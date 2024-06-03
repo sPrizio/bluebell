@@ -4,8 +4,8 @@ import com.bluebell.flowerpot.api.converters.GenericDTOConverter;
 import com.bluebell.flowerpot.api.models.dto.account.AccountDTO;
 import com.bluebell.flowerpot.api.models.records.currency.CurrencyDisplay;
 import com.bluebell.flowerpot.core.models.entities.account.Account;
-import com.bluebell.flowerpot.core.services.math.MathService;
 import com.bluebell.flowerpot.core.services.platform.UniqueIdentifierService;
+import com.bluebell.core.services.MathService;
 import jakarta.annotation.Resource;
 import org.springframework.stereotype.Component;
 
@@ -18,8 +18,7 @@ import org.springframework.stereotype.Component;
 @Component("accountDTOConverter")
 public class AccountDTOConverter implements GenericDTOConverter<Account, AccountDTO> {
 
-    @Resource(name = "mathService")
-    private MathService mathService;
+    private final MathService mathService = new MathService();
 
     @Resource(name = "uniqueIdentifierService")
     private UniqueIdentifierService uniqueIdentifierService;

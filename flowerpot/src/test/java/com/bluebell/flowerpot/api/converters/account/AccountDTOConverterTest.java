@@ -2,8 +2,8 @@ package com.bluebell.flowerpot.api.converters.account;
 
 import com.bluebell.flowerpot.AbstractGenericTest;
 import com.bluebell.flowerpot.api.models.dto.account.AccountDTO;
-import com.bluebell.flowerpot.core.services.math.MathService;
 import com.bluebell.flowerpot.core.services.platform.UniqueIdentifierService;
+import com.bluebell.core.services.MathService;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;

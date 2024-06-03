@@ -4,8 +4,8 @@ import com.bluebell.flowerpot.api.converters.GenericDTOConverter;
 import com.bluebell.flowerpot.api.converters.account.AccountDTOConverter;
 import com.bluebell.flowerpot.api.models.dto.trade.TradeDTO;
 import com.bluebell.flowerpot.core.models.entities.trade.Trade;
-import com.bluebell.flowerpot.core.services.math.MathService;
 import com.bluebell.flowerpot.core.services.platform.UniqueIdentifierService;
+import com.bluebell.core.services.MathService;
 import jakarta.annotation.Resource;
 import org.springframework.stereotype.Component;
 
@@ -18,11 +18,10 @@ import org.springframework.stereotype.Component;
 @Component("tradeDTOConverter")
 public class TradeDTOConverter implements GenericDTOConverter<Trade, TradeDTO> {
 
+    private final MathService mathService = new MathService();
+
     @Resource(name = "accountDTOConverter")
     private AccountDTOConverter accountDTOConverter;
-
-    @Resource(name = "mathService")
-    private MathService mathService;
 
     @Resource(name = "uniqueIdentifierService")
     private UniqueIdentifierService uniqueIdentifierService;

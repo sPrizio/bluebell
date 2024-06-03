@@ -1,8 +1,8 @@
 package com.bluebell.aurora.models.strategy;
 
 import com.bluebell.aurora.models.trade.Trade;
-import com.bluebell.aurora.services.MathService;
 import com.bluebell.aurora.strategies.Strategy;
+import com.bluebell.core.services.MathService;
 import lombok.Getter;
 
 import java.time.LocalDate;

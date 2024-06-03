@@ -5,7 +5,7 @@ import com.bluebell.flowerpot.core.enums.system.TimeInterval;
 import com.bluebell.flowerpot.core.models.entities.account.Account;
 import com.bluebell.flowerpot.core.models.entities.trade.Trade;
 import com.bluebell.flowerpot.core.models.records.TradeRecord;
-import com.bluebell.flowerpot.core.services.math.MathService;
+import com.bluebell.core.services.MathService;
 import jakarta.annotation.Resource;
 import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.stereotype.Service;
@@ -27,8 +27,7 @@ import static com.bluebell.flowerpot.core.validation.GenericValidator.validatePa
 @Service
 public class TradeRecordService {
 
-    @Resource(name = "mathService")
-    private MathService mathService;
+    private final MathService mathService = new MathService();
 
     @Resource(name = "tradeService")
     private TradeService tradeService;
