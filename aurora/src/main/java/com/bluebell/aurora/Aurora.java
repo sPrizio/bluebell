@@ -37,7 +37,8 @@ public class Aurora {
         // TODO: generate report of losing days and look for patterns
         // TODO: drawdown calculator!
 
-        // TODO: testing for all the modules
+        // TODO: testing aurora
+        // TODO: possibly look into nextjs app on this project?
 
 
         final MetaDataService metaDataService = new MetaDataService();
