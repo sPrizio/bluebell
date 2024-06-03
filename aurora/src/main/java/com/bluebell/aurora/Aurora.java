@@ -1,12 +1,12 @@
 package com.bluebell.aurora;
 
-import com.bluebell.aurora.enums.TimeInterval;
 import com.bluebell.aurora.models.metadata.MetaData;
 import com.bluebell.aurora.models.strategy.parameter.impl.StaticStrategyParameters;
-import com.bluebell.aurora.parsers.impl.FirstRateDataParser;
-import com.bluebell.aurora.models.price.MarketPrice;
 import com.bluebell.aurora.services.MetaDataService;
 import com.bluebell.aurora.strategies.impl.ProjectAuroraStrategy;
+import com.bluebell.radicle.enums.TimeInterval;
+import com.bluebell.radicle.models.MarketPrice;
+import com.bluebell.radicle.parsers.impl.FirstRateDataParser;
 
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
@@ -31,11 +31,13 @@ public class Aurora {
             compare = compare.plusYears(1);
         }
 
-        //TODO: make the strategy take dynamic data
-        //TODO: flag to make take profits as static or dynamic
+        // TODO: make the strategy take dynamic data
+        // TODO: flag to make take profits as static or dynamic
         // TODO: in order to normalize data the strategy should take in a list of parameters that are tied to the dates?
         // TODO: generate report of losing days and look for patterns
         // TODO: drawdown calculator!
+
+        // TODO: testing for all the modules
 
 
         final MetaDataService metaDataService = new MetaDataService();

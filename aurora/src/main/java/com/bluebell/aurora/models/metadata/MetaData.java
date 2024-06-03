@@ -1,7 +1,7 @@
 package com.bluebell.aurora.models.metadata;
 
-import com.bluebell.aurora.models.price.MarketPrice;
 import com.bluebell.aurora.services.MathService;
+import com.bluebell.radicle.models.MarketPrice;
 import lombok.Getter;
 import org.apache.commons.collections4.CollectionUtils;
 import org.javatuples.Triplet;

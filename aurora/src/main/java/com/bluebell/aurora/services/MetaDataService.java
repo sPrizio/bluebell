@@ -1,7 +1,7 @@
 package com.bluebell.aurora.services;
 
 import com.bluebell.aurora.models.metadata.MetaData;
-import com.bluebell.aurora.models.price.MarketPrice;
+import com.bluebell.radicle.models.MarketPrice;
 
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;

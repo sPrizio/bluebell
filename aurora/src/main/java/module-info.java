@@ -1,5 +1,6 @@
 open module com.aurora {
     requires com.bluebell;
+    requires com.bluebell.radicle;
     requires org.apache.commons.collections4;
     requires org.apache.commons.lang3;
     requires org.apache.commons.text;

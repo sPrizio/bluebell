@@ -2,11 +2,11 @@ package com.bluebell.aurora.strategies.impl;
 
 import com.bluebell.aurora.enums.MarketDirection;
 import com.bluebell.aurora.enums.TradeType;
-import com.bluebell.aurora.models.price.MarketPrice;
 import com.bluebell.aurora.models.strategy.StrategyResult;
 import com.bluebell.aurora.models.strategy.parameter.StrategyParameters;
 import com.bluebell.aurora.models.trade.Trade;
 import com.bluebell.aurora.strategies.Strategy;
+import com.bluebell.radicle.models.MarketPrice;
 import lombok.Getter;
 
 import java.time.LocalDate;

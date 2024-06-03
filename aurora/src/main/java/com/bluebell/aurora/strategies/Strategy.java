@@ -1,9 +1,9 @@
 package com.bluebell.aurora.strategies;
 
 import com.bluebell.aurora.enums.TradeType;
-import com.bluebell.aurora.models.price.MarketPrice;
 import com.bluebell.aurora.models.strategy.StrategyResult;
 import com.bluebell.aurora.models.trade.Trade;
+import com.bluebell.radicle.models.MarketPrice;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
