@@ -9,7 +9,7 @@ import com.bluebell.radicle.models.MarketPrice;
  * @author Stephen Prizio
  * @version 0.0.1
  */
-public enum TimeInterval {
+public enum RadicleTimeInterval {
     ONE_MINUTE,
     FIVE_MINUTE,
     FIFTEEN_MINUTE,

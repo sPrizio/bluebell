@@ -2,7 +2,7 @@ package com.bluebell.flowerpot.core.services.trade;
 
 import com.bluebell.flowerpot.AbstractGenericTest;
 import com.bluebell.flowerpot.core.constants.CoreConstants;
-import com.bluebell.flowerpot.core.enums.system.TimeInterval;
+import com.bluebell.flowerpot.core.enums.system.FlowerpotTimeInterval;
 import com.bluebell.flowerpot.core.exceptions.validation.IllegalParameterException;
 import org.junit.Before;
 import org.junit.Test;
@@ -24,7 +24,7 @@ import static org.mockito.ArgumentMatchers.any;
  * Testing class for {@link TradeRecordService}
  *
  * @author Stephen Prizio
- * @version 0.0.5
+ * @version 0.0.6
  */
 @SpringBootTest
 @RunWith(SpringRunner.class)
@@ -47,28 +47,28 @@ public class TradeRecordServiceTest extends AbstractGenericTest {
     @Test
     public void test_getTradeRecords_missingParamStartDate() {
         assertThatExceptionOfType(IllegalParameterException.class)
-                .isThrownBy(() -> this.tradeRecordService.getTradeRecords(null, LocalDate.MAX, generateTestAccount(), TimeInterval.DAILY, CoreConstants.MAX_RESULT_SIZE))
+                .isThrownBy(() -> this.tradeRecordService.getTradeRecords(null, LocalDate.MAX, generateTestAccount(), FlowerpotTimeInterval.DAILY, CoreConstants.MAX_RESULT_SIZE))
                 .withMessage(CoreConstants.Validation.DateTime.START_DATE_CANNOT_BE_NULL);
     }
 
     @Test
     public void test_getTradeRecords_missingParamEndDate() {
         assertThatExceptionOfType(IllegalParameterException.class)
-                .isThrownBy(() -> this.tradeRecordService.getTradeRecords(LocalDate.MIN, null, generateTestAccount(), TimeInterval.DAILY, CoreConstants.MAX_RESULT_SIZE))
+                .isThrownBy(() -> this.tradeRecordService.getTradeRecords(LocalDate.MIN, null, generateTestAccount(), FlowerpotTimeInterval.DAILY, CoreConstants.MAX_RESULT_SIZE))
                 .withMessage(CoreConstants.Validation.DateTime.END_DATE_CANNOT_BE_NULL);
     }
 
     @Test
     public void test_getTradeRecords_invalidTimeSpan() {
         assertThatExceptionOfType(UnsupportedOperationException.class)
-                .isThrownBy(() -> this.tradeRecordService.getTradeRecords(LocalDate.MAX, LocalDate.MIN, generateTestAccount(), TimeInterval.DAILY, CoreConstants.MAX_RESULT_SIZE))
+                .isThrownBy(() -> this.tradeRecordService.getTradeRecords(LocalDate.MAX, LocalDate.MIN, generateTestAccount(), FlowerpotTimeInterval.DAILY, CoreConstants.MAX_RESULT_SIZE))
                 .withMessage(CoreConstants.Validation.DateTime.MUTUALLY_EXCLUSIVE_DATES);
     }
 
     @Test
     public void test_getTradeRecords_missingParamAccount() {
         assertThatExceptionOfType(IllegalParameterException.class)
-                .isThrownBy(() -> this.tradeRecordService.getTradeRecords(LocalDate.MIN, LocalDate.MAX, null, TimeInterval.DAILY, CoreConstants.MAX_RESULT_SIZE))
+                .isThrownBy(() -> this.tradeRecordService.getTradeRecords(LocalDate.MIN, LocalDate.MAX, null, FlowerpotTimeInterval.DAILY, CoreConstants.MAX_RESULT_SIZE))
                 .withMessage(CoreConstants.Validation.Account.ACCOUNT_CANNOT_BE_NULL);
     }
 
@@ -81,7 +81,7 @@ public class TradeRecordServiceTest extends AbstractGenericTest {
 
     @Test
     public void test_getTradeRecords_success() {
-        assertThat(this.tradeRecordService.getTradeRecords(LocalDate.of(2022, 8, 20), LocalDate.of(2022, 8, 25), generateTestAccount(), TimeInterval.DAILY, CoreConstants.MAX_RESULT_SIZE))
+        assertThat(this.tradeRecordService.getTradeRecords(LocalDate.of(2022, 8, 20), LocalDate.of(2022, 8, 25), generateTestAccount(), FlowerpotTimeInterval.DAILY, CoreConstants.MAX_RESULT_SIZE))
                 .isNotEmpty()
                 .element(0)
                 .extracting("lowestPoint", "points", "trades", "profitability")

@@ -1,5 +1,7 @@
 open module com.bluebell.flowerpot {
     requires com.bluebell;
+    requires com.bluebell.radicle;
+    requires spring.aop;
     requires org.apache.commons.collections4;
     requires org.apache.commons.lang3;
     requires org.apache.commons.text;

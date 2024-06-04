@@ -3,7 +3,7 @@ package com.bluebell.aurora;
 import com.bluebell.aurora.models.strategy.parameter.impl.StaticStrategyParameters;
 import com.bluebell.aurora.services.MetaDataService;
 import com.bluebell.aurora.strategies.impl.ProjectAuroraStrategy;
-import com.bluebell.radicle.enums.TimeInterval;
+import com.bluebell.radicle.enums.RadicleTimeInterval;
 import com.bluebell.radicle.models.MarketPrice;
 import com.bluebell.radicle.parsers.impl.FirstRateDataParser;
 
@@ -11,12 +11,18 @@ import java.time.LocalDate;
 import java.util.Map;
 import java.util.TreeSet;
 
+/**
+ * Executes the aurora module. Primarily used for testing strategies and obtaining meta-data
+ *
+ * @author Stephen Prizio
+ * @version 0.0.1
+ */
 public class Aurora {
 
     public static void main(String... args) {
 
         final FirstRateDataParser parser = new FirstRateDataParser();
-        final Map<LocalDate, TreeSet<MarketPrice>> masterCollection = parser.parseMarketPricesByDate("NDX_full_5min.txt", TimeInterval.FIVE_MINUTE);
+        final Map<LocalDate, TreeSet<MarketPrice>> masterCollection = parser.parseMarketPricesByDate("NDX_full_5min.txt", RadicleTimeInterval.FIVE_MINUTE);
 
         final ProjectAuroraStrategy projectAuroraStrategy = new ProjectAuroraStrategy(new StaticStrategyParameters(10, 5, 9, 50, 0.25, 9.55));
 

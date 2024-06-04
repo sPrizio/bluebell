@@ -1,4 +1,4 @@
-package com.bluebell.flowerpot.core.models.records;
+package com.bluebell.flowerpot.core.models.nonentities;
 
 import com.bluebell.flowerpot.core.models.entities.trade.Trade;
 
@@ -24,7 +24,7 @@ import java.time.LocalDate;
  * @param retention percentage of points won of total points
  *
  * @author Stephen Prizio
- * @version 0.0.5
+ * @version 0.0.6
  */
 public record TradeRecord(
         LocalDate start,

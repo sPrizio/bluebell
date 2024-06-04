@@ -1,6 +1,6 @@
 package com.bluebell.radicle.parsers.impl;
 
-import com.bluebell.radicle.enums.TimeInterval;
+import com.bluebell.radicle.enums.RadicleTimeInterval;
 import com.bluebell.radicle.models.MarketPrice;
 import com.bluebell.radicle.parsers.MarketPriceParser;
 import org.apache.commons.io.FileUtils;
@@ -26,7 +26,7 @@ public class FirstRateDataParser implements MarketPriceParser {
     //  METHODS
 
     @Override
-    public TreeSet<MarketPrice> parseMarketPrices(final String file, final TimeInterval interval) {
+    public TreeSet<MarketPrice> parseMarketPrices(final String file, final RadicleTimeInterval interval) {
 
         final String sampleFile = getDataRoot() + "/" + file;
         if (!validateFile(sampleFile)) {
@@ -35,7 +35,7 @@ public class FirstRateDataParser implements MarketPriceParser {
         }
 
         final DateTimeFormatter dateTimeFormatter;
-        if (interval == TimeInterval.ONE_DAY) {
+        if (interval == RadicleTimeInterval.ONE_DAY) {
             dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         } else {
             dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
@@ -52,7 +52,7 @@ public class FirstRateDataParser implements MarketPriceParser {
                 final String[] lineComponents = line.split(",");
                 marketPrices.add(new MarketPrice(
                         interval ==
-                                TimeInterval.ONE_DAY ? LocalDate.parse(lineComponents[0], dateTimeFormatter).atStartOfDay()
+                                RadicleTimeInterval.ONE_DAY ? LocalDate.parse(lineComponents[0], dateTimeFormatter).atStartOfDay()
                                 : LocalDateTime.parse(lineComponents[0], dateTimeFormatter),
                         interval,
                         parseDoubleFromString(lineComponents[1]),
@@ -69,7 +69,7 @@ public class FirstRateDataParser implements MarketPriceParser {
     }
 
     @Override
-    public Map<LocalDate, TreeSet<MarketPrice>> parseMarketPricesByDate(final String file, final TimeInterval interval) {
+    public Map<LocalDate, TreeSet<MarketPrice>> parseMarketPricesByDate(final String file, final RadicleTimeInterval interval) {
 
         final TreeSet<MarketPrice> marketPrices = parseMarketPrices(file, interval);
         final Map<LocalDate, TreeSet<MarketPrice>> masterCollection = new HashMap<>();

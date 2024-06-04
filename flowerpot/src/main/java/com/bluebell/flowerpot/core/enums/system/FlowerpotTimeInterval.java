@@ -1,6 +1,6 @@
 package com.bluebell.flowerpot.core.enums.system;
 
-import com.bluebell.flowerpot.core.models.records.TradeRecord;
+import com.bluebell.flowerpot.core.models.nonentities.TradeRecord;
 import org.apache.commons.lang3.StringUtils;
 
 import java.time.temporal.ChronoUnit;
@@ -9,9 +9,9 @@ import java.time.temporal.ChronoUnit;
  * Enum representing various time intervals for {@link TradeRecord}s
  *
  * @author Stephen Prizio
- * @version 0.0.5
+ * @version 0.0.6
  */
-public enum TimeInterval {
+public enum FlowerpotTimeInterval {
     DAILY(ChronoUnit.DAYS, 1),
     WEEKLY(ChronoUnit.WEEKS, 1),
     MONTHLY(ChronoUnit.MONTHS, 1),
@@ -21,7 +21,7 @@ public enum TimeInterval {
 
     public final int amount;
 
-    TimeInterval(final ChronoUnit unit, final int amount) {
+    FlowerpotTimeInterval(final ChronoUnit unit, final int amount) {
         this.unit = unit;
         this.amount = amount;
     }
@@ -30,12 +30,12 @@ public enum TimeInterval {
     //  METHODS
 
     /**
-     * Converts a string value into a {@link TimeInterval}
+     * Converts a string value into a {@link FlowerpotTimeInterval}
      *
      * @param code string
-     * @return {@link TimeInterval}
+     * @return {@link FlowerpotTimeInterval}
      */
-    public static TimeInterval getInterval(final String code) {
+    public static FlowerpotTimeInterval getInterval(final String code) {
 
         if (StringUtils.isEmpty(code)) {
             throw new IllegalArgumentException("code cannot be empty");

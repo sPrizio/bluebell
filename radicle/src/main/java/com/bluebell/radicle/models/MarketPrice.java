@@ -2,7 +2,7 @@ package com.bluebell.radicle.models;
 
 
 import com.bluebell.core.services.MathService;
-import com.bluebell.radicle.enums.TimeInterval;
+import com.bluebell.radicle.enums.RadicleTimeInterval;
 
 import java.time.LocalDateTime;
 import java.util.Objects;
@@ -11,7 +11,7 @@ import java.util.Objects;
  * Representation of a market price for an interval of time
  *
  * @param date start date
- * @param interval {@link TimeInterval}
+ * @param interval {@link RadicleTimeInterval}
  * @param open open price
  * @param high highest price
  * @param low lowest price
@@ -21,7 +21,7 @@ import java.util.Objects;
  */
 public record MarketPrice(
         LocalDateTime date,
-        TimeInterval interval,
+        RadicleTimeInterval interval,
         double open,
         double high,
         double low,
@@ -32,7 +32,7 @@ public record MarketPrice(
     //  CONSTRUCTORS
 
     public MarketPrice() {
-        this(LocalDateTime.MIN, TimeInterval.ONE_DAY, 0.0, 0.0, 0.0, 0.0);
+        this(LocalDateTime.MIN, RadicleTimeInterval.ONE_DAY, 0.0, 0.0, 0.0, 0.0);
     }
 
 

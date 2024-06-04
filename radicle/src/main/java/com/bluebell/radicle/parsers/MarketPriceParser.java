@@ -1,6 +1,6 @@
 package com.bluebell.radicle.parsers;
 
-import com.bluebell.radicle.enums.TimeInterval;
+import com.bluebell.radicle.enums.RadicleTimeInterval;
 import com.bluebell.radicle.models.MarketPrice;
 import org.apache.commons.lang3.StringUtils;
 
@@ -28,19 +28,19 @@ public interface MarketPriceParser {
      * Parses a file of market prices into a {@link TreeSet} of {@link MarketPrice}
      *
      * @param file file path
-     * @param interval {@link TimeInterval}
+     * @param interval {@link RadicleTimeInterval}
      * @return {@link List} of {@link MarketPrice}
      */
-    TreeSet<MarketPrice> parseMarketPrices(final String file, final TimeInterval interval);
+    TreeSet<MarketPrice> parseMarketPrices(final String file, final RadicleTimeInterval interval);
 
     /**
      * Parses a file of market prices into a {@link Map} of {@link MarketPrice} organized by their date (truncates the time)
      *
      * @param file file path
-     * @param interval {@link TimeInterval}
+     * @param interval {@link RadicleTimeInterval}
      * @return {@link List} of {@link MarketPrice}
      */
-    Map<LocalDate, TreeSet<MarketPrice>> parseMarketPricesByDate(final String file, final TimeInterval interval);
+    Map<LocalDate, TreeSet<MarketPrice>> parseMarketPricesByDate(final String file, final RadicleTimeInterval interval);
 
 
     //  HELPERS

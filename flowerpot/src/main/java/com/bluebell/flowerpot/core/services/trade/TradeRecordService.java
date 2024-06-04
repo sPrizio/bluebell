@@ -1,16 +1,17 @@
 package com.bluebell.flowerpot.core.services.trade;
 
+import com.bluebell.core.services.MathService;
 import com.bluebell.flowerpot.core.constants.CoreConstants;
-import com.bluebell.flowerpot.core.enums.system.TimeInterval;
+import com.bluebell.flowerpot.core.enums.system.FlowerpotTimeInterval;
 import com.bluebell.flowerpot.core.models.entities.account.Account;
 import com.bluebell.flowerpot.core.models.entities.trade.Trade;
-import com.bluebell.flowerpot.core.models.records.TradeRecord;
-import com.bluebell.core.services.MathService;
+import com.bluebell.flowerpot.core.models.nonentities.TradeRecord;
 import jakarta.annotation.Resource;
 import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.time.temporal.TemporalAdjusters;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -22,7 +23,7 @@ import static com.bluebell.flowerpot.core.validation.GenericValidator.validatePa
  * Service-layer for calculating {@link TradeRecord}s
  *
  * @author Stephen Prizio
- * @version 0.0.5
+ * @version 0.0.6
  */
 @Service
 public class TradeRecordService {
@@ -44,24 +45,24 @@ public class TradeRecordService {
      * @param count number of results
      * @return {@link List} of {@link TradeRecord}
      */
-    public List<TradeRecord> getTradeRecords(final LocalDate start, final LocalDate end, final Account account, final TimeInterval timeInterval, final int count) {
+    public List<TradeRecord> getTradeRecords(final LocalDate start, final LocalDate end, final Account account, final FlowerpotTimeInterval flowerpotTimeInterval, final int count) {
 
         validateParameterIsNotNull(start, CoreConstants.Validation.DateTime.START_DATE_CANNOT_BE_NULL);
         validateParameterIsNotNull(end, CoreConstants.Validation.DateTime.END_DATE_CANNOT_BE_NULL);
         validateDatesAreNotMutuallyExclusive(start.atStartOfDay(), end.atStartOfDay(), CoreConstants.Validation.DateTime.MUTUALLY_EXCLUSIVE_DATES);
         validateParameterIsNotNull(account, CoreConstants.Validation.Account.ACCOUNT_CANNOT_BE_NULL);
-        validateParameterIsNotNull(timeInterval, CoreConstants.Validation.System.TIME_INTERVAL_CANNOT_BE_NULL);
+        validateParameterIsNotNull(flowerpotTimeInterval, CoreConstants.Validation.System.TIME_INTERVAL_CANNOT_BE_NULL);
 
         final int limit = (count == CoreConstants.MAX_RESULT_SIZE) ? 1000000 : count;
-        LocalDate tempStart = start;
-        LocalDate tempEnd = start.plus(timeInterval.amount, timeInterval.unit);
+        LocalDate tempStart = flowerpotTimeInterval == FlowerpotTimeInterval.MONTHLY ? start.with(TemporalAdjusters.firstDayOfMonth()) : start;
+        LocalDate tempEnd = tempStart.plus(flowerpotTimeInterval.amount, flowerpotTimeInterval.unit);
 
         final List<TradeRecord> records = new ArrayList<>();
         while (tempStart.isBefore(end) || tempStart.isEqual(end)) {
             records.add(generateRecord(tempStart, tempEnd, this.tradeService.findAllTradesWithinTimespan(tempStart.atStartOfDay(), tempEnd.atStartOfDay(), account)));
 
-            tempStart = tempStart.plus(timeInterval.amount, timeInterval.unit);
-            tempEnd = tempEnd.plus(timeInterval.amount, timeInterval.unit);
+            tempStart = tempStart.plus(flowerpotTimeInterval.amount, flowerpotTimeInterval.unit);
+            tempEnd = tempEnd.plus(flowerpotTimeInterval.amount, flowerpotTimeInterval.unit);
         }
 
         return records.stream().filter(tr -> tr.trades() > 0).sorted(Comparator.reverseOrder()).limit(limit).toList();

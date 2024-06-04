@@ -28,4 +28,5 @@ Current Release: **Pre-release**
 - **0.0.3** : Testing Suite implementation & integration
 - **0.0.4** : Forex Factory calendar integration
 - **0.0.5** : Trade Record Integration
+- **0.0.6** : Charting Implementation
 

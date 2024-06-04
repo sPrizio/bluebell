@@ -3,9 +3,9 @@ package com.bluebell.flowerpot.api.controllers.trade;
 import com.bluebell.flowerpot.api.controllers.AbstractApiController;
 import com.bluebell.flowerpot.api.models.records.json.StandardJsonResponse;
 import com.bluebell.flowerpot.core.constants.CoreConstants;
-import com.bluebell.flowerpot.core.enums.system.TimeInterval;
+import com.bluebell.flowerpot.core.enums.system.FlowerpotTimeInterval;
 import com.bluebell.flowerpot.core.models.entities.security.User;
-import com.bluebell.flowerpot.core.models.records.TradeRecord;
+import com.bluebell.flowerpot.core.models.nonentities.TradeRecord;
 import com.bluebell.flowerpot.core.services.trade.TradeRecordService;
 import com.bluebell.flowerpot.security.aspects.ValidateApiToken;
 import com.bluebell.flowerpot.security.constants.SecurityConstants;
@@ -25,7 +25,7 @@ import static com.bluebell.flowerpot.core.validation.GenericValidator.validateLo
  * Api controller for {@link TradeRecord}
  *
  * @author Stephen Prizio
- * @version 0.0.5
+ * @version 0.0.6
  */
 @RestController
 @RequestMapping("${base.api.controller.endpoint}/trade-record")
@@ -64,12 +64,12 @@ public class TradeRecordApiController extends AbstractApiController {
         validateLocalDateFormat(start, CoreConstants.DATE_FORMAT, String.format(CoreConstants.Validation.DateTime.START_DATE_INVALID_FORMAT, start, CoreConstants.DATE_FORMAT));
         validateLocalDateFormat(end, CoreConstants.DATE_FORMAT, String.format(CoreConstants.Validation.DateTime.START_DATE_INVALID_FORMAT, end, CoreConstants.DATE_FORMAT));
 
-        if (!EnumUtils.isValidEnumIgnoreCase(TimeInterval.class, interval)) {
+        if (!EnumUtils.isValidEnumIgnoreCase(FlowerpotTimeInterval.class, interval)) {
             return new StandardJsonResponse(false, null, String.format("%s is not a valid time interval", interval));
         }
 
         final User user = (User) request.getAttribute(SecurityConstants.USER_REQUEST_KEY);
-        final List<TradeRecord> records = this.tradeRecordService.getTradeRecords(LocalDate.parse(start, DateTimeFormatter.ISO_DATE), LocalDate.parse(end, DateTimeFormatter.ISO_DATE), getAccountForId(user, accountNumber), TimeInterval.getInterval(interval), count);
+        final List<TradeRecord> records = this.tradeRecordService.getTradeRecords(LocalDate.parse(start, DateTimeFormatter.ISO_DATE), LocalDate.parse(end, DateTimeFormatter.ISO_DATE), getAccountForId(user, accountNumber), FlowerpotTimeInterval.getInterval(interval), count);
         return new StandardJsonResponse(true, records, StringUtils.EMPTY);
     }
 }

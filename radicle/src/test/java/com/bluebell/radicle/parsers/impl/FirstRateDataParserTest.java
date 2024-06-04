@@ -1,6 +1,6 @@
 package com.bluebell.radicle.parsers.impl;
 
-import com.bluebell.radicle.enums.TimeInterval;
+import com.bluebell.radicle.enums.RadicleTimeInterval;
 import com.bluebell.radicle.models.MarketPrice;
 import org.apache.commons.lang3.StringUtils;
 import org.junit.jupiter.api.Test;
@@ -25,13 +25,13 @@ class FirstRateDataParserTest {
 
     @Test
     void test_parseMarketPrices_badPath() {
-        assertThat(this.firstRateDataParser.parseMarketPrices(StringUtils.EMPTY, TimeInterval.FIVE_MINUTE))
+        assertThat(this.firstRateDataParser.parseMarketPrices(StringUtils.EMPTY, RadicleTimeInterval.FIVE_MINUTE))
                 .isEmpty();
     }
 
     @Test
     void test_parseMarketPrices_success_5min() {
-        assertThat(this.firstRateDataParser.parseMarketPrices("NDX_5min_sample.csv", TimeInterval.FIVE_MINUTE))
+        assertThat(this.firstRateDataParser.parseMarketPrices("NDX_5min_sample.csv", RadicleTimeInterval.FIVE_MINUTE))
                 .isNotEmpty()
                 .element(2)
                 .extracting("close")
@@ -40,7 +40,7 @@ class FirstRateDataParserTest {
 
     @Test
     void test_parseMarketPrices_success_1day() {
-        assertThat(this.firstRateDataParser.parseMarketPrices("NDX_1day_sample.csv", TimeInterval.ONE_DAY))
+        assertThat(this.firstRateDataParser.parseMarketPrices("NDX_1day_sample.csv", RadicleTimeInterval.ONE_DAY))
                 .isNotEmpty()
                 .element(4)
                 .extracting("close")
@@ -52,7 +52,7 @@ class FirstRateDataParserTest {
 
     @Test
     void test_parseMarketPricesByDate_badPath() {
-        assertThat(this.firstRateDataParser.parseMarketPricesByDate(StringUtils.EMPTY, TimeInterval.FIVE_MINUTE))
+        assertThat(this.firstRateDataParser.parseMarketPricesByDate(StringUtils.EMPTY, RadicleTimeInterval.FIVE_MINUTE))
                 .isEmpty();
     }
 
@@ -60,7 +60,7 @@ class FirstRateDataParserTest {
     void test_parseMarketPricesByDate_success() {
 
         final TreeSet<MarketPrice> prices =
-                this.firstRateDataParser.parseMarketPricesByDate("NDX_5min_sample.csv", TimeInterval.FIVE_MINUTE).get(LocalDate.of(2024, 5, 14));
+                this.firstRateDataParser.parseMarketPricesByDate("NDX_5min_sample.csv", RadicleTimeInterval.FIVE_MINUTE).get(LocalDate.of(2024, 5, 14));
 
         final MarketPrice marketPrice = prices.first();
         assertThat(marketPrice)

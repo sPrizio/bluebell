@@ -9,9 +9,9 @@ Current Release: **Pre-release**
 ---
 
 ### Modules
-- Aurora: A custom trading strategy designed to capture intrda-day trends based on the opening price principle
-- Flowerpot: Back-end API system capable of tracking user trades and accounts to build a comprehensive look at one's portfolio
-- Radicle: Parsing system meant to collect historical data for use with back-testing and data-visualization systems
+- Aurora **v0.0.1**: A custom trading strategy designed to capture intrda-day trends based on the opening price principle
+- Flowerpot **v0.0.6**: Back-end API system capable of tracking user trades and accounts to build a comprehensive look at one's portfolio
+- Radicle **v0.0.1**: Parsing system meant to collect historical data for use with back-testing and data-visualization systems
 
 ---
 
