@@ -1,6 +1,5 @@
 package com.bluebell.aurora;
 
-import com.bluebell.aurora.models.metadata.MetaData;
 import com.bluebell.aurora.models.strategy.parameter.impl.StaticStrategyParameters;
 import com.bluebell.aurora.services.MetaDataService;
 import com.bluebell.aurora.strategies.impl.ProjectAuroraStrategy;
@@ -9,8 +8,8 @@ import com.bluebell.radicle.models.MarketPrice;
 import com.bluebell.radicle.parsers.impl.FirstRateDataParser;
 
 import java.time.LocalDate;
-import java.time.temporal.ChronoUnit;
-import java.util.*;
+import java.util.Map;
+import java.util.TreeSet;
 
 public class Aurora {
 
@@ -19,7 +18,6 @@ public class Aurora {
         final FirstRateDataParser parser = new FirstRateDataParser();
         final Map<LocalDate, TreeSet<MarketPrice>> masterCollection = parser.parseMarketPricesByDate("NDX_full_5min.txt", TimeInterval.FIVE_MINUTE);
 
-        /*final ProjectAuroraStrategy projectAuroraStrategy = new ProjectAuroraStrategy(60, 30, 9, 50, 0.25, 9.55);*/
         final ProjectAuroraStrategy projectAuroraStrategy = new ProjectAuroraStrategy(new StaticStrategyParameters(10, 5, 9, 50, 0.25, 9.55));
 
         final LocalDate start = LocalDate.of(2013, 1, 1);

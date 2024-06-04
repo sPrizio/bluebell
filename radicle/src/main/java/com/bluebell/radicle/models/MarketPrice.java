@@ -1,6 +1,7 @@
 package com.bluebell.radicle.models;
 
 
+import com.bluebell.core.services.MathService;
 import com.bluebell.radicle.enums.TimeInterval;
 
 import java.time.LocalDateTime;
@@ -53,6 +54,21 @@ public record MarketPrice(
      */
     public boolean isBearish() {
         return this.close < this.open;
+    }
+
+    /**
+     * A doji is a price movement where the open and close are within a small distance from each other and a fraction of the overall movement
+     * Note: Here we assume doji candles to have bodies less than 10% of the overall movement
+     *
+     * @return true if the distance between the open and close is less than 10% from the overall highs and lows
+     */
+    public boolean isDoji() {
+
+        final MathService mathService = new MathService();
+        final double body = Math.abs(mathService.subtract(this.open, this. close));
+        final double wicks = Math.abs(mathService.subtract(this.high, this.low));
+
+        return mathService.wholePercentage(body, wicks) <= 10;
     }
 
     @Override
