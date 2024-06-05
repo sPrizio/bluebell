@@ -62,7 +62,7 @@ public class FirstRateDataParser implements MarketPriceParser {
                 ));
             }
         } catch (Exception e) {
-            System.out.printf(e.getMessage());
+            System.out.printf(e.getMessage(), e);
         }
 
         return marketPrices;

@@ -71,6 +71,15 @@ public record MarketPrice(
         return mathService.wholePercentage(body, wicks) <= 10;
     }
 
+    /**
+     * If the market price is not indecisive, it will have a larger enough difference in open and close
+     *
+     * @return inverse of doji
+     */
+    public boolean hasFullBody() {
+        return !this.isDoji();
+    }
+
     @Override
     public int compareTo(MarketPrice o) {
         return this.date.compareTo(o.date);
