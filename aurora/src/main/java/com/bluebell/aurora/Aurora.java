@@ -1,13 +1,22 @@
 package com.bluebell.aurora;
 
-import com.bluebell.aurora.models.strategy.parameter.impl.StaticStrategyParameters;
+import com.bluebell.aurora.enums.TradeType;
+import com.bluebell.aurora.models.metadata.MetaData;
+import com.bluebell.aurora.models.parameter.LimitParameter;
+import com.bluebell.aurora.models.strategy.StrategyResult;
+import com.bluebell.aurora.models.parameter.strategy.impl.BasicStrategyParameters;
+import com.bluebell.aurora.models.parameter.strategy.impl.BloomStrategyParameters;
 import com.bluebell.aurora.services.MetaDataService;
-import com.bluebell.aurora.strategies.impl.ProjectAuroraStrategy;
+import com.bluebell.aurora.strategies.impl.Bloom;
+import com.bluebell.core.services.MathService;
 import com.bluebell.radicle.enums.RadicleTimeInterval;
 import com.bluebell.radicle.models.MarketPrice;
 import com.bluebell.radicle.parsers.impl.FirstRateDataParser;
 
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
+import java.util.List;
 import java.util.Map;
 import java.util.TreeSet;
 
@@ -21,18 +30,48 @@ public class Aurora {
 
     public static void main(String... args) {
 
+        final MathService mathService = new MathService();
+
+        // config
+        final double variance = 1.25;
+        final boolean normalize = true;
+        final double absoluteTarget = 30.0;
+        final double buyProfit = 52.04;
+        final double sellProfit = 45.61;
+        final double buyStop = mathService.divide(buyProfit, 2.0);
+        final double sellStop = mathService.divide(sellProfit, 2.0);
+        final double lotSize = 0.25;
+        final double pricePerPoint = 9.55;
+
+        //TODO: auto place breakeven stop should be implemented. Definitely a way to minimize risk!
+
         final FirstRateDataParser parser = new FirstRateDataParser();
         final Map<LocalDate, TreeSet<MarketPrice>> masterCollection = parser.parseMarketPricesByDate("NDX_full_5min.txt", RadicleTimeInterval.FIVE_MINUTE);
 
-        final ProjectAuroraStrategy projectAuroraStrategy = new ProjectAuroraStrategy(new StaticStrategyParameters(10, 5, 9, 50, 0.25, 9.55));
+        final Bloom bloom1 = new Bloom(new BloomStrategyParameters(variance, normalize, absoluteTarget, new BasicStrategyParameters(new LimitParameter(TradeType.BUY, buyProfit, buyStop), new LimitParameter(TradeType.SELL, sellProfit, sellStop), 9, 30, lotSize, pricePerPoint)));
+        final Bloom bloom2 = new Bloom(new BloomStrategyParameters(variance, normalize, absoluteTarget, new BasicStrategyParameters(new LimitParameter(TradeType.BUY, buyProfit, buyStop), new LimitParameter(TradeType.SELL, sellProfit, sellStop), 9, 35, lotSize, pricePerPoint)));
+        final Bloom bloom3 = new Bloom(new BloomStrategyParameters(variance, normalize, absoluteTarget, new BasicStrategyParameters(new LimitParameter(TradeType.BUY, buyProfit, buyStop), new LimitParameter(TradeType.SELL, sellProfit, sellStop), 9, 40, lotSize, pricePerPoint)));
+        final Bloom bloom4 = new Bloom(new BloomStrategyParameters(variance, normalize, absoluteTarget, new BasicStrategyParameters(new LimitParameter(TradeType.BUY, buyProfit, buyStop), new LimitParameter(TradeType.SELL, sellProfit, sellStop), 9, 45, lotSize, pricePerPoint)));
+        final Bloom bloom5 = new Bloom(new BloomStrategyParameters(variance, normalize, absoluteTarget, new BasicStrategyParameters(new LimitParameter(TradeType.BUY, buyProfit, buyStop), new LimitParameter(TradeType.SELL, sellProfit, sellStop), 9, 50, lotSize, pricePerPoint)));
+        final Bloom bloom6 = new Bloom(new BloomStrategyParameters(variance, normalize, absoluteTarget, new BasicStrategyParameters(new LimitParameter(TradeType.BUY, buyProfit, buyStop), new LimitParameter(TradeType.SELL, sellProfit, sellStop), 9, 55, lotSize, pricePerPoint)));
+        final Bloom bloom7 = new Bloom(new BloomStrategyParameters(variance, normalize, absoluteTarget, new BasicStrategyParameters(new LimitParameter(TradeType.BUY, buyProfit, buyStop), new LimitParameter(TradeType.SELL, sellProfit, sellStop), 10, 0, lotSize, pricePerPoint)));
 
-        final LocalDate start = LocalDate.of(2013, 1, 1);
+
+        final LocalDate start = LocalDate.of(2024, 1, 1);
         final LocalDate end = LocalDate.of(2025, 1, 1);
 
         LocalDate compare = start;
+        final ChronoUnit unit = ChronoUnit.YEARS;
+
         while (compare.isBefore(end)) {
-            System.out.println(projectAuroraStrategy.executeStrategy(compare, compare.plusYears(1), masterCollection));
-            compare = compare.plusYears(1);
+            System.out.print(getDisplay(bloom1.executeStrategy(compare, compare.plus(1, unit), masterCollection)));
+            System.out.print(getDisplay(bloom2.executeStrategy(compare, compare.plus(1, unit), masterCollection)));
+            System.out.print(getDisplay(bloom3.executeStrategy(compare, compare.plus(1, unit), masterCollection)));
+            System.out.print(getDisplay(bloom4.executeStrategy(compare, compare.plus(1, unit), masterCollection)));
+            System.out.print(getDisplay(bloom5.executeStrategy(compare, compare.plus(1, unit), masterCollection)));
+            System.out.print(getDisplay(bloom6.executeStrategy(compare, compare.plus(1, unit), masterCollection)));
+            System.out.print(getDisplay(bloom7.executeStrategy(compare, compare.plus(1, unit), masterCollection)));
+            compare = compare.plus(1, unit);
         }
 
         // TODO: make the strategy take dynamic data
@@ -41,12 +80,19 @@ public class Aurora {
         // TODO: generate report of losing days and look for patterns
         // TODO: drawdown calculator!
 
-        // TODO: testing aurora
         // TODO: possibly look into nextjs app on this project?
 
 
-        final MetaDataService metaDataService = new MetaDataService();
-        //final List<MetaData> metaData = metaDataService.getMetaData(start, end, ChronoUnit.YEARS, masterCollection);
-        //metaData.forEach(System.out::println);
+        /*final MetaDataService metaDataService = new MetaDataService();
+        final List<MetaData> metaData = metaDataService.getMetaData(start, end, ChronoUnit.YEARS, masterCollection);
+        metaData.forEach(System.out::println);*/
+    }
+
+
+    private static String getDisplay(final StrategyResult result) {
+
+        return """
+                From %s to %s: \t %s points for $%s with trading success rate of %s and daily hit rate of %s
+                """.formatted(result.getStart().format(DateTimeFormatter.ofPattern("yyyy")), result.getEnd().format(DateTimeFormatter.ofPattern("yyyy")), result.getPoints(), result.getNetProfit(), result.getWinPercentage() + "%", result.getDailyWinPercentage() + "%");
     }
 }

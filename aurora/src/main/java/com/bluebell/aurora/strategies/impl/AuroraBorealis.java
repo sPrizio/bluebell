@@ -1,9 +1,7 @@
 package com.bluebell.aurora.strategies.impl;
 
-import com.bluebell.aurora.enums.MarketDirection;
-import com.bluebell.aurora.enums.TradeType;
 import com.bluebell.aurora.models.strategy.StrategyResult;
-import com.bluebell.aurora.models.strategy.parameter.StrategyParameters;
+import com.bluebell.aurora.models.parameter.strategy.StrategyParameters;
 import com.bluebell.aurora.models.trade.Trade;
 import com.bluebell.aurora.strategies.Strategy;
 import com.bluebell.radicle.models.MarketPrice;
@@ -13,13 +11,13 @@ import java.time.LocalDate;
 import java.util.*;
 
 /**
- * Implementation of {@link Strategy}
+ * Opens a position in the same direction as the open
  *
  * @author Stephen Prizio
  * @version 0.0.1
  */
 @Getter
-public class ProjectAuroraStrategy implements Strategy {
+public class AuroraBorealis implements Strategy {
 
     private final StrategyParameters strategyParameters;
 
@@ -30,7 +28,7 @@ public class ProjectAuroraStrategy implements Strategy {
 
     //  CONSTRUCTORS
 
-    public ProjectAuroraStrategy(final StrategyParameters strategyParameters) {
+    public AuroraBorealis(final StrategyParameters strategyParameters) {
         this.strategyParameters = strategyParameters;
         this.openTrades = new HashMap<>();
         this.closedTrades = new HashMap<>();
@@ -42,7 +40,7 @@ public class ProjectAuroraStrategy implements Strategy {
     @Override
     public StrategyResult executeStrategy(final LocalDate startDate, final LocalDate endDate, final Map<LocalDate, TreeSet<MarketPrice>> prices) {
 
-        final boolean shouldCheckDirection = !(this.strategyParameters.startHour() == 9 && this.strategyParameters.startMinute() == 30);
+        /*final boolean shouldCheckDirection = !(this.strategyParameters.startHour() == 9 && this.strategyParameters.startMinute() == 30);
         MarketDirection direction;
 
         for (final Map.Entry<LocalDate, TreeSet<MarketPrice>> entry : prices.entrySet()) {
@@ -74,7 +72,7 @@ public class ProjectAuroraStrategy implements Strategy {
                 }
 
                 //  check each market price to see if any of the open trades were hit
-                checkTrades(marketPrice);
+                checkTrades(this.openTrades, this.closedTrades, marketPrice);
             }
         }
 
@@ -82,7 +80,8 @@ public class ProjectAuroraStrategy implements Strategy {
         this.openTrades.clear();
         this.closedTrades.clear();
 
-        return result;
+        return result;*/
+        return null;
     }
 
 
@@ -104,40 +103,7 @@ public class ProjectAuroraStrategy implements Strategy {
      * @param price {@link MarketPrice}
      * @return true if hour and minute are equal
      */
-    private boolean isSignalBar(final MarketPrice price) {
+    /*private boolean isSignalBar(final MarketPrice price) {
         return price.date().getHour() == this.strategyParameters.startHour() && price.date().getMinute() == this.strategyParameters.startMinute();
-    }
-
-    /**
-     * Checks whether the given {@link MarketPrice} closes an open {@link Trade}
-     *
-     * @param marketPrice {@link MarketPrice}
-     */
-    private void checkTrades(final MarketPrice marketPrice) {
-        this.openTrades.forEach((key, value) -> {
-            if (value.getTradeType() == TradeType.BUY) {
-                if (marketPrice.high() >= value.getTakeProfit()) {
-                    // hit take profit
-                    closeTrade(value, marketPrice.date(), value.getTakeProfit());
-                    this.closedTrades.put(value.getId(), value);
-                } else if (marketPrice.low() <= value.getStopLoss()) {
-                    // hit stop loss
-                    closeTrade(value, marketPrice.date(), value.getStopLoss());
-                    this.closedTrades.put(value.getId(), value);
-                }
-            } else {
-                if (marketPrice.low() <= value.getTakeProfit()) {
-                    // hit take profit
-                    closeTrade(value, marketPrice.date(), value.getTakeProfit());
-                    this.closedTrades.put(value.getId(), value);
-                } else if (marketPrice.high() >= value.getStopLoss()) {
-                    // hit stop loss
-                    closeTrade(value, marketPrice.date(), value.getStopLoss());
-                    this.closedTrades.put(value.getId(), value);
-                }
-            }
-        });
-
-        this.closedTrades.keySet().forEach(this.openTrades::remove);
-    }
+    }*/
 }

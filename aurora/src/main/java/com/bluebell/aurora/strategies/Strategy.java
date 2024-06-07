@@ -82,4 +82,37 @@ public interface Strategy {
                     .doubleValue();
         }
     }
+
+    /**
+     * Checks whether the given {@link MarketPrice} closes an open {@link Trade}
+     *
+     * @param marketPrice {@link MarketPrice}
+     */
+    default void checkTrades(final Map<String, Trade> openTrades, final Map<String, Trade> closedTrades, final MarketPrice marketPrice) {
+        openTrades.forEach((key, value) -> {
+            if (value.getTradeType() == TradeType.BUY) {
+                if (marketPrice.high() >= value.getTakeProfit()) {
+                    // hit take profit
+                    closeTrade(value, marketPrice.date(), value.getTakeProfit());
+                    closedTrades.put(value.getId(), value);
+                } else if (marketPrice.low() <= value.getStopLoss()) {
+                    // hit stop loss
+                    closeTrade(value, marketPrice.date(), value.getStopLoss());
+                    closedTrades.put(value.getId(), value);
+                }
+            } else {
+                if (marketPrice.low() <= value.getTakeProfit()) {
+                    // hit take profit
+                    closeTrade(value, marketPrice.date(), value.getTakeProfit());
+                    closedTrades.put(value.getId(), value);
+                } else if (marketPrice.high() >= value.getStopLoss()) {
+                    // hit stop loss
+                    closeTrade(value, marketPrice.date(), value.getStopLoss());
+                    closedTrades.put(value.getId(), value);
+                }
+            }
+        });
+
+        closedTrades.keySet().forEach(openTrades::remove);
+    }
 }
