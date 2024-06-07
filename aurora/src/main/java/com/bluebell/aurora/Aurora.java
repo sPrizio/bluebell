@@ -57,20 +57,20 @@ public class Aurora {
         final Bloom bloom7 = new Bloom(new BloomStrategyParameters(variance, normalize, absoluteTarget, new BasicStrategyParameters(new LimitParameter(TradeType.BUY, buyProfit, buyStop), new LimitParameter(TradeType.SELL, sellProfit, sellStop), 10, 0, lotSize, pricePerPoint)));
 
 
-        final LocalDate start = LocalDate.of(2024, 1, 1);
-        final LocalDate end = LocalDate.of(2025, 1, 1);
+        final LocalDate start = LocalDate.of(2024, 6, 6);
+        final LocalDate end = LocalDate.of(2024, 6, 7);
 
         LocalDate compare = start;
-        final ChronoUnit unit = ChronoUnit.YEARS;
+        final ChronoUnit unit = ChronoUnit.DAYS;
 
         while (compare.isBefore(end)) {
-            System.out.print(getDisplay(bloom1.executeStrategy(compare, compare.plus(1, unit), masterCollection)));
-            System.out.print(getDisplay(bloom2.executeStrategy(compare, compare.plus(1, unit), masterCollection)));
-            System.out.print(getDisplay(bloom3.executeStrategy(compare, compare.plus(1, unit), masterCollection)));
+            //System.out.print(getDisplay(bloom1.executeStrategy(compare, compare.plus(1, unit), masterCollection)));
+            //System.out.print(getDisplay(bloom2.executeStrategy(compare, compare.plus(1, unit), masterCollection)));
+            //System.out.print(getDisplay(bloom3.executeStrategy(compare, compare.plus(1, unit), masterCollection)));
             System.out.print(getDisplay(bloom4.executeStrategy(compare, compare.plus(1, unit), masterCollection)));
-            System.out.print(getDisplay(bloom5.executeStrategy(compare, compare.plus(1, unit), masterCollection)));
-            System.out.print(getDisplay(bloom6.executeStrategy(compare, compare.plus(1, unit), masterCollection)));
-            System.out.print(getDisplay(bloom7.executeStrategy(compare, compare.plus(1, unit), masterCollection)));
+            //System.out.print(getDisplay(bloom5.executeStrategy(compare, compare.plus(1, unit), masterCollection)));
+            //System.out.print(getDisplay(bloom6.executeStrategy(compare, compare.plus(1, unit), masterCollection)));
+            //System.out.print(getDisplay(bloom7.executeStrategy(compare, compare.plus(1, unit), masterCollection)));
             compare = compare.plus(1, unit);
         }
 

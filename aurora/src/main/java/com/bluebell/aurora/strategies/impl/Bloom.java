@@ -1,6 +1,7 @@
 package com.bluebell.aurora.strategies.impl;
 
 import com.bluebell.aurora.enums.TradeType;
+import com.bluebell.aurora.models.parameter.LimitParameter;
 import com.bluebell.aurora.models.strategy.StrategyResult;
 import com.bluebell.aurora.models.parameter.strategy.impl.BloomStrategyParameters;
 import com.bluebell.aurora.models.trade.Trade;
@@ -82,7 +83,6 @@ public class Bloom implements Strategy {
                 //  check each market price to see if any of the open trades were hit
                 checkTrades(this.openTrades, this.closedTrades, marketPrice);
 
-                //TODO: only close trades at the end of day if they are not in profit
                 if (isExitBar(marketPrice) && !this.openTrades.isEmpty()) {
                     this.openTrades.forEach((key, trade) -> {
                         closeTrade(trade, marketPrice.date(), marketPrice.open());
@@ -160,19 +160,34 @@ public class Bloom implements Strategy {
         final double absoluteDifference = this.mathService.subtract(this.strategyParameters.getAbsoluteProfitTarget(), difference);
         if (difference > this.strategyParameters.getAbsoluteProfitTarget()) {
             return Pair.with(
-                    this.mathService.subtract(this.mathService.multiply(this.strategyParameters.getBasicStrategyParameters().getBuyLimit().getTakeProfit(), this.strategyParameters.getVariance()), absoluteDifference),
-                    this.mathService.multiply(this.strategyParameters.getBasicStrategyParameters().getBuyLimit().getStopLoss(), this.strategyParameters.getVariance())
+                    this.mathService.multiply(this.mathService.subtract(getLimitParameterForTradeType(tradeType).getTakeProfit(), absoluteDifference), this.strategyParameters.getVariance()),
+                    this.mathService.multiply(getLimitParameterForTradeType(tradeType).getStopLoss(), this.strategyParameters.getVariance())
             );
         } else if (difference < this.strategyParameters.getAbsoluteProfitTarget()) {
             return Pair.with(
-                    this.mathService.add(this.mathService.multiply(this.strategyParameters.getBasicStrategyParameters().getBuyLimit().getTakeProfit(), this.strategyParameters.getVariance()), absoluteDifference),
-                    this.mathService.multiply(this.strategyParameters.getBasicStrategyParameters().getBuyLimit().getStopLoss(), this.strategyParameters.getVariance())
+                    this.mathService.multiply(this.mathService.add(getLimitParameterForTradeType(tradeType).getTakeProfit(), absoluteDifference), this.strategyParameters.getVariance()),
+                    this.mathService.multiply(getLimitParameterForTradeType(tradeType).getStopLoss(), this.strategyParameters.getVariance())
             );
         } else {
             return Pair.with(
-                    this.mathService.multiply(this.strategyParameters.getBasicStrategyParameters().getBuyLimit().getTakeProfit(), this.strategyParameters.getVariance()),
-                    this.mathService.multiply(this.strategyParameters.getBasicStrategyParameters().getBuyLimit().getStopLoss(), this.strategyParameters.getVariance())
+                    this.mathService.multiply(getLimitParameterForTradeType(tradeType).getTakeProfit(), this.strategyParameters.getVariance()),
+                    this.mathService.multiply(getLimitParameterForTradeType(tradeType).getStopLoss(), this.strategyParameters.getVariance())
             );
+        }
+    }
+
+
+    /**
+     * Obtains the correct limit parameter for the {@link TradeType}
+     *
+     * @param tradeType {@link TradeType}
+     * @return {@link LimitParameter}
+     */
+    private LimitParameter getLimitParameterForTradeType(final TradeType tradeType) {
+        if (tradeType == TradeType.BUY) {
+            return this.strategyParameters.getBasicStrategyParameters().getBuyLimit();
+        } else {
+            return this.strategyParameters.getBasicStrategyParameters().getSellLimit();
         }
     }
 }
