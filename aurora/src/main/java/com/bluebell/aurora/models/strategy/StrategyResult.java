@@ -4,6 +4,7 @@ import com.bluebell.aurora.models.parameter.LimitParameter;
 import com.bluebell.aurora.models.trade.Trade;
 import com.bluebell.aurora.strategies.Strategy;
 import com.bluebell.core.services.MathService;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.apache.commons.collections4.CollectionUtils;
 
@@ -54,6 +55,8 @@ public class StrategyResult {
 
     private final long averageTradeDuration;
 
+    private final Double maxDrawdown;
+
 
     //  CONSTRUCTORS
 
@@ -79,6 +82,7 @@ public class StrategyResult {
         this.pricePerPoint = pricePerPoint;
         this.netProfit = calculateNetProfit();
         this.averageTradeDuration = calculateAverageTradeDuration(trades);
+        this.maxDrawdown = null;
     }
 
 
@@ -125,6 +129,20 @@ public class StrategyResult {
         return this.mathService.wholePercentage(map.entrySet().stream().filter(entry -> isPositive(entry.getValue())).count(), map.size());
     }
 
+    /**
+     * Returns the lowest point of this strategy
+     *
+     * @return min value
+     */
+    public Double getMaxDrawdown() {
+
+        if (this.maxDrawdown == null) {
+            return this.calculateDrawdown().stream().mapToDouble(DrawdownEntry::getCumulativePoints).min().orElse(0.0);
+        }
+
+        return this.maxDrawdown;
+    }
+
     @Override
     public String toString() {
         return """
@@ -143,6 +161,7 @@ public class StrategyResult {
                 \tbuyLimit = %s
                 \tsellLimit = %s
                 \tpricePerPoint = %s
+                \tmaxDrawdown = %s
                 }
                 """
                 .formatted(
@@ -161,7 +180,8 @@ public class StrategyResult {
                         this.averageTradeDuration,
                         this.buyLimit.toString(),
                         this.sellLimit.toString(),
-                        this.pricePerPoint
+                        this.pricePerPoint,
+                        this.maxDrawdown
                 );
     }
 
@@ -195,5 +215,38 @@ public class StrategyResult {
      */
     private boolean isPositive(final List<Trade> list) {
         return CollectionUtils.isNotEmpty(list) && list.stream().mapToDouble(Trade::getPoints).sum() > 0.0;
+    }
+
+    /**
+     * Calculates the drawdown history for the list of trades as if they were executed sequentially
+     *
+     * @return {@link List} if {@link DrawdownEntry}
+     */
+    private List<DrawdownEntry> calculateDrawdown() {
+
+        final List<DrawdownEntry> entries = new ArrayList<>();
+
+        double sum = 0.0;
+        for (final Trade trade : this.trades.stream().sorted(Comparator.comparing(Trade::getTradeCloseTime)).toList()) {
+            sum = this.mathService.add(trade.getPoints(), sum);
+            entries.add(new DrawdownEntry(trade.getPoints(), sum));
+        }
+
+        return entries;
+    }
+
+
+    //  INNER CLASSES
+
+    /**
+     * Minor inner class that is meant to keep track of each trade's overall performance in an iterative method
+     */
+    @Getter
+    @AllArgsConstructor
+    private static class DrawdownEntry {
+
+        private double points;
+
+        private double cumulativePoints;
     }
 }
