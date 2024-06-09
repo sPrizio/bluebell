@@ -12,7 +12,9 @@ import java.io.FileOutputStream;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
+import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 /**
@@ -23,15 +25,28 @@ import java.util.Objects;
  */
 public class ReportingService<S extends Strategy<P>, P extends BasicStrategyParameters> {
 
-    public void generateReportForStrategyResults(final LocalDate start, final LocalDate end, final ChronoUnit unit, final List<List<StrategyResult<P>>> strategyResults) {
+    private final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("MMMM d yyyy");
+
+    /**
+     * Generates a report to a text file of a list of strategy results
+     *
+     * @param unit {@link ChronoUnit}
+     * @param strategyResults list of list of strategy results (allows for multiple configurations)
+     */
+    public void generateReportForStrategyResults(final ChronoUnit unit, final Map<LocalDate, List<StrategyResult<P>>> strategyResults) {
 
         final StringBuilder stringBuilder = new StringBuilder();
-        final File directory = new File(getDataRoot() + "report.txt");
+        for (final Map.Entry<LocalDate, List<StrategyResult<P>>> entry : strategyResults.entrySet().stream().sorted(Map.Entry.comparingByKey()).toList()) {
+            final File tempFile = new File(getDataRoot() + String.format("report-%s.txt", entry.getKey().format(DateTimeFormatter.ISO_DATE)));
+            try (FileOutputStream os = new FileOutputStream(tempFile)) {
+                stringBuilder
+                        .append("Period: ").append(entry.getKey().format(DATE_FORMATTER)).append(" to ").append(entry.getKey().plus(1, unit).format(DATE_FORMATTER))
+                        .append("\n").append("Aggregation Period: ").append(unit.toString())
+                        .append("\n")
+                        .append("\n");
 
-        try (FileOutputStream outputStream = new FileOutputStream(directory, false)) {
-            for (final List<StrategyResult<P>> strategyResultList : strategyResults) {
-                for (final StrategyResult<P> strategyResult : strategyResultList) {
-                    if (strategyResult.getStrategyParameters() instanceof BloomStrategyParameters bs) {
+                for (StrategyResult<P> pStrategyResult : entry.getValue()) {
+                    if (pStrategyResult.getStrategyParameters() instanceof BloomStrategyParameters bs) {
                         stringBuilder.append("Variance: ").append(bs.getVariance()).append("%");
                         if (bs.isNormalize()) {
                             stringBuilder.append(" with normalization").append("\n");
@@ -41,18 +56,20 @@ public class ReportingService<S extends Strategy<P>, P extends BasicStrategyPara
                     }
 
                     stringBuilder
-                            .append(strategyResult.getStrategyParameters().getDescription()).append("\n")
-                            .append(strategyResult.getWins().size()).append(" wins ").append(strategyResult.getLosses().size()).append(" losses").append("\n")
-                            .append(strategyResult.getPoints()).append(" points").append("\n")
-                            .append("$").append(strategyResult.getNetProfit()).append("\n")
-                            .append(strategyResult.getDailyWinPercentage()).append("%").append("\n")
+                            .append(pStrategyResult.getStrategyParameters().getDescription()).append("\n")
+                            .append(pStrategyResult.getWins().size()).append(" wins / ").append(pStrategyResult.getLosses().size()).append(" losses").append("\n")
+                            .append("Net Points: ").append(pStrategyResult.getPoints()).append("\n")
+                            .append("Net Profit: ").append("$").append(pStrategyResult.getNetProfit()).append("\n")
+                            .append("Daily Win Percentage: ").append(pStrategyResult.getDailyWinPercentage()).append("%").append("\n")
+                            .append("Drawdown: ").append(pStrategyResult.getMaxDrawdown()).append(" points").append("\n")
                             .append("\n");
                 }
-            }
 
-            outputStream.write(stringBuilder.toString().getBytes());
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
+                os.write(stringBuilder.toString().getBytes());
+                stringBuilder.setLength(0);
+            } catch (Exception e) {
+                System.err.println(e.getMessage());
+            }
         }
     }
 
@@ -66,11 +83,5 @@ public class ReportingService<S extends Strategy<P>, P extends BasicStrategyPara
      */
     private String getDataRoot() {
         return Objects.requireNonNull(getClass().getClassLoader().getResource("reports")).getFile();
-    }
-
-    private String getDisplay(final StrategyResult result) {
-        return """
-                From %s to %s: \t %s points for $%s with trading success rate of %s and daily hit rate of %s with a max drawdown of %s points
-                """.formatted(result.getStart().format(DateTimeFormatter.ofPattern("yyyy")), result.getEnd().format(DateTimeFormatter.ofPattern("yyyy")), result.getPoints(), result.getNetProfit(), result.getWinPercentage() + "%", result.getDailyWinPercentage() + "%", result.getMaxDrawdown());
     }
 }

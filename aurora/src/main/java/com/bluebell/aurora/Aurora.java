@@ -14,10 +14,7 @@ import com.bluebell.radicle.parsers.impl.FirstRateDataParser;
 
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.TreeSet;
+import java.util.*;
 
 /**
  * Executes the aurora module. Primarily used for testing strategies and obtaining meta-data
@@ -50,33 +47,35 @@ public class Aurora {
         final FirstRateDataParser parser = new FirstRateDataParser();
         final Map<LocalDate, TreeSet<MarketPrice>> masterCollection = parser.parseMarketPricesByDate("NDX_full_5min.txt", RadicleTimeInterval.FIVE_MINUTE);
 
-        final Bloom bloom1 = new Bloom(new BloomStrategyParameters(variance, normalize, absoluteTarget, new BasicStrategyParameters("09:30 Candle", new LimitParameter(TradeType.BUY, buyProfit, buyStop), new LimitParameter(TradeType.SELL, sellProfit, sellStop), 9, 30, lotSize, pricePerPoint)));
-        final Bloom bloom2 = new Bloom(new BloomStrategyParameters(variance, normalize, absoluteTarget, new BasicStrategyParameters("09:35 Candle", new LimitParameter(TradeType.BUY, buyProfit, buyStop), new LimitParameter(TradeType.SELL, sellProfit, sellStop), 9, 35, lotSize, pricePerPoint)));
-        final Bloom bloom3 = new Bloom(new BloomStrategyParameters(variance, normalize, absoluteTarget, new BasicStrategyParameters("09:40 Candle", new LimitParameter(TradeType.BUY, buyProfit, buyStop), new LimitParameter(TradeType.SELL, sellProfit, sellStop), 9, 40, lotSize, pricePerPoint)));
-        final Bloom bloom4 = new Bloom(new BloomStrategyParameters(variance, normalize, absoluteTarget, new BasicStrategyParameters("09:45 Candle", new LimitParameter(TradeType.BUY, buyProfit, buyStop), new LimitParameter(TradeType.SELL, sellProfit, sellStop), 9, 45, lotSize, pricePerPoint)));
-        final Bloom bloom5 = new Bloom(new BloomStrategyParameters(variance, normalize, absoluteTarget, new BasicStrategyParameters("09:50 Candle", new LimitParameter(TradeType.BUY, buyProfit, buyStop), new LimitParameter(TradeType.SELL, sellProfit, sellStop), 9, 50, lotSize, pricePerPoint)));
-        final Bloom bloom6 = new Bloom(new BloomStrategyParameters(variance, normalize, absoluteTarget, new BasicStrategyParameters("09:55 Candle", new LimitParameter(TradeType.BUY, buyProfit, buyStop), new LimitParameter(TradeType.SELL, sellProfit, sellStop), 9, 55, lotSize, pricePerPoint)));
-        final Bloom bloom7 = new Bloom(new BloomStrategyParameters(variance, normalize, absoluteTarget, new BasicStrategyParameters("10:00 Candle", new LimitParameter(TradeType.BUY, buyProfit, buyStop), new LimitParameter(TradeType.SELL, sellProfit, sellStop), 10, 0, lotSize, pricePerPoint)));
-
         final LocalDate start = LocalDate.of(2023, 1, 1);
         final LocalDate end = LocalDate.of(2024, 1, 1);
 
         LocalDate compare = start;
         final ChronoUnit unit = ChronoUnit.YEARS;
-        final List<StrategyResult<BloomStrategyParameters>> strategyResults = new ArrayList<>();
+        int startingHour = 9;
+        int startingMinute = 30;
+
+        final Map<LocalDate, List<StrategyResult<BloomStrategyParameters>>> map = new HashMap<>();
+        final List<StrategyResult<BloomStrategyParameters>> entries = new ArrayList<>();
 
         while (compare.isBefore(end)) {
-            strategyResults.add(bloom1.executeStrategy(compare, compare.plus(1, unit), masterCollection));
-            strategyResults.add(bloom2.executeStrategy(compare, compare.plus(1, unit), masterCollection));
-            strategyResults.add(bloom3.executeStrategy(compare, compare.plus(1, unit), masterCollection));
-            strategyResults.add(bloom4.executeStrategy(compare, compare.plus(1, unit), masterCollection));
-            strategyResults.add(bloom5.executeStrategy(compare, compare.plus(1, unit), masterCollection));
-            strategyResults.add(bloom6.executeStrategy(compare, compare.plus(1, unit), masterCollection));
-            strategyResults.add(bloom7.executeStrategy(compare, compare.plus(1, unit), masterCollection));
+            while (startingMinute != 5) {
+                Bloom bloom = new Bloom(new BloomStrategyParameters(variance, normalize, absoluteTarget, new BasicStrategyParameters(String.format("%s:%s Candle", startingHour, startingMinute), new LimitParameter(TradeType.BUY, buyProfit, buyStop), new LimitParameter(TradeType.SELL, sellProfit, sellStop), startingHour, startingMinute, lotSize, pricePerPoint)));
+                entries.add(bloom.executeStrategy(compare, compare.plus(1, unit), masterCollection));
+
+                startingMinute += 5;
+                if (startingMinute == 60) {
+                    startingMinute = 0;
+                    startingHour = 10;
+                }
+            }
+
+            map.put(compare, new ArrayList<>(entries));
             compare = compare.plus(1, unit);
+            entries.clear();
         }
 
-        reportingService.generateReportForStrategyResults(start, end, unit, List.of(strategyResults));
+        reportingService.generateReportForStrategyResults(unit, map);
 
         // TODO: flag to make take profits as static or dynamic
         // TODO: possibly look into nextjs app on this project?
