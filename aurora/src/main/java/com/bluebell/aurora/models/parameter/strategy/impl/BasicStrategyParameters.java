@@ -17,6 +17,8 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class BasicStrategyParameters implements StrategyParameters {
 
+    private String description;
+
     private LimitParameter buyLimit;
 
     private LimitParameter sellLimit;

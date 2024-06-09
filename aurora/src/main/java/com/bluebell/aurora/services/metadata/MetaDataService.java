@@ -1,4 +1,4 @@
-package com.bluebell.aurora.services;
+package com.bluebell.aurora.services.metadata;
 
 import com.bluebell.aurora.models.metadata.MetaData;
 import com.bluebell.radicle.models.MarketPrice;
