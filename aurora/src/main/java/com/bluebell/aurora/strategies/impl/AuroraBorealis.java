@@ -1,5 +1,6 @@
 package com.bluebell.aurora.strategies.impl;
 
+import com.bluebell.aurora.models.parameter.strategy.impl.BasicStrategyParameters;
 import com.bluebell.aurora.models.strategy.StrategyResult;
 import com.bluebell.aurora.models.parameter.strategy.StrategyParameters;
 import com.bluebell.aurora.models.trade.Trade;
@@ -17,7 +18,7 @@ import java.util.*;
  * @version 0.0.1
  */
 @Getter
-public class AuroraBorealis implements Strategy {
+public class AuroraBorealis implements Strategy<BasicStrategyParameters> {
 
     private final StrategyParameters strategyParameters;
 

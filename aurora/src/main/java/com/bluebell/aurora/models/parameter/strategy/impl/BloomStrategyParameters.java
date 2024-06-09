@@ -14,8 +14,7 @@ import lombok.NoArgsConstructor;
  */
 @Getter
 @NoArgsConstructor
-@AllArgsConstructor
-public class BloomStrategyParameters implements StrategyParameters {
+public class BloomStrategyParameters extends BasicStrategyParameters implements StrategyParameters {
 
     private double variance;
 
@@ -23,5 +22,19 @@ public class BloomStrategyParameters implements StrategyParameters {
 
     private double absoluteProfitTarget;
 
-    private BasicStrategyParameters basicStrategyParameters;
+    public BloomStrategyParameters(double variance, boolean normalize, double absoluteProfitTarget, final BasicStrategyParameters basicStrategyParameters) {
+        super(
+                basicStrategyParameters.getDescription(),
+                basicStrategyParameters.getBuyLimit(),
+                basicStrategyParameters.getSellLimit(),
+                basicStrategyParameters.getStartHour(),
+                basicStrategyParameters.getStartMinute(),
+                basicStrategyParameters.getLotSize(),
+                basicStrategyParameters.getPricePerPoint()
+        );
+
+        this.variance = variance;
+        this.normalize = normalize;
+        this.absoluteProfitTarget = absoluteProfitTarget;
+    }
 }

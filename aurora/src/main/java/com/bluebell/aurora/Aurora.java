@@ -30,7 +30,7 @@ public class Aurora {
     public static void main(String... args) {
 
         final MathService mathService = new MathService();
-        final ReportingService reportingService = new ReportingService();
+        final ReportingService<Bloom, BloomStrategyParameters> reportingService = new ReportingService<>();
 
         // config
         final double variance = 1.15;
@@ -63,7 +63,7 @@ public class Aurora {
 
         LocalDate compare = start;
         final ChronoUnit unit = ChronoUnit.YEARS;
-        final List<StrategyResult> strategyResults = new ArrayList<>();
+        final List<StrategyResult<BloomStrategyParameters>> strategyResults = new ArrayList<>();
 
         while (compare.isBefore(end)) {
             strategyResults.add(bloom1.executeStrategy(compare, compare.plus(1, unit), masterCollection));
@@ -76,7 +76,7 @@ public class Aurora {
             compare = compare.plus(1, unit);
         }
 
-        reportingService.generateReportForStrategyResults(start, end, unit, strategyResults);
+        reportingService.generateReportForStrategyResults(start, end, unit, List.of(strategyResults));
 
         // TODO: flag to make take profits as static or dynamic
         // TODO: possibly look into nextjs app on this project?

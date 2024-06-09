@@ -25,7 +25,7 @@ import java.util.TreeSet;
  * @version 0.0.1
  */
 @Getter
-public class Bloom implements Strategy {
+public class Bloom implements Strategy<BloomStrategyParameters> {
 
     private final MathService mathService = new MathService();
 
@@ -48,7 +48,7 @@ public class Bloom implements Strategy {
     //  METHODS
 
     @Override
-    public StrategyResult executeStrategy(final LocalDate startDate, final LocalDate endDate, final Map<LocalDate, TreeSet<MarketPrice>> prices) {
+    public StrategyResult<BloomStrategyParameters> executeStrategy(final LocalDate startDate, final LocalDate endDate, final Map<LocalDate, TreeSet<MarketPrice>> prices) {
 
         for (final Map.Entry<LocalDate, TreeSet<MarketPrice>> entry : prices.entrySet()) {
 
@@ -60,7 +60,7 @@ public class Bloom implements Strategy {
                 if (isSignalBar(marketPrice)) {
                     final Trade tradeBuy = openTrade(
                             TradeType.BUY,
-                            this.strategyParameters.getBasicStrategyParameters().getLotSize(),
+                            this.strategyParameters.getLotSize(),
                             marketPrice.date(),
                             marketPrice.open(),
                             calculateLimit(marketPrice.open(), normalize(TradeType.BUY).getValue1(), false),
@@ -69,7 +69,7 @@ public class Bloom implements Strategy {
 
                     final Trade tradeSell = openTrade(
                             TradeType.SELL,
-                            this.strategyParameters.getBasicStrategyParameters().getLotSize(),
+                            this.strategyParameters.getLotSize(),
                             marketPrice.date(),
                             marketPrice.open(),
                             calculateLimit(marketPrice.open(), normalize(TradeType.SELL).getValue1(), true),
@@ -94,7 +94,7 @@ public class Bloom implements Strategy {
             }
         }
 
-        final StrategyResult result = new StrategyResult(startDate, endDate, this.closedTrades.values(), this.strategyParameters.getBasicStrategyParameters().getBuyLimit(), this.strategyParameters.getBasicStrategyParameters().getSellLimit(), this.strategyParameters.getBasicStrategyParameters().getPricePerPoint());
+        final StrategyResult<BloomStrategyParameters> result = new StrategyResult<>(this.strategyParameters, startDate, endDate, this.closedTrades.values(), this.strategyParameters.getBuyLimit(), this.strategyParameters.getSellLimit(), this.strategyParameters.getPricePerPoint());
         this.openTrades.clear();
         this.closedTrades.clear();
 
@@ -111,7 +111,7 @@ public class Bloom implements Strategy {
      * @return true if hour and minute are equal
      */
     private boolean isSignalBar(final MarketPrice price) {
-        return price.date().getHour() == this.strategyParameters.getBasicStrategyParameters().getStartHour() && price.date().getMinute() == this.strategyParameters.getBasicStrategyParameters().getStartMinute();
+        return price.date().getHour() == this.strategyParameters.getStartHour() && price.date().getMinute() == this.strategyParameters.getStartMinute();
     }
 
     /**
@@ -137,19 +137,19 @@ public class Bloom implements Strategy {
 
         if (!this.strategyParameters.isNormalize()) {
             return Pair.with(
-                    this.mathService.multiply(this.strategyParameters.getBasicStrategyParameters().getBuyLimit().getTakeProfit(), this.strategyParameters.getVariance()),
-                    this.mathService.multiply(this.strategyParameters.getBasicStrategyParameters().getBuyLimit().getStopLoss(), this.strategyParameters.getVariance())
+                    this.mathService.multiply(this.strategyParameters.getBuyLimit().getTakeProfit(), this.strategyParameters.getVariance()),
+                    this.mathService.multiply(this.strategyParameters.getBuyLimit().getStopLoss(), this.strategyParameters.getVariance())
             );
         }
 
         switch (tradeType) {
             case TradeType.BUY -> {
-                tp = this.strategyParameters.getBasicStrategyParameters().getBuyLimit().getTakeProfit();
-                sl = this.strategyParameters.getBasicStrategyParameters().getSellLimit().getStopLoss();
+                tp = this.strategyParameters.getBuyLimit().getTakeProfit();
+                sl = this.strategyParameters.getSellLimit().getStopLoss();
             }
             case TradeType.SELL -> {
-                tp = this.strategyParameters.getBasicStrategyParameters().getSellLimit().getTakeProfit();
-                sl = this.strategyParameters.getBasicStrategyParameters().getBuyLimit().getStopLoss();
+                tp = this.strategyParameters.getSellLimit().getTakeProfit();
+                sl = this.strategyParameters.getBuyLimit().getStopLoss();
             }
             default -> {
                 return Pair.with(0.0, 0.0);
@@ -185,9 +185,9 @@ public class Bloom implements Strategy {
      */
     private LimitParameter getLimitParameterForTradeType(final TradeType tradeType) {
         if (tradeType == TradeType.BUY) {
-            return this.strategyParameters.getBasicStrategyParameters().getBuyLimit();
+            return this.strategyParameters.getBuyLimit();
         } else {
-            return this.strategyParameters.getBasicStrategyParameters().getSellLimit();
+            return this.strategyParameters.getSellLimit();
         }
     }
 }

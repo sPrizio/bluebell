@@ -1,6 +1,7 @@
 package com.bluebell.aurora.models.strategy;
 
 import com.bluebell.aurora.models.parameter.LimitParameter;
+import com.bluebell.aurora.models.parameter.strategy.impl.BasicStrategyParameters;
 import com.bluebell.aurora.models.trade.Trade;
 import com.bluebell.aurora.strategies.Strategy;
 import com.bluebell.core.services.MathService;
@@ -19,9 +20,11 @@ import java.util.*;
  * @version 0.0.1
  */
 @Getter
-public class StrategyResult {
+public class StrategyResult<P extends BasicStrategyParameters> {
 
     private final MathService mathService = new MathService();
+
+    private final P strategyParameters;
 
     private final LocalDate start;
 
@@ -60,8 +63,9 @@ public class StrategyResult {
 
     //  CONSTRUCTORS
 
-    public StrategyResult(final LocalDate start, final LocalDate end, final Collection<Trade> trades, final LimitParameter buyLimit, final LimitParameter sellLimit, final double pricePerPoint) {
+    public StrategyResult(final P strategyParameters, final LocalDate start, final LocalDate end, final Collection<Trade> trades, final LimitParameter buyLimit, final LimitParameter sellLimit, final double pricePerPoint) {
 
+        this.strategyParameters = strategyParameters;
         this.start = start;
         this.end = end;
         this.trades = trades.stream().toList();

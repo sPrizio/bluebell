@@ -1,6 +1,7 @@
 package com.bluebell.aurora.strategies;
 
 import com.bluebell.aurora.enums.TradeType;
+import com.bluebell.aurora.models.parameter.strategy.impl.BasicStrategyParameters;
 import com.bluebell.aurora.models.strategy.StrategyResult;
 import com.bluebell.aurora.models.trade.Trade;
 import com.bluebell.radicle.models.MarketPrice;
@@ -18,7 +19,7 @@ import java.util.TreeSet;
  * @author Stephen Prizio
  * @version 0.0.1
  */
-public interface Strategy {
+public interface Strategy<P extends BasicStrategyParameters> {
 
     /**
      * Executes a {@link Strategy} on the given collection of market prices
@@ -28,7 +29,7 @@ public interface Strategy {
      * @param prices {@link Map} of {@link MarketPrice}
      * @return {@link StrategyResult}
      */
-    StrategyResult executeStrategy(final LocalDate startDate, final LocalDate endDate, final Map<LocalDate, TreeSet<MarketPrice>> prices);
+    StrategyResult<P> executeStrategy(final LocalDate startDate, final LocalDate endDate, final Map<LocalDate, TreeSet<MarketPrice>> prices);
 
 
     //  HELPERS

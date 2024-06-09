@@ -1,6 +1,11 @@
 package com.bluebell.aurora.services.reporting;
 
+import com.bluebell.aurora.models.parameter.strategy.StrategyParameters;
+import com.bluebell.aurora.models.parameter.strategy.impl.BasicStrategyParameters;
+import com.bluebell.aurora.models.parameter.strategy.impl.BloomStrategyParameters;
 import com.bluebell.aurora.models.strategy.StrategyResult;
+import com.bluebell.aurora.strategies.Strategy;
+import com.bluebell.aurora.strategies.impl.Bloom;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -16,18 +21,36 @@ import java.util.Objects;
  * @author Stephen Prizio
  * @version 0.0.1
  */
-public class ReportingService {
+public class ReportingService<S extends Strategy<P>, P extends BasicStrategyParameters> {
 
-    public void generateReportForStrategyResults(final LocalDate start, final LocalDate end, final ChronoUnit unit, final List<StrategyResult> strategyResults) {
+    public void generateReportForStrategyResults(final LocalDate start, final LocalDate end, final ChronoUnit unit, final List<List<StrategyResult<P>>> strategyResults) {
 
         final StringBuilder stringBuilder = new StringBuilder();
-        try {
-            final File directory = new File(getDataRoot() + "report.txt");
-            if (directory.createNewFile()) {
-                FileOutputStream outputStream = new FileOutputStream(directory, false);
-                strategyResults.forEach(strategyResult -> stringBuilder.append(getDisplay(strategyResult)));
-                outputStream.write(stringBuilder.toString().getBytes());
+        final File directory = new File(getDataRoot() + "report.txt");
+
+        try (FileOutputStream outputStream = new FileOutputStream(directory, false)) {
+            for (final List<StrategyResult<P>> strategyResultList : strategyResults) {
+                for (final StrategyResult<P> strategyResult : strategyResultList) {
+                    if (strategyResult.getStrategyParameters() instanceof BloomStrategyParameters bs) {
+                        stringBuilder.append("Variance: ").append(bs.getVariance()).append("%");
+                        if (bs.isNormalize()) {
+                            stringBuilder.append(" with normalization").append("\n");
+                        } else {
+                            stringBuilder.append("\n");
+                        }
+                    }
+
+                    stringBuilder
+                            .append(strategyResult.getStrategyParameters().getDescription()).append("\n")
+                            .append(strategyResult.getWins().size()).append(" wins ").append(strategyResult.getLosses().size()).append(" losses").append("\n")
+                            .append(strategyResult.getPoints()).append(" points").append("\n")
+                            .append("$").append(strategyResult.getNetProfit()).append("\n")
+                            .append(strategyResult.getDailyWinPercentage()).append("%").append("\n")
+                            .append("\n");
+                }
             }
+
+            outputStream.write(stringBuilder.toString().getBytes());
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
