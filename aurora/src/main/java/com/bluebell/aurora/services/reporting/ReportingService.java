@@ -1,6 +1,5 @@
 package com.bluebell.aurora.services.reporting;
 
-import com.bluebell.aurora.models.parameter.strategy.StrategyParameters;
 import com.bluebell.aurora.models.parameter.strategy.impl.BasicStrategyParameters;
 import com.bluebell.aurora.models.parameter.strategy.impl.BloomStrategyParameters;
 import com.bluebell.aurora.models.strategy.StrategyResult;
@@ -12,7 +11,6 @@ import java.io.FileOutputStream;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -25,7 +23,19 @@ import java.util.Objects;
  */
 public class ReportingService<S extends Strategy<P>, P extends BasicStrategyParameters> {
 
-    private final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("MMMM d yyyy");
+    private final Class<S> strategy;
+
+    private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("MMMM d yyyy");
+
+
+    //  CONSTRUCTORS
+
+    public ReportingService(final Class<S> clazz) {
+        this.strategy = clazz;
+    }
+
+
+    //  METHODS
 
     /**
      * Generates a report to a text file of a list of strategy results
@@ -41,7 +51,7 @@ public class ReportingService<S extends Strategy<P>, P extends BasicStrategyPara
             try (FileOutputStream os = new FileOutputStream(tempFile)) {
                 stringBuilder
                         .append("Period: ").append(entry.getKey().format(DATE_FORMATTER)).append(" to ").append(entry.getKey().plus(1, unit).format(DATE_FORMATTER))
-                        .append("\n").append("Aggregation Period: ").append(unit.toString())
+                        .append("\n").append("Aggregation Period: ").append(unit)
                         .append("\n")
                         .append("\n");
 
@@ -82,6 +92,19 @@ public class ReportingService<S extends Strategy<P>, P extends BasicStrategyPara
      * @return sample data path
      */
     private String getDataRoot() {
-        return Objects.requireNonNull(getClass().getClassLoader().getResource("reports")).getFile();
+
+        final String result;
+        if (this.strategy.isAssignableFrom(Bloom.class)) {
+            result = Objects.requireNonNull(getClass().getClassLoader().getResource("reports")).getFile() + "bloom/";
+        } else {
+            result = Objects.requireNonNull(getClass().getClassLoader().getResource("reports")).getFile() + "general/";
+        }
+
+        final File directory = new File(result);
+        if (!directory.exists()){
+            directory.mkdirs();
+        }
+
+        return result;
     }
 }
