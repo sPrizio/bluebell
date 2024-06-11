@@ -42,7 +42,7 @@ public class Aurora {
         final ChronoUnit unit = ChronoUnit.YEARS;
         final BloomSimulation bloomSimulation = new BloomSimulation();
         final ReportingService<Bloom, BloomStrategyParameters> reportingService = new ReportingService<>(Bloom.class);
-        reportingService.generateReportForStrategyResults(unit, bloomSimulation.simulate(masterCollection, unit, LocalDate.of(2024, 1, 1), LocalDate.of(2025, 1, 1)));
+        reportingService.generateReportForStrategyResults(unit, bloomSimulation.simulate(masterCollection, unit, LocalDate.of(2021, 1, 1), LocalDate.of(2025, 1, 1)));
 
        /* final MetaDataService metaDataService = new MetaDataService();
         final List<MetaData> metaData = metaDataService.getMetaData(start, end, unit, masterCollection);
