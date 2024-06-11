@@ -2,6 +2,7 @@ package com.bluebell.aurora.models.trade;
 
 import com.bluebell.aurora.enums.TradeType;
 import com.bluebell.aurora.strategies.Strategy;
+import com.bluebell.core.services.MathService;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -18,6 +19,8 @@ import java.util.UUID;
 @Getter
 @Setter
 public class Trade implements Comparable<Trade> {
+
+    private final MathService mathService = new MathService();
 
     private String id;
 
@@ -79,6 +82,16 @@ public class Trade implements Comparable<Trade> {
         }
 
         return Math.abs(ChronoUnit.MINUTES.between(this.tradeOpenTime, this.tradeCloseTime));
+    }
+
+    /**
+     * Calculates the total profit for this trade
+     *
+     * @param pricePerPoint price per point
+     * @return price per point * net points
+     */
+    public double calculateProfit(final double pricePerPoint) {
+        return this.mathService.multiply(getPoints(), pricePerPoint);
     }
 
     @Override

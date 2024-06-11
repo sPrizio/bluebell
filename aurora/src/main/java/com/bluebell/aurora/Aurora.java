@@ -1,21 +1,17 @@
 package com.bluebell.aurora;
 
-import com.bluebell.aurora.enums.TradeType;
-import com.bluebell.aurora.models.parameter.LimitParameter;
-import com.bluebell.aurora.models.parameter.strategy.impl.BasicStrategyParameters;
 import com.bluebell.aurora.models.parameter.strategy.impl.BloomStrategyParameters;
-import com.bluebell.aurora.models.strategy.StrategyResult;
 import com.bluebell.aurora.services.reporting.ReportingService;
 import com.bluebell.aurora.simulation.impl.BloomSimulation;
 import com.bluebell.aurora.strategies.impl.Bloom;
-import com.bluebell.core.services.MathService;
 import com.bluebell.radicle.enums.RadicleTimeInterval;
 import com.bluebell.radicle.models.MarketPrice;
 import com.bluebell.radicle.parsers.impl.FirstRateDataParser;
 
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
-import java.util.*;
+import java.util.Map;
+import java.util.TreeSet;
 
 /**
  * Executes the aurora module. Primarily used for testing strategies and obtaining meta-data
@@ -26,11 +22,9 @@ import java.util.*;
 
 /**
  * TODO
- * auto place breakeven stop should be implemented. Definitely a way to minimize risk!
- * flag to make take profits as static or dynamic
  * possibly look into nextjs app on this project?
  * dynamically calculate previous X days average price movements to set the next day's tp and sl. This will need to be tested against raw data to evaluate viability
- * wrap the large map data types in non-entites to make the signatures cleaner
+ * wrap the large map data types in non-entities to make the signatures cleaner
  */
 public class Aurora {
 

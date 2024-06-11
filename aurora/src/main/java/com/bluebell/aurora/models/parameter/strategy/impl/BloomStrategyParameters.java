@@ -20,9 +20,11 @@ public class BloomStrategyParameters extends BasicStrategyParameters implements 
 
     private boolean normalize;
 
+    private boolean breakEvenStop;
+
     private double absoluteProfitTarget;
 
-    public BloomStrategyParameters(double variance, boolean normalize, double absoluteProfitTarget, final BasicStrategyParameters basicStrategyParameters) {
+    public BloomStrategyParameters(final double variance, final boolean normalize, final boolean breakEvenStop, final double absoluteProfitTarget, final BasicStrategyParameters basicStrategyParameters) {
         super(
                 basicStrategyParameters.getDescription(),
                 basicStrategyParameters.getBuyLimit(),
@@ -30,11 +32,14 @@ public class BloomStrategyParameters extends BasicStrategyParameters implements 
                 basicStrategyParameters.getStartHour(),
                 basicStrategyParameters.getStartMinute(),
                 basicStrategyParameters.getLotSize(),
-                basicStrategyParameters.getPricePerPoint()
+                basicStrategyParameters.getPricePerPoint(),
+                basicStrategyParameters.isScaleProfits(),
+                basicStrategyParameters.getInitialBalance()
         );
 
         this.variance = variance;
         this.normalize = normalize;
+        this.breakEvenStop = breakEvenStop;
         this.absoluteProfitTarget = absoluteProfitTarget;
     }
 }

@@ -30,4 +30,8 @@ public class BasicStrategyParameters implements StrategyParameters {
     private double lotSize;
 
     private double pricePerPoint;
+
+    private boolean scaleProfits;
+
+    private double initialBalance;
 }

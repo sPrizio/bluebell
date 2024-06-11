@@ -9,6 +9,9 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.apache.commons.collections4.CollectionUtils;
 
+import java.math.BigDecimal;
+import java.math.MathContext;
+import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
@@ -60,10 +63,14 @@ public class StrategyResult<P extends BasicStrategyParameters> {
 
     private final Double maxDrawdown;
 
+    private final boolean scaleProfits;
+
+    private final double initialBalance;
+
 
     //  CONSTRUCTORS
 
-    public StrategyResult(final P strategyParameters, final LocalDate start, final LocalDate end, final Collection<Trade> trades, final LimitParameter buyLimit, final LimitParameter sellLimit, final double pricePerPoint) {
+    public StrategyResult(final P strategyParameters, final LocalDate start, final LocalDate end, final Collection<Trade> trades, final LimitParameter buyLimit, final LimitParameter sellLimit, final double pricePerPoint, final boolean scaleProfits, final double initialBalance) {
 
         this.strategyParameters = strategyParameters;
         this.start = start;
@@ -84,9 +91,11 @@ public class StrategyResult<P extends BasicStrategyParameters> {
         this.buyLimit = buyLimit;
         this.sellLimit = sellLimit;
         this.pricePerPoint = pricePerPoint;
-        this.netProfit = calculateNetProfit();
         this.averageTradeDuration = calculateAverageTradeDuration(trades);
         this.maxDrawdown = null;
+        this.scaleProfits = scaleProfits;
+        this.initialBalance = initialBalance;
+        this.netProfit = calculateNetProfit();
     }
 
 
@@ -193,11 +202,32 @@ public class StrategyResult<P extends BasicStrategyParameters> {
     //  HELPERS
 
     /**
-     * Calculates the net profit
+     * Calculates the net profit. If scaleProfits is true, will attempt a rudimentary scaling based on the pricePerPoint value.
+     * Example: Account balance of $30,000 and a price per point of $9.55/pt yields should equal approximately the same as
+     *          $38,000 and $12.95/pt
      *
+     * 9.55 = 1% of $30,000
+     * 9.55 = 300
      * @return net profit
      */
     private double calculateNetProfit() {
+
+        if (this.scaleProfits) {
+            BigDecimal onePercent = BigDecimal.valueOf(this.initialBalance).multiply(BigDecimal.valueOf(0.01));
+            BigDecimal multiplier = BigDecimal.valueOf(this.pricePerPoint).divide(onePercent, new MathContext(10, RoundingMode.HALF_EVEN));
+
+            double runningBalance = this.initialBalance;
+            for (int i = 0; i < this.trades.size(); i++) {
+                if (i == 0) {
+                    runningBalance = this.mathService.add(runningBalance, this.trades.getFirst().calculateProfit(this.pricePerPoint));
+                } else {
+                    runningBalance = this.mathService.add(runningBalance, this.trades.get(i).calculateProfit(BigDecimal.valueOf(runningBalance).multiply(BigDecimal.valueOf(0.01)).multiply(multiplier).setScale(2, RoundingMode.HALF_EVEN).doubleValue()));
+                }
+            }
+
+            return this.mathService.subtract(runningBalance, this.initialBalance);
+        }
+
         return this.mathService.multiply(this.points, this.pricePerPoint);
     }
 

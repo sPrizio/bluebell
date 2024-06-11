@@ -2,8 +2,8 @@ package com.bluebell.aurora.strategies.impl;
 
 import com.bluebell.aurora.enums.TradeType;
 import com.bluebell.aurora.models.parameter.LimitParameter;
-import com.bluebell.aurora.models.strategy.StrategyResult;
 import com.bluebell.aurora.models.parameter.strategy.impl.BloomStrategyParameters;
+import com.bluebell.aurora.models.strategy.StrategyResult;
 import com.bluebell.aurora.models.trade.Trade;
 import com.bluebell.aurora.strategies.Strategy;
 import com.bluebell.core.services.MathService;
@@ -14,6 +14,7 @@ import org.javatuples.Pair;
 import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 import java.util.TreeSet;
 
 /**
@@ -35,6 +36,8 @@ public class Bloom implements Strategy<BloomStrategyParameters> {
 
     private final Map<String, Trade> closedTrades;
 
+    private final Map<String, String> relatedTrades;
+
 
     //  CONSTRUCTORS
 
@@ -42,6 +45,7 @@ public class Bloom implements Strategy<BloomStrategyParameters> {
         this.strategyParameters = strategyParameters;
         this.openTrades = new HashMap<>();
         this.closedTrades = new HashMap<>();
+        this.relatedTrades = new HashMap<>();
     }
 
 
@@ -78,10 +82,15 @@ public class Bloom implements Strategy<BloomStrategyParameters> {
 
                     this.openTrades.put(tradeBuy.getId(), tradeBuy);
                     this.openTrades.put(tradeSell.getId(), tradeSell);
+
+                    if (this.strategyParameters.isBreakEvenStop()) {
+                        this.relatedTrades.put(tradeBuy.getId(), tradeSell.getId());
+                        this.relatedTrades.put(tradeSell.getId(), tradeBuy.getId());
+                    }
                 }
 
                 //  check each market price to see if any of the open trades were hit
-                checkTrades(this.openTrades, this.closedTrades, marketPrice);
+                checkRelatedTrades(this.openTrades, this.closedTrades, marketPrice);
 
                 if (isExitBar(marketPrice) && !this.openTrades.isEmpty()) {
                     this.openTrades.forEach((key, trade) -> {
@@ -94,7 +103,7 @@ public class Bloom implements Strategy<BloomStrategyParameters> {
             }
         }
 
-        final StrategyResult<BloomStrategyParameters> result = new StrategyResult<>(this.strategyParameters, startDate, endDate, this.closedTrades.values(), this.strategyParameters.getBuyLimit(), this.strategyParameters.getSellLimit(), this.strategyParameters.getPricePerPoint());
+        final StrategyResult<BloomStrategyParameters> result = new StrategyResult<>(this.strategyParameters, startDate, endDate, this.closedTrades.values(), this.strategyParameters.getBuyLimit(), this.strategyParameters.getSellLimit(), this.strategyParameters.getPricePerPoint(), this.strategyParameters.isScaleProfits(), this.strategyParameters.getInitialBalance());
         this.openTrades.clear();
         this.closedTrades.clear();
 
@@ -103,6 +112,67 @@ public class Bloom implements Strategy<BloomStrategyParameters> {
 
 
     //  HELPERS
+
+    /**
+     * Looks for a related trade for the given trade
+     *
+     * @param trade {@link Trade}
+     * @return {@link Optional} {@link Trade}
+     */
+    private Optional<Trade> getRelatedTrade(final Trade trade) {
+        final Trade result = this.openTrades.getOrDefault(this.relatedTrades.getOrDefault(trade.getId(), null), null);
+        return Optional.ofNullable(result);
+    }
+
+    /**
+     * Overrides the checkTrades logic to allow checking for related trades to update related trades based on the current trade's value
+     *
+     * @param openTrades open trades
+     * @param closedTrades closed trades
+     * @param marketPrice {@link MarketPrice}
+     */
+    private void checkRelatedTrades(final Map<String, Trade> openTrades, final Map<String, Trade> closedTrades, final MarketPrice marketPrice) {
+
+        if (!this.strategyParameters.isBreakEvenStop()) {
+            checkTrades(openTrades, closedTrades, marketPrice);
+        } else {
+            openTrades.forEach((key, value) -> {
+                if (value.getTradeType() == TradeType.BUY) {
+                    if (marketPrice.high() >= value.getTakeProfit()) {
+                        // hit take profit
+                        closeTrade(value, marketPrice.date(), value.getTakeProfit());
+                        closedTrades.put(value.getId(), value);
+                        this.relatedTrades.remove(value.getId());
+                    } else if (marketPrice.low() <= value.getStopLoss()) {
+                        // hit stop loss
+                        closeTrade(value, marketPrice.date(), value.getStopLoss());
+                        closedTrades.put(value.getId(), value);
+
+                        final Optional<Trade> relatedTrade = getRelatedTrade(value);
+                        relatedTrade.ifPresent(trade -> trade.setStopLoss(this.mathService.add(trade.getOpenPrice(), 15.0)));
+                        this.relatedTrades.remove(value.getId());
+                    }
+                } else {
+                    if (marketPrice.low() <= value.getTakeProfit()) {
+                        // hit take profit
+                        closeTrade(value, marketPrice.date(), value.getTakeProfit());
+                        closedTrades.put(value.getId(), value);
+                        this.relatedTrades.remove(value.getId());
+                    } else if (marketPrice.high() >= value.getStopLoss()) {
+                        // hit stop loss
+                        closeTrade(value, marketPrice.date(), value.getStopLoss());
+                        closedTrades.put(value.getId(), value);
+
+                        final Optional<Trade> relatedTrade = getRelatedTrade(value);
+                        relatedTrade.ifPresent(trade -> trade.setStopLoss(this.mathService.subtract(trade.getOpenPrice(), 15.0)));
+                        this.relatedTrades.remove(value.getId());
+                    }
+                }
+            });
+
+            closedTrades.keySet().forEach(openTrades::remove);
+        }
+    }
 
     /**
      * Returns true if the given {@link MarketPrice} is equal to the start of day
@@ -175,7 +245,6 @@ public class Bloom implements Strategy<BloomStrategyParameters> {
             );
         }
     }
-
 
     /**
      * Obtains the correct limit parameter for the {@link TradeType}
