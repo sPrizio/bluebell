@@ -5,7 +5,7 @@ import com.bluebell.flowerpot.api.models.dto.trade.TradeDTO;
 import com.bluebell.flowerpot.core.enums.trade.info.TradeType;
 import com.bluebell.flowerpot.core.enums.trade.platform.TradePlatform;
 import com.bluebell.flowerpot.core.services.platform.UniqueIdentifierService;
-import com.bluebell.core.services.MathService;
+import com.bluebell.radicle.services.MathService;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;

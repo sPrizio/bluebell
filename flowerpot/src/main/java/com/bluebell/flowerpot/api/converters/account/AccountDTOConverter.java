@@ -5,7 +5,7 @@ import com.bluebell.flowerpot.api.models.dto.account.AccountDTO;
 import com.bluebell.flowerpot.api.models.records.currency.CurrencyDisplay;
 import com.bluebell.flowerpot.core.models.entities.account.Account;
 import com.bluebell.flowerpot.core.services.platform.UniqueIdentifierService;
-import com.bluebell.core.services.MathService;
+import com.bluebell.radicle.services.MathService;
 import jakarta.annotation.Resource;
 import org.springframework.stereotype.Component;
 
