@@ -3,6 +3,7 @@ package com.bluebell.aurora.simulation;
 import com.bluebell.aurora.models.parameter.strategy.impl.BasicStrategyParameters;
 import com.bluebell.aurora.models.strategy.StrategyResult;
 import com.bluebell.aurora.strategies.Strategy;
+import com.bluebell.radicle.models.AggregatedMarketPrices;
 import com.bluebell.radicle.models.MarketPrice;
 
 import java.time.LocalDate;
@@ -26,7 +27,7 @@ public interface Simulation<P extends BasicStrategyParameters> {
      * @param unit {@link ChronoUnit}
      * @param startDate start
      * @param endDate end
-     * @return list of strategy results organized by their date
+     * @return map of strategy results organized by their date
      */
-    Map<LocalDate, List<StrategyResult<P>>> simulate(final Map<LocalDate, TreeSet<MarketPrice>> marketData, final ChronoUnit unit, final LocalDate startDate, final LocalDate endDate);
+    Map<LocalDate, List<StrategyResult<P>>> simulate(final Map<LocalDate, AggregatedMarketPrices> marketData, final ChronoUnit unit, final LocalDate startDate, final LocalDate endDate);
 }

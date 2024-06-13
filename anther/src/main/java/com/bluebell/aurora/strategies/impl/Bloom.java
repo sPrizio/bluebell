@@ -7,6 +7,7 @@ import com.bluebell.aurora.models.strategy.StrategyResult;
 import com.bluebell.aurora.models.trade.Trade;
 import com.bluebell.aurora.strategies.Strategy;
 import com.bluebell.core.services.MathService;
+import com.bluebell.radicle.models.AggregatedMarketPrices;
 import com.bluebell.radicle.models.MarketPrice;
 import lombok.Getter;
 import org.javatuples.Pair;
@@ -15,7 +16,6 @@ import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
-import java.util.TreeSet;
 
 /**
  * The bloom strategy is a straddle. A long and short position are both opened at the opening of the day, each with a 3:1 Risk/Reward. In general,
@@ -52,15 +52,15 @@ public class Bloom implements Strategy<BloomStrategyParameters> {
     //  METHODS
 
     @Override
-    public StrategyResult<BloomStrategyParameters> executeStrategy(final LocalDate startDate, final LocalDate endDate, final Map<LocalDate, TreeSet<MarketPrice>> prices) {
+    public StrategyResult<BloomStrategyParameters> executeStrategy(final LocalDate startDate, final LocalDate endDate, final Map<LocalDate, AggregatedMarketPrices> prices) {
 
-        for (final Map.Entry<LocalDate, TreeSet<MarketPrice>> entry : prices.entrySet()) {
+        for (final Map.Entry<LocalDate, AggregatedMarketPrices> entry : prices.entrySet()) {
 
             if (entry.getKey().isBefore(startDate) || (entry.getKey().isAfter(endDate) || entry.getKey().isEqual(endDate))) {
                 continue;
             }
 
-            for (final MarketPrice marketPrice : entry.getValue()) {
+            for (final MarketPrice marketPrice : entry.getValue().marketPrices()) {
                 if (isSignalBar(marketPrice)) {
                     final Trade tradeBuy = openTrade(
                             TradeType.BUY,

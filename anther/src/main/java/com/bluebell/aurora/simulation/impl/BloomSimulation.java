@@ -8,11 +8,14 @@ import com.bluebell.aurora.models.strategy.StrategyResult;
 import com.bluebell.aurora.simulation.Simulation;
 import com.bluebell.aurora.strategies.impl.Bloom;
 import com.bluebell.core.services.MathService;
-import com.bluebell.radicle.models.MarketPrice;
+import com.bluebell.radicle.models.AggregatedMarketPrices;
 
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Implementation of {@link Simulation} specific for the {@link Bloom} strategy
@@ -30,7 +33,7 @@ public class BloomSimulation implements Simulation<BloomStrategyParameters> {
     //  METHODS
 
     @Override
-    public Map<LocalDate, List<StrategyResult<BloomStrategyParameters>>> simulate(final Map<LocalDate, TreeSet<MarketPrice>> marketData, final ChronoUnit unit, final LocalDate startDate, final LocalDate endDate) {
+    public Map<LocalDate, List<StrategyResult<BloomStrategyParameters>>> simulate(final Map<LocalDate, AggregatedMarketPrices> marketData, final ChronoUnit unit, final LocalDate startDate, final LocalDate endDate) {
 
         LocalDate compare = startDate;
         int startingHour = 9;

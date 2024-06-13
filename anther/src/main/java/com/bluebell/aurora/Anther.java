@@ -5,33 +5,29 @@ import com.bluebell.aurora.services.reporting.ReportingService;
 import com.bluebell.aurora.simulation.impl.BloomSimulation;
 import com.bluebell.aurora.strategies.impl.Bloom;
 import com.bluebell.radicle.enums.RadicleTimeInterval;
-import com.bluebell.radicle.models.MarketPrice;
+import com.bluebell.radicle.models.AggregatedMarketPrices;
 import com.bluebell.radicle.parsers.impl.FirstRateDataParser;
 
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.Map;
-import java.util.TreeSet;
 
 /**
  * Executes the aurora module. Primarily used for testing strategies and obtaining meta-data
  *
  * @author Stephen Prizio
  * @version 0.0.1
- */
-
-/**
+ *
  * TODO
- * possibly look into nextjs app on this project?
- * dynamically calculate previous X days average price movements to set the next day's tp and sl. This will need to be tested against raw data to evaluate viability
- * wrap the large map data types in non-entities to make the signatures cleaner
+ *  * possibly look into nextjs app on this project?
+ *  * dynamically calculate previous X days average price movements to set the next day's tp and sl. This will need to be tested against raw data to evaluate viability
  */
-public class Aurora {
+public class Anther {
 
     public static void main(String... args) {
 
         final FirstRateDataParser parser = new FirstRateDataParser();
-        final Map<LocalDate, TreeSet<MarketPrice>> masterCollection = parser.parseMarketPricesByDate(RadicleTimeInterval.FIVE_MINUTE);
+        final Map<LocalDate, AggregatedMarketPrices> masterCollection = parser.parseMarketPricesByDate(RadicleTimeInterval.FIVE_MINUTE);
 
         final ChronoUnit unit = ChronoUnit.YEARS;
         final BloomSimulation bloomSimulation = new BloomSimulation();

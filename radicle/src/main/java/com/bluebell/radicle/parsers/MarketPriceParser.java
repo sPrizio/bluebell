@@ -1,6 +1,7 @@
 package com.bluebell.radicle.parsers;
 
 import com.bluebell.radicle.enums.RadicleTimeInterval;
+import com.bluebell.radicle.models.AggregatedMarketPrices;
 import com.bluebell.radicle.models.MarketPrice;
 import org.apache.commons.lang3.StringUtils;
 
@@ -10,7 +11,6 @@ import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.TreeSet;
 
 /**
@@ -31,7 +31,7 @@ public interface MarketPriceParser {
      * @param interval {@link RadicleTimeInterval}
      * @return {@link List} of {@link MarketPrice}
      */
-    TreeSet<MarketPrice> parseMarketPrices(final String file, final RadicleTimeInterval interval);
+    AggregatedMarketPrices parseMarketPrices(final String file, final RadicleTimeInterval interval);
 
     /**
      * Parses a file of market prices into a {@link Map} of {@link MarketPrice} organized by their date (truncates the time)
@@ -39,7 +39,7 @@ public interface MarketPriceParser {
      * @param interval {@link RadicleTimeInterval}
      * @return {@link List} of {@link MarketPrice}
      */
-    Map<LocalDate, TreeSet<MarketPrice>> parseMarketPricesByDate(final RadicleTimeInterval interval);
+    Map<LocalDate, AggregatedMarketPrices> parseMarketPricesByDate(final RadicleTimeInterval interval);
 
 
     //  HELPERS

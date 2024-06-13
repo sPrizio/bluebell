@@ -1,6 +1,7 @@
 package com.bluebell.radicle.parsers.impl;
 
 import com.bluebell.radicle.enums.RadicleTimeInterval;
+import com.bluebell.radicle.models.AggregatedMarketPrices;
 import com.bluebell.radicle.models.MarketPrice;
 import com.bluebell.radicle.parsers.MarketPriceParser;
 import lombok.NoArgsConstructor;
@@ -11,10 +12,7 @@ import java.io.File;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Objects;
-import java.util.TreeSet;
+import java.util.*;
 
 /**
  * Parses data from FirstData
@@ -35,12 +33,12 @@ public class FirstRateDataParser implements MarketPriceParser {
     //  METHODS
 
     @Override
-    public TreeSet<MarketPrice> parseMarketPrices(final String file, final RadicleTimeInterval interval) {
+    public AggregatedMarketPrices parseMarketPrices(final String file, final RadicleTimeInterval interval) {
 
         final String sampleFile = getDataRoot() + "/" + file;
         if (!validateFile(sampleFile)) {
             System.out.printf("File %s was not found!%n", file);
-            return new TreeSet<>();
+            return new AggregatedMarketPrices(new TreeSet<>(), interval);
         }
 
         final DateTimeFormatter dateTimeFormatter;
@@ -74,32 +72,32 @@ public class FirstRateDataParser implements MarketPriceParser {
             System.out.printf(e.getMessage(), e);
         }
 
-        return marketPrices;
+        return new AggregatedMarketPrices(marketPrices, interval);
     }
 
     @Override
-    public Map<LocalDate, TreeSet<MarketPrice>> parseMarketPricesByDate(final RadicleTimeInterval interval) {
+    public Map<LocalDate, AggregatedMarketPrices> parseMarketPricesByDate(final RadicleTimeInterval interval) {
 
-        final TreeSet<MarketPrice> marketPrices;
+        final AggregatedMarketPrices marketPrices;
         switch (interval) {
             case ONE_MINUTE -> marketPrices = parseMarketPrices(this.isTest ? "NDX_1min_sample.csv" : "NDX_full_1min.txt", RadicleTimeInterval.ONE_MINUTE);
             case FIVE_MINUTE -> marketPrices = parseMarketPrices(this.isTest ? "NDX_5min_sample.csv" : "NDX_full_5min.txt", RadicleTimeInterval.FIVE_MINUTE);
             case THIRTY_MINUTE -> marketPrices = parseMarketPrices(this.isTest ? "NDX_30min_sample.csv" : "NDX_full_30min.txt", RadicleTimeInterval.THIRTY_MINUTE);
             case ONE_HOUR -> marketPrices = parseMarketPrices(this.isTest ? "NDX_1hour_sample.csv" : "NDX_full_1hour.txt", RadicleTimeInterval.ONE_HOUR);
             case ONE_DAY -> marketPrices = parseMarketPrices(this.isTest ? "" : "NDX_1day_sample.csv", RadicleTimeInterval.ONE_DAY);
-            default -> marketPrices = new TreeSet<>();
+            default -> marketPrices = new AggregatedMarketPrices(new TreeSet<>(), interval);
         }
 
-        final Map<LocalDate, TreeSet<MarketPrice>> masterCollection = new HashMap<>();
-        marketPrices.forEach(marketPrice -> {
-            final TreeSet<MarketPrice> mapPrices;
+        final Map<LocalDate, AggregatedMarketPrices> masterCollection = new HashMap<>();
+        marketPrices.marketPrices().forEach(marketPrice -> {
+            final AggregatedMarketPrices mapPrices;
             if (masterCollection.containsKey(marketPrice.date().toLocalDate())) {
                 mapPrices = masterCollection.get(marketPrice.date().toLocalDate());
             } else {
-                mapPrices = new TreeSet<>();
+                mapPrices = new AggregatedMarketPrices(new TreeSet<>(), interval);
             }
 
-            mapPrices.add(marketPrice);
+            mapPrices.marketPrices().add(marketPrice);
             masterCollection.put(marketPrice.date().toLocalDate(), mapPrices);
         });
 

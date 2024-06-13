@@ -4,6 +4,7 @@ import com.bluebell.aurora.enums.TradeType;
 import com.bluebell.aurora.models.parameter.strategy.impl.BasicStrategyParameters;
 import com.bluebell.aurora.models.strategy.StrategyResult;
 import com.bluebell.aurora.models.trade.Trade;
+import com.bluebell.radicle.models.AggregatedMarketPrices;
 import com.bluebell.radicle.models.MarketPrice;
 
 import java.math.BigDecimal;
@@ -29,7 +30,7 @@ public interface Strategy<P extends BasicStrategyParameters> {
      * @param prices {@link Map} of {@link MarketPrice}
      * @return {@link StrategyResult}
      */
-    StrategyResult<P> executeStrategy(final LocalDate startDate, final LocalDate endDate, final Map<LocalDate, TreeSet<MarketPrice>> prices);
+    StrategyResult<P> executeStrategy(final LocalDate startDate, final LocalDate endDate, final Map<LocalDate, AggregatedMarketPrices> prices);
 
 
     //  HELPERS
