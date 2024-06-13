@@ -18,7 +18,7 @@ import static org.assertj.core.api.Assertions.assertThat;
  */
 class FirstRateDataParserTest {
 
-    private final FirstRateDataParser firstRateDataParser = new FirstRateDataParser();
+    private final FirstRateDataParser firstRateDataParser = new FirstRateDataParser(true);
 
 
     //  ----------------- parseMarketPrices -----------------

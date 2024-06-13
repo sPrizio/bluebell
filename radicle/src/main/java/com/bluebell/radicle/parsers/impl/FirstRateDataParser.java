@@ -117,7 +117,7 @@ public class FirstRateDataParser implements MarketPriceParser {
     private String getDataRoot() {
 
         final String root = Objects.requireNonNull(getClass().getClassLoader().getResource("firstratedata")).getFile();
-        if (this.isTest) {
+        if (this.isTest && !root.contains("test-classes")) {
             return root.replace("classes", "test-classes");
         }
 
