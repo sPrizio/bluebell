@@ -31,7 +31,7 @@ public class Aurora {
     public static void main(String... args) {
 
         final FirstRateDataParser parser = new FirstRateDataParser();
-        final Map<LocalDate, TreeSet<MarketPrice>> masterCollection = parser.parseMarketPricesByDate("NDX_full_5min.txt", RadicleTimeInterval.FIVE_MINUTE);
+        final Map<LocalDate, TreeSet<MarketPrice>> masterCollection = parser.parseMarketPricesByDate(RadicleTimeInterval.FIVE_MINUTE);
 
         final ChronoUnit unit = ChronoUnit.YEARS;
         final BloomSimulation bloomSimulation = new BloomSimulation();

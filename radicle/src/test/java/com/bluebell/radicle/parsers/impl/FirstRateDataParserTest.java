@@ -51,16 +51,10 @@ class FirstRateDataParserTest {
     //  ----------------- parseMarketPricesByDate -----------------
 
     @Test
-    void test_parseMarketPricesByDate_badPath() {
-        assertThat(this.firstRateDataParser.parseMarketPricesByDate(StringUtils.EMPTY, RadicleTimeInterval.FIVE_MINUTE))
-                .isEmpty();
-    }
-
-    @Test
     void test_parseMarketPricesByDate_success() {
 
         final TreeSet<MarketPrice> prices =
-                this.firstRateDataParser.parseMarketPricesByDate("NDX_5min_sample.csv", RadicleTimeInterval.FIVE_MINUTE).get(LocalDate.of(2024, 5, 14));
+                this.firstRateDataParser.parseMarketPricesByDate(RadicleTimeInterval.FIVE_MINUTE).get(LocalDate.of(2024, 5, 14));
 
         final MarketPrice marketPrice = prices.first();
         assertThat(marketPrice)

@@ -5,25 +5,17 @@ import com.bluebell.flowerpot.core.constants.CoreConstants;
 import com.bluebell.flowerpot.core.enums.chart.IntradayInterval;
 import com.bluebell.flowerpot.core.exceptions.validation.IllegalParameterException;
 import com.bluebell.flowerpot.core.services.chart.impl.ApexChartService;
-import com.bluebell.radicle.models.MarketPrice;
-import com.bluebell.radicle.parsers.impl.FirstRateDataParser;
-import org.assertj.core.groups.Tuple;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.time.LocalDate;
-import java.util.Map;
-import java.util.TreeSet;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
 
 /**
  * Testing class for {@link ApexChartService}
@@ -35,19 +27,11 @@ import static org.mockito.ArgumentMatchers.anyString;
 @RunWith(SpringRunner.class)
 public class ApexChartServiceTest extends AbstractGenericTest {
 
-    private final FirstRateDataParser firstRateDataParser = new FirstRateDataParser();
-
     @Autowired
     private ApexChartService apexChartService;
 
     @Before
     public void setUp() throws Exception {
-
-        final TreeSet<MarketPrice> test = new TreeSet<>();
-        test.add(new MarketPrice());
-        test.add(new MarketPrice());
-
-        Mockito.when(this.firstRateDataParser.parseMarketPricesByDate(anyString(), any())).thenReturn(Map.of(LocalDate.of(2024, 1, 1), test));
     }
 
 
@@ -69,7 +53,7 @@ public class ApexChartServiceTest extends AbstractGenericTest {
 
     @Test
     public void test_getChartData_badDates() {
-        assertThatExceptionOfType(IllegalParameterException.class)
+        assertThatExceptionOfType(UnsupportedOperationException.class)
                 .isThrownBy(() -> this.apexChartService.getChartData(LocalDate.MAX, LocalDate.MIN, IntradayInterval.FIVE_MINUTES))
                 .withMessage(CoreConstants.Validation.DateTime.MUTUALLY_EXCLUSIVE_DATES);
     }
@@ -84,9 +68,9 @@ public class ApexChartServiceTest extends AbstractGenericTest {
     @Test
     public void test_getChartData_success() {
         assertThat(this.apexChartService.getChartData(LocalDate.MIN, LocalDate.MAX, IntradayInterval.FIVE_MINUTES))
-                .hasSize(1)
+                .hasSize(790)
                 .first()
                 .extracting("x", "y")
-                .contains(Tuple.tuple(13083.41, 13098.67, 14.85), Tuple.tuple(13160.09, 13156.12, -4.50));
+                .contains(1715607000000L, new double[]{18228.4, 18233.5, 18204.06, 18204.16});
     }
 }

@@ -36,11 +36,10 @@ public interface MarketPriceParser {
     /**
      * Parses a file of market prices into a {@link Map} of {@link MarketPrice} organized by their date (truncates the time)
      *
-     * @param file file path
      * @param interval {@link RadicleTimeInterval}
      * @return {@link List} of {@link MarketPrice}
      */
-    Map<LocalDate, TreeSet<MarketPrice>> parseMarketPricesByDate(final String file, final RadicleTimeInterval interval);
+    Map<LocalDate, TreeSet<MarketPrice>> parseMarketPricesByDate(final RadicleTimeInterval interval);
 
 
     //  HELPERS
@@ -54,15 +53,6 @@ public interface MarketPriceParser {
     default boolean validateFile(final String file) {
         final File toValidate = new File(file);
         return toValidate.exists() && toValidate.canRead() && !toValidate.isDirectory();
-    }
-
-    /**
-     * Returns the root folder for sample data
-     *
-     * @return sample data path
-     */
-    default String getDataRoot() {
-        return Objects.requireNonNull(getClass().getClassLoader().getResource("firstratedata")).getFile();
     }
 
     /**

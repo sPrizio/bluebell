@@ -3,6 +3,7 @@ package com.bluebell.radicle.parsers.impl;
 import com.bluebell.radicle.enums.RadicleTimeInterval;
 import com.bluebell.radicle.models.MarketPrice;
 import com.bluebell.radicle.parsers.MarketPriceParser;
+import lombok.NoArgsConstructor;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.LineIterator;
 
@@ -12,6 +13,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.TreeSet;
 
 /**
@@ -20,7 +22,14 @@ import java.util.TreeSet;
  * @author Stephen Prizio
  * @version 0.0.1
  */
+@NoArgsConstructor
 public class FirstRateDataParser implements MarketPriceParser {
+
+    private boolean isTest = false;
+
+    public FirstRateDataParser(final boolean isTest) {
+        this.isTest = isTest;
+    }
 
 
     //  METHODS
@@ -69,9 +78,18 @@ public class FirstRateDataParser implements MarketPriceParser {
     }
 
     @Override
-    public Map<LocalDate, TreeSet<MarketPrice>> parseMarketPricesByDate(final String file, final RadicleTimeInterval interval) {
+    public Map<LocalDate, TreeSet<MarketPrice>> parseMarketPricesByDate(final RadicleTimeInterval interval) {
 
-        final TreeSet<MarketPrice> marketPrices = parseMarketPrices(file, interval);
+        final TreeSet<MarketPrice> marketPrices;
+        switch (interval) {
+            case ONE_MINUTE -> marketPrices = parseMarketPrices(this.isTest ? "NDX_1min_sample.csv" : "NDX_full_1min.txt", RadicleTimeInterval.ONE_MINUTE);
+            case FIVE_MINUTE -> marketPrices = parseMarketPrices(this.isTest ? "NDX_5min_sample.csv" : "NDX_full_5min.txt", RadicleTimeInterval.FIVE_MINUTE);
+            case THIRTY_MINUTE -> marketPrices = parseMarketPrices(this.isTest ? "NDX_30min_sample.csv" : "NDX_full_30min.txt", RadicleTimeInterval.THIRTY_MINUTE);
+            case ONE_HOUR -> marketPrices = parseMarketPrices(this.isTest ? "NDX_1hour_sample.csv" : "NDX_full_1hour.txt", RadicleTimeInterval.ONE_HOUR);
+            case ONE_DAY -> marketPrices = parseMarketPrices(this.isTest ? "" : "NDX_1day_sample.csv", RadicleTimeInterval.ONE_DAY);
+            default -> marketPrices = new TreeSet<>();
+        }
+
         final Map<LocalDate, TreeSet<MarketPrice>> masterCollection = new HashMap<>();
         marketPrices.forEach(marketPrice -> {
             final TreeSet<MarketPrice> mapPrices;
@@ -86,5 +104,23 @@ public class FirstRateDataParser implements MarketPriceParser {
         });
 
         return masterCollection;
+    }
+
+
+    //  HELPERS
+
+    /**
+     * Returns the root folder for sample data
+     *
+     * @return sample data path
+     */
+    private String getDataRoot() {
+
+        final String root = Objects.requireNonNull(getClass().getClassLoader().getResource("firstratedata")).getFile();
+        if (this.isTest) {
+            return root.replace("classes", "test-classes");
+        }
+
+        return root;
     }
 }

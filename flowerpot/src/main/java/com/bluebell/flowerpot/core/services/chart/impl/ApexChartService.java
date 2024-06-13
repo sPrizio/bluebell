@@ -27,7 +27,7 @@ import static com.bluebell.flowerpot.core.validation.GenericValidator.validatePa
 @Service
 public class ApexChartService implements ChartService<ApexChartCandleStick> {
 
-    private final FirstRateDataParser firstRateDataParser = new FirstRateDataParser();
+    private final FirstRateDataParser firstRateDataParser = new FirstRateDataParser(true);
 
 
     //  METHODS
@@ -36,17 +36,17 @@ public class ApexChartService implements ChartService<ApexChartCandleStick> {
     public List<ApexChartCandleStick> getChartData(final LocalDate startDate, final LocalDate endDate, final IntradayInterval timeInterval) {
 
         validateParameterIsNotNull(startDate, CoreConstants.Validation.DateTime.START_DATE_CANNOT_BE_NULL);
-        validateParameterIsNotNull(startDate, CoreConstants.Validation.DateTime.END_DATE_CANNOT_BE_NULL);
+        validateParameterIsNotNull(endDate, CoreConstants.Validation.DateTime.END_DATE_CANNOT_BE_NULL);
         validateDatesAreNotMutuallyExclusive(startDate.atStartOfDay(), endDate.atStartOfDay(), CoreConstants.Validation.DateTime.MUTUALLY_EXCLUSIVE_DATES);
         validateParameterIsNotNull(timeInterval, "timeInterval cannot be null");
 
         final Map<LocalDate, SortedSet<MarketPrice>> collection;
         switch (timeInterval) {
-            case ONE_MINUTE -> collection = new HashMap<>(this.firstRateDataParser.parseMarketPricesByDate("NDX_full_1min.txt", RadicleTimeInterval.ONE_MINUTE));
-            case FIVE_MINUTES -> collection = new HashMap<>(this.firstRateDataParser.parseMarketPricesByDate("NDX_full_5min.txt", RadicleTimeInterval.FIVE_MINUTE));
-            case THIRTY_MINUTES -> collection = new HashMap<>(this.firstRateDataParser.parseMarketPricesByDate("NDX_full_30min.txt", RadicleTimeInterval.THIRTY_MINUTE));
-            case ONE_HOUR -> collection = new HashMap<>(this.firstRateDataParser.parseMarketPricesByDate("NDX_full_1hour.txt", RadicleTimeInterval.ONE_HOUR));
-            case ONE_DAY -> collection = new HashMap<>(this.firstRateDataParser.parseMarketPricesByDate("NDX_full_1day.txt", RadicleTimeInterval.ONE_DAY));
+            case ONE_MINUTE -> collection = new HashMap<>(this.firstRateDataParser.parseMarketPricesByDate(RadicleTimeInterval.ONE_MINUTE));
+            case FIVE_MINUTES -> collection = new HashMap<>(this.firstRateDataParser.parseMarketPricesByDate(RadicleTimeInterval.FIVE_MINUTE));
+            case THIRTY_MINUTES -> collection = new HashMap<>(this.firstRateDataParser.parseMarketPricesByDate(RadicleTimeInterval.THIRTY_MINUTE));
+            case ONE_HOUR -> collection = new HashMap<>(this.firstRateDataParser.parseMarketPricesByDate(RadicleTimeInterval.ONE_HOUR));
+            case ONE_DAY -> collection = new HashMap<>(this.firstRateDataParser.parseMarketPricesByDate(RadicleTimeInterval.ONE_DAY));
             default -> collection = new HashMap<>();
         }
 
@@ -79,6 +79,6 @@ public class ApexChartService implements ChartService<ApexChartCandleStick> {
             }
         });
 
-        return candleSticks;
+        return candleSticks.stream().sorted(Comparator.comparing(ApexChartCandleStick::getX)).toList();
     }
 }
