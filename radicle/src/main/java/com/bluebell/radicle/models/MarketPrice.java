@@ -1,8 +1,8 @@
 package com.bluebell.radicle.models;
 
 
-import com.bluebell.core.services.MathService;
 import com.bluebell.radicle.enums.RadicleTimeInterval;
+import com.bluebell.radicle.services.MathService;
 
 import java.time.LocalDateTime;
 import java.util.Objects;

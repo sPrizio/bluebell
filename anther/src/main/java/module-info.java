@@ -1,5 +1,4 @@
-open module com.bluebell.aurora {
-    requires com.bluebell;
+open module com.bluebell.anther {
     requires com.bluebell.radicle;
     requires org.apache.commons.collections4;
     requires org.apache.commons.lang3;
