@@ -25,11 +25,11 @@ public interface MarketPriceParser {
     //  METHODS
 
     /**
-     * Parses a file of market prices into a {@link TreeSet} of {@link MarketPrice}
+     * Parses a file of market prices into {@link AggregatedMarketPrices}
      *
      * @param file file path
      * @param interval {@link RadicleTimeInterval}
-     * @return {@link List} of {@link MarketPrice}
+     * @return {@link AggregatedMarketPrices}
      */
     AggregatedMarketPrices parseMarketPrices(final String file, final RadicleTimeInterval interval);
 

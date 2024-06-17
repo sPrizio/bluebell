@@ -1,6 +1,8 @@
 package com.bluebell.anther.services.metadata;
 
 import com.bluebell.anther.models.metadata.MetaData;
+import com.bluebell.radicle.enums.RadicleTimeInterval;
+import com.bluebell.radicle.models.AggregatedMarketPrices;
 import com.bluebell.radicle.models.MarketPrice;
 
 import java.time.LocalDate;
@@ -21,15 +23,16 @@ public class MetaDataService {
      * @param start {@link LocalDate}
      * @param end {@link LocalDate}
      * @param unit {@link ChronoUnit}
+     * @param timeInterval {@link RadicleTimeInterval}
      * @param prices {@link Map} of {@link MarketPrice} indexed by their date
      * @return {@link MetaData}
      */
-    public List<MetaData> getMetaData(final LocalDate start, final LocalDate end, final ChronoUnit unit, final Map<LocalDate, TreeSet<MarketPrice>> prices) {
+    public List<MetaData> getMetaData(final LocalDate start, final LocalDate end, final ChronoUnit unit, final RadicleTimeInterval timeInterval, final Map<LocalDate, AggregatedMarketPrices> prices) {
 
         final List<MetaData> metaData = new ArrayList<>();
         LocalDate compare = start;
         while (compare.isBefore(end)) {
-            metaData.add(new MetaData(compare, compare.plus(1, unit), getPrices(compare, compare.plus(1, unit), prices)));
+            metaData.add(new MetaData(compare, compare.plus(1, unit), unit, timeInterval, getPrices(compare, compare.plus(1, unit), prices)));
             compare = compare.plus(1, unit);
         }
 
@@ -47,16 +50,16 @@ public class MetaDataService {
      * @param prices collection of market prices
      * @return {@link SortedSet}
      */
-    private SortedSet<MarketPrice> getPrices(final LocalDate start, final LocalDate end, final Map<LocalDate, TreeSet<MarketPrice>> prices) {
+    private SortedSet<MarketPrice> getPrices(final LocalDate start, final LocalDate end, final Map<LocalDate, AggregatedMarketPrices> prices) {
 
         if (prices.containsKey(start)) {
-            return prices.get(start);
+            return prices.get(start).marketPrices();
         }
 
         final TreeSet<MarketPrice> set = new TreeSet<>();
         prices.forEach((date, marketPrices) -> {
             if ((date.isEqual(start) || date.isAfter(start)) && (date.isEqual(end) || date.isBefore(end))) {
-                set.addAll(marketPrices);
+                set.addAll(marketPrices.marketPrices());
             }
         });
 

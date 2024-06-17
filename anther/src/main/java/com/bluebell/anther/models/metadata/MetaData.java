@@ -1,5 +1,6 @@
 package com.bluebell.anther.models.metadata;
 
+import com.bluebell.radicle.enums.RadicleTimeInterval;
 import com.bluebell.radicle.models.MarketPrice;
 import com.bluebell.radicle.services.MathService;
 import lombok.Getter;
@@ -10,6 +11,7 @@ import org.javatuples.Triplet;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.SortedSet;
 
@@ -27,6 +29,10 @@ public class MetaData {
     private final LocalDate start;
 
     private final LocalDate end;
+
+    private final ChronoUnit unit;
+
+    private final RadicleTimeInterval timeInterval;
 
     private final int count;
 
@@ -59,11 +65,13 @@ public class MetaData {
 
     //  CONSTRUCTORS
 
-    public MetaData(final LocalDate start, final LocalDate end, final SortedSet<MarketPrice> prices) {
+    public MetaData(final LocalDate start, final LocalDate end, final ChronoUnit unit, final RadicleTimeInterval timeInterval, final SortedSet<MarketPrice> prices) {
 
         this.start = start;
         this.end = end;
         this.count = prices.size();
+        this.unit = unit;
+        this.timeInterval = timeInterval;
 
         final Triplet<Double, Double, Double> values = calculate(prices);
         this.absoluteHigh = values.getValue0();
@@ -102,7 +110,7 @@ public class MetaData {
         }
 
         double absoluteTop = 0.0;
-        double absoluteBottom = 123456789;
+        double absoluteBottom = Integer.MAX_VALUE;
         final double average = this.mathService.getDouble(prices.stream().mapToDouble(pr -> Math.abs(this.mathService.subtract(pr.high(), pr.low()))).average().orElse(0.0));
 
         for (MarketPrice price : prices) {
@@ -169,6 +177,8 @@ public class MetaData {
                 \tstart = %s
                 \tend = %s
                 \tcount = %s
+                \tmarketPriceInterval = %s
+                \taggregatedInterval = %s
                 \tabsoluteHigh = %s
                 \tabsoluteLow = %s
                 \tAbsolute Change = %s
@@ -189,6 +199,8 @@ public class MetaData {
                         this.start.format(DateTimeFormatter.ISO_DATE),
                         this.end.format(DateTimeFormatter.ISO_DATE),
                         this.count,
+                        this.timeInterval,
+                        this.unit,
                         this.absoluteHigh,
                         this.absoluteLow,
                         this.mathService.subtract(this.absoluteHigh, this.absoluteLow),
