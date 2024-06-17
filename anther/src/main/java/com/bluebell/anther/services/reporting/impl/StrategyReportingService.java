@@ -47,7 +47,7 @@ public class StrategyReportingService<S extends Strategy<P>, P extends BasicStra
 
         final StringBuilder stringBuilder = new StringBuilder();
         for (final Map.Entry<LocalDate, List<StrategyResult<P>>> entry : strategyResults.entrySet().stream().sorted(Map.Entry.comparingByKey()).toList()) {
-            final File tempFile = new File(getContentRoot("reports") + String.format("report-%s.txt", entry.getKey().format(DateTimeFormatter.ISO_DATE)));
+            final File tempFile = new File(getContentRoot("reports") + String.format("report-%s-%s.txt", unit.toString().toLowerCase(), entry.getKey().format(DateTimeFormatter.ISO_DATE)));
             try (FileOutputStream os = new FileOutputStream(tempFile)) {
                 stringBuilder
                         .append("Period: ").append(entry.getKey().format(DATE_FORMATTER)).append(" to ").append(entry.getKey().plus(1, unit).format(DATE_FORMATTER))

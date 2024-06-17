@@ -21,19 +21,15 @@ import java.util.Map;
  *
  * @author Stephen Prizio
  * @version 0.0.1
- *
- * TODO
- *  * possibly look into nextjs app on this project?
- *  * dynamically calculate previous X days average price movements to set the next day's tp and sl. This will need to be tested against raw data to evaluate viability
  */
 public class Anther {
 
     public static void main(String... args) {
 
-        final ChronoUnit unit = ChronoUnit.MONTHS;
+        final ChronoUnit unit = ChronoUnit.YEARS;
         final RadicleTimeInterval timeInterval = RadicleTimeInterval.FIVE_MINUTE;
         final LocalDate start = LocalDate.of(2020, 1, 1);
-        final LocalDate end = LocalDate.of(2021, 1, 1);
+        final LocalDate end = LocalDate.of(2025, 1, 1);
 
         final FirstRateDataParser parser = new FirstRateDataParser();
         final Map<LocalDate, AggregatedMarketPrices> masterCollection = parser.parseMarketPricesByDate(timeInterval);
