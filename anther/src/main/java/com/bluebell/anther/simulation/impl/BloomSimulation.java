@@ -75,6 +75,13 @@ public class BloomSimulation implements Simulation<BloomStrategyParameters> {
 
     //  HELPERS
 
+    /**
+     * Correctly obtains {@link BloomStrategyParameters} for the given date
+     *
+     * @param map preset values
+     * @param localDate date to lookup
+     * @return {@link BloomStrategyParameters}
+     */
     private BloomStrategyParameters resolveStrategyParameters(final Map<LocalDate, BloomStrategyParameters> map, final LocalDate localDate) {
 
         if (MapUtils.isNotEmpty(map)) {
