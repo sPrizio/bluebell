@@ -7,7 +7,9 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
+import java.util.Base64;
 import java.util.UUID;
 
 /**
@@ -44,7 +46,7 @@ public class Trade implements Comparable<Trade> {
     //  CONSTRUCTORS
 
     public Trade(final TradeType tradeType, final double lotSize, final LocalDateTime tradeOpenTime, final double openPrice, final double stopLoss, final double takeProfit) {
-        this.id = UUID.randomUUID().toString();
+        this.id = UUID.randomUUID() + "_" + Base64.getEncoder().encodeToString(LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME).getBytes());
         this.tradeType = tradeType;
         this.lotSize = lotSize;
         this.tradeOpenTime = tradeOpenTime;
@@ -97,5 +99,21 @@ public class Trade implements Comparable<Trade> {
     @Override
     public int compareTo(Trade o) {
         return this.tradeOpenTime.compareTo(o.tradeOpenTime);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Trade trade = (Trade) o;
+        return this.id.equals(trade.id) && this.tradeType == trade.tradeType && this.tradeOpenTime.isEqual(trade.tradeOpenTime);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = this.id.hashCode();
+        result = 31 * result + this.tradeType.hashCode() + this.tradeOpenTime.hashCode();
+        return result;
     }
 }

@@ -28,7 +28,7 @@ import static com.bluebell.flowerpot.core.validation.GenericValidator.validatePa
 @Service
 public class ApexChartService implements ChartService<ApexChartCandleStick> {
 
-    private final FirstRateDataParser firstRateDataParser = new FirstRateDataParser(true);
+    private final FirstRateDataParser firstRateDataParser = new FirstRateDataParser(false);
 
 
     //  METHODS

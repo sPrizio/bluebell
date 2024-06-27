@@ -116,10 +116,10 @@ public class BloomSimulation implements Simulation<BloomStrategyParameters> {
     private Map<LocalDate, BloomStrategyParameters> getParameters(final int startHour, final int startMinute, final double variance) {
 
         // normalization before 2020 with a value > 15 does not make sense. Keep this in mind
-        final boolean normalize = false;
+        final boolean normalize = true;
         final double absoluteTarget = 30.0;
-        final double lotSize = 0.25;
-        final double pricePerPoint = 9.55;
+        final double lotSize = 0.28;
+        final double pricePerPoint = 5.6;
         final boolean breakEvenStop = false;
         final boolean scaleProfits = false;
         final double initialBalance = 30000.0;

@@ -13,9 +13,7 @@ import lombok.Getter;
 import org.javatuples.Pair;
 
 import java.time.LocalDate;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 /**
  * The bloom strategy is a straddle. A long and short position are both opened at the opening of the day, each with a 3:1 Risk/Reward. In general,

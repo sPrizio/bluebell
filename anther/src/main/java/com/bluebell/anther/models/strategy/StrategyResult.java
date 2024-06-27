@@ -67,6 +67,8 @@ public class StrategyResult<P extends BasicStrategyParameters> {
 
     private final double initialBalance;
 
+    private List<CumulativeStrategyReportEntry> cumulativeReportEntries;
+
 
     //  CONSTRUCTORS
 
@@ -75,7 +77,7 @@ public class StrategyResult<P extends BasicStrategyParameters> {
         this.strategyParameters = strategyParameters;
         this.start = start;
         this.end = end;
-        this.trades = trades.stream().toList();
+        this.trades = trades.stream().sorted(Comparator.comparing(Trade::getTradeCloseTime)).toList();
 
         final List<Trade> wins = getWins();
         final List<Trade> losses = getLosses();
@@ -96,6 +98,7 @@ public class StrategyResult<P extends BasicStrategyParameters> {
         this.scaleProfits = scaleProfits;
         this.initialBalance = initialBalance;
         this.netProfit = calculateNetProfit();
+        this.cumulativeReportEntries = new ArrayList<>();
     }
 
 
@@ -154,6 +157,30 @@ public class StrategyResult<P extends BasicStrategyParameters> {
         }
 
         return this.maxDrawdown;
+    }
+
+    /**
+     * Computes a bunny trail per trade
+     *
+     * @return {@link List} of {@link CumulativeStrategyReportEntry}
+     */
+    public List<CumulativeStrategyReportEntry> getCumulativeReportEntries() {
+
+        final List<CumulativeStrategyReportEntry> entries = new ArrayList<>();
+
+        int cumTrades = 0;
+        double cumPoints = 0.0;
+        double cumProfit = 0.0;
+
+        for (final Trade trade : this.trades) {
+            cumTrades += 1;
+            cumPoints = this.mathService.add(cumPoints, trade.getPoints());
+            cumProfit = this.mathService.add(cumProfit, trade.calculateProfit(this.pricePerPoint));
+
+            entries.add(new CumulativeStrategyReportEntry(cumPoints, cumProfit, cumTrades));
+        }
+
+        return entries;
     }
 
     @Override
@@ -217,11 +244,17 @@ public class StrategyResult<P extends BasicStrategyParameters> {
             BigDecimal multiplier = BigDecimal.valueOf(this.pricePerPoint).divide(onePercent, new MathContext(10, RoundingMode.HALF_EVEN));
 
             double runningBalance = this.initialBalance;
-            for (int i = 0; i < this.trades.size(); i++) {
-                if (i == 0) {
-                    runningBalance = this.mathService.add(runningBalance, this.trades.getFirst().calculateProfit(this.pricePerPoint));
+            final Iterator<Trade> iterator = this.trades.iterator();
+            int count = 0;
+
+            while (iterator.hasNext()) {
+                final Trade trade = iterator.next();
+                count += 1;
+
+                if (count == 1) {
+                    runningBalance = this.mathService.add(runningBalance, trade.calculateProfit(this.pricePerPoint));
                 } else {
-                    runningBalance = this.mathService.add(runningBalance, this.trades.get(i).calculateProfit(BigDecimal.valueOf(runningBalance).multiply(BigDecimal.valueOf(0.01)).multiply(multiplier).setScale(2, RoundingMode.HALF_EVEN).doubleValue()));
+                    runningBalance = this.mathService.add(runningBalance, trade.calculateProfit(BigDecimal.valueOf(runningBalance).multiply(BigDecimal.valueOf(0.01)).multiply(multiplier).setScale(2, RoundingMode.HALF_EVEN).doubleValue()));
                 }
             }
 

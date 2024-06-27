@@ -12,6 +12,7 @@ import java.io.FileOutputStream;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -92,7 +93,7 @@ public class StrategyReportingService<S extends Strategy<P>, P extends BasicStra
      * @param root reports root
      * @return root folder
      */
-    private String getContentRoot(final String root) {
+    protected String getContentRoot(final String root) {
 
         String result = getDataRoot(root);
         if (this.strategy.isAssignableFrom(Bloom.class)) {

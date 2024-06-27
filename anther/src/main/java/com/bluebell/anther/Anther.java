@@ -2,7 +2,9 @@ package com.bluebell.anther;
 
 import com.bluebell.anther.models.metadata.MetaData;
 import com.bluebell.anther.models.parameter.strategy.impl.BloomStrategyParameters;
+import com.bluebell.anther.models.strategy.StrategyResult;
 import com.bluebell.anther.services.metadata.MetaDataService;
+import com.bluebell.anther.services.reporting.impl.BloomReportingService;
 import com.bluebell.anther.services.reporting.impl.MetaDataReportingService;
 import com.bluebell.anther.services.reporting.impl.StrategyReportingService;
 import com.bluebell.anther.simulation.impl.BloomSimulation;
@@ -35,8 +37,10 @@ public class Anther {
         final Map<LocalDate, AggregatedMarketPrices> masterCollection = parser.parseMarketPricesByDate(timeInterval);
 
         final BloomSimulation bloomSimulation = new BloomSimulation();
-        final StrategyReportingService<Bloom, BloomStrategyParameters> strategyReportingService = new StrategyReportingService<>(Bloom.class);
-        strategyReportingService.generateReportForStrategyResults(unit, bloomSimulation.simulate(masterCollection, unit, start, end));
+        final BloomReportingService strategyReportingService = new BloomReportingService();
+        final Map<LocalDate, List<StrategyResult<BloomStrategyParameters>>> strategyResults = bloomSimulation.simulate(masterCollection, unit, start, end);
+        strategyReportingService.generateReportForStrategyResults(unit, strategyResults);
+        strategyReportingService.generateCumulativeReport(strategyResults);
 
         final MetaDataService metaDataService = new MetaDataService();
         final MetaDataReportingService metaDataReportingService = new MetaDataReportingService();
