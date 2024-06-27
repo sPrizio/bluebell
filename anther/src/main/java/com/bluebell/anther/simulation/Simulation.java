@@ -1,6 +1,7 @@
 package com.bluebell.anther.simulation;
 
 import com.bluebell.anther.models.parameter.strategy.impl.BasicStrategyParameters;
+import com.bluebell.anther.models.simulation.SimulationResult;
 import com.bluebell.anther.models.strategy.StrategyResult;
 import com.bluebell.anther.strategies.Strategy;
 import com.bluebell.radicle.models.AggregatedMarketPrices;
@@ -25,7 +26,7 @@ public interface Simulation<P extends BasicStrategyParameters> {
      * @param unit {@link ChronoUnit}
      * @param startDate start
      * @param endDate end
-     * @return map of strategy results organized by their date
+     * @return {@link SimulationResult}
      */
-    Map<LocalDate, List<StrategyResult<P>>> simulate(final Map<LocalDate, AggregatedMarketPrices> marketData, final ChronoUnit unit, final LocalDate startDate, final LocalDate endDate);
+    SimulationResult<P> simulate(final Map<LocalDate, AggregatedMarketPrices> marketData, final ChronoUnit unit, final LocalDate startDate, final LocalDate endDate);
 }

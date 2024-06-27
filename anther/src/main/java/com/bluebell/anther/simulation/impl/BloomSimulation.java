@@ -4,6 +4,7 @@ import com.bluebell.anther.enums.TradeType;
 import com.bluebell.anther.models.parameter.LimitParameter;
 import com.bluebell.anther.models.parameter.strategy.impl.BasicStrategyParameters;
 import com.bluebell.anther.models.parameter.strategy.impl.BloomStrategyParameters;
+import com.bluebell.anther.models.simulation.SimulationResult;
 import com.bluebell.anther.models.strategy.StrategyResult;
 import com.bluebell.anther.simulation.Simulation;
 import com.bluebell.anther.strategies.impl.Bloom;
@@ -35,7 +36,7 @@ public class BloomSimulation implements Simulation<BloomStrategyParameters> {
     //  METHODS
 
     @Override
-    public Map<LocalDate, List<StrategyResult<BloomStrategyParameters>>> simulate(final Map<LocalDate, AggregatedMarketPrices> marketData, final ChronoUnit unit, final LocalDate startDate, final LocalDate endDate) {
+    public SimulationResult<BloomStrategyParameters> simulate(final Map<LocalDate, AggregatedMarketPrices> marketData, final ChronoUnit unit, final LocalDate startDate, final LocalDate endDate) {
 
         LocalDate compare = startDate;
         int startingHour = 9;
@@ -69,7 +70,7 @@ public class BloomSimulation implements Simulation<BloomStrategyParameters> {
             variance = 1.0;
         }
 
-        return map;
+        return new SimulationResult<>(map);
     }
 
 

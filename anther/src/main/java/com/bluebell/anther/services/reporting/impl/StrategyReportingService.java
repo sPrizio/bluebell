@@ -2,17 +2,18 @@ package com.bluebell.anther.services.reporting.impl;
 
 import com.bluebell.anther.models.parameter.strategy.impl.BasicStrategyParameters;
 import com.bluebell.anther.models.parameter.strategy.impl.BloomStrategyParameters;
+import com.bluebell.anther.models.simulation.SimulationResult;
 import com.bluebell.anther.models.strategy.StrategyResult;
 import com.bluebell.anther.services.reporting.ReportingService;
 import com.bluebell.anther.strategies.Strategy;
 import com.bluebell.anther.strategies.impl.Bloom;
+import com.bluebell.anther.util.DirectoryUtil;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -42,12 +43,12 @@ public class StrategyReportingService<S extends Strategy<P>, P extends BasicStra
      * Generates a report to a text file of a list of strategy results
      *
      * @param unit            {@link ChronoUnit}
-     * @param strategyResults list of list of strategy results (allows for multiple configurations)
+     * @param simulationResult {@link SimulationResult}
      */
-    public void generateReportForStrategyResults(final ChronoUnit unit, final Map<LocalDate, List<StrategyResult<P>>> strategyResults) {
+    public void generateReportForSimulationResult(final ChronoUnit unit, final SimulationResult<P> simulationResult) {
 
         final StringBuilder stringBuilder = new StringBuilder();
-        for (final Map.Entry<LocalDate, List<StrategyResult<P>>> entry : strategyResults.entrySet().stream().sorted(Map.Entry.comparingByKey()).toList()) {
+        for (final Map.Entry<LocalDate, List<StrategyResult<P>>> entry : simulationResult.result().entrySet().stream().sorted(Map.Entry.comparingByKey()).toList()) {
             final File tempFile = new File(getContentRoot("reports") + String.format("report-%s-%s.txt", unit.toString().toLowerCase(), entry.getKey().format(DateTimeFormatter.ISO_DATE)));
             try (FileOutputStream os = new FileOutputStream(tempFile)) {
                 stringBuilder
@@ -95,7 +96,7 @@ public class StrategyReportingService<S extends Strategy<P>, P extends BasicStra
      */
     protected String getContentRoot(final String root) {
 
-        String result = getDataRoot(root);
+        String result = DirectoryUtil.getDirectory(root);
         if (this.strategy.isAssignableFrom(Bloom.class)) {
             result += "bloom/";
         } else {

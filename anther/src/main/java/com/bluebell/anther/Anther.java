@@ -1,14 +1,13 @@
 package com.bluebell.anther;
 
+import com.bluebell.anther.engine.impl.BloomDecisionEngine;
 import com.bluebell.anther.models.metadata.MetaData;
 import com.bluebell.anther.models.parameter.strategy.impl.BloomStrategyParameters;
-import com.bluebell.anther.models.strategy.StrategyResult;
+import com.bluebell.anther.models.simulation.SimulationResult;
 import com.bluebell.anther.services.metadata.MetaDataService;
 import com.bluebell.anther.services.reporting.impl.BloomReportingService;
 import com.bluebell.anther.services.reporting.impl.MetaDataReportingService;
-import com.bluebell.anther.services.reporting.impl.StrategyReportingService;
 import com.bluebell.anther.simulation.impl.BloomSimulation;
-import com.bluebell.anther.strategies.impl.Bloom;
 import com.bluebell.radicle.enums.RadicleTimeInterval;
 import com.bluebell.radicle.models.AggregatedMarketPrices;
 import com.bluebell.radicle.parsers.impl.FirstRateDataParser;
@@ -26,6 +25,13 @@ import java.util.Map;
  */
 public class Anther {
 
+    private static final boolean RUN_SIMULATION = true;
+    private static final boolean GENERATE_REPORTS = false;
+    private static final boolean GENERATE_METADATA = false;
+    private static final boolean GENERATE_CUMULATIVE_REPORTS = false;
+    private static final boolean COMPUTE_DECISIONS = true;
+
+
     public static void main(String... args) {
 
         final ChronoUnit unit = ChronoUnit.YEARS;
@@ -36,15 +42,30 @@ public class Anther {
         final FirstRateDataParser parser = new FirstRateDataParser();
         final Map<LocalDate, AggregatedMarketPrices> masterCollection = parser.parseMarketPricesByDate(timeInterval);
 
-        final BloomSimulation bloomSimulation = new BloomSimulation();
-        final BloomReportingService strategyReportingService = new BloomReportingService();
-        final Map<LocalDate, List<StrategyResult<BloomStrategyParameters>>> strategyResults = bloomSimulation.simulate(masterCollection, unit, start, end);
-        strategyReportingService.generateReportForStrategyResults(unit, strategyResults);
-        strategyReportingService.generateCumulativeReport(strategyResults);
+        if (RUN_SIMULATION) {
+            final BloomSimulation bloomSimulation = new BloomSimulation();
+            final BloomReportingService strategyReportingService = new BloomReportingService();
+            final SimulationResult<BloomStrategyParameters> simulationResult = bloomSimulation.simulate(masterCollection, unit, start, end);
 
-        final MetaDataService metaDataService = new MetaDataService();
-        final MetaDataReportingService metaDataReportingService = new MetaDataReportingService();
-        final List<MetaData> metaData = metaDataService.getMetaData(start, end, unit, timeInterval, masterCollection);
-        metaDataReportingService.generateMetadataReport(metaData);
+            if (GENERATE_REPORTS) {
+                strategyReportingService.generateReportForSimulationResult(unit, simulationResult);
+            }
+
+            if (GENERATE_CUMULATIVE_REPORTS) {
+                strategyReportingService.generateCumulativeReport(simulationResult);
+            }
+
+            if (COMPUTE_DECISIONS) {
+                final BloomDecisionEngine bloomDecisionEngine = new BloomDecisionEngine();
+                bloomDecisionEngine.decide(simulationResult);
+            }
+        }
+
+        if (GENERATE_METADATA) {
+            final MetaDataService metaDataService = new MetaDataService();
+            final MetaDataReportingService metaDataReportingService = new MetaDataReportingService();
+            final List<MetaData> metaData = metaDataService.getMetaData(start, end, unit, timeInterval, masterCollection);
+            metaDataReportingService.generateMetadataReport(metaData);
+        }
     }
 }

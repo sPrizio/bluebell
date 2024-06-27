@@ -1,6 +1,7 @@
 package com.bluebell.anther.services.reporting.impl;
 
 import com.bluebell.anther.models.parameter.strategy.impl.BloomStrategyParameters;
+import com.bluebell.anther.models.simulation.SimulationResult;
 import com.bluebell.anther.models.strategy.CumulativeStrategyReportEntry;
 import com.bluebell.anther.models.strategy.StrategyResult;
 import com.bluebell.anther.models.trade.Trade;
@@ -11,7 +12,7 @@ import org.javatuples.Triplet;
 
 import java.io.File;
 import java.io.FileOutputStream;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -19,7 +20,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Test
+ * Extends the {@link StrategyReportingService} specific for {@link Bloom}
  *
  * @author Stephen Prizio
  * @version 0.0.1
@@ -35,10 +36,15 @@ public class BloomReportingService extends StrategyReportingService<Bloom, Bloom
 
     //  METHODS
 
-    public void generateCumulativeReport(final Map<LocalDate, List<StrategyResult<BloomStrategyParameters>>> strategyResults) {
+    /**
+     * Generates a list of files representing the cumulative performance of strategy results
+     *
+     * @param simulationResult {@link Map} of {@link List} of {@link StrategyResult}
+     */
+    public void generateCumulativeReport(final SimulationResult<BloomStrategyParameters> simulationResult) {
 
         final Map<String, List<Trade>> map = new HashMap<>();
-        strategyResults.values().stream().flatMap(List::stream).forEach(sr -> {
+        simulationResult.result().values().stream().flatMap(List::stream).forEach(sr -> {
             final String key = generateKey(sr);
             List<Trade> trades = new ArrayList<>();
             if (map.containsKey(key)) {
@@ -56,13 +62,13 @@ public class BloomReportingService extends StrategyReportingService<Bloom, Bloom
             try (FileOutputStream os = new FileOutputStream(tempFile)) {
                 stringBuilder
                         .append("Cumulative Trace for the ").append(deconstructedKey.getValue0()).append(":").append(deconstructedKey.getValue1()).append(" candle with a variance of ").append(deconstructedKey.getValue2()).append("%")
-                        .append("\nNormalization: ").append(strategyResults.entrySet().iterator().next().getValue().getFirst().getStrategyParameters().isNormalize())
+                        .append("\nNormalization: ").append(simulationResult.result().entrySet().iterator().next().getValue().getFirst().getStrategyParameters().isNormalize())
                         .append("\n")
                         .append("\n");
 
-                final double pricePerPoint = strategyResults.entrySet().iterator().next().getValue().getFirst().getStrategyParameters().getPricePerPoint();
+                final double pricePerPoint = simulationResult.result().entrySet().iterator().next().getValue().getFirst().getStrategyParameters().getPricePerPoint();
                 final List<CumulativeStrategyReportEntry> entries = getCumulativeReportEntries(value, pricePerPoint);
-                entries.forEach(entry -> stringBuilder.append(formatNumber(entry.points())).append("\t$").append(formatNumber(entry.netProfit())).append("\t").append(formatNumber(entry.trades())).append("\n"));
+                entries.forEach(entry -> stringBuilder.append(formatNumber(entry.points())).append("\t$").append(formatNumber(entry.netProfit())).append("\t").append(formatNumber(entry.trades())).append("\t").append(formatDateTime(entry.modified())).append("\n"));
 
                 os.write(stringBuilder.toString().getBytes());
                 stringBuilder.setLength(0);
@@ -118,17 +124,39 @@ public class BloomReportingService extends StrategyReportingService<Bloom, Bloom
             cumPoints = this.mathService.add(cumPoints, trade.getPoints());
             cumProfit = this.mathService.add(cumProfit, trade.calculateProfit(pricePerPoint));
 
-            entries.add(new CumulativeStrategyReportEntry(cumPoints, cumProfit, cumTrades));
+            entries.add(new CumulativeStrategyReportEntry(cumPoints, cumProfit, cumTrades, trade.getTradeCloseTime()));
         }
 
         return entries;
     }
 
+    /**
+     * Formats a double
+     *
+     * @param number double
+     * @return properly formatted double
+     */
     private String formatNumber(final double number) {
         return StringUtils.rightPad(String.format("%.2f", number), 10, " ");
     }
 
+    /**
+     * Formats an integer
+     *
+     * @param number integer
+     * @return properly formatted integer
+     */
     private String formatNumber(final int number) {
         return StringUtils.rightPad(StringUtils.leftPad(String.valueOf(number), 2, "0"), 7, " ");
+    }
+
+    /**
+     * Formats a {@link LocalDateTime} 
+     * 
+     * @param dateTime {@link LocalDateTime}
+     * @return formatted string
+     */
+    private String formatDateTime(final LocalDateTime dateTime) {
+        return StringUtils.rightPad(dateTime.format(DateTimeFormatter.ofPattern("MMM dd yyyy 'at' HH:mm:ss")).trim(), 10, " ");
     }
 }

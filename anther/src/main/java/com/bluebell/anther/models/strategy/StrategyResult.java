@@ -67,7 +67,7 @@ public class StrategyResult<P extends BasicStrategyParameters> {
 
     private final double initialBalance;
 
-    private List<CumulativeStrategyReportEntry> cumulativeReportEntries;
+    private final List<CumulativeStrategyReportEntry> cumulativeReportEntries;
 
 
     //  CONSTRUCTORS
@@ -177,7 +177,7 @@ public class StrategyResult<P extends BasicStrategyParameters> {
             cumPoints = this.mathService.add(cumPoints, trade.getPoints());
             cumProfit = this.mathService.add(cumProfit, trade.calculateProfit(this.pricePerPoint));
 
-            entries.add(new CumulativeStrategyReportEntry(cumPoints, cumProfit, cumTrades));
+            entries.add(new CumulativeStrategyReportEntry(cumPoints, cumProfit, cumTrades, trade.getTradeCloseTime()));
         }
 
         return entries;
