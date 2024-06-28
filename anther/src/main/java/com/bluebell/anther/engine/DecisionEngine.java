@@ -15,7 +15,19 @@ import java.util.List;
  */
 public interface DecisionEngine<S extends Strategy<P>, P extends BasicStrategyParameters> {
 
+    /**
+     * Determines the best decision from the consideration list
+     *
+     * @param simulationResult {@link SimulationResult}
+     * @return {@link Decision}
+     */
     Decision<P> decide(final SimulationResult<P> simulationResult);
 
+    /**
+     * Generates a list of decisions to be evaluated
+     *
+     * @param simulationResult {@link SimulationResult}
+     * @return {@link List} of {@link Decision}
+     */
     List<Decision<P>> consider(final SimulationResult<P> simulationResult);
 }

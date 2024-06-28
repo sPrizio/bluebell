@@ -6,6 +6,7 @@ import com.bluebell.anther.models.parameter.strategy.impl.BloomStrategyParameter
 import com.bluebell.anther.models.simulation.SimulationResult;
 import com.bluebell.anther.models.strategy.CumulativeStrategyReportEntry;
 import com.bluebell.anther.models.strategy.StrategyResult;
+import com.bluebell.anther.models.trade.Trade;
 import com.bluebell.anther.services.reporting.impl.BloomReportingService;
 import com.bluebell.anther.strategies.impl.Bloom;
 import com.bluebell.anther.util.DirectoryUtil;
@@ -18,11 +19,10 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Stream;
 
 /**
@@ -33,12 +33,33 @@ import java.util.stream.Stream;
  */
 public class BloomDecisionEngine implements DecisionEngine<Bloom, BloomStrategyParameters> {
 
+    private int window = 1;
+
 
     //  METHODS
 
     @Override
     public Decision<BloomStrategyParameters> decide(final SimulationResult<BloomStrategyParameters> simulationResult) {
-        return consider(simulationResult).getLast();
+
+        //final List<Decision<BloomStrategyParameters>> decisions = consider(simulationResult);
+
+        //TODO: TEMP
+        //  compute decisions for research purposes
+        final List<Pair<Integer, Double>> res = new ArrayList<>();
+        while (this.window < 2232) {
+            System.out.println("Deciding for: " + this.window);
+            final Map<Decision<BloomStrategyParameters>, List<Pair<Integer, Integer>>> map = getTradeIntervalsForDecisions(consider(simulationResult), simulationResult);
+
+            final List<CumulativeStrategyReportEntry> entries = new ArrayList<>();
+            map.forEach((key, value) -> entries.addAll(getReportEntriesForDecision(key, value, simulationResult)));
+            final double value = entries.stream().mapToDouble(CumulativeStrategyReportEntry::pointsForTrade).sum();
+
+            res.add(Pair.with(this.window, value));
+            this.window += 1;
+        }
+
+        return null;
+        //return decisions.getLast();
     }
 
     @Override
@@ -48,15 +69,14 @@ public class BloomDecisionEngine implements DecisionEngine<Bloom, BloomStrategyP
         final List<CumulativeData> data = getData(simulationResult);
         int limit = CollectionUtils.isNotEmpty(data) ? data.getFirst().entries().size() : 0;
 
-        final int window = 5;
         int windowCounter = 1;
 
-        decisions.add(Pair.with(data.getFirst(), 0));
+        decisions.add(Pair.with(data.get(30), 0));
         CumulativeData currentDecision = data.getFirst();
         CumulativeData currentMax = data.getFirst();
 
         for (int i = 0; i < limit; i++) {
-            if (windowCounter == window) {
+            if (windowCounter == this.window) {
                 double currentScore = 0.0;
                 double maxScore = 0.0;
 
@@ -125,7 +145,7 @@ public class BloomDecisionEngine implements DecisionEngine<Bloom, BloomStrategyP
             final List<String> allLines = Files.readAllLines(file.toPath());
             for (final String line : allLines) {
                 final String[] split = line.split("\t");
-                if (split.length < 4) {
+                if (split.length < 6) {
                     continue;
                 }
 
@@ -134,7 +154,9 @@ public class BloomDecisionEngine implements DecisionEngine<Bloom, BloomStrategyP
                                 Double.parseDouble(split[0].trim()),
                                 Double.parseDouble(split[1].trim().replace("$", StringUtils.EMPTY)),
                                 Integer.parseInt(split[2].trim()),
-                                LocalDateTime.parse(split[3].trim(), DateTimeFormatter.ofPattern("MMM dd yyy 'at' HH:mm:ss"))
+                                LocalDateTime.parse(split[3].trim(), DateTimeFormatter.ofPattern("MMM dd yyy 'at' HH:mm:ss")),
+                                Double.parseDouble(split[4].trim()),
+                                Double.parseDouble(split[5].trim().replace("$", StringUtils.EMPTY))
                         )
                 );
             }
@@ -197,6 +219,81 @@ public class BloomDecisionEngine implements DecisionEngine<Bloom, BloomStrategyP
                         .filter(sp -> sp.getVariance() == data.getValue0().variance())
                         .findFirst()
                         .orElseThrow(() -> new UnsupportedOperationException("Impossible error")), data.getValue1());
+    }
+
+    /**
+     * Computes the max size of trades taken across all simulation results (disregarding repetitions)
+     *
+     * @param simulationResult {@link SimulationResult}
+     * @return trade size
+     */
+    private int getTradesSize(final SimulationResult<BloomStrategyParameters> simulationResult) {
+
+        final Iterator<Map.Entry<LocalDate, List<StrategyResult<BloomStrategyParameters>>>> iterator = simulationResult.result().entrySet().iterator();
+        final Map<LocalDate, Integer> map = new HashMap<>();
+
+        while (iterator.hasNext()) {
+            Map.Entry<LocalDate, List<StrategyResult<BloomStrategyParameters>>> entry = iterator.next();
+            map.put(entry.getKey(), entry.getValue().getFirst().getTrades().size());
+        }
+
+        return map.values().stream().mapToInt(i -> i).sum();
+    }
+
+    /**
+     * Computes the trade intervals for each decision. This means that each decision was appropriate for a certain number of trades. This method will capture the intervals of trades
+     * where the decision was operating and store their strategy parameters at the time that the trades were taken
+     *
+     * @param decisions {@link List} of {@link Decision}s
+     * @param simulationResult {@link SimulationResult}
+     * @return {@link Map} of {@link BloomStrategyParameters}
+     */
+    private Map<Decision<BloomStrategyParameters>, List<Pair<Integer, Integer>>> getTradeIntervalsForDecisions(final List<Decision<BloomStrategyParameters>> decisions, final SimulationResult<BloomStrategyParameters> simulationResult) {
+
+        final Map<Decision<BloomStrategyParameters>, List<Pair<Integer, Integer>>> map = new HashMap<>();
+        if (CollectionUtils.isNotEmpty(decisions)) {
+            for (int i = 0; i < decisions.size() - 1; i++) {
+                final Decision<BloomStrategyParameters> decision = decisions.get(i);
+                final Decision<BloomStrategyParameters> nextDecision = decisions.get(i + 1);
+
+                List<Pair<Integer, Integer>> pairs = new ArrayList<>();
+                if (map.containsKey(decision)) {
+                    pairs = new ArrayList<>(map.get(decision));
+                }
+
+                pairs.add(Pair.with(decision.index(), nextDecision.index()));
+                map.put(decision, pairs);
+            }
+
+            List<Pair<Integer, Integer>> pairs = new ArrayList<>();
+            if (map.containsKey(decisions.getLast())) {
+                pairs = new ArrayList<>(map.get(decisions.getLast()));
+            }
+
+            pairs.add(Pair.with(decisions.getLast().index(), getTradesSize(simulationResult)));
+            map.put(decisions.getLast(), pairs);
+        }
+
+        return map;
+    }
+
+    private List<CumulativeStrategyReportEntry> getReportEntriesForDecision(final Decision<BloomStrategyParameters> decision, final List<Pair<Integer, Integer>> pairs, final SimulationResult<BloomStrategyParameters> simulationResult) {
+
+        final List<CumulativeData> dataList = getData(simulationResult);
+        final CumulativeData data =
+                dataList
+                        .stream()
+                        .filter(d -> d.startHour() == decision.strategyParameters().getStartHour())
+                        .filter(d -> d.startMinute() == decision.strategyParameters().getStartMinute())
+                        .filter(d -> d.variance() == decision.strategyParameters().getVariance())
+                        .findFirst()
+                        .orElseThrow(() -> new UnsupportedOperationException("Impossible error"));
+
+        final List<CumulativeStrategyReportEntry> entries = new ArrayList<>();
+
+        pairs.forEach(pair -> entries.addAll(data.entries().subList(pair.getValue0(), pair.getValue1())));
+
+        return entries;
     }
 
 

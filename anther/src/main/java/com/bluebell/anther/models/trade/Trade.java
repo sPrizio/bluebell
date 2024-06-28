@@ -107,13 +107,13 @@ public class Trade implements Comparable<Trade> {
         if (o == null || getClass() != o.getClass()) return false;
 
         Trade trade = (Trade) o;
-        return this.id.equals(trade.id) && this.tradeType == trade.tradeType && this.tradeOpenTime.isEqual(trade.tradeOpenTime);
+        return this.id.equals(trade.id) && this.tradeType == trade.tradeType;
     }
 
     @Override
     public int hashCode() {
         int result = this.id.hashCode();
-        result = 31 * result + this.tradeType.hashCode() + this.tradeOpenTime.hashCode();
+        result = 31 * result + this.tradeType.hashCode();
         return result;
     }
 }

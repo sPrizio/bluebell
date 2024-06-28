@@ -41,4 +41,27 @@ public class BloomStrategyParameters extends BasicStrategyParameters implements 
         this.breakEvenStop = breakEvenStop;
         this.absoluteProfitTarget = absoluteProfitTarget;
     }
+
+
+    //  METHODS
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+
+        BloomStrategyParameters that = (BloomStrategyParameters) o;
+        return Double.compare(this.variance, that.variance) == 0 && this.normalize == that.normalize && this.getStartHour() == that.getStartHour() && this.getStartMinute() == that.getStartMinute();
+    }
+
+    @Override
+    public int hashCode() {
+        int result = super.hashCode();
+        result = 31 * result + Double.hashCode(this.variance);
+        result = 31 * result + Boolean.hashCode(this.normalize);
+        result = 31 * result + Integer.hashCode(this.getStartHour());
+        result = 31 * result + Integer.hashCode(this.getStartMinute());
+        return result;
+    }
 }

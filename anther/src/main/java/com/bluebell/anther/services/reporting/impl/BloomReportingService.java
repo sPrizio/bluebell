@@ -68,7 +68,15 @@ public class BloomReportingService extends StrategyReportingService<Bloom, Bloom
 
                 final double pricePerPoint = simulationResult.result().entrySet().iterator().next().getValue().getFirst().getStrategyParameters().getPricePerPoint();
                 final List<CumulativeStrategyReportEntry> entries = getCumulativeReportEntries(value, pricePerPoint);
-                entries.forEach(entry -> stringBuilder.append(formatNumber(entry.points())).append("\t$").append(formatNumber(entry.netProfit())).append("\t").append(formatNumber(entry.trades())).append("\t").append(formatDateTime(entry.modified())).append("\n"));
+                entries.forEach(entry -> stringBuilder
+                        .append(formatNumber(entry.points()))
+                        .append("\t$").append(formatNumber(entry.netProfit()))
+                        .append("\t").append(formatNumber(entry.trades()))
+                        .append("\t").append(formatDateTime(entry.modified()))
+                        .append("\t").append(formatNumber(entry.pointsForTrade()))
+                        .append("\t$").append(formatNumber(entry.profitForTrade()))
+                        .append("\n")
+                );
 
                 os.write(stringBuilder.toString().getBytes());
                 stringBuilder.setLength(0);
@@ -124,7 +132,7 @@ public class BloomReportingService extends StrategyReportingService<Bloom, Bloom
             cumPoints = this.mathService.add(cumPoints, trade.getPoints());
             cumProfit = this.mathService.add(cumProfit, trade.calculateProfit(pricePerPoint));
 
-            entries.add(new CumulativeStrategyReportEntry(cumPoints, cumProfit, cumTrades, trade.getTradeCloseTime()));
+            entries.add(new CumulativeStrategyReportEntry(cumPoints, cumProfit, cumTrades, trade.getTradeCloseTime(), trade.getPoints(), trade.calculateProfit(pricePerPoint)));
         }
 
         return entries;
