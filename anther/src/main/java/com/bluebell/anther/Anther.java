@@ -26,10 +26,10 @@ import java.util.Map;
 public class Anther {
 
     private static final boolean RUN_SIMULATION = true;
-    private static final boolean GENERATE_REPORTS = false;
+    private static final boolean GENERATE_REPORTS = true;
     private static final boolean GENERATE_METADATA = false;
     private static final boolean GENERATE_CUMULATIVE_REPORTS = false;
-    private static final boolean COMPUTE_DECISIONS = true;
+    private static final boolean COMPUTE_DECISIONS = false;
 
 
     public static void main(String... args) {

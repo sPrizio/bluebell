@@ -61,7 +61,7 @@ public class BloomSimulation implements Simulation<BloomStrategyParameters> {
 
                 startingHour = 9;
                 startingMinute = 30;
-                variance = mathService.add(variance, 0.05);
+                variance = this.mathService.add(variance, 0.05);
             }
 
             map.put(compare, new ArrayList<>(entries));

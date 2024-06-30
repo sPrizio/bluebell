@@ -6,7 +6,6 @@ import com.bluebell.anther.models.parameter.strategy.impl.BloomStrategyParameter
 import com.bluebell.anther.models.simulation.SimulationResult;
 import com.bluebell.anther.models.strategy.CumulativeStrategyReportEntry;
 import com.bluebell.anther.models.strategy.StrategyResult;
-import com.bluebell.anther.models.trade.Trade;
 import com.bluebell.anther.services.reporting.impl.BloomReportingService;
 import com.bluebell.anther.strategies.impl.Bloom;
 import com.bluebell.anther.util.DirectoryUtil;
@@ -40,26 +39,7 @@ public class BloomDecisionEngine implements DecisionEngine<Bloom, BloomStrategyP
 
     @Override
     public Decision<BloomStrategyParameters> decide(final SimulationResult<BloomStrategyParameters> simulationResult) {
-
-        //final List<Decision<BloomStrategyParameters>> decisions = consider(simulationResult);
-
-        //TODO: TEMP
-        //  compute decisions for research purposes
-        final List<Pair<Integer, Double>> res = new ArrayList<>();
-        while (this.window < 2232) {
-            System.out.println("Deciding for: " + this.window);
-            final Map<Decision<BloomStrategyParameters>, List<Pair<Integer, Integer>>> map = getTradeIntervalsForDecisions(consider(simulationResult), simulationResult);
-
-            final List<CumulativeStrategyReportEntry> entries = new ArrayList<>();
-            map.forEach((key, value) -> entries.addAll(getReportEntriesForDecision(key, value, simulationResult)));
-            final double value = entries.stream().mapToDouble(CumulativeStrategyReportEntry::pointsForTrade).sum();
-
-            res.add(Pair.with(this.window, value));
-            this.window += 1;
-        }
-
-        return null;
-        //return decisions.getLast();
+        return consider(simulationResult).getLast();
     }
 
     @Override
@@ -108,6 +88,30 @@ public class BloomDecisionEngine implements DecisionEngine<Bloom, BloomStrategyP
         }
 
         return decisions.stream().map(dec -> getParametersForFile(dec, simulationResult)).map(pair -> new Decision<>(pair.getValue0(), pair.getValue1())).sorted(Comparator.comparing(Decision::index)).toList();
+    }
+
+    /**
+     * Evaluates a series of decisions
+     *
+     * @param simulationResult {@link SimulationResult}
+     * @return {@link List} of {@link Pair}
+     */
+    public List<Pair<Integer, Double>> evaluate(final SimulationResult<BloomStrategyParameters> simulationResult) {
+
+        final List<Pair<Integer, Double>> res = new ArrayList<>();
+        while (this.window < 2232) {
+            System.out.println("Deciding for: " + this.window);
+            final Map<Decision<BloomStrategyParameters>, List<Pair<Integer, Integer>>> map = getTradeIntervalsForDecisions(consider(simulationResult), simulationResult);
+
+            final List<CumulativeStrategyReportEntry> entries = new ArrayList<>();
+            map.forEach((key, value) -> entries.addAll(getReportEntriesForDecision(key, value, simulationResult)));
+            final double value = entries.stream().mapToDouble(CumulativeStrategyReportEntry::pointsForTrade).sum();
+
+            res.add(Pair.with(this.window, value));
+            this.window += 1;
+        }
+
+        return res;
     }
 
 
@@ -277,6 +281,15 @@ public class BloomDecisionEngine implements DecisionEngine<Bloom, BloomStrategyP
         return map;
     }
 
+    /**
+     * Obtains the cumulative entries for the given decision and pairs. A decision can have multiple pairs (here the pairs refer to intervals, like trades #3 -> #15 and #56 -> #87)
+     * where we want we to obtain the cumulative entries that match the given pairs
+     *
+     * @param decision {@link Decision}
+     * @param pairs list of pairs
+     * @param simulationResult {@link SimulationResult}
+     * @return {@link List} of {@link CumulativeStrategyReportEntry}
+     */
     private List<CumulativeStrategyReportEntry> getReportEntriesForDecision(final Decision<BloomStrategyParameters> decision, final List<Pair<Integer, Integer>> pairs, final SimulationResult<BloomStrategyParameters> simulationResult) {
 
         final List<CumulativeData> dataList = getData(simulationResult);
