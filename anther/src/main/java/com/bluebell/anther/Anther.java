@@ -21,15 +21,15 @@ import java.util.Map;
  * Executes the anther module. Primarily used for testing strategies and obtaining meta-data
  *
  * @author Stephen Prizio
- * @version 0.0.1
+ * @version 0.0.2
  */
 public class Anther {
 
-    private static final boolean RUN_SIMULATION = true;
+    private static final boolean RUN_SIMULATION = false;
     private static final boolean GENERATE_REPORTS = false;
     private static final boolean GENERATE_METADATA = false;
     private static final boolean GENERATE_CUMULATIVE_REPORTS = false;
-    private static final boolean COMPUTE_DECISIONS = true;
+    private static final boolean COMPUTE_DECISIONS = false;
 
 
     public static void main(String... args) {

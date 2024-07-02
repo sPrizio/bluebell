@@ -1,8 +1,10 @@
 open module com.bluebell.radicle {
     exports com.bluebell.radicle.enums;
+    exports com.bluebell.radicle.indicators;
     exports com.bluebell.radicle.models;
     exports com.bluebell.radicle.parsers.impl;
     exports com.bluebell.radicle.services;
+    exports com.bluebell.radicle.indicators.impl;
     requires org.apache.commons.collections4;
     requires org.apache.commons.lang3;
     requires org.apache.commons.text;

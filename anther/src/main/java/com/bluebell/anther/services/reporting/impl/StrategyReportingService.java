@@ -11,6 +11,7 @@ import com.bluebell.anther.util.DirectoryUtil;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
@@ -48,7 +49,16 @@ public class StrategyReportingService<S extends Strategy<P>, P extends BasicStra
     public void generateReportForSimulationResult(final ChronoUnit unit, final SimulationResult<P> simulationResult) {
 
         final StringBuilder stringBuilder = new StringBuilder();
-        for (final Map.Entry<LocalDate, List<StrategyResult<P>>> entry : simulationResult.result().entrySet().stream().sorted(Map.Entry.comparingByKey()).toList()) {
+        final List<Map.Entry<LocalDate, List<StrategyResult<P>>>> entries =
+                simulationResult
+                        .result()
+                        .entrySet()
+                        .stream()
+                        .filter(e -> isWeekday(e.getKey()))
+                        .sorted(Map.Entry.comparingByKey())
+                        .toList();
+
+        for (final Map.Entry<LocalDate, List<StrategyResult<P>>> entry : entries) {
             final File tempFile = new File(getContentRoot("reports") + String.format("report-%s-%s.txt", unit.toString().toLowerCase(), entry.getKey().format(DateTimeFormatter.ISO_DATE)));
             try (FileOutputStream os = new FileOutputStream(tempFile)) {
                 stringBuilder
@@ -109,5 +119,15 @@ public class StrategyReportingService<S extends Strategy<P>, P extends BasicStra
         }
 
         return result;
+    }
+
+    /**
+     * Checks if the given local date is a weekend day
+     *
+     * @param localDate {@link LocalDate}
+     * @return true if not saturday and not sunday
+     */
+    private boolean isWeekday(final LocalDate localDate) {
+        return !localDate.getDayOfWeek().equals(DayOfWeek.SATURDAY) && !localDate.getDayOfWeek().equals(DayOfWeek.SUNDAY);
     }
 }

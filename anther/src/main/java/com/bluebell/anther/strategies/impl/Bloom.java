@@ -21,7 +21,7 @@ import java.util.*;
  * to capture this trend via straddling.
  *
  * @author Stephen Prizio
- * @version 0.0.1
+ * @version 0.0.2
  */
 @Getter
 public class Bloom implements Strategy<BloomStrategyParameters> {
@@ -53,7 +53,6 @@ public class Bloom implements Strategy<BloomStrategyParameters> {
     public StrategyResult<BloomStrategyParameters> executeStrategy(final LocalDate startDate, final LocalDate endDate, final Map<LocalDate, AggregatedMarketPrices> prices) {
 
         for (final Map.Entry<LocalDate, AggregatedMarketPrices> entry : prices.entrySet()) {
-
             if (entry.getKey().isBefore(startDate) || (entry.getKey().isAfter(endDate) || entry.getKey().isEqual(endDate))) {
                 continue;
             }
@@ -89,14 +88,8 @@ public class Bloom implements Strategy<BloomStrategyParameters> {
 
                 //  check each market price to see if any of the open trades were hit
                 checkRelatedTrades(this.openTrades, this.closedTrades, marketPrice);
-
-                if (isExitBar(marketPrice) && !this.openTrades.isEmpty()) {
-                    this.openTrades.forEach((key, trade) -> {
-                        closeTrade(trade, marketPrice.date(), marketPrice.open());
-                        this.closedTrades.put(trade.getId(), trade);
-                    });
-
-                    this.closedTrades.keySet().forEach(this.openTrades::remove);
+                if (isExitBar(marketPrice)) {
+                    cleanExcessTrades(this.openTrades, this.closedTrades, marketPrice);
                 }
             }
         }

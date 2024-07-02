@@ -1,6 +1,7 @@
 package com.bluebell.radicle.parsers.impl;
 
 import com.bluebell.radicle.enums.RadicleTimeInterval;
+import com.bluebell.radicle.indicators.impl.ExponentialMovingAverageIndicator;
 import com.bluebell.radicle.models.AggregatedMarketPrices;
 import com.bluebell.radicle.models.MarketPrice;
 import com.bluebell.radicle.parsers.MarketPriceParser;
@@ -18,12 +19,19 @@ import java.util.*;
  * Parses data from FirstData
  *
  * @author Stephen Prizio
- * @version 0.0.1
+ * @version 0.0.2
  */
 @NoArgsConstructor
 public class FirstRateDataParser implements MarketPriceParser {
 
     private boolean isTest = false;
+    private final ExponentialMovingAverageIndicator ema20 = new ExponentialMovingAverageIndicator(20);
+    private final ExponentialMovingAverageIndicator ema50 = new ExponentialMovingAverageIndicator(50);
+    private final ExponentialMovingAverageIndicator ema100 = new ExponentialMovingAverageIndicator(100);
+    private final ExponentialMovingAverageIndicator ema200 = new ExponentialMovingAverageIndicator(200);
+
+
+    //  CONSTRUCTORS
 
     public FirstRateDataParser(final boolean isTest) {
         this.isTest = isTest;
@@ -65,13 +73,15 @@ public class FirstRateDataParser implements MarketPriceParser {
                         parseDoubleFromString(lineComponents[1]),
                         parseDoubleFromString(lineComponents[2]),
                         parseDoubleFromString(lineComponents[3]),
-                        parseDoubleFromString(lineComponents[4])
+                        parseDoubleFromString(lineComponents[4]),
+                        new HashMap<>()
                 ));
             }
         } catch (Exception e) {
             System.out.printf(e.getMessage(), e);
         }
 
+        handleIndicators(new ArrayList<>(marketPrices));
         return new AggregatedMarketPrices(marketPrices, interval);
     }
 
@@ -120,5 +130,35 @@ public class FirstRateDataParser implements MarketPriceParser {
         }
 
         return root;
+    }
+
+    /**
+     * Handles computing indicator values
+     *
+     * @param marketPrices {@link List} of {@link MarketPrice}
+     */
+    private void handleIndicators(final List<MarketPrice> marketPrices) {
+        for (int i = 0; i < marketPrices.size(); i++) {
+            //  handle indicators
+            calculateEma(i, marketPrices, this.ema20);
+            calculateEma(i, marketPrices, this.ema50);
+            calculateEma(i, marketPrices, this.ema100);
+            calculateEma(i, marketPrices, this.ema200);
+        }
+    }
+
+    /**
+     * Computes the ema
+     *
+     * @param i index
+     * @param marketPrices {@link List} of {@link MarketPrice}
+     * @param ema {@link ExponentialMovingAverageIndicator} instance
+     */
+    private void calculateEma(final int i, final List<MarketPrice> marketPrices, final ExponentialMovingAverageIndicator ema) {
+        if (i < ema.getPeriod()) {
+            ema.computeValue(marketPrices.subList(0, i), marketPrices.get(i));
+        } else {
+            ema.computeValue(marketPrices.subList(i - (int) ema.getPeriod(), i), marketPrices.get(i));
+        }
     }
 }

@@ -87,6 +87,8 @@ public interface Strategy<P extends BasicStrategyParameters> {
     /**
      * Checks whether the given {@link MarketPrice} closes an open {@link Trade}
      *
+     * @param openTrades open trades map
+     * @param closedTrades closed trades map
      * @param marketPrice {@link MarketPrice}
      */
     default void checkTrades(final Map<String, Trade> openTrades, final Map<String, Trade> closedTrades, final MarketPrice marketPrice) {
@@ -115,5 +117,23 @@ public interface Strategy<P extends BasicStrategyParameters> {
         });
 
         closedTrades.keySet().forEach(openTrades::remove);
+    }
+
+    /**
+     * Cleans up any open trades at the eod
+     *
+     * @param openTrades open trades map
+     * @param closedTrades closed trades map
+     * @param marketPrice {@link MarketPrice}
+     */
+    default void cleanExcessTrades(final Map<String, Trade> openTrades, final Map<String, Trade> closedTrades, final MarketPrice marketPrice) {
+        if (!openTrades.isEmpty()) {
+            openTrades.forEach((key, trade) -> {
+                closeTrade(trade, marketPrice.date(), marketPrice.open());
+                closedTrades.put(trade.getId(), trade);
+            });
+
+            closedTrades.keySet().forEach(openTrades::remove);
+        }
     }
 }
