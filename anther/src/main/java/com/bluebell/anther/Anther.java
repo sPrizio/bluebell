@@ -3,11 +3,13 @@ package com.bluebell.anther;
 import com.bluebell.anther.engine.impl.BloomDecisionEngine;
 import com.bluebell.anther.models.metadata.MetaData;
 import com.bluebell.anther.models.parameter.strategy.impl.BloomStrategyParameters;
+import com.bluebell.anther.models.parameter.strategy.impl.BlossomStrategyParameters;
 import com.bluebell.anther.models.simulation.SimulationResult;
 import com.bluebell.anther.services.metadata.MetaDataService;
 import com.bluebell.anther.services.reporting.impl.BloomReportingService;
 import com.bluebell.anther.services.reporting.impl.MetaDataReportingService;
 import com.bluebell.anther.simulation.impl.BloomSimulation;
+import com.bluebell.anther.simulation.impl.BlossomSimulation;
 import com.bluebell.radicle.enums.RadicleTimeInterval;
 import com.bluebell.radicle.models.AggregatedMarketPrices;
 import com.bluebell.radicle.parsers.impl.FirstRateDataParser;
@@ -25,7 +27,8 @@ import java.util.Map;
  */
 public class Anther {
 
-    private static final boolean RUN_SIMULATION = false;
+    private static final boolean RUN_BLOOM_SIMULATION = false;
+    private static final boolean RUN_BLOSSOM_SIMULATION = true;
     private static final boolean GENERATE_REPORTS = false;
     private static final boolean GENERATE_METADATA = false;
     private static final boolean GENERATE_CUMULATIVE_REPORTS = false;
@@ -42,7 +45,7 @@ public class Anther {
         final FirstRateDataParser parser = new FirstRateDataParser();
         final Map<LocalDate, AggregatedMarketPrices> masterCollection = parser.parseMarketPricesByDate(timeInterval);
 
-        if (RUN_SIMULATION) {
+        if (RUN_BLOOM_SIMULATION) {
             final BloomSimulation bloomSimulation = new BloomSimulation();
             final BloomReportingService strategyReportingService = new BloomReportingService();
             final SimulationResult<BloomStrategyParameters> simulationResult = bloomSimulation.simulate(masterCollection, unit, start, end);
@@ -58,6 +61,25 @@ public class Anther {
             if (COMPUTE_DECISIONS) {
                 final BloomDecisionEngine bloomDecisionEngine = new BloomDecisionEngine();
                 bloomDecisionEngine.decide(simulationResult);
+            }
+        }
+
+        if (RUN_BLOSSOM_SIMULATION) {
+            final BlossomSimulation bloomSimulation = new BlossomSimulation();
+            //final BloomReportingService strategyReportingService = new BloomReportingService();
+            final SimulationResult<BlossomStrategyParameters> simulationResult = bloomSimulation.simulate(masterCollection, unit, start, end);
+
+            if (GENERATE_REPORTS) {
+                //strategyReportingService.generateReportForSimulationResult(unit, simulationResult);
+            }
+
+            if (GENERATE_CUMULATIVE_REPORTS) {
+                //strategyReportingService.generateCumulativeReport(simulationResult);
+            }
+
+            if (COMPUTE_DECISIONS) {
+                //final BloomDecisionEngine bloomDecisionEngine = new BloomDecisionEngine();
+                //bloomDecisionEngine.decide(simulationResult);
             }
         }
 

@@ -11,7 +11,9 @@ import com.bluebell.radicle.models.MarketPrice;
 import org.javatuples.Pair;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -44,8 +46,16 @@ public class Blossom implements Strategy<BlossomStrategyParameters> {
     public StrategyResult<BlossomStrategyParameters> executeStrategy(LocalDate startDate, LocalDate endDate, Map<LocalDate, AggregatedMarketPrices> prices) {
 
         for (final Map.Entry<LocalDate, AggregatedMarketPrices> entry : prices.entrySet()) {
-            for (final MarketPrice marketPrice : entry.getValue().marketPrices()) {
-                if (isSignalBar(marketPrice)) {
+            if (entry.getKey().isBefore(startDate) || (entry.getKey().isAfter(endDate) || entry.getKey().isEqual(endDate))) {
+                continue;
+            }
+
+            final List<MarketPrice> list = new ArrayList<>(entry.getValue().marketPrices());
+            for (int i = 1; i < entry.getValue().marketPrices().size(); i++) {
+                final MarketPrice previous = list.get(i - 1);
+                final MarketPrice marketPrice = list.get(i);
+
+                if (isSignalBar(previous) && this.openTrades.isEmpty()) {
                     final CrossOver crossOver = marketPrice.getCrossOverStatus(this.strategyParameters.getEma().getName());
                     final TradeType tradeType = crossOver.equals(CrossOver.CROSS_ABOVE) ? TradeType.BUY : TradeType.SELL;
 
