@@ -32,6 +32,10 @@ public class BloomSimulation implements Simulation<BloomStrategyParameters> {
 
     private final MathService mathService = new MathService();
 
+    //  TODO: for reference: 8 = 15, 9 = 16, 11 = 18, 12 = 19
+    //  TODO: if that order is completed and a loss, set another one (at noon)
+    //  TODO: close pending orders at EOD
+
 
     //  METHODS
 
