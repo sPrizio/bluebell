@@ -9,9 +9,9 @@
 #property strict
 
 input double lotSize = 0.28;
-input double buyTakeProfit = 150.0;
-input double buyStopLoss = 24.0;
-input double sellTakeProfit = 100.0;
+input double buyTakeProfit = 48.0;
+input double buyStopLoss = 23.0;
+input double sellTakeProfit = 58.0;
 input double sellStopSLoss = 22.0;
 input int slippage = 10;
 input int trailingBuyStop = 50;
@@ -54,6 +54,7 @@ void OnTick(){
 void OnBar() {
 
    checkTrade();
+   clearDay();
 
    // check for start of trading
    if (TimeHour(globalTime) == 7 && TimeMinute(globalTime) == 5) {
@@ -80,7 +81,6 @@ void OnBar() {
    Opens a new stop order trade
 */
 void OpenBloomTrade() {
-
    if (isReadyToTrade && activeTradeId == -1) {
       while (IsTradeContextBusy()) {
          Sleep(50);
@@ -103,6 +103,15 @@ void OpenBloomTrade() {
    }
 }
 
+void clearDay() {
+   if (activeTradeId != -1 && TimeDay(Time[0]) != TimeDay(Time[1])) {
+      //close all trades
+      OrderDelete(activeTradeId);
+      activeTradeId = -1;
+      isReadyToTrade = false;
+   }
+}
+
 /*
    Checks if the currently active trade has been closed, if so update the state of the strategy
    so that it can be ready for another trade
@@ -121,6 +130,9 @@ void checkTrade() {
    }
 }
 
+/*
+    Calculates trailing stops
+*/
 void handleTrailingStops() {
    if (getOrderType() == OP_BUY) {
       updateTrailingBuyStopLoss();
@@ -129,6 +141,9 @@ void handleTrailingStops() {
    }
 }
 
+/*
+    Calculates trailing stops for the sell trade
+*/
 void updateTrailingSellStopLoss() {
    if (trailingSellStop > 0 && activeTradeId != -1) {
       if (OrderSelect(activeTradeId, SELECT_BY_TICKET)) {
@@ -140,7 +155,7 @@ void updateTrailingSellStopLoss() {
                if (newPrice < OrderStopLoss()) {
                   bool res = OrderModify(OrderTicket(), OrderOpenPrice(), newPrice, OrderTakeProfit(), 0);
                   if(!res)  {
-                     Print("Error in OrderModify. Error code=",GetLastError());
+                     Print("Error in OrderModify. Error code = ",GetLastError());
                   } else {
                      Print("Order modified successfully.");
                   }
@@ -151,6 +166,9 @@ void updateTrailingSellStopLoss() {
    }
 }
 
+/*
+    Calculates trailing stops for the buy trade
+*/
 void updateTrailingBuyStopLoss() {
    if (trailingBuyStop > 0 && activeTradeId != -1) {
       if (OrderSelect(activeTradeId, SELECT_BY_TICKET)) {
@@ -162,7 +180,7 @@ void updateTrailingBuyStopLoss() {
                if (newPrice > OrderStopLoss()) {
                   bool res = OrderModify(OrderTicket(), OrderOpenPrice(), newPrice, OrderTakeProfit(), 0);
                   if(!res)  {
-                     Print("Error in OrderModify. Error code=",GetLastError());
+                     Print("Error in OrderModify. Error code = ",GetLastError());
                   } else {
                      Print("Order modified successfully.");
                   }
@@ -173,6 +191,11 @@ void updateTrailingBuyStopLoss() {
    }
 }
 
+/*
+    Returns the order type
+
+    @return order type enum
+*/
 int getOrderType() {
    if (OrderSelect(activeTradeId, SELECT_BY_TICKET)) {
       return OrderType();
