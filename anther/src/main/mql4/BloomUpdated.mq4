@@ -8,16 +8,17 @@
 #property version   "1.0"
 #property strict
 
-input double lotSize = 0.28;
-input double buyTakeProfit = 48.0;
-input double buyStopLoss = 23.0;
-input double sellTakeProfit = 58.0;
-input double sellStopSLoss = 22.0;
+input double lotSize = 0.4;
+input double longTakeProfit = 48.0;
+input double longStopLoss = 23.0;
+input double shortTakeProfit = 58.0;
+input double shortStopSLoss = 22.0;
 input int slippage = 10;
-input int trailingBuyStop = 50;
-input int trailingSellStop = 35;
+input bool allowBreakEvenStop = true;
+input int breakEvenStopLevel = 30;
 
 // GLOBALS
+double varianceOffset = 2.25;
 datetime globalTime;
 double signalPrice;
 bool isReadyToTrade = false;
@@ -40,7 +41,7 @@ void OnDeinit(const int reason) {
 //+------------------------------------------------------------------+
 void OnTick(){
 
-   //handleTrailingStops();
+   SetBreakEvenStop();
    datetime currentTime = iTime(_Symbol, _Period, 0);
    if (globalTime != currentTime) {
       globalTime = currentTime;
@@ -53,21 +54,21 @@ void OnTick(){
 //+------------------------------------------------------------------+
 void OnBar() {
 
-   checkTrade();
-   clearDay();
+   CheckTrades();
+   ClearTradesForDay();
 
    // check for start of trading
    if (TimeHour(globalTime) == 7 && TimeMinute(globalTime) == 5) {
       signalPrice = Close[1];
    }
 
-   // set 8:00 stop order
-   if (TimeHour(globalTime) == 15 && TimeMinute(globalTime) == 0) {
+   // set first stop order
+   if (TimeHour(globalTime) == 11 && TimeMinute(globalTime) == 0) {
       isReadyToTrade = true;
       OpenBloomTrade();
    }
 
-   // set 12:00 stop order
+   // set second (optional) stop order
    if (isReadyToTrade && TimeHour(globalTime) == 19 && TimeMinute(globalTime) == 0) {
       OpenBloomTrade();
    }
@@ -83,18 +84,19 @@ void OnBar() {
 void OpenBloomTrade() {
    if (isReadyToTrade && activeTradeId == -1) {
       while (IsTradeContextBusy()) {
+         Print("Trade context is busy. Waiting...");
          Sleep(50);
       }
 
-      double localBuyStopLoss = signalPrice - buyStopLoss;
-      double localBuyTakeProfit = signalPrice + buyTakeProfit;
-      double localSellStopLoss = signalPrice + sellStopSLoss;
-      double localSellTakeProfit = signalPrice - sellTakeProfit;
+      double localBuyStopLoss = signalPrice - longStopLoss;
+      double localBuyTakeProfit = signalPrice + longTakeProfit;
+      double localSellStopLoss = signalPrice + shortStopSLoss;
+      double localSellTakeProfit = signalPrice - shortTakeProfit;
 
       if (Open[0] < signalPrice) {
-         activeTradeId = OrderSend(_Symbol, OP_BUYSTOP, lotSize, signalPrice + 2.25, slippage, localBuyStopLoss, localBuyTakeProfit, "Bloom Buy Stop", 91);
+         activeTradeId = OrderSend(_Symbol, OP_BUYSTOP, lotSize, signalPrice + varianceOffset, slippage, localBuyStopLoss, localBuyTakeProfit, "Bloom Buy Stop", 91);
       } else if (Open[0] > signalPrice) {
-         activeTradeId = OrderSend(_Symbol, OP_SELLSTOP, lotSize, signalPrice - 2.25, slippage, localSellStopLoss, localSellTakeProfit, "Bloom Sell Stop", 91);
+         activeTradeId = OrderSend(_Symbol, OP_SELLSTOP, lotSize, signalPrice - varianceOffset, slippage, localSellStopLoss, localSellTakeProfit, "Bloom Sell Stop", 91);
       }
 
       if (activeTradeId != -1) {
@@ -103,91 +105,23 @@ void OpenBloomTrade() {
    }
 }
 
-void clearDay() {
-   if (activeTradeId != -1 && TimeDay(Time[0]) != TimeDay(Time[1])) {
-      //close all trades
-      OrderDelete(activeTradeId);
+void DeleteTrade() {
+   if (OrderDelete(activeTradeId)) {
+      Print(StringFormat("Order #%d was successfully deleted.", activeTradeId));
       activeTradeId = -1;
       isReadyToTrade = false;
-   }
+   } else {
+      Alert(StringFormat("Order #%d could not be deleted. Please review your terminal.", activeTradeId));
+    }
 }
 
 /*
-   Checks if the currently active trade has been closed, if so update the state of the strategy
-   so that it can be ready for another trade
+   In the even that a stop order is leftover at the end of the day, delete it
 */
-void checkTrade() {
-   if (OrderSelect(activeTradeId, SELECT_BY_TICKET)) {
-      if (OrderCloseTime() > 0) {
-         activeTradeId = -1;
-         isReadyToTrade = (OrderProfit() < 0);
-      } else if (TimeHour(globalTime) == 23) {
-         //close all trades
-         OrderDelete(activeTradeId);
-         activeTradeId = -1;
-         isReadyToTrade = false;
-      }
-   }
-}
-
-/*
-    Calculates trailing stops
-*/
-void handleTrailingStops() {
-   if (getOrderType() == OP_BUY) {
-      updateTrailingBuyStopLoss();
-   } else if (getOrderType() == OP_SELL) {
-      updateTrailingSellStopLoss();
-   }
-}
-
-/*
-    Calculates trailing stops for the sell trade
-*/
-void updateTrailingSellStopLoss() {
-   if (trailingSellStop > 0 && activeTradeId != -1) {
-      if (OrderSelect(activeTradeId, SELECT_BY_TICKET)) {
-         if (OrderOpenTime() > 0 && OrderCloseTime() == 0) {
-            // Trade is open
-            double difference = (Ask + OrderOpenPrice());
-            if (difference < trailingSellStop) {
-               double newPrice = Ask + trailingSellStop;
-               if (newPrice < OrderStopLoss()) {
-                  bool res = OrderModify(OrderTicket(), OrderOpenPrice(), newPrice, OrderTakeProfit(), 0);
-                  if(!res)  {
-                     Print("Error in OrderModify. Error code = ",GetLastError());
-                  } else {
-                     Print("Order modified successfully.");
-                  }
-               }
-            }
-         }
-      }
-   }
-}
-
-/*
-    Calculates trailing stops for the buy trade
-*/
-void updateTrailingBuyStopLoss() {
-   if (trailingBuyStop > 0 && activeTradeId != -1) {
-      if (OrderSelect(activeTradeId, SELECT_BY_TICKET)) {
-         if (OrderOpenTime() > 0 && OrderCloseTime() == 0) {
-            // Trade is open
-            double difference = (Bid - OrderOpenPrice());
-            if (difference > trailingBuyStop) {
-               double newPrice = Bid - trailingBuyStop;
-               if (newPrice > OrderStopLoss()) {
-                  bool res = OrderModify(OrderTicket(), OrderOpenPrice(), newPrice, OrderTakeProfit(), 0);
-                  if(!res)  {
-                     Print("Error in OrderModify. Error code = ",GetLastError());
-                  } else {
-                     Print("Order modified successfully.");
-                  }
-               }
-            }
-         }
-      }
+void ClearTradesForDay() {
+   if (activeTradeId != -1 && TimeDay(Time[0]) != TimeDay(Time[1])) {
+      Print(StringFormat("Stale stop order detected. Deleting order #%d", activeTradeId));
+      DeleteTrade();
    }
 }
 
@@ -196,10 +130,52 @@ void updateTrailingBuyStopLoss() {
 
     @return order type enum
 */
-int getOrderType() {
+int GetOrderType() {
    if (OrderSelect(activeTradeId, SELECT_BY_TICKET)) {
       return OrderType();
    } else {
       return -1;
+   }
+}
+
+/*
+   Checks if the currently active trade has been closed, if so update the state of the strategy
+   so that it can be ready for another trade
+*/
+void CheckTrades() {
+   if (OrderSelect(activeTradeId, SELECT_BY_TICKET)) {
+      if (OrderCloseTime() > 0) {
+         activeTradeId = -1;
+         isReadyToTrade = (OrderProfit() < 0);
+      } else if (TimeHour(globalTime) == 23) {
+         DeleteTrade();
+      }
+   }
+}
+
+/*
+   If the order moves by the breakEvenStopLevel in profit, set the stop loss to breakeven
+*/
+void SetBreakEvenStop() {
+   if (activeTradeId != -1 && allowBreakEvenStop && breakEvenStopLevel > 0) {
+      double currentPrice = -1;
+
+      if (GetOrderType() == OP_BUY) {
+         currentPrice = Bid;
+      } else if (GetOrderType() == OP_SELL) {
+         currentPrice = Ask;
+      }
+
+      if (currentPrice != -1 && OrderSelect(activeTradeId, SELECT_BY_TICKET)) {
+         if (MathAbs(currentPrice - OrderOpenPrice()) > breakEvenStopLevel) {
+            Print("Trade has moved far enough into profit, setting Stop Loss to breakeven.");
+
+            if(OrderModify(OrderTicket(), OrderOpenPrice(), OrderOpenPrice(), OrderTakeProfit(), 0))  {
+               Print("Break-even Stop Loss was successfully set.");
+            } else {
+               Print(StringFormat("Error during OrderModify(). Error code = %d", GetLastError()));
+            }
+         }
+      }
    }
 }
