@@ -40,7 +40,6 @@ void OnDeinit(const int reason) {
 //| Expert tick function                                             |
 //+------------------------------------------------------------------+
 void OnTick(){
-
    SetBreakEvenStop();
    datetime currentTime = iTime(_Symbol, _Period, 0);
    if (globalTime != currentTime) {
