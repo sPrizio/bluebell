@@ -1,0 +1,48 @@
+@import "@/app/variables.module";
+@import "@/app/mixins.module";
+
+.step-section {
+  $this: &;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  height: 75vh;
+
+  &__container {
+    @include container();
+  }
+
+  &__title {
+    @include header-sizing(2, 'desktop');
+    @include mq-medium-down {
+      @include header-sizing(2, 'mobile');
+    }
+
+    font-family: $font-important;
+    font-weight: 500;
+    text-transform: uppercase;
+  }
+
+  &__columns {
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    justify-content: flex-start;
+    width: 100%;
+    margin-top: 3rem;
+  }
+
+  &__column {
+    flex: 1;
+
+    &:not(:first-child) {
+      margin-left: 3rem;
+    }
+
+    &:not(:last-child) {
+      margin-right: 3rem;
+    }
+  }
+}

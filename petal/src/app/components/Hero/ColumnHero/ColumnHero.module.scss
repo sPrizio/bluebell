@@ -1,0 +1,93 @@
+@import "@/app/variables.module";
+@import "@/app/mixins.module";
+
+.column-hero {
+  $this: &;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 2rem 0;
+
+  &__container {
+    @include container();
+  }
+
+  &__title {
+    @include header-sizing(3, 'desktop');
+    @include mq-medium-down {
+      @include header-sizing(3, 'mobile');
+    }
+
+    font-weight: $font-weight-regular;
+  }
+
+  &__columns {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    margin-top: 3rem;
+  }
+
+  &__column {
+    flex: 1;
+    height: 8rem;
+  }
+
+  &__disclaimer {
+    padding-top: 2rem;
+
+    @include body-sizing('small', 'desktop');
+    @include mq-medium-down {
+      @include body-sizing('small', 'mobile');
+    }
+  }
+
+  &--primary {
+    background-color: $color-primary;
+    color: $color-font-secondary;
+
+    #{$this}__column {
+      &:not(:last-child) {
+        border-right: 0.0625rem solid $color-white;
+      }
+    }
+  }
+
+  &--secondary {
+    background-color: $color-secondary;
+    color: $color-font-primary;
+
+    #{$this}__column {
+      &:not(:last-child) {
+        border-right: 0.0625rem solid $color-grey-500;
+      }
+    }
+  }
+
+  &--tertiary {
+    background-color: $color-tertiary;
+    color: $color-font-secondary;
+
+    #{$this}__column {
+      &:not(:last-child) {
+        border-right: 0.0625rem solid $color-white;
+      }
+    }
+  }
+
+  &--small {
+    height: 20rem;
+  }
+
+  &--medium {
+    height: 30rem;
+  }
+
+  &--large {
+    height: 40rem;
+  }
+}

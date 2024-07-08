@@ -180,12 +180,12 @@
   &--secondary {
     background-color: $color-secondary;
     border-color: $color-secondary;
-    color: $color-white;
+    color: $color-tertiary;
 
     &:hover,
     &:focus-visible {
       background-color: $color-white;
-      color: $color-secondary;
+      color: $color-tertiary;
     }
 
     &.simple-button--plain {
@@ -214,14 +214,14 @@
   }
 
   &--tertiary {
-    background-color: $color-white;
+    background-color: $color-tertiary;
     border-color: $color-tertiary;
-    color: $color-tertiary;
+    color: $color-white;
 
     &:hover,
     &:focus-visible {
-      background-color: $color-tertiary;
-      color: $color-white;
+      background-color: $color-white;
+      color: $color-tertiary;
     }
 
     &.simple-button--loading {

@@ -66,7 +66,7 @@ function NavBar() {
                         handler={handleClick}/>
           </div>
           <div className={styles[`${baseClass}__item`]}>
-            <SimpleButton text={'free consult'} variant={"primary"} highlightText={true} />
+            <SimpleButton text={'free consult'} variant={"tertiary"} highlightText={true} />
           </div>
           <div className={styles[`${baseClass}__item`] + ' ' + styles[`${baseClass}__item--mobile`]}>
             <div className={styles[`${baseClass}__mobile-menu`]}>
