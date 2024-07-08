@@ -2,11 +2,8 @@
 @import "@/app/mixins.module";
 
 .simple-button {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
+  @include flex();
   align-content: center;
-  justify-content: center;
   background: none;
   border: 0.0625rem solid transparent;
   border-radius: 0.5rem;

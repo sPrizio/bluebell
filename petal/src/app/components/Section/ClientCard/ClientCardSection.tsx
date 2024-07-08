@@ -1,0 +1,46 @@
+import styles from './ClientCardSection.module.scss'
+import ClientCard from "@/app/components/Card/ClientCard";
+import {ClientCardSectionElement} from "@/app/types/appTypes";
+
+export default function ClientCardSection(
+  {
+    title = '',
+    subtitle = '',
+    elements = []
+  }
+    : Readonly<{
+    title: string,
+    subtitle: string,
+    elements: Array<ClientCardSectionElement>
+  }>
+) {
+
+  const baseClass = "client-card-section"
+
+
+  //  RENDER FUNCTION
+
+  return (
+    <div className={styles[baseClass]}>
+      <div className={styles[`${baseClass}__container`]}>
+        <div className={styles[`${baseClass}__title`]}>
+          {title}
+        </div>
+        <div className={styles[`${baseClass}__subtitle`]}>
+          {subtitle}
+        </div>
+        <div className={styles[`${baseClass}__cards`]}>
+          {
+            elements && elements.length > 0 && elements.map((item: any, index: number) => {
+              return (
+                <div key={index} className={styles[`${baseClass}__column`]}>
+                  <ClientCard element={item}/>
+                </div>
+              )
+            })
+          }
+        </div>
+      </div>
+    </div>
+  )
+}

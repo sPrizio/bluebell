@@ -1,0 +1,46 @@
+@import "@/app/variables.module";
+@import "@/app/mixins.module";
+
+.client-nav-bar {
+  background-color: $color-secondary;
+  height: 3rem;
+
+  &__container {
+    @include container();
+    height: 100%;
+    @include flex($justify: flex-end);
+  }
+
+  &__item-container {
+    height: 100%;
+    max-width: 25rem;
+    min-width: 25rem;
+    @include flex();
+  }
+
+  &__item {
+    flex: 1;
+    @include flex($justify: flex-end);
+    @include body-sizing('default', 'desktop');
+    @include mq-medium-down {
+      @include body-sizing('default', 'mobile');
+    }
+
+    &--icon, &--text {
+      @include flex();
+    }
+
+    &--icon {
+      padding-right: 0.25rem;
+      text-align: center;
+    }
+
+    &--text {
+      padding-left: 0.25rem;
+    }
+
+    &:hover {
+      cursor: pointer;
+    }
+  }
+}

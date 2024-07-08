@@ -1,3 +1,10 @@
+export type SimpleImage = {
+  src: string,
+  alt: string,
+  width: number,
+  height: number,
+}
+
 export type ColumnHeroElement = {
   title: string,
   text: string,
@@ -6,5 +13,14 @@ export type ColumnHeroElement = {
 export type StepSectionElement = {
   title: string,
   text: string,
-  image: string
+  image: SimpleImage
+}
+
+export type ClientCardSectionElement = {
+  title: string,
+  text: string,
+  image: {
+    src: any,
+    alt: string,
+  }
 }

@@ -3,10 +3,7 @@
 
 .column-hero {
   $this: &;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
+  @include flex($direction: column);
   text-align: center;
   padding: 2rem 0;
 
@@ -24,10 +21,7 @@
   }
 
   &__columns {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: center;
+    @include flex();
     width: 100%;
     margin-top: 3rem;
   }

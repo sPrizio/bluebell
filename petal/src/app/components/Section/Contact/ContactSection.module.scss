@@ -1,0 +1,73 @@
+@import "@/app/variables.module";
+@import "@/app/mixins.module";
+
+.contact-section {
+  padding: 5rem 0;
+
+  &__container {
+    @include container();
+    height: 100%;
+    @include flex();
+  }
+
+  &__title {
+    @include header-sizing(3, 'desktop');
+    @include mq-medium-down {
+      @include header-sizing(3, 'mobile');
+    }
+
+    padding-left: 1rem;
+    border-left: 0.5rem solid $color-secondary;
+  }
+
+  &__text {
+    margin-top: 1rem;
+  }
+
+  &__column {
+    flex: 1;
+
+    &:first-child {
+      flex: 0.5;
+    }
+
+    &:not(:first-child) {
+      margin-left: 3rem;
+    }
+
+    &:not(:last-child) {
+      margin-right: 3rem;
+    }
+  }
+
+  &__form-group {
+    @include flex();
+
+    &:not(:first-child) {
+      margin-top: 1rem;
+    }
+
+    &:not(:last-child) {
+      margin-bottom: 1rem;
+    }
+  }
+
+  &__input {
+    flex: 1;
+    height: 100%;
+    width: 100%;
+
+    &:not(:first-child) {
+      margin-left: 1rem;
+    }
+
+    &:not(:last-child) {
+      margin-right: 1rem;
+    }
+  }
+
+  &__message {
+    margin: 1rem 0 ;
+    height: 3rem;
+  }
+}

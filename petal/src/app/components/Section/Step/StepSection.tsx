@@ -1,6 +1,6 @@
 import {StepSectionElement} from "@/app/types/appTypes";
 import styles from './StepSection.module.scss';
-import StepSectionEntry from "@/app/components/Section/StepSectionEntry";
+import StepSectionEntry from "@/app/components/Section/Step/StepSectionEntry";
 
 /**
  * Section for containing steps which are essentially columns

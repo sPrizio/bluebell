@@ -2,10 +2,7 @@
 @import "@/app/mixins.module";
 
 .simple-hero {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
+  @include flex($direction: column);
 
   &__container {
     @include container();

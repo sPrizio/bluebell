@@ -3,9 +3,7 @@
 
 .main-logo {
   width: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  @include flex();
 
   &__container {
     width: 100%;

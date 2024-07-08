@@ -65,13 +65,14 @@ function NavBar() {
             <NavBarItem route={'/faq'} label={'FAQ'} active={'/faq' === currentTab}
                         handler={handleClick}/>
           </div>
-          <div className={styles[`${baseClass}__item`]}>
-            <SimpleButton text={'free consult'} variant={"tertiary"} highlightText={true} />
-          </div>
+          {/*<!-- The mobile element cannot be neither first nor last -->*/}
           <div className={styles[`${baseClass}__item`] + ' ' + styles[`${baseClass}__item--mobile`]}>
             <div className={styles[`${baseClass}__mobile-menu`]}>
               <RxHamburgerMenu/>
             </div>
+          </div>
+          <div className={styles[`${baseClass}__item`]}>
+            <SimpleButton text={'free consult'} variant={"tertiary"} highlightText={true}/>
           </div>
         </div>
       </div>

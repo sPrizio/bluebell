@@ -3,12 +3,9 @@
 
 .step-section {
   $this: &;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
+  @include flex();
   text-align: center;
-  height: 75vh;
+  height: 65vh;
 
   &__container {
     @include container();
@@ -26,6 +23,7 @@
   }
 
   &__columns {
+    @include flex($align: flext-start, $justify: flex-start);
     display: flex;
     flex-direction: row;
     align-items: flex-start;

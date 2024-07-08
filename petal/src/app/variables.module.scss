@@ -4,7 +4,9 @@
 $color-black: #000000;
 $color-white: #FFFFFF;
 $color-grey-100: #EEF0F4;
+$color-grey-300: #CBD3DD;
 $color-grey-500: #A9B5C6;
+$color-grey-600: #7D8FA9;
 
 //  BRAND
 $color-primary: #0077E4;
@@ -16,9 +18,10 @@ $color-quaternary: #055CB4;
 $color-font-primary: $color-tertiary;
 $color-font-disabled: $color-grey-500;
 $color-font-secondary: $color-white;
+$color-font-input: $color-grey-600;
 
 // TRANSITIONS
-$transition-duration: .3s;
+$transition-duration: .4s;
 $transition-curve: ease-in-out;
 
 //  GENERAL LAYOUT

@@ -1,0 +1,41 @@
+@import "@/app/variables.module";
+@import "@/app/mixins.module";
+
+.client-card-section {
+  padding: 4rem 0;
+  background-color: $color-grey-100;
+
+  &__container {
+    @include container();
+    @include flex($direction: column, $align: flex-start);
+  }
+
+  &__title {
+    @include header-sizing(3, 'desktop');
+    @include mq-medium-down {
+      @include header-sizing(3, 'mobile');
+    }
+
+    border-bottom: 0.5rem solid $color-secondary;
+  }
+
+  &__subtitle {
+    padding: 2rem 0;
+  }
+
+  &__cards {
+    @include flex();
+  }
+
+  &__column {
+    flex: 1;
+
+    &:not(:first-child) {
+      margin-left: 1rem;
+    }
+
+    &:not(:last-child) {
+      margin-right: 1rem;
+    }
+  }
+}

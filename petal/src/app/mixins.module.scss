@@ -125,6 +125,13 @@
   padding: 0 $container-padding;
 }
 
+@mixin flex($direction: center, $align: center, $justify: center) {
+  display: flex;
+  flex-direction: $direction;
+  align-items: $align;
+  justify-content: $justify;
+}
+
 @mixin break {
   @include mq-medium-up {
     display: none;
