@@ -58,7 +58,9 @@ void OnBar() {
 
    // check for start of trading
    if (TimeHour(globalTime) == 7 && TimeMinute(globalTime) == 5) {
-      signalPrice = Close[1];
+      double priceLevel = Close[1];
+      Print(StringFormat("Setting price level at %f", priceLevel));
+      signalPrice = priceLevel;
    }
 
    // set first stop order
@@ -111,6 +113,7 @@ void DeleteTrade() {
       isReadyToTrade = false;
    } else {
       Alert(StringFormat("Order #%d could not be deleted. Please review your terminal.", activeTradeId));
+      Print(GetLastError());
     }
 }
 
@@ -166,13 +169,11 @@ void SetBreakEvenStop() {
       }
 
       if (currentPrice != -1 && OrderSelect(activeTradeId, SELECT_BY_TICKET)) {
-         if (MathAbs(currentPrice - OrderOpenPrice()) > breakEvenStopLevel) {
+         if (MathAbs(OrderStopLoss() - OrderOpenPrice()) > 0 && MathAbs(currentPrice - OrderOpenPrice()) > breakEvenStopLevel) {
             Print("Trade has moved far enough into profit, setting Stop Loss to breakeven.");
 
-            if(OrderModify(OrderTicket(), OrderOpenPrice(), OrderOpenPrice(), OrderTakeProfit(), 0))  {
+            if (OrderModify(OrderTicket(), OrderOpenPrice(), OrderOpenPrice(), OrderTakeProfit(), 0))  {
                Print("Break-even Stop Loss was successfully set.");
-            } else {
-               Print(StringFormat("Error during OrderModify(). Error code = %d", GetLastError()));
             }
          }
       }
