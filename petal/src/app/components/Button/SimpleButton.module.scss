@@ -1,0 +1,237 @@
+@import "@/app/variables.module";
+@import "@/app/mixins.module";
+
+.simple-button {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  align-content: center;
+  justify-content: center;
+  background: none;
+  border: 0.0625rem solid transparent;
+  border-radius: 0.5rem;
+  font-family: $font-primary;
+  font-weight: $font-weight-medium;
+  font-size: 0.85rem;
+  line-height: 1.25rem;
+  padding: 0.375rem 0.75rem;
+  height: auto;
+  position: relative;
+  text-decoration: none;
+  text-transform: none;
+  min-height: 1.875rem;
+  max-width: 12.5rem;
+  transition-property: background-color, border-color, color, opacity, width, min-width;
+  transition-duration: $transition-duration;
+  transition-timing-function: $transition-curve;
+
+  svg {
+    font-size: 1.5rem;
+  }
+
+  &__inner {
+    &:first-child {
+      padding-right: 0.25rem;
+    }
+
+    &:last-child {
+      padding-left: 0.25rem
+    }
+
+    &--highlight-text {
+      text-transform: uppercase !important;
+    }
+  }
+
+  @include mq-large-up {
+    @include body-sizing('default', 'desktop');
+    font-weight: $font-weight-semi-bold;
+    padding: 0.5rem 1rem;
+  }
+
+  &:hover,
+  &:focus-visible {
+    cursor: pointer;
+  }
+
+  &--loading {
+    pointer-events: none;
+
+    &:hover {
+      pointer-events: none;
+    }
+  }
+
+  &--loader {
+    @include button-loader;
+  }
+
+  &--plain {
+    background: none !important;
+    border: none;
+
+    &:after {
+      background-color: transparent;
+      border: none;
+      bottom: 0;
+      content: '';
+      height: 0.0625rem;
+      left: 0;
+      opacity: 1;
+      position: absolute;
+      top: inherit;
+      transition: width $transition-duration $transition-curve;
+      width: 0;
+    }
+
+    &:hover,
+    &:focus-visible {
+      &:after {
+        width: 100%;
+      }
+    }
+
+    &.simple-button--active {
+      &:after {
+        width: 100%;
+      }
+    }
+  }
+
+  &--primary {
+    background-color: $color-primary;
+    border-color: $color-primary;
+    color: $color-white;
+
+    &:hover,
+    &:focus-visible {
+      background-color: $color-white;
+      color: $color-primary;
+    }
+
+    &.simple-button--inverted {
+      background-color: transparent;
+      border-color: $color-primary;
+      color: $color-primary;
+
+      &:hover,
+      &:focus-visible {
+        background-color: $color-primary;
+        color: $color-white;
+      }
+
+      &:disabled {
+        background-color: $color-white;
+        border-color: $color-font-disabled;
+        color: $color-font-disabled;
+        pointer-events: none;
+      }
+
+      &.simple-button--loading {
+        .simple-button--loader {
+          &::before {
+            border-bottom-color: $color-primary;
+          }
+        }
+      }
+    }
+
+    &.simple-button--loading {
+      .simple-button--loader {
+        &::before {
+          border-bottom-color: $color-white;
+        }
+      }
+    }
+
+    &:disabled {
+      background-color: $color-font-disabled;
+      border-color: $color-font-disabled;
+      color: $color-white;
+      pointer-events: none;
+    }
+
+    &.simple-button--plain {
+      color: $color-primary;
+
+      &.simple-button--loading {
+        .simple-button--loader {
+          &::before {
+            border-bottom-color: $color-primary;
+          }
+        }
+      }
+
+      &:disabled {
+        color: $color-font-disabled;
+        pointer-events: none;
+
+        &:after {
+          background-color: $color-font-disabled;
+        }
+      }
+
+      &:after {
+        background-color: $color-primary;
+      }
+    }
+  }
+
+  &--secondary {
+    background-color: $color-secondary;
+    border-color: $color-secondary;
+    color: $color-white;
+
+    &:hover,
+    &:focus-visible {
+      background-color: $color-white;
+      color: $color-secondary;
+    }
+
+    &.simple-button--plain {
+      color: $color-secondary;
+
+      &.simple-button--loading {
+        .simple-button--loader {
+          &::before {
+            border-bottom-color: $color-secondary;
+          }
+        }
+      }
+
+      &:after {
+        background-color: $color-secondary;
+      }
+    }
+
+    &.simple-button--loading {
+      .simple-button--loader {
+        &::before {
+          border-bottom-color: $color-white;
+        }
+      }
+    }
+  }
+
+  &--tertiary {
+    background-color: $color-white;
+    border-color: $color-tertiary;
+    color: $color-tertiary;
+
+    &:hover,
+    &:focus-visible {
+      background-color: $color-tertiary;
+      color: $color-white;
+    }
+
+    &.simple-button--loading {
+      .simple-button--loader {
+        &::before {
+          border-bottom-color: $color-tertiary;
+        }
+      }
+    }
+  }
+}
+
+@include loader-animation;

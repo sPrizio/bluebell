@@ -1,0 +1,112 @@
+/*
+Public Sans
+ */
+@import url("https://fonts.googleapis.com/css2?family=Public+Sans:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap");
+/*
+Poppins
+ */
+@import url("https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap");
+/*
+Oswald
+ */
+@import url("https://fonts.googleapis.com/css2?family=Oswald:wght@200..700&display=swap");
+/*
+px to rem Conversion Chart for reference
+
+1px   -> 0.0625rem
+2px   -> 0.125rem
+4xp   -> 0.25rem
+6px   -> 0.375rem
+8px   -> 0.5rem
+10px  -> 0.625rem
+12px  -> 0.75rem
+14px  -> 0.875rem
+**** 16px => 1rem ****
+18px  -> 1.125rem
+20px  -> 1.25rem
+24px  -> 1.5rem
+26px  -> 1.625rem
+30px  -> 1.875rem
+**** 32px => 2rem ****
+36px  -> 2.25rem
+**** 48px => 3rem ****
+**** 64px => 4rem ****
+100px -> 6.25rem
+200px -> 12.5rem
+300px -> 18.75rem
+ */
+/*
+Public Sans
+ */
+@import url("https://fonts.googleapis.com/css2?family=Public+Sans:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap");
+/*
+Poppins
+ */
+@import url("https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap");
+/*
+Oswald
+ */
+@import url("https://fonts.googleapis.com/css2?family=Oswald:wght@200..700&display=swap");
+/*
+px to rem Conversion Chart for reference
+
+1px   -> 0.0625rem
+2px   -> 0.125rem
+4xp   -> 0.25rem
+6px   -> 0.375rem
+8px   -> 0.5rem
+10px  -> 0.625rem
+12px  -> 0.75rem
+14px  -> 0.875rem
+**** 16px => 1rem ****
+18px  -> 1.125rem
+20px  -> 1.25rem
+24px  -> 1.5rem
+26px  -> 1.625rem
+30px  -> 1.875rem
+**** 32px => 2rem ****
+36px  -> 2.25rem
+**** 48px => 3rem ****
+**** 64px => 4rem ****
+100px -> 6.25rem
+200px -> 12.5rem
+300px -> 18.75rem
+ */
+.html {
+  font-size: 1rem;
+}
+
+.body {
+  margin: 0;
+  background-color: #FFFFFF;
+  font-family: "Poppins", -apple-system, BlinkMacSystemFont, "Segoe UI", "Oxygen", "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif;
+  color: #153C64;
+  font-size: 1rem;
+  line-height: 1.5rem;
+  letter-spacing: 0;
+  font-weight: 400;
+  transition-property: color, background-color, font-size, font-weight, letter-spacing, line-height;
+  transition-duration: 0.3s;
+  transition-timing-function: ease-in-out;
+}
+@media screen and (max-width: 61.9375rem) {
+  .body {
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+    letter-spacing: 0;
+    font-weight: 400;
+  }
+}
+
+.flex-page {
+  display: flex;
+  flex-direction: row;
+  min-height: 75vh;
+  align-items: stretch;
+}
+.flex-page__content {
+  flex: 1;
+  height: 100%;
+}
+
+/*# sourceMappingURL=layout.module.css.map */

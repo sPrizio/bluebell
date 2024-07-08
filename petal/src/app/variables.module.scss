@@ -1,0 +1,43 @@
+@import "typography.module";
+
+//  COLORS
+$color-black: #000000;
+$color-white: #FFFFFF;
+$color-grey-100: #EEF0F4;
+$color-grey-500: #A9B5C6;
+
+//  BRAND
+$color-primary: #0077E4;
+$color-secondary: #BED5EB;
+$color-tertiary: #153C64;
+$color-quaternary: #055CB4;
+
+//  TYPOGRAPHY
+$color-font-primary: $color-tertiary;
+$color-font-disabled: $color-grey-500;
+$color-font-secondary: $color-white;
+
+// TRANSITIONS
+$transition-duration: .3s;
+$transition-curve: ease-in-out;
+
+//  GENERAL LAYOUT
+$breakpoints: (
+        xsmall: 0rem,
+        small: 30rem,
+        medium: 48rem,
+        large: 62rem,
+        xlarge: 71rem
+);
+
+$grid-padding: (
+        mobile: (
+                padding: 1rem,
+        ),
+        desktop: (
+                padding: 5rem,
+        ),
+);
+
+$container-padding: 2.5rem;
+$container-max-width: 70rem;

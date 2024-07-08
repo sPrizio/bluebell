@@ -1,0 +1,73 @@
+@import "@/app/variables.module";
+@import "@/app/mixins.module";
+
+.simple-hero {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  &__container {
+    @include container();
+  }
+
+  &__title {
+    @include header-sizing(1, 'desktop');
+    @include mq-medium-down {
+      @include header-sizing(1, 'mobile');
+    }
+
+    font-size: 6.25rem;
+    line-height: 6.25rem;
+    letter-spacing: -0.4rem;
+    font-weight: $font-weight-semi-bold;
+  }
+
+  &__text {
+    margin-top: 2rem;
+
+    @include body-sizing('default', 'desktop');
+    @include mq-large-down {
+      @include body-sizing('default', 'mobile')
+    }
+  }
+
+  &--primary {
+    background-color: $color-primary;
+    color: $color-font-secondary;
+  }
+
+  &--secondary {
+    background-color: $color-secondary;
+    color: $color-font-primary;
+  }
+
+  &--tertiary {
+    background-color: $color-tertiary;
+    color: $color-font-secondary;
+  }
+
+  &--left {
+    text-align: left;
+  }
+
+  &--center {
+    text-align: center;
+  }
+
+  &--right {
+    text-align: right;
+  }
+
+  &--small {
+    height: 20rem;
+  }
+
+  &--medium {
+    height: 30rem;
+  }
+
+  &--large {
+    height: 40rem;
+  }
+}
