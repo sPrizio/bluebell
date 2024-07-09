@@ -31,14 +31,14 @@ export default function Home() {
         size={"large"}
       />
       <StepImageSection
-        title={"Money doesn't need to be complicated."}
+        title={"Finances can be simple, and beautiful."}
         elements={[
           {
             title: 'The Find Your Freedom Planning Promise™',
             text: 'Our holistic approach covers every facet of your financial picture. We tailor every decision to move you closer to your why.',
             image: {
-              src: fees,
-              alt: 'Fees imaging'
+              src: promise,
+              alt: 'Promise imaging'
             }
           },
           {
@@ -53,8 +53,8 @@ export default function Home() {
             title: 'Transparent, Straightforward Fees',
             text: 'We want you to always know and understand what you’re paying your advisor – and how those fees apply to your investments.',
             image: {
-              src: promise,
-              alt: 'Promise imaging'
+              src: fees,
+              alt: 'Fees imaging'
             }
           }
         ]}
@@ -72,7 +72,7 @@ export default function Home() {
             }
           },
           {
-            title: 'Pre-retirees',
+            title: 'Families',
             text: 'I want to help my business continue to thrive, while also planning for retirement and succession.',
             image: {
               src: pr,
