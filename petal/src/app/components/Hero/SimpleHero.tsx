@@ -1,5 +1,16 @@
 import styles from './SimpleHero.module.scss'
 
+/**
+ * A simple hero is a generic, re-usable hero
+ *
+ * @param title title
+ * @param text message
+ * @param variant color
+ * @param alignment text alignment
+ * @param size hero size
+ * @author Stephen Prizio
+ * @version 0.0.1
+ */
 export default function SimpleHero(
   {
     title = '',
@@ -9,7 +20,7 @@ export default function SimpleHero(
     size = 'medium'
   }
     : Readonly<{
-    title: string,
+    title: any,
     text: string,
     variant?: 'primary' | 'secondary' | 'tertiary',
     alignment?: 'left' | 'center' | 'right'

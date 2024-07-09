@@ -13,12 +13,7 @@
   }
 
   &__title {
-    @include header-sizing(2, 'desktop');
-    @include mq-medium-down {
-      @include header-sizing(2, 'mobile');
-    }
-
-    font-family: $font-important;
+    @include hero-title(1);
     text-align: center;
   }
 

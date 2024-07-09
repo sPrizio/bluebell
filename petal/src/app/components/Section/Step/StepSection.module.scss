@@ -12,13 +12,7 @@
   }
 
   &__title {
-    @include header-sizing(2, 'desktop');
-    @include mq-medium-down {
-      @include header-sizing(2, 'mobile');
-    }
-
-    font-family: $font-important;
-    font-weight: 500;
+    @include hero-title(3);
     text-transform: uppercase;
   }
 

@@ -9,22 +9,56 @@ import pr from '@/app/assets/images/content/clientcard/PreRetirees.jpg';
 import pc from '@/app/assets/images/content/clientcard/PrivateClient.jpg';
 import r from '@/app/assets/images/content/clientcard/Retirees.jpg';
 import yp from '@/app/assets/images/content/clientcard/YoungProfessionals.jpg';
+import fees from '@/app/assets/images/content/stepimage/fees.webp';
+import plan from '@/app/assets/images/content/stepimage/plan.webp';
+import promise from '@/app/assets/images/content/stepimage/promise.webp';
+import StepImageSection from "@/app/components/Section/Step/StepImageSection";
 
 export default function Home() {
 
   const baseClass = "home-page"
 
 
+  //  RENDER FUNCTION
+
   return (
     <div className={styles[baseClass]}>
       <SimpleHero
-        title={'NOT YOUR FATHER’S FINANCIAL ADVISOR'}
+        title={<div>We&apos;re the guy they know</div>}
         text={'We get it — you want to change careers, have kids, retire one day; but you also want to go to Portugal next year. Find out how much more you can do when you have your [financial] sh*t together.'}
         variant={'tertiary'}
-        alignment={'center'}
+        alignment={'left'}
         size={"large"}
       />
-
+      <StepImageSection
+        title={"Money doesn't need to be complicated."}
+        elements={[
+          {
+            title: 'The Find Your Freedom Planning Promise™',
+            text: 'Our holistic approach covers every facet of your financial picture. We tailor every decision to move you closer to your why.',
+            image: {
+              src: fees,
+              alt: 'Fees imaging'
+            }
+          },
+          {
+            title: 'You-Focused Financial Plan',
+            text: 'We create a customized, you-focused financial plan presented in plain English that starts with your unique vision of financial freedom.',
+            image: {
+              src: plan,
+              alt: 'Plan imaging'
+            }
+          },
+          {
+            title: 'Transparent, Straightforward Fees',
+            text: 'We want you to always know and understand what you’re paying your advisor – and how those fees apply to your investments.',
+            image: {
+              src: promise,
+              alt: 'Promise imaging'
+            }
+          }
+        ]}
+      />
       <ClientCardSection
         title={'Your Goals, Our Mission'}
         subtitle={'At Carson Wealth, our goal is to help you pursue your goals, whether you’re just getting started, preparing for retirement, or well into your golden years.'}
@@ -73,7 +107,7 @@ export default function Home() {
       />
 
       <StepSection
-        title={'A financial advisor for young professionals'}
+        title={'A realistic financial guide catered for you'}
         elements={[
           {
             title: 'Fee-only planning',

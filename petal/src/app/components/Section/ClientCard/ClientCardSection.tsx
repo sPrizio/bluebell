@@ -2,6 +2,15 @@ import styles from './ClientCardSection.module.scss'
 import ClientCard from "@/app/components/Card/ClientCard";
 import {ClientCardSectionElement} from "@/app/types/appTypes";
 
+/**
+ * Client card section renders multiple client cards
+ *
+ * @param title title
+ * @param subtitle subtitle
+ * @param elements list of client cards
+ * @author Stephen Prizio
+ * @version 0.0.1
+ */
 export default function ClientCardSection(
   {
     title = '',

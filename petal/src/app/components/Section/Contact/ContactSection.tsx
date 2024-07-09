@@ -6,6 +6,12 @@ import SimpleInput from "@/app/components/Input/SimpleInput";
 import {useState} from "react";
 import SimpleTextArea from "@/app/components/Input/SimpleTextArea";
 
+/**
+ * Contact us section component
+ *
+ * @author Stephen Prizio
+ * @version 0.0.1
+ */
 export default function ContactSection() {
 
   const baseClass = "contact-section"

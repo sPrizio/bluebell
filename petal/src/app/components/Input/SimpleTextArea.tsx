@@ -1,6 +1,19 @@
 import styles from './SimpleTextArea.module.scss'
 import React, {ChangeEvent, useState} from "react";
 
+/**
+ * Custom text area
+ *
+ * @param isLoading loading flag
+ * @param variant color
+ * @param placeholder placeholder text
+ * @param val state
+ * @param cols width
+ * @param rows height
+ * @param handler state handler
+ * @author Stephen Prizio
+ * @version 0.0.1
+ */
 export default function SimpleTextArea(
   {
     isLoading = false,

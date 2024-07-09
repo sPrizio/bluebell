@@ -11,17 +11,9 @@
   }
 
   &__title {
-    @include header-sizing(3, 'desktop');
-    @include mq-medium-down {
-      @include header-sizing(3, 'mobile');
-    }
-
+    @include hero-title(3);
     padding-left: 1rem;
     border-left: 0.5rem solid $color-secondary;
-  }
-
-  &__text {
-    margin-top: 1rem;
   }
 
   &__column {

@@ -13,11 +13,7 @@
   }
 
   &__title {
-    @include header-sizing(4, 'desktop');
-    @include mq-medium-down {
-      @include header-sizing(4, 'mobile');
-    }
-
+    @include hero-title(4);
     text-align: center;
   }
 
@@ -26,7 +22,5 @@
     @include mq-medium-down {
       @include body-sizing('default', 'mobile');
     }
-
-    margin-top: 2rem;
   }
 }

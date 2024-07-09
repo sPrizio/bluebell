@@ -132,6 +132,18 @@
   justify-content: $justify;
 }
 
+@mixin hero-title($size: 3) {
+  @include header-sizing($size, 'desktop');
+  @include mq-medium-down {
+    @include header-sizing($size, 'mobile');
+  }
+
+  font-family: $font-hero;
+  font-weight: $font-weight-bold;
+
+  margin-bottom: 2rem;
+}
+
 @mixin break {
   @include mq-medium-up {
     display: none;

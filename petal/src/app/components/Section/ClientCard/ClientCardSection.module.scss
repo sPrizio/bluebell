@@ -11,16 +11,12 @@
   }
 
   &__title {
-    @include header-sizing(3, 'desktop');
-    @include mq-medium-down {
-      @include header-sizing(3, 'mobile');
-    }
-
+    @include hero-title(3);
     border-bottom: 0.5rem solid $color-secondary;
   }
 
   &__subtitle {
-    padding: 2rem 0;
+    padding-bottom: 2rem;
   }
 
   &__cards {

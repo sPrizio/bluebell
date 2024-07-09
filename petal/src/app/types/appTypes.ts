@@ -24,3 +24,12 @@ export type ClientCardSectionElement = {
     alt: string,
   }
 }
+
+export type StepImageSectionElement = {
+  title: string,
+  text: string,
+  image: {
+    src: any,
+    alt: string,
+  }
+}

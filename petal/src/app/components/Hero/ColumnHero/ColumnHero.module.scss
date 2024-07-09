@@ -12,18 +12,13 @@
   }
 
   &__title {
-    @include header-sizing(3, 'desktop');
-    @include mq-medium-down {
-      @include header-sizing(3, 'mobile');
-    }
-
+    @include hero-title(3);
     font-weight: $font-weight-regular;
   }
 
   &__columns {
     @include flex();
     width: 100%;
-    margin-top: 3rem;
   }
 
   &__column {
