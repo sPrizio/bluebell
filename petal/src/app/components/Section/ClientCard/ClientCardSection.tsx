@@ -24,10 +24,10 @@ export default function ClientCardSection(
   }>
 ) {
 
-  const baseClass = "client-card-section"
+  const baseClass : string = "client-card-section"
 
 
-  //  RENDER FUNCTION
+  //  RENDER
 
   return (
     <div className={styles[baseClass]}>

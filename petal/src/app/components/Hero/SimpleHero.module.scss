@@ -2,31 +2,62 @@
 @import "@/app/mixins.module";
 
 .simple-hero {
-  @include flex($direction: column);
+  @include flex($direction: column, $align: stretch);
+  position: relative;
+
+  &__item {
+    flex: 1;
+  }
+
+  &__nav {
+    flex-grow: 0;
+  }
+
+  &__content {
+    flex-grow: 1;
+    @include flex();
+  }
 
   &__container {
     @include container();
+    z-index: 10;
   }
 
   &__title {
-    @include header-sizing(1, 'desktop');
-    @include mq-medium-down {
-      @include header-sizing(1, 'mobile');
-    }
+    @include hero-title(1);
 
+    margin-top: -4rem;
     text-transform: uppercase;
     font-size: 6.25rem;
     line-height: 6.25rem;
     letter-spacing: -0.25rem;
-    font-weight: $font-weight-semi-bold;
+    font-weight: $font-weight-bold;
   }
 
   &__text {
     margin-top: 2rem;
 
-    @include body-sizing('default', 'desktop');
-    @include mq-large-down {
-      @include body-sizing('default', 'mobile')
+    @include hero-title(5);
+    font-weight: $font-weight-regular;
+  }
+
+  &__color-overlay {
+    position: absolute;
+    background-color: rgba($color-black, 0.5);
+    z-index: 6;
+    height: 100%;
+    width: 100%;
+  }
+
+  &__image-overlay {
+    position: absolute;
+    z-index: 5;
+    height: 100%;
+    width: 100%;
+
+    img {
+      max-width: 100%;
+      max-height: 100%;
     }
   }
 
@@ -43,6 +74,11 @@
   &--tertiary {
     background-color: $color-tertiary;
     color: $color-font-secondary;
+  }
+
+  &--image {
+    background-color: rgba($color-black, 1.0);
+    color: $color-white;
   }
 
   &--left {

@@ -18,10 +18,10 @@ export default function StepSectionEntry(
   }>
 ) {
 
-  const baseClass = "step-section-entry"
+  const baseClass : string = "step-section-entry"
 
 
-  //  RENDER FUNCTION
+  //  RENDER
 
   return (
     <div className={styles[baseClass]}>

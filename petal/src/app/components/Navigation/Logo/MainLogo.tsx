@@ -2,6 +2,7 @@ import React from "react";
 import styles from "./MainLogo.module.scss";
 import Image from "next/image";
 import brand from '@/app/assets/images/brand/bluebell/brand_main.png';
+import brandWhite from '@/app/assets/images/brand/bluebell/brand_main_white-removebg-preview.png';
 
 /**
  * Renders the main logo of the app
@@ -9,20 +10,26 @@ import brand from '@/app/assets/images/brand/bluebell/brand_main.png';
  * @author Stephen Prizio
  * @version 0.0.1
  */
-function MainLogo() {
+export default function MainLogo(
+  {
+    variant = 'primary',
+  }
+    : Readonly<{
+    variant?: 'primary' | 'secondary' | 'tertiary' | 'transparent' | 'white',
+  }>
+) {
 
-  const baseClass = "main-logo"
+  const baseClass : string = "main-logo"
 
+  //  TODO: logos in various colors
 
   //  RENDER
 
   return (
     <div className={styles[baseClass]}>
       <div className={styles[`${baseClass}__container`]}>
-        <Image src={brand} height={35} alt={'Brand Logo'} />
+        <Image src={variant === 'transparent' ? brandWhite : brand} height={50} alt={'Brand Logo'} />
       </div>
     </div>
   )
 }
-
-export default MainLogo;

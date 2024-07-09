@@ -3,8 +3,16 @@
 import styles from './StepImageSection.module.scss'
 import {StepImageSectionElement} from "@/app/types/appTypes";
 import Image from "next/image";
-import {useEffect, useState} from "react";
+import {useState} from "react";
 
+/**
+ * Step image section, shows images with cards
+ *
+ * @param title title of section
+ * @param elements array of step image section elements
+ * @author Stephen Prizio
+ * @version 0.0.1
+ */
 export default function StepImageSection(
   {
     title = '',
@@ -16,7 +24,7 @@ export default function StepImageSection(
   }>
 ) {
 
-  const baseClass = "step-image-section"
+  const baseClass : string = "step-image-section"
 
   const [currentSelection, setCurrentSelection] = useState<StepImageSectionElement>(elements[0]);
 
@@ -42,7 +50,7 @@ export default function StepImageSection(
   }
 
 
-  //  RENDER FUNCTION
+  //  RENDER
 
   return (
     <div className={styles[baseClass]}>

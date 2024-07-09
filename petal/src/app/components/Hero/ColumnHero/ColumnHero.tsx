@@ -30,7 +30,7 @@ export default function ColumnHero(
   }>
 ) {
 
-  const baseClass = "column-hero"
+  const baseClass : string = "column-hero"
 
 
   //  FUNCTIONS
@@ -53,7 +53,7 @@ export default function ColumnHero(
   }
 
 
-  //  RENDER FUNCTION
+  //  RENDER
 
   return (
     <div className={computeClass(variant, size)}>

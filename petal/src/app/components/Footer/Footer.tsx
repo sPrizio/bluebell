@@ -1,24 +1,24 @@
 import styles from './Footer.module.scss'
 
 /**
- * The footer. TODO: increase this to show more links and socials
+ * The footer component TODO: increase this to show more links and socials
  *
  * @author Stephen Prizio
  * @version 0.0.1
  */
 export default function Footer() {
 
-  const baseClass = "footer";
+  const baseClass : string = "footer";
 
 
-  //  RENDER FUNCTION
+  //  RENDER
 
   return (
     <div className={styles[baseClass]}>
       <div className={styles[`${baseClass}__container`]}>
         <div className={styles[`${baseClass}__content`]}>
           <div className={styles[`${baseClass}__item`]}>
-            bluebell helps individuals across the country grow and flourish throughout their financial journey
+            bluebell &copy; helps individuals across the country grow and flourish throughout their financial journey
           </div>
           <div className={styles[`${baseClass}__item`]}>
             &copy;&nbsp;2024 bluebell, All rights reserved

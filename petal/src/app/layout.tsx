@@ -1,9 +1,7 @@
-import type { Metadata } from "next";
+import type {Metadata} from "next";
 import './assets/css/normalize.css'
 import styles from './layout.module.scss'
-import NavBar from "@/app/components/Navigation/Navbar/NavBar";
-import ClientNavBar from "@/app/components/Navigation/Navbar/ClientNavBar";
-import Footer from "@/app/components/Footer/Footer";
+import React from "react";
 
 export const metadata: Metadata = {
   title: 'bluebell',
@@ -23,21 +21,18 @@ export default function RootLayout(
     children: React.ReactNode
   }>) {
 
-  const baseClass = 'flex-page'
+  const baseClass : string = 'flex-page'
 
   //  RENDER
 
   return (
     <html lang="en" className={styles['html']}>
     <body className={styles['body']}>
-    <ClientNavBar />
-    <NavBar/>
     <div className={styles[baseClass]}>
       <div className={styles[`${baseClass}__content`]}>
         {children}
       </div>
     </div>
-    <Footer/>
     </body>
     </html>
   )

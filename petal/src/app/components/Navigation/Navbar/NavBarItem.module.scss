@@ -5,7 +5,6 @@
   $this: &;
   @include flex();
   padding: 0.375rem 0.75rem;
-  color: $color-font-primary;
   border: 0.125rem solid transparent;
   font-weight: 500;
   transition-property: border-color;
@@ -18,16 +17,77 @@
   }
 
   &--active {
-    border-bottom: 0.125rem solid $color-primary;
-    color: $color-primary;
     font-weight: $font-weight-bold;
     pointer-events: none;
     cursor: auto;
-    box-shadow: rgba($color-grey-100, 0.25) 0 0.1875rem 0.375rem;
   }
 
   &:hover {
-    border-bottom: 0.125rem solid $color-primary;
     cursor: pointer;
+  }
+
+  &--primary {
+    color: $color-font-secondary;
+
+    &:hover {
+      border-bottom: 0.125rem solid $color-font-secondary;
+    }
+  }
+
+  &--secondary {
+    color: $color-font-primary;
+
+    &:hover {
+      border-bottom: 0.125rem solid $color-font-primary;
+    }
+  }
+
+  &--tertiary {
+    color: $color-font-secondary;
+
+    &:hover {
+      border-bottom: 0.125rem solid $color-font-secondary;
+    }
+  }
+
+  &--transparent {
+    color: $color-font-secondary;
+
+    &:hover {
+      border-bottom: 0.125rem solid $color-font-secondary;
+    }
+  }
+
+  &--white {
+    color: $color-font-primary;
+
+    &:hover {
+      border-bottom: 0.125rem solid $color-font-primary;
+    }
+  }
+
+  &--active_primary {
+    color: $color-font-secondary;
+    border-bottom: 0.125rem solid $color-font-secondary;
+  }
+
+  &--active_secondary {
+    color: $color-font-primary;
+    border-bottom: 0.125rem solid $color-font-primary;
+  }
+
+  &--active_tertiary {
+    color: $color-font-secondary;
+    border-bottom: 0.125rem solid $color-font-secondary;
+  }
+
+  &--active_transparent {
+    color: $color-font-secondary;
+    border-bottom: 0.125rem solid $color-font-secondary;
+  }
+
+  &--active_white {
+    color: $color-font-primary;
+    border-bottom: 0.125rem solid $color-font-primary;
   }
 }

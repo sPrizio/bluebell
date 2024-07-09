@@ -20,7 +20,7 @@ import styles from "./SimpleInput.module.scss";
  * @author Stephen Prizio
  * @version 0.0.1
  */
-function SimpleInput(
+export default function SimpleInput(
   {
     isLoading = false,
     variant = "primary",
@@ -52,7 +52,7 @@ function SimpleInput(
   }>
 ) {
 
-  const baseClass = "simple-input"
+  const baseClass : string = "simple-input"
 
   const [input, setInput] = useState('')
 
@@ -167,5 +167,3 @@ function SimpleInput(
     </div>
   )
 }
-
-export default SimpleInput;

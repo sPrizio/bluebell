@@ -1,4 +1,7 @@
 import styles from './SimpleHero.module.scss'
+import {SimpleImage} from "@/app/types/appTypes";
+import Image from "next/image";
+import NavBar from "@/app/components/Navigation/Navbar/NavBar";
 
 /**
  * A simple hero is a generic, re-usable hero
@@ -8,6 +11,8 @@ import styles from './SimpleHero.module.scss'
  * @param variant color
  * @param alignment text alignment
  * @param size hero size
+ * @param image image
+ * @param hasNavBar allow nav bar
  * @author Stephen Prizio
  * @version 0.0.1
  */
@@ -17,21 +22,25 @@ export default function SimpleHero(
     text = '',
     variant = 'primary',
     alignment = 'left',
-    size = 'medium'
+    size = 'medium',
+    image = null,
+    hasNavBar = false
   }
     : Readonly<{
-    title: any,
+    title: string,
     text: string,
-    variant?: 'primary' | 'secondary' | 'tertiary',
+    variant?: 'primary' | 'secondary' | 'tertiary' | 'image' | 'video',
     alignment?: 'left' | 'center' | 'right'
     size?: 'small' | 'medium' | 'large',
+    image?: SimpleImage,
+    hasNavBar?: boolean
   }>
 ) {
 
-  const baseClass = "simple-hero";
+  const baseClass : string = "simple-hero";
 
 
-  //  FUNCTIONS
+  //  GENERAL FUNCTIONS
 
   /**
    * Computes the css class based on the given props
@@ -41,11 +50,7 @@ export default function SimpleHero(
    * @param alignment - text alignment
    * @param size - font size
    */
-  function computeClass(
-    variant: string,
-    alignment: "left" | "center" | "right" | undefined,
-    size: 'small' | 'medium' | 'large' | undefined
-  ) {
+  function computeClass(variant, alignment, size) {
     const v = variant ? styles[`${baseClass}--${variant}`] : ""
     const a = alignment ? styles[`${baseClass}--${alignment}`] : ""
     const s = size ? styles[`${baseClass}--${size}`] : ""
@@ -58,18 +63,35 @@ export default function SimpleHero(
   }
 
 
-  //  RENDER FUNCTION
+  //  RENDER
 
   return (
     <div className={computeClass(variant, alignment, size)}>
-      <div className={styles[`${baseClass}__container`]}>
-        <div className={styles[`${baseClass}__title`]}>
-          {title}
-        </div>
-        <div className={styles[`${baseClass}__text`]}>
-          {text}
+      {
+        hasNavBar ?
+          <div className={styles[`${baseClass}__item`] + ' ' + styles[`${baseClass}__nav`]}>
+            <NavBar variant={"transparent"} size={"medium"} />
+          </div> : null
+      }
+      <div className={styles[`${baseClass}__item`] + ' ' + styles[`${baseClass}__content`]}>
+        <div className={styles[`${baseClass}__container`]}>
+          <div className={styles[`${baseClass}__title`]}>
+            {title}
+          </div>
+          <div className={styles[`${baseClass}__text`]}>
+            {text}
+          </div>
         </div>
       </div>
+      {
+        (variant === 'image') && (image !== undefined) && (image?.src) ?
+          <>
+            <div className={styles[`${baseClass}__color-overlay`]}/>
+            <div className={styles[`${baseClass}__image-overlay`]}>
+              <Image src={image?.src ?? ''} alt={image?.alt ?? ''}/>
+            </div>
+          </> : null
+      }
     </div>
   )
 }

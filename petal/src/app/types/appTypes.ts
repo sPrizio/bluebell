@@ -1,5 +1,5 @@
 export type SimpleImage = {
-  src: string,
+  src: any,
   alt: string,
   width: number,
   height: number,

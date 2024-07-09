@@ -18,10 +18,10 @@ export default function ClientCard(
   }>
 ) {
 
-  const baseClass = "client-card"
+  const baseClass : string = "client-card"
 
 
-  //  RENDER FUNCTION
+  //  RENDER
 
   return (
     <div className={styles[baseClass]}>

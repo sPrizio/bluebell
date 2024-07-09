@@ -2,7 +2,6 @@
 @import "@/app/mixins.module";
 
 .client-nav-bar {
-  background-color: $color-secondary;
   height: 3rem;
 
   &__container {
@@ -42,5 +41,30 @@
     &:hover {
       cursor: pointer;
     }
+  }
+
+  &--primary {
+    background-color: $color-primary;
+    color: $color-font-secondary;
+  }
+
+  &--secondary {
+    background-color: $color-secondary;
+    color: $color-font-primary;
+  }
+
+  &--tertiary {
+    background-color: $color-tertiary;
+    color: $color-font-secondary;
+  }
+
+  &--white {
+    background-color: $color-white;
+    color: $color-font-primary;
+  }
+
+  &--black {
+    background-color: $color-black;
+    color: $color-font-secondary;
   }
 }

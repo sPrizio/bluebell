@@ -17,10 +17,10 @@ export default function ColumnHeroEntry(
   }>
 ) {
 
-  const baseClass = "column-hero-entry"
+  const baseClass : string = "column-hero-entry"
 
 
-  //  RENDER FUNCTION
+  //  RENDER
 
   return (
     <div className={styles[baseClass]}>

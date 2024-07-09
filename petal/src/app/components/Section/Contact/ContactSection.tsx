@@ -14,7 +14,7 @@ import SimpleTextArea from "@/app/components/Input/SimpleTextArea";
  */
 export default function ContactSection() {
 
-  const baseClass = "contact-section"
+  const baseClass : string = "contact-section"
 
   const [firstName, setFirstName] = useState<string>('')
   const [lastName, setlastName] = useState<string>('')
@@ -23,7 +23,7 @@ export default function ContactSection() {
   const [message, setMessage] = useState<string>('')
 
 
-  //  RENDER FUNCTION
+  //  RENDER
 
   return (
     <div className={styles[baseClass]}>

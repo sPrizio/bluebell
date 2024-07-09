@@ -34,7 +34,7 @@ export default function SimpleTextArea(
   }>
 ) {
 
-  const baseClass = "simple-text-area";
+  const baseClass : string = "simple-text-area";
 
   const [input, setInput] = useState('')
 
@@ -56,7 +56,7 @@ export default function SimpleTextArea(
   }
 
 
-  //  RENDER FUNCTION
+  //  RENDER
 
   return (
     <div className={styles[baseClass] + ' ' + (isLoading ? styles[`${baseClass}--loading`] : '')}>

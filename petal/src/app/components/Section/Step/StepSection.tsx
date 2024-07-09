@@ -21,10 +21,10 @@ export default function StepSection(
   }>
 ) {
 
-  const baseClass = "step-section"
+  const baseClass : string = "step-section"
 
 
-  //  RENDER FUNCTION
+  //  RENDER
 
   return (
     <div className={styles[baseClass]}>

@@ -19,7 +19,7 @@ import styles from './SimpleButton.module.scss'
  * @author Stephen Prizio
  * @version 0.0.1
  */
-function SimpleButton(
+export default function SimpleButton(
     {
         text = '',
         variant = 'primary',
@@ -48,7 +48,7 @@ function SimpleButton(
     }>
 ) {
 
-    const baseClass = 'simple-button'
+    const baseClass : string = 'simple-button'
 
 
     //  FUNCTIONS
@@ -95,5 +95,3 @@ function SimpleButton(
         </div>
     );
 }
-
-export default SimpleButton;

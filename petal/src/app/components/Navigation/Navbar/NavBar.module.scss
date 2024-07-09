@@ -2,10 +2,9 @@
 @import "@/app/mixins.module";
 
 .nav-bar {
-  background-color: $color-white;
-  box-shadow: rgba($color-black, 0.25) 0 0.125rem 0.25rem;
-  padding: 1.0rem 0;
   width: 100%;
+  position: relative;
+  z-index: 100;
 
   &__container {
     @include container();
@@ -69,5 +68,41 @@
         cursor: pointer;
       }
     }
+  }
+
+  &--primary {
+    background-color: $color-primary;
+    box-shadow: rgba($color-black, 0.25) 0 0.125rem 0.25rem;
+  }
+
+  &--secondary {
+    background-color: $color-secondary;
+    box-shadow: rgba($color-black, 0.25) 0 0.125rem 0.25rem;
+  }
+
+  &--tertiary {
+    background-color: $color-tertiary;
+    box-shadow: rgba($color-black, 0.25) 0 0.125rem 0.25rem;
+  }
+
+  &--transparent {
+    background-color: transparent;
+  }
+
+  &--white {
+    background-color: $color-white;
+    box-shadow: rgba($color-black, 0.25) 0 0.125rem 0.25rem;
+  }
+
+  &--small {
+    padding: 0.5rem 0;
+  }
+
+  &--medium {
+    padding: 1.0rem 0;
+  }
+
+  &--large {
+    padding: 1.5rem 0;
   }
 }
