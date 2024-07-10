@@ -42,6 +42,7 @@ void OnDeinit(const int reason) {
 void OnTick(){
    SetBreakEvenStop();
    datetime currentTime = iTime(_Symbol, _Period, 0);
+
    if (globalTime != currentTime) {
       globalTime = currentTime;
       OnBar();
@@ -53,17 +54,13 @@ void OnTick(){
 //+------------------------------------------------------------------+
 void OnBar() {
 
+   ProtectSelf();
    CheckTrades();
    ClearTradesForDay();
 
-   // set first stop order
+   // if trading window opens, open a new trade
    if (TimeHour(globalTime) == 11 && TimeMinute(globalTime) == 0) {
       isReadyToTrade = true;
-      OpenBloomTrade();
-   }
-
-   // set second (optional) stop order
-   if (isReadyToTrade && TimeHour(globalTime) == 19 && TimeMinute(globalTime) == 0) {
       OpenBloomTrade();
    }
 }
@@ -114,6 +111,9 @@ void OpenBloomTrade() {
    }
 }
 
+/*
+   Deletes the current pending order on command.
+*/
 void DeleteTrade() {
    if (OrderDelete(activeTradeId)) {
       Print(StringFormat("Order #%d was successfully deleted.", activeTradeId));
@@ -132,6 +132,38 @@ void ClearTradesForDay() {
    if (activeTradeId != -1 && TimeDay(Time[0]) != TimeDay(Time[1])) {
       Print(StringFormat("Stale stop order detected. Deleting order #%d", activeTradeId));
       DeleteTrade();
+   }
+}
+
+/*
+   Looks for large differences in pending orders and market highs/lows. If the market is moving to far, remove the order
+   just to be safe
+*/
+void ProtectSelf() {
+   if (activeTradeId != -1) {
+      if (GetOrderType() == OP_SELLSTOP) {
+         double high = High[iHighest(_Symbol, _Period, MODE_HIGH, 100, 0)];
+         double localBuyStopLoss = signalPrice - longStopLoss;
+         double localBuyTakeProfit = signalPrice + longTakeProfit;
+
+         if (OrderSelect(activeTradeId, SELECT_BY_TICKET)) {
+            if (MathAbs(high - OrderOpenPrice()) > 75) {
+               DeleteTrade();
+               activeTradeId = OrderSend(_Symbol, OP_BUYLIMIT, lotSize, signalPrice - varianceOffset, slippage, localBuyStopLoss, localBuyTakeProfit, "Bloom Buy Stop", 91);
+            }
+         }
+      } else if (GetOrderType() == OP_BUYSTOP) {
+         double low = Low[iLowest(_Symbol, _Period, MODE_LOW, 100, 0)];
+         double localSellStopLoss = signalPrice + shortStopSLoss;
+         double localSellTakeProfit = signalPrice - shortTakeProfit;
+
+         if (OrderSelect(activeTradeId, SELECT_BY_TICKET)) {
+            if (MathAbs(OrderOpenPrice() - low) > 75) {
+               DeleteTrade();
+               activeTradeId = OrderSend(_Symbol, OP_SELLLIMIT, lotSize, signalPrice + varianceOffset, slippage, localSellStopLoss, localSellTakeProfit, "Bloom Sell Stop", 91);
+            }
+         }
+      }
    }
 }
 
