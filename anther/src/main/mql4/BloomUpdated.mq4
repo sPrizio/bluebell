@@ -20,7 +20,7 @@ input int breakEvenStopLevel = 30;
 // GLOBALS
 double varianceOffset = 2.25;
 datetime globalTime;
-double signalPrice;
+double signalPrice = -1.0;
 bool isReadyToTrade = false;
 int activeTradeId = -1;
 
@@ -56,13 +56,6 @@ void OnBar() {
    CheckTrades();
    ClearTradesForDay();
 
-   // check for start of trading
-   if (TimeHour(globalTime) == 7 && TimeMinute(globalTime) == 5) {
-      double priceLevel = Close[1];
-      Print(StringFormat("Setting price level at %f", priceLevel));
-      signalPrice = priceLevel;
-   }
-
    // set first stop order
    if (TimeHour(globalTime) == 11 && TimeMinute(globalTime) == 0) {
       isReadyToTrade = true;
@@ -80,6 +73,20 @@ void OnBar() {
 //+------------------------------------------------------------------+
 
 /*
+   Obtains the signal price
+*/
+void GetSignalPrice() {
+   for (int i = 0; i < 200; i++) {
+      if (TimeHour(Time[i]) == 7 && TimeMinute(Time[i]) == 0) {
+         signalPrice = Close[i];
+         return;
+      }
+   }
+
+   Print("Fatal Error. Please review the terminal");
+}
+
+/*
    Opens a new stop order trade
 */
 void OpenBloomTrade() {
@@ -89,6 +96,7 @@ void OpenBloomTrade() {
          Sleep(50);
       }
 
+      GetSignalPrice();
       double localBuyStopLoss = signalPrice - longStopLoss;
       double localBuyTakeProfit = signalPrice + longTakeProfit;
       double localSellStopLoss = signalPrice + shortStopSLoss;
