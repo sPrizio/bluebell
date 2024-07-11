@@ -36,10 +36,10 @@ export default function HomePage() {
         title={"Now you know a guy."}
         text={
           'Finances can be messy, money can be complicated and everyone seems to have the only advice you\'ll ever need to hear. We get it, we\'ve been there. ' +
-          'Find out how simple things can be and empower your growth. Let your money work for you so you can work on finding the next best ramen spot.'
+          'Find out how simple things can be and empower your growth. Let your money work for you, so you can work on finding the next best ramen spot.'
         }
         variant={'image'}
-        alignment={'left'}
+        alignment={'center'}
         size={"large"}
         image={{
           src: testBanner,
