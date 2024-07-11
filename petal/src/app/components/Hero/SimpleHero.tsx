@@ -70,7 +70,7 @@ export default function SimpleHero(
       {
         hasNavBar ?
           <div className={styles[`${baseClass}__item`] + ' ' + styles[`${baseClass}__nav`]}>
-            <NavBar variant={"transparent"} size={"medium"} />
+            <NavBar variant={"transparent"} size={"small"} />
           </div> : null
       }
       <div className={styles[`${baseClass}__item`] + ' ' + styles[`${baseClass}__content`]}>

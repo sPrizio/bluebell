@@ -79,6 +79,21 @@ export default function NavBar(
     }
   }
 
+  /**
+   * Determines which variant to return for the main logo
+   */
+  function computeMainLogo() {
+    switch (variant) {
+      case 'primary':
+      case 'transparent':
+      case 'tertiary':
+        return 'white';
+      case 'white':
+      case 'secondary':
+        return 'tertiary';
+    }
+  }
+
 
   //  RENDER
 
@@ -88,7 +103,7 @@ export default function NavBar(
         <div className={styles[`${baseClass}__items`] + ' ' + styles[`${baseClass}__items--left`]}>
           <div className={styles[`${baseClass}__item`] + ' ' + styles[`${baseClass}__item--brand`]}>
             <Link href={'/home'} onClick={() => handleClick('/home')}>
-              <MainLogo variant={variant} />
+              <MainLogo variant={computeMainLogo()} />
             </Link>
           </div>
         </div>

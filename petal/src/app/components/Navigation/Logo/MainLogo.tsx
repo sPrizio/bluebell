@@ -1,8 +1,10 @@
 import React from "react";
 import styles from "./MainLogo.module.scss";
 import Image from "next/image";
-import brand from '@/app/assets/images/brand/bluebell/brand_main.png';
-import brandWhite from '@/app/assets/images/brand/bluebell/brand_main_white-removebg-preview.png';
+import brandPrimary from '@/app/assets/images/brand/bluebell/bluebell_primary.png';
+import brandSecondary from '@/app/assets/images/brand/bluebell/bluebell_secondary.png';
+import brandTertiary from '@/app/assets/images/brand/bluebell/bluebell_tertiary.png';
+import brandWhite from '@/app/assets/images/brand/bluebell/bluebell_white.png';
 
 /**
  * Renders the main logo of the app
@@ -19,16 +21,34 @@ export default function MainLogo(
   }>
 ) {
 
-  const baseClass : string = "main-logo"
+  const baseClass: string = "main-logo"
 
-  //  TODO: logos in various colors
+
+  //  GENERAL FUNCTIONS
+
+  /**
+   * Computes the image depending on the variant
+   */
+  function determineImage() : any {
+    switch (variant) {
+      case 'primary':
+        return brandPrimary;
+      case 'secondary':
+        return brandSecondary;
+      case 'tertiary':
+        return brandTertiary;
+      default:
+        return brandWhite;
+    }
+  }
+
 
   //  RENDER
 
   return (
     <div className={styles[baseClass]}>
       <div className={styles[`${baseClass}__container`]}>
-        <Image src={variant === 'transparent' ? brandWhite : brand} height={50} alt={'Brand Logo'} />
+        <Image src={determineImage()} height={75} alt={'Brand Logo'}/>
       </div>
     </div>
   )

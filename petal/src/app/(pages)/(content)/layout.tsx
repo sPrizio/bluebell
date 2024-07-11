@@ -14,7 +14,7 @@ import {usePathname} from "next/navigation";
  * @author Stephen Prizio
  * @version 0.0.1
  */
-export default function ContentLayout({children}: { children: React.ReactNode }) {
+export default function ContentLayout({children}: Readonly<{ children: React.ReactNode }>) {
 
   const baseClass : string = "content-page";
   const pathname : string = usePathname();
@@ -25,7 +25,7 @@ export default function ContentLayout({children}: { children: React.ReactNode })
   return (
     <div className={styles[baseClass]}>
       <ClientNavBar variant={'tertiary'}/>
-      {pathname && pathname.includes('home') ? null : <NavBar variant={"white"} />}
+      {pathname?.includes('home') ?? '' ? null : <NavBar variant={"white"} size={"small"} />}
       <div className={styles[`${baseClass}__content`]}>
         {children}
       </div>

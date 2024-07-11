@@ -2,7 +2,6 @@
 @import "@/app/mixins.module";
 
 .simple-button {
-  @include flex();
   align-content: center;
   background: none;
   border: 0.0625rem solid transparent;

@@ -25,8 +25,6 @@ export default function HomePage() {
 
   const baseClass: string = "home-page"
 
-  //  TODO: logo re-design, yet again
-  //  TODO: theming for brand image
   //  TODO: responsive design
   //  TODO: back to top button
 
