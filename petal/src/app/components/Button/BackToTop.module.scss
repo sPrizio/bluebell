@@ -1,0 +1,67 @@
+@import "@/app/variables.module";
+@import "@/app/mixins.module";
+
+.back-to-top {
+  transition: all $transition-duration $transition-curve;
+  position: fixed;
+  border-radius: 100%;
+  z-index: 250;
+  bottom: 5%;
+  right: 5%;
+  margin: 0;
+  @include flex();
+  opacity: 0;
+
+  &--active {
+    opacity: 1;
+  }
+
+  &:hover {
+    cursor: pointer;
+  }
+
+  &--primary {
+    background-color: $color-primary;
+    color: $color-font-secondary;
+    box-shadow: rgba($color-black, 0.5) 0 0.25rem 0.5rem;
+  }
+
+  &--secondary {
+    background-color: $color-secondary;
+    color: $color-font-primary;
+    box-shadow: rgba($color-black, 0.5) 0 0.25rem 0.5rem;
+  }
+
+  &--tertiary {
+    background-color: $color-tertiary;
+    color: $color-font-secondary;
+    box-shadow: rgba($color-black, 0.5) 0 0.25rem 0.5rem;
+  }
+
+  &--white {
+    background-color: $color-white;
+    color: $color-font-primary;
+    box-shadow: rgba($color-black, 0.5) 0 0.25rem 0.5rem;
+  }
+
+  &--small {
+    height: 4rem;
+    width: 4rem;
+    @include hero-title(3);
+    margin: 0;
+  }
+
+  &--medium {
+    height: 5rem;
+    width: 5rem;
+    @include hero-title(2);
+    margin: 0;
+  }
+
+  &--large {
+    height: 6rem;
+    width: 6rem;
+    @include hero-title(2);
+    margin: 0;
+  }
+}

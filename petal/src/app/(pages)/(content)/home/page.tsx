@@ -23,7 +23,6 @@ export default function HomePage() {
 
   const baseClass: string = "home-page"
 
-  //  TODO: back to top button
 
   //  GENERAL FUNCTIONS
 

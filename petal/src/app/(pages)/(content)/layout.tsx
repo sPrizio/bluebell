@@ -6,6 +6,7 @@ import Footer from "@/app/components/Footer/Footer";
 import React from "react";
 import NavBar from "@/app/components/Navigation/Navbar/NavBar";
 import {usePathname} from "next/navigation";
+import BackToTop from "@/app/components/Button/BackToTop";
 
 /**
  * The default layout for content pages
@@ -45,6 +46,7 @@ export default function ContentLayout({children}: Readonly<{ children: React.Rea
         {children}
       </div>
       <Footer/>
+      <BackToTop variant={"tertiary"} size={"medium"} />
     </div>
   )
 }
