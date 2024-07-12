@@ -50,12 +50,13 @@ export default function SimpleHero(
    * @param alignment - text alignment
    * @param size - font size
    */
-  function computeClass(variant, alignment, size) {
+  function computeClass(variant, alignment, size, hasNavBar) {
     const v = variant ? styles[`${baseClass}--${variant}`] : ""
     const a = alignment ? styles[`${baseClass}--${alignment}`] : ""
     const s = size ? styles[`${baseClass}--${size}`] : ""
+    const n = hasNavBar ? styles[`${baseClass}--offset-nav`] : ""
 
-    return `${styles[baseClass]} ${v} ${a} ${s}`.trim()
+    return `${styles[baseClass]} ${v} ${a} ${s} ${n}`.trim()
   }
 
   if (!variant || variant.length === 0) {
@@ -66,11 +67,11 @@ export default function SimpleHero(
   //  RENDER
 
   return (
-    <div className={computeClass(variant, alignment, size)}>
+    <div className={computeClass(variant, alignment, size, hasNavBar)}>
       {
         hasNavBar ?
           <div className={styles[`${baseClass}__item`] + ' ' + styles[`${baseClass}__nav`]}>
-            <NavBar variant={"transparent"} size={"small"} />
+            <NavBar transitory={true} initialState={'open'} variant={"transparent"} size={"small"} />
           </div> : null
       }
       <div className={styles[`${baseClass}__item`] + ' ' + styles[`${baseClass}__content`]}>
@@ -84,7 +85,7 @@ export default function SimpleHero(
         </div>
       </div>
       {
-        (variant === 'image') && (image !== undefined) && (image?.src) ?
+        variant === 'image' && image?.src ?
           <>
             <div className={styles[`${baseClass}__color-overlay`]}/>
             <div className={styles[`${baseClass}__image-overlay`]}>

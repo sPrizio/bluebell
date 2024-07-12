@@ -5,37 +5,63 @@
   $this: &;
   @include flex($direction: column);
   position: relative;
+  @include section-padding();
 
   &__container {
     @include container();
     @include flex($align: flex-start);
-    margin-top: 2rem;
+
+    @include mq-large-down {
+      @include flex($direction: column-reverse, $align: flex-start);
+    }
   }
 
   &__item {
     flex: 1;
     width: 100%;
+    @include flex($direction: column);
 
     &:not(:first-child) {
       margin-left: 2rem;
+
+      @include mq-large-down {
+        margin-left: 0;
+      }
     }
 
     &:not(:last-child) {
       margin-right: 2rem;
+
+      @include mq-large-down {
+        margin-right: 0;
+      }
     }
   }
 
   &__title {
+    @include container();
     @include hero-title(3);
   }
 
   &__text {
+    @include mq-large-down {
+      margin-top: 2rem;
+    }
+
     text-align: left;
   }
 
   &__image {
     img {
       height: 25rem;
+      @include mq-large-down {
+        height: 20rem;
+      }
+
+      @include mq-small-down {
+        height: 15rem;
+      }
+
       width: 100%;
     }
   }
@@ -78,14 +104,14 @@
   }
 
   &--small {
-    height: 30rem;
+    min-height: 30rem;
   }
 
   &--medium {
-    height: 40rem;
+    min-height: 40rem;
   }
 
   &--large {
-    height: 50rem;
+    min-height: 50rem;
   }
 }

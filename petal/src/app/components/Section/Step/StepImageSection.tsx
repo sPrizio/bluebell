@@ -10,6 +10,7 @@ import {useState} from "react";
  *
  * @param title title of section
  * @param elements array of step image section elements
+ * @param hasBackground background color flag
  * @author Stephen Prizio
  * @version 0.0.1
  */
@@ -68,7 +69,7 @@ export default function StepImageSection(
                 <div className={styles[`${baseClass}__image-overlay-text`]}>{currentSelection.text}</div>
               </div>
             </div>
-            <Image src={currentSelection.image.src} alt={currentSelection.image.alt} fill={true} />
+            <Image src={currentSelection.image.src} alt={currentSelection.image.alt} />
           </div>
           <div className={styles[`${baseClass}__item`] + ' ' + styles[`${baseClass}__step-container`]}>
             {

@@ -23,11 +23,13 @@ export default function HomePage() {
 
   const baseClass: string = "home-page"
 
-  //  TODO: responsive design
   //  TODO: back to top button
 
   //  GENERAL FUNCTIONS
 
+  /**
+   * Text for image section
+   */
   function getImageSectionText() {
     return (
       <>
@@ -44,7 +46,7 @@ export default function HomePage() {
           <li>Investing Strategy</li>
         </ul>
         <div>
-          We also offer access to an award-winning<sup>[1]</sup>, proprietary investing platform and a host of other unique and personalized services
+          We also offer access to an award-winning<sup>[1]</sup>, proprietary investing platform and a host of other specialized services
           to tackle your unique challenges. Let&apos;s get started!
         </div>
         <br/>
@@ -52,11 +54,11 @@ export default function HomePage() {
     )
   }
 
+
   //  RENDER
 
   return (
     <div className={styles[baseClass]}>
-      <p>MOBILE READINESS MARKER</p>
       <SimpleHero
         title={"Now you know a guy."}
         text={
@@ -86,7 +88,7 @@ export default function HomePage() {
           height: 0,
           width: 0
         }}
-        cta={<SimpleButton text={'Our Services'} variant={"tertiary"} />}
+        cta={<SimpleButton text={'Our Services'} variant={"tertiary"}/>}
       />
       <StepImageSection
         title={"Finances can be simple, and beautiful."}
@@ -193,7 +195,7 @@ export default function HomePage() {
             }
           },
         ]}
-        cta={<SimpleButton text={"Get Started"} variant={"tertiary"} />}
+        cta={<SimpleButton text={"Get Started"} variant={"tertiary"}/>}
       />
       {/*<ColumnHero
         title={'Our Firm at a Glance'}

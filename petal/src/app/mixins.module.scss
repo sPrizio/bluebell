@@ -120,16 +120,24 @@
 
 @mixin container {
   margin: 0 auto;
-  width: 100%;
   max-width: $container-max-width;
   padding: 0 $container-padding;
+
+  @include mq-medium-down {
+    padding: 0 1.5rem;
+  }
 }
 
-@mixin flex($direction: center, $align: center, $justify: center) {
+@mixin flex($direction: center, $align: center, $justify: center, $self: stretch) {
   display: flex;
   flex-direction: $direction;
   align-items: $align;
   justify-content: $justify;
+  align-self: $self;
+}
+
+@mixin section-padding() {
+  padding: $section-padding 0;
 }
 
 @mixin hero-title($size: 3) {

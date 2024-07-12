@@ -2,13 +2,17 @@
 @import "@/app/mixins.module";
 
 .contact-section {
-  padding: 5rem 0;
+  @include section-padding();
   background-color: $color-background;
 
   &__container {
     @include container();
     height: 100%;
     @include flex();
+
+    @include mq-large-down {
+      @include flex($direction: column, $align: stretch);
+    }
   }
 
   &__title {
@@ -17,31 +21,45 @@
     border-left: 0.5rem solid $color-secondary;
   }
 
+  &__text {
+    @include mq-large-down {
+      margin-bottom: 1rem;
+    }
+  }
+
   &__column {
     flex: 1;
 
-    &:first-child {
-      flex: 0.5;
-    }
+    @include mq-large-up {
+      &:first-child {
+        flex: 0.5;
+      }
 
-    &:not(:first-child) {
-      margin-left: 3rem;
-    }
+      &:not(:first-child) {
+        margin-left: 3rem;
+      }
 
-    &:not(:last-child) {
-      margin-right: 3rem;
+      &:not(:last-child) {
+        margin-right: 3rem;
+      }
     }
   }
 
   &__form-group {
     @include flex();
 
-    &:not(:first-child) {
-      margin-top: 1rem;
+    @include mq-large-down {
+      @include flex($direction: column);
     }
 
-    &:not(:last-child) {
-      margin-bottom: 1rem;
+    @include mq-large-up {
+      &:not(:first-child) {
+        margin-top: 1rem;
+      }
+
+      &:not(:last-child) {
+        margin-bottom: 1rem;
+      }
     }
   }
 
@@ -50,17 +68,23 @@
     height: 100%;
     width: 100%;
 
-    &:not(:first-child) {
-      margin-left: 1rem;
+    @include mq-large-up {
+      &:not(:first-child) {
+        margin-left: 1rem;
+      }
+
+      &:not(:last-child) {
+        margin-right: 1rem;
+      }
     }
 
-    &:not(:last-child) {
-      margin-right: 1rem;
+    @include mq-large-down {
+      margin: 0.5rem 0;
     }
   }
 
   &__message {
-    margin: 1rem 0 ;
+    margin: 1rem 0;
     height: 3rem;
   }
 }

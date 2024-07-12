@@ -4,8 +4,8 @@
 .step-section {
   $this: &;
   @include flex();
+  @include section-padding();
   text-align: center;
-  height: 65vh;
 
   &__container {
     @include container();
@@ -16,7 +16,11 @@
   }
 
   &__columns {
-    @include flex($align: flext-start, $justify: flex-start);
+    @include flex($align: flex-start, $justify: flex-start);
+    @include mq-large-down {
+      @include flex($direction: column, $align: flex-start, $justify: flex-start);
+    }
+
     display: flex;
     flex-direction: row;
     align-items: flex-start;
@@ -28,12 +32,24 @@
   &__column {
     flex: 1;
 
-    &:not(:first-child) {
-      margin-left: 3rem;
+    @include mq-large-up {
+      &:not(:first-child) {
+        margin-left: 3rem;
+      }
+
+      &:not(:last-child) {
+        margin-right: 3rem;
+      }
     }
 
-    &:not(:last-child) {
-      margin-right: 3rem;
+    @include mq-large-down {
+      &:not(:first-child) {
+        margin-top: 1.5rem;
+      }
+
+      &:not(:last-child) {
+        margin-bottom: 1.5rem;
+      }
     }
   }
 

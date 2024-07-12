@@ -2,24 +2,52 @@
 @import "@/app/mixins.module";
 
 .client-nav-bar {
-  height: 3rem;
+  padding: 1rem 0;
 
   &__container {
     @include container();
     height: 100%;
     @include flex($justify: flex-end);
+
+    @include mq-large-down {
+      @include flex();
+    }
   }
 
   &__item-container {
     height: 100%;
-    max-width: 25rem;
-    min-width: 25rem;
     @include flex();
+
+    @include mq-medium-down {
+      @include flex($direction: column);
+    }
   }
 
   &__item {
+    width: 100%;
+    &:not(:last-child) {
+      margin-right: 2rem;
+    }
+
+    &:not(:first-child) {
+      margin-left: 2rem;
+    }
+
     flex: 1;
     @include flex($justify: flex-end);
+    @include mq-large-down {
+      @include flex();
+      &:not(:last-child) {
+        margin-right: 0;
+        padding-bottom: 0.5rem;
+      }
+
+      &:not(:first-child) {
+        margin-left: 0;
+        padding-top: 0.5rem;
+      }
+    }
+
     @include body-sizing('default', 'desktop');
     @include mq-medium-down {
       @include body-sizing('default', 'mobile');

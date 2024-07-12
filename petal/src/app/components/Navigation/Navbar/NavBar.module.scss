@@ -2,9 +2,10 @@
 @import "@/app/mixins.module";
 
 .nav-bar {
-  width: 100%;
+  $this: &;
   position: relative;
   z-index: 100;
+  padding: 1.0rem 0;
 
   &__container {
     @include container();
@@ -28,6 +29,7 @@
 
   &__item {
     position: relative;
+    z-index: 100;
     text-align: center;
     padding: 0.75rem 0;
 
@@ -53,36 +55,68 @@
 
       @include mq-large-down {
         display: block;
+        font-size: 2rem;
+
+        &:hover {
+          cursor: pointer;
+        }
       }
     }
   }
 
   &__mobile-menu {
+    @include flex($direction: column);
+    transition: all $transition-duration $transition-curve;
     display: none;
-    font-size: 1.5rem;
+    position: absolute;
+    margin-top: 0.5rem;
+    z-index: 5;
+    width: 100%;
+    padding: 1.5rem 0.5rem;
 
-    @include mq-large-down {
-      display: block;
+    &--active {
+      @include flex($direction: column);
+    }
+  }
 
-      &:hover {
-        cursor: pointer;
-      }
+  &__mobile-menu-item {
+    &:not(:first-child) {
+      margin-top: 0.5rem;
+    }
+
+    &:not(:last-child) {
+      margin-bottom: 0.5rem;
     }
   }
 
   &--primary {
     background-color: $color-primary;
     box-shadow: rgba($color-black, 0.25) 0 0.125rem 0.25rem;
+
+    #{$this}__mobile-menu {
+      background-color: $color-primary;
+      box-shadow: rgba($color-black, 0.25) 0 0.125rem 0.25rem;
+    }
   }
 
   &--secondary {
     background-color: $color-secondary;
     box-shadow: rgba($color-black, 0.25) 0 0.125rem 0.25rem;
+
+    #{$this}__mobile-menu {
+      background-color: $color-secondary;
+      box-shadow: rgba($color-black, 0.25) 0 0.125rem 0.25rem;
+    }
   }
 
   &--tertiary {
     background-color: $color-tertiary;
     box-shadow: rgba($color-black, 0.25) 0 0.125rem 0.25rem;
+
+    #{$this}__mobile-menu {
+      background-color: $color-tertiary;
+      box-shadow: rgba($color-black, 0.25) 0 0.125rem 0.25rem;
+    }
   }
 
   &--transparent {
@@ -92,17 +126,50 @@
   &--white {
     background-color: $color-white;
     box-shadow: rgba($color-black, 0.25) 0 0.125rem 0.25rem;
+
+    #{$this}__mobile-menu {
+      background-color: $color-white;
+      box-shadow: rgba($color-black, 0.25) 0 0.125rem 0.25rem;
+    }
   }
 
   &--small {
-    padding: 0.5rem 0;
+    height: 8rem;
+
+    @include mq-large-down {
+      height: 6rem;
+    }
   }
 
   &--medium {
-    padding: 1.0rem 0;
+    height: 10rem;
+
+    @include mq-large-down {
+      height: 8rem;
+    }
   }
 
   &--large {
-    padding: 1.5rem 0;
+    height: 12rem;
+
+    @include mq-large-down {
+      height: 10rem;
+    }
+  }
+
+  &--open {
+    display: block;
+
+    @include mq-large-down {
+      display: none;
+    }
+  }
+
+  &--closed {
+    display: none;
+
+    @include mq-large-down {
+      display: block;
+    }
   }
 }

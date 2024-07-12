@@ -4,6 +4,7 @@
 .simple-hero {
   @include flex($direction: column, $align: stretch);
   position: relative;
+  transition: all $transition-duration $transition-curve;
 
   &__item {
     flex: 1;
@@ -21,21 +22,29 @@
   &__container {
     @include container();
     z-index: 10;
+    width: 100%;
   }
 
   &__title {
-    @include hero-title(1);
+    @include mq-large-up {
+      @include hero-title(1);
+      margin-top: -4rem;
+      font-size: 6.25rem;
+      line-height: 6.25rem;
+    }
 
-    margin-top: -4rem;
+    @include hero-title(1);
     text-transform: uppercase;
-    font-size: 6.25rem;
-    line-height: 6.25rem;
     letter-spacing: -0.25rem;
     font-weight: $font-weight-bold;
   }
 
   &__text {
-    margin-top: 2rem;
+    @include mq-large-up {
+      margin-top: 2rem;
+    }
+
+    word-wrap: break-word;
 
     @include hero-title(5);
     font-weight: $font-weight-regular;
@@ -96,13 +105,31 @@
 
   &--small {
     height: 20rem;
+
+    @include mq-large-down {
+      height: 15rem;
+    }
   }
 
   &--medium {
     height: 30rem;
+
+    @include mq-large-down {
+      height: 25rem;
+    }
   }
 
   &--large {
     height: 40rem;
+
+    @include mq-large-down {
+      height: 35rem;
+    }
+  }
+
+  &--offset-nav {
+    @include mq-large-down {
+      margin-top: 0;
+    }
   }
 }

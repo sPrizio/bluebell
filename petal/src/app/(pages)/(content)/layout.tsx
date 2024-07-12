@@ -20,12 +20,27 @@ export default function ContentLayout({children}: Readonly<{ children: React.Rea
   const pathname : string = usePathname();
 
 
+  //  GENERAL FUNCTIONS
+
+  /**
+   * Returns true if we're on the home page
+   */
+  function isHomePage() {
+    return pathname?.includes('home') ?? false
+  }
+
+
   //  RENDER
 
   return (
     <div className={styles[baseClass]}>
       <ClientNavBar variant={'tertiary'}/>
-      {pathname?.includes('home') ?? '' ? null : <NavBar variant={"white"} size={"small"} />}
+      <NavBar
+        transitory={isHomePage()}
+        initialState={isHomePage() ? "closed" : "open"}
+        variant={"white"}
+        size={"small"}
+      />
       <div className={styles[`${baseClass}__content`]}>
         {children}
       </div>

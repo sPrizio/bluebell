@@ -1,4 +1,6 @@
-import React from "react";
+'use client'
+
+import React, {useEffect, useState} from "react";
 import styles from "./MainLogo.module.scss";
 import Image from "next/image";
 import brandPrimary from '@/app/assets/images/brand/bluebell/bluebell_primary.png';
@@ -22,9 +24,26 @@ export default function MainLogo(
 ) {
 
   const baseClass: string = "main-logo"
+  const [windowSize, setWindowSize] = useState([0, 0])
+
+  useEffect(() => {
+    function updateSize() {
+      setWindowSize([window.innerWidth, window.innerHeight]);
+    }
+    window.addEventListener('resize', updateSize);
+    updateSize();
+    return () => window.removeEventListener('resize', updateSize);
+  }, [])
 
 
   //  GENERAL FUNCTIONS
+
+  /**
+   * Updates tjhe window size
+   */
+  function updateSize() {
+    setWindowSize([window.innerWidth, window.innerHeight]);
+  }
 
   /**
    * Computes the image depending on the variant
@@ -48,7 +67,7 @@ export default function MainLogo(
   return (
     <div className={styles[baseClass]}>
       <div className={styles[`${baseClass}__container`]}>
-        <Image src={determineImage()} height={75} alt={'Brand Logo'}/>
+        <Image src={determineImage()} height={windowSize[0] < 992 ? 60: 75} alt={'Brand Logo'}/>
       </div>
     </div>
   )

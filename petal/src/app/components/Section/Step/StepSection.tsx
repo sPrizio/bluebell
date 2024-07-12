@@ -8,6 +8,7 @@ import React from "react";
  *
  * @param title section title
  * @param elements array of elements
+ * @param cta button
  * @author Stephen Prizio
  * @version 0.0.1
  */

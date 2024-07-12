@@ -4,9 +4,8 @@
 .step-image-section {
   $this: &;
   @include flex();
-  text-align: left;
-  min-height: 45vh;
-  padding: 5rem;
+  text-align: center;
+  @include section-padding();
 
   &--background {
     background-color: $color-background;
@@ -14,7 +13,8 @@
 
   &__container {
     @include container();
-    @include flex($direction: column, $align: flex-start);
+    @include flex($direction: column, $align: center);
+    width: 100%;
   }
 
   &__title {
@@ -22,25 +22,43 @@
   }
 
   &__items {
-    @include flex($align: flex-start);
+    @include flex();
     width: 100%;
+
+    @include mq-large-down {
+      @include flex($direction: column);
+    }
   }
 
   &__item {
     flex: 1;
+    @include flex($align: stretch);
+    height: 27.5rem;
+    width: 100%;
 
-    &:not(:first-child) {
-      margin-left: 2rem;
+    @include mq-large-down {
+      &:not(:first-child) {
+        margin-top: 2rem;
+      }
+
+      &:not(:last-child) {
+        margin-bottom: 2rem;
+      }
     }
 
-    &:not(:last-child) {
-      margin-right: 2rem;
+    @include mq-large-up {
+      &:not(:first-child) {
+        margin-left: 2rem;
+      }
+
+      &:not(:last-child) {
+        margin-right: 2rem;
+      }
     }
   }
 
   &__image-container {
     position: relative;
-    height: 27.5rem;
     text-align: left;
     flex: 1.75;
 
@@ -75,8 +93,11 @@
 
   &__step-container {
     text-align: left;
-    height: 27.5rem;
     @include flex($direction: column, $align: stretch);
+
+    @include mq-large-down {
+      @include flex($direction: row);
+    }
   }
 
   &__step {
@@ -84,18 +105,35 @@
     transition: all $transition-duration $transition-curve;
     flex: 1;
     background-color: $color-secondary;
-    padding: 2rem 2rem;
+    padding: 2rem;
     border-radius: 0.25rem;
     @include flex($justify: flex-start);
     @include hero-title(4);
-    margin-bottom: 0;
+    margin: 0;
 
-    &:not(:first-child) {
-      margin-top: 0.5rem;
+    @include mq-large-down {
+      padding: 1rem;
+
+      @include hero-title(5);
+      margin: 0;
+
+      &:not(:first-child) {
+        margin-left: 0.5rem;
+      }
+
+      &:not(:last-child) {
+        margin-right: 0.5rem;
+      }
     }
 
-    &:not(:last-child) {
-      margin-bottom: 0.5rem;
+    @include mq-large-up {
+      &:not(:first-child) {
+        margin-top: 0.5rem;
+      }
+
+      &:not(:last-child) {
+        margin-bottom: 0.5rem;
+      }
     }
 
     &:hover, &--active {

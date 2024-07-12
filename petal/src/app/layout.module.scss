@@ -22,16 +22,9 @@
 }
 
 .flex-page {
-  display: flex;
-  flex-direction: row;
   min-height: 75vh;
-  align-items: stretch;
 
   &__content {
-    flex: 1;
     height: 100%;
   }
-}
-
-.home-page {
 }
