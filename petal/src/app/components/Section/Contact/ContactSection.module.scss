@@ -3,6 +3,7 @@
 
 .contact-section {
   padding: 5rem 0;
+  background-color: $color-background;
 
   &__container {
     @include container();

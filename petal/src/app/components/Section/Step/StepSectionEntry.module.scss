@@ -23,4 +23,16 @@
       @include body-sizing('default', 'mobile');
     }
   }
+
+  &__image {
+    height: 5rem;
+    width: 5rem;
+    position: relative;
+    margin-bottom: 2rem;
+
+    img {
+      height: 100%;
+      width: 100%;
+    }
+  }
 }

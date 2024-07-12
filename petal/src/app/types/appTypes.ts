@@ -1,8 +1,8 @@
 export type SimpleImage = {
   src: any,
   alt: string,
-  width: number,
-  height: number,
+  width?: number,
+  height?: number,
 }
 
 export type ColumnHeroElement = {

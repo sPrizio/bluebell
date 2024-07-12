@@ -5,8 +5,12 @@
   $this: &;
   @include flex();
   text-align: left;
-  min-height: 15vh;
+  min-height: 45vh;
   padding: 5rem;
+
+  &--background {
+    background-color: $color-background;
+  }
 
   &__container {
     @include container();
@@ -53,6 +57,7 @@
     background-image: linear-gradient(transparent 25%, rgba($color-black, 1.0));
     width: 100%;
     height: 100%;
+    border-radius: 0.25rem;
   }
 
   &__image-overlay-container {

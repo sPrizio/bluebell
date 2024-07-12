@@ -1,19 +1,17 @@
 import styles from "./layout.module.scss";
-import SimpleHero from "@/app/components/Hero/SimpleHero";
-import ColumnHero from "@/app/components/Hero/ColumnHero/ColumnHero";
+import SimpleHero from "@/app/components/Hero/SimpleHero/SimpleHero";
 import StepSection from "@/app/components/Section/Step/StepSection";
 import ContactSection from "@/app/components/Section/Contact/ContactSection";
-import ClientCardSection from "@/app/components/Section/ClientCard/ClientCardSection";
-import boe from '@/app/assets/images/content/clientcard/BusinessOwnersExecutives.jpg';
-import pr from '@/app/assets/images/content/clientcard/PreRetirees.jpg';
-import pc from '@/app/assets/images/content/clientcard/PrivateClient.jpg';
-import r from '@/app/assets/images/content/clientcard/Retirees.jpg';
-import yp from '@/app/assets/images/content/clientcard/YoungProfessionals.jpg';
-import fees from '@/app/assets/images/content/stepimage/fees.webp';
-import plan from '@/app/assets/images/content/stepimage/plan.webp';
-import promise from '@/app/assets/images/content/stepimage/promise.webp';
+import fees from '@/app/assets/images/content/step/image/fees.webp';
+import plan from '@/app/assets/images/content/step/image/plan.webp';
+import promise from '@/app/assets/images/content/step/image/promise.webp';
 import testBanner from '@/app/assets/images/content/test-hero.jpg'
+import pot from '@/app/assets/images/content/step/section/reuse.png'
+import handPot from '@/app/assets/images/content/step/section/hand-with-growing-plant.png'
+import growth from '@/app/assets/images/content/step/section/flowers.png'
 import StepImageSection from "@/app/components/Section/Step/StepImageSection";
+import ImageSection from "@/app/components/Section/Image/ImageSection";
+import SimpleButton from "@/app/components/Button/SimpleButton";
 
 /**
  * The home page
@@ -28,10 +26,37 @@ export default function HomePage() {
   //  TODO: responsive design
   //  TODO: back to top button
 
+  //  GENERAL FUNCTIONS
+
+  function getImageSectionText() {
+    return (
+      <>
+        <div>
+          Work with our team of professionals to organize your entire financial profile. Got debt to consolidate? Not sure where you should be
+          putting your money? Feeling like you&apos;re being left behind? We have you covered!
+        </div>
+        <br />
+        <div>Our offerings include (but are not limited to):</div>
+        <ul>
+          <li>Budgeting</li>
+          <li>Debt Consolidation</li>
+          <li>Wealth Management</li>
+          <li>Investing Strategy</li>
+        </ul>
+        <div>
+          We also offer access to an award-winning<sup>[1]</sup>, proprietary investing platform and a host of other unique and personalized services
+          to tackle your unique challenges. Let&apos;s get started!
+        </div>
+        <br/>
+      </>
+    )
+  }
+
   //  RENDER
 
   return (
     <div className={styles[baseClass]}>
+      <p>MOBILE READINESS MARKER</p>
       <SimpleHero
         title={"Now you know a guy."}
         text={
@@ -48,6 +73,20 @@ export default function HomePage() {
           width: 0
         }}
         hasNavBar={true}
+      />
+      <ImageSection
+        title={'Take Control of Your Money. Empower Your Future.'}
+        text={getImageSectionText()}
+        variant={'white'}
+        alignment={'center'}
+        size={"large"}
+        image={{
+          src: testBanner,
+          alt: 'Test Banner',
+          height: 0,
+          width: 0
+        }}
+        cta={<SimpleButton text={'Our Services'} variant={"tertiary"} />}
       />
       <StepImageSection
         title={"Finances can be simple, and beautiful."}
@@ -77,8 +116,9 @@ export default function HomePage() {
             }
           }
         ]}
+        hasBackground={true}
       />
-      <ClientCardSection
+      {/*<ClientCardSection
         title={'Your Goals, Our Mission'}
         subtitle={'No matter your stage in life & career, we\'re ready to serve you and your needs. Our goal is to support your pursuit of financial independence and to help you achieve your goals'}
         elements={[
@@ -123,44 +163,39 @@ export default function HomePage() {
             }
           }
         ]}
-      />
+      />*/}
 
       <StepSection
-        title={'A realistic financial guide catered for you'}
+        title={'A Journey of Growth, Together'}
         elements={[
           {
-            title: 'Break It Down',
-            text: 'We take a good, hard look at everything you own and owe. We\'ll walk you through everything that we see and everything we\'ve seen to paint your financial picture. You\'ll be surprised at how well you\'re doing and close you actually are to your goals.',
+            title: 'Plant',
+            text: 'We take a good, hard look at everything you own and owe. We start developing the outline and plan to set up your path to success. You\'ll be surprised at how well you\'re doing and close you actually are to your goals.',
             image: {
-              src: 'https://images.squarespace-cdn.com/content/v1/642b29f96b382f5bd2c745eb/4a42af0f-a9b8-4184-8e02-2df97899dcbe/Fee-only-planning.png',
+              src: handPot['src'],
               alt: 'default_image_1',
-              width: 275,
-              height: 144
             }
           },
           {
-            title: 'Collaborative experience',
-            text: 'You\'ll work one-on-one with a dedicated financial advisor to create a plan that will help you accomplish what matters most to you. A financial plan built by you, with you in mind with a little (or a lot) of our help.',
+            title: 'Nourish',
+            text: 'Collaborate with a dedicated advisor to establish your growth strategy. Budget spending, Allocate income to invest, Consolidate debt. Build your future one step at a time. We\'ll be there every step of the way.',
             image: {
-              src: 'https://images.squarespace-cdn.com/content/v1/642b29f96b382f5bd2c745eb/ee65038f-07de-4c14-9538-3fad2b7e1229/collaborative-experience.png',
+              src: pot['src'],
               alt: 'default_image_3',
-              width: 275,
-              height: 144
             }
           },
           {
-            title: 'Targeted Investing',
-            text: 'Your goals dictate your saving and investing strategy. Learn about what the market offers, how the market works and how you can extract the most value out of it to meet your goals. It is amazingly simple and wonderfully beautiful.',
+            title: 'Grow',
+            text: 'Reap the benefits of your diligent planning. Watch your wealth grow with a few simple habits. Leverage your new skills to further develop your financial profile. Enjoy your success!',
             image: {
-              src: 'https://images.squarespace-cdn.com/content/v1/642b29f96b382f5bd2c745eb/1ca79d9b-31e4-4561-9da1-f904a995d16c/goals-based-investing.png',
+              src: growth['src'],
               alt: 'default_image_2',
-              width: 275,
-              height: 144
             }
           },
         ]}
+        cta={<SimpleButton text={"Get Started"} variant={"tertiary"} />}
       />
-      <ColumnHero
+      {/*<ColumnHero
         title={'Our Firm at a Glance'}
         elements={[
           {
@@ -179,7 +214,7 @@ export default function HomePage() {
         disclaimer={'*Reflects combined AUM as of 3.31.2024 for bluebell and its subsidiaries.'}
         variant={"secondary"}
         size={"small"}
-      />
+      />*/}
       <ContactSection/>
     </div>
   );

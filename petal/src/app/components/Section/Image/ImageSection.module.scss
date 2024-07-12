@@ -1,0 +1,91 @@
+@import "@/app/variables.module";
+@import "@/app/mixins.module";
+
+.image-section {
+  $this: &;
+  @include flex($direction: column);
+  position: relative;
+
+  &__container {
+    @include container();
+    @include flex($align: flex-start);
+    margin-top: 2rem;
+  }
+
+  &__item {
+    flex: 1;
+    width: 100%;
+
+    &:not(:first-child) {
+      margin-left: 2rem;
+    }
+
+    &:not(:last-child) {
+      margin-right: 2rem;
+    }
+  }
+
+  &__title {
+    @include hero-title(3);
+  }
+
+  &__text {
+    text-align: left;
+  }
+
+  &__image {
+    img {
+      height: 25rem;
+      width: 100%;
+    }
+  }
+
+  &--primary {
+    background-color: $color-primary;
+    color: $color-font-secondary;
+  }
+
+  &--secondary {
+    background-color: $color-secondary;
+    color: $color-font-primary;
+  }
+
+  &--tertiary {
+    background-color: $color-tertiary;
+    color: $color-font-secondary;
+  }
+
+  &--white {
+    background-color: $color-white;
+    color: $color-font-primary;
+  }
+
+  &--image {
+    background-color: rgba($color-black, 1.0);
+    color: $color-white;
+  }
+
+  &--left {
+    text-align: left;
+  }
+
+  &--center {
+    text-align: center;
+  }
+
+  &--right {
+    text-align: right;
+  }
+
+  &--small {
+    height: 30rem;
+  }
+
+  &--medium {
+    height: 40rem;
+  }
+
+  &--large {
+    height: 50rem;
+  }
+}

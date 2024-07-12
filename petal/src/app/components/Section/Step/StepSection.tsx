@@ -1,6 +1,7 @@
 import {StepSectionElement} from "@/app/types/appTypes";
 import styles from './StepSection.module.scss';
 import StepSectionEntry from "@/app/components/Section/Step/StepSectionEntry";
+import React from "react";
 
 /**
  * Section for containing steps which are essentially columns
@@ -13,11 +14,13 @@ import StepSectionEntry from "@/app/components/Section/Step/StepSectionEntry";
 export default function StepSection(
   {
     title = '',
-    elements = []
+    elements = [],
+    cta = null
   }
     : Readonly<{
     title: string,
-    elements: Array<StepSectionElement>
+    elements: Array<StepSectionElement>,
+    cta?: React.ReactNode
   }>
 ) {
 
@@ -42,6 +45,9 @@ export default function StepSection(
               )
             })
           }
+        </div>
+        <div className={styles[`${baseClass}__cta`]}>
+          {cta}
         </div>
       </div>
     </div>

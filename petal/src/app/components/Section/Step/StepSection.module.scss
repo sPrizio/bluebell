@@ -13,7 +13,6 @@
 
   &__title {
     @include hero-title(3);
-    text-transform: uppercase;
   }
 
   &__columns {
@@ -36,5 +35,10 @@
     &:not(:last-child) {
       margin-right: 3rem;
     }
+  }
+
+  &__cta {
+    margin-top: 3rem;
+    @include flex();
   }
 }

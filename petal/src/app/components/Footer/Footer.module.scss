@@ -4,6 +4,8 @@
 .footer {
   width: 100%;
   padding: 5rem 0 3.5rem 0;
+  background-color: $color-tertiary;
+  color: $color-font-secondary;
 
   &__container {
     @include container();

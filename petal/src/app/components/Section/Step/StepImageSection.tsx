@@ -16,11 +16,13 @@ import {useState} from "react";
 export default function StepImageSection(
   {
     title = '',
-    elements = []
+    elements = [],
+    hasBackground = false
   }
     : Readonly<{
     title: string,
     elements: Array<StepImageSectionElement>
+    hasBackground?: boolean
   }>
 ) {
 
@@ -53,7 +55,7 @@ export default function StepImageSection(
   //  RENDER
 
   return (
-    <div className={styles[baseClass]}>
+    <div className={styles[baseClass] + ' ' + (hasBackground ? styles[`${baseClass}--background`] : '')}>
       <div className={styles[`${baseClass}__container`]}>
         <div className={styles[`${baseClass}__title`]}>
           {title}

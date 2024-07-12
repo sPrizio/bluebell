@@ -29,7 +29,7 @@ export default function StepSectionEntry(
         element.image && element.image.src.length > 0 ?
           <div className={styles[`${baseClass}__element`]}>
             <div className={styles[`${baseClass}__image`]}>
-              <Image src={element.image.src} alt={element.image.alt} height={element.image.height} width={element.image.width} />
+              <Image src={element.image.src} alt={element.image.alt} fill={true} />
             </div>
           </div> : null
       }
