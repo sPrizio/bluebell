@@ -144,6 +144,9 @@ void OpenBloomTrade() {
       } else if (Open[0] > signalPrice) {
         Print("Opening Sell Stop Order");
         activeTradeId = OrderSend(_Symbol, OP_SELLSTOP, lotSize, signalPrice - varianceOffset, slippage, localSellStopLoss, localSellTakeProfit, "Bloom Sell Stop", 91);
+      } else {
+        Print("Opening Buy Stop Order");
+        activeTradeId = OrderSend(_Symbol, OP_BUYSTOP, lotSize, signalPrice + varianceOffset, slippage, localBuyStopLoss, localBuyTakeProfit, "Bloom Buy Stop", 91);
       }
    }
 }
