@@ -110,7 +110,7 @@ bool HasActiveTrade() {
 void GetSignalPrice() {
 
    Print("Fetching signal price.");
-   for (int i = 0; i < 100; i++) {
+   for (int i = 0; i < 300; i++) {
       if (TimeHour(Time[i]) == 7 && TimeMinute(Time[i]) == 0) {
          signalPrice = Close[i];
          Print(StringFormat("Signal price set to %.2f", signalPrice));
@@ -138,12 +138,12 @@ void OpenBloomTrade() {
       double localSellStopLoss = signalPrice + shortStopSLoss;
       double localSellTakeProfit = signalPrice - shortTakeProfit;
 
-      if (Open[0] < signalPrice) {
-         Print("Opening Buy Stop Order");
-         activeTradeId = OrderSend(_Symbol, OP_BUYSTOP, lotSize, signalPrice + varianceOffset, slippage, localBuyStopLoss, localBuyTakeProfit, "Bloom Buy Stop", 91);
-      } else if (Open[0] > signalPrice) {
+      if (Open[0] > signalPrice) {
          Print("Opening Sell Stop Order");
          activeTradeId = OrderSend(_Symbol, OP_SELLSTOP, lotSize, signalPrice - varianceOffset, slippage, localSellStopLoss, localSellTakeProfit, "Bloom Sell Stop", 91);
+      } else {
+         Print("Opening Buy Stop Order");
+         activeTradeId = OrderSend(_Symbol, OP_BUYSTOP, lotSize, signalPrice + varianceOffset, slippage, localBuyStopLoss, localBuyTakeProfit, "Bloom Buy Stop", 91);
       }
    }
 }
