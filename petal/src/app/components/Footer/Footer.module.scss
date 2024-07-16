@@ -3,9 +3,7 @@
 
 .footer {
   width: 100%;
-  padding: 5rem 0 3.5rem 0;
-  background-color: $color-tertiary;
-  color: $color-font-secondary;
+  @include section-padding('medium');
 
   &__container {
     @include container();
@@ -16,7 +14,7 @@
       @include body-sizing('xsmall', 'mobile');
     }
 
-    font-weight: 500;
+    font-weight: $font-weight-regular;
     letter-spacing: -0.025rem;
   }
 
@@ -38,5 +36,25 @@
     &:first-child {
       text-align: left;
     }
+  }
+
+  &--primary {
+    background-color: $color-primary;
+    color: $color-font-secondary;
+  }
+
+  &--secondary {
+    background-color: $color-secondary;
+    color: $color-font-primary;
+  }
+
+  &--tertiary {
+    background-color: $color-tertiary;
+    color: $color-font-secondary;
+  }
+
+  &--white {
+    background-color: $color-white;
+    color: $color-font-primary;
   }
 }

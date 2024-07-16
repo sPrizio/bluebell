@@ -3,13 +3,24 @@ import {SimpleImage} from "@/app/types/appTypes";
 import Image from "next/image";
 import React from "react";
 
+/**
+ * A section that contains imaging. The standard page separator
+ *
+ * @param title section title
+ * @param text section text
+ * @param variant color variant
+ * @param alignment text alignment
+ * @param image image
+ * @param cta optional cta
+ * @author Stephen Prizio
+ * @version 0.0.1
+ */
 export default function ImageSection(
   {
     title = '',
     text = '',
     variant = 'primary',
     alignment = 'left',
-    size = 'medium',
     image = null,
     cta = null
   }
@@ -18,7 +29,6 @@ export default function ImageSection(
     text: any,
     variant?: 'primary' | 'secondary' | 'tertiary' | 'white',
     alignment?: 'left' | 'center' | 'right'
-    size?: 'small' | 'medium' | 'large',
     image?: SimpleImage,
     cta?: React.ReactNode
   }>
@@ -35,14 +45,12 @@ export default function ImageSection(
    * @param variant - determines color & shape. Accepted values are : 'primary', 'secondary', 'tertiary'.
    *                 if the value is not one of the above or is missing, the button will not render
    * @param alignment - text alignment
-   * @param size - font size
    */
-  function computeClass(variant, alignment, size) {
+  function computeClass(variant, alignment) {
     const v = variant ? styles[`${baseClass}--${variant}`] : ""
     const a = alignment ? styles[`${baseClass}--${alignment}`] : ""
-    const s = size ? styles[`${baseClass}--${size}`] : ""
 
-    return `${styles[baseClass]} ${v} ${a} ${s}`.trim()
+    return `${styles[baseClass]} ${v} ${a}`.trim()
   }
 
   if (!variant || variant.length === 0) {
@@ -53,7 +61,7 @@ export default function ImageSection(
   //  RENDER
 
   return (
-    <div className={computeClass(variant, alignment, size)}>
+    <div className={computeClass(variant, alignment)}>
       <div className={styles[`${baseClass}__title`]}>
         {title}
       </div>

@@ -3,18 +3,44 @@ import styles from './Footer.module.scss'
 /**
  * The footer component TODO: increase this to show more links and socials
  *
+ * @param variant color variant
  * @author Stephen Prizio
  * @version 0.0.1
  */
-export default function Footer() {
+export default function Footer(
+  {
+    variant = 'primary',
+  }
+    : Readonly<{
+    variant?: 'primary' | 'secondary' | 'tertiary' | 'white',
+  }>
+) {
 
   const baseClass : string = "footer";
+
+
+  //  GENERAL FUNCTIONS
+
+  /**
+   * Computes the css class based on the given props
+   *
+   * @param variant - determines color & shape. Accepted values are : 'primary', 'secondary', 'tertiary'.
+   *                 if the value is not one of the above or is missing, the button will not render
+   */
+  function computeClass(variant) {
+    const v = variant ? styles[`${baseClass}--${variant}`] : ""
+    return `${styles[baseClass]} ${v}`.trim()
+  }
+
+  if (!variant || variant.length === 0) {
+    return null
+  }
 
 
   //  RENDER
 
   return (
-    <div className={styles[baseClass]}>
+    <div className={computeClass(variant)}>
       <div className={styles[`${baseClass}__container`]}>
         <div className={styles[`${baseClass}__content`]}>
           <div className={styles[`${baseClass}__item`]}>

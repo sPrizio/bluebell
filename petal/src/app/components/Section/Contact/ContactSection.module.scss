@@ -2,7 +2,7 @@
 @import "@/app/mixins.module";
 
 .contact-section {
-  @include section-padding();
+  @include section-padding('large');
   background-color: $color-background;
 
   &__container {

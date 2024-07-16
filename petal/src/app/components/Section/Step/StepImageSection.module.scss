@@ -5,7 +5,7 @@
   $this: &;
   @include flex();
   text-align: center;
-  @include section-padding();
+  @include section-padding('large');
 
   &--background {
     background-color: $color-background;
