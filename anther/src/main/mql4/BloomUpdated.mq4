@@ -13,11 +13,12 @@ input double longTakeProfit = 48.0;
 input double longStopLoss = 23.0;
 input double shortTakeProfit = 58.0;
 input double shortStopSLoss = 22.0;
-input int slippage = 10;
 input bool allowBreakEvenStop = true;
 input int breakEvenStopLevel = 30;
+input bool logTradeContext = false;
 
 // GLOBALS
+int slippage = 10;
 double varianceOffset = 2.25;
 datetime globalTime;
 double signalPrice = -1.0;
@@ -70,8 +71,10 @@ void OnBar() {
    Logs info about the current bar and trade context
 */
 void LogTradeContext() {
-   Print(StringFormat("Trade Window: %s, Signal Price: %.2f, Active Trade Id: %.d", IsTradeWindowOpen() ? "Open" : "Closed", signalPrice, activeTradeId));
-   Print(StringFormat("Current Bar: %d:%.2d", TimeHour(globalTime), TimeMinute(globalTime)));
+   if (logTradeContext) {
+      Print(StringFormat("Trade Window: %s, Signal Price: %.2f, Active Trade Id: %.d", IsTradeWindowOpen() ? "Open" : "Closed", signalPrice, activeTradeId));
+      Print(StringFormat("Current Bar: %d:%.2d", TimeHour(globalTime), TimeMinute(globalTime)));
+   }
 }
 
 /*
@@ -139,14 +142,11 @@ void OpenBloomTrade() {
       double localSellTakeProfit = signalPrice - shortTakeProfit;
 
       if (Open[0] < signalPrice) {
-        Print("Opening Buy Stop Order");
-        activeTradeId = OrderSend(_Symbol, OP_BUYSTOP, lotSize, signalPrice + varianceOffset, slippage, localBuyStopLoss, localBuyTakeProfit, "Bloom Buy Stop", 91);
+         Print("Opening Buy Stop Order");
+         activeTradeId = OrderSend(_Symbol, OP_BUYSTOP, lotSize, signalPrice + varianceOffset, slippage, localBuyStopLoss, localBuyTakeProfit, "Bloom Buy Stop", 91);
       } else if (Open[0] > signalPrice) {
-        Print("Opening Sell Stop Order");
-        activeTradeId = OrderSend(_Symbol, OP_SELLSTOP, lotSize, signalPrice - varianceOffset, slippage, localSellStopLoss, localSellTakeProfit, "Bloom Sell Stop", 91);
-      } else {
-        Print("Opening Buy Stop Order");
-        activeTradeId = OrderSend(_Symbol, OP_BUYSTOP, lotSize, signalPrice + varianceOffset, slippage, localBuyStopLoss, localBuyTakeProfit, "Bloom Buy Stop", 91);
+         Print("Opening Sell Stop Order");
+         activeTradeId = OrderSend(_Symbol, OP_SELLSTOP, lotSize, signalPrice - varianceOffset, slippage, localSellStopLoss, localSellTakeProfit, "Bloom Sell Stop", 91);
       }
    }
 }
