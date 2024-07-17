@@ -5,7 +5,11 @@
   $this: &;
   @include flex($direction: column);
   position: relative;
-  @include section-padding();
+  @include section-padding('large');
+
+  &__title {
+    width: 100%;
+  }
 
   &__container {
     @include container();
@@ -103,7 +107,7 @@
     text-align: right;
   }
 
-  &--small {
+  /*&--small {
     min-height: 30rem;
   }
 
@@ -113,5 +117,5 @@
 
   &--large {
     min-height: 50rem;
-  }
+  }*/
 }

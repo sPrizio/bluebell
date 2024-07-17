@@ -45,7 +45,7 @@ export default function ContentLayout({children}: Readonly<{ children: React.Rea
       <div className={styles[`${baseClass}__content`]}>
         {children}
       </div>
-      <Footer/>
+      <Footer variant={"secondary"}/>
       <BackToTop variant={"tertiary"} size={"medium"} />
     </div>
   )

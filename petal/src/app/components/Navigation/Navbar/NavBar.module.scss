@@ -6,15 +6,16 @@
   position: relative;
   z-index: 100;
   padding: 1.0rem 0;
+  @include flex();
 
   &__container {
     @include container();
     @include flex();
+    width: 100%;
   }
 
   &__items {
-    display: flex;
-    align-items: center;
+    @include flex();
 
     &--left {
       flex: 0.5;
@@ -134,6 +135,14 @@
   }
 
   &--small {
+    height: 6rem;
+
+    @include mq-large-down {
+      height: 4rem;
+    }
+  }
+
+  &--medium {
     height: 8rem;
 
     @include mq-large-down {
@@ -141,19 +150,11 @@
     }
   }
 
-  &--medium {
+  &--large {
     height: 10rem;
 
     @include mq-large-down {
       height: 8rem;
-    }
-  }
-
-  &--large {
-    height: 12rem;
-
-    @include mq-large-down {
-      height: 10rem;
     }
   }
 

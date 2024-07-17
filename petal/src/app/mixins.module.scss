@@ -136,8 +136,15 @@
   align-self: $self;
 }
 
-@mixin section-padding() {
-  padding: $section-padding 0;
+@mixin section-padding($size: 'medium') {
+
+  @if $size == 'small' {
+    padding: $section-padding-small 0;
+  } @else if $size == 'large' {
+    padding: $section-padding-large 0;
+  } @else {
+    padding: $section-padding-medium 0;
+  }
 }
 
 @mixin hero-title($size: 3) {

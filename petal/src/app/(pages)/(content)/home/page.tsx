@@ -80,7 +80,6 @@ export default function HomePage() {
         text={getImageSectionText()}
         variant={'white'}
         alignment={'center'}
-        size={"large"}
         image={{
           src: testBanner,
           alt: 'Test Banner',
