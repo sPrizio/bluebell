@@ -1,8 +1,10 @@
-//+------------------------------------------------------------------+
-//|                                                        Bloom.mq4 |
-//|                                                   Stephen Prizio |
-//|                                         https://www.bluebell.com |
-//+------------------------------------------------------------------+
+/*
+   +------------------------------------------------------------------+
+   |                                                        Bloom.mq4 |
+   |                                                   Stephen Prizio |
+   |                                         https://www.bluebell.com |
+   +------------------------------------------------------------------+
+*/
 #property copyright "Stephen Prizio"
 #property link      "https://www.bluebell.com"
 #property version   "1.0"
@@ -16,6 +18,7 @@ input double shortStopSLoss = 22.0;
 input bool allowBreakEvenStop = true;
 input int breakEvenStopLevel = 30;
 input bool logTradeContext = false;
+input double reversalWindow = 85.0;
 
 // GLOBALS
 int slippage = 10;
@@ -24,21 +27,25 @@ datetime globalTime;
 double signalPrice = -1.0;
 int activeTradeId = -1;
 
-//+------------------------------------------------------------------+
-//| Expert initialization function                                   |
-//+------------------------------------------------------------------+
-int OnInit() {
-   return(INIT_SUCCEEDED);
-}
-//+------------------------------------------------------------------+
-//| Expert deinitialization function                                 |
-//+------------------------------------------------------------------+
-void OnDeinit(const int reason) {
+/*
+   +------------------------------------------------------------------+
+   | Expert initialization function                                   |
+   +------------------------------------------------------------------+
+*/
+int OnInit() { return(INIT_SUCCEEDED); }
 
-}
-//+------------------------------------------------------------------+
-//| Expert tick function                                             |
-//+------------------------------------------------------------------+
+/*
+   +------------------------------------------------------------------+
+   | Expert deinitialization function                                 |
+   +------------------------------------------------------------------+
+*/
+void OnDeinit(const int reason) {}
+
+/*
+   +------------------------------------------------------------------+
+   | Expert tick function                                             |
+   +------------------------------------------------------------------+
+*/
 void OnTick() {
 
    TrackTime();
@@ -47,9 +54,11 @@ void OnTick() {
    }
 }
 
-//+------------------------------------------------------------------+
-//| Expert bar function                                              |
-//+------------------------------------------------------------------+
+/*
+   +------------------------------------------------------------------+
+   | Expert bar function                                              |
+   +------------------------------------------------------------------+
+*/
 void OnBar() {
 
    LogTradeContext();
@@ -63,9 +72,11 @@ void OnBar() {
    }
 }
 
-//+------------------------------------------------------------------+
-//| General Functions                                                |
-//+------------------------------------------------------------------+
+/*
+   +------------------------------------------------------------------+
+   | General Functions                                                |
+   +------------------------------------------------------------------+
+*/
 
 /*
    Logs info about the current bar and trade context
@@ -104,6 +115,13 @@ bool IsTradeWindowOpen() {
    @returns true if a trade is active
 */
 bool HasActiveTrade() {
+
+   if (activeTradeId != -1) {
+      return true;
+   } else if (OrdersTotal() > 0 && OrderSelect(0, SELECT_BY_POS, MODE_TRADES)) {
+      activeTradeId = OrderTicket();
+   }
+
    return activeTradeId != -1;
 }
 
@@ -147,6 +165,9 @@ void OpenBloomTrade() {
       } else if (Open[0] > signalPrice) {
          Print("Opening Sell Stop Order");
          activeTradeId = OrderSend(_Symbol, OP_SELLSTOP, lotSize, signalPrice - varianceOffset, slippage, localSellStopLoss, localSellTakeProfit, "Bloom Sell Stop", 91);
+      } else {
+         Print("Opening Buy Stop Order");
+         activeTradeId = OrderSend(_Symbol, OP_BUYSTOP, lotSize, signalPrice + varianceOffset, slippage, localBuyStopLoss, localBuyTakeProfit, "Bloom Buy Stop", 91);
       }
    }
 }
@@ -194,7 +215,7 @@ void ProtectSelf() {
       if (GetOrderType() == OP_SELLSTOP) {
          double high = High[iHighest(_Symbol, _Period, MODE_HIGH, 100, 0)];
          if (OrderSelect(activeTradeId, SELECT_BY_TICKET)) {
-            if (MathAbs(high - OrderOpenPrice()) > 75 && DeleteTrade()) {
+            if (MathAbs(high - OrderOpenPrice()) > reversalWindow && DeleteTrade()) {
                Print("Flipping the switch.");
                GetSignalPrice();
                double localBuyStopLoss = signalPrice - longStopLoss;
@@ -206,7 +227,7 @@ void ProtectSelf() {
       } else if (GetOrderType() == OP_BUYSTOP) {
          double low = Low[iLowest(_Symbol, _Period, MODE_LOW, 100, 0)];
          if (OrderSelect(activeTradeId, SELECT_BY_TICKET)) {
-            if (MathAbs(OrderOpenPrice() - low) > 75 && DeleteTrade()) {
+            if (MathAbs(OrderOpenPrice() - low) > reversalWindow && DeleteTrade()) {
                Print("Flipping the switch.");
                GetSignalPrice();
                double localSellStopLoss = signalPrice + shortStopSLoss;
@@ -273,3 +294,35 @@ void SetBreakEvenStop() {
       }
    }
 }
+
+/*
+   Control Statistics. Bloom Version 1.0
+   As of July 17th, 2024 (exclusive)
+   Parameters:
+      lotSize = 0.4;
+      longTakeProfit = 48.0;
+      longStopLoss = 23.0;
+      shortTakeProfit = 58.0;
+      shortStopSLoss = 22.0;
+      allowBreakEvenStop = true;
+      breakEvenStopLevel = 30;
+      logTradeContext = false;
+      reversalWindow = 85.0;
+
+      // GLOBALS
+      slippage = 10;
+      varianceOffset = 2.25;
+      globalTime;
+      signalPrice = -1.0;
+      activeTradeId = -1;
+*/
+/*
+   +------------------------------------------------------------------+
+   | Trades                                                        110 |
+   | Net Profit                                             $10,892.00 |
+   | Profitability                                                2.38 |
+   | Win %                                                      61.82% |
+   | Max Drawdown                                    $1,105.44 (2.63%) |
+   | Relative Drawdown                                 $929.52 (2.95%) |
+   +------------------------------------------------------------------+
+*/
