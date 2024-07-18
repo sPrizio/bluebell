@@ -218,10 +218,10 @@ void ProtectSelf() {
             if (MathAbs(high - OrderOpenPrice()) > reversalWindow && DeleteTrade()) {
                Print("Flipping the switch.");
                GetSignalPrice();
-               double localBuyStopLoss = signalPrice - longStopLoss;
-               double localBuyTakeProfit = signalPrice + longTakeProfit;
+               double localBuyStopLoss = signalPrice - (longStopLoss * 1.5);
+               double localBuyTakeProfit = signalPrice + (longTakeProfit * 1.5);
 
-               activeTradeId = OrderSend(_Symbol, OP_BUYLIMIT, lotSize, signalPrice - varianceOffset, slippage, localBuyStopLoss, localBuyTakeProfit, "Bloom Buy Stop", 91);
+               activeTradeId = OrderSend(_Symbol, OP_BUYLIMIT, (lotSize * 0.75), signalPrice - varianceOffset, slippage, localBuyStopLoss, localBuyTakeProfit, "Bloom Buy Stop", 91);
             }
          }
       } else if (GetOrderType() == OP_BUYSTOP) {
@@ -230,10 +230,10 @@ void ProtectSelf() {
             if (MathAbs(OrderOpenPrice() - low) > reversalWindow && DeleteTrade()) {
                Print("Flipping the switch.");
                GetSignalPrice();
-               double localSellStopLoss = signalPrice + shortStopSLoss;
-               double localSellTakeProfit = signalPrice - shortTakeProfit;
+               double localSellStopLoss = signalPrice + (shortStopSLoss * 1.5);
+               double localSellTakeProfit = signalPrice - (shortTakeProfit * 1.5);
 
-               activeTradeId = OrderSend(_Symbol, OP_SELLLIMIT, lotSize, signalPrice + varianceOffset, slippage, localSellStopLoss, localSellTakeProfit, "Bloom Sell Stop", 91);
+               activeTradeId = OrderSend(_Symbol, OP_SELLLIMIT, (lotSize * 0.75), signalPrice + varianceOffset, slippage, localSellStopLoss, localSellTakeProfit, "Bloom Sell Stop", 91);
             }
          }
       }
@@ -318,11 +318,11 @@ void SetBreakEvenStop() {
 */
 /*
    +------------------------------------------------------------------+
-   | Trades                                                        110 |
-   | Net Profit                                             $10,892.00 |
-   | Profitability                                                2.38 |
-   | Win %                                                      61.82% |
-   | Max Drawdown                                    $1,105.44 (2.63%) |
-   | Relative Drawdown                                 $929.52 (2.95%) |
+   | Trades                                                        111 |
+   | Net Profit                                             $10,297.50 |
+   | Profitability                                                2.32 |
+   | Win %                                                      63.96% |
+   | Max Drawdown                                    $1,102.80 (2.70%) |
+   | Relative Drawdown                                 $929.52 (2.94%) |
    +------------------------------------------------------------------+
 */
