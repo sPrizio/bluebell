@@ -90,14 +90,8 @@ public class Bloom implements Strategy<BloomStrategyParameters> {
                 //  check each market price to see if any of the open trades were hit
                 checkRelatedTrades(this.openTrades, this.closedTrades, marketPrice);
 
-                if (isExitBar(marketPrice) && !this.openTrades.isEmpty()) {
-                    this.openTrades.forEach((key, trade) -> {
-                        closeTrade(trade, marketPrice.date(), marketPrice.open());
-                        this.closedTrades.put(trade.getId(), trade);
-                    });
-
-                    this.closedTrades.keySet().forEach(this.openTrades::remove);
-                }
+                //  close the trading day
+                closeDay(marketPrice, this.openTrades, this.closedTrades);
             }
         }
 
@@ -106,6 +100,16 @@ public class Bloom implements Strategy<BloomStrategyParameters> {
         this.closedTrades.clear();
 
         return result;
+    }
+
+    /**
+     * Returns true if the given {@link MarketPrice} is equal to the end of day
+     *
+     * @param price {@link MarketPrice}
+     * @return true if hour and minute are equal
+     */
+    public boolean isExitBar(final MarketPrice price) {
+        return price.date().getHour() == 16 && price.date().getMinute() == 0;
     }
 
 
@@ -180,16 +184,6 @@ public class Bloom implements Strategy<BloomStrategyParameters> {
      */
     private boolean isSignalBar(final MarketPrice price) {
         return price.date().getHour() == this.strategyParameters.getStartHour() && price.date().getMinute() == this.strategyParameters.getStartMinute();
-    }
-
-    /**
-     * Returns true if the given {@link MarketPrice} is equal to the end of day
-     *
-     * @param price {@link MarketPrice}
-     * @return true if hour and minute are equal
-     */
-    private boolean isExitBar(final MarketPrice price) {
-        return price.date().getHour() == 16 && price.date().getMinute() == 0;
     }
 
     /**

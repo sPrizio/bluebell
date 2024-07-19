@@ -8,7 +8,9 @@ import com.bluebell.anther.models.simulation.SimulationResult;
 import com.bluebell.anther.models.strategy.StrategyResult;
 import com.bluebell.anther.simulation.Simulation;
 import com.bluebell.anther.strategies.impl.Bloom;
+import com.bluebell.radicle.enums.RadicleTimeInterval;
 import com.bluebell.radicle.models.AggregatedMarketPrices;
+import com.bluebell.radicle.parsers.impl.FirstRateDataParser;
 import com.bluebell.radicle.services.MathService;
 import org.apache.commons.collections4.MapUtils;
 
@@ -32,29 +34,41 @@ public class BloomSimulation implements Simulation<BloomStrategyParameters> {
 
     private final MathService mathService = new MathService();
 
-    //  TODO: for reference: 8 = 15, 9 = 16, 11 = 18, 12 = 19
-    //  TODO: if that order is completed and a loss, set another one (at noon)
-    //  TODO: close pending orders at EOD
+    private final LocalDate start;
+
+    private final LocalDate end;
+
+    private final RadicleTimeInterval timeInterval;
+
+    private final ChronoUnit unit;
+
+    public BloomSimulation(final LocalDate start, final LocalDate end, final RadicleTimeInterval timeInterval, final ChronoUnit unit) {
+        this.start = start;
+        this.end = end;
+        this.timeInterval = timeInterval;
+        this.unit = unit;
+    }
 
 
     //  METHODS
 
     @Override
-    public SimulationResult<BloomStrategyParameters> simulate(final Map<LocalDate, AggregatedMarketPrices> marketData, final ChronoUnit unit, final LocalDate startDate, final LocalDate endDate) {
+    public SimulationResult<BloomStrategyParameters> simulate() {
 
-        LocalDate compare = startDate;
+        LocalDate compare = this.start;
         int startingHour = 9;
         int startingMinute = 30;
 
+        final Map<LocalDate, AggregatedMarketPrices> marketData = getMarketData();
         final Map<LocalDate, List<StrategyResult<BloomStrategyParameters>>> map = new HashMap<>();
         final List<StrategyResult<BloomStrategyParameters>> entries = new ArrayList<>();
 
         double variance = 1.0;
-        while (compare.isBefore(endDate)) {
+        while (compare.isBefore(this.end)) {
             while (variance <= 1.25) {
                 while (startingMinute != 5) {
                     Bloom bloom = new Bloom(resolveStrategyParameters(getParameters(startingHour, startingMinute, variance), compare));
-                    entries.add(bloom.executeStrategy(compare, compare.plus(1, unit), marketData));
+                    entries.add(bloom.executeStrategy(compare, compare.plus(1, this.unit), marketData));
 
                     startingMinute += 5;
                     if (startingMinute == 60) {
@@ -81,33 +95,12 @@ public class BloomSimulation implements Simulation<BloomStrategyParameters> {
     //  HELPERS
 
     /**
-     * Correctly obtains {@link BloomStrategyParameters} for the given date
+     * Obtains the market data for the simulation
      *
-     * @param map preset values
-     * @param localDate date to lookup
-     * @return {@link BloomStrategyParameters}
+     * @return {@link Map} of {@link AggregatedMarketPrices}
      */
-    private BloomStrategyParameters resolveStrategyParameters(final Map<LocalDate, BloomStrategyParameters> map, final LocalDate localDate) {
-
-        if (MapUtils.isNotEmpty(map)) {
-            if (map.containsKey(localDate)) {
-                return map.get(localDate);
-            } else {
-                LocalDate test = localDate.with(TemporalAdjusters.firstDayOfMonth());
-                if (map.containsKey(test)) {
-                    return map.get(test);
-                } else {
-                    test = localDate.with(TemporalAdjusters.firstDayOfYear());
-                    if (map.containsKey(test)) {
-                        return map.get(test);
-                    }
-                }
-            }
-
-            throw new UnsupportedOperationException("No valid parameter configuration was found!");
-        }
-
-        throw new UnsupportedOperationException("No parameters found");
+    private Map<LocalDate, AggregatedMarketPrices> getMarketData() {
+        return new FirstRateDataParser().parseMarketPricesByDate(this.timeInterval);
     }
 
     /**

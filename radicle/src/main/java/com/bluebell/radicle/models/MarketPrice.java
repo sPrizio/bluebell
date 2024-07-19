@@ -80,6 +80,47 @@ public record MarketPrice(
         return !this.isDoji();
     }
 
+    /**
+     * Returns the change between the open and close
+     *
+     * @param agnostic if true, return as an absolute value
+     * @return body size
+     */
+    public double getBodySize(final boolean agnostic) {
+
+        final MathService mathService = new MathService();
+        if (agnostic) {
+            return Math.abs(mathService.subtract(this.open, this.close));
+        } else {
+            return mathService.subtract(this.close, this.open);
+        }
+    }
+
+    /**
+     * returns the total change between high and low
+     *
+     * @param agnostic if ture, return as an absolute value
+     * @return candle size
+     */
+    public double getFullSize(final boolean agnostic) {
+
+        final MathService mathService = new MathService();
+        if (agnostic) {
+            return Math.abs(mathService.subtract(this.high, this.low));
+        } else {
+            return mathService.subtract(this.high, this.low);
+        }
+    }
+
+    /**
+     * Returns true if the price contains the necessary data
+     *
+     * @return true if open and close are not zero
+     */
+    public boolean isNotEmpty() {
+        return this.open != 0.0 && this.close != 0.0;
+    }
+
     @Override
     public int compareTo(MarketPrice o) {
         return this.date.compareTo(o.date);

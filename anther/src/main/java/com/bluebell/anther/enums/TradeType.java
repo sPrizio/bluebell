@@ -8,5 +8,6 @@ package com.bluebell.anther.enums;
  */
 public enum TradeType {
     BUY,
-    SELL
+    SELL,
+    NA
 }

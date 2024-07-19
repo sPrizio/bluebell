@@ -5,6 +5,7 @@ import com.bluebell.radicle.models.AggregatedMarketPrices;
 import com.bluebell.radicle.models.MarketPrice;
 import com.bluebell.radicle.parsers.MarketPriceParser;
 import lombok.NoArgsConstructor;
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.LineIterator;
 
@@ -13,6 +14,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * Parses data from FirstData
@@ -82,6 +84,8 @@ public class FirstRateDataParser implements MarketPriceParser {
         switch (interval) {
             case ONE_MINUTE -> marketPrices = parseMarketPrices(this.isTest ? "NDX_1min_sample.csv" : "NDX_full_1min.txt", RadicleTimeInterval.ONE_MINUTE);
             case FIVE_MINUTE -> marketPrices = parseMarketPrices(this.isTest ? "NDX_5min_sample.csv" : "NDX_full_5min.txt", RadicleTimeInterval.FIVE_MINUTE);
+            case TEN_MINUTE -> marketPrices = parseDynamicMarketPrices(RadicleTimeInterval.TEN_MINUTE);
+            case FIFTEEN_MINUTE -> marketPrices = parseDynamicMarketPrices(RadicleTimeInterval.FIFTEEN_MINUTE);
             case THIRTY_MINUTE -> marketPrices = parseMarketPrices(this.isTest ? "NDX_30min_sample.csv" : "NDX_full_30min.txt", RadicleTimeInterval.THIRTY_MINUTE);
             case ONE_HOUR -> marketPrices = parseMarketPrices(this.isTest ? "NDX_1hour_sample.csv" : "NDX_full_1hour.txt", RadicleTimeInterval.ONE_HOUR);
             case ONE_DAY -> marketPrices = parseMarketPrices(this.isTest ? "" : "NDX_1day_sample.csv", RadicleTimeInterval.ONE_DAY);
@@ -106,6 +110,59 @@ public class FirstRateDataParser implements MarketPriceParser {
 
 
     //  HELPERS
+
+    /**
+     * Computes the market prices for an interval that doesn't directly map to a file
+     *
+     * @param interval {@link RadicleTimeInterval}
+     * @return {@link AggregatedMarketPrices}
+     */
+    private AggregatedMarketPrices parseDynamicMarketPrices(final RadicleTimeInterval interval) {
+
+        final AggregatedMarketPrices smallerPrices = parseMarketPrices(this.isTest ? "NDX_1min_sample.csv" : "NDX_full_1min.txt", RadicleTimeInterval.ONE_MINUTE);
+        if (CollectionUtils.isEmpty(smallerPrices.marketPrices())) {
+            return new AggregatedMarketPrices(Collections.emptySortedSet(), interval);
+        }
+
+        final Map<LocalDateTime, MarketPrice> collection = new HashMap<>();
+        smallerPrices.marketPrices().forEach(sp -> collection.put(sp.date(), sp));
+
+        final LocalDateTime start = smallerPrices.marketPrices().first().date();
+        final LocalDateTime end = smallerPrices.marketPrices().last().date();
+        LocalDateTime compare = start;
+
+        final SortedSet<MarketPrice> computed = new TreeSet<>();
+        while (compare.isBefore(end) || compare.isEqual(end)) {
+            LocalDateTime localCompareStart = compare;
+            final LocalDateTime localCompareEnd = compare.plus(interval.getAmount(), interval.getUnit());
+            final List<MarketPrice> localPrices = new ArrayList<>();
+
+            while (localCompareStart.isBefore(localCompareEnd)) {
+                if (collection.containsKey(localCompareStart)) {
+                    localPrices.add(collection.get(localCompareStart));
+                }
+
+                localCompareStart = localCompareStart.plusMinutes(1);
+            }
+
+            if (CollectionUtils.isNotEmpty(localPrices)) {
+                computed.add(
+                        new MarketPrice(
+                                compare,
+                                interval,
+                                localPrices.getFirst() != null ? localPrices.getFirst().open() : 0.0,
+                                new ArrayList<>(localPrices).stream().filter(Objects::nonNull).mapToDouble(MarketPrice::high).max().orElse(0.0),
+                                new ArrayList<>(localPrices).stream().filter(Objects::nonNull).mapToDouble(MarketPrice::low).min().orElse(0.0),
+                                localPrices.getLast() != null ? localPrices.getLast().close() : 0.0
+                        )
+                );
+            }
+
+            compare = localCompareEnd;
+        }
+
+        return new AggregatedMarketPrices(new TreeSet<>(computed.stream().filter(MarketPrice::isNotEmpty).toList()), interval);
+    }
 
     /**
      * Returns the root folder for sample data

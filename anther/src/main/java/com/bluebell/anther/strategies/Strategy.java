@@ -31,6 +31,8 @@ public interface Strategy<P extends BasicStrategyParameters> {
      */
     StrategyResult<P> executeStrategy(final LocalDate startDate, final LocalDate endDate, final Map<LocalDate, AggregatedMarketPrices> prices);
 
+    boolean isExitBar(final MarketPrice price);
+
 
     //  HELPERS
 
@@ -115,5 +117,23 @@ public interface Strategy<P extends BasicStrategyParameters> {
         });
 
         closedTrades.keySet().forEach(openTrades::remove);
+    }
+
+    /**
+     * Closes the day, meaning close all trades on the exit signal
+     *
+     * @param currentPrice {@link MarketPrice} current bar
+     * @param openTrades open trades
+     * @param closedTrades closed trades
+     */
+    default void closeDay(final MarketPrice currentPrice, final Map<String, Trade> openTrades, final Map<String, Trade> closedTrades) {
+        if (isExitBar(currentPrice) && !openTrades.isEmpty()) {
+            openTrades.forEach((key, trade) -> {
+                closeTrade(trade, currentPrice.date(), currentPrice.open());
+                closedTrades.put(trade.getId(), trade);
+            });
+
+            closedTrades.keySet().forEach(openTrades::remove);
+        }
     }
 }
