@@ -17,7 +17,9 @@ public class SproutStrategyParameters extends BasicStrategyParameters implements
 
     private double profitMultiplier;
 
-    public SproutStrategyParameters(final double profitMultiplier, final BasicStrategyParameters basicStrategyParameters) {
+    private double allowableRisk;
+
+    public SproutStrategyParameters(final double profitMultiplier, final double allowableRisk, final BasicStrategyParameters basicStrategyParameters) {
         super(
                 basicStrategyParameters.getDescription(),
                 basicStrategyParameters.getBuyLimit(),
@@ -31,5 +33,27 @@ public class SproutStrategyParameters extends BasicStrategyParameters implements
         );
 
         this.profitMultiplier = profitMultiplier;
+        this.allowableRisk = allowableRisk;
+    }
+
+
+    //  METHODS
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+
+        SproutStrategyParameters that = (SproutStrategyParameters) o;
+        return Double.compare(this.profitMultiplier, that.profitMultiplier) == 0 && Double.compare(this.allowableRisk, that.allowableRisk) == 0;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = super.hashCode();
+        result = 31 * result + Double.hashCode(this.profitMultiplier);
+        result = 31 * result + Double.hashCode(this.allowableRisk);
+        return result;
     }
 }

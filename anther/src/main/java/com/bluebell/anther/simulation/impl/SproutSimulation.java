@@ -1,6 +1,5 @@
 package com.bluebell.anther.simulation.impl;
 
-import com.bluebell.anther.enums.TradeType;
 import com.bluebell.anther.models.parameter.LimitParameter;
 import com.bluebell.anther.models.parameter.strategy.impl.BasicStrategyParameters;
 import com.bluebell.anther.models.parameter.strategy.impl.SproutStrategyParameters;
@@ -82,27 +81,29 @@ public class SproutSimulation implements Simulation<SproutStrategyParameters> {
      */
     private Map<LocalDate, SproutStrategyParameters> getParameters() {
 
-        final int startHour = 9;
-        final int startMinute = 30;
+        final int startHour = -1;
+        final int startMinute = -1;
         final double lotSize = 0.28;
         final double pricePerPoint = 5.6;
         final boolean scaleProfits = false;
         final double initialBalance = 30000.0;
+        final double profitMultiplier = 2.0;
+        final double allowableRisk = 255.0;
 
         final Map<LocalDate, SproutStrategyParameters> map = new HashMap<>();
 
-        map.put(LocalDate.of(2013, 1, 1), new SproutStrategyParameters(2.0, new BasicStrategyParameters(DESCRIPTION, new LimitParameter(TradeType.BUY, 6.1, 3.1), new LimitParameter(TradeType.SELL, 6.83, 3.42), startHour, startMinute, lotSize, pricePerPoint, scaleProfits, initialBalance)));
-        map.put(LocalDate.of(2014, 1, 1), new SproutStrategyParameters(2.0, new BasicStrategyParameters(DESCRIPTION, new LimitParameter(TradeType.BUY, 8.0, 4.0), new LimitParameter(TradeType.SELL, 9.11, 4.56), startHour, startMinute, lotSize, pricePerPoint, scaleProfits, initialBalance)));
-        map.put(LocalDate.of(2015, 1, 1), new SproutStrategyParameters(2.0, new BasicStrategyParameters(DESCRIPTION, new LimitParameter(TradeType.BUY, 14.89, 7.45), new LimitParameter(TradeType.SELL, 12.88, 6.44), startHour, startMinute, lotSize, pricePerPoint, scaleProfits, initialBalance)));
-        map.put(LocalDate.of(2016, 1, 1), new SproutStrategyParameters(2.0, new BasicStrategyParameters(DESCRIPTION, new LimitParameter(TradeType.BUY, 12.29, 6.15), new LimitParameter(TradeType.SELL, 9.79, 4.9), startHour, startMinute, lotSize, pricePerPoint, scaleProfits, initialBalance)));
-        map.put(LocalDate.of(2017, 1, 1), new SproutStrategyParameters(2.0, new BasicStrategyParameters(DESCRIPTION, new LimitParameter(TradeType.BUY, 9.88, 4.94), new LimitParameter(TradeType.SELL, 8.2, 4.1), startHour, startMinute, lotSize, pricePerPoint, scaleProfits, initialBalance)));
-        map.put(LocalDate.of(2018, 1, 1), new SproutStrategyParameters(2.0, new BasicStrategyParameters(DESCRIPTION, new LimitParameter(TradeType.BUY, 20.81, 10.41), new LimitParameter(TradeType.SELL, 25.47, 12.74), startHour, startMinute, lotSize, pricePerPoint, scaleProfits, initialBalance)));
-        map.put(LocalDate.of(2019, 1, 1), new SproutStrategyParameters(2.0, new BasicStrategyParameters(DESCRIPTION, new LimitParameter(TradeType.BUY, 18.37, 9.19), new LimitParameter(TradeType.SELL, 17.12, 8.56), startHour, startMinute, lotSize, pricePerPoint, scaleProfits, initialBalance)));
-        map.put(LocalDate.of(2020, 1, 1), new SproutStrategyParameters(2.0, new BasicStrategyParameters(DESCRIPTION, new LimitParameter(TradeType.BUY, 49.53, 24.77), new LimitParameter(TradeType.SELL, 55.98, 28.0), startHour, startMinute, lotSize, pricePerPoint, scaleProfits, initialBalance)));
-        map.put(LocalDate.of(2021, 1, 1), new SproutStrategyParameters(2.0, new BasicStrategyParameters(DESCRIPTION, new LimitParameter(TradeType.BUY, 48.22, 24.11), new LimitParameter(TradeType.SELL, 39.03, 19.52), startHour, startMinute, lotSize, pricePerPoint, scaleProfits, initialBalance)));
-        map.put(LocalDate.of(2022, 1, 1), new SproutStrategyParameters(2.0, new BasicStrategyParameters(DESCRIPTION, new LimitParameter(TradeType.BUY, 70.35, 35.18), new LimitParameter(TradeType.SELL, 64.13, 32.07), startHour, startMinute, lotSize, pricePerPoint, scaleProfits, initialBalance)));
-        map.put(LocalDate.of(2023, 1, 1), new SproutStrategyParameters(2.0, new BasicStrategyParameters(DESCRIPTION, new LimitParameter(TradeType.BUY, 41.84, 20.92), new LimitParameter(TradeType.SELL, 48.93, 24.47), startHour, startMinute, lotSize, pricePerPoint, scaleProfits, initialBalance)));
-        map.put(LocalDate.of(2024, 1, 1), new SproutStrategyParameters(2.0, new BasicStrategyParameters(DESCRIPTION, new LimitParameter(TradeType.BUY, 60.0, 28.0), new LimitParameter(TradeType.SELL, 60.0, 28.0), startHour, startMinute, lotSize, pricePerPoint, scaleProfits, initialBalance)));
+        map.put(LocalDate.of(2013, 1, 1), new SproutStrategyParameters(profitMultiplier, allowableRisk, new BasicStrategyParameters(DESCRIPTION, new LimitParameter(), new LimitParameter(), startHour, startMinute, lotSize, pricePerPoint, scaleProfits, initialBalance)));
+        map.put(LocalDate.of(2014, 1, 1), new SproutStrategyParameters(profitMultiplier, allowableRisk, new BasicStrategyParameters(DESCRIPTION, new LimitParameter(), new LimitParameter(), startHour, startMinute, lotSize, pricePerPoint, scaleProfits, initialBalance)));
+        map.put(LocalDate.of(2015, 1, 1), new SproutStrategyParameters(profitMultiplier, allowableRisk, new BasicStrategyParameters(DESCRIPTION, new LimitParameter(), new LimitParameter(), startHour, startMinute, lotSize, pricePerPoint, scaleProfits, initialBalance)));
+        map.put(LocalDate.of(2016, 1, 1), new SproutStrategyParameters(profitMultiplier, allowableRisk, new BasicStrategyParameters(DESCRIPTION, new LimitParameter(), new LimitParameter(), startHour, startMinute, lotSize, pricePerPoint, scaleProfits, initialBalance)));
+        map.put(LocalDate.of(2017, 1, 1), new SproutStrategyParameters(profitMultiplier, allowableRisk, new BasicStrategyParameters(DESCRIPTION, new LimitParameter(), new LimitParameter(), startHour, startMinute, lotSize, pricePerPoint, scaleProfits, initialBalance)));
+        map.put(LocalDate.of(2018, 1, 1), new SproutStrategyParameters(profitMultiplier, allowableRisk, new BasicStrategyParameters(DESCRIPTION, new LimitParameter(), new LimitParameter(), startHour, startMinute, lotSize, pricePerPoint, scaleProfits, initialBalance)));
+        map.put(LocalDate.of(2019, 1, 1), new SproutStrategyParameters(profitMultiplier, allowableRisk, new BasicStrategyParameters(DESCRIPTION, new LimitParameter(), new LimitParameter(), startHour, startMinute, lotSize, pricePerPoint, scaleProfits, initialBalance)));
+        map.put(LocalDate.of(2020, 1, 1), new SproutStrategyParameters(profitMultiplier, allowableRisk, new BasicStrategyParameters(DESCRIPTION, new LimitParameter(), new LimitParameter(), startHour, startMinute, lotSize, pricePerPoint, scaleProfits, initialBalance)));
+        map.put(LocalDate.of(2021, 1, 1), new SproutStrategyParameters(profitMultiplier, allowableRisk, new BasicStrategyParameters(DESCRIPTION, new LimitParameter(), new LimitParameter(), startHour, startMinute, lotSize, pricePerPoint, scaleProfits, initialBalance)));
+        map.put(LocalDate.of(2022, 1, 1), new SproutStrategyParameters(profitMultiplier, allowableRisk, new BasicStrategyParameters(DESCRIPTION, new LimitParameter(), new LimitParameter(), startHour, startMinute, lotSize, pricePerPoint, scaleProfits, initialBalance)));
+        map.put(LocalDate.of(2023, 1, 1), new SproutStrategyParameters(profitMultiplier, allowableRisk, new BasicStrategyParameters(DESCRIPTION, new LimitParameter(), new LimitParameter(), startHour, startMinute, lotSize, pricePerPoint, scaleProfits, initialBalance)));
+        map.put(LocalDate.of(2024, 1, 1), new SproutStrategyParameters(profitMultiplier, allowableRisk, new BasicStrategyParameters(DESCRIPTION, new LimitParameter(), new LimitParameter(), startHour, startMinute, lotSize, pricePerPoint, scaleProfits, initialBalance)));
 
         return map;
     }

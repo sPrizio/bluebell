@@ -2,11 +2,13 @@ package com.bluebell.anther.services.reporting.impl;
 
 import com.bluebell.anther.models.parameter.strategy.impl.BasicStrategyParameters;
 import com.bluebell.anther.models.parameter.strategy.impl.BloomStrategyParameters;
+import com.bluebell.anther.models.parameter.strategy.impl.SproutStrategyParameters;
 import com.bluebell.anther.models.simulation.SimulationResult;
 import com.bluebell.anther.models.strategy.StrategyResult;
 import com.bluebell.anther.services.reporting.ReportingService;
 import com.bluebell.anther.strategies.Strategy;
 import com.bluebell.anther.strategies.impl.Bloom;
+import com.bluebell.anther.strategies.impl.Sprout;
 import com.bluebell.anther.util.DirectoryUtil;
 
 import java.io.File;
@@ -65,11 +67,14 @@ public class StrategyReportingService<S extends Strategy<P>, P extends BasicStra
                         } else {
                             stringBuilder.append("\n");
                         }
+                    } else if (pStrategyResult.getStrategyParameters() instanceof SproutStrategyParameters sp) {
+                        stringBuilder.append("Profit Multiplier: ").append(sp.getProfitMultiplier()).append("\n");
+                        stringBuilder.append("Allowable Risk: ").append(sp.getAllowableRisk()).append(" points").append("\n");
                     }
 
                     stringBuilder
                             .append(pStrategyResult.getStrategyParameters().getDescription()).append("\n")
-                            .append(pStrategyResult.getWins().size()).append(" wins / ").append(pStrategyResult.getLosses().size()).append(" losses").append("\n")
+                            .append(pStrategyResult.getWins().size()).append(" wins / ").append(pStrategyResult.getLosses().size()).append(" losses (").append(pStrategyResult.getWinPercentage()).append("%)").append("\n")
                             .append("Net Points: ").append(pStrategyResult.getPoints()).append("\n")
                             .append("Net Profit: ").append("$").append(pStrategyResult.getNetProfit()).append("\n")
                             .append("Daily Win Percentage: ").append(pStrategyResult.getDailyWinPercentage()).append("%").append("\n")
@@ -99,6 +104,8 @@ public class StrategyReportingService<S extends Strategy<P>, P extends BasicStra
         String result = DirectoryUtil.getDirectory(root);
         if (this.strategy.isAssignableFrom(Bloom.class)) {
             result += "bloom/";
+        } else if (this.strategy.isAssignableFrom(Sprout.class)) {
+            result += "sprout/";
         } else {
             result += "general/";
         }

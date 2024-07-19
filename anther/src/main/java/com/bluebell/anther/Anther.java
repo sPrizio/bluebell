@@ -8,6 +8,7 @@ import com.bluebell.anther.models.simulation.SimulationResult;
 import com.bluebell.anther.services.metadata.MetaDataService;
 import com.bluebell.anther.services.reporting.impl.BloomReportingService;
 import com.bluebell.anther.services.reporting.impl.MetaDataReportingService;
+import com.bluebell.anther.services.reporting.impl.SproutReportingService;
 import com.bluebell.anther.simulation.impl.BloomSimulation;
 import com.bluebell.anther.simulation.impl.SproutSimulation;
 import com.bluebell.radicle.enums.RadicleTimeInterval;
@@ -30,9 +31,9 @@ public class Anther {
     private static final boolean RUN_BLOOM = false;
     private static final boolean RUN_SPROUT = true;
     private static final boolean RUN_SIMULATION = true;
-    private static final boolean GENERATE_REPORTS = false;
+    private static final boolean GENERATE_REPORTS = true;
     private static final boolean GENERATE_METADATA = false;
-    private static final boolean GENERATE_CUMULATIVE_REPORTS = false;
+    private static final boolean GENERATE_CUMULATIVE_REPORTS = true;
     private static final boolean COMPUTE_DECISIONS = false;
 
     private static final ChronoUnit UNIT = ChronoUnit.YEARS;
@@ -104,15 +105,15 @@ public class Anther {
 
         if (RUN_SIMULATION) {
             final SproutSimulation sproutSimulation = new SproutSimulation(start, end, timeInterval, unit);
-            //final BloomReportingService strategyReportingService = new BloomReportingService();
+            final SproutReportingService strategyReportingService = new SproutReportingService();
             final SimulationResult<SproutStrategyParameters> simulationResult = sproutSimulation.simulate();
 
             if (GENERATE_REPORTS) {
-                //strategyReportingService.generateReportForSimulationResult(unit, simulationResult);
+                strategyReportingService.generateReportForSimulationResult(unit, simulationResult);
             }
 
             if (GENERATE_CUMULATIVE_REPORTS) {
-                //strategyReportingService.generateCumulativeReport(simulationResult);
+                strategyReportingService.generateCumulativeReport(simulationResult);
             }
         }
     }
