@@ -28,6 +28,7 @@ import java.util.Map;
 public class StrategyReportingService<S extends Strategy<P>, P extends BasicStrategyParameters> implements ReportingService {
 
     private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("MMMM d yyyy");
+    private static final String POINTS_SUFFIX = " points";
 
     private final Class<S> strategy;
 
@@ -69,17 +70,19 @@ public class StrategyReportingService<S extends Strategy<P>, P extends BasicStra
                         }
                     } else if (pStrategyResult.getStrategyParameters() instanceof SproutStrategyParameters sp) {
                         stringBuilder.append("Profit Multiplier: ").append(sp.getProfitMultiplier()).append("\n");
-                        stringBuilder.append("Allowable Risk: ").append(sp.getAllowableRisk()).append(" points").append("\n");
+                        stringBuilder.append("Allowable Risk: ").append(sp.getAllowableRisk()).append(POINTS_SUFFIX).append("\n");
+                        stringBuilder.append("Minimum Risk: ").append(sp.getMinimumRisk()).append(POINTS_SUFFIX).append("\n");
+                        stringBuilder.append("Minimum Reward: ").append(sp.getMinimumReward()).append(POINTS_SUFFIX).append("\n\n");
                     }
 
                     stringBuilder
                             .append(pStrategyResult.getStrategyParameters().getDescription()).append("\n")
-                            .append(pStrategyResult.getWins().size()).append(" wins / ").append(pStrategyResult.getLosses().size()).append(" losses (").append(pStrategyResult.getWinPercentage()).append("%)").append("\n")
+                            .append(pStrategyResult.getWins().size()).append(" wins of ").append(pStrategyResult.getTrades().size()).append(" total trades (").append(pStrategyResult.getWinPercentage()).append("%)").append("\n")
                             .append("Net Points: ").append(pStrategyResult.getPoints()).append("\n")
                             .append("Net Profit: ").append("$").append(pStrategyResult.getNetProfit()).append("\n")
                             .append("Daily Win Percentage: ").append(pStrategyResult.getDailyWinPercentage()).append("%").append("\n")
-                            .append("Absolute Drawdown: ").append(pStrategyResult.getMaxDrawdown()).append(" points").append("\n")
-                            .append("Relative Drawdown: ").append(pStrategyResult.getRelativeDrawdown()).append(" points").append("\n")
+                            .append("Absolute Drawdown: ").append(pStrategyResult.getMaxDrawdown()).append(POINTS_SUFFIX).append("\n")
+                            .append("Relative Drawdown: ").append(pStrategyResult.getRelativeDrawdown()).append(POINTS_SUFFIX).append("\n")
                             .append("\n");
                 }
 

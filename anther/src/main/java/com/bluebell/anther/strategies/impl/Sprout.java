@@ -65,7 +65,8 @@ public class Sprout implements Strategy<SproutStrategyParameters> {
                 if (tradeSignal != TradeSignal.NO_SIGNAL && hasConfirmation(tradeSignal, referencePrice, signalPrice, currentPrice)) {
                     final double price = tradeSignal == TradeSignal.BUY_SIGNAL ? signalPrice.high() : signalPrice.low();
 
-                    if (signalPrice.getFullSize(true) <= this.strategyParameters.getAllowableRisk()) {
+                    /*if (signalPrice.getFullSize(true) <= this.strategyParameters.getAllowableRisk()) {*/
+                    if (signalPrice.getBodySize(true) <= this.strategyParameters.getAllowableRisk()) {
                         final Trade trade = openTrade(
                                 tradeSignal.getTradeType(),
                                 this.strategyParameters.getLotSize(),
@@ -123,16 +124,14 @@ public class Sprout implements Strategy<SproutStrategyParameters> {
         }
 
         //  new high
+        TradeSignal result = TradeSignal.NO_SIGNAL;
         if (signal.high() > ref.high() && current.low() < signal.low()) {
-            return TradeSignal.SELL_SIGNAL;
+            result = TradeSignal.SELL_SIGNAL;
+        } else if (signal.low() < ref.low() && current.high() > signal.high()) {
+            result = TradeSignal.BUY_SIGNAL;
         }
 
-        //  new low
-        if (signal.low() < ref.low() && current.high() > signal.high()) {
-            return TradeSignal.BUY_SIGNAL;
-        }
-
-        return TradeSignal.NO_SIGNAL;
+        return result;
     }
 
     /**
@@ -170,7 +169,12 @@ public class Sprout implements Strategy<SproutStrategyParameters> {
             }
         }
 
-        return calculateLimit(price, this.mathService.multiply(window, this.strategyParameters.getProfitMultiplier()), shouldAdd);
+        final double profitWindow = this.mathService.multiply(window, this.strategyParameters.getProfitMultiplier());
+        if (profitWindow < this.strategyParameters.getMinimumReward()) {
+            return calculateLimit(price, this.strategyParameters.getMinimumReward(), shouldAdd);
+        } else {
+            return calculateLimit(price, profitWindow, shouldAdd);
+        }
     }
 
     /**

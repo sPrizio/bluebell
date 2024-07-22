@@ -88,23 +88,24 @@ public class SproutSimulation implements Simulation<SproutStrategyParameters> {
         final boolean scaleProfits = false;
         final double initialBalance = 30000.0;
         final double profitMultiplier = 2.0;
-        final double allowableRisk = 255.0;
+        final double allowableRisk = 60.0;
         final double minimumRisk = 25.0;
+        final double minimumReward = 40.0;
 
         final Map<LocalDate, SproutStrategyParameters> map = new HashMap<>();
 
-        map.put(LocalDate.of(2013, 1, 1), new SproutStrategyParameters(profitMultiplier, allowableRisk, minimumRisk, new BasicStrategyParameters(DESCRIPTION, new LimitParameter(), new LimitParameter(), startHour, startMinute, lotSize, pricePerPoint, scaleProfits, initialBalance)));
-        map.put(LocalDate.of(2014, 1, 1), new SproutStrategyParameters(profitMultiplier, allowableRisk, minimumRisk, new BasicStrategyParameters(DESCRIPTION, new LimitParameter(), new LimitParameter(), startHour, startMinute, lotSize, pricePerPoint, scaleProfits, initialBalance)));
-        map.put(LocalDate.of(2015, 1, 1), new SproutStrategyParameters(profitMultiplier, allowableRisk, minimumRisk, new BasicStrategyParameters(DESCRIPTION, new LimitParameter(), new LimitParameter(), startHour, startMinute, lotSize, pricePerPoint, scaleProfits, initialBalance)));
-        map.put(LocalDate.of(2016, 1, 1), new SproutStrategyParameters(profitMultiplier, allowableRisk, minimumRisk, new BasicStrategyParameters(DESCRIPTION, new LimitParameter(), new LimitParameter(), startHour, startMinute, lotSize, pricePerPoint, scaleProfits, initialBalance)));
-        map.put(LocalDate.of(2017, 1, 1), new SproutStrategyParameters(profitMultiplier, allowableRisk, minimumRisk, new BasicStrategyParameters(DESCRIPTION, new LimitParameter(), new LimitParameter(), startHour, startMinute, lotSize, pricePerPoint, scaleProfits, initialBalance)));
-        map.put(LocalDate.of(2018, 1, 1), new SproutStrategyParameters(profitMultiplier, allowableRisk, minimumRisk, new BasicStrategyParameters(DESCRIPTION, new LimitParameter(), new LimitParameter(), startHour, startMinute, lotSize, pricePerPoint, scaleProfits, initialBalance)));
-        map.put(LocalDate.of(2019, 1, 1), new SproutStrategyParameters(profitMultiplier, allowableRisk, minimumRisk, new BasicStrategyParameters(DESCRIPTION, new LimitParameter(), new LimitParameter(), startHour, startMinute, lotSize, pricePerPoint, scaleProfits, initialBalance)));
-        map.put(LocalDate.of(2020, 1, 1), new SproutStrategyParameters(profitMultiplier, allowableRisk, minimumRisk, new BasicStrategyParameters(DESCRIPTION, new LimitParameter(), new LimitParameter(), startHour, startMinute, lotSize, pricePerPoint, scaleProfits, initialBalance)));
-        map.put(LocalDate.of(2021, 1, 1), new SproutStrategyParameters(profitMultiplier, allowableRisk, minimumRisk, new BasicStrategyParameters(DESCRIPTION, new LimitParameter(), new LimitParameter(), startHour, startMinute, lotSize, pricePerPoint, scaleProfits, initialBalance)));
-        map.put(LocalDate.of(2022, 1, 1), new SproutStrategyParameters(profitMultiplier, allowableRisk, minimumRisk, new BasicStrategyParameters(DESCRIPTION, new LimitParameter(), new LimitParameter(), startHour, startMinute, lotSize, pricePerPoint, scaleProfits, initialBalance)));
-        map.put(LocalDate.of(2023, 1, 1), new SproutStrategyParameters(profitMultiplier, allowableRisk, minimumRisk, new BasicStrategyParameters(DESCRIPTION, new LimitParameter(), new LimitParameter(), startHour, startMinute, lotSize, pricePerPoint, scaleProfits, initialBalance)));
-        map.put(LocalDate.of(2024, 1, 1), new SproutStrategyParameters(profitMultiplier, allowableRisk, minimumRisk, new BasicStrategyParameters(DESCRIPTION, new LimitParameter(), new LimitParameter(), startHour, startMinute, lotSize, pricePerPoint, scaleProfits, initialBalance)));
+        map.put(LocalDate.of(2013, 1, 1), new SproutStrategyParameters(profitMultiplier, allowableRisk, minimumRisk, minimumReward, new BasicStrategyParameters(DESCRIPTION, new LimitParameter(), new LimitParameter(), startHour, startMinute, lotSize, pricePerPoint, scaleProfits, initialBalance)));
+        map.put(LocalDate.of(2014, 1, 1), new SproutStrategyParameters(profitMultiplier, allowableRisk, minimumRisk, minimumReward, new BasicStrategyParameters(DESCRIPTION, new LimitParameter(), new LimitParameter(), startHour, startMinute, lotSize, pricePerPoint, scaleProfits, initialBalance)));
+        map.put(LocalDate.of(2015, 1, 1), new SproutStrategyParameters(profitMultiplier, allowableRisk, minimumRisk, minimumReward, new BasicStrategyParameters(DESCRIPTION, new LimitParameter(), new LimitParameter(), startHour, startMinute, lotSize, pricePerPoint, scaleProfits, initialBalance)));
+        map.put(LocalDate.of(2016, 1, 1), new SproutStrategyParameters(profitMultiplier, allowableRisk, minimumRisk, minimumReward, new BasicStrategyParameters(DESCRIPTION, new LimitParameter(), new LimitParameter(), startHour, startMinute, lotSize, pricePerPoint, scaleProfits, initialBalance)));
+        map.put(LocalDate.of(2017, 1, 1), new SproutStrategyParameters(profitMultiplier, allowableRisk, minimumRisk, minimumReward, new BasicStrategyParameters(DESCRIPTION, new LimitParameter(), new LimitParameter(), startHour, startMinute, lotSize, pricePerPoint, scaleProfits, initialBalance)));
+        map.put(LocalDate.of(2018, 1, 1), new SproutStrategyParameters(profitMultiplier, allowableRisk, minimumRisk, minimumReward, new BasicStrategyParameters(DESCRIPTION, new LimitParameter(), new LimitParameter(), startHour, startMinute, lotSize, pricePerPoint, scaleProfits, initialBalance)));
+        map.put(LocalDate.of(2019, 1, 1), new SproutStrategyParameters(profitMultiplier, allowableRisk, minimumRisk, minimumReward, new BasicStrategyParameters(DESCRIPTION, new LimitParameter(), new LimitParameter(), startHour, startMinute, lotSize, pricePerPoint, scaleProfits, initialBalance)));
+        map.put(LocalDate.of(2020, 1, 1), new SproutStrategyParameters(profitMultiplier, allowableRisk, minimumRisk, minimumReward, new BasicStrategyParameters(DESCRIPTION, new LimitParameter(), new LimitParameter(), startHour, startMinute, lotSize, pricePerPoint, scaleProfits, initialBalance)));
+        map.put(LocalDate.of(2021, 1, 1), new SproutStrategyParameters(profitMultiplier, allowableRisk, minimumRisk, minimumReward, new BasicStrategyParameters(DESCRIPTION, new LimitParameter(), new LimitParameter(), startHour, startMinute, lotSize, pricePerPoint, scaleProfits, initialBalance)));
+        map.put(LocalDate.of(2022, 1, 1), new SproutStrategyParameters(profitMultiplier, allowableRisk, minimumRisk, minimumReward, new BasicStrategyParameters(DESCRIPTION, new LimitParameter(), new LimitParameter(), startHour, startMinute, lotSize, pricePerPoint, scaleProfits, initialBalance)));
+        map.put(LocalDate.of(2023, 1, 1), new SproutStrategyParameters(profitMultiplier, allowableRisk, minimumRisk, minimumReward, new BasicStrategyParameters(DESCRIPTION, new LimitParameter(), new LimitParameter(), startHour, startMinute, lotSize, pricePerPoint, scaleProfits, initialBalance)));
+        map.put(LocalDate.of(2024, 1, 1), new SproutStrategyParameters(profitMultiplier, allowableRisk, minimumRisk, minimumReward, new BasicStrategyParameters(DESCRIPTION, new LimitParameter(), new LimitParameter(), startHour, startMinute, lotSize, pricePerPoint, scaleProfits, initialBalance)));
 
         return map;
     }

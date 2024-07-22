@@ -2,6 +2,7 @@ package com.bluebell.anther.models.parameter.strategy.impl;
 
 import com.bluebell.anther.models.parameter.strategy.StrategyParameters;
 import com.bluebell.anther.strategies.impl.Sprout;
+import com.bluebell.radicle.services.MathService;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -21,7 +22,9 @@ public class SproutStrategyParameters extends BasicStrategyParameters implements
 
     private double minimumRisk;
 
-    public SproutStrategyParameters(final double profitMultiplier, final double allowableRisk, final double minimumRisk, final BasicStrategyParameters basicStrategyParameters) {
+    private double minimumReward;
+
+    public SproutStrategyParameters(final double profitMultiplier, final double allowableRisk, final double minimumRisk, final double minimumReward, final BasicStrategyParameters basicStrategyParameters) {
         super(
                 basicStrategyParameters.getDescription(),
                 basicStrategyParameters.getBuyLimit(),
@@ -37,6 +40,7 @@ public class SproutStrategyParameters extends BasicStrategyParameters implements
         this.profitMultiplier = profitMultiplier;
         this.allowableRisk = allowableRisk;
         this.minimumRisk = minimumRisk;
+        this.minimumReward = minimumReward;
     }
 
 
