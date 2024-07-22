@@ -159,8 +159,9 @@ public class BloomDecisionEngine implements DecisionEngine<Bloom, BloomStrategyP
                                 Double.parseDouble(split[1].trim().replace("$", StringUtils.EMPTY)),
                                 Integer.parseInt(split[2].trim()),
                                 LocalDateTime.parse(split[3].trim(), DateTimeFormatter.ofPattern("MMM dd yyy 'at' HH:mm:ss")),
-                                Double.parseDouble(split[4].trim()),
-                                Double.parseDouble(split[5].trim().replace("$", StringUtils.EMPTY))
+                                LocalDateTime.parse(split[4].trim(), DateTimeFormatter.ofPattern("MMM dd yyy 'at' HH:mm:ss")),
+                                Double.parseDouble(split[5].trim()),
+                                Double.parseDouble(split[6].trim().replace("$", StringUtils.EMPTY))
                         )
                 );
             }

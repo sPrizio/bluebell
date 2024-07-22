@@ -122,7 +122,6 @@ public class Sprout implements Strategy<SproutStrategyParameters> {
             return TradeSignal.NO_SIGNAL;
         }
 
-
         //  new high
         if (signal.high() > ref.high() && current.low() < signal.low()) {
             return TradeSignal.SELL_SIGNAL;
@@ -137,6 +136,22 @@ public class Sprout implements Strategy<SproutStrategyParameters> {
     }
 
     /**
+     * Returns true if a new high/low was set (returns false if a new high and a new low were set at the same time)
+     *
+     * @param isHigh if true, look for highs
+     * @param ref reference price
+     * @param signal signal price
+     * @return true if new high/low was set
+     */
+    private boolean newMarker(final boolean isHigh, final MarketPrice ref, final MarketPrice signal) {
+        if (!isHigh) {
+            return signal.high() > ref.high() && signal.low() > ref.low();
+        } else {
+            return signal.low() < ref.low() && signal.high() < ref.high();
+        }
+    }
+
+    /**
      * Computes the limit based on the given parameters. Pass -1 to not include the window calculation
      *
      * @param window    overrides limit if it is greater than the given limit
@@ -148,7 +163,11 @@ public class Sprout implements Strategy<SproutStrategyParameters> {
     private double calculateActualLimit(final double window, final double price, final boolean shouldAdd, final boolean includeMultiplier) {
 
         if (!includeMultiplier) {
-            return calculateLimit(price, window, shouldAdd);
+            if (window < this.strategyParameters.getMinimumRisk()) {
+                return calculateLimit(price, this.strategyParameters.getMinimumRisk(), shouldAdd);
+            } else {
+                return calculateLimit(price, window, shouldAdd);
+            }
         }
 
         return calculateLimit(price, this.mathService.multiply(window, this.strategyParameters.getProfitMultiplier()), shouldAdd);
@@ -166,9 +185,9 @@ public class Sprout implements Strategy<SproutStrategyParameters> {
     private boolean hasConfirmation(final TradeSignal tradeSignal, final MarketPrice ref, final MarketPrice signal, final MarketPrice current) {
 
         if (tradeSignal == TradeSignal.BUY_SIGNAL) {
-            return signal.isBullish();
+            return /*newMarker(true, ref, signal) &&*/ signal.hasBullishIndication();
         } else if (tradeSignal == TradeSignal.SELL_SIGNAL) {
-            return signal.isBearish();
+            return /*newMarker(false, ref, signal) &&*/ signal.hasBearishIndication();
         }
 
         return false;

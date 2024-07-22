@@ -45,6 +45,8 @@ public class ApexChartService implements ChartService<ApexChartCandleStick> {
         switch (timeInterval) {
             case ONE_MINUTE -> collection = new HashMap<>(this.firstRateDataParser.parseMarketPricesByDate(RadicleTimeInterval.ONE_MINUTE));
             case FIVE_MINUTES -> collection = new HashMap<>(this.firstRateDataParser.parseMarketPricesByDate(RadicleTimeInterval.FIVE_MINUTE));
+            case TEN_MINUTES -> collection = new HashMap<>(this.firstRateDataParser.parseMarketPricesByDate(RadicleTimeInterval.TEN_MINUTE));
+            case FIFTEEN_MINUTES -> collection = new HashMap<>(this.firstRateDataParser.parseMarketPricesByDate(RadicleTimeInterval.FIFTEEN_MINUTE));
             case THIRTY_MINUTES -> collection = new HashMap<>(this.firstRateDataParser.parseMarketPricesByDate(RadicleTimeInterval.THIRTY_MINUTE));
             case ONE_HOUR -> collection = new HashMap<>(this.firstRateDataParser.parseMarketPricesByDate(RadicleTimeInterval.ONE_HOUR));
             case ONE_DAY -> collection = new HashMap<>(this.firstRateDataParser.parseMarketPricesByDate(RadicleTimeInterval.ONE_DAY));

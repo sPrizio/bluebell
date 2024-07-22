@@ -15,10 +15,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Extends the {@link StrategyReportingService} specific for {@link Sprout}
@@ -53,7 +50,7 @@ public class SproutReportingService extends StrategyReportingService<Sprout, Spr
             }
 
             trades.addAll(sr.getTrades());
-            map.put(key, trades);
+            map.put(key, trades.stream().sorted(Comparator.comparing(Trade::getTradeOpenTime).thenComparing(Trade::getTradeCloseTime)).toList());
         });
 
         final StringBuilder stringBuilder = new StringBuilder();
@@ -72,8 +69,9 @@ public class SproutReportingService extends StrategyReportingService<Sprout, Spr
                         .append(formatNumber(entry.points()))
                         .append("\t$").append(formatNumber(entry.netProfit()))
                         .append("\t").append(formatNumber(entry.trades()))
-                        .append("\t").append(formatDateTime(entry.modified()))
-                        .append("\t").append(formatNumber(entry.pointsForTrade()))
+                        .append("\t").append(formatDateTime(entry.opened()))
+                        .append("\t").append(formatDateTime(entry.closed()))
+                        .append("\t\t").append(formatNumber(entry.pointsForTrade()))
                         .append("\t$").append(formatNumber(entry.profitForTrade()))
                         .append("\n")
                 );
@@ -128,7 +126,7 @@ public class SproutReportingService extends StrategyReportingService<Sprout, Spr
             cumPoints = this.mathService.add(cumPoints, trade.getPoints());
             cumProfit = this.mathService.add(cumProfit, trade.calculateProfit(pricePerPoint));
 
-            entries.add(new CumulativeStrategyReportEntry(cumPoints, cumProfit, cumTrades, trade.getTradeCloseTime(), trade.getPoints(), trade.calculateProfit(pricePerPoint)));
+            entries.add(new CumulativeStrategyReportEntry(cumPoints, cumProfit, cumTrades, trade.getTradeOpenTime(), trade.getTradeCloseTime(), trade.getPoints(), trade.calculateProfit(pricePerPoint)));
         }
 
         return entries;

@@ -78,7 +78,8 @@ public class StrategyReportingService<S extends Strategy<P>, P extends BasicStra
                             .append("Net Points: ").append(pStrategyResult.getPoints()).append("\n")
                             .append("Net Profit: ").append("$").append(pStrategyResult.getNetProfit()).append("\n")
                             .append("Daily Win Percentage: ").append(pStrategyResult.getDailyWinPercentage()).append("%").append("\n")
-                            .append("Drawdown: ").append(pStrategyResult.getMaxDrawdown()).append(" points").append("\n")
+                            .append("Absolute Drawdown: ").append(pStrategyResult.getMaxDrawdown()).append(" points").append("\n")
+                            .append("Relative Drawdown: ").append(pStrategyResult.getRelativeDrawdown()).append(" points").append("\n")
                             .append("\n");
                 }
 

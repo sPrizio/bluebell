@@ -72,7 +72,8 @@ public class BloomReportingService extends StrategyReportingService<Bloom, Bloom
                         .append(formatNumber(entry.points()))
                         .append("\t$").append(formatNumber(entry.netProfit()))
                         .append("\t").append(formatNumber(entry.trades()))
-                        .append("\t").append(formatDateTime(entry.modified()))
+                        .append("\t").append(formatDateTime(entry.opened()))
+                        .append("\t").append(formatDateTime(entry.closed()))
                         .append("\t").append(formatNumber(entry.pointsForTrade()))
                         .append("\t$").append(formatNumber(entry.profitForTrade()))
                         .append("\n")
@@ -132,7 +133,7 @@ public class BloomReportingService extends StrategyReportingService<Bloom, Bloom
             cumPoints = this.mathService.add(cumPoints, trade.getPoints());
             cumProfit = this.mathService.add(cumProfit, trade.calculateProfit(pricePerPoint));
 
-            entries.add(new CumulativeStrategyReportEntry(cumPoints, cumProfit, cumTrades, trade.getTradeCloseTime(), trade.getPoints(), trade.calculateProfit(pricePerPoint)));
+            entries.add(new CumulativeStrategyReportEntry(cumPoints, cumProfit, cumTrades, trade.getTradeOpenTime(), trade.getTradeCloseTime(), trade.getPoints(), trade.calculateProfit(pricePerPoint)));
         }
 
         return entries;

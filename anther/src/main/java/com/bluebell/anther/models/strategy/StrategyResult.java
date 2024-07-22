@@ -63,6 +63,8 @@ public class StrategyResult<P extends BasicStrategyParameters> {
 
     private final Double maxDrawdown;
 
+    private final Double relativeDrawdown;
+
     private final boolean scaleProfits;
 
     private final double initialBalance;
@@ -95,6 +97,7 @@ public class StrategyResult<P extends BasicStrategyParameters> {
         this.pricePerPoint = pricePerPoint;
         this.averageTradeDuration = calculateAverageTradeDuration(trades);
         this.maxDrawdown = null;
+        this.relativeDrawdown = null;
         this.scaleProfits = scaleProfits;
         this.initialBalance = initialBalance;
         this.netProfit = calculateNetProfit();
@@ -151,12 +154,37 @@ public class StrategyResult<P extends BasicStrategyParameters> {
      * @return min value
      */
     public Double getMaxDrawdown() {
+        return this.mathService.getDouble(Objects.requireNonNullElseGet(this.maxDrawdown, () -> this.calculateDrawdown().stream().mapToDouble(DrawdownEntry::getCumulativePoints).min().orElse(0.0)));
+    }
 
-        if (this.maxDrawdown == null) {
-            return this.calculateDrawdown().stream().mapToDouble(DrawdownEntry::getCumulativePoints).min().orElse(0.0);
+    /**
+     * Returns the lowest point throughout the strategy
+     *
+     * @return min value
+     */
+    public Double getRelativeDrawdown() {
+
+        if (this.relativeDrawdown == null) {
+            final List<DrawdownEntry> values = this.calculateDrawdown();
+            double sum = 0.0;
+            double min = 0.0;
+
+            for (final DrawdownEntry val : values) {
+                if (val.getPoints() > 0.0) {
+                    sum = 0.0;
+                } else {
+                    sum += val.getPoints();
+                }
+
+                if (sum < min) {
+                    min = sum;
+                }
+            }
+
+            return this.mathService.getDouble(min);
         }
 
-        return this.maxDrawdown;
+        return this.mathService.getDouble(this.relativeDrawdown);
     }
 
     /**
@@ -177,7 +205,7 @@ public class StrategyResult<P extends BasicStrategyParameters> {
             cumPoints = this.mathService.add(cumPoints, trade.getPoints());
             cumProfit = this.mathService.add(cumProfit, trade.calculateProfit(this.pricePerPoint));
 
-            entries.add(new CumulativeStrategyReportEntry(cumPoints, cumProfit, cumTrades, trade.getTradeCloseTime(), trade.getPoints(), trade.calculateProfit(this.pricePerPoint)));
+            entries.add(new CumulativeStrategyReportEntry(cumPoints, cumProfit, cumTrades, trade.getTradeOpenTime(), trade.getTradeCloseTime(), trade.getPoints(), trade.calculateProfit(this.pricePerPoint)));
         }
 
         return entries;
@@ -294,7 +322,7 @@ public class StrategyResult<P extends BasicStrategyParameters> {
         final List<DrawdownEntry> entries = new ArrayList<>();
 
         double sum = 0.0;
-        for (final Trade trade : this.trades.stream().sorted(Comparator.comparing(Trade::getTradeCloseTime)).toList()) {
+        for (final Trade trade : this.trades.stream().sorted(Comparator.comparing(Trade::getTradeOpenTime).thenComparing(Trade::getTradeCloseTime)).toList()) {
             sum = this.mathService.add(trade.getPoints(), sum);
             entries.add(new DrawdownEntry(trade.getPoints(), sum));
         }

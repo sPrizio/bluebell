@@ -19,7 +19,9 @@ public class SproutStrategyParameters extends BasicStrategyParameters implements
 
     private double allowableRisk;
 
-    public SproutStrategyParameters(final double profitMultiplier, final double allowableRisk, final BasicStrategyParameters basicStrategyParameters) {
+    private double minimumRisk;
+
+    public SproutStrategyParameters(final double profitMultiplier, final double allowableRisk, final double minimumRisk, final BasicStrategyParameters basicStrategyParameters) {
         super(
                 basicStrategyParameters.getDescription(),
                 basicStrategyParameters.getBuyLimit(),
@@ -34,6 +36,7 @@ public class SproutStrategyParameters extends BasicStrategyParameters implements
 
         this.profitMultiplier = profitMultiplier;
         this.allowableRisk = allowableRisk;
+        this.minimumRisk = minimumRisk;
     }
 
 

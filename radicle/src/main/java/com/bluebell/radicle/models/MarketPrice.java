@@ -57,6 +57,28 @@ public record MarketPrice(
     }
 
     /**
+     * A hammer is when the body of the candle is in the upper half of the overall candle
+     *
+     * @return true if candle
+     */
+    public boolean isHammer() {
+        final MathService mathService = new MathService();
+        final double topArea = mathService.subtract(this.high(), mathService.divide(this.getFullSize(true), 2.0));
+        return this.open >= topArea && this.close >= topArea;
+    }
+
+    /**
+     * A tombstone is the inverse of a hammer
+     *
+     * @return true if tomb
+     */
+    public boolean isTombstone() {
+        final MathService mathService = new MathService();
+        final double bottomArea = mathService.add(this.low(), mathService.divide(this.getFullSize(true), 2.0));
+        return this.open <= bottomArea && this.close <= bottomArea;
+    }
+
+    /**
      * A doji is a price movement where the open and close are within a small distance from each other and a fraction of the overall movement
      * Note: Here we assume doji candles to have bodies less than 10% of the overall movement
      *
@@ -120,6 +142,15 @@ public record MarketPrice(
     public boolean isNotEmpty() {
         return this.open != 0.0 && this.close != 0.0;
     }
+
+    public boolean hasBullishIndication() {
+        return isBullish() || isHammer();
+    }
+
+    public boolean hasBearishIndication() {
+        return isBearish() || isTombstone();
+    }
+
 
     @Override
     public int compareTo(MarketPrice o) {
