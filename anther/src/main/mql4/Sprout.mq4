@@ -17,9 +17,12 @@ enum tradeSignal {
 
 input double lotSize = 0.2;
 input double allowableRisk = 60.0;
+input double allowableReward = 110.0;
 input double minimumRisk = 25.0;
 input double minimumReward = 40.0;
 input double profitMultiplier = 2.0;
+input int tradesLimit = 2;
+input bool allowConcurrentTrades = false;
 
 // Global Variables
 int slippage = 10;
@@ -67,8 +70,9 @@ void OnBar() {
 
    if (IsTradeWindowOpen()) {
       canTrade = true;
-   } else if (HasOpenTrades()) {
-      // close all open trades
+   }
+
+   if (IsEndOfDay() && HasOpenTrades()) {
       CloseDay();
    }
 }
@@ -91,27 +95,51 @@ void TrackTime() {
    }
 }
 
+/*
+   Checks for a new day
+
+   @return true if a new day has started
+*/
 bool IsNewDay() {
-   return TimeHour(globalTime) == 17;
+   return TimeHour(globalTime) == 17 && TimeMinute(globalTime) == 0;
 }
 
-bool CanTrade() {
-   return tradesToday < 2;
+bool IsEndOfDay() {
+   return TimeHour(globalTime) > 22 && TimeHour(globalTime) <= 23;
 }
 
 /*
    Checks if the trading window for this strategy is open
 */
 bool IsTradeWindowOpen() {
-   bool isAfterOpen = TimeHour(globalTime) >= 17;
-   bool isBeforeClose = TimeHour(globalTime) < 23;
 
-   return isAfterOpen && isBeforeClose;
+   bool isAfterOpen = TimeHour(globalTime) >= 17;
+   bool isBeforeClose = TimeHour(globalTime) <= 23;
+   bool limitNotReached = tradesToday < tradesLimit;
+
+   if (allowConcurrentTrades) {
+      return isAfterOpen && isBeforeClose && limitNotReached;
+   } else {
+      return isAfterOpen && isBeforeClose && limitNotReached && !HasOpenTrades();
+   }
 }
 
+/*
+   Looks for any open trades
 
+   @return true if any trades are open
+*/
 bool HasOpenTrades() {
-   return OrdersTotal() > 0;
+
+   for (int pos = 0; pos < OrdersTotal(); pos++) {
+      if (OrderSelect(pos, SELECT_BY_POS)) {
+         if (StringFind(OrderComment(), "Sprout") != -1) {
+            return true;
+        }
+      }
+   }
+
+   return false;
 }
 
 /*
@@ -229,7 +257,9 @@ bool HasTradeConfirmation(int signal) {
 }
 
 /*
-   RUNS ON EACH TICK OF THE CURRENT BAR TEMP
+   Looks for trade signals on each tick
+
+   @return trade signal
 */
 int LookForTradeSignals() {
 
@@ -239,21 +269,24 @@ int LookForTradeSignals() {
    double sigHigh = High[1];
    double sigLow = Low[1];
 
-   if (sigLow < refLow && Bid > sigHigh && HasTradeConfirmation(BUY_SIGNAL) && CanTrade()) {
+   if (sigLow < refLow && Bid > sigHigh && HasTradeConfirmation(BUY_SIGNAL)) {
       canTrade = false;
       OpenStandardTrade(GetFullSize(), BUY_SIGNAL);
-      tradesToday = tradesToday + 1;
       return BUY_SIGNAL;
-   } else if (sigHigh > refHigh && Ask < sigLow && HasTradeConfirmation(SELL_SIGNAL) && CanTrade()) {
+   } else if (sigHigh > refHigh && Ask < sigLow && HasTradeConfirmation(SELL_SIGNAL)) {
       canTrade = false;
       OpenStandardTrade(GetFullSize(), SELL_SIGNAL);
-      tradesToday = tradesToday + 1;
       return SELL_SIGNAL;
    } else {
       return NO_SIGNAL;
    }
 }
 
+/*
+   Specialized function to calculate sl and tp
+
+   @return sl and tp prices
+*/
 double CalculateActualLimit(double price, double window, bool shouldAdd, bool includeMultiplier) {
 
    if (!includeMultiplier) {
@@ -267,11 +300,18 @@ double CalculateActualLimit(double price, double window, bool shouldAdd, bool in
    double profitWindow = window * profitMultiplier;
    if (profitWindow < minimumReward) {
       return CalculateLimit(price, minimumReward, shouldAdd);
+   } else if (profitWindow > allowableReward) {
+      return CalculateLimit(price, allowableReward, shouldAdd);
    } else {
       return CalculateLimit(price, profitWindow, shouldAdd);
    }
 }
 
+/*
+   Used to calculate sl and tp
+
+   @return sl or tp price
+*/
 double CalculateLimit(double price, double increment, bool shouldAdd) {
 
    if (shouldAdd) {
@@ -291,12 +331,16 @@ void OpenStandardTrade(double window, int signal) {
       if (val == -1) {
          Print(StringFormat("An error occurred while trying to open a Buy at %d:%.2d", TimeHour(globalTime), TimeMinute(globalTime)));
          Print(GetLastError());
+      } else {
+         tradesToday +=1;
       }
    } else if (signal == SELL_SIGNAL) {
       int val = OrderSend(_Symbol, OP_SELL, lotSize, Bid, slippage, CalculateActualLimit(Ask, window, true, false), CalculateActualLimit(Ask, window, false, true), "Sprout Sell", 91);
       if (val == -1) {
          Print(StringFormat("An error occurred while trying to open a Sell at %d:%.2d", TimeHour(globalTime), TimeMinute(globalTime)));
          Print(GetLastError());
+      } else {
+         tradesToday +=1;
       }
    }
 }
