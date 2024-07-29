@@ -65,7 +65,6 @@ public class Sprout implements Strategy<SproutStrategyParameters> {
                 if (tradeSignal != TradeSignal.NO_SIGNAL && hasConfirmation(tradeSignal, referencePrice, signalPrice, currentPrice)) {
                     final double price = tradeSignal == TradeSignal.BUY_SIGNAL ? signalPrice.high() : signalPrice.low();
 
-                    /*if (signalPrice.getFullSize(true) <= this.strategyParameters.getAllowableRisk()) {*/
                     if (signalPrice.getBodySize(true) <= this.strategyParameters.getAllowableRisk()) {
                         final Trade trade = openTrade(
                                 tradeSignal.getTradeType(),
@@ -123,7 +122,6 @@ public class Sprout implements Strategy<SproutStrategyParameters> {
             return TradeSignal.NO_SIGNAL;
         }
 
-        //  new high
         TradeSignal result = TradeSignal.NO_SIGNAL;
         if (signal.high() > ref.high() && current.low() < signal.low()) {
             result = TradeSignal.SELL_SIGNAL;
@@ -189,9 +187,9 @@ public class Sprout implements Strategy<SproutStrategyParameters> {
     private boolean hasConfirmation(final TradeSignal tradeSignal, final MarketPrice ref, final MarketPrice signal, final MarketPrice current) {
 
         if (tradeSignal == TradeSignal.BUY_SIGNAL) {
-            return /*newMarker(true, ref, signal) &&*/ signal.hasBullishIndication();
+            return signal.hasBullishIndication();
         } else if (tradeSignal == TradeSignal.SELL_SIGNAL) {
-            return /*newMarker(false, ref, signal) &&*/ signal.hasBearishIndication();
+            return signal.hasBearishIndication();
         }
 
         return false;

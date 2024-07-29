@@ -20,7 +20,7 @@ input int breakEvenStopLevel = 30;
 input bool logTradeContext = false;
 input double reversalWindow = 85.0;
 
-// GLOBALS
+// Global Variables
 int slippage = 10;
 double varianceOffset = 2.25;
 datetime globalTime;

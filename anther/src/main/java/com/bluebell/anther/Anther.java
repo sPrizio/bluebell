@@ -38,8 +38,8 @@ public class Anther {
 
     private static final ChronoUnit UNIT = ChronoUnit.YEARS;
     private static final RadicleTimeInterval TIME_INTERVAL = RadicleTimeInterval.FIFTEEN_MINUTE;
-    private static final LocalDate START = LocalDate.of(2021, 1, 1);
-    private static final LocalDate END = LocalDate.of(2022, 1, 1);
+    private static final LocalDate START = LocalDate.of(2024, 1, 1);
+    private static final LocalDate END = LocalDate.of(2025, 1, 1);
 
     /**
      * Main function

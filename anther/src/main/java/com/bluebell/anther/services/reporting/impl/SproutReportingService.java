@@ -69,6 +69,7 @@ public class SproutReportingService extends StrategyReportingService<Sprout, Spr
                         .append(formatNumber(entry.points()))
                         .append("\t$").append(formatNumber(entry.netProfit()))
                         .append("\t").append(formatNumber(entry.trades()))
+                        .append("\t").append(entry.tradeType())
                         .append("\t").append(formatDateTime(entry.opened()))
                         .append("\t").append(formatDateTime(entry.closed()))
                         .append("\t\t").append(formatNumber(entry.pointsForTrade()))
@@ -126,7 +127,7 @@ public class SproutReportingService extends StrategyReportingService<Sprout, Spr
             cumPoints = this.mathService.add(cumPoints, trade.getPoints());
             cumProfit = this.mathService.add(cumProfit, trade.calculateProfit(pricePerPoint));
 
-            entries.add(new CumulativeStrategyReportEntry(cumPoints, cumProfit, cumTrades, trade.getTradeOpenTime(), trade.getTradeCloseTime(), trade.getPoints(), trade.calculateProfit(pricePerPoint)));
+            entries.add(new CumulativeStrategyReportEntry(cumPoints, cumProfit, cumTrades, StringUtils.capitalize(trade.getTradeType().toString().toLowerCase()), trade.getTradeOpenTime(), trade.getTradeCloseTime(), trade.getPoints(), trade.calculateProfit(pricePerPoint)));
         }
 
         return entries;

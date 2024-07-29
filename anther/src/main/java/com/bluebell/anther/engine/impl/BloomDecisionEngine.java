@@ -1,6 +1,7 @@
 package com.bluebell.anther.engine.impl;
 
 import com.bluebell.anther.engine.DecisionEngine;
+import com.bluebell.anther.enums.TradeType;
 import com.bluebell.anther.models.engine.Decision;
 import com.bluebell.anther.models.parameter.strategy.impl.BloomStrategyParameters;
 import com.bluebell.anther.models.simulation.SimulationResult;
@@ -158,6 +159,7 @@ public class BloomDecisionEngine implements DecisionEngine<Bloom, BloomStrategyP
                                 Double.parseDouble(split[0].trim()),
                                 Double.parseDouble(split[1].trim().replace("$", StringUtils.EMPTY)),
                                 Integer.parseInt(split[2].trim()),
+                                StringUtils.capitalize(split[2].trim().toLowerCase()),
                                 LocalDateTime.parse(split[3].trim(), DateTimeFormatter.ofPattern("MMM dd yyy 'at' HH:mm:ss")),
                                 LocalDateTime.parse(split[4].trim(), DateTimeFormatter.ofPattern("MMM dd yyy 'at' HH:mm:ss")),
                                 Double.parseDouble(split[5].trim()),

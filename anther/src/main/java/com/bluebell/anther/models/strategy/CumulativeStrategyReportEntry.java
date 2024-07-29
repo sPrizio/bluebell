@@ -8,12 +8,13 @@ import java.time.LocalDateTime;
  * @param points cumulative points
  * @param netProfit cumulative profit
  * @param trades cumulative trades
- * @param openen open time
+ * @param tradeType type of trade
+ * @param opened open time
  * @param closed close time
  * @param pointsForTrade points only for this trade, not cumulative
  * @param profitForTrade profit only for this trade, not cumulative
  * @author Stephen Prizio
  * @version 0.0.1
  */
-public record CumulativeStrategyReportEntry(double points, double netProfit, int trades, LocalDateTime opened, LocalDateTime closed, double pointsForTrade, double profitForTrade) {
+public record CumulativeStrategyReportEntry(double points, double netProfit, int trades, String tradeType, LocalDateTime opened, LocalDateTime closed, double pointsForTrade, double profitForTrade) {
 }
