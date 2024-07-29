@@ -15,28 +15,39 @@ enum tradeSignal {
    NO_SIGNAL
 };
 
-input double lotSize = 0.2;
-input double allowableRisk = 60.0;
-input double allowableReward = 110.0;
-input double minimumRisk = 25.0;
-input double minimumReward = 40.0;
+input double lotSize = 0.25;
+input double allowableRisk = 45.0;
+input double allowableReward = 85.0;
+input double minimumRisk = 35.0;
+input double minimumReward = 65.0;
 input double profitMultiplier = 2.0;
-input int tradesLimit = 2;
-input bool allowConcurrentTrades = false;
+input int tradesLimit = 4;
+input bool allowBreakEvenStop = false;
+input int breakEvenStopLevel = 40;
 
 // Global Variables
+int activeTradeId = -1;
 int slippage = 10;
 datetime globalTime;
 bool canTrade = false;
 int tradesToday = 0;
-
+double todaysProfit = 0.0;
+double openingBalance = AccountBalance();
 
 /*
    +------------------------------------------------------------------+
    | Expert initialization function                                   |
    +------------------------------------------------------------------+
 */
-int OnInit() { return(INIT_SUCCEEDED); }
+int OnInit() {
+
+   if (_Period == PERIOD_M30) {
+      return(INIT_SUCCEEDED);
+   }
+
+   Print("Sprout is designed to function only on the 30-minute time frame");
+   return(INIT_AGENT_NOT_SUITABLE);
+}
 
 /*
    +------------------------------------------------------------------+
@@ -55,6 +66,10 @@ void OnTick() {
    if (canTrade) {
       LookForTradeSignals();
    }
+
+   if (HasActiveTrade()) {
+      SetBreakEvenStop();
+   }
 }
 
 /*
@@ -63,9 +78,12 @@ void OnTick() {
    +------------------------------------------------------------------+
 */
 void OnBar() {
+   //Print(iCustom(_Symbol, _Period, "Market\\VWAP Level", 0, 1));
 
    if (IsNewDay()) {
       tradesToday = 0;
+      todaysProfit = 0.0;
+      openingBalance = AccountBalance();
    }
 
    if (IsTradeWindowOpen()) {
@@ -74,6 +92,10 @@ void OnBar() {
 
    if (IsEndOfDay() && HasOpenTrades()) {
       CloseDay();
+   }
+
+   if (openingBalance != AccountBalance()) {
+      todaysProfit = AccountBalance() - openingBalance;
    }
 }
 
@@ -117,11 +139,7 @@ bool IsTradeWindowOpen() {
    bool isBeforeClose = TimeHour(globalTime) <= 23;
    bool limitNotReached = tradesToday < tradesLimit;
 
-   if (allowConcurrentTrades) {
-      return isAfterOpen && isBeforeClose && limitNotReached;
-   } else {
-      return isAfterOpen && isBeforeClose && limitNotReached && !HasOpenTrades();
-   }
+   return isAfterOpen && isBeforeClose && limitNotReached && !HasOpenTrades();
 }
 
 /*
@@ -174,6 +192,8 @@ void CloseDay() {
          if (!result) {
             Print("ERROR - Unable to close the order - ", OrderTicket(), " - Error ", GetLastError());
          }
+
+         activeTradeId = -1;
       }
    }
 }
@@ -256,6 +276,16 @@ bool HasTradeConfirmation(int signal) {
    return false;
 }
 
+bool ShouldTrade(int signal) {
+   if (signal == BUY_SIGNAL) {
+      return todaysProfit <= 0.0;
+   } else if (signal == SELL_SIGNAL) {
+      return todaysProfit <= 0.0;
+   }
+
+   return false;
+}
+
 /*
    Looks for trade signals on each tick
 
@@ -269,11 +299,11 @@ int LookForTradeSignals() {
    double sigHigh = High[1];
    double sigLow = Low[1];
 
-   if (sigLow < refLow && Bid > sigHigh && HasTradeConfirmation(BUY_SIGNAL)) {
+   if (sigLow < refLow && Bid > sigHigh && HasTradeConfirmation(BUY_SIGNAL) && ShouldTrade(BUY_SIGNAL)) {
       canTrade = false;
       OpenStandardTrade(GetFullSize(), BUY_SIGNAL);
       return BUY_SIGNAL;
-   } else if (sigHigh > refHigh && Ask < sigLow && HasTradeConfirmation(SELL_SIGNAL)) {
+   } else if (sigHigh > refHigh && Ask < sigLow && HasTradeConfirmation(SELL_SIGNAL) && ShouldTrade(SELL_SIGNAL)) {
       canTrade = false;
       OpenStandardTrade(GetFullSize(), SELL_SIGNAL);
       return SELL_SIGNAL;
@@ -332,6 +362,7 @@ void OpenStandardTrade(double window, int signal) {
          Print(StringFormat("An error occurred while trying to open a Buy at %d:%.2d", TimeHour(globalTime), TimeMinute(globalTime)));
          Print(GetLastError());
       } else {
+         activeTradeId = val;
          tradesToday +=1;
       }
    } else if (signal == SELL_SIGNAL) {
@@ -340,7 +371,102 @@ void OpenStandardTrade(double window, int signal) {
          Print(StringFormat("An error occurred while trying to open a Sell at %d:%.2d", TimeHour(globalTime), TimeMinute(globalTime)));
          Print(GetLastError());
       } else {
+         activeTradeId = val;
          tradesToday +=1;
       }
    }
 }
+
+/*
+    Returns the order type
+
+    @return order type enum
+*/
+int GetOrderType() {
+   if (OrderSelect(activeTradeId, SELECT_BY_TICKET)) {
+      return OrderType();
+   } else {
+      return -1;
+   }
+}
+
+/*
+   Determines if a trade is currently active
+
+   @returns true if a trade is active
+*/
+bool HasActiveTrade() {
+
+   if (activeTradeId != -1) {
+      return true;
+   } else if (HasOpenTrades()) {
+      for (int pos = 0; pos < OrdersTotal(); pos++) {
+         if (OrderSelect(pos, SELECT_BY_POS)) {
+            if (StringFind(OrderComment(), "Sprout") != -1) {
+               activeTradeId = OrderTicket();
+            }
+         }
+      }
+   }
+
+   return activeTradeId != -1;
+}
+
+/*
+   Handle break even stops
+*/
+void SetBreakEvenStop() {
+   if (HasActiveTrade() && allowBreakEvenStop && breakEvenStopLevel > 0) {
+      double currentPrice = -1.0;
+
+      if (GetOrderType() == OP_BUY) {
+         currentPrice = Bid;
+      } else if (GetOrderType() == OP_SELL) {
+         currentPrice = Ask;
+      }
+
+      if (currentPrice != -1 && OrderSelect(activeTradeId, SELECT_BY_TICKET)) {
+         if (MathAbs(OrderStopLoss() - OrderOpenPrice()) > 0 && MathAbs(currentPrice - OrderOpenPrice()) > breakEvenStopLevel) {
+            Print("Trade has moved far enough into profit, setting Stop Loss to breakeven.");
+
+            if (OrderModify(OrderTicket(), OrderOpenPrice(), OrderOpenPrice(), OrderTakeProfit(), 0))  {
+               Print("Break-even Stop Loss was successfully set.");
+            }
+         }
+      }
+   }
+}
+
+/*
+   Control Statistics. Sprout Version 1.0
+   As of July 29th, 2024 (exclusive)
+   Parameters:
+      lotSize = 0.25;
+      allowableRisk = 45.0;
+      allowableReward = 85.0;
+      minimumRisk = 35.0;
+      minimumReward = 65.0;
+      profitMultiplier = 2.0;
+      tradesLimit = 4;
+      allowBreakEvenStop = false;
+      breakEvenStopLevel = 40;
+
+      // Global Variables
+      activeTradeId = -1;
+      slippage = 10;
+      globalTime;
+      canTrade = false;
+      tradesToday = 0;
+      todaysProfit = 0.0;
+      openingBalance = AccountBalance();
+*/
+/*
+   +------------------------------------------------------------------+
+   | Trades                                                        217 |
+   | Net Profit                                             $10,742.20 |
+   | Profitability                                                1.42 |
+   | Win %                                                      51.61% |
+   | Max Drawdown                                    $3,530.30 (9.83%) |
+   | Relative Drawdown                               $3,530.30 (9.83%) |
+   +------------------------------------------------------------------+
+*/
