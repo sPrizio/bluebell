@@ -15,15 +15,17 @@ enum tradeSignal {
    NO_SIGNAL
 };
 
+input bool online = true;
 input double lotSize = 0.25;
-input double allowableRisk = 45.0;
+input double allowableRisk = 65.0;
 input double allowableReward = 85.0;
 input double minimumRisk = 35.0;
 input double minimumReward = 65.0;
 input double profitMultiplier = 2.0;
-input int tradesLimit = 4;
-input bool allowBreakEvenStop = false;
-input int breakEvenStopLevel = 40;
+input int tradesLimit = 3;
+input bool allowBreakEvenStop = true;
+input int breakEvenStopLevel = 55.0;
+input double stopLevelOffset = 0.0;
 
 // Global Variables
 int activeTradeId = -1;
@@ -40,6 +42,12 @@ double openingBalance = AccountBalance();
    +------------------------------------------------------------------+
 */
 int OnInit() {
+
+   if (!online) {
+      Print("Sprout has been turned off");
+   } else {
+      Print("Sprout is now online");
+   }
 
    if (_Period == PERIOD_M30) {
       return(INIT_SUCCEEDED);
@@ -62,13 +70,16 @@ void OnDeinit(const int reason) {}
    +------------------------------------------------------------------+
 */
 void OnTick() {
-   TrackTime();
-   if (canTrade) {
-      LookForTradeSignals();
-   }
 
-   if (HasActiveTrade()) {
-      SetBreakEvenStop();
+   if (online) {
+      TrackTime();
+      if (canTrade) {
+         LookForTradeSignals();
+      }
+
+      if (HasActiveTrade()) {
+         SetBreakEvenStop();
+      }
    }
 }
 
@@ -78,24 +89,25 @@ void OnTick() {
    +------------------------------------------------------------------+
 */
 void OnBar() {
-   //Print(iCustom(_Symbol, _Period, "Market\\VWAP Level", 0, 1));
 
-   if (IsNewDay()) {
-      tradesToday = 0;
-      todaysProfit = 0.0;
-      openingBalance = AccountBalance();
-   }
+   if (online) {
+      if (IsNewDay()) {
+         tradesToday = 0;
+         todaysProfit = 0.0;
+         openingBalance = AccountBalance();
+      }
 
-   if (IsTradeWindowOpen()) {
-      canTrade = true;
-   }
+      if (IsTradeWindowOpen()) {
+         canTrade = true;
+      }
 
-   if (IsEndOfDay() && HasOpenTrades()) {
-      CloseDay();
-   }
+      if (IsEndOfDay() && HasOpenTrades()) {
+         CloseDay();
+      }
 
-   if (openingBalance != AccountBalance()) {
-      todaysProfit = AccountBalance() - openingBalance;
+      if (openingBalance != AccountBalance()) {
+         todaysProfit = AccountBalance() - openingBalance;
+      }
    }
 }
 
@@ -277,13 +289,14 @@ bool HasTradeConfirmation(int signal) {
 }
 
 bool ShouldTrade(int signal) {
-   if (signal == BUY_SIGNAL) {
+   /*if (signal == BUY_SIGNAL) {
       return todaysProfit <= 0.0;
    } else if (signal == SELL_SIGNAL) {
       return todaysProfit <= 0.0;
    }
 
-   return false;
+   return false;*/
+   return true;
 }
 
 /*
@@ -322,6 +335,8 @@ double CalculateActualLimit(double price, double window, bool shouldAdd, bool in
    if (!includeMultiplier) {
       if (window < minimumRisk) {
          return CalculateLimit(price, minimumRisk, shouldAdd);
+      } else if (window > allowableRisk) {
+         return CalculateLimit(price, allowableRisk, shouldAdd);
       } else {
          return CalculateLimit(price, window, shouldAdd);
       }
@@ -418,18 +433,21 @@ bool HasActiveTrade() {
 void SetBreakEvenStop() {
    if (HasActiveTrade() && allowBreakEvenStop && breakEvenStopLevel > 0) {
       double currentPrice = -1.0;
+      double difference = 0.0;
 
       if (GetOrderType() == OP_BUY) {
          currentPrice = Bid;
+         difference = stopLevelOffset * -1.0;
       } else if (GetOrderType() == OP_SELL) {
          currentPrice = Ask;
+         difference = stopLevelOffset;
       }
 
       if (currentPrice != -1 && OrderSelect(activeTradeId, SELECT_BY_TICKET)) {
          if (MathAbs(OrderStopLoss() - OrderOpenPrice()) > 0 && MathAbs(currentPrice - OrderOpenPrice()) > breakEvenStopLevel) {
             Print("Trade has moved far enough into profit, setting Stop Loss to breakeven.");
 
-            if (OrderModify(OrderTicket(), OrderOpenPrice(), OrderOpenPrice(), OrderTakeProfit(), 0))  {
+            if (OrderModify(OrderTicket(), OrderOpenPrice(), OrderOpenPrice() + difference, OrderTakeProfit(), 0))  {
                Print("Break-even Stop Loss was successfully set.");
             }
          }
@@ -441,15 +459,17 @@ void SetBreakEvenStop() {
    Control Statistics. Sprout Version 1.0
    As of July 29th, 2024 (exclusive)
    Parameters:
+      online = true;
       lotSize = 0.25;
-      allowableRisk = 45.0;
+      allowableRisk = 65.0;
       allowableReward = 85.0;
       minimumRisk = 35.0;
       minimumReward = 65.0;
       profitMultiplier = 2.0;
-      tradesLimit = 4;
-      allowBreakEvenStop = false;
-      breakEvenStopLevel = 40;
+      tradesLimit = 3;
+      allowBreakEvenStop = true;
+      breakEvenStopLevel = 55;
+      stopLevelOffset = 0.0;
 
       // Global Variables
       activeTradeId = -1;
@@ -462,11 +482,11 @@ void SetBreakEvenStop() {
 */
 /*
    +------------------------------------------------------------------+
-   | Trades                                                        217 |
-   | Net Profit                                             $10,742.20 |
-   | Profitability                                                1.42 |
-   | Win %                                                      51.61% |
-   | Max Drawdown                                    $3,530.30 (9.83%) |
-   | Relative Drawdown                               $3,530.30 (9.83%) |
+   | Trades                                                        342 |
+   | Net Profit                                             $13,817.35 |
+   | Profitability                                                1.40 |
+   | Win %                                                      53.22% |
+   | Max Drawdown                                    $2,703.65 (7.62%) |
+   | Relative Drawdown                               $2,703.65 (7.62%) |
    +------------------------------------------------------------------+
 */
