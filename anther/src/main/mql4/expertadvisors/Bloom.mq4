@@ -10,6 +10,7 @@
 #property version   "1.0"
 #property strict
 
+input bool online = true;
 input double lotSize = 0.4;
 input double longTakeProfit = 48.0;
 input double longStopLoss = 23.0;
@@ -32,7 +33,15 @@ int activeTradeId = -1;
    | Expert initialization function                                   |
    +------------------------------------------------------------------+
 */
-int OnInit() { return(INIT_SUCCEEDED); }
+int OnInit() {
+   if (!online) {
+      Print("Bloom has been turned off");
+   } else {
+      Print("Bloom is now online");
+   }
+
+   return(INIT_SUCCEEDED);
+}
 
 /*
    +------------------------------------------------------------------+
@@ -48,9 +57,11 @@ void OnDeinit(const int reason) {}
 */
 void OnTick() {
 
-   TrackTime();
-   if (HasActiveTrade()) {
-      SetBreakEvenStop();
+   if (online) {
+      TrackTime();
+      if (HasActiveTrade()) {
+         SetBreakEvenStop();
+      }
    }
 }
 
@@ -61,14 +72,16 @@ void OnTick() {
 */
 void OnBar() {
 
-   LogTradeContext();
-   if (IsTradeWindowOpen()) {
-      Print("Trade Window opened. Bloom is now active.");
-      OpenBloomTrade();
-   } else {
-      ProtectSelf();
-      CheckTrades();
-      ClearTradesForDay();
+   if (online) {
+      LogTradeContext();
+      if (IsTradeWindowOpen()) {
+         Print("Trade Window opened. Bloom is now active.");
+         OpenBloomTrade();
+      } else {
+         ProtectSelf();
+         CheckTrades();
+         ClearTradesForDay();
+      }
    }
 }
 
@@ -299,6 +312,7 @@ void SetBreakEvenStop() {
    Control Statistics. Bloom Version 1.0
    As of July 17th, 2024 (exclusive)
    Parameters:
+      online = true;
       lotSize = 0.4;
       longTakeProfit = 48.0;
       longStopLoss = 23.0;
