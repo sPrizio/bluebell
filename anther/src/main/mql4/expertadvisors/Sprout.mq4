@@ -372,7 +372,7 @@ double CalculateLimit(double price, double increment, bool shouldAdd) {
 */
 void OpenStandardTrade(double window, int signal) {
    if (signal == BUY_SIGNAL) {
-      int val = OrderSend(_Symbol, OP_BUY, lotSize, Ask, slippage, CalculateActualLimit(Bid, window, false, false), CalculateActualLimit(Bid, window, true, true), "Sprout Buy", 91);
+      int val = OrderSend(_Symbol, OP_BUY, lotSize, Ask, slippage, CalculateActualLimit(Bid, window, false, false), CalculateActualLimit(Bid, window, true, true), "Sprout Buy", 911);
       if (val == -1) {
          Print(StringFormat("An error occurred while trying to open a Buy at %d:%.2d", TimeHour(globalTime), TimeMinute(globalTime)));
          Print(GetLastError());
@@ -381,7 +381,7 @@ void OpenStandardTrade(double window, int signal) {
          tradesToday +=1;
       }
    } else if (signal == SELL_SIGNAL) {
-      int val = OrderSend(_Symbol, OP_SELL, lotSize, Bid, slippage, CalculateActualLimit(Ask, window, true, false), CalculateActualLimit(Ask, window, false, true), "Sprout Sell", 91);
+      int val = OrderSend(_Symbol, OP_SELL, lotSize, Bid, slippage, CalculateActualLimit(Ask, window, true, false), CalculateActualLimit(Ask, window, false, true), "Sprout Sell", 911);
       if (val == -1) {
          Print(StringFormat("An error occurred while trying to open a Sell at %d:%.2d", TimeHour(globalTime), TimeMinute(globalTime)));
          Print(GetLastError());
