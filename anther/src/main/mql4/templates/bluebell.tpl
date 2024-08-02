@@ -1,8 +1,8 @@
 <chart>
 id=132947243713956822
 symbol=NDAQ100
-period=5
-leftpos=38547
+period=15
+leftpos=11204
 digits=2
 scale=8
 graph=1
@@ -54,6 +54,25 @@ draw_0=0
 color_0=36095
 style_0=0
 weight_0=2
+period_flags=0
+show_data=1
+</indicator>
+<indicator>
+name=Custom Indicator
+<expert>
+name=SL&TP Values
+flags=339
+window_num=0
+<inputs>
+Colors=0
+Offset=2500
+</inputs>
+</expert>
+shift_0=0
+draw_0=0
+color_0=4294967295
+style_0=0
+weight_0=0
 period_flags=0
 show_data=1
 </indicator>
