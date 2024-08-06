@@ -1,0 +1,12 @@
+@import "app/variables.module";
+@import "app/mixins.module";
+
+.file-input {
+  &__label {
+    width: 100%;
+  }
+
+  input[type="file"] {
+    display: none;
+  }
+}

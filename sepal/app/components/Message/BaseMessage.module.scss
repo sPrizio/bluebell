@@ -1,0 +1,95 @@
+@import "app/variables.module";
+@import "app/mixins.module";
+
+$border-radius: 0.5rem;
+$border-width: 0.25rem;
+
+.base-message {
+  $this: &;
+  border-top: $border-width solid $color-primary;
+  background-color: rgba($color-primary, 0.15);
+  border-radius: $border-radius;
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  align-items: center;
+  justify-content: center;
+
+  &--info {
+    border-top: $border-width solid $color-info;
+    background-color: rgba($color-info-light, 0.15);
+
+    #{$this}__icon, #{$this}__title {
+      color: $color-info;
+    }
+  }
+
+  &--warning {
+    border-top: $border-width solid $color-warning;
+    background-color: rgba($color-warning-light, 0.15);
+
+    #{$this}__icon, #{$this}__title {
+      color: $color-warning;
+    }
+  }
+
+  &--danger {
+    border-top: $border-width solid $color-danger;
+    background-color: rgba($color-danger-light, 0.15);
+
+    #{$this}__icon, #{$this}__title {
+      color: $color-danger;
+    }
+  }
+
+  &--success {
+    border-top: $border-width solid $color-success;
+    background-color: rgba($color-success-light, 0.15);
+
+    #{$this}__icon, #{$this}__title {
+      color: $color-success;
+    }
+  }
+
+  &__item {
+    flex: 1;
+    padding: 1.125rem 1.5rem;
+  }
+
+  &__content {
+    line-height: 1.625rem;
+  }
+
+  &__icon {
+    color: $color-primary;
+    flex: 0.15;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    @include header-sizing(2, 'desktop');
+    @include mq-large-down {
+      @include header-sizing(2, 'mobile');
+    }
+  }
+
+  &__title {
+    color: $color-primary;
+    font-weight: $font-weight-semi-bold !important;
+
+    @include body-sizing('default', 'desktop');
+    @include mq-large-down {
+      @include body-sizing('default', 'mobile');
+    }
+
+  }
+
+  &__text {
+    margin-top: 0.5rem;
+
+    @include body-sizing('small', 'desktop');
+    @include mq-large-down {
+      @include body-sizing('small', 'mobile');
+    }
+  }
+}

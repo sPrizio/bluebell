@@ -1,0 +1,71 @@
+@import "app/colors.module";
+@import "app/typography.module";
+
+//  COLORS
+$color-black: #000000;
+$color-white: #FFFFFF;
+$color-font-primary: $color-grey-900;
+$color-font-secondary: $color-grey-700;
+$color-font-disabled: $color-grey-500;
+
+//  BRAND
+$color-primary: $color-blue-700;
+$color-primary-light: $color-blue-400;
+$color-secondary: $color-purple-400;
+$color-tertiary: $color-turquoise-400;
+$color-input: $color-white;
+$color-select: $color-white;
+
+// UI - Pages
+$color-ui-dark-page-background: $color-grey-50;
+$color-ui-dark-background: $color-grey-0;
+$color-ui-dark-semi-background: $color-grey-900;
+$color-ui-dark-tertiary-background: $color-grey-700;
+$color-ui-dark-border: $color-grey-800;
+$color-ui-dark-font-color: $color-grey-600;
+
+// UI - Components
+$color-ui-dark-card-background: $color-white;
+$color-ui-dark-card-header: $color-grey-800;
+$color-ui-dark-table-headers: $color-primary;
+$color-ui-dark-table-content: $color-grey-800;
+
+// UI - Colors
+$color-ui-dark-positive: $color-green-500;
+$color-ui-dark-negative: $color-red-600;
+$color-orange: orange;
+
+// MESSAGES
+$color-info: $color-blue-700;
+$color-info-light: $color-blue-700;
+$color-success: $color-green-700;
+$color-success-light: $color-green-700;
+$color-warning: $color-yellow-700;
+$color-warning-light: $color-yellow-700;
+$color-danger: $color-red-700;
+$color-danger-light: $color-red-700;
+
+// TRANSITIONS
+$transition-duration: .3s;
+$transition-curve: ease-in-out;
+
+//  GENERAL LAYOUT
+$breakpoints: (
+        xsmall: 0rem,
+        small: 30rem,
+        medium: 48rem,
+        large: 62rem,
+        xlarge: 71rem
+);
+
+$grid-padding: (
+        mobile: (
+                padding: 1rem,
+        ),
+        desktop: (
+                padding: 5rem,
+        ),
+);
+
+$container-padding: 2.5rem;
+$container-max-width: 85rem;

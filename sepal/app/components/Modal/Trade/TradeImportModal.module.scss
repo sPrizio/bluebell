@@ -1,0 +1,12 @@
+@import "app/variables.module";
+@import "app/mixins.module";
+
+.trade-import-modal {
+  width: 100%;
+
+  &__report-issue {
+    text-decoration: none;
+    color: $color-primary;
+    font-weight: bold;
+  }
+}

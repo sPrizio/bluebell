@@ -1,0 +1,30 @@
+@import "app/variables.module";
+@import "app/mixins.module";
+
+.account-activity {
+
+  &__tooltip {
+    border-radius: 12px;
+    background-color: $color-white;
+    padding: 0.75rem 1.5rem;
+    box-shadow: rgba($color-black, 0.35) 0 0.0625rem 0.25rem;
+  }
+
+  &__tooltip-label {
+    color: $color-font-primary;
+    border-bottom: 0.1250rem solid $color-grey-200;
+    margin-bottom: 0.5rem;
+  }
+
+  &__tooltip-content {
+    display: flex;
+
+    &--current {
+      color: $color-primary;
+    }
+
+    &--previous {
+      color: rgb(186, 184, 195);
+    }
+  }
+}

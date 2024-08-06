@@ -1,0 +1,200 @@
+@import "app/variables.module";
+@import "app/mixins.module";
+
+$border-radius: 0.375rem;
+$border-rounded: 1.5rem;
+
+.simple-input {
+  $this: &;
+  display: flex;
+  flex-direction: row;
+  min-width: 12.5rem;
+  width: 100%;
+  align-items: center;
+  justify-content: center;
+
+  @include mq-large-down {
+    min-width: 6.25rem;
+  }
+
+  &--loading {
+    pointer-events: none;
+
+    &:hover {
+      pointer-events: none;
+    }
+  }
+
+  #{$this}--loader {
+    position: relative;
+    @include button-loader;
+
+    &::before {
+      border-bottom: 0.125rem solid $color-ui-dark-font-color;
+    }
+  }
+
+  &--rounded {
+    #{$this}__input {
+      padding-left: 1.5rem;
+      border-top-left-radius: $border-rounded;
+      border-bottom-left-radius: $border-rounded;
+
+      &--full-rounded {
+        border-top-right-radius: $border-rounded;
+        border-bottom-right-radius: $border-rounded;
+      }
+    }
+
+    #{$this}__button {
+      border-top-right-radius: $border-rounded;
+      border-bottom-right-radius: $border-rounded;
+    }
+  }
+
+  &__write-input-container {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+  }
+
+  &__write-input-item {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+  }
+
+  &__write-input-icon {
+    padding: 0 0.375rem;
+    flex: 0 0 2.375rem;
+
+    @include header-sizing(4, 'desktop');
+    @include mq-large-down {
+      @include header-sizing(4, 'mobile');
+    }
+
+    &--left {
+      justify-content: flex-start;
+    }
+
+    &--right {
+      justify-content: flex-end;
+    }
+  }
+
+  &__write-input-input {
+    flex: 1;
+  }
+
+  input {
+    all: unset;
+
+    &::placeholder {
+      color: rgba($color-ui-dark-font-color, 0.5);
+    }
+  }
+
+  &__item {
+    display: flex;
+    flex: 1;
+    height: 1rem !important;
+    justify-content: flex-start;
+    align-items: center;
+    padding: 0.6rem;
+  }
+
+  &__input {
+    border: 0.0625rem solid $color-grey-300;
+    background-color: $color-input;
+    border-top-left-radius: $border-radius;
+    border-bottom-left-radius: $border-radius;
+
+    &--full-rounded {
+      border-top-right-radius: $border-radius;
+      border-bottom-right-radius: $border-radius;
+    }
+  }
+
+  &__button {
+    flex: 0.5;
+    color: $color-white;
+    border-top-right-radius: $border-radius;
+    border-bottom-right-radius: $border-radius;
+
+    &:hover {
+      cursor: pointer;
+    }
+
+    &--primary {
+      border: 0.0625rem solid $color-primary;
+      color: $color-white;
+      background-color: $color-primary;
+
+      .simple-input--loader {
+        &::before {
+          border-bottom: 0.125rem solid $color-white;
+        }
+      }
+    }
+
+    &--secondary {
+      border: 0.0625rem solid $color-secondary;
+      background-color: $color-secondary;
+
+      .simple-input--loader {
+        &::before {
+          border-bottom: 0.125rem solid $color-white;
+        }
+      }
+    }
+
+    &--tertiary {
+      border: 0.0625rem solid $color-tertiary;
+      background-color: $color-tertiary;
+
+      .simple-input--loader {
+        &::before {
+          border-bottom: 0.125rem solid $color-white;
+        }
+      }
+    }
+  }
+
+  &__flex-wrapper {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+  }
+
+  &__flex-item {
+    flex: 1;
+  }
+
+  &__flex-content {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  &__button-icon, &__button-text {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  &__button-icon {
+    @include header-sizing(4, 'desktop');
+    @include mq-large-down {
+      @include header-sizing(4, 'mobile');
+    }
+
+    padding-right: 0.25rem;
+  }
+}
+
+@include loader-animation;

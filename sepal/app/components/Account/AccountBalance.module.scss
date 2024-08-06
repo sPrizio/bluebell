@@ -1,0 +1,129 @@
+@import "app/variables.module";
+@import "app/mixins.module";
+
+.account-balance {
+  margin-top: -1rem;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-content: center;
+
+  &__break {
+    @include break;
+  }
+
+  &__column {
+    flex: 1;
+
+    &--align-right {
+      text-align: right;
+    }
+  }
+
+  &__account-info {
+    @include body-sizing('small', 'desktop');
+    @include mq-medium-down {
+      @include body-sizing('small', 'mobile');
+    }
+
+    color: $color-font-secondary;
+    font-weight: $font-weight-regular;
+  }
+
+  &__account-value {
+    @include header-sizing(4, 'desktop');
+    @include mq-medium-down {
+      @include header-sizing(4, 'mobile');
+    }
+
+    color: $color-primary;
+
+    small {
+      @include body-sizing('small', 'desktop');
+      @include mq-medium-down {
+        @include body-sizing('small', 'mobile');
+      }
+
+      padding-left: 0.25rem;
+      font-weight: $font-weight-semi-bold;
+      letter-spacing: -0.0675rem;
+    }
+  }
+
+  &__balance-info {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+  }
+
+  &__delta {
+    @include body-sizing('small', 'desktop');
+    @include mq-medium-down {
+      @include body-sizing('small', 'mobile');
+    }
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding-right: 0.35rem;
+    font-weight: $font-weight-bold;
+
+    &--positive {
+      color: $color-ui-dark-positive;
+    }
+
+    &--negative {
+      color: $color-ui-dark-negative;
+    }
+  }
+
+  &__delta-symbol {
+    @include header-sizing(4, 'desktop');
+    @include mq-medium-down {
+      @include header-sizing(4, 'mobile');
+    }
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  &__timeline {
+    display: inline-block;
+    @include body-sizing('small', 'desktop');
+    @include mq-medium-down {
+      @include body-sizing('small', 'mobile');
+    }
+
+    color: $color-font-secondary;
+    font-weight: $font-weight-regular;
+  }
+
+  &__money {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+
+    div {
+      flex: 1;
+
+      small {
+        color: $color-primary;
+        font-weight: $font-weight-semi-bold;
+      }
+
+      &:first-child {
+        text-align: right;
+
+        @include mq-medium-down {
+          text-align: left;
+        }
+      }
+
+      &:last-child {
+        flex: 0.75;
+      }
+    }
+  }
+}

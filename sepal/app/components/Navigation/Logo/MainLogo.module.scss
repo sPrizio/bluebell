@@ -1,0 +1,13 @@
+@import "app/variables.module";
+@import "app/mixins.module";
+
+.main-logo {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  &__container {
+    width: 100%;
+  }
+}

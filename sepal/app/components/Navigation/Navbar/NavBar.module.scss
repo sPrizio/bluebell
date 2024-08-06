@@ -1,0 +1,76 @@
+@import "app/variables.module";
+@import "app/mixins.module";
+
+.nav-bar {
+  background-color: $color-white;
+  box-shadow: rgba($color-black, 0.25) 0 0.125rem 0.25rem;
+  padding: 0.375rem 0;
+
+  &__container {
+    @include container;
+
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+  }
+
+  &__items {
+    display: flex;
+    align-items: center;
+
+    &--left {
+      flex: 1;
+      justify-content: flex-start;
+    }
+
+    &--right {
+      flex: 0.75;
+      justify-content: flex-end;
+    }
+  }
+
+  &__item {
+    position: relative;
+    text-align: center;
+    padding: 0.75rem 0;
+
+    &:not(:first-child) {
+      margin-left: 0.5rem;
+    }
+
+    &:not(:last-child) {
+      margin-right: 0.5rem;
+    }
+
+    @include mq-large-down {
+      display: none;
+    }
+
+    &--brand {
+      display: block;
+      margin-right: 1.5rem !important;
+    }
+
+    &--mobile {
+      display: none;
+
+      @include mq-large-down {
+        display: block;
+      }
+    }
+  }
+
+  &__mobile-menu {
+    display: none;
+    font-size: 1.5rem;
+
+    @include mq-large-down {
+      display: block;
+
+      &:hover {
+        cursor: pointer;
+      }
+    }
+  }
+}

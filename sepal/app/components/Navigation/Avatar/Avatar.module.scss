@@ -1,0 +1,58 @@
+@import "app/variables.module";
+@import "app/mixins.module";
+
+.avatar {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+
+  &:hover {
+    cursor: pointer;
+  }
+
+  &__name {
+    margin-left: 0.25rem;
+    color: $color-font-primary;
+    @include body-sizing('default', 'desktop');
+    @include mq-large-down {
+      @include body-sizing('default', 'mobile')
+    }
+  }
+
+  &__item {
+  }
+
+  &__icon {
+    flex: 0.25;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  &__icon-wrapper {
+    border: 0.25rem solid $color-white;
+    border-radius: 100%;
+
+    height: 2.5rem;
+    width: 2.5rem;
+
+    img {
+      width: 100%;
+      height: 100%;
+      border-radius: 100%;
+    }
+  }
+
+  &__content {
+    flex: 1;
+    display: flex;
+    width: 100%;
+  }
+
+  &__container {
+    display: flex;
+    flex-direction: column;
+    align-content: center;
+    justify-content: center;
+  }
+}

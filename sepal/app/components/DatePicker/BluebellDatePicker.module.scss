@@ -1,0 +1,48 @@
+@import "app/variables.module";
+@import "app/mixins.module";
+
+$border-radius: 0.375rem;
+
+.bluebell-date-picker {
+  font-family: $font-primary !important;
+  max-width: 9.5rem;
+  position: relative;
+
+  &__label {
+    @include body-sizing('small', 'desktop');
+    @include mq-large-down {
+      @include body-sizing('small', 'mobile');
+    }
+
+    position: absolute;
+    top: -65%;
+    color: $color-primary;
+    z-index: 10;
+    font-weight: $font-weight-semi-bold;
+  }
+
+  input {
+    font-family: $font-primary !important;
+    background-color: $color-white;
+    color: $color-font-primary;
+    height: 1.5rem;
+    padding: 0.375rem;
+    font-weight: $font-weight-light;
+    border: 0.0625rem solid $color-grey-300;
+    width: 100%;
+
+    @include mq-large-down {
+      height: 1rem;
+    }
+
+    &:hover {
+      cursor: pointer;
+    }
+  }
+
+  &--is-rounded {
+    input {
+      border-radius: $border-radius;
+    }
+  }
+}

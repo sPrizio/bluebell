@@ -1,0 +1,88 @@
+@import "app/variables.module";
+@import "app/mixins.module";
+
+.user-menu {
+  $this: &;
+  display: none;
+  background-color: $color-white;
+  position: absolute;
+  min-width: 11rem;
+  min-height: 3.125rem;
+  padding: 0.75rem 0.75rem;
+  left: -75%;
+  z-index: 10;
+  margin-top: 0.375rem;
+  box-shadow: rgba($color-black, 0.25) 0 0.125rem 0.25rem;
+  border-radius: 0.75rem;
+
+  &--active {
+    display: block;
+  }
+
+  &__menu-wrapper {
+    background-color: $color-white;
+    width: 100%;
+  }
+
+  &__menu-item {
+    flex: 1;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    background-color: $color-white;
+    padding: 0.5rem 0;
+    color: $color-font-primary;
+    transition: color $transition-duration $transition-curve;
+
+    &:hover {
+      cursor: pointer;
+      color: $color-primary;
+
+      #{$this}__text-link {
+        color: $color-primary;
+      }
+    }
+
+    &:not(:first-child) {
+      margin-top: 0.375rem;
+    }
+
+    &:not(:last-child) {
+      margin-bottom: 0.375rem;
+    }
+
+    &--last {
+      border-top: 0.125rem solid $color-grey-200;
+    }
+  }
+
+  &__icon, &__text {
+    flex-direction: row;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  &__icon {
+    flex: 0.25;
+    font-size: 1.5rem;
+    margin-right: 0.375rem;
+  }
+
+  &__text {
+    flex: 1;
+    justify-content: flex-start;
+
+    @include body-sizing('small', 'desktop');
+    @include mq-large-down {
+      @include body-sizing('small', 'desktop');
+    }
+  }
+
+  &__text-link {
+    transition: color $transition-duration $transition-curve;
+    text-decoration: none;
+    color: $color-font-primary;
+  }
+}

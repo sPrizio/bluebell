@@ -1,0 +1,46 @@
+@import "app/variables.module";
+@import "app/mixins.module";
+
+.account-equity-chart {
+  &__tooltip {
+    border-radius: 12px;
+    background-color: $color-white;
+    padding: 0.75rem 1.5rem;
+    box-shadow: rgba($color-black, 0.35) 0 0.0625rem 0.25rem;
+  }
+
+  &__tooltip-label {
+    color: $color-font-primary;
+  }
+
+  &__tooltip-content {
+    color: $color-primary;
+    font-weight: $font-weight-medium;
+    display: flex;
+  }
+
+  &__tooltip-delta {
+    @include body-sizing('small', 'desktop');
+
+    padding-left: 0.75rem;
+    font-weight: $font-weight-semi-bold;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    &--positive {
+      color: $color-ui-dark-positive;
+    }
+
+    &--negative {
+      color: $color-ui-dark-negative;
+    }
+  }
+
+  &__tooltip-delta-symbol {
+    padding: 0 0.25rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+}

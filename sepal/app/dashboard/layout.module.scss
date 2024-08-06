@@ -1,0 +1,59 @@
+@import "app/variables.module";
+@import "app/mixins.module";
+
+.dashboard-page {
+  &__page-row {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    justify-content: center;
+    flex-wrap: wrap;
+
+    &:not(:first-child) {
+      margin-top: 2rem;
+    }
+
+    &:not(:last-child) {
+      margin-bottom: 2rem;
+    }
+  }
+
+  &__page-component {
+    &:not(:first-child) {
+      margin-top: 2rem;
+    }
+
+    &:not(:last-child) {
+      margin-bottom: 2rem;
+    }
+  }
+
+  &__page-column {
+    flex: 1;
+
+    @include mq-medium-up {
+      &:not(:first-child) {
+        margin-left: 1rem;
+      }
+
+      &:not(:last-child) {
+        margin-right: 1rem;
+      }
+    }
+
+    @include mq-medium-down {
+      &:not(:first-child) {
+        margin-top: 1rem;
+      }
+
+      &:not(:last-child) {
+        margin-bottom: 1rem;
+      }
+    }
+  }
+
+  &__break {
+    @include break;
+  }
+}

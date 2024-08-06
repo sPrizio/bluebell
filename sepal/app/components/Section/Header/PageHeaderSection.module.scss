@@ -1,0 +1,84 @@
+@import "app/variables.module";
+@import "app/mixins.module";
+
+.page-header-section {
+  border-bottom: 0.125rem solid transparent;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  margin: 2.5rem 0;
+
+  &__item {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    margin-bottom: 0.375rem;
+  }
+
+  &__icon {
+    @include header-sizing(1, 'desktop');
+    @include mq-large-down {
+      @include header-sizing(1, 'mobile');
+
+      flex: 0 0 2rem;
+      height: 2rem;
+      width: 2rem;
+    }
+
+    justify-content: center;
+    text-align: center;
+    flex: 0 0 2.5rem;
+    height: 2.5rem;
+    width: 2.5rem;
+    border-radius: 0.75rem;
+    background-color: $color-primary;
+    color: $color-white;
+    padding: 0.5rem;
+    margin-right: 0.75rem;
+  }
+
+  &__title {
+    color: $color-grey-800;
+
+    @include header-sizing(3, 'desktop');
+    @include mq-large-down {
+      @include header-sizing(3, 'mobile');
+    }
+
+    font-weight: $font-weight-bold !important;
+    letter-spacing: -0.15rem !important;
+  }
+
+  &__subtitle {
+    margin-top: -0.625rem;
+    color: $color-ui-dark-card-header;
+    @include header-sizing(5, 'desktop');
+    @include mq-large-down {
+      @include header-sizing(5, 'mobile');
+    }
+
+    font-weight: $font-weight-medium !important;
+    letter-spacing: -0.1rem !important;
+  }
+
+  &__controls {
+    display: flex;
+    flex-direction: row;
+    align-items: flex-end;
+    align-content: flex-end;
+  }
+
+  &__control {
+    display: flex;
+    margin-left: auto;
+
+    &:not(:first-child) {
+      margin-left: 0.375rem;
+    }
+
+    &:not(:last-child) {
+      margin-right: 0.375rem;
+    }
+  }
+}

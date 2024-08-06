@@ -1,0 +1,56 @@
+@import "app/variables.module";
+@import "app/mixins.module";
+
+.news {
+  &__symbol, &__value {
+    text-align: center;
+  }
+
+  &__flag {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 2.5rem !important;
+
+    div {
+      height: 2rem;
+      width: 2rem;
+
+      img {
+        height: 100%;
+        width: 100%;
+      }
+    }
+  }
+
+  &__slot {
+    &--past {
+      td {
+        opacity: 0.5;
+      }
+    }
+  }
+
+  &__severity {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    @include header-sizing(4, 'desktop');
+    @include mq-medium-down {
+      @include header-sizing(4, 'mobile')
+    }
+
+    &--low {
+      color: $color-grey-500;
+    }
+
+    &--moderate {
+      color: $color-orange;
+    }
+
+    &--dangerous {
+      color: $color-danger;
+    }
+  }
+}
