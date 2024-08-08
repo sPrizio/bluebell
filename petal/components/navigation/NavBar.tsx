@@ -2,12 +2,19 @@ import NavBarLink from "@/components/navigation/NavBarLink";
 import SimpleButton from "@/components/buttons/SimpleButton";
 import MainLogo from "@/components/navigation/MainLogo";
 
+/**
+ * The nav bar component
+ *
+ * @param variant color variant
+ * @author Stephen Prizio
+ * @version 0.0.1
+ */
 export default function NavBar(
   {
     variant = 'primary',
   }
     : Readonly<{
-    variant?: 'primary' | 'secondary' | 'tertiary' | 'white',
+    variant?: 'primary' | 'secondary' | 'tertiary' | 'white' | 'transparent',
   }>
 ) {
 
@@ -25,6 +32,8 @@ export default function NavBar(
         return 'bg-tertiary text-white';
       case 'white':
         return 'bg-white text-tertiary';
+      case 'transparent':
+        return 'bg-transparent text-white ';
       default:
         return 'bg-primary text-white';
     }
@@ -52,6 +61,7 @@ export default function NavBar(
   function computeBorder() {
     switch (variant) {
       case 'primary':
+      case 'transparent':
         return 'border-white';
       case 'secondary':
         return 'border-tertiary';
@@ -70,30 +80,32 @@ export default function NavBar(
   }
 
   return (
-    <div className={(computeVariant()) + " px-4 sm:px-6 md:px-8 relative py-4 lg:py-6 flex items-center justify-between font-semibold text-sm leading-6 shadow-md"}>
-      <MainLogo variant={variant} />
-      <div className="flex items-center">
-        <div className="-my-1 ml-2 -mr-1 md:hidden">
-          <button type="button" className="w-8 h-8 flex items-center justify-center">
-            <span className="sr-only">Navigation</span>
-            <svg width="24" height="24" fill="none" aria-hidden="true">
-              <path
-                d="M12 6v.01M12 12v.01M12 18v.01M12 7a1 1 0 1 1 0-2 1 1 0 0 1 0 2Zm0 6a1 1 0 1 1 0-2 1 1 0 0 1 0 2Zm0 6a1 1 0 1 1 0-2 1 1 0 0 1 0 2Z"
-                stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-            </svg>
-          </button>
-        </div>
-        <div className="hidden md:flex items-center">
-          <nav>
-            <ul className="flex items-center gap-x-8">
-              <li><NavBarLink variant={variant} text={'Docs'} url={''} /></li>
-              <li><NavBarLink variant={variant} text={'Components'} url={''} /></li>
-              <li><NavBarLink variant={variant} text={'Blogs'} url={''} /></li>
-              <li><NavBarLink variant={variant} text={'Showcase'} url={''} /></li>
-            </ul>
-          </nav>
-          <div className={computeBorder() + " flex items-center border-l ml-6 pl-6"}>
-            <SimpleButton variant={computeButtonVariant()} text={'Free Consult'} />
+    <div className={(computeVariant()) + " relative py-4 lg:py-6 font-semibold text-sm leading-6"}>
+      <div className={" container flex items-center justify-between"}>
+        <MainLogo variant={variant}/>
+        <div className="flex items-center">
+          <div className="-my-1 ml-2 -mr-1 md:hidden">
+            <button type="button" className="w-8 h-8 flex items-center justify-center">
+              <span className="sr-only">Navigation</span>
+              <svg width="24" height="24" fill="none" aria-hidden="true">
+                <path
+                  d="M12 6v.01M12 12v.01M12 18v.01M12 7a1 1 0 1 1 0-2 1 1 0 0 1 0 2Zm0 6a1 1 0 1 1 0-2 1 1 0 0 1 0 2Zm0 6a1 1 0 1 1 0-2 1 1 0 0 1 0 2Z"
+                  stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+              </svg>
+            </button>
+          </div>
+          <div className="hidden md:flex items-center">
+            <nav>
+              <ul className="flex items-center gap-x-8">
+                <li><NavBarLink variant={variant} text={'Docs'} url={''}/></li>
+                <li><NavBarLink variant={variant} text={'Components'} url={''}/></li>
+                <li><NavBarLink variant={variant} text={'Blogs'} url={''}/></li>
+                <li><NavBarLink variant={variant} text={'Showcase'} url={''}/></li>
+              </ul>
+            </nav>
+            <div className={computeBorder() + " flex items-center border-l ml-6 pl-6"}>
+              <SimpleButton variant={computeButtonVariant()} text={'Free Consult'}/>
+            </div>
           </div>
         </div>
       </div>

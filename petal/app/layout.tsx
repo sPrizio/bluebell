@@ -3,6 +3,7 @@ import "./globals.css";
 import { cn } from "@/lib/utils"
 import React from "react";
 import { Inter as FontSans } from "next/font/google"
+import 'animate.css'
 
 const fontSans = FontSans({
   subsets: ["latin"],
@@ -17,7 +18,7 @@ export const metadata: Metadata = {
 export default function RootLayout({children,}: Readonly<{ children: React.ReactNode; }>) {
   return (
     <html lang="en">
-      <body className={cn("min-h-screen bg-background font-sans antialiased", fontSans.variable)}>
+      <body className={cn("min-h-screen bg-background font-sans antialiased text-slate-600 tracking-tighter", fontSans.variable)}>
         {children}
       </body>
     </html>

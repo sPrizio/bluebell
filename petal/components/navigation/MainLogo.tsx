@@ -15,7 +15,7 @@ export default function MainLogo(
     variant = 'primary',
   }
     : Readonly<{
-    variant?: 'primary' | 'secondary' | 'tertiary' | 'white',
+    variant?: 'primary' | 'secondary' | 'tertiary' | 'white' | 'transparent',
   }>
 ) {
 

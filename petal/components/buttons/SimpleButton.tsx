@@ -1,16 +1,27 @@
+/**
+ * Base button component for a generic button
+ *
+ * @param text - text label
+ * @param variant - determines color & shape. Accepted values are : 'primary', 'secondary', 'tertiary'.
+ *                 if the value is not one of the above or is missing, the button will not render
+ * @param inverted - flag to determine if the colors should be inverted
+ * @param disabled - flag to determine whether this button should render as disabled
+ * @param loading - flag to show the button as loading
+ * @param handler - handler function for button
+ * @param icon - icon component
+ * @param iconPosition - icon position on left or right of text
+ * @author Stephen Prizio
+ * @version 0.0.1
+ */
 export default function SimpleButton(
   {
     text = '',
     variant = 'primary',
-    inverted = false,
-    plain = false,
-    active = false,
     disabled = false,
     loading = false,
     handler = null,
     icon = null,
     iconPosition = 'left',
-    highlightText = false,
   }
     : Readonly<{
     text?: string,
