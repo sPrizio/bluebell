@@ -1,5 +1,12 @@
 import {cn} from "@/lib/utils";
 
+/**
+ * A card meant for the feature section. Meant to be part of a grid
+ *
+ * @param feature feature ui type
+ * @author Stephen Prizio
+ * @version 0.0.1
+ */
 export default function FeatureCard(
   {
     feature

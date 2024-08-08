@@ -4,6 +4,16 @@ import FeatureCard from "@/components/cards/FeatureCard";
 import {useEffect, useRef} from "react";
 import {useInView} from "framer-motion";
 
+/**
+ * Section that renders feature cards as a grid
+ *
+ * @param title title
+ * @param subtitle subtitle
+ * @param features list of features
+ * @param className custom classes
+ * @author Stephen Prizio
+ * @version 0.0.1
+ */
 export default function FeatureSection(
   {
     title = '',

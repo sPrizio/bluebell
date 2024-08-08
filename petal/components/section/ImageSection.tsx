@@ -1,9 +1,21 @@
 'use client'
 
 import Image from "next/image";
-import {motion, useInView} from "framer-motion";
+import {useInView} from "framer-motion";
 import {useEffect, useRef} from "react";
 
+/**
+ * Section that renders text and an image
+ *
+ * @param title title
+ * @param subtitle subtitle
+ * @param content content
+ * @param className custom classes
+ * @param alignment content on the left or right
+ * @param image image to render
+ * @author Stephen Prizio
+ * @version 0.0.1
+ */
 export default function ImageSection(
   {
     title = '',
@@ -30,8 +42,13 @@ export default function ImageSection(
   }, [isInView])
 
 
-  //  GENERAL FUNCTIONS
+  //  FUNCTIONS
 
+  /**
+   * Calculates what animations to show and which directions
+   *
+   * @param rightToLeft left to right direction or not
+   */
   function includeAnimation(rightToLeft: boolean) {
 
     if (isInView) {
@@ -65,13 +82,7 @@ export default function ImageSection(
                 </blockquote> : null
             }
             <div className={"basis-1/2 text-base leading-relaxed mt-6 font-regular"}>
-              We are Finance Corp, We provide Finance consulting from 30 years.<br/><br/>
-              Accumsan est in tempus etos ullamcorper sem quam suscipit lacus maecenas tortor. Suspendisse gravida
-              ornare
-              non mattis velit rutrum modest sed do eiusmod tempor incididunt ut labore et dolore.<br/><br/>
-              We have one of the philo sophia nec mei maiorum appell antur. Orci varius natoque penatibus et magnis
-              dis
-              parturient montes, nascetur ridiculus mus egestas varius penatibus.
+              {content}
             </div>
           </div>
           <div className={"basis-1/2 " + (alignment == 'right' ? (" order-first mr-24 " + includeAnimation(false)) : (" " + includeAnimation(true)))}>

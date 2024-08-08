@@ -43,7 +43,7 @@ export default function SimpleCard(
   }, [isInView])
 
 
-  //  GENERAL FUNCTIONS
+  //  FUNCTIONS
 
   /**
    * Computes the animation class

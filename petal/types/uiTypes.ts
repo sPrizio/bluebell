@@ -8,3 +8,18 @@ interface FeatureType {
   icon?: React.ReactNode,
   index: number
 }
+
+interface TestimonialType {
+  quote: string,
+  name: string,
+  title: string
+}
+
+interface HighlightCardType {
+  description: string,
+  title: string,
+  src: string,
+  ctaText: string,
+  ctaLink: string,
+  content: React.ReactNode,
+}
