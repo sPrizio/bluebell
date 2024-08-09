@@ -36,7 +36,7 @@ export default function ImageSection(
 ) {
 
   const ref = useRef(null)
-  const isInView = useInView(ref, { once: true })
+  const isInView = useInView(ref, { once: true, amount: 0.75 })
 
   useEffect(() => {
   }, [isInView])
@@ -63,7 +63,7 @@ export default function ImageSection(
 
   return (
     <div className={"py-12 px-4 " + className} ref={ref}>
-      <div className="container my-10 sm:my-16 md:my-24">
+      <div className={"container my-10 sm:my-16 md:my-24 " + (isInView ? '': ' invisible ')}>
         <div className="flex items-start">
           <div className={"basis-1/2 " + (alignment == 'right' ? (" " + includeAnimation(true)) : " order-first md:mr-24 " + includeAnimation(false))}>
             {

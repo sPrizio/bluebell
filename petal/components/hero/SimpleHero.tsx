@@ -1,9 +1,9 @@
 'use client'
 
 import NavBar from "@/components/navigation/NavBar";
-import {TextGenerateEffect} from "@/components/ui/text-generate-effect";
 import {useEffect, useRef} from "react";
 import {useInView} from "framer-motion";
+import {FlipWords} from "@/components/ui/flip-words";
 
 /**
  * A simple hero component that can support simple color variants or background images
@@ -43,7 +43,7 @@ export default function SimpleHero(
 ) {
 
   const ref = useRef(null)
-  const isInView = useInView(ref, { once: true })
+  const isInView = useInView(ref, { once: true, amount: 0.75 })
 
   useEffect(() => {
   }, [isInView])
@@ -118,15 +118,17 @@ export default function SimpleHero(
 
   //  RENDER
 
+  const words = ['simple.', 'digestible.', 'manageable.', 'comfortable.', 'approachable.']
+
   return (
     <div className={computeVariant()} ref={ref}>
       {hasNavBar ? <NavBar variant={variant == "image" ? 'transparent' : variant} /> : null}
       <div className={computeAlignment() + computePosition() + computeSize() + " container flex items-center"}>
         <div className="w-2/3">
           <div className="text-6xl font-extrabold">
-            {highlight && isInView ? <TextGenerateEffect words={title} duration={1} /> : <>{title}</>}
+            {highlight && isInView ? <>Finances made <FlipWords words={words} className={'py-4 bg-primary text-white rounded-3xl'} /></> : <>{title}</>}
           </div>
-          <div className={"mt-4 text-md font-normal bg-primary/40 p-4 rounded-lg " + (highlight && isInView ? " animate__animated animate__lightSpeedInLeft animate__delay-1s" : "")}>
+          <div className={"mt-4 text-lg font-normal bg-primary/45 p-4 rounded-lg " + (highlight && isInView ? " animate__animated animate__lightSpeedInLeft animate__delay-1s" : "")}>
             {subtitle}
           </div>
         </div>

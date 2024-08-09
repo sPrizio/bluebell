@@ -27,12 +27,12 @@ export default function SimpleSection(
     subtitle?: string
     content: React.ReactNode;
     className?: string,
-    variant?: 'white' | 'primary' | 'secondary' | 'tertiary'
+    variant?: 'white' | 'primary' | 'secondary' | 'tertiary' | 'custom'
   }>
 ) {
 
   const ref = useRef(null)
-  const isInView = useInView(ref, {once: true})
+  const isInView = useInView(ref, {once: true, amount: 0.75})
 
   useEffect(() => {
   }, [isInView])
@@ -51,8 +51,10 @@ export default function SimpleSection(
         return ' bg-tertiary ';
       case 'white':
         return ' bg-white ';
-      default:
+      case 'primary':
         return ' bg-primary ';
+      default:
+        return ' ';
     }
   }
 
@@ -67,8 +69,10 @@ export default function SimpleSection(
         return ' text-secondary ';
       case 'white':
         return ' text-primary ';
+      case 'primary':
+        return ' text-white '
       default:
-        return ' text-white ';
+        return ' text-primary ';
     }
   }
 
@@ -83,8 +87,10 @@ export default function SimpleSection(
         return ' text-slate-300 ';
       case 'white':
         return ' text-tertiary ';
+        case 'primary':
+          return ' text-secondary ';
       default:
-        return ' text-secondary  ';
+        return ' text-tertiary ';
     }
   }
 
@@ -92,7 +98,7 @@ export default function SimpleSection(
   //  RENDER
 
   return (
-    <div className={"py-12 px-4 " + className + computeVariant()} ref={ref}>
+    <div className={"py-12 px-4 " + computeVariant() + " " + className} ref={ref}>
       <div className="container px-8 my-10 sm:my-16 md:my-24">
         {
           title?.length ?? -1 > 0 ?

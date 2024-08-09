@@ -120,7 +120,7 @@ export const InfiniteMovingCards = ({
       case 'tertiary':
         return 'text-white';
       case 'white':
-        return 'text-tertiary';
+        return 'text-muted-foreground';
       default:
         return 'text-secondary';
     }
@@ -136,7 +136,7 @@ export const InfiniteMovingCards = ({
       case 'tertiary':
         return ' text-secondary ';
       case 'white':
-        return ' text-tertiary ';
+        return ' text-foreground ';
       default:
         return ' text-muted ';
     }
