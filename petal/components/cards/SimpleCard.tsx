@@ -37,7 +37,7 @@ export default function SimpleCard(
 ) {
 
   const ref = useRef(null)
-  const isInView = useInView(ref, { once: true, amount: 0.75 })
+  const isInView = useInView(ref, { once: true,amount: 'some' })
 
   useEffect(() => {
   }, [isInView])

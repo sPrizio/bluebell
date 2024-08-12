@@ -43,7 +43,7 @@ export default function SimpleHero(
 ) {
 
   const ref = useRef(null)
-  const isInView = useInView(ref, { once: true, amount: 0.75 })
+  const isInView = useInView(ref, { once: true, amount: 'some' })
 
   useEffect(() => {
   }, [isInView])
@@ -118,17 +118,18 @@ export default function SimpleHero(
 
   //  RENDER
 
-  const words = ['simple.', 'digestible.', 'manageable.', 'comfortable.', 'approachable.']
+  const words = ['simple.', 'easy.', 'digestible.', 'manageable.', 'comfortable.', 'approachable.']
 
   return (
-    <div className={computeVariant()} ref={ref}>
+    <div className={computeVariant() + " relative "} ref={ref}>
+      <div className="absolute h-full w-full bg-black opacity-55" />
       {hasNavBar ? <NavBar variant={variant == "image" ? 'transparent' : variant} /> : null}
-      <div className={computeAlignment() + computePosition() + computeSize() + " container flex items-center"}>
-        <div className="w-2/3">
+      <div className={computeAlignment() + computePosition() + computeSize() + " container flex items-center " + (!isInView ? " invisible " : "")}>
+        <div className={" w-full lg:w-2/3 " + (highlight && isInView ? " animate__animated animate__lightSpeedInLeft " : "")}>
           <div className="text-6xl font-extrabold">
-            {highlight && isInView ? <>Finances made <FlipWords words={words} className={'py-4 bg-primary text-white rounded-3xl'} /></> : <>{title}</>}
+            {highlight && isInView ? <div>Finances made <FlipWords words={words} className={'text-primary rounded-3xl brightness-105'} /></div> : <>{title}</>}
           </div>
-          <div className={"mt-4 text-lg font-normal bg-primary/45 p-4 rounded-lg " + (highlight && isInView ? " animate__animated animate__lightSpeedInLeft animate__delay-1s" : "")}>
+          <div className={"mt-12 text-lg font-normal rounded-lg "}>
             {subtitle}
           </div>
         </div>

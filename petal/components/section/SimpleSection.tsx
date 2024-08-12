@@ -32,7 +32,7 @@ export default function SimpleSection(
 ) {
 
   const ref = useRef(null)
-  const isInView = useInView(ref, {once: true, amount: 0.75})
+  const isInView = useInView(ref, {once: true, amount: 'some'})
 
   useEffect(() => {
   }, [isInView])
@@ -98,8 +98,8 @@ export default function SimpleSection(
   //  RENDER
 
   return (
-    <div className={"py-12 px-4 " + computeVariant() + " " + className} ref={ref}>
-      <div className="container px-8 my-10 sm:my-16 md:my-24">
+    <div className={"py-6 px-4 " + computeVariant() + " " + className} ref={ref}>
+      <div className={(!isInView ? " invisible " : "") + " container px-8 my-6 sm:my-8 md:my-12 "}>
         {
           title?.length ?? -1 > 0 ?
             <div

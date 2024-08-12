@@ -6,6 +6,18 @@ import { AnimatePresence, motion } from "framer-motion";
 import { useOutsideClick } from "@/hooks/use-outside-click";
 import SimpleSection from "@/components/section/SimpleSection";
 
+/**
+ * A special component to highlight entries via modal
+ *
+ * @param title title
+ * @param subtitle subtitle
+ * @param className custom classes
+ * @param highlights entries to highlight
+ * @param cardClassName classes for the highlight cards
+ * @param variant color variant
+ * @author Stephen Prizio
+ * @version 0.0.1
+ */
 export default function HighlightSection(
   {
     title = '',
@@ -53,6 +65,9 @@ export default function HighlightSection(
 
   //  FUNCTIONS
 
+  /**
+   * Computes title color
+   */
   function computeTitle() {
     switch (variant) {
       case 'secondary':
@@ -66,6 +81,9 @@ export default function HighlightSection(
     }
   }
 
+  /**
+   * Computes subtitle color
+   */
   function computeSubtitle() {
     switch (variant) {
       case 'secondary':
@@ -124,7 +142,7 @@ export default function HighlightSection(
                 <motion.div
                   layoutId={`card-${active.title}-${id}`}
                   ref={ref}
-                  className="w-full max-w-[500px]  h-full md:h-fit md:max-h-[90%]  flex flex-col bg-white sm:rounded-3xl overflow-hidden"
+                  className="w-full max-w-[500px] h-fit md:h-fit md:max-h-[90%]  flex flex-col bg-white sm:rounded-3xl overflow-hidden"
                 >
                   <motion.div layoutId={`image-${active.title}-${id}`}>
                     <Image
@@ -137,7 +155,7 @@ export default function HighlightSection(
                     />
                   </motion.div>
 
-                  <div>
+                  <div className="pt-6 pb-12">
                     <div className="flex justify-between items-start p-4">
                       <div className="">
                         <motion.h3
@@ -150,7 +168,7 @@ export default function HighlightSection(
                           layoutId={`description-${active.description}-${id}`}
                           className="text-muted-foreground"
                         >
-                          {active.description}
+                         {active.description}
                         </motion.p>
                       </div>
                     </div>
@@ -170,7 +188,7 @@ export default function HighlightSection(
               </div>
             ) : null}
           </AnimatePresence>
-          <ul className="mx-auto w-full grid grid-cols-2 md:grid-cols-4 items-start gap-12">
+          <ul className="mx-auto w-full grid grid-cols-2 lg:grid-cols-4 items-start gap-12">
             {highlights.map((card, index) => (
               <motion.div
                 layoutId={`card-${card.title}-${id}`}

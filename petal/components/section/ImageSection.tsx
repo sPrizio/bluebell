@@ -36,7 +36,7 @@ export default function ImageSection(
 ) {
 
   const ref = useRef(null)
-  const isInView = useInView(ref, { once: true, amount: 0.75 })
+  const isInView = useInView(ref, { once: true, amount: 'some' })
 
   useEffect(() => {
   }, [isInView])
@@ -62,10 +62,10 @@ export default function ImageSection(
   //  RENDER
 
   return (
-    <div className={"py-12 px-4 " + className} ref={ref}>
-      <div className={"container my-10 sm:my-16 md:my-24 " + (isInView ? '': ' invisible ')}>
-        <div className="flex items-start">
-          <div className={"basis-1/2 " + (alignment == 'right' ? (" " + includeAnimation(true)) : " order-first md:mr-24 " + includeAnimation(false))}>
+    <div className={"py-6 px-4 " + className} ref={ref}>
+      <div className={"container my-6 sm:my-8 md:my-12 " + (isInView ? '': ' invisible ')}>
+        <div className="flex items-start flex-col lg:flex-row">
+          <div className={" basis-full lg:basis-1/2 " + (alignment == 'right' ? (" " + includeAnimation(true)) : " order-first lg:mr-24 " + includeAnimation(false))}>
             {
               title?.length ?? -1 > 0 ?
                 <div
@@ -85,7 +85,7 @@ export default function ImageSection(
               {content}
             </div>
           </div>
-          <div className={"basis-1/2 " + (alignment == 'right' ? (" order-first mr-24 " + includeAnimation(false)) : (" " + includeAnimation(true)))}>
+          <div className={" w-full basis-full lg:basis-1/2 mt-12 lg:mt-0 " + (alignment == 'right' ? (" order-first lg:mr-24 " + includeAnimation(false)) : (" " + includeAnimation(true)))}>
             <div className={"relative h-[15vh] md:h-[25vh] lg:h-[30vh]"}>
               <Image
                 className={'rounded-3xl'}

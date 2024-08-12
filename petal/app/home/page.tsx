@@ -7,17 +7,37 @@ import FeatureSection from "@/components/section/FeatureSection";
 
 import {
   IconAdjustmentsBolt,
+  IconBrandFacebook,
+  IconBrandInstagram,
+  IconBrandLinkedin,
+  IconBrandX,
   IconCloud,
   IconCurrencyDollar,
-  IconEaseInOut, IconGrowth,
+  IconEaseInOut,
+  IconGrowth,
   IconHeart,
-  IconHelp, IconPlant,
-  IconRouteAltLeft, IconSeeding,
+  IconHelp,
+  IconMail,
+  IconMapPin,
+  IconPhone,
+  IconPlant,
+  IconRouteAltLeft,
+  IconSeeding,
   IconTerminal2,
 } from "@tabler/icons-react";
 import InfiniteScrollingCards from "@/components/cards/InfiniteScrollingCards";
 import HighlightSection from "@/components/section/HighlightSection";
+import ContactForm from "@/components/forms/ContactForm";
+import ContactItem from "@/components/content/contact/ContactItem";
+import ContactSocial from "@/components/content/contact/ContactSocial";
+import {Separator} from "@/components/ui/separator";
 
+/**
+ * The home page
+ *
+ * @author Stephen Prizio
+ * @version 0.0.1
+ */
 export default function HomePage() {
 
   const features: Array<FeatureType> = [
@@ -237,7 +257,7 @@ export default function HomePage() {
       <SimpleHero
         variant={'image'}
         title={'Plant. Grow. Flourish.'}
-        subtitle={'Finances can be messy, money can be complicated and everyone seems to have the only advice you\'ll ever need to hear. We get it, we\'ve been there. ' +
+        subtitle={'Money can be complicated and everyone seems to have the only advice you\'ll ever need to hear. We get it, we\'ve been there. ' +
           'Find out how simple things can be and empower your growth. Let your money work for you, so you can work on finding the next best ramen spot.'}
         size={'medium'}
         position={"left"}
@@ -249,8 +269,8 @@ export default function HomePage() {
         title={'Money doesn\'t need to be complicated.'}
         subtitle={'Understanding finances isn\'t as difficult as you think. You\'re probably already on the right track.'}
         content={
-          <div className="flex items-stretch">
-            <div className="basis-1/3 mr-6">
+          <div className="flex items-stretch flex-col lg:flex-row">
+            <div className="basis-full lg:basis-1/3 mb-6 lg:mb-0 lg:mr-6">
               <SimpleCard
                 title={'Plant'}
                 subtitle={'Understand the situation. Define your goals.'}
@@ -266,7 +286,7 @@ export default function HomePage() {
                 delay={1}
               />
             </div>
-            <div className="basis-1/3 mr-6">
+            <div className="basis-full lg:basis-1/3 mb-6 lg:mb-0 lg:mr-6">
               <SimpleCard
                 title={'Grow'}
                 subtitle={'Build good habits. Reinforce responsibility.'}
@@ -282,7 +302,7 @@ export default function HomePage() {
                 delay={2}
               />
             </div>
-            <div className="basis-1/3">
+            <div className="basis-full lg:basis-1/3">
               <SimpleCard
                 title={'Flourish'}
                 subtitle={'Enjoy the results.'}
@@ -341,6 +361,36 @@ export default function HomePage() {
           </div>
         }
         variant={'white'}
+      />
+      <SimpleSection
+        title={'Get In Touch.'}
+        subtitle={'Let\'s talk! We\'d love to know more about you and your goals'}
+        variant={"custom"}
+        className={"bg-gray-100"}
+        content={
+          <div className="flex items-center flex-col lg:flex-row">
+            <div className="lg:mr-12 basis-full lg:basis-1/3 w-full order-last lg:order-first">
+              <ContactItem icon={<IconMapPin/>} text={'12th Wall Street, NY United States'}/>
+              <ContactItem icon={<IconPhone/>} text={'+1 (514) 941-1025'}/>
+              <ContactItem icon={<IconMail/>} text={'support@bluebell.com'}/>
+              <div className="mt-12">Follow us on our socials!</div>
+              <div className="mt-2">
+                <div className="flex items-center text-primary">
+                  <ContactSocial icon={<IconBrandFacebook size={30}/>} url={'#'}/>
+                  <ContactSocial icon={<IconBrandLinkedin size={30}/>} url={'#'}/>
+                  <ContactSocial icon={<IconBrandX size={30}/>} url={'#'}/>
+                  <ContactSocial icon={<IconBrandInstagram size={30}/>} url={'#'}/>
+                </div>
+              </div>
+            </div>
+            <div className="lg:flex-grow w-full ">
+              <ContactForm/>
+            </div>
+            <div className={"w-full my-10 lg:hidden"}>
+              <Separator className={'bg-gray-300'}/>
+            </div>
+          </div>
+        }
       />
       <Footer variant={"tertiary"}/>
     </div>

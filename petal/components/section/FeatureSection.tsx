@@ -30,7 +30,7 @@ export default function FeatureSection(
 ) {
 
   const ref = useRef(null)
-  const isInView = useInView(ref, { once: true, amount: 0.75 })
+  const isInView = useInView(ref, { once: true, amount: 'some' })
 
   useEffect(() => {
   }, [isInView])
@@ -39,8 +39,8 @@ export default function FeatureSection(
   //  RENDER
 
   return (
-    <div className={"py-24 px-4 " + className} ref={ref}>
-      <div className="container px-8 my-10 sm:my-16 md:my-24">
+    <div className={"py-12 px-4 " + className} ref={ref}>
+      <div className="container px-8 my-6 sm:my-8 md:my-12">
         {
           title?.length ?? -1 > 0 ?
             <div className={"text-4xl font-extrabold text-primary " + (isInView ? " animate__animated animate__lightSpeedInLeft " : "")}>
@@ -55,7 +55,7 @@ export default function FeatureSection(
               </p>
             </blockquote> : null
         }
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 relative z-10 py-10 max-w-7xl mx-auto">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 relative z-10 py-10 max-w-7xl mx-auto">
           {features.map((feature, index) => (
             <FeatureCard key={feature.title} feature={feature}/>
           ))}
