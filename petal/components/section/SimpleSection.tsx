@@ -115,7 +115,7 @@ export default function SimpleSection(
               </p>
             </blockquote> : null
         }
-        <div className="my-12 ">
+        <div className={"my-12 " + (isInView ? " animate__animated animate__fadeIn animate__slow animate__delay-1s " : "")}>
           <motion.div>
             {content}
           </motion.div>

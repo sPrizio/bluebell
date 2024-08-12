@@ -31,6 +31,8 @@ import ContactForm from "@/components/forms/ContactForm";
 import ContactItem from "@/components/content/contact/ContactItem";
 import ContactSocial from "@/components/content/contact/ContactSocial";
 import {Separator} from "@/components/ui/separator";
+import {TracingBeam} from "@/components/ui/tracing-beam";
+import BackToTopButton from "@/components/buttons/BackToTopButton";
 
 /**
  * The home page
@@ -393,6 +395,7 @@ export default function HomePage() {
         }
       />
       <Footer variant={"tertiary"}/>
+      <BackToTopButton />
     </div>
   )
 }
