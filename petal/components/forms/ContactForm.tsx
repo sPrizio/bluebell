@@ -8,6 +8,7 @@ import { Input } from "@/components/ui/input"
 import {Button} from "@/components/ui/button";
 import {zodPhone} from "@/lib/utils";
 import {Textarea} from "@/components/ui/textarea";
+import SimpleButton from "@/components/buttons/SimpleButton";
 
 const formSchema = z.object({
   firstName: z.string().min(2, { message: 'Must contain at least 2 characters' }).max(50, { message: 'Max length exceeded.' }),
@@ -125,7 +126,7 @@ export default function ContactForm() {
               )}
             />
           </div>
-          <Button type="submit" className="bg-primary text-white">Submit</Button>
+          <SimpleButton text={'Submit'} type={'submit'} variant={'fill'} color={'primary'} />
         </form>
       </Form>
     </div>

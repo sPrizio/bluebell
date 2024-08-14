@@ -31,8 +31,8 @@ import ContactForm from "@/components/forms/ContactForm";
 import ContactItem from "@/components/content/contact/ContactItem";
 import ContactSocial from "@/components/content/contact/ContactSocial";
 import {Separator} from "@/components/ui/separator";
-import {TracingBeam} from "@/components/ui/tracing-beam";
 import BackToTopButton from "@/components/buttons/BackToTopButton";
+import AdminBar from "@/components/navigation/AdminBar";
 
 /**
  * The home page
@@ -215,47 +215,7 @@ export default function HomePage() {
 
   return (
     <div className={""}>
-      {/*<NavBar variant={'primary'} />
-      <NavBar variant={'secondary'} />
-      <NavBar variant={'tertiary'} />
-      <NavBar variant={'white'} />*/}
-      {/*<SimpleHero
-        variant={'primary'}
-        title={'Plant. Grow. Flourish.'}
-        subtitle={'Cryptro is a decentralised public blockchain and cryptocurrency project and is fully open source. Cryptro is developing a smart contract platform'}
-        size={'small'}
-        alignment={'left'}
-        position={'left'}
-        hasNavBar={true}
-        highlight={true}
-      />
-      <SimpleHero
-        variant={'secondary'}
-        title={'Plant. Grow. Flourish.'}
-        subtitle={'Cryptro is a decentralised public blockchain and cryptocurrency project and is fully open source. Cryptro is developing a smart contract platform'}
-        size={'medium'}
-        alignment={'center'}
-        position={'center'}
-        hasNavBar={true}
-        highlight={true}
-      />
-      <SimpleHero
-        variant={'tertiary'}
-        title={'Plant. Grow. Flourish.'}
-        subtitle={'Cryptro is a decentralised public blockchain and cryptocurrency project and is fully open source. Cryptro is developing a smart contract platform'}
-        size={'large'}
-        alignment={'right'}
-        position={'right'}
-        highlight={true}
-      />
-      <SimpleHero
-        variant={'white'}
-        title={'Plant. Grow. Flourish.'}
-        subtitle={'Cryptro is a decentralised public blockchain and cryptocurrency project and is fully open source. Cryptro is developing a smart contract platform'}
-        size={'full'}
-        position={"center"}
-        highlight={true}
-      />*/}
+      <AdminBar variant={'tertiary'} />
       <SimpleHero
         variant={'image'}
         title={'Plant. Grow. Flourish.'}

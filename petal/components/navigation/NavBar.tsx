@@ -49,7 +49,9 @@ export default function NavBar(
       case 'tertiary':
         return 'secondary';
       case 'white':
-        return 'tertiary';
+        return 'primary';
+      case 'transparent':
+        return 'primary';
       default:
         return 'white';
     }
@@ -97,14 +99,14 @@ export default function NavBar(
           <div className="hidden md:flex items-center">
             <nav>
               <ul className="flex items-center gap-x-8">
-                <li><NavBarLink variant={variant} text={'Docs'} url={''}/></li>
-                <li><NavBarLink variant={variant} text={'Components'} url={''}/></li>
-                <li><NavBarLink variant={variant} text={'Blogs'} url={''}/></li>
-                <li><NavBarLink variant={variant} text={'Showcase'} url={''}/></li>
+                <li><NavBarLink variant={variant} text={'About Us'} url={''}/></li>
+                <li><NavBarLink variant={variant} text={'Our Services'} url={''}/></li>
+                <li><NavBarLink variant={variant} text={'Contact Us'} url={''}/></li>
+                <li><NavBarLink variant={variant} text={'FAQ'} url={''}/></li>
               </ul>
             </nav>
             <div className={computeBorder() + " flex items-center border-l ml-6 pl-6"}>
-              <SimpleButton variant={computeButtonVariant()} text={'Free Consult'}/>
+              <SimpleButton color={computeButtonVariant()} text={'Get Started'}/>
             </div>
           </div>
         </div>

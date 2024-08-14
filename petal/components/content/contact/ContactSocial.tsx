@@ -1,3 +1,5 @@
+import Link from "next/link";
+
 /**
  * Renders a social icon within the contact us form
  *
@@ -22,9 +24,9 @@ export default function ContactSocial(
 
   return (
     <div className="[&:not(:last-child)]:mr-4">
-      <a href={url}>
+      <Link href={url}>
         {icon}
-      </a>
+      </Link>
     </div>
   )
 }

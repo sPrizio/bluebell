@@ -3,6 +3,16 @@
 import React from "react";
 import {InfiniteMovingCards} from "../ui/infinite-moving-cards";
 
+/**
+ * Renders scrolling cards that never end
+ *
+ * @param className custom css classes
+ * @param testimonials testimonials (card content)
+ * @param cardClassName custom css classes for the specific cards
+ * @param variant color variant
+ * @author Stephen Prizio
+ * @version 0.0.1
+ */
 export default function InfiniteScrollingCards(
   {
     className = '',
