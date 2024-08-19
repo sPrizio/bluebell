@@ -92,6 +92,7 @@ void OnBar() {
 
    if (online) {
       if (IsNewDay()) {
+         canTrade = false;
          tradesToday = 0;
          todaysProfit = 0.0;
          openingBalance = AccountBalance();
@@ -135,7 +136,7 @@ void TrackTime() {
    @return true if a new day has started
 */
 bool IsNewDay() {
-   return TimeHour(globalTime) == 17 && TimeMinute(globalTime) == 0;
+   return TimeHour(globalTime) == 1 && TimeMinute(globalTime) == 0;
 }
 
 bool IsEndOfDay() {
@@ -148,7 +149,7 @@ bool IsEndOfDay() {
 bool IsTradeWindowOpen() {
 
    bool isAfterOpen = TimeHour(globalTime) >= 17;
-   bool isBeforeClose = TimeHour(globalTime) <= 23;
+   bool isBeforeClose = TimeHour(globalTime) < 23;
    bool limitNotReached = tradesToday < tradesLimit;
 
    return isAfterOpen && isBeforeClose && limitNotReached && !HasOpenTrades();
