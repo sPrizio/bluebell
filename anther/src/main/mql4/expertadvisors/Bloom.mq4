@@ -132,7 +132,9 @@ bool HasActiveTrade() {
    if (activeTradeId != -1) {
       return true;
    } else if (OrdersTotal() > 0 && OrderSelect(0, SELECT_BY_POS, MODE_TRADES)) {
-      activeTradeId = OrderTicket();
+      if (OrderMagicNumber() == 910) {
+         activeTradeId = OrderTicket();
+      }
    }
 
    return activeTradeId != -1;
