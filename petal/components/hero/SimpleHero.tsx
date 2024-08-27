@@ -1,7 +1,7 @@
 'use client'
 
 import NavBar from "@/components/navigation/NavBar";
-import {useEffect, useRef} from "react";
+import {useContext, useEffect, useRef} from "react";
 import {useInView} from "framer-motion";
 import {FlipWords} from "@/components/ui/flip-words";
 
@@ -122,12 +122,12 @@ export default function SimpleHero(
 
   return (
     <div className={computeVariant() + " relative "} ref={ref}>
-      <div className="absolute h-full w-full bg-black opacity-55" />
+      {variant === 'image' ? <div className="absolute h-full w-full bg-black opacity-55"/> : null}
       {hasNavBar ? <NavBar variant={variant == "image" ? 'transparent' : variant} /> : null}
       <div className={computeAlignment() + computePosition() + computeSize() + " container flex items-center " + (!isInView ? " invisible " : "")}>
         <div className={" w-full lg:w-2/3 " + (highlight && isInView ? " animate__animated animate__lightSpeedInLeft " : "")}>
           <div className="text-6xl font-extrabold">
-            {highlight && isInView ? <div>Finances made <FlipWords words={words} className={'text-primary rounded-3xl brightness-105'} /></div> : <>{title}</>}
+            {highlight && isInView ? <div>{title}&nbsp;<FlipWords words={words} className={'text-primary rounded-3xl brightness-105'}/></div> : <div>{title}</div>}
           </div>
           <div className={"mt-12 text-lg font-normal rounded-lg "}>
             {subtitle}

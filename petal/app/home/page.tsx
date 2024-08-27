@@ -218,7 +218,7 @@ export default function HomePage() {
       <AdminBar variant={'tertiary'} />
       <SimpleHero
         variant={'image'}
-        title={'Plant. Grow. Flourish.'}
+        title={'Finances made'}
         subtitle={'Money can be complicated and everyone seems to have the only advice you\'ll ever need to hear. We get it, we\'ve been there. ' +
           'Find out how simple things can be and empower your growth. Let your money work for you, so you can work on finding the next best ramen spot.'}
         size={'medium'}

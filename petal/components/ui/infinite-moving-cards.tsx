@@ -149,7 +149,7 @@ export const InfiniteMovingCards = ({
     <div
       ref={containerRef}
       className={cn(
-        "scroller relative z-20  max-w-7xl overflow-hidden ",
+        "scroller relative max-w-7xl overflow-hidden ",
         className
       )}
     >
@@ -173,10 +173,10 @@ export const InfiniteMovingCards = ({
             <div className="">
               <div
                 aria-hidden="true"
-                className="user-select-none -z-1 pointer-events-none absolute -left-0.5 -top-0.5 h-[calc(100%_+_4px)] w-[calc(100%_+_4px)]"
+                className="user-select-none pointer-events-none absolute -left-0.5 -top-0.5 h-[calc(100%_+_4px)] w-[calc(100%_+_4px)]"
               ></div>
               <span
-                className={" relative z-20 text-sm leading-[1.6] tracking-tighter font-normal " + computeCardText()}>
+                className={" relative text-sm leading-[1.6] tracking-tighter font-normal " + computeCardText()}>
                 {item.quote}
               </span>
             </div>

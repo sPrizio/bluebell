@@ -55,7 +55,7 @@ export default function FeatureSection(
               </p>
             </blockquote> : null
         }
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 relative z-10 py-10 max-w-7xl mx-auto">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 relative py-10 max-w-7xl mx-auto">
           {features.map((feature, index) => (
             <FeatureCard key={feature.title} feature={feature}/>
           ))}

@@ -1,5 +1,6 @@
 import {Button} from "@/components/ui/button";
 import React from "react";
+import {Loader2} from "lucide-react";
 
 /**
  * Base button component for a generic button
@@ -75,7 +76,12 @@ export default function SimpleButton(
 
   return (
     <div className={"transform-gpu"}>
-      <Button type={type} variant={computeVariant()} className={computeColor()}>{text}</Button>
+      {isLoading ?
+        <Button disabled type={type} variant={computeVariant()} className={computeColor()}>
+          <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+          Please wait
+        </Button> : <Button type={type} variant={computeVariant()} className={computeColor()}>{text}</Button>
+      }
     </div>
   )
 }

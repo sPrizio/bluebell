@@ -31,7 +31,7 @@ export default function NavBar(
       case 'tertiary':
         return 'bg-tertiary text-white';
       case 'white':
-        return 'bg-white text-tertiary';
+        return 'bg-white text-primary';
       case 'transparent':
         return 'bg-transparent text-white ';
       default:
@@ -70,7 +70,7 @@ export default function NavBar(
       case 'tertiary':
         return 'border-secondary';
       default:
-        return 'border-tertiary';
+        return 'border-primary';
     }
   }
 
@@ -102,7 +102,7 @@ export default function NavBar(
                 <li><NavBarLink variant={variant} text={'About Us'} url={''}/></li>
                 <li><NavBarLink variant={variant} text={'Our Services'} url={''}/></li>
                 <li><NavBarLink variant={variant} text={'Contact Us'} url={''}/></li>
-                <li><NavBarLink variant={variant} text={'FAQ'} url={''}/></li>
+                <li><NavBarLink variant={variant} text={'FAQ'} url={'/faq'}/></li>
               </ul>
             </nav>
             <div className={computeBorder() + " flex items-center border-l ml-6 pl-6"}>

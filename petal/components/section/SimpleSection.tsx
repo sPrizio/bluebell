@@ -102,8 +102,7 @@ export default function SimpleSection(
       <div className={(!isInView ? " invisible " : "") + " container px-8 my-6 sm:my-8 md:my-12 "}>
         {
           title?.length ?? -1 > 0 ?
-            <div
-              className={"text-4xl font-extrabold " + computeVariantTitle() + (isInView ? " animate__animated animate__lightSpeedInLeft " : "")}>
+            <div className={"text-4xl font-extrabold " + computeVariantTitle() + (isInView ? " animate__animated animate__lightSpeedInLeft " : "")}>
               {title}
             </div> : null
         }

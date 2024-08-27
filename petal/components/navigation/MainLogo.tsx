@@ -2,7 +2,9 @@
 import Image from "next/image";
 import brandTertiary from '@/assets/brand/bluebell/bluebell_tertiary.png';
 import brandWhite from '@/assets/brand/bluebell/bluebell_white.png';
+import brandPrimary from '@/assets/brand/bluebell/bluebell_primary.png';
 import {useEffect, useState} from "react";
+import Link from "next/link";
 
 /**
  * Renders the main logo of the app
@@ -46,8 +48,9 @@ export default function MainLogo(
    */
   function determineImage(): any {
     switch (variant) {
-      case 'secondary':
       case 'white':
+        return brandPrimary;
+      case 'secondary':
         return brandTertiary;
       default:
         return brandWhite;
@@ -58,8 +61,8 @@ export default function MainLogo(
   //  RENDER
 
   return (
-    <div className="">
+    <Link href={'/home'}>
       <Image src={determineImage()} height={windowSize[0] < 992 ? 50 : 65} alt={'Brand Logo'}/>
-    </div>
+    </Link>
   )
 }

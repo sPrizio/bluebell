@@ -25,41 +25,30 @@ export default function NavBarLink(
   //  FUNCTIONS
 
   /**
-   * Computes the css classes based on the given props
-   */
-  function computeVariant() {
-    switch (variant) {
-      case 'secondary':
-      case 'transparent':
-        return ' hover:text-white ';
-      case 'tertiary':
-        return ' hover:text-secondary ';
-      case 'white':
-        return ' hover:text-primary ';
-      default:
-        return ' hover:text-secondary ';
-    }
-  }
-
-  /**
    * Computes the hovering animations
    *
    * @param variant color variant
    */
   function computeAfter(variant: string) {
-    let v = variant;
-    if (variant === 'transparent') {
-      v = 'white'
+    switch (variant) {
+      case 'secondary':
+        return ` relative py-2 after:content-[''] after:absolute after:h-[2px] after:left-0 after:bottom-0 after:w-0 after:bg-tertiary after:transition-[width] after:duration-300 after:ease-in-out hover:after:w-full `
+      case 'tertiary':
+        return ` relative py-2 after:content-[''] after:absolute after:h-[2px] after:left-0 after:bottom-0 after:w-0 after:bg-secondary after:transition-[width] after:duration-300 after:ease-in-out hover:after:w-full `
+      case 'white':
+        return ` relative py-2 after:content-[''] after:absolute after:h-[2px] after:left-0 after:bottom-0 after:w-0 after:bg-primary after:transition-[width] after:duration-300 after:ease-in-out hover:after:w-full `
+      case 'transparent':
+        return ` relative py-2 after:content-[''] after:absolute after:h-[2px] after:left-0 after:bottom-0 after:w-0 after:bg-white after:transition-[width] after:duration-300 after:ease-in-out hover:after:w-full `
+      default:
+        return ` relative py-2 after:content-[''] after:absolute after:h-[2px] after:left-0 after:bottom-0 after:w-0 after:bg-white after:transition-[width] after:duration-300 after:ease-in-out hover:after:w-full `
     }
-
-    return ` relative py-2 after:content-[''] after:absolute after:h-[2px] after:left-0 after:bottom-0 after:w-0 after:bg-${v} after:transition-[width] after:duration-300 after:ease-in-out hover:after:w-full `
   }
 
 
   //  RENDER
 
   return (
-    <Link className={computeVariant() + computeAfter(variant)} href={url}>
+    <Link className={computeAfter(variant)} href={url}>
       {text}
     </Link>
   )

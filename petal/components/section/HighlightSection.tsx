@@ -1,9 +1,9 @@
 'use client'
 
 import Image from "next/image";
-import React, { useEffect, useId, useRef, useState } from "react";
-import { AnimatePresence, motion } from "framer-motion";
-import { useOutsideClick } from "@/hooks/use-outside-click";
+import React, {useEffect, useId, useRef, useState} from "react";
+import {AnimatePresence, motion} from "framer-motion";
+import {useOutsideClick} from "@/hooks/use-outside-click";
 import SimpleSection from "@/components/section/SimpleSection";
 
 /**
@@ -112,13 +112,13 @@ export default function HighlightSection(
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
-                className="fixed inset-0 bg-black/20 h-full w-full z-10"
+                className="fixed inset-0 bg-black/100 h-full w-full z-[1000]"
               />
             )}
           </AnimatePresence>
           <AnimatePresence>
             {active && typeof active === "object" ? (
-              <div className="fixed inset-0  grid place-items-center z-[100]">
+              <div className="fixed inset-0  grid place-items-center z-[1000]">
                 <motion.button
                   key={`button-${active.title}-${id}`}
                   layout
@@ -142,7 +142,7 @@ export default function HighlightSection(
                 <motion.div
                   layoutId={`card-${active.title}-${id}`}
                   ref={ref}
-                  className="w-full max-w-[500px] h-fit md:h-fit md:max-h-[90%]  flex flex-col bg-white sm:rounded-3xl overflow-hidden"
+                  className="w-full max-w-[500px] h-fit md:h-fit md:max-h-[90%] z-[1000] flex flex-col bg-white sm:rounded-3xl overflow-hidden"
                 >
                   <motion.div layoutId={`image-${active.title}-${id}`}>
                     <Image
