@@ -1,5 +1,5 @@
-# bluebell-ui
-bluebell-ui is the official git repository for the UI that powers bluebell. It is powered by Next.js and is built on React.
+# sepal
+sepal is the official git repository for the UI that powers bluebell admin. It is powered by Next.js and is built on React.
 
 ---
 

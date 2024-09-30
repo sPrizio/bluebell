@@ -6,6 +6,16 @@ const nextConfig = {
                 protocol: 'https',
                 hostname: 'images.squarespace-cdn.com',
                 port: '',
+            },
+            {
+                protocol: 'https',
+                hostname: 'demo.themenio.com',
+                port: ''
+            },
+            {
+                protocol: 'https',
+                hostname: 'assets.aceternity.com',
+                port: ''
             }
         ]
     }
