@@ -10,8 +10,8 @@
     <packaging>pom</packaging>
     <modules>
         <module>anther</module>
-        <module>flowerpot</module>
         <module>radicle</module>
+        <module>planter</module>
     </modules>
 
     <properties>
