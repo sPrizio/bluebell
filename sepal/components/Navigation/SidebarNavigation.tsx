@@ -1,68 +1,35 @@
 "use client";
-import React, { useState } from "react";
-import { Sidebar, SidebarBody, SidebarLink } from "../ui/sidebar";
-import {
-  IconArrowLeft,
-  IconBrandTabler,
-  IconSettings,
-  IconUserBolt,
-} from "@tabler/icons-react";
-import Link from "next/link";
-import { motion } from "framer-motion";
-import Image from "next/image";
-import { cn } from "@/lib/utils";
+
+import React, {useState} from "react";
+import {Sidebar, SidebarBody} from "../ui/sidebar";
+import {motion} from "framer-motion";
+import {cn} from "@/lib/utils";
 import MainLogo from "@/components/Navigation/MainLogo";
 import MobileLogo from "@/components/Navigation/MobileLogo";
-
-const links = [
-  {
-    label: "Dashboard",
-    href: "#",
-    icon: (
-      <IconBrandTabler className="text-neutral-700 dark:text-neutral-200 h-5 w-5 flex-shrink-0" />
-    ),
-  },
-  {
-    label: "Profile",
-    href: "#",
-    icon: (
-      <IconUserBolt className="text-neutral-700 dark:text-neutral-200 h-5 w-5 flex-shrink-0" />
-    ),
-  },
-  {
-    label: "Settings",
-    href: "#",
-    icon: (
-      <IconSettings className="text-neutral-700 dark:text-neutral-200 h-5 w-5 flex-shrink-0" />
-    ),
-  },
-  {
-    label: "Logout",
-    href: "#",
-    icon: (
-      <IconArrowLeft className="text-neutral-700 dark:text-neutral-200 h-5 w-5 flex-shrink-0" />
-    ),
-  },
-];
+import SidebarNavigationLink from "@/components/Navigation/SidebarNavigationLink";
+import {usePathname} from "next/navigation";
 
 /**
  * Sidebar navigation component
  *
  * @param variant color variant
+ * @param links navigation links
  * @author Stephen Prizio
  * @version 0.0.1
  */
 export default function SidebarNavigation(
   {
     variant = 'primary',
+    links = []
   }
     : Readonly<{
     variant?: 'primary' | 'secondary' | 'tertiary' | 'white' | 'transparent',
+    links: Array<SidebarNavigationLinkType>
   }>
 ) {
 
-  const [open, setOpen] = useState(true);
-
+  const [open, setOpen] = useState(false);
+  const pathName = usePathname();
 
   //  RENDER
 
@@ -75,7 +42,7 @@ export default function SidebarNavigation(
               {open ? <Logo variant={variant}/> : <LogoIcon/>}
               <div className="mt-8 flex flex-col gap-2 mb-auto">
                 {links.map((link, idx) => (
-                  <SidebarLink key={idx} link={link}/>
+                  <SidebarNavigationLink key={idx} label={link.label} href={link.href} icon={link.icon} open={open} animate={true} active={link.href === pathName} />
                 ))}
               </div>
               <div>
