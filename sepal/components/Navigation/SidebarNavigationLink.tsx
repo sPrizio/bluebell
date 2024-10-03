@@ -8,6 +8,7 @@ import {motion} from "framer-motion";
 /**
  * A navigation item used in the sidebar
  *
+ * @param active is link active
  * @param open is open
  * @param animate should animate
  * @param label display text

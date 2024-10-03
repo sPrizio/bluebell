@@ -35,7 +35,7 @@ export default function SidebarNavigation(
 
   return (
     <>
-      <div className={cn("rounded-md flex flex-col md:flex-row bg-neutral-100 w-full flex-1 max-w-7xl mx-auto border border-neutral-200 overflow-hidden h-screen")}>
+      <div className={cn("rounded-md flex flex-col md:flex-row bg-white w-full flex-1 max-w-7xl mx-auto border border-neutral-200 overflow-hidden h-screen")}>
         <Sidebar open={open} setOpen={setOpen}>
           <SidebarBody className="justify-between gap-10">
             <div className="flex flex-col flex-1 overflow-y-auto overflow-x-hidden">

@@ -3,9 +3,9 @@ import "./globals.css";
 import SidebarNavigation from "@/components/Navigation/SidebarNavigation";
 import {Inter as FontSans} from "next/font/google"
 import {cn} from "@/lib/utils";
-import {IconArrowLeft, IconBrandTabler, IconSettings, IconUserBolt} from "@tabler/icons-react";
 import React from "react";
-import PageHeaderSection from "@/components/Section/PageHeaderSection";
+import {resolveIcon} from "@/lib/services";
+import {Icons} from "@/lib/enums";
 
 const fontSans = FontSans({
   subsets: ["latin"],
@@ -22,42 +22,32 @@ const links = [
   {
     label: 'Trading Accounts',
     href: "/",
-    icon: <IconBrandTabler className={linkStyles} />
+    icon: resolveIcon(Icons.TradingAccounts, linkStyles)
   },
   {
     label: "Account Overview",
     href: "/dashboard",
-    icon: (
-      <IconBrandTabler className={linkStyles} />
-    ),
+    icon: resolveIcon(Icons.AccountOverview, linkStyles),
   },
   {
     label: "My Profile",
     href: "/profile",
-    icon: (
-      <IconUserBolt className={linkStyles} />
-    ),
+    icon: resolveIcon(Icons.UserProfile, linkStyles),
   },
   {
     label: "Market News",
     href: "/market-news",
-    icon: (
-      <IconSettings className={linkStyles} />
-    ),
+    icon: resolveIcon(Icons.MarketNews, linkStyles),
   },
   {
     label: "Performance",
     href: "/performance",
-    icon: (
-      <IconSettings className={linkStyles} />
-    ),
+    icon: resolveIcon(Icons.Performance, linkStyles),
   },
   {
     label: "Logout",
     href: "/logout",
-    icon: (
-      <IconArrowLeft className={linkStyles} />
-    ),
+    icon: resolveIcon(Icons.Logout, linkStyles),
   },
 ];
 
@@ -76,14 +66,13 @@ export default function RootLayout({
 
   return (
     <html lang="en">
-      <body className={cn("min-h-screen bg-background font-sans antialiased text-slate-600 tracking-tighter", fontSans.variable)}>
+      <body className={cn("min-h-screen font-sans antialiased text-slate-600 bg-neutral-100 tracking-tighter", fontSans.variable)}>
       <div className={"flex flex-row"}>
         <div className={""}>
           <SidebarNavigation variant={'primary'} links={links} />
         </div>
         <div className={"flex-1 flex items-start justify-center"}>
-          <div className={"w-5/6 lg:w-3/5 min-h-5/6 flex items-start py-8"}>
-            <PageHeaderSection title={''} subtitle={''} icon={null} />
+          <div className={"w-5/6 lg:w-3/5 min-h-5/6 flex flex-col items-start py-8"}>
             {children}
           </div>
         </div>
