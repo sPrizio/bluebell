@@ -1,77 +1,63 @@
-import { BellRing, Check } from "lucide-react"
+import {Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle,} from "@/components/ui/card"
 
-import { cn } from "@/lib/utils"
-import { Button } from "@/components/ui/button"
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card"
-import { Switch } from "@/components/ui/switch"
-
-const notifications = [
+/**
+ * Base card component
+ *
+ * @param title card title
+ * @param subtitle card subtitle
+ * @param cardContent card content
+ * @param headerControl card header button
+ * @param footerControls card footer buttons
+ * @author Stephen Prizio
+ * @version 0.0.1
+ */
+export function BaseCard(
   {
-    title: "Your call has been confirmed.",
-    description: "1 hour ago",
-  },
-  {
-    title: "You have a new message!",
-    description: "1 hour ago",
-  },
-  {
-    title: "Your subscription is expiring soon!",
-    description: "2 hours ago",
-  },
-]
+    title = '',
+    subtitle = '',
+    cardContent = null,
+    headerControl = null,
+    footerControls = [],
+  }
+    : Readonly<{
+    title: string,
+    subtitle?: string,
+    cardContent: React.ReactNode,
+    headerControl?: React.ReactNode,
+    footerControls?: Array<React.ReactNode>
+  }>) {
 
-type CardProps = React.ComponentProps<typeof Card>
 
-export function BaseCard({ className, ...props }: CardProps) {
+  //  RENDER
+
   return (
-    <Card className={cn("w-full", className)} {...props}>
+    <Card className={'w-full'}>
       <CardHeader>
-        <CardTitle>Notifications</CardTitle>
-        <CardDescription>You have 3 unread messages.</CardDescription>
-      </CardHeader>
-      <CardContent className="grid gap-4">
-        <div className=" flex items-center space-x-4 rounded-md border p-4">
-          <BellRing />
-          <div className="flex-1 space-y-1">
-            <p className="text-sm font-medium leading-none">
-              Push Notifications
-            </p>
-            <p className="text-sm text-muted-foreground">
-              Send notifications to device.
-            </p>
+        <div className={"flex flex-row gap-4 items-start w-full"}>
+          <div className={"flex-1"}>
+            <CardTitle>{title}</CardTitle>
+            {subtitle && subtitle.length > 0 ? <CardDescription>{subtitle}</CardDescription> : null}
           </div>
-          <Switch />
+          {
+            headerControl ? <div>{headerControl}</div> : null
+          }
         </div>
-        <div>
-          {notifications.map((notification, index) => (
-            <div
-              key={index}
-              className="mb-4 grid grid-cols-[25px_1fr] items-start pb-4 last:mb-0 last:pb-0"
-            >
-              <span className="flex h-2 w-2 translate-y-1 rounded-full bg-sky-500" />
-              <div className="space-y-1">
-                <p className="text-sm font-medium leading-none">
-                  {notification.title}
-                </p>
-                <p className="text-sm text-muted-foreground">
-                  {notification.description}
-                </p>
-              </div>
-            </div>
-          ))}
-        </div>
+      </CardHeader>
+      <CardContent>
+        {cardContent}
       </CardContent>
       <CardFooter>
-        <Button className="w-full">
-          <Check className="mr-2 h-4 w-4" /> Mark all as read
-        </Button>
+        <div className={"flex flex-row gap-4 items-center w-full"}>
+          {
+            footerControls && footerControls.length > 0 && footerControls.map(item => {
+              return (
+                <div className={"grow"}>
+                  {item}
+                </div>
+              )
+            })
+          }
+        </div>
       </CardFooter>
     </Card>
   )

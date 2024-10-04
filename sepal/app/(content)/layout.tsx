@@ -24,9 +24,6 @@ export default function ContentPageLayout(
   const [pageIconCode, setPageIconCode] = useState('')
 
 
-  //  GENERAL FUNCTIONS
-
-
   //  RENDER
 
   return (

@@ -42,7 +42,9 @@ export default function SidebarNavigation(
               {open ? <Logo variant={variant}/> : <LogoIcon/>}
               <div className="mt-8 flex flex-col gap-2 mb-auto">
                 {links.map((link, idx) => (
-                  <SidebarNavigationLink key={idx} label={link.label} href={link.href} icon={link.icon} open={open} animate={true} active={link.href === pathName} />
+                  <>
+                    <SidebarNavigationLink key={idx} label={link.label} href={link.href} icon={link.icon} open={open} animate={true} active={link.href === pathName} />
+                  </>
                 ))}
               </div>
               <div>

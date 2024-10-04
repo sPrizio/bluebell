@@ -22,7 +22,7 @@ const linkStyles = "h-6 w-6 flex-shrink-0";
 const links = [
   {
     label: 'Trading Accounts',
-    href: "/",
+    href: "/trading-accounts",
     icon: resolveIcon(Icons.TradingAccounts, linkStyles)
   },
   {
@@ -73,7 +73,7 @@ export default function RootLayout({
           <SidebarNavigation variant={'primary'} links={links}/>
         </div>
         <div className={"flex-1 flex flex-col items-center justify-start"}>
-          <div className={"w-5/6 2xl:w-3/5 min-h-5/6 py-8"}>
+          <div className={"w-5/6 2xl:w-4/5 max-w-[1440px] min-h-5/6 py-8"}>
             {children}
           </div>
           <div className={"w-full mt-auto"}>
