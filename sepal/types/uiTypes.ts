@@ -1,8 +1,10 @@
-
-interface PageInformation {
-  title: string,
-  subtitle: string,
-  icon: React.ReactNode,
+interface PageInfoContext {
+  pageTitle: string,
+  pageSubtitle: string,
+  pageIconCode: string,
+  setPageTitle: React.Dispatch<React.SetStateAction<string>>,
+  setPageSubtitle: React.Dispatch<React.SetStateAction<string>>,
+  setPageIconCode: React.Dispatch<React.SetStateAction<string>>,
 }
 
 interface SidebarNavigationLinkType {

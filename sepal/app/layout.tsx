@@ -6,6 +6,7 @@ import {cn} from "@/lib/utils";
 import React from "react";
 import {resolveIcon} from "@/lib/services";
 import {Icons} from "@/lib/enums";
+import Footer from "@/components/Footer/Footer";
 
 const fontSans = FontSans({
   subsets: ["latin"],
@@ -69,11 +70,14 @@ export default function RootLayout({
       <body className={cn("min-h-screen font-sans antialiased text-slate-600 bg-neutral-100 tracking-tighter", fontSans.variable)}>
       <div className={"flex flex-row"}>
         <div className={""}>
-          <SidebarNavigation variant={'primary'} links={links} />
+          <SidebarNavigation variant={'primary'} links={links}/>
         </div>
-        <div className={"flex-1 flex items-start justify-center"}>
-          <div className={"w-5/6 lg:w-3/5 min-h-5/6 flex flex-col items-start py-8"}>
+        <div className={"flex-1 flex flex-col items-center justify-start"}>
+          <div className={"w-5/6 2xl:w-3/5 min-h-5/6 py-8"}>
             {children}
+          </div>
+          <div className={"w-full mt-auto"}>
+            <Footer />
           </div>
         </div>
       </div>
