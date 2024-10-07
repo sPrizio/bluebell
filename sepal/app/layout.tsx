@@ -21,13 +21,13 @@ export const metadata: Metadata = {
 const linkStyles = "h-6 w-6 flex-shrink-0";
 const links = [
   {
-    label: 'Trading Accounts',
-    href: "/trading-accounts",
-    icon: resolveIcon(Icons.TradingAccounts, linkStyles)
+    label: 'Dashboard',
+    href: "/dashboard",
+    icon: resolveIcon(Icons.Dashboard, linkStyles)
   },
   {
     label: "Account Overview",
-    href: "/dashboard",
+    href: "/account",
     icon: resolveIcon(Icons.AccountOverview, linkStyles),
   },
   {

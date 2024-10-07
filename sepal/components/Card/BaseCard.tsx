@@ -25,40 +25,40 @@ export function BaseCard(
     cardContent: React.ReactNode,
     headerControl?: React.ReactNode,
     footerControls?: Array<React.ReactNode>
-  }>) {
+  }>
+) {
 
 
   //  RENDER
 
   return (
     <Card className={'w-full'}>
-      <CardHeader>
+      <CardHeader className={'pb-4'}>
         <div className={"flex flex-row gap-4 items-start w-full"}>
           <div className={"flex-1"}>
             <CardTitle>{title}</CardTitle>
             {subtitle && subtitle.length > 0 ? <CardDescription>{subtitle}</CardDescription> : null}
           </div>
-          {
-            headerControl ? <div>{headerControl}</div> : null
-          }
+          {headerControl ? <div>{headerControl}</div> : null}
         </div>
       </CardHeader>
-      <CardContent>
+      <CardContent className={'pb-4'}>
         {cardContent}
       </CardContent>
-      <CardFooter>
-        <div className={"flex flex-row gap-4 items-center w-full"}>
-          {
-            footerControls && footerControls.length > 0 && footerControls.map(item => {
-              return (
-                <div className={"grow"}>
-                  {item}
-                </div>
-              )
-            })
-          }
-        </div>
-      </CardFooter>
+      {
+        footerControls && footerControls.length > 0 ?
+          <CardFooter>
+            <div className={"flex flex-row gap-4 items-center w-full"}>
+              {
+                footerControls && footerControls.length > 0 && footerControls.map((item, itx) => {
+                  return (
+                    <div key={itx} className={"grow"}>{item}</div>
+                  )
+                })
+              }
+            </div>
+          </CardFooter> : null
+      }
     </Card>
   )
 }

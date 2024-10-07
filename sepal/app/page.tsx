@@ -7,5 +7,5 @@ import { redirect } from 'next/navigation'
  * @version 0.0.1
  */
 export default function Home() {
-  redirect('/trading-accounts');
+  redirect('/dashboard');
 }

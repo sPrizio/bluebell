@@ -6,6 +6,10 @@ import {useSepalPageInfoContext} from "@/lib/SepalContext";
 import {BaseCard} from "@/components/Card/BaseCard";
 import {Check} from "lucide-react";
 import {Button} from "@/components/ui/button";
+import DashboardContent from "@/components/Card/content/DashboardContent";
+import {resolveIcon} from "@/lib/services";
+import AccountsTable from "@/components/Table/AccountsTable";
+import {IconCirclePlus, IconPlus} from "@tabler/icons-react";
 
 /**
  * The page that shows all of a user's accounts
@@ -25,10 +29,58 @@ export default function AccountsPage() {
   } = useSepalPageInfoContext()
 
   useEffect(() => {
-    setPageTitle('Trading Accounts')
-    setPageSubtitle('An overview of your trading accounts.')
-    setPageIconCode(Icons.TradingAccounts)
+    setPageTitle('Dashboard')
+    setPageSubtitle('An overview of your trading portfolio.')
+    setPageIconCode(Icons.Dashboard)
   }, [])
+
+  const accounts: Array<Account> = [
+    {
+      uid: '123',
+      defaultAccount: true,
+      accountOpenTime: '-1',
+      accountCloseTime: '-1',
+      balance: 30987.65,
+      active: false,
+      name: 'Test Account 1',
+      accountNumber: 123,
+      currency: 'CAD',
+      broker: 'CMC',
+      accountType: 'CFD',
+      tradePlatform: 'MT4',
+      lastTraded: '-1'
+    },
+    {
+      uid: '123',
+      defaultAccount: true,
+      accountOpenTime: '-1',
+      accountCloseTime: '-1',
+      balance: 30987.65,
+      active: false,
+      name: 'Test Account 1',
+      accountNumber: 123,
+      currency: 'CAD',
+      broker: 'CMC',
+      accountType: 'CFD',
+      tradePlatform: 'MT4',
+      lastTraded: '-1'
+    },
+    {
+      uid: '123',
+      defaultAccount: true,
+      accountOpenTime: '-1',
+      accountCloseTime: '-1',
+      balance: 30987.65,
+      active: false,
+      name: 'Test Account 1',
+      accountNumber: 123,
+      currency: 'CAD',
+      broker: 'CMC',
+      accountType: 'CFD',
+      tradePlatform: 'MT4',
+      lastTraded: '-1'
+    }
+  ]
 
 
   //  RENDER
@@ -38,57 +90,28 @@ export default function AccountsPage() {
       <div className={"grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-8"}>
         <div className={""}>
           <BaseCard
-            title={'Notifications'}
-            subtitle={'You have 3 unread notifications.'}
-            cardContent={<p>Hello World!</p>}
-            headerControl={
-              <Button className="w-full text-white">Create</Button>
-            }
-            footerControls={[
-              <Button className="w-full text-white">Submit</Button>,
-              <Button className="w-full" variant={"outline"}>Cancel</Button>
-            ]}
+            title={'Net Worth'}
+            cardContent={<DashboardContent prefix={'$'} value={40000} delta={3.48} icon={resolveIcon(Icons.ChartDoughnut, '', 40)} />}
           />
         </div>
         <div className={""}>
           <BaseCard
-            title={'Notifications'}
-            subtitle={'You have 3 unread notifications.'}
-            cardContent={<p>Hello World!</p>}
-            headerControl={
-              <Button className="w-full text-white">Create</Button>
-            }
-            footerControls={[
-              <Button className="w-full text-white">Submit</Button>,
-              <Button className="w-full" variant={"outline"}>Cancel</Button>
-            ]}
+            title={'Trades'}
+            cardContent={<DashboardContent value={650} delta={12} icon={resolveIcon(Icons.Replace, '', 40)} />}
           />
         </div>
-        <BaseCard
-          title={'Notifications'}
-          subtitle={'You have 3 unread notifications.'}
-          cardContent={<p>Hello World!</p>}
-          headerControl={
-            <Button className="w-full text-white">Create</Button>
-          }
-          footerControls={[
-            <Button className="w-full text-white">Submit</Button>,
-            <Button className="w-full" variant={"outline"}>Cancel</Button>
-          ]}
-        />
-        <BaseCard
-          title={'Notifications'}
-          subtitle={'You have 3 unread notifications.'}
-          cardContent={<p>Hello World!</p>}
-          headerControl={
-            <Button className="w-full text-white">Create</Button>
-          }
-          footerControls={[
-            <Button className="w-full text-white">Submit</Button>,
-            <Button className="w-full" variant={"outline"}>Cancel</Button>
-          ]}
-        />
-        {/*Account Profit in last month, trades in last month, deposits & withdrawals*/}
+        <div>
+          <BaseCard
+            title={'Deposits'}
+            cardContent={<DashboardContent value={336} delta={20.4} icon={resolveIcon(Icons.ArrowBarDown, '', 40)} />}
+          />
+        </div>
+        <div>
+          <BaseCard
+            title={'Withdrawals'}
+            cardContent={<DashboardContent value={18} delta={-1.10} icon={resolveIcon(Icons.ArrowBarUp, '', 40)} />}
+          />
+        </div>
       </div>
       <div className={"grid grid-cols-1 xl:grid-cols-3 gap-8"}>
         {/*Graph and Accounts list row*/}
@@ -109,16 +132,12 @@ export default function AccountsPage() {
         </div>
         <div className={""}>
           <BaseCard
-            title={'Notifications'}
-            subtitle={'You have 3 unread notifications.'}
-            cardContent={<p>Hello World!</p>}
+            title={'Accounts'}
+            subtitle={'Only active accounts will be shown.'}
+            cardContent={<AccountsTable accounts={accounts} />}
             headerControl={
-              <Button className="w-full text-white">Create</Button>
+              <Button className="w-full text-white"><IconCirclePlus />&nbsp;Add</Button>
             }
-            footerControls={[
-              <Button className="w-full text-white">Submit</Button>,
-              <Button className="w-full" variant={"outline"}>Cancel</Button>
-            ]}
           />
         </div>
       </div>
