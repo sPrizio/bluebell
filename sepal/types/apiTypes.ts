@@ -36,6 +36,14 @@ interface Account extends GenericApiType {
   lastTraded: string
 }
 
+interface Transaction extends GenericApiType {
+  date: string,
+  account: Account,
+  amount: number,
+  type: 'Deposit' | 'Withdrawal'
+  status: 'Pending' | 'Complete' | 'Failed'
+}
+
 interface Trade extends GenericApiType {
   tradeId: string,
   product: string,

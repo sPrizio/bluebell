@@ -174,3 +174,30 @@ export const tradeLog: Array<TradeLog> = [
     records: tradeRecords.slice(0, 3)
   }
 ]
+
+export const accountTransactions: Array<Transaction> = [
+  {
+    uid: '123',
+    date: '2024-10-08',
+    amount: 125.89,
+    status: 'Pending',
+    account: accounts[0],
+    type: 'Withdrawal'
+  },
+  {
+    uid: '124',
+    date: '2024-10-06',
+    amount: 500.0,
+    status: 'Complete',
+    account: accounts[0],
+    type: 'Deposit'
+  },
+  {
+    uid: '125',
+    date: '2024-10-01',
+    amount: 375.0,
+    status: 'Failed',
+    account: accounts[0],
+    type: 'Deposit'
+  }
+]

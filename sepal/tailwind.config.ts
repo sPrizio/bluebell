@@ -53,7 +53,11 @@ const config = {
         transparent: 'transparent',
         primary: '#0077E4',
         secondary: '#BED5EB',
-        tertiary: '#153C64'
+        tertiary: '#153C64',
+        primaryGreen: 'rgb(22, 163, 74)',
+        primaryRed: 'rgb(220, 38, 38)',
+        primaryYellow: 'rgb(217, 119, 6)',
+        primaryGrey: 'rgb(100, 116, 139)'
       },
       fontFamily: {
         sans: ["var(--font-sans)", ...fontFamily.sans],

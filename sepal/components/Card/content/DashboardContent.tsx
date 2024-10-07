@@ -34,9 +34,9 @@ export default function DashboardContent(
    */
   function computeDeltaColor() {
     if (delta > 0) {
-      return ' text-green-600 '
+      return ' text-primaryGreen '
     } else if (delta < 0) {
-      return ' text-red-600 '
+      return ' text-primaryRed '
     }
 
     return ' text-slate-500 '

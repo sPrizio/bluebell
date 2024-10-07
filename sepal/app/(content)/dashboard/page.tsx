@@ -12,7 +12,8 @@ import AccountsTable from "@/components/Table/AccountsTable";
 import {IconCirclePlus, IconPlus} from "@tabler/icons-react";
 import TradeLogTable from "@/components/Table/TradeLogTable";
 import {record} from "zod";
-import {accounts, tradeLog, tradeRecords} from "@/lib/sample-data";
+import {accounts, accountTransactions, tradeLog, tradeRecords} from "@/lib/sample-data";
+import AccountTransactionsTable from "@/components/Table/AccountTransactionsTable";
 
 /**
  * The page that shows all of a user's accounts
@@ -97,7 +98,6 @@ export default function AccountsPage() {
         </div>
       </div>
       <div className={"grid grid-cols-1 xl:grid-cols-3 gap-8"}>
-        {/*Trade Log & Account Transactions row*/}
         <div className={"col-span-1 xl:col-span-2"}>
           <BaseCard
             title={'Trade Log'}
@@ -107,16 +107,9 @@ export default function AccountsPage() {
         </div>
         <div className={""}>
           <BaseCard
-            title={'Notifications'}
-            subtitle={'You have 3 unread notifications.'}
-            cardContent={<p>Hello World!</p>}
-            headerControl={
-              <Button className="w-full text-white">Create</Button>
-            }
-            footerControls={[
-              <Button className="w-full text-white">Submit</Button>,
-              <Button className="w-full" variant={"outline"}>Cancel</Button>
-            ]}
+            title={'Transaction Activity'}
+            subtitle={'Your most recent account transactions.'}
+            cardContent={<AccountTransactionsTable transactions={accountTransactions} />}
           />
         </div>
       </div>

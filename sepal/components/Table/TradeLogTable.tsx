@@ -56,7 +56,7 @@ export default function TradeLogTable(
       </TableHeader>
       <TableBody>
         {
-          log && log.length && log.map((item, itx) => {
+          log?.map((item, itx) => {
             return (
               <>
                 <TableRow className={'hover:bg-transparent'}>
@@ -65,9 +65,9 @@ export default function TradeLogTable(
                   </TableCell>
                 </TableRow>
                 {
-                  item && item.records.length && item.records.map((rec, ritx) => {
+                  item?.records?.map((rec) => {
                     return (
-                      <TableRow key={ritx} className={'border-b-0 hover:bg-transparent'}>
+                      <TableRow key={rec.uid} className={'border-b-0 hover:bg-transparent'}>
                         <TableCell className={'invisible'}>{moment(rec.end).format(DateTime.ISOMonthWeekDayFormat)}</TableCell>
                         <TableCell>{rec.account.name}</TableCell>
                         <TableCell className={'text-center'}>{rec.trades}</TableCell>
@@ -76,28 +76,12 @@ export default function TradeLogTable(
                         <TableCell className="text-right">${formatNumberForDisplay(rec.netProfit)}</TableCell>
                       </TableRow>
                     )
-                  })
+                  }) ?? null
                 }
               </>
             )
-          })
+          }) ?? null
         }
-
-
-        {/*{
-          log && log.records.length && log.records.map((rec, ritx) => {
-            return (
-              <TableRow key={ritx}>
-                <TableCell>{moment(item.end).format(DateTime.ISOMonthWeekDayFormat)}</TableCell>
-                <TableCell>{item.account.name}</TableCell>
-                <TableCell className={'text-center'}>{item.trades}</TableCell>
-                <TableCell className={'text-center'}>{item.winPercentage}%</TableCell>
-                <TableCell className={'text-center'}>{formatNegativePoints(item.points)}</TableCell>
-                <TableCell className="text-right">${formatNumberForDisplay(item.netProfit)}</TableCell>
-              </TableRow>
-            )
-          })
-        }*/}
       </TableBody>
     </Table>
   )

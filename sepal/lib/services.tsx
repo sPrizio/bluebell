@@ -1,12 +1,18 @@
 import {
-  IconArrowBarToDown, IconArrowBarUp,
-  IconArrowNarrowDown, IconArrowNarrowLeft, IconArrowNarrowRight,
-  IconArrowNarrowUp, IconArrowsRightLeft,
-  IconChartBar, IconChartDonut, IconChartDonut3, IconChartDonutFilled,
+  IconArrowBarToDown,
+  IconArrowBarUp,
+  IconArrowNarrowDown,
+  IconArrowNarrowLeft,
+  IconArrowNarrowRight,
+  IconArrowNarrowUp,
+  IconArrowsRightLeft,
+  IconChartDonutFilled,
   IconChartLine,
-  IconChartPie, IconLayoutDashboard,
+  IconChartPie,
+  IconLayoutDashboard,
   IconLogout2,
-  IconNews, IconReplaceFilled,
+  IconNews,
+  IconReplaceFilled,
   IconUserCircle
 } from "@tabler/icons-react";
 import {Icons} from "@/lib/enums";
@@ -96,7 +102,7 @@ export function formatNumberForDisplay(val: number | string) {
     }
   }
 
-  return val.toLocaleString()
+  return parseFloat(val.toFixed(2)).toLocaleString('en-US', {minimumFractionDigits: 2})
 }
 
 /**
