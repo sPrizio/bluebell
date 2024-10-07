@@ -10,6 +10,9 @@ import DashboardContent from "@/components/Card/content/DashboardContent";
 import {resolveIcon} from "@/lib/services";
 import AccountsTable from "@/components/Table/AccountsTable";
 import {IconCirclePlus, IconPlus} from "@tabler/icons-react";
+import TradeLogTable from "@/components/Table/TradeLogTable";
+import {record} from "zod";
+import {accounts, tradeLog, tradeRecords} from "@/lib/sample-data";
 
 /**
  * The page that shows all of a user's accounts
@@ -33,54 +36,6 @@ export default function AccountsPage() {
     setPageSubtitle('An overview of your trading portfolio.')
     setPageIconCode(Icons.Dashboard)
   }, [])
-
-  const accounts: Array<Account> = [
-    {
-      uid: '123',
-      defaultAccount: true,
-      accountOpenTime: '-1',
-      accountCloseTime: '-1',
-      balance: 30987.65,
-      active: false,
-      name: 'Test Account 1',
-      accountNumber: 123,
-      currency: 'CAD',
-      broker: 'CMC',
-      accountType: 'CFD',
-      tradePlatform: 'MT4',
-      lastTraded: '-1'
-    },
-    {
-      uid: '123',
-      defaultAccount: true,
-      accountOpenTime: '-1',
-      accountCloseTime: '-1',
-      balance: 30987.65,
-      active: false,
-      name: 'Test Account 1',
-      accountNumber: 123,
-      currency: 'CAD',
-      broker: 'CMC',
-      accountType: 'CFD',
-      tradePlatform: 'MT4',
-      lastTraded: '-1'
-    },
-    {
-      uid: '123',
-      defaultAccount: true,
-      accountOpenTime: '-1',
-      accountCloseTime: '-1',
-      balance: 30987.65,
-      active: false,
-      name: 'Test Account 1',
-      accountNumber: 123,
-      currency: 'CAD',
-      broker: 'CMC',
-      accountType: 'CFD',
-      tradePlatform: 'MT4',
-      lastTraded: '-1'
-    }
-  ]
 
 
   //  RENDER
@@ -145,16 +100,9 @@ export default function AccountsPage() {
         {/*Trade Log & Account Transactions row*/}
         <div className={"col-span-1 xl:col-span-2"}>
           <BaseCard
-            title={'Notifications'}
-            subtitle={'You have 3 unread notifications.'}
-            cardContent={<p>Hello World!</p>}
-            headerControl={
-              <Button className="w-full text-white">Create</Button>
-            }
-            footerControls={[
-              <Button className="w-full text-white">Submit</Button>,
-              <Button className="w-full" variant={"outline"}>Cancel</Button>
-            ]}
+            title={'Trade Log'}
+            subtitle={'Your performance over the last few days.'}
+            cardContent={<TradeLogTable log={tradeLog} />}
           />
         </div>
         <div className={""}>

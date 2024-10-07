@@ -36,7 +36,7 @@ export default function AccountsTable(
         </div>
       </TableCaption>
       <TableHeader>
-        <TableRow>
+        <TableRow className={'hover:bg-transparent'}>
           <TableHead>Name</TableHead>
           <TableHead className={'text-center'}>Type</TableHead>
           <TableHead className={'text-center'}>Broker</TableHead>
@@ -47,7 +47,7 @@ export default function AccountsTable(
         {
           accounts && accounts.length && accounts.map((item, itx) => {
             return (
-              <TableRow key={itx}>
+              <TableRow key={itx} className={'hover:cursor-pointer'}>
                 <TableCell>{item.name}</TableCell>
                 <TableCell className={'text-center'}>{item.accountType}</TableCell>
                 <TableCell className={'text-center'}>{item.broker}</TableCell>

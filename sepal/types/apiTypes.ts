@@ -53,6 +53,33 @@ interface Trade extends GenericApiType {
   account: Account
 }
 
+interface TradeRecord extends GenericApiType {
+  end: string,
+  largestLoss: number,
+  largestWin: number,
+  lossAverage: number,
+  losses: number,
+  lowestPoint: number,
+  netProfit: number,
+  points: number,
+  pointsGained: number,
+  pointsLost: number,
+  profitability: number,
+  retention: number,
+  start: string,
+  trades: number,
+  winAverage: number,
+  winPercentage: number,
+  wins: number,
+  account: Account
+}
+
+interface TradeLog extends GenericApiType {
+  start: string,
+  end: string,
+  records: Array<TradeRecord>
+}
+
 interface MarketNews extends GenericApiType {
   date: string,
   slots: Array<MarketNewsSlot>,
