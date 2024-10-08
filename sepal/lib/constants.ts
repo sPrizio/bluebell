@@ -1,6 +1,8 @@
 //  each page has a header section that can contain an icon, this is the icon's size
 export const DEFAULT_PAGE_HEADER_SECTION_ICON_SIZE = 36;
 
+export const BASE_COLORS = ['red', 'green', 'blue', 'orange', 'pink', 'grey', 'black']
+
 export const ApiCredentials = {
   AuthHeader: 'fp-api_token',
   TestAccountNumber: '28331289',
@@ -31,4 +33,12 @@ export const DateTime = {
   ISOShortTimeFormat: 'HH:mm',
   ISOTimeFormat: 'HH:mm:ss',
   ISOWeekdayFormat: 'dddd'
+}
+
+export const Css = {
+  ColorPrimary: 'rgb(0, 119, 228)',
+  ColorGraphAccPrimary: '#8884d8',
+  ColorGraphAccSecondary: '#82ca9d',
+  ColorGraphAccTertiary: '#bda74e',
+  FontFamily: 'Inter, sans-serif',
 }

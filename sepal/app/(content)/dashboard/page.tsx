@@ -12,8 +12,9 @@ import AccountsTable from "@/components/Table/AccountsTable";
 import {IconCirclePlus, IconPlus} from "@tabler/icons-react";
 import TradeLogTable from "@/components/Table/TradeLogTable";
 import {record} from "zod";
-import {accounts, accountTransactions, tradeLog, tradeRecords} from "@/lib/sample-data";
+import {accounts, accountTransactions, chartData, tradeLog, tradeRecords} from "@/lib/sample-data";
 import AccountTransactionsTable from "@/components/Table/AccountTransactionsTable";
+import PortfolioGrowthChart from "@/components/Chart/PortfolioGrowthChart";
 
 /**
  * The page that shows all of a user's accounts
@@ -70,20 +71,11 @@ export default function AccountsPage() {
         </div>
       </div>
       <div className={"grid grid-cols-1 xl:grid-cols-3 gap-8"}>
-        {/*Graph and Accounts list row*/}
-
         <div className={"col-span-1 xl:col-span-2"}>
           <BaseCard
-            title={'Notifications'}
-            subtitle={'You have 3 unread notifications.'}
-            cardContent={<p>Hello World!</p>}
-            headerControl={
-              <Button className="w-full text-white">Create</Button>
-            }
-            footerControls={[
-              <Button className="w-full text-white">Submit</Button>,
-              <Button className="w-full" variant={"outline"}>Cancel</Button>
-            ]}
+            title={'Portfolio Growth'}
+            subtitle={'A look back at your portfolio\'s performance over the last 6 months.'}
+            cardContent={<PortfolioGrowthChart data={chartData} />}
           />
         </div>
         <div className={""}>

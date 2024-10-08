@@ -21,6 +21,12 @@ interface PhoneNumber extends GenericApiType {
   display: string
 }
 
+// TODO: implement on backend
+interface AccountEquityPoint extends GenericApiType {
+  date: string,
+  portfolio: number
+}
+
 interface Account extends GenericApiType {
   defaultAccount: boolean,
   accountOpenTime: string,
@@ -82,6 +88,7 @@ interface TradeRecord extends GenericApiType {
   account: Account
 }
 
+// TODO: implement on backend
 interface TradeLog extends GenericApiType {
   start: string,
   end: string,

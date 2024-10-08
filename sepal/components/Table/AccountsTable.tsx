@@ -11,6 +11,13 @@ import {IconExternalLink} from "@tabler/icons-react";
 import Link from "next/link";
 import {formatNumberForDisplay} from "@/lib/services";
 
+/**
+ * Renders a table containing all of the user's active accounts
+ *
+ * @param accounts active accounts
+ * @author Stephen Prizio
+ * @version 0.0.1
+ */
 export default function AccountsTable(
   {
     accounts = [],
@@ -45,16 +52,16 @@ export default function AccountsTable(
       </TableHeader>
       <TableBody>
         {
-          accounts && accounts.length && accounts.map((item, itx) => {
+          accounts?.map((item, itx) => {
             return (
-              <TableRow key={itx} className={'hover:cursor-pointer'}>
+              <TableRow key={item.uid} className={'hover:cursor-pointer'}>
                 <TableCell>{item.name}</TableCell>
                 <TableCell className={'text-center'}>{item.accountType}</TableCell>
                 <TableCell className={'text-center'}>{item.broker}</TableCell>
                 <TableCell className="text-right">${formatNumberForDisplay(item.balance)}</TableCell>
               </TableRow>
             )
-          })
+          }) ?? null
         }
       </TableBody>
     </Table>
