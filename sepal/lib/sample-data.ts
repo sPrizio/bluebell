@@ -204,6 +204,7 @@ export const accountTransactions: Array<Transaction> = [
 
 export const chartData: Array<AccountEquityPoint> = [
   {
+    uid: '123',
     date: '2024-04-01',
     portfolio: 4000,
     testAccount1: 2400,
@@ -211,6 +212,7 @@ export const chartData: Array<AccountEquityPoint> = [
     testAccount3: 4000,
   },
   {
+    uid: '124',
     date: '2024-05-01',
     portfolio: 3000,
     testAccount1: 1398,
@@ -218,6 +220,7 @@ export const chartData: Array<AccountEquityPoint> = [
     testAccount3: 1589,
   },
   {
+    uid: '125',
     date: '2024-06-01',
     portfolio: 2000,
     testAccount1: 5890,
@@ -225,6 +228,7 @@ export const chartData: Array<AccountEquityPoint> = [
     testAccount3: 3698,
   },
   {
+    uid: '126',
     date: '2024-07-01',
     portfolio: 2780,
     testAccount1: 3908,
@@ -232,6 +236,7 @@ export const chartData: Array<AccountEquityPoint> = [
     testAccount3: 789,
   },
   {
+    uid: '127',
     date: '2024-08-01',
     portfolio: 1890,
     testAccount1: 4800,
@@ -239,6 +244,7 @@ export const chartData: Array<AccountEquityPoint> = [
     testAccount3: 2693,
   },
   {
+    uid: '128',
     date: '2024-09-01',
     portfolio: 2390,
     testAccount1: 3800,
@@ -246,6 +252,7 @@ export const chartData: Array<AccountEquityPoint> = [
     testAccount3: 3687,
   },
   {
+    uid: '129',
     date: '2024-10-01',
     portfolio: 3490,
     testAccount1: 4300,

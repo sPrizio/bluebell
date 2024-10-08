@@ -25,6 +25,7 @@ interface PhoneNumber extends GenericApiType {
 interface AccountEquityPoint extends GenericApiType {
   date: string,
   portfolio: number
+  [others: string]: any
 }
 
 interface Account extends GenericApiType {
