@@ -12,3 +12,8 @@ interface SidebarNavigationLinkType {
   href: string,
   icon: React.ReactNode
 }
+
+interface ModalContext {
+  open: boolean,
+  setOpen: React.Dispatch<React.SetStateAction<boolean>>
+}

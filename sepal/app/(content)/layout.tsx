@@ -1,7 +1,7 @@
 'use client'
 
 import React, {useState} from "react";
-import {SepalPageInfoContext} from "@/lib/SepalContext";
+import {SepalPageInfoContext} from "@/lib/context/SepalContext";
 import PageHeaderSection from "@/components/Section/PageHeaderSection";
 import {ScrollArea} from "@/components/ui/scroll-area";
 
@@ -17,7 +17,8 @@ export default function ContentPageLayout(
     children,
   }: Readonly<{
     children: React.ReactNode;
-  }>) {
+  }>
+) {
 
   const [pageTitle, setPageTitle] = useState('')
   const [pageSubtitle, setPageSubtitle] = useState('')

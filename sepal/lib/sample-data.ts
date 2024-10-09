@@ -1,6 +1,6 @@
 export const accounts: Array<Account> = [
   {
-    uid: '123',
+    uid: '1231',
     defaultAccount: true,
     accountOpenTime: '-1',
     accountCloseTime: '-1',
@@ -15,7 +15,7 @@ export const accounts: Array<Account> = [
     lastTraded: '-1'
   },
   {
-    uid: '123',
+    uid: '1232',
     defaultAccount: true,
     accountOpenTime: '-1',
     accountCloseTime: '-1',
@@ -30,7 +30,7 @@ export const accounts: Array<Account> = [
     lastTraded: '-1'
   },
   {
-    uid: '123',
+    uid: '1233',
     defaultAccount: true,
     accountOpenTime: '-1',
     accountCloseTime: '-1',
@@ -48,7 +48,7 @@ export const accounts: Array<Account> = [
 
 export const tradeRecords: Array<TradeRecord> = [
   {
-    uid: '123',
+    uid: '1234',
     end: '2024-10-07',
     largestLoss: -126.36,
     largestWin: 214.56,
@@ -156,7 +156,7 @@ export const tradeRecords: Array<TradeRecord> = [
 
 export const tradeLog: Array<TradeLog> = [
   {
-    uid: '123',
+    uid: '1235',
     start: '2024-10-08',
     end: '2024-10-09',
     records: tradeRecords.slice(0, 1)
@@ -177,7 +177,7 @@ export const tradeLog: Array<TradeLog> = [
 
 export const accountTransactions: Array<Transaction> = [
   {
-    uid: '123',
+    uid: '1236',
     date: '2024-10-08',
     amount: 125.89,
     status: 'Pending',
@@ -204,7 +204,7 @@ export const accountTransactions: Array<Transaction> = [
 
 export const chartData: Array<AccountEquityPoint> = [
   {
-    uid: '123',
+    uid: '1237',
     date: '2024-04-01',
     portfolio: 4000,
     testAccount1: 2400,
@@ -262,8 +262,27 @@ export const chartData: Array<AccountEquityPoint> = [
 ];
 
 export const accountCreationInfo: AccountCreationInfo = {
-  uid: '123',
-  currencies: ['CAD', 'USD', 'EUR'],
-  platforms: ['MT4', 'MT5', 'cTrader'],
-  brokers: ['FTMO', 'CMC', 'td365', 'TD']
+  uid: '1238',
+  currencies: [
+    {uid: 'CAD', code: 'CAD', label: 'CAD'},
+    {uid: 'USD', code: 'USD', label: 'USD'},
+    {uid: 'EUR', code: 'EUR', label: 'EUR'},
+  ],
+  platforms: [
+    {uid: 'MT4', code: 'MT4', label: 'MetaTrader 4'},
+    {uid: 'MT5', code: 'MT5', label: 'MetaTrader 5'},
+    {uid: 'cTrader', code: 'cTrader', label: 'cTrader'},
+  ],
+  brokers: [
+    {uid: 'FTMO', code: 'FTMO', label: 'FTMO'},
+    {uid: 'CMC', code: 'CMC', label: 'CMC Markets'},
+    {uid: 'td365', code: 'td365', label: 'td365'},
+    {uid: 'TD', code: 'TD', label: 'TD'},
+  ],
+  accountTypes: [
+    {uid: 'forex', code: 'forex', label: 'Forex'},
+    {uid: 'cfd', code: 'cfd', label: 'CFD'},
+    {uid: 'options', code: 'options', label: 'Options'},
+    {uid: 'shares', code: 'shares', label: 'Shares'},
+  ]
 }

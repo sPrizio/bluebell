@@ -2,17 +2,15 @@
 
 import React, {useEffect} from "react";
 import {Icons} from "@/lib/enums";
-import {useSepalPageInfoContext} from "@/lib/SepalContext";
+import {useSepalPageInfoContext} from "@/lib/context/SepalContext";
 import {BaseCard} from "@/components/Card/BaseCard";
-import {Check} from "lucide-react";
 import {Button} from "@/components/ui/button";
 import DashboardContent from "@/components/Card/content/DashboardContent";
 import {resolveIcon} from "@/lib/services";
 import AccountsTable from "@/components/Table/AccountsTable";
-import {IconCirclePlus, IconPlus} from "@tabler/icons-react";
+import {IconCirclePlus} from "@tabler/icons-react";
 import TradeLogTable from "@/components/Table/TradeLogTable";
-import {record} from "zod";
-import {accounts, accountTransactions, chartData, tradeLog, tradeRecords} from "@/lib/sample-data";
+import {accounts, accountTransactions, chartData, tradeLog} from "@/lib/sample-data";
 import AccountTransactionsTable from "@/components/Table/AccountTransactionsTable";
 import PortfolioGrowthChart from "@/components/Chart/PortfolioGrowthChart";
 import BaseModal from "@/components/Modal/BaseModal";

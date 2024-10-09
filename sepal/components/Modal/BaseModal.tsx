@@ -1,3 +1,5 @@
+'use client'
+
 import {
   Dialog,
   DialogContent,
@@ -7,8 +9,18 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog"
 import {Button} from "@/components/ui/button";
-import {ReactNode} from "react";
+import {ReactNode, useEffect, useState} from "react";
+import {SepalModalContext, useSepalModalContext} from "@/lib/context/SepalContext";
 
+/**
+ * Basic, re-usable modal
+ *
+ * @param trigger component to trigger the modal
+ * @param title modal title
+ * @param content modal content
+ * @author Stephen Prizio
+ * @version 0.0.1
+ */
 export default function BaseModal(
   {
     trigger = <Button className={'bg-primary text-white'}>Hello</Button>,
@@ -21,8 +33,14 @@ export default function BaseModal(
     content: ReactNode
   }>
 ) {
+
+  const [open, setOpen] = useState(false)
+
+
+  //  RENDER
+
   return (
-    <Dialog>
+    <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         {trigger}
       </DialogTrigger>
@@ -35,7 +53,9 @@ export default function BaseModal(
           </DialogDescription>
         </DialogHeader>
         <div className="grid gap-4 py-4">
-          {content}
+          <SepalModalContext.Provider value={{ open, setOpen }}>
+            {content}
+          </SepalModalContext.Provider>
         </div>
         {/*<DialogFooter>
           <Button type="submit" className={'bg-primary text-white'}>Save changes</Button>

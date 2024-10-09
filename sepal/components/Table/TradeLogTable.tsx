@@ -1,3 +1,4 @@
+import React from 'react';
 import {
   Table,
   TableBody,
@@ -58,8 +59,8 @@ export default function TradeLogTable(
         {
           log?.map((item, itx) => {
             return (
-              <>
-                <TableRow className={'hover:bg-transparent'}>
+              <React.Fragment key={item.uid}>
+                <TableRow key={item.uid} className={'hover:bg-transparent'}>
                   <TableCell colSpan={6} className={'text-primary font-semibold'}>
                     {moment(item.end).format(DateTime.ISOMonthWeekDayFormat)}
                   </TableCell>
@@ -78,7 +79,7 @@ export default function TradeLogTable(
                     )
                   }) ?? null
                 }
-              </>
+              </React.Fragment>
             )
           }) ?? null
         }
