@@ -260,3 +260,10 @@ export const chartData: Array<AccountEquityPoint> = [
     testAccount3: 3896,
   },
 ];
+
+export const accountCreationInfo: AccountCreationInfo = {
+  uid: '123',
+  currencies: ['CAD', 'USD', 'EUR'],
+  platforms: ['MT4', 'MT5', 'cTrader'],
+  brokers: ['FTMO', 'CMC', 'td365', 'TD']
+}

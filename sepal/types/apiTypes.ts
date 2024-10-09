@@ -22,6 +22,13 @@ interface PhoneNumber extends GenericApiType {
 }
 
 // TODO: implement on backend
+interface AccountCreationInfo extends GenericApiType {
+  currencies: Array<string>,
+  brokers: Array<string>,
+  platforms: Array<string>
+}
+
+// TODO: implement on backend
 interface AccountEquityPoint extends GenericApiType {
   date: string,
   portfolio: number

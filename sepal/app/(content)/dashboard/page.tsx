@@ -15,6 +15,8 @@ import {record} from "zod";
 import {accounts, accountTransactions, chartData, tradeLog, tradeRecords} from "@/lib/sample-data";
 import AccountTransactionsTable from "@/components/Table/AccountTransactionsTable";
 import PortfolioGrowthChart from "@/components/Chart/PortfolioGrowthChart";
+import BaseModal from "@/components/Modal/BaseModal";
+import NewAccountForm from "@/components/Form/NewAccountForm";
 
 /**
  * The page that shows all of a user's accounts
@@ -48,25 +50,26 @@ export default function AccountsPage() {
         <div className={""}>
           <BaseCard
             title={'Net Worth'}
-            cardContent={<DashboardContent prefix={'$'} value={40000} delta={3.48} icon={resolveIcon(Icons.ChartDoughnut, '', 40)} />}
+            cardContent={<DashboardContent prefix={'$'} value={40000} delta={3.48}
+                                           icon={resolveIcon(Icons.ChartDoughnut, '', 40)}/>}
           />
         </div>
         <div className={""}>
           <BaseCard
             title={'Trades'}
-            cardContent={<DashboardContent value={650} delta={12} icon={resolveIcon(Icons.Replace, '', 40)} />}
+            cardContent={<DashboardContent value={650} delta={12} icon={resolveIcon(Icons.Replace, '', 40)}/>}
           />
         </div>
         <div>
           <BaseCard
             title={'Deposits'}
-            cardContent={<DashboardContent value={336} delta={20.4} icon={resolveIcon(Icons.ArrowBarDown, '', 40)} />}
+            cardContent={<DashboardContent value={336} delta={20.4} icon={resolveIcon(Icons.ArrowBarDown, '', 40)}/>}
           />
         </div>
         <div>
           <BaseCard
             title={'Withdrawals'}
-            cardContent={<DashboardContent value={18} delta={-1.10} icon={resolveIcon(Icons.ArrowBarUp, '', 40)} />}
+            cardContent={<DashboardContent value={18} delta={-1.10} icon={resolveIcon(Icons.ArrowBarUp, '', 40)}/>}
           />
         </div>
       </div>
@@ -75,16 +78,19 @@ export default function AccountsPage() {
           <BaseCard
             title={'Portfolio Growth'}
             subtitle={'A look back at your portfolio\'s performance over the last 6 months.'}
-            cardContent={<PortfolioGrowthChart data={chartData} />}
+            cardContent={<PortfolioGrowthChart data={chartData}/>}
           />
         </div>
         <div className={""}>
           <BaseCard
             title={'Accounts'}
             subtitle={'Only active accounts will be shown.'}
-            cardContent={<AccountsTable accounts={accounts} />}
+            cardContent={<AccountsTable accounts={accounts}/>}
             headerControl={
-              <Button className="w-full text-white"><IconCirclePlus />&nbsp;Add</Button>
+              <BaseModal title={'Add a new Trading Account'}
+                         trigger={<Button className="w-full text-white"><IconCirclePlus/>&nbsp;Add</Button>}
+                         content={<NewAccountForm />}
+              />
             }
           />
         </div>
@@ -94,14 +100,14 @@ export default function AccountsPage() {
           <BaseCard
             title={'Trade Log'}
             subtitle={'Your performance over the last few days.'}
-            cardContent={<TradeLogTable log={tradeLog} />}
+            cardContent={<TradeLogTable log={tradeLog}/>}
           />
         </div>
         <div className={""}>
           <BaseCard
             title={'Transaction Activity'}
             subtitle={'Your most recent account transactions.'}
-            cardContent={<AccountTransactionsTable transactions={accountTransactions} />}
+            cardContent={<AccountTransactionsTable transactions={accountTransactions}/>}
           />
         </div>
       </div>
