@@ -1,15 +1,7 @@
-import {
-  Table,
-  TableBody,
-  TableCaption,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table"
+import {Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow,} from "@/components/ui/table"
 import {IconExternalLink, IconSquareRoundedCheckFilled} from "@tabler/icons-react";
 import Link from "next/link";
-import {formatNumberForDisplay} from "@/lib/services";
+import {formatNumberForDisplay, getBrokerImageForCode, getFlagForCode, getRoundFlagForCode} from "@/lib/functions";
 import moment from "moment";
 import {DateTime} from "@/lib/constants";
 
@@ -17,6 +9,9 @@ import {DateTime} from "@/lib/constants";
  * Renders a table containing the user's active accounts
  *
  * @param accounts active accounts
+ * @param showAllLink show link below table to direct to accounts page
+ * @param allowAccountSelection allow clicking on rows
+ * @param showCompactTable minimal table flag
  * @author Stephen Prizio
  * @version 0.0.1
  */
@@ -34,6 +29,13 @@ export default function AccountsTable(
     showCompactTable?: boolean
   }>
 ) {
+
+
+  //  GENERAL FUNCTIONS
+
+  function getBrokerImage(val: string): React.ReactNode {
+    return getBrokerImageForCode(val.toLowerCase(), 30, 30)
+  }
 
 
   //  RENDER
@@ -67,16 +69,16 @@ export default function AccountsTable(
                   </TableRow>
                   :
                   <TableRow className={'hover:bg-transparent'}>
-                    <TableHead>Name</TableHead>
-                    <TableHead className={'text-center'} />
-                    <TableHead className={''}>Date Opened</TableHead>
-                    <TableHead className={''}>Date Closed</TableHead>
-                    <TableHead className={'text-center'}>Account Number</TableHead>
-                    <TableHead className={'text-center'}>Currency</TableHead>
-                    <TableHead className={'text-center'}>Trading Platform</TableHead>
-                    <TableHead className={'text-center'}>Type</TableHead>
-                    <TableHead className={'text-center'}>Broker</TableHead>
-                    <TableHead className={''}>Last Traded</TableHead>
+                    <TableHead className={'w-[50px] text-center'} />
+                    <TableHead className={'w-[150px]'}>Number</TableHead>
+                    <TableHead className={'w-[175px]'}>Name</TableHead>
+                    <TableHead className={'w-[175px]'}>Opened</TableHead>
+                    <TableHead className={'w-[175px]'}>Closed</TableHead>
+                    <TableHead className={'w-[60px] text-center'}>Currency</TableHead>
+                    <TableHead className={'w-[85px] text-center'}>Platform</TableHead>
+                    <TableHead className={'w-[85px] text-center'}>Type</TableHead>
+                    <TableHead className={'w-[60px] text-center'}>Broker</TableHead>
+                    <TableHead className={'w-[175px]'}>Last Traded</TableHead>
                     <TableHead className="text-right">Balance</TableHead>
                   </TableRow>
               }
@@ -103,12 +105,11 @@ export default function AccountsTable(
                     accounts?.map((item, itx) => {
                       return (
                         <TableRow key={item.uid} className={allowAccountSelection ? 'hover:cursor-pointer' : 'hover:bg-transparent'}>
-                          <TableCell>{item.name}</TableCell>
                           <TableCell className={'text-center'}>
-                            {
-                              item.defaultAccount ? <IconSquareRoundedCheckFilled className={'text-primary'} /> : null
-                            }
+                            {item.defaultAccount ? <IconSquareRoundedCheckFilled className={'text-primary'} /> : null}
                           </TableCell>
+                          <TableCell className={''}>{item.accountNumber}</TableCell>
+                          <TableCell>{item.name}</TableCell>
                           <TableCell className={''}>{moment(item.accountOpenTime).format(DateTime.ISOShortMonthDayYearWithTimeFormat)}</TableCell>
                           <TableCell className={''}>
                             {
@@ -116,11 +117,12 @@ export default function AccountsTable(
                                 <p>Active</p> : moment(item.accountCloseTime).format(DateTime.ISOShortMonthDayYearWithTimeFormat)
                             }
                           </TableCell>
-                          <TableCell className={'text-center'}>{item.accountNumber}</TableCell>
-                          <TableCell className={'text-center'}>{item.currency}</TableCell>
+                          <TableCell className={'text-center flex items-center justify-center'}>
+                            {getFlagForCode(item.currency)}
+                          </TableCell>
                           <TableCell className={'text-center'}>{item.tradePlatform}</TableCell>
                           <TableCell className={'text-center'}>{item.accountType}</TableCell>
-                          <TableCell className={'text-center'}>{item.broker}</TableCell>
+                          <TableCell className={'text-center flex items-center justify-center'}>{getBrokerImage(item.broker)}</TableCell>
                           <TableCell className={''}>{moment(item.lastTraded).format(DateTime.ISOShortMonthDayYearWithTimeFormat)}</TableCell>
                           <TableCell className="text-right">${formatNumberForDisplay(item.balance)}</TableCell>
                         </TableRow>

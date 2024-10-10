@@ -4,7 +4,7 @@ import SidebarNavigation from "@/components/Navigation/SidebarNavigation";
 import {Inter as FontSans} from "next/font/google"
 import {cn} from "@/lib/utils";
 import React from "react";
-import {resolveIcon} from "@/lib/services";
+import {resolveIcon} from "@/lib/functions";
 import {Icons} from "@/lib/enums";
 import Footer from "@/components/Footer/Footer";
 

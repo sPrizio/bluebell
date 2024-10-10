@@ -27,8 +27,8 @@ export default function Breadcrumbs() {
    */
   function getPageList() {
     const list = usePathname().split('/');
-    list.unshift('Home');
-    return list.filter(el => el.length > 0).map(url => beautifyWord(url))
+    list.unshift('Dashboard');
+    return [...new Set(list.filter(el => el.length > 0).map(url => beautifyWord(url)))]
   }
 
   /**
@@ -48,7 +48,13 @@ export default function Breadcrumbs() {
     <div>
       {getPageList().map((page, i, pages) => {
         return (
-          <BreadcrumbItem key={page} label={page} isLast={(i + 1) === pages.length} active={page === getCurrentPage()} />
+          <BreadcrumbItem
+            key={page}
+            label={page}
+            isLast={(i + 1) === pages.length}
+            active={page === getCurrentPage()}
+            href={'/' + page.split(' ').join('-').toLowerCase()}
+          />
         )
       })}
     </div>

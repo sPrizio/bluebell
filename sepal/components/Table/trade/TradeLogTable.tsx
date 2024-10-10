@@ -10,7 +10,7 @@ import {
 } from "@/components/ui/table"
 import {IconExternalLink} from "@tabler/icons-react";
 import Link from "next/link";
-import {formatNegativePoints, formatNumberForDisplay} from "@/lib/services";
+import {formatNegativePoints, formatNumberForDisplay} from "@/lib/functions";
 import moment from "moment";
 import {DateTime} from "@/lib/constants";
 

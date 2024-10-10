@@ -1,4 +1,4 @@
-import {resolveIcon} from "@/lib/services";
+import {resolveIcon} from "@/lib/functions";
 import {DEFAULT_PAGE_HEADER_SECTION_ICON_SIZE} from "@/lib/constants";
 import Breadcrumbs from "@/components/Navigation/Breadcrumb/Breadcrumbs";
 

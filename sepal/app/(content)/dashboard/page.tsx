@@ -6,7 +6,7 @@ import {useSepalPageInfoContext} from "@/lib/context/SepalContext";
 import {BaseCard} from "@/components/Card/BaseCard";
 import {Button} from "@/components/ui/button";
 import DashboardContent from "@/components/Card/content/DashboardContent";
-import {resolveIcon} from "@/lib/services";
+import {resolveIcon} from "@/lib/functions";
 import AccountsTable from "@/components/Table/account/AccountsTable";
 import {IconCirclePlus} from "@tabler/icons-react";
 import TradeLogTable from "@/components/Table/trade/TradeLogTable";

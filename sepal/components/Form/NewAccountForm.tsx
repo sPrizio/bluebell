@@ -66,10 +66,10 @@ export default function NewAccountForm() {
     resolver: zodResolver(formSchema),
     defaultValues: {
       defaultAccount: false,
-      balance: 0.0,
+      balance: undefined,
       active: true,
       name: '',
-      accountNumber: 0.0,
+      accountNumber: undefined,
       currency: 'default',
       broker: 'default',
       accountType: 'default',
@@ -137,7 +137,7 @@ export default function NewAccountForm() {
                   <FormItem>
                     <FormLabel className="!text-current">Account Number</FormLabel>
                     <FormControl>
-                      <Input placeholder="123456" {...field} type={'number'} />
+                      <Input placeholder="123" {...field} type={'number'} />
                     </FormControl>
                     <FormMessage className={'text-primaryRed font-semibold'} />
                   </FormItem>

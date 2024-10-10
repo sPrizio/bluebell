@@ -274,10 +274,10 @@ export const accountCreationInfo: AccountCreationInfo = {
     {uid: 'cTrader', code: 'cTrader', label: 'cTrader'},
   ],
   brokers: [
-    {uid: 'FTMO', code: 'FTMO', label: 'FTMO'},
-    {uid: 'CMC', code: 'CMC', label: 'CMC Markets'},
+    {uid: 'FTMO', code: 'ftmo', label: 'FTMO'},
+    {uid: 'CMC', code: 'cmc', label: 'CMC Markets'},
     {uid: 'td365', code: 'td365', label: 'td365'},
-    {uid: 'TD', code: 'TD', label: 'TD'},
+    {uid: 'TD', code: 'td', label: 'TD'},
   ],
   accountTypes: [
     {uid: 'forex', code: 'forex', label: 'Forex'},

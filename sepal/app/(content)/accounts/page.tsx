@@ -5,7 +5,7 @@ import React, {useEffect} from "react";
 import {Icons} from "@/lib/enums";
 import {BaseCard} from "@/components/Card/BaseCard";
 import {Button} from "@/components/ui/button";
-import {IconCirclePlus} from "@tabler/icons-react";
+import {IconCirclePlus, IconSquareRoundedCheckFilled} from "@tabler/icons-react";
 import NewAccountForm from "@/components/Form/NewAccountForm";
 import BaseModal from "@/components/Modal/BaseModal";
 import {accounts} from "@/lib/sample-data";
@@ -49,10 +49,12 @@ export default function AccountsPage() {
       </div>
       <p>TODO</p>
       <ul>
-        <li>Resolver for flag codes into images (refer to previous app for that)</li>
-        <li>Resolver for images for brokers</li>
         <li>Clicking on an account brings us to the account details page</li>
       </ul>
+      <div className={'flex items-center text-sm justify-end w-full'}>
+        *&nbsp;The&nbsp;&nbsp;<span className={'inline-block'}><IconSquareRoundedCheckFilled className={'text-primary'} /></span>&nbsp;&nbsp;indicates a default account. A default account
+        is the account that will be shown in the performance section on initial view. The default account can be changed at any time.
+      </div>
       <div className={''}>
         <BaseCard
           title={'Active Accounts'}
