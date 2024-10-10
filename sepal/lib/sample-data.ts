@@ -2,47 +2,47 @@ export const accounts: Array<Account> = [
   {
     uid: '1231',
     defaultAccount: true,
-    accountOpenTime: '-1',
+    accountOpenTime: '2024-10-10T20:00:15',
     accountCloseTime: '-1',
     balance: 30987.65,
-    active: false,
+    active: true,
     name: 'Test Account 1',
     accountNumber: 123,
     currency: 'CAD',
     broker: 'CMC',
     accountType: 'CFD',
     tradePlatform: 'MT4',
-    lastTraded: '-1'
+    lastTraded: '2024-10-11T12:22:45'
   },
   {
     uid: '1232',
-    defaultAccount: true,
-    accountOpenTime: '-1',
+    defaultAccount: false,
+    accountOpenTime: '2023-08-01T15:34:15',
     accountCloseTime: '-1',
     balance: 30987.65,
-    active: false,
-    name: 'Test Account 1',
-    accountNumber: 123,
+    active: true,
+    name: 'Test Account 2',
+    accountNumber: 1234,
     currency: 'CAD',
-    broker: 'CMC',
+    broker: 'FTMO',
     accountType: 'CFD',
     tradePlatform: 'MT4',
-    lastTraded: '-1'
+    lastTraded: '2024-10-01T16:09:45'
   },
   {
     uid: '1233',
-    defaultAccount: true,
-    accountOpenTime: '-1',
-    accountCloseTime: '-1',
+    defaultAccount: false,
+    accountOpenTime: '2023-06-24T09:45:15',
+    accountCloseTime: '2024-07-30T23:54:05',
     balance: 30987.65,
     active: false,
-    name: 'Test Account 1',
-    accountNumber: 123,
+    name: 'Test Account 3',
+    accountNumber: 12345,
     currency: 'CAD',
     broker: 'CMC',
     accountType: 'CFD',
     tradePlatform: 'MT4',
-    lastTraded: '-1'
+    lastTraded: '2024-07-30T16:01:45'
   }
 ]
 

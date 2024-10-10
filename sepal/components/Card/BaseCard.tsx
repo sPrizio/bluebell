@@ -20,9 +20,9 @@ export function BaseCard(
     footerControls = [],
   }
     : Readonly<{
-    title: string,
+    title?: string,
     subtitle?: string,
-    cardContent: React.ReactNode,
+    cardContent?: React.ReactNode,
     headerControl?: React.ReactNode,
     footerControls?: Array<React.ReactNode>
   }>
@@ -33,17 +33,21 @@ export function BaseCard(
 
   return (
     <Card className={'w-full'}>
-      <CardHeader className={'pb-4'}>
-        <div className={"flex flex-row gap-4 items-start w-full"}>
-          <div className={"flex-1"}>
-            <CardTitle>{title}</CardTitle>
-            {subtitle && subtitle.length > 0 ? <CardDescription>{subtitle}</CardDescription> : null}
-          </div>
-          {headerControl ? <div>{headerControl}</div> : null}
-        </div>
-      </CardHeader>
+      {
+        title && title.length > 0 ?
+          <CardHeader className={'pb-4'}>
+            <div className={"flex flex-row gap-4 items-start w-full"}>
+              <div className={"flex-1"}>
+                <CardTitle>{title}</CardTitle>
+                {subtitle && subtitle.length > 0 ? <CardDescription>{subtitle}</CardDescription> : null}
+              </div>
+              {headerControl ? <div>{headerControl}</div> : null}
+            </div>
+          </CardHeader>
+          : <div className={'p-6'} />
+      }
       <CardContent className={'pb-4'}>
-        {cardContent}
+        {cardContent || <p className={'text-slate-400 text-center'}>No data present.</p>}
       </CardContent>
       {
         footerControls && footerControls.length > 0 ?

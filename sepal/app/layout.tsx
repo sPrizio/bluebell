@@ -28,8 +28,8 @@ const links = [
     icon: resolveIcon(Icons.Dashboard, linkStyles)
   },
   {
-    label: "Account Overview",
-    href: "/account",
+    label: "Accounts",
+    href: "/accounts",
     icon: resolveIcon(Icons.AccountOverview, linkStyles),
   },
   {

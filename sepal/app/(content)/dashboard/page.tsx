@@ -7,22 +7,22 @@ import {BaseCard} from "@/components/Card/BaseCard";
 import {Button} from "@/components/ui/button";
 import DashboardContent from "@/components/Card/content/DashboardContent";
 import {resolveIcon} from "@/lib/services";
-import AccountsTable from "@/components/Table/AccountsTable";
+import AccountsTable from "@/components/Table/account/AccountsTable";
 import {IconCirclePlus} from "@tabler/icons-react";
-import TradeLogTable from "@/components/Table/TradeLogTable";
+import TradeLogTable from "@/components/Table/trade/TradeLogTable";
 import {accounts, accountTransactions, chartData, tradeLog} from "@/lib/sample-data";
-import AccountTransactionsTable from "@/components/Table/AccountTransactionsTable";
+import AccountTransactionsTable from "@/components/Table/account/AccountTransactionsTable";
 import PortfolioGrowthChart from "@/components/Chart/PortfolioGrowthChart";
 import BaseModal from "@/components/Modal/BaseModal";
 import NewAccountForm from "@/components/Form/NewAccountForm";
 
 /**
- * The page that shows all of a user's accounts
+ * The page that shows an overview of a user's portfolio
  *
  * @author Stephen Prizio
  * @version 0.0.1
  */
-export default function AccountsPage() {
+export default function DashboardPage() {
 
   const {
     pageTitle,
@@ -83,7 +83,12 @@ export default function AccountsPage() {
           <BaseCard
             title={'Accounts'}
             subtitle={'Only active accounts will be shown.'}
-            cardContent={<AccountsTable accounts={accounts}/>}
+            cardContent={
+            <AccountsTable
+              accounts={accounts}
+              showAllLink={true}
+            />
+          }
             headerControl={
               <BaseModal title={'Add a new Trading Account'}
                          trigger={<Button className="w-full text-white"><IconCirclePlus/>&nbsp;Add</Button>}
