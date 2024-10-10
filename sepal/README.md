@@ -9,12 +9,13 @@ Current Release: **Pre-release**
 
 ### Static Pages
 - Dashboard
+- ALP
 
 ### Integrated Pages
 None
 
 ### Pages In Progress or Not Started
-- Account Overview
+- ADP
 - Profile
 - Market News
 - Performance
