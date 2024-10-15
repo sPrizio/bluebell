@@ -10,7 +10,7 @@ import {
   IconChartLine,
   IconChartPie,
   IconLayoutDashboard,
-  IconLogout2,
+  IconLogout2, IconMountain,
   IconNews,
   IconReplaceFilled,
   IconUserCircle
@@ -49,35 +49,37 @@ import td from '@/app/assets/brokers/td.png'
 export function resolveIcon(iconCode: string, className = '', iconSize = 24) {
   switch (iconCode) {
     case Icons.Dashboard:
-      return <IconLayoutDashboard className={className} size={iconSize} />;
+      return <IconLayoutDashboard className={className} size={iconSize}/>;
     case Icons.AccountOverview:
-      return <IconChartPie className={className} size={iconSize} />;
+      return <IconChartPie className={className} size={iconSize}/>;
     case Icons.UserProfile:
-      return <IconUserCircle className={className} size={iconSize} />;
+      return <IconUserCircle className={className} size={iconSize}/>;
     case Icons.MarketNews:
-      return <IconNews className={className} size={iconSize} />;
+      return <IconNews className={className} size={iconSize}/>;
     case Icons.Performance:
-      return <IconChartLine className={className} size={iconSize} />;
+      return <IconChartLine className={className} size={iconSize}/>;
     case Icons.Logout:
-      return <IconLogout2 className={className} size={iconSize} />;
+      return <IconLogout2 className={className} size={iconSize}/>;
     case Icons.ArrowUp:
-      return <IconArrowNarrowUp className={className} size={iconSize} />;
+      return <IconArrowNarrowUp className={className} size={iconSize}/>;
     case Icons.ArrowRight:
-      return <IconArrowNarrowRight className={className} size={iconSize} />;
+      return <IconArrowNarrowRight className={className} size={iconSize}/>;
     case Icons.ArrowDown:
-      return <IconArrowNarrowDown className={className} size={iconSize} />;
+      return <IconArrowNarrowDown className={className} size={iconSize}/>;
     case Icons.ArrowLeft:
-      return <IconArrowNarrowLeft className={className} size={iconSize} />;
+      return <IconArrowNarrowLeft className={className} size={iconSize}/>;
     case Icons.ArrowLeftRight:
-      return <IconArrowsRightLeft className={className} size={iconSize} />;
+      return <IconArrowsRightLeft className={className} size={iconSize}/>;
     case Icons.ChartDoughnut:
-      return <IconChartDonutFilled className={className} size={iconSize} />;
+      return <IconChartDonutFilled className={className} size={iconSize}/>;
     case Icons.Replace:
-      return <IconReplaceFilled className={className} size={iconSize} />;
+      return <IconReplaceFilled className={className} size={iconSize}/>;
     case Icons.ArrowBarDown:
-      return <IconArrowBarToDown className={className} size={iconSize} />;
+      return <IconArrowBarToDown className={className} size={iconSize}/>;
     case Icons.ArrowBarUp:
-      return <IconArrowBarUp className={className} size={iconSize} />;
+      return <IconArrowBarUp className={className} size={iconSize}/>;
+    case Icons.Mountain:
+      return <IconMountain className={className} size={iconSize}/>;
     default:
       return null;
   }
@@ -150,19 +152,19 @@ export function formatNegativePoints(val: number) {
 export function getFlagForCode(val: string, height = 25, width = 25) {
   switch (val) {
     case "CAD":
-      return <Image src={can} height={height} width={width} alt={'Canada'} />
+      return <Image src={can} height={height} width={width} alt={'Canada'}/>
     case "USD":
-      return <Image src={usa} height={height} width={width} alt={'United States'} />
+      return <Image src={usa} height={height} width={width} alt={'United States'}/>
     case "EUR":
-      return <Image src={eu} height={height} width={width} alt={'European Union'} />
+      return <Image src={eu} height={height} width={width} alt={'European Union'}/>
     case "GBP":
-      return <Image src={uk} height={height} width={width} alt={'United Kingdom'} />
+      return <Image src={uk} height={height} width={width} alt={'United Kingdom'}/>
     case "JPY":
-      return <Image src={jpy} height={height} width={width} alt={'Japan'} />
+      return <Image src={jpy} height={height} width={width} alt={'Japan'}/>
     case "CNY":
-      return <Image src={cny} height={height} width={width} alt={'China'} />
+      return <Image src={cny} height={height} width={width} alt={'China'}/>
     case "AUD":
-      return <Image src={aud} height={height} width={width} alt={'Australia'} />
+      return <Image src={aud} height={height} width={width} alt={'Australia'}/>
     default:
       return null;
   }
@@ -178,35 +180,66 @@ export function getFlagForCode(val: string, height = 25, width = 25) {
 export function getRoundFlagForCode(val: string, height = 25, width = 25) {
   switch (val) {
     case "CAD":
-      return <Image src={canRound} height={height} width={width} alt={'Canada'} />
+      return <Image src={canRound} height={height} width={width} alt={'Canada'}/>
     case "USD":
-      return <Image src={usaRound} height={height} width={width} alt={'United States'} />
+      return <Image src={usaRound} height={height} width={width} alt={'United States'}/>
     case "EUR":
-      return <Image src={euRound} height={height} width={width} alt={'European Union'} />
+      return <Image src={euRound} height={height} width={width} alt={'European Union'}/>
     case "GBP":
-      return <Image src={ukRound} height={height} width={width} alt={'United Kingdom'} />
+      return <Image src={ukRound} height={height} width={width} alt={'United Kingdom'}/>
     case "JPY":
-      return <Image src={jpyRound} height={height} width={width} alt={'Japan'} />
+      return <Image src={jpyRound} height={height} width={width} alt={'Japan'}/>
     case "CNY":
-      return <Image src={cnyRound} height={height} width={width} alt={'China'} />
+      return <Image src={cnyRound} height={height} width={width} alt={'China'}/>
     case "AUD":
-      return <Image src={audRound} height={height} width={width} alt={'Australia'} />
+      return <Image src={audRound} height={height} width={width} alt={'Australia'}/>
     default:
       return null;
   }
 }
 
+/**
+ * Returns an image for brokers
+ *
+ * @param val broker code
+ * @param height optional image height
+ * @param width optional image width
+ */
 export function getBrokerImageForCode(val: string, height = 25, width = 25) {
-  switch(val) {
+  switch (val) {
     case 'cmc':
-      return <Image src={cmc} alt={'CMC Markets Logo'} height={height} width={width} />
+      return <Image src={cmc} alt={'CMC Markets Logo'} height={height} width={width}/>
     case 'ftmo':
-      return <Image src={ftmo} alt={'FTMO Logo'} height={height} width={width} />
+      return <Image src={ftmo} alt={'FTMO Logo'} height={height} width={width}/>
     case 'td365':
-      return <Image src={td365} alt={'TD365 Logo'} height={height} width={width} />
+      return <Image src={td365} alt={'TD365 Logo'} height={height} width={width}/>
     case 'td':
-      return <Image src={td} alt={'TD (Toronto-Dominion) Logo'} height={height} width={width} />
+      return <Image src={td} alt={'TD (Toronto-Dominion) Logo'} height={height} width={width}/>
     default:
       return null;
   }
+}
+
+/**
+ * Delays the page by x amount of time
+ *
+ * @param ms time to delay in milliseconds
+ */
+export const delay = (ms: number) => new Promise(res => setTimeout(res, ms));
+
+/**
+ * Determines whether the given value is a number
+ *
+ * @param num value
+ */
+export const isNumeric = (num: any) => (typeof(num) === 'number' || typeof(num) === "string" && num.trim() !== '') && !isNaN(num as number);
+
+/**
+ * Converts string array in an enum for zos
+ *
+ * @param val array of strings
+ */
+export function safeConvertEnum(val: string[]) : [string, ...string[]] {
+  // @ts-ignore
+  return val
 }

@@ -8,10 +8,10 @@ export const accounts: Array<Account> = [
     active: true,
     name: 'Test Account 1',
     accountNumber: 123,
-    currency: 'CAD',
-    broker: 'CMC',
-    accountType: 'CFD',
-    tradePlatform: 'MT4',
+    currency: {uid: 'CAD', code: 'CAD', label: 'CAD'},
+    broker: {uid: 'cmc_1', code: 'cmc', label: 'CMC Markets'},
+    accountType: {uid: 'cfd', code: 'cfd', label: 'CFD'},
+    tradePlatform: {uid: 'MT4', code: 'MT4', label: 'MT4'},
     lastTraded: '2024-10-11T12:22:45'
   },
   {
@@ -23,10 +23,10 @@ export const accounts: Array<Account> = [
     active: true,
     name: 'Test Account 2',
     accountNumber: 1234,
-    currency: 'CAD',
-    broker: 'FTMO',
-    accountType: 'CFD',
-    tradePlatform: 'MT4',
+    currency: {uid: 'CAD', code: 'CAD', label: 'CAD'},
+    broker: {uid: 'ftmo_2', code: 'ftmo', label: 'FTMO'},
+    accountType: {uid: 'cfd', code: 'cfd', label: 'CFD'},
+    tradePlatform: {uid: 'MT4', code: 'MT4', label: 'MT4'},
     lastTraded: '2024-10-01T16:09:45'
   },
   {
@@ -38,10 +38,10 @@ export const accounts: Array<Account> = [
     active: false,
     name: 'Test Account 3',
     accountNumber: 12345,
-    currency: 'CAD',
-    broker: 'CMC',
-    accountType: 'CFD',
-    tradePlatform: 'MT4',
+    currency: {uid: 'cad', code: 'cad', label: 'CAD'},
+    broker: {uid: 'cmc_3', code: 'cmc', label: 'CMC Markets'},
+    accountType: {uid: 'cfd', code: 'cfd', label: 'CFD'},
+    tradePlatform: {uid: 'MT4', code: 'MT4', label: 'MT4'},
     lastTraded: '2024-07-30T16:01:45'
   }
 ]

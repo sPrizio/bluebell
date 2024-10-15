@@ -14,7 +14,7 @@ import {accounts, accountTransactions, chartData, tradeLog} from "@/lib/sample-d
 import AccountTransactionsTable from "@/components/Table/account/AccountTransactionsTable";
 import PortfolioGrowthChart from "@/components/Chart/PortfolioGrowthChart";
 import BaseModal from "@/components/Modal/BaseModal";
-import NewAccountForm from "@/components/Form/NewAccountForm";
+import AccountForm from "@/components/Form/account/AccountForm";
 
 /**
  * The page that shows an overview of a user's portfolio
@@ -28,15 +28,21 @@ export default function DashboardPage() {
     pageTitle,
     pageSubtitle,
     pageIconCode,
+    breadcrumbs,
     setPageTitle,
     setPageSubtitle,
-    setPageIconCode
+    setPageIconCode,
+    setBreadcrumbs
   } = useSepalPageInfoContext()
 
   useEffect(() => {
     setPageTitle('Dashboard')
     setPageSubtitle('An overview of your trading portfolio.')
     setPageIconCode(Icons.Dashboard)
+    setBreadcrumbs([
+      {label: 'Dashboard', href: '/dashboard', active: true},
+    ])
+
   }, [])
 
 
@@ -84,17 +90,20 @@ export default function DashboardPage() {
             title={'Accounts'}
             subtitle={'Only active accounts will be shown.'}
             cardContent={
-            <AccountsTable
-              accounts={accounts}
-              showAllLink={true}
-            />
-          }
-            headerControl={
-              <BaseModal title={'Add a new Trading Account'}
-                         trigger={<Button className="w-full text-white"><IconCirclePlus/>&nbsp;Add</Button>}
-                         content={<NewAccountForm />}
+              <AccountsTable
+                accounts={accounts}
+                showAllLink={true}
               />
             }
+            headerControls={[
+              <BaseModal
+                key={0}
+                title={'Add a new Trading Account'}
+                description={'Adding a new account will include it as part of your portfolio. If you do not wish to track your account in your portfolio, mark it as inactive. These settings can be changed at anytime from the account page.'}
+                trigger={<Button className="w-full text-white"><IconCirclePlus/>&nbsp;Add</Button>}
+                content={<AccountForm mode={'create'} />}
+              />
+            ]}
           />
         </div>
       </div>

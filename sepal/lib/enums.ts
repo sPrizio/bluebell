@@ -16,5 +16,6 @@ export enum Icons {
   ChartDoughnut = 'chart-doughnut',
   Replace = 'replace',
   ArrowBarDown = 'arrow-bar-down',
-  ArrowBarUp = 'arrow-bar-up'
+  ArrowBarUp = 'arrow-bar-up',
+  Mountain = 'mountain',
 }

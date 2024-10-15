@@ -7,6 +7,7 @@ import React from "react";
 import {resolveIcon} from "@/lib/functions";
 import {Icons} from "@/lib/enums";
 import Footer from "@/components/Footer/Footer";
+import {Toaster} from "@/components/ui/toaster";
 
 const fontSans = FontSans({
   subsets: ["latin"],
@@ -83,6 +84,7 @@ export default function RootLayout({
           </div>
         </div>
       </div>
+      <Toaster />
       </body>
     </html>
   );

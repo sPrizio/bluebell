@@ -52,11 +52,17 @@ const config = {
         },
         transparent: 'transparent',
         primary: '#0077E4',
+        primaryLight: '#b8ddff',
         secondary: '#BED5EB',
+        secondaryLight: '#eff4fa',
         tertiary: '#153C64',
+        tertiaryLight: '#afceee',
         primaryGreen: 'rgb(22, 163, 74)',
+        primaryGreenLight: '#b7f5ce',
         primaryRed: 'rgb(220, 38, 38)',
+        primaryRedLight: '#f6c9c9',
         primaryYellow: 'rgb(217, 119, 6)',
+        primaryYellowLight: '#fddeb9',
         primaryGrey: 'rgb(100, 116, 139)'
       },
       fontFamily: {

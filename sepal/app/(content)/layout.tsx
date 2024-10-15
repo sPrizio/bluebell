@@ -23,17 +23,19 @@ export default function ContentPageLayout(
   const [pageTitle, setPageTitle] = useState('')
   const [pageSubtitle, setPageSubtitle] = useState('')
   const [pageIconCode, setPageIconCode] = useState('')
+  const [breadcrumbs, setBreadcrumbs] = useState<Array<AppLink>>([])
 
 
   //  RENDER
 
   return (
-    <SepalPageInfoContext.Provider value={{ pageTitle, pageSubtitle, pageIconCode, setPageTitle, setPageSubtitle, setPageIconCode }}>
+    <SepalPageInfoContext.Provider value={{ pageTitle, pageSubtitle, pageIconCode, breadcrumbs, setPageTitle, setPageSubtitle, setPageIconCode, setBreadcrumbs }}>
       <div className={"block"}>
         <PageHeaderSection
           title={pageTitle}
           subtitle={pageSubtitle}
           iconCode={pageIconCode}
+          breadcrumbs={breadcrumbs}
         />
         <ScrollArea className={`block h-[77vh] w-full [mask-image:linear-gradient(#000_85%,transparent_95%)]`}>
           {children}

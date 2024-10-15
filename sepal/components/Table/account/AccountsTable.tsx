@@ -1,9 +1,12 @@
+'use client'
+
 import {Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow,} from "@/components/ui/table"
 import {IconExternalLink, IconSquareRoundedCheckFilled} from "@tabler/icons-react";
 import Link from "next/link";
 import {formatNumberForDisplay, getBrokerImageForCode, getFlagForCode, getRoundFlagForCode} from "@/lib/functions";
 import moment from "moment";
 import {DateTime} from "@/lib/constants";
+import {useRouter} from "next/navigation";
 
 /**
  * Renders a table containing the user's active accounts
@@ -30,11 +33,24 @@ export default function AccountsTable(
   }>
 ) {
 
+  const router = useRouter();
+
 
   //  GENERAL FUNCTIONS
 
+  /**
+   * Obtains the image representing the given broker
+   *
+   * @param val incoming key
+   */
   function getBrokerImage(val: string): React.ReactNode {
     return getBrokerImageForCode(val.toLowerCase(), 30, 30)
+  }
+
+  function redirectToAccount(val: number) {
+    if (allowAccountSelection) {
+      router.push(`/accounts/${val}`)
+    }
   }
 
 
@@ -87,12 +103,12 @@ export default function AccountsTable(
               showCompactTable ?
                 <TableBody>
                   {
-                    accounts?.map((item, itx) => {
+                    accounts?.map((item) => {
                       return (
                         <TableRow key={item.uid} className={allowAccountSelection ? 'hover:cursor-pointer' : 'hover:bg-transparent'}>
                           <TableCell>{item.name}</TableCell>
-                          <TableCell className={'text-center'}>{item.accountType}</TableCell>
-                          <TableCell className={'text-center'}>{item.broker}</TableCell>
+                          <TableCell className={'text-center'}>{item.accountType.label}</TableCell>
+                          <TableCell className={'text-center'}>{item.broker.label}</TableCell>
                           <TableCell className="text-right">${formatNumberForDisplay(item.balance)}</TableCell>
                         </TableRow>
                       )
@@ -102,9 +118,9 @@ export default function AccountsTable(
                 :
                 <TableBody>
                   {
-                    accounts?.map((item, itx) => {
+                    accounts?.map((item) => {
                       return (
-                        <TableRow key={item.uid} className={allowAccountSelection ? 'hover:cursor-pointer' : 'hover:bg-transparent'}>
+                        <TableRow key={item.uid} className={allowAccountSelection ? 'hover:cursor-pointer' : 'hover:bg-transparent'} onClick={() => redirectToAccount(item.accountNumber)}>
                           <TableCell className={'text-center'}>
                             {item.defaultAccount ? <IconSquareRoundedCheckFilled className={'text-primary'} /> : null}
                           </TableCell>
@@ -118,11 +134,11 @@ export default function AccountsTable(
                             }
                           </TableCell>
                           <TableCell className={'text-center flex items-center justify-center'}>
-                            {getFlagForCode(item.currency)}
+                            {getFlagForCode(item.currency.label)}
                           </TableCell>
-                          <TableCell className={'text-center'}>{item.tradePlatform}</TableCell>
-                          <TableCell className={'text-center'}>{item.accountType}</TableCell>
-                          <TableCell className={'text-center flex items-center justify-center'}>{getBrokerImage(item.broker)}</TableCell>
+                          <TableCell className={'text-center'}>{item.tradePlatform.label}</TableCell>
+                          <TableCell className={'text-center'}>{item.accountType.label}</TableCell>
+                          <TableCell className={'text-center flex items-center justify-center'}>{getBrokerImage(item.broker.code)}</TableCell>
                           <TableCell className={''}>{moment(item.lastTraded).format(DateTime.ISOShortMonthDayYearWithTimeFormat)}</TableCell>
                           <TableCell className="text-right">${formatNumberForDisplay(item.balance)}</TableCell>
                         </TableRow>

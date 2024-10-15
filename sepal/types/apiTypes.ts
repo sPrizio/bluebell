@@ -22,17 +22,11 @@ interface PhoneNumber extends GenericApiType {
 }
 
 // TODO: implement on backend
-interface AccountCreationInfoOption extends GenericApiType {
-  code: string,
-  label: string
-}
-
-// TODO: implement on backend
 interface AccountCreationInfo extends GenericApiType {
-  currencies: Array<AccountCreationInfoOption>,
-  brokers: Array<AccountCreationInfoOption>,
-  platforms: Array<AccountCreationInfoOption>,
-  accountTypes: Array<AccountCreationInfoOption>
+  currencies: Array<Currency>,
+  brokers: Array<Broker>,
+  platforms: Array<TradePlatform>,
+  accountTypes: Array<AccountType>
 }
 
 // TODO: implement on backend
@@ -43,6 +37,24 @@ interface AccountEquityPoint extends GenericApiType {
   [others: string]: any
 }
 
+// TODO: implement on backend
+interface AccountOption extends GenericApiType {
+  code: string,
+  label: string
+}
+
+// TODO: implement on backend
+interface Currency extends AccountOption {}
+
+// TODO: implement on backend
+interface AccountType extends AccountOption {}
+
+// TODO: implement on backend
+interface TradePlatform extends AccountOption {}
+
+// TODO: implement on backend
+interface Broker extends AccountOption {}
+
 interface Account extends GenericApiType {
   defaultAccount: boolean,
   accountOpenTime: string,
@@ -51,10 +63,10 @@ interface Account extends GenericApiType {
   active: boolean,
   name: string,
   accountNumber: number,
-  currency: string,
-  broker: string,
-  accountType: string,
-  tradePlatform: string,
+  currency: Currency,
+  broker: Broker,
+  accountType: AccountType,
+  tradePlatform: TradePlatform,
   lastTraded: string
 }
 

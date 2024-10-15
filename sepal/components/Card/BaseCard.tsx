@@ -16,14 +16,14 @@ export function BaseCard(
     title = '',
     subtitle = '',
     cardContent = null,
-    headerControl = null,
+    headerControls = [],
     footerControls = [],
   }
     : Readonly<{
     title?: string,
     subtitle?: string,
     cardContent?: React.ReactNode,
-    headerControl?: React.ReactNode,
+    headerControls?: Array<React.ReactNode>,
     footerControls?: Array<React.ReactNode>
   }>
 ) {
@@ -41,7 +41,13 @@ export function BaseCard(
                 <CardTitle>{title}</CardTitle>
                 {subtitle && subtitle.length > 0 ? <CardDescription>{subtitle}</CardDescription> : null}
               </div>
-              {headerControl ? <div>{headerControl}</div> : null}
+              {
+                headerControls?.map((item, key) => {
+                  return (
+                    <div key={key}>{item}</div>
+                  )
+                })
+              }
             </div>
           </CardHeader>
           : <div className={'p-6'} />

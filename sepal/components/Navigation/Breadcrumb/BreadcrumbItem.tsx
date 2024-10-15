@@ -6,6 +6,7 @@ import Link from "next/link";
  * @param label text
  * @param isLast if last, don't render a /
  * @param active if active, highlight
+ * @param href link address
  * @author Stephen Prizio
  * @version 0.0.1
  */

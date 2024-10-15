@@ -2,6 +2,7 @@
 
 import {usePathname} from "next/navigation";
 import BreadcrumbItem from "@/components/Navigation/Breadcrumb/BreadcrumbItem";
+import React from "react";
 
 /**
  * Renders the breadcrumbs for any page
@@ -9,7 +10,13 @@ import BreadcrumbItem from "@/components/Navigation/Breadcrumb/BreadcrumbItem";
  * @author Stephen Prizio
  * @version 0.0.1
  */
-export default function Breadcrumbs() {
+export default function Breadcrumbs(
+  {
+    links = [],
+  }: Readonly<{
+    links: Array<AppLink>;
+  }>
+) {
 
 
   //  GENERAL FUNCTIONS
@@ -46,17 +53,19 @@ export default function Breadcrumbs() {
 
   return (
     <div>
-      {getPageList().map((page, i, pages) => {
-        return (
-          <BreadcrumbItem
-            key={page}
-            label={page}
-            isLast={(i + 1) === pages.length}
-            active={page === getCurrentPage()}
-            href={'/' + page.split(' ').join('-').toLowerCase()}
-          />
-        )
-      })}
+      {
+        links.map((link, i, links) => {
+          return (
+            <BreadcrumbItem
+              key={link.href}
+              label={link.label}
+              isLast={(i + 1) === links.length}
+              active={link.active}
+              href={link.href}
+            />
+          )
+        })
+      }
     </div>
   )
 }

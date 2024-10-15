@@ -1,4 +1,7 @@
 //  each page has a header section that can contain an icon, this is the icon's size
+import {z} from "zod";
+import {safeConvertEnum} from "@/lib/functions";
+
 export const DEFAULT_PAGE_HEADER_SECTION_ICON_SIZE = 36;
 
 export const BASE_COLORS = ['red', 'green', 'blue', 'orange', 'pink', 'grey', 'black']
@@ -43,4 +46,18 @@ export const Css = {
   ColorGraphAccSecondary: '#82ca9d',
   ColorGraphAccTertiary: '#bda74e',
   FontFamily: 'Inter, sans-serif',
+}
+
+export function CRUDAccountSchema(accInfo: AccountCreationInfo | undefined) {
+  return z.object({
+    defaultAccount: z.boolean(),
+    balance: z.coerce.number().min(1, { message: 'Please enter a number between 1 and 999999999.' }).max(999999999, { message: 'Please enter a number between 1 and 999999999.' }),
+    active: z.boolean(),
+    name: z.string().min(3, { message: 'Please enter an account name with a minimum of 3 characters.' }).max(75, { message: 'Please enter an account name with at most 75 characters.' }),
+    accountNumber: z.coerce.number().min(1, { message: 'Please enter a number between 1 and 99999999999.' }).max(99999999999, { message: 'Please enter a number between 1 and 99999999999.' }),
+    currency: z.enum(safeConvertEnum(accInfo?.currencies?.map(item => item.code) ?? []), { message: 'Please select one of the given currencies.' }),
+    broker: z.enum(safeConvertEnum(accInfo?.brokers?.map(item => item.code) ?? []), { message: 'Please select one of the given brokers.' }),
+    accountType: z.enum(safeConvertEnum(accInfo?.accountTypes?.map(item => item.code) ?? []), { message: 'Please select one of the given account types.' }),
+    tradePlatform: z.enum(safeConvertEnum(accInfo?.platforms?.map(item => item.code) ?? []), { message: 'Please select one of the given trading platforms.' })
+  })
 }

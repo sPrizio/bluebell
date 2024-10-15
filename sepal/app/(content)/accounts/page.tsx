@@ -6,10 +6,10 @@ import {Icons} from "@/lib/enums";
 import {BaseCard} from "@/components/Card/BaseCard";
 import {Button} from "@/components/ui/button";
 import {IconCirclePlus, IconSquareRoundedCheckFilled} from "@tabler/icons-react";
-import NewAccountForm from "@/components/Form/NewAccountForm";
 import BaseModal from "@/components/Modal/BaseModal";
 import {accounts} from "@/lib/sample-data";
 import AccountsTable from "@/components/Table/account/AccountsTable";
+import AccountForm from "@/components/Form/account/AccountForm";
 
 /**
  * The page that shows all of a user's accounts
@@ -23,15 +23,21 @@ export default function AccountsPage() {
     pageTitle,
     pageSubtitle,
     pageIconCode,
+    breadcrumbs,
     setPageTitle,
     setPageSubtitle,
-    setPageIconCode
+    setPageIconCode,
+    setBreadcrumbs
   } = useSepalPageInfoContext()
 
   useEffect(() => {
     setPageTitle('Accounts')
     setPageSubtitle('A list of all your trading accounts.')
-    setPageIconCode(Icons.Dashboard)
+    setPageIconCode(Icons.AccountOverview)
+    setBreadcrumbs([
+      {label: 'Dashboard', href: '/dashboard', active: false},
+      {label: 'Accounts', href: '/accounts', active: true},
+    ])
   }, [])
 
 
@@ -42,15 +48,12 @@ export default function AccountsPage() {
       <div className={'flex flex-row items-center justify-end'}>
         <div>
           <BaseModal title={'Add a new Trading Account'}
+                     description={'Adding a new account will include it as part of your portfolio. If you do not wish to track your account in your portfolio, mark it as inactive. These settings can be changed at anytime from the account page.'}
                      trigger={<Button className="w-full text-white"><IconCirclePlus/>&nbsp;Add a new account</Button>}
-                     content={<NewAccountForm/>}
+                     content={<AccountForm mode={'create'}/>}
           />
         </div>
       </div>
-      <p>TODO</p>
-      <ul>
-        <li>Clicking on an account brings us to the account details page</li>
-      </ul>
       <div className={'flex items-center text-sm justify-end w-full'}>
         *&nbsp;The&nbsp;&nbsp;<span className={'inline-block'}><IconSquareRoundedCheckFilled className={'text-primary'} /></span>&nbsp;&nbsp;indicates a default account. A default account
         is the account that will be shown in the performance section on initial view. The default account can be changed at any time.

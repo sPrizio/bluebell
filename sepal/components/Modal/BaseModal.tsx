@@ -25,11 +25,13 @@ export default function BaseModal(
   {
     trigger = <Button className={'bg-primary text-white'}>Hello</Button>,
     title = '',
+    description = '',
     content = null,
   }
     : Readonly<{
     trigger?: ReactNode,
     title: string,
+    description?: string,
     content: ReactNode
   }>
 ) {
@@ -47,10 +49,7 @@ export default function BaseModal(
       <DialogContent>
         <DialogHeader>
           <DialogTitle>{title}</DialogTitle>
-          <DialogDescription>
-            Adding a new account will include it as part of your portfolio. If you do not wish to track your account in your portfolio,
-            mark it as inactive. These settings can be changed at anytime from the account page.
-          </DialogDescription>
+          {description ? <DialogDescription>{description}</DialogDescription> : null}
         </DialogHeader>
         <div className="grid gap-4 py-4">
           <SepalModalContext.Provider value={{ open, setOpen }}>

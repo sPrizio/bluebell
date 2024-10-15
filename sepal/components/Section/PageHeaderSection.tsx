@@ -8,6 +8,7 @@ import Breadcrumbs from "@/components/Navigation/Breadcrumb/Breadcrumbs";
  * @param iconCode icon
  * @param title header title
  * @param subtitle head subtitle
+ * @param breadcrumbs breadcrumbs
  * @author Stephen Prizio
  * @version 0.0.1
  */
@@ -16,10 +17,12 @@ export default function PageHeaderSection(
     iconCode = '',
     title = '',
     subtitle = '',
+    breadcrumbs = []
   }: Readonly<{
     iconCode?: string,
     title: string,
     subtitle?: string,
+    breadcrumbs: Array<AppLink>
   }>
 ) {
 
@@ -36,7 +39,7 @@ export default function PageHeaderSection(
         <div className={'text-slate-700 text-md'}>{subtitle}</div>
       </div>
       <div className={'flex flex-1 justify-end'}>
-        <Breadcrumbs />
+        <Breadcrumbs links={breadcrumbs} />
       </div>
     </div>
   )

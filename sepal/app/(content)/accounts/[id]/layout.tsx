@@ -2,12 +2,12 @@ import React from "react";
 import type {Metadata} from "next";
 
 export const metadata: Metadata = {
-  title: "Accounts - bluebell",
-  description: "View a list of your accounts",
+  title: "Account Overview - bluebell",
+  description: "View your account details",
 };
 
 /**
- * The base layout for the accounts listing page
+ * The base layout for the account detail page
  *
  * @param children content
  * @author Stephen Prizio
