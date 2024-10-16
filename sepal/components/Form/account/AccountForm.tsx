@@ -23,6 +23,7 @@ import {useSepalModalContext} from "@/lib/context/SepalContext";
 import {delay} from "@/lib/functions";
 import { useToast } from "@/hooks/use-toast"
 import {CRUDAccountSchema} from "@/lib/constants";
+import {Switch} from "@/components/ui/switch";
 
 /**
  * Renders a form that can create or update an account
@@ -107,7 +108,7 @@ export default function AccountForm(
     // ✅ This will be type-safe and validated.
     setIsLoading(true)
     await delay(4000);
-    //console.log(values)
+    console.log(values)
     setIsLoading(false)
 
     setSuccess('success')
@@ -310,10 +311,65 @@ export default function AccountForm(
                 )}
               />
             </div>
+            <div className={''}>
+              <FormField
+                control={form.control}
+                name="defaultAccount"
+                render={({field}) => (
+                  <FormItem>
+                    <div className={'flex items-center gap-4 w-full'}>
+                      <div className={'w-full'}>
+                        <FormLabel className="!text-current">Default Account</FormLabel>
+                      </div>
+                      <div className={'flex items-center justify-end text-right'}>
+                        <FormControl>
+                          <Switch
+                            checked={field.value}
+                            onCheckedChange={field.onChange}
+                          />
+                        </FormControl>
+                      </div>
+                    </div>
+                    <FormDescription>
+                      A default account is an account that will be considered the primary or main account.
+                    </FormDescription>
+                    <FormMessage className={'text-primaryRed font-semibold'} />
+                  </FormItem>
+                )}
+              />
+            </div>
+            <div className={''}>
+              <FormField
+                control={form.control}
+                name="active"
+                render={({field}) => (
+                  <FormItem>
+                    <div className={'flex items-center gap-4 w-full'}>
+                      <div className={'w-full'}>
+                        <FormLabel className="!text-current">Active</FormLabel>
+                      </div>
+                      <div className={'flex items-center justify-end text-right'}>
+                        <FormControl>
+                          <Switch
+                            checked={field.value}
+                            onCheckedChange={field.onChange}
+                          />
+                        </FormControl>
+                      </div>
+                    </div>
+                    <FormDescription>
+                      Active accounts will have their trades tracked and periodically updated, inactive accounts
+                      will be archived for reference purposes.
+                    </FormDescription>
+                    <FormMessage className={'text-primaryRed font-semibold'}/>
+                  </FormItem>
+                )}
+              />
+            </div>
           </div>
           <div className={'flex w-full justify-end items-center gap-4'}>
             <Button type="submit" className={'bg-primary text-white'} disabled={isLoading}>
-              {isLoading ? <Loader2 className="mr-2 h-4 w-4 animate-spin"/> : null}
+            {isLoading ? <Loader2 className="mr-2 h-4 w-4 animate-spin"/> : null}
               Submit
             </Button>
             <Button type="button" className={'border border-gray-400'} variant={"outline"} onClick={() => setOpen(false)}>

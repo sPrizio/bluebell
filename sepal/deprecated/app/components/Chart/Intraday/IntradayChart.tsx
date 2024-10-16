@@ -11,7 +11,7 @@ import Chart from 'react-apexcharts'
  * @author Stephen Prizio
  * @version 0.0.1
  */
-export function IntradayChart({series = [], options = {}, id = 0}: {series: any, options: any, id: number}) {
+export default function IntradayChart({series = [], options = {}, id = 0}: {series: any, options: any, id: number}) {
 
   const baseClass = "intraday-chart"
 

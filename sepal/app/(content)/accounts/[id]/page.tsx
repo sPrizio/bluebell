@@ -7,11 +7,7 @@ import {useParams, useRouter} from "next/navigation";
 import {isNumeric} from "@/lib/functions";
 import {accounts} from "@/lib/sample-data";
 import {Loader2} from "lucide-react";
-import {BaseCard} from "@/components/Card/BaseCard";
-import {Button} from "@/components/ui/button";
-import {IconEdit, IconTrash} from "@tabler/icons-react";
-import BaseModal from "@/components/Modal/BaseModal";
-import AccountForm from "@/components/Form/account/AccountForm";
+import AccountDetails from "@/components/Account/AccountDetails";
 
 /**
  * Renders the account details page
@@ -98,11 +94,6 @@ export default function AccountDetailPage() {
 
   return (
     <div className={''}>
-      <p>TODO</p>
-      <ul>
-        <li>Build out page layout</li>
-        <li>Include controls for editing and deleting an account (editing will open equivalent of new form modal but with values, delete will open a confirmation modal)</li>
-      </ul>
       {
         isLoading ?
           <div className={'h-[72vh] flex items-center justify-center'}>
@@ -115,35 +106,7 @@ export default function AccountDetailPage() {
           </div>
           :
           <div className={'grid grid-cols-1 gap-4'}>
-            {
-              !account ?
-                <div>
-                  No Content
-                </div>
-                :
-                <div>
-                  <BaseCard
-                    title={'Test'}
-                    subtitle={'Hello'}
-                    cardContent={<p>Hello World!</p>}
-                    headerControls={[
-                      <BaseModal
-                        key={0}
-                        title={'Update Trading Account Information'}
-                        description={'Here you can edit/update any account information. Note that some aspects of your account cannot be changed after account creation.'}
-                        trigger={<Button className="" variant={"outline"}><IconEdit/>&nbsp;Update</Button>}
-                        content={<AccountForm mode={'edit'} account={account} />}
-                      />,
-                      <BaseModal
-                        key={1}
-                        title={'Delete Trading Account'}
-                        trigger={<Button className="bg-primaryRed text-white hover:bg-red-500"><IconTrash/>&nbsp;Delete</Button>}
-                        content={<AccountForm/>}
-                      />
-                    ]}
-                  />
-                </div>
-            }
+            {!account ? <div>No Content</div> : <AccountDetails account={account} />}
           </div>
       }
     </div>

@@ -44,7 +44,7 @@ export default function AccountsTable(
    * @param val incoming key
    */
   function getBrokerImage(val: string): React.ReactNode {
-    return getBrokerImageForCode(val.toLowerCase(), 30, 30)
+    return getBrokerImageForCode(val.toLowerCase(), 25, 25)
   }
 
   function redirectToAccount(val: number) {
