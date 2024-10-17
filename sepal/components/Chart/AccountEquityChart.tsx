@@ -107,8 +107,6 @@ export default function AccountEquityChart(
 
   //  RENDER
 
-  // smoothing comes from data array change
-
   return (
     <div className={'flex items-center justify-center pb-2'}>
       <div className={'w-[100%]'}>

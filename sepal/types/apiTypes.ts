@@ -80,16 +80,17 @@ interface AccountEquityPoint extends GenericApiType {
 // TODO: implement on backend
 interface AccountInsights extends GenericApiType {
   tradingDays: number,
+  trades: number,
   maxDailyLoss: number,
   maxTotalLoss: number,
   maxDailyProfit: number,
   maxProfit: number,
-  consistency: number,
 }
 
 // TODO: implement on backend
 interface AccountDetails extends GenericApiType {
   account: Account,
+  consistency: number,
   equity: Array<AccountEquityPoint>,
   insights: AccountInsights
 }

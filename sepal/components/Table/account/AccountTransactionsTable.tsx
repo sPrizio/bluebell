@@ -72,8 +72,10 @@ export default function AccountTransactionsTable(
                 <TableCell>{item.account.name}</TableCell>
                 <TableCell className={'text-center'}>{item.type}</TableCell>
                 <TableCell className={'text-center'}>${formatNumberForDisplay(item.amount)}</TableCell>
-                <TableCell className={'text-right flex items-center justify-end'}>
-                  {item.status}&nbsp;<span className={'inline-block ' + computeColors(item.status)}><IconPointFilled size={15} /></span>
+                <TableCell className={'text-right h-full'}>
+                  <div className={'flex items-center justify-end'}>
+                    {item.status}&nbsp;<span className={'inline-block ' + computeColors(item.status)}><IconPointFilled size={15} /></span>
+                  </div>
                 </TableCell>
               </TableRow>
             )

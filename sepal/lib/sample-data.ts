@@ -290,8 +290,15 @@ export const accountCreationInfo: AccountCreationInfo = {
 export const accountDetails: AccountDetails = {
   uid: '1239',
   account: accounts[0],
+  consistency: 51,
   insights: {
-
+    uid: '3344',
+    tradingDays: 31,
+    trades: 189,
+    maxDailyLoss: -489.33,
+    maxTotalLoss: -987.21,
+    maxDailyProfit: 783.56,
+    maxProfit: 3894.12,
   },
   equity: [
     {

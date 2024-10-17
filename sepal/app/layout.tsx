@@ -49,6 +49,11 @@ const links = [
     icon: resolveIcon(Icons.Performance, linkStyles),
   },
   {
+    label: "Transactions",
+    href: "/transactions",
+    icon: resolveIcon(Icons.Transactions, linkStyles),
+  },
+  {
     label: "Logout",
     href: "/logout",
     icon: resolveIcon(Icons.Logout, linkStyles),

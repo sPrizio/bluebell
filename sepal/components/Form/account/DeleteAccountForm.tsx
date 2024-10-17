@@ -6,12 +6,14 @@ import {useEffect, useState} from "react";
 import {useSepalModalContext} from "@/lib/context/SepalContext";
 import {delay} from "@/lib/functions";
 import {toast} from "@/hooks/use-toast";
+import {useRouter} from 'next/navigation'
 
 export default function DeleteAccountForm() {
 
   const [isLoading, setIsLoading] = useState(false)
   const { open, setOpen } = useSepalModalContext()
   const [success, setSuccess] = useState<'success' | 'failed' | 'undefined'>('undefined')
+  const router = useRouter();
 
   useEffect(() => {
     if (success === 'success') {
@@ -46,6 +48,7 @@ export default function DeleteAccountForm() {
 
     setSuccess('success')
     setOpen(false)
+    router.push('/accounts')
   }
 
 

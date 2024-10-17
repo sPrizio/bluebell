@@ -7,6 +7,7 @@ export enum Icons {
   UserProfile = 'user-profile',
   MarketNews = 'market-news',
   Performance = 'performance',
+  Transactions = 'transactions',
   Logout = 'logout',
   ArrowUp = 'arrow-up',
   ArrowLeft = 'arrow-left',

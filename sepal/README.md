@@ -19,6 +19,8 @@ None
 - Profile
 - Market News
 - Performance
+- Transactions
+- Login
 
 ---
 

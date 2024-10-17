@@ -5,12 +5,14 @@ import {
   IconArrowNarrowLeft,
   IconArrowNarrowRight,
   IconArrowNarrowUp,
+  IconArrowsDiff,
   IconArrowsRightLeft,
   IconChartDonutFilled,
   IconChartLine,
   IconChartPie,
   IconLayoutDashboard,
-  IconLogout2, IconMountain,
+  IconLogout2,
+  IconMountain,
   IconNews,
   IconReplaceFilled,
   IconUserCircle
@@ -80,6 +82,8 @@ export function resolveIcon(iconCode: string, className = '', iconSize = 24) {
       return <IconArrowBarUp className={className} size={iconSize}/>;
     case Icons.Mountain:
       return <IconMountain className={className} size={iconSize}/>;
+    case Icons.Transactions:
+      return <IconArrowsDiff className={className} size={iconSize}/>;
     default:
       return null;
   }
