@@ -1,4 +1,6 @@
-import React from "react";
+'use client'
+
+import React, {useEffect, useState} from "react";
 import BaseModal from "@/components/Modal/BaseModal";
 import {Button} from "@/components/ui/button";
 import {IconEdit, IconTrash} from "@tabler/icons-react";
@@ -9,6 +11,9 @@ import AccountInformation from "@/components/Account/AccountInformation";
 import {Switch} from "@/components/ui/switch";
 import {Label} from "@/components/ui/label";
 import SimpleBanner from "@/components/Banner/SimpleBanner";
+import {delay} from "@/lib/functions";
+import {accountDetails} from "@/lib/sample-data";
+import AccountEquityChart from "@/components/Chart/AccountEquityChart";
 
 /**
  * Renders the account details layout
@@ -26,6 +31,29 @@ export default function AccountDetails(
   }>
 ) {
 
+  const [isLoading, setIsLoading] = useState(false)
+  const [accDetails, setAccDetails] = useState<AccountDetails>()
+  const [showPoints, setShowPoints] = useState(true)
+
+  useEffect(() => {
+    getAccountDetails()
+  }, []);
+
+
+  //  GENERAL FUNCTIONS
+
+  /**
+   * Fetches the account details
+   */
+  async function getAccountDetails() {
+    setIsLoading(true)
+
+    await delay(3000)
+    setAccDetails(accountDetails)
+
+    setIsLoading(false)
+  }
+
 
   //  RENDER
 
@@ -33,7 +61,7 @@ export default function AccountDetails(
     <div className={'grid sm:grid-cols-1 lg:grid-cols-2 xl:grid-cols-4 gap-6'}>
       <div className={'sm:col-span-1 lg:col-span-2 xl:col-span-4'}>
         <SimpleBanner
-          text={(account?.active ?? false) ? 'This account is active.' : 'This account is marked currently inactive.'}
+          text={(account?.active ?? false) ? 'This account is currently active.' : 'This account is marked currently inactive.'}
           variant={(account?.active ?? false) ? 'info' : 'danger'}
         />
       </div>
@@ -62,13 +90,14 @@ export default function AccountDetails(
       <div className={'xl:col-span-3'}>
         <div className={'col-span-1 lg:col-span-3'}>
           <BaseCard
+            loading={isLoading}
             title={'Account Equity'}
             subtitle={'A look at the evolution of your account since inception.'}
-            cardContent={<p>Include chart & consistency score below chart</p>}
+            cardContent={<AccountEquityChart data={accDetails?.equity ?? []} showPoints={showPoints} />}
             headerControls={[
               <div key={0} className="flex items-center space-x-2">
-                <Switch id="airplane-mode"/>
-                <Label htmlFor="airplane-mode">Points only</Label>
+                <Label htmlFor="airplane-mode">Show as Points</Label>
+                <Switch id="airplane-mode" checked={showPoints} onCheckedChange={setShowPoints} />
               </div>
             ]}
           />
@@ -76,12 +105,14 @@ export default function AccountDetails(
       </div>
       <div className={''}>
         <BaseCard
+          loading={isLoading}
           title={'Account Information'}
           cardContent={<AccountInformation account={account}/>}
         />
       </div>
       <div className={'sm:col-span-1 lg:col-span-2 xl:col-span-4'}>
         <BaseCard
+          loading={isLoading}
           title={'Insights'}
           subtitle={'A quick look at some of the key markers of this account\'s performance.'}
           cardContent={<p>Trading days, max daily loss, max total loss, max daily profit, max profit</p>}
@@ -89,6 +120,7 @@ export default function AccountDetails(
       </div>
       <div className={'xl:col-span-2'}>
         <BaseCard
+          loading={isLoading}
           title={'Statistics'}
           subtitle={'A look some of this account\'s key statistical measures for performance.'}
           cardContent={<p>Statistics: equity, average profit, average loss, balance, no of trades, average RRR, lots,
@@ -96,8 +128,9 @@ export default function AccountDetails(
             rate, profit factor, retention, sharpe ratio</p>}
         />
       </div>
-      <div className={'xl:col-span-2'}>
+      <div className={'xl:col-span-2 flex justify-end'}>
         <BaseCard
+          loading={isLoading}
           title={'Performance'}
           subtitle={'A look at this account\'s daily performance.'}
           cardContent={<p>trade record summary (daily)</p>}
@@ -105,6 +138,7 @@ export default function AccountDetails(
       </div>
       <div className={'sm:col-span-1 lg:col-span-2 xl:col-span-4'}>
         <BaseCard
+          loading={isLoading}
           title={'Trades'}
           subtitle={'A view of each trade taken in this account'}
           cardContent={<p>Trades log</p>}

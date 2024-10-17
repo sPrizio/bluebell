@@ -24,7 +24,7 @@ export default function PortfolioGrowthChart(
     data = [],
   }
     : Readonly<{
-    data: Array<AccountEquityPoint>,
+    data: Array<PortfolioEquityPoint>,
   }>
 ) {
 

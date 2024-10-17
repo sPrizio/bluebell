@@ -202,7 +202,7 @@ export const accountTransactions: Array<Transaction> = [
   }
 ]
 
-export const chartData: Array<AccountEquityPoint> = [
+export const chartData: Array<PortfolioEquityPoint> = [
   {
     uid: '1237',
     date: '2024-04-01',
@@ -286,3 +286,55 @@ export const accountCreationInfo: AccountCreationInfo = {
     {uid: 'shares', code: 'shares', label: 'Shares'},
   ]
 }
+
+export const accountDetails: AccountDetails = {
+  uid: '1239',
+  account: accounts[0],
+  insights: {
+
+  },
+  equity: [
+    {
+      uid: '1233',
+      date: '2024-04-01',
+      amount: 30086.65,
+      points: 15.23,
+    },
+    {
+      uid: '1244',
+      date: '2024-05-01',
+      amount: 30191.55,
+      points: 46.89,
+    },
+    {
+      uid: '1256',
+      date: '2024-06-01',
+      amount: 30611.55,
+      points: 123.88,
+    },
+    {
+      uid: '1266',
+      date: '2024-07-01',
+      amount: 30631.80,
+      points: 121.02,
+    },
+    {
+      uid: '1277',
+      date: '2024-08-01',
+      amount: 30301.80,
+      points: 85.21,
+    },
+    {
+      uid: '1288',
+      date: '2024-09-01',
+      amount: 30721.80,
+      points: 144.17,
+    },
+    {
+      uid: '1299',
+      date: '2024-10-01',
+      amount: 30391.80,
+      points: 91.56,
+    },
+  ]
+};
