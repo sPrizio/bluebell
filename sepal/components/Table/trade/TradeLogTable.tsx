@@ -38,10 +38,10 @@ export default function TradeLogTable(
       <TableCaption>
         <div className={"flex items-center justify-center gap-1"}>
           <div className={""}>
-            <Link href={'#'}>View Full Performance</Link>
+            <Link href={'/performance'}>View Full Performance</Link>
           </div>
           <div className={""}>
-            <Link href={'#'}><IconExternalLink size={18}/></Link>
+            <Link href={'/performance'}><IconExternalLink size={18}/></Link>
           </div>
         </div>
       </TableCaption>
@@ -57,7 +57,7 @@ export default function TradeLogTable(
       </TableHeader>
       <TableBody>
         {
-          log?.map((item, itx) => {
+          log?.map((item) => {
             return (
               <React.Fragment key={item.uid}>
                 <TableRow key={item.uid} className={'hover:bg-transparent'}>

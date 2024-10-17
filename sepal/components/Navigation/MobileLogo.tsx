@@ -89,7 +89,7 @@ export default function MobileLogo(
   //  RENDER
 
   return (
-    <Link href={'/home'} className={computeBackground()}>
+    <Link href={'/dashboard'} className={computeBackground()}>
       <Image src={determineImage()} height={windowSize[0] < 992 ? 50 : 65} alt={'Brand Logo'}/>
     </Link>
   )

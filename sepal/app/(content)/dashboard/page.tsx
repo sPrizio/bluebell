@@ -98,15 +98,6 @@ export default function DashboardPage() {
                 showAllLink={true}
               />
             }
-            headerControls={[
-              <BaseModal
-                key={0}
-                title={'Add a new Trading Account'}
-                description={'Adding a new account will include it as part of your portfolio. If you do not wish to track your account in your portfolio, mark it as inactive. These settings can be changed at anytime from the account page.'}
-                trigger={<Button className="w-full text-white"><IconCirclePlus/>&nbsp;Add</Button>}
-                content={<AccountForm mode={'create'} />}
-              />
-            ]}
           />
         </div>
       </div>

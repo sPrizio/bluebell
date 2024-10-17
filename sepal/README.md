@@ -21,6 +21,7 @@ None
 - Performance
 - Transactions
 - Login
+- Trades
 
 ---
 
@@ -29,6 +30,7 @@ None
 - Set up mock api calls with expected data returns v0.0.2
 - Integrate mock api calls with actual backend v0.0.3
 - Implement security with login and registration pages v0.0.4
+- Check empty state for everything once integrations are done (per page basis)
 ---
 
 ### Version History

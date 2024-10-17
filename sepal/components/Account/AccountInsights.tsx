@@ -1,6 +1,13 @@
 import React from "react";
 import {formatNumberForDisplay} from "@/lib/functions";
 
+/**
+ * Renders an account's insights
+ *
+ * @param insights account insights
+ * @author Stephen Prizio
+ * @version 0.0.1
+ */
 export default function AccountInsights(
   {
     insights,

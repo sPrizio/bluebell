@@ -83,6 +83,8 @@ export function resolveIcon(iconCode: string, className = '', iconSize = 24) {
       return <IconMountain className={className} size={iconSize}/>;
     case Icons.Transactions:
       return <IconArrowsRightLeft className={className} size={iconSize}/>;
+    case Icons.Trades:
+      return <IconReplaceFilled className={className} size={iconSize} />;
     default:
       return null;
   }

@@ -88,11 +88,27 @@ interface AccountInsights extends GenericApiType {
 }
 
 // TODO: implement on backend
+interface AccountStatistics extends GenericApiType {
+  balance: number,
+  averageProfit: number,
+  averageLoss: number,
+  numberOfTrades: number,
+  rrr: number,
+  lots: number,
+  expectancy: number,
+  winPercentage: number,
+  profitFactor: number,
+  retention: number,
+  sharpeRatio: number;
+}
+
+// TODO: implement on backend
 interface AccountDetails extends GenericApiType {
   account: Account,
   consistency: number,
   equity: Array<AccountEquityPoint>,
-  insights: AccountInsights
+  insights: AccountInsights,
+  statistics: AccountStatistics
 }
 
 interface Transaction extends GenericApiType {

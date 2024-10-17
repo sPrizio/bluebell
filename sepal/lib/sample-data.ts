@@ -291,6 +291,20 @@ export const accountDetails: AccountDetails = {
   uid: '1239',
   account: accounts[0],
   consistency: 51,
+  statistics: {
+    uid: '3568',
+    balance: 30987.65,
+    lots: 78.9,
+    averageProfit: 185.32,
+    averageLoss: 91.87,
+    numberOfTrades: 189,
+    rrr: 2.31,
+    expectancy: 18.54,
+    winPercentage: 51,
+    profitFactor: 1.54,
+    retention: 65,
+    sharpeRatio: 0.31
+  },
   insights: {
     uid: '3344',
     tradingDays: 31,

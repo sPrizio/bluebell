@@ -12,10 +12,12 @@ import {Switch} from "@/components/ui/switch";
 import {Label} from "@/components/ui/label";
 import SimpleBanner from "@/components/Banner/SimpleBanner";
 import {delay} from "@/lib/functions";
-import {accountDetails} from "@/lib/sample-data";
+import {accountDetails, tradeRecords} from "@/lib/sample-data";
 import AccountEquityChart from "@/components/Chart/AccountEquityChart";
 import {Progress} from "@/components/ui/progress";
 import AccountInsights from "@/components/Account/AccountInsights";
+import AccountStatistics from "@/components/Account/AccountStatistics";
+import TradeRecordTable from "@/components/Table/trade/TradeRecordTable";
 
 /**
  * Renders the account details layout
@@ -167,7 +169,8 @@ export default function AccountDetails(
                 cardContent={
                   <div className={'grid grid-cols-1 items-center justify-end gap-2'}>
                     <div className={'flex items-center justify-end gap-2'}>
-                      Consistency Score: <span className={'font-bold text-' + computeConsistencyColor()}>{computeConsistencyStatus()}&nbsp;&nbsp;({accDetails?.consistency ?? 0}%)</span>
+                      Consistency Score: <span
+                      className={'font-bold text-' + computeConsistencyColor()}>{computeConsistencyStatus()}&nbsp;&nbsp;({accDetails?.consistency ?? 0}%)</span>
                     </div>
                     <div>
                       <Progress
@@ -180,10 +183,12 @@ export default function AccountDetails(
                       <div className={intervalStyles + ' basis-[34%] bg-primaryRed border-primaryRed text-primaryRed'}>
                         &lt;&nbsp;35%
                       </div>
-                      <div className={intervalStyles + ' basis-[40%] bg-primaryYellow border-primaryYellow text-primaryYellow'}>
+                      <div
+                        className={intervalStyles + ' basis-[40%] bg-primaryYellow border-primaryYellow text-primaryYellow'}>
                         35-75%
                       </div>
-                      <div className={intervalStyles + ' basis-[26%] bg-primaryGreen border-primaryGreen text-primaryGreen'}>
+                      <div
+                        className={intervalStyles + ' basis-[26%] bg-primaryGreen border-primaryGreen text-primaryGreen'}>
                         &gt;&nbsp;75%
                       </div>
                     </div>
@@ -215,21 +220,24 @@ export default function AccountDetails(
         }
       </div>
       <div className={'xl:col-span-2'}>
-        <BaseCard
-          loading={isLoading}
-          title={'Statistics'}
-          subtitle={'A look some of this account\'s key statistical measures for performance.'}
-          cardContent={<p>Statistics: equity, average profit, average loss, balance, no of trades, average RRR, lots,
-            expectancy, win
-            rate, profit factor, retention, sharpe ratio</p>}
-        />
+        {
+          accDetails?.statistics ?
+            <BaseCard
+              loading={isLoading}
+              title={'Statistics'}
+              subtitle={'A look some of this account\'s key statistical measures for performance.'}
+              cardContent={<AccountStatistics statistics={accDetails.statistics} />}
+            />
+            :
+            null
+        }
       </div>
       <div className={'xl:col-span-2 flex justify-end'}>
         <BaseCard
           loading={isLoading}
           title={'Performance'}
-          subtitle={'A look at this account\'s daily performance.'}
-          cardContent={<p>trade record summary (daily)</p>}
+          subtitle={'A look at this account\'s recent daily performance.'}
+          cardContent={<TradeRecordTable records={tradeRecords} />}
         />
       </div>
       <div className={'sm:col-span-1 lg:col-span-2 xl:col-span-4'}>
