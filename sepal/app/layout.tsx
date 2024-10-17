@@ -1,13 +1,10 @@
 import type {Metadata} from "next";
 import "./globals.css";
-import SidebarNavigation from "@/components/Navigation/SidebarNavigation";
 import {Inter as FontSans} from "next/font/google"
 import {cn} from "@/lib/utils";
 import React from "react";
-import {resolveIcon} from "@/lib/functions";
-import {Icons} from "@/lib/enums";
-import Footer from "@/components/Footer/Footer";
 import {Toaster} from "@/components/ui/toaster";
+import AdminPanelLayout from "@/components/ui/admin-panel/admin-panel-layout";
 
 const fontSans = FontSans({
   subsets: ["latin"],
@@ -20,45 +17,6 @@ export const metadata: Metadata = {
     "The system will aim to track trades through each day, offer basic insights and helpful news as well as a place to manage trading accounts. Additionally, bluebell offers basic " +
     "charting capabilities for back-testing and custom strategies that leverage real-world data to establish a successful trading system that can be used to execute mechanical systems trades",
 };
-
-const linkStyles = "h-6 w-6 flex-shrink-0";
-const links = [
-  {
-    label: 'Dashboard',
-    href: "/dashboard",
-    icon: resolveIcon(Icons.Dashboard, linkStyles)
-  },
-  {
-    label: "Accounts",
-    href: "/accounts",
-    icon: resolveIcon(Icons.AccountOverview, linkStyles),
-  },
-  {
-    label: "My Profile",
-    href: "/profile",
-    icon: resolveIcon(Icons.UserProfile, linkStyles),
-  },
-  {
-    label: "Market News",
-    href: "/market-news",
-    icon: resolveIcon(Icons.MarketNews, linkStyles),
-  },
-  {
-    label: "Performance",
-    href: "/performance",
-    icon: resolveIcon(Icons.Performance, linkStyles),
-  },
-  {
-    label: "Transactions",
-    href: "/transactions",
-    icon: resolveIcon(Icons.Transactions, linkStyles),
-  },
-  {
-    label: "Logout",
-    href: "/logout",
-    icon: resolveIcon(Icons.Logout, linkStyles),
-  },
-];
 
 /**
  * The root layout design
@@ -75,21 +33,11 @@ export default function RootLayout({
 
   return (
     <html lang="en">
-      <body className={cn("min-h-screen font-sans antialiased text-slate-600 bg-neutral-100 tracking-tighter", fontSans.variable)}>
-      <div className={"flex flex-row"}>
-        <div className={""}>
-          <SidebarNavigation variant={'primary'} links={links}/>
-        </div>
-        <div className={"flex-1 flex flex-col items-center justify-start"}>
-          <div className={"w-5/6 2xl:w-4/5 max-w-[1440px] min-h-5/6 py-8"}>
-            {children}
-          </div>
-          <div className={"w-full mt-auto"}>
-            <Footer />
-          </div>
-        </div>
-      </div>
-      <Toaster />
+      <body className={cn("min-h-screen font-sans antialiased text-slate-600 bg-[#f6f8fb] tracking-tighter", fontSans.variable)}>
+      <AdminPanelLayout>
+        {children}
+        <Toaster />
+      </AdminPanelLayout>
       </body>
     </html>
   );

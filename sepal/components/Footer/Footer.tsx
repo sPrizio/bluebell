@@ -6,7 +6,7 @@ export default function Footer() {
   //  RENDER
 
   return (
-    <div className={'bg-white p-8 text-center text-sm border-t border-neutral-200'}>
+    <div className={'bg-transparent pt-8 pb-12 text-center text-sm'}>
       <strong className={'text-primary'}>&nbsp;bluebell&nbsp;</strong>&copy;&nbsp;2024
       <br />
       All Rights Reserved

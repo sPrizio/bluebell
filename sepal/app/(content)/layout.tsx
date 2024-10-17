@@ -4,6 +4,7 @@ import React, {useState} from "react";
 import {SepalPageInfoContext} from "@/lib/context/SepalContext";
 import PageHeaderSection from "@/components/Section/PageHeaderSection";
 import {ScrollArea} from "@/components/ui/scroll-area";
+import {ContentLayout} from "@/components/ui/admin-panel/content-layout";
 
 /**
  * Generic layout for content pages
@@ -30,18 +31,19 @@ export default function ContentPageLayout(
 
   return (
     <SepalPageInfoContext.Provider value={{ pageTitle, pageSubtitle, pageIconCode, breadcrumbs, setPageTitle, setPageSubtitle, setPageIconCode, setBreadcrumbs }}>
-      <div className={"block"}>
-        <PageHeaderSection
-          title={pageTitle}
-          subtitle={pageSubtitle}
-          iconCode={pageIconCode}
-          breadcrumbs={breadcrumbs}
-        />
-        <ScrollArea className={`block h-[77vh] w-full [mask-image:linear-gradient(#000_85%,transparent_95%)]`}>
-          {children}
-          <div className={'h-[8vh]'} />
-        </ScrollArea>
-      </div>
+      <ContentLayout title={''}>
+        <div className={""}>
+          <PageHeaderSection
+            title={pageTitle}
+            subtitle={pageSubtitle}
+            iconCode={pageIconCode}
+            breadcrumbs={breadcrumbs}
+          />
+          <div className={''}>
+            {children}
+          </div>
+        </div>
+      </ContentLayout>
     </SepalPageInfoContext.Provider>
   )
 }

@@ -69,9 +69,13 @@ export default function DashboardContent(
         </div>
         &nbsp;
       </div>
-      <div className={"flex items-center justify-center w-1/4"}>
-        <span className={'text-primary'}>{icon}</span>
-      </div>
+      {
+        icon ?
+          <div className={"flex items-center justify-center w-1/4"}>
+            <span className={'text-primary'}>{icon}</span>
+          </div>
+          : null
+      }
     </div>
   )
 }

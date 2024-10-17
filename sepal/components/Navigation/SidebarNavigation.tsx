@@ -35,19 +35,21 @@ export default function SidebarNavigation(
 
   return (
     <div
-      className={cn("rounded-md flex flex-col md:flex-row bg-white w-full flex-1 max-w-7xl mx-auto border border-neutral-200 overflow-hidden h-screen")}>
+      className={cn("z-1000 rounded-md flex flex-col md:flex-row bg-white w-full flex-1 max-w-7xl mx-auto border border-neutral-200 overflow-hidden h-screen")}>
       <Sidebar open={open} setOpen={setOpen}>
-        <SidebarBody className="justify-between gap-10">
+        <SidebarBody className="justify-between gap-10 z-1000">
           <div className="flex flex-col flex-1 overflow-y-auto overflow-x-hidden">
             {open ? <Logo variant={variant}/> : <LogoIcon/>}
             <div className="mt-8 flex flex-col gap-2 mb-auto">
-              {links && links.length && links.map((link, idx) => {
+              {
+                links?.map((link, idx) => {
                   return (
                     <SidebarNavigationLink key={idx} label={link.label} href={link.href} icon={link.icon} open={open}
                                            animate={true} active={link.href === pathName}/>
                   );
                 }
-              )}
+              ) ?? null
+              }
             </div>
             <div>
               <small>

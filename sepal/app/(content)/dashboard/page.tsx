@@ -49,31 +49,34 @@ export default function DashboardPage() {
   //  RENDER
 
   return (
-    <div className={'grid grid-cols-1 gap-16 w-full'}>
+    <div className={'grid grid-cols-1 gap-8 w-full'}>
       <div className={"grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-8"}>
         <div className={""}>
           <BaseCard
             title={'Net Worth'}
-            cardContent={<DashboardContent prefix={'$'} value={40000} delta={3.48}
-                                           icon={resolveIcon(Icons.ChartDoughnut, '', 40)}/>}
+            cardContent={<DashboardContent prefix={'$'} value={40000} delta={3.48}/>}
+            icon={resolveIcon(Icons.ChartDoughnut, '', 30)}
           />
         </div>
         <div className={""}>
           <BaseCard
             title={'Trades'}
-            cardContent={<DashboardContent value={650} delta={12} icon={resolveIcon(Icons.Replace, '', 40)}/>}
+            cardContent={<DashboardContent value={650} delta={12}/>}
+            icon={resolveIcon(Icons.Replace, '', 30)}
           />
         </div>
         <div>
           <BaseCard
             title={'Deposits'}
-            cardContent={<DashboardContent value={336} delta={20.4} icon={resolveIcon(Icons.ArrowBarDown, '', 40)}/>}
+            cardContent={<DashboardContent value={336} delta={20.4}/>}
+            icon={resolveIcon(Icons.ArrowBarDown, '', 30)}
           />
         </div>
         <div>
           <BaseCard
             title={'Withdrawals'}
-            cardContent={<DashboardContent value={18} delta={-1.10} icon={resolveIcon(Icons.ArrowBarUp, '', 40)}/>}
+            cardContent={<DashboardContent value={18} delta={-1.10}/>}
+            icon={resolveIcon(Icons.ArrowBarUp, '', 30)}
           />
         </div>
       </div>

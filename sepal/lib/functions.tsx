@@ -5,13 +5,12 @@ import {
   IconArrowNarrowLeft,
   IconArrowNarrowRight,
   IconArrowNarrowUp,
-  IconArrowsDiff,
   IconArrowsRightLeft,
   IconChartDonutFilled,
-  IconChartLine,
   IconChartPie,
+  IconChartScatter,
   IconLayoutDashboard,
-  IconLogout2,
+  IconLogout,
   IconMountain,
   IconNews,
   IconReplaceFilled,
@@ -59,9 +58,9 @@ export function resolveIcon(iconCode: string, className = '', iconSize = 24) {
     case Icons.MarketNews:
       return <IconNews className={className} size={iconSize}/>;
     case Icons.Performance:
-      return <IconChartLine className={className} size={iconSize}/>;
+      return <IconChartScatter className={className} size={iconSize}/>;
     case Icons.Logout:
-      return <IconLogout2 className={className} size={iconSize}/>;
+      return <IconLogout className={className} size={iconSize}/>;
     case Icons.ArrowUp:
       return <IconArrowNarrowUp className={className} size={iconSize}/>;
     case Icons.ArrowRight:
@@ -83,7 +82,7 @@ export function resolveIcon(iconCode: string, className = '', iconSize = 24) {
     case Icons.Mountain:
       return <IconMountain className={className} size={iconSize}/>;
     case Icons.Transactions:
-      return <IconArrowsDiff className={className} size={iconSize}/>;
+      return <IconArrowsRightLeft className={className} size={iconSize}/>;
     default:
       return null;
   }

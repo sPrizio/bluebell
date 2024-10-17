@@ -20,6 +20,7 @@ export function BaseCard(
     cardContent = null,
     headerControls = [],
     footerControls = [],
+    icon = null,
     loading = false,
   }
     : Readonly<{
@@ -28,6 +29,7 @@ export function BaseCard(
     cardContent?: React.ReactNode,
     headerControls?: Array<React.ReactNode>,
     footerControls?: Array<React.ReactNode>
+    icon?: React.ReactNode,
     loading?: boolean,
   }>
 ) {
@@ -50,7 +52,7 @@ export function BaseCard(
           <Card className={'w-full'}>
             {
               title && title.length > 0 ?
-                <CardHeader className={'pb-4'}>
+                <CardHeader className={'pb-2'}>
                   <div className={"flex flex-row gap-4 items-start w-full"}>
                     <div className={"flex-1"}>
                       <CardTitle>{title}</CardTitle>
@@ -63,11 +65,14 @@ export function BaseCard(
                         )
                       })
                     }
+                    {
+                      icon ? <div className={'text-primary'}>{icon}</div> : null
+                    }
                   </div>
                 </CardHeader>
                 : <div className={'p-6'}/>
             }
-            <CardContent className={'pb-4'}>
+            <CardContent className={'pb-2'}>
               {cardContent || <p className={'text-slate-400 text-center'}>No data present.</p>}
             </CardContent>
             {
