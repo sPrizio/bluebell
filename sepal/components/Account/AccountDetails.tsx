@@ -3,7 +3,7 @@
 import React, {useEffect, useState} from "react";
 import BaseModal from "@/components/Modal/BaseModal";
 import {Button} from "@/components/ui/button";
-import {IconEdit, IconTrash} from "@tabler/icons-react";
+import {IconEdit, IconExternalLink, IconTrash} from "@tabler/icons-react";
 import AccountForm from "@/components/Form/account/AccountForm";
 import DeleteAccountForm from "@/components/Form/account/DeleteAccountForm";
 import {BaseCard} from "@/components/Card/BaseCard";
@@ -12,12 +12,14 @@ import {Switch} from "@/components/ui/switch";
 import {Label} from "@/components/ui/label";
 import SimpleBanner from "@/components/Banner/SimpleBanner";
 import {delay} from "@/lib/functions";
-import {accountDetails, tradeRecords} from "@/lib/sample-data";
+import {accountDetails, tradeRecords, trades} from "@/lib/sample-data";
 import AccountEquityChart from "@/components/Chart/AccountEquityChart";
 import {Progress} from "@/components/ui/progress";
 import AccountInsights from "@/components/Account/AccountInsights";
 import AccountStatistics from "@/components/Account/AccountStatistics";
 import TradeRecordTable from "@/components/Table/trade/TradeRecordTable";
+import TradeTable from "@/components/Table/trade/TradeTable";
+import Link from "next/link";
 
 /**
  * Renders the account details layout
@@ -213,7 +215,7 @@ export default function AccountDetails(
               loading={isLoading}
               title={'Insights'}
               subtitle={'A quick look at some of the key markers of this account\'s performance.'}
-              cardContent={<AccountInsights insights={accDetails.insights} />}
+              cardContent={<AccountInsights insights={accDetails.insights}/>}
             />
             :
             null
@@ -226,7 +228,7 @@ export default function AccountDetails(
               loading={isLoading}
               title={'Statistics'}
               subtitle={'A look some of this account\'s key statistical measures for performance.'}
-              cardContent={<AccountStatistics statistics={accDetails.statistics} />}
+              cardContent={<AccountStatistics statistics={accDetails.statistics}/>}
             />
             :
             null
@@ -237,15 +239,27 @@ export default function AccountDetails(
           loading={isLoading}
           title={'Performance'}
           subtitle={'A look at this account\'s recent daily performance.'}
-          cardContent={<TradeRecordTable records={tradeRecords} />}
+          cardContent={<TradeRecordTable records={tradeRecords}/>}
         />
       </div>
       <div className={'sm:col-span-1 lg:col-span-2 xl:col-span-4'}>
         <BaseCard
           loading={isLoading}
           title={'Trades'}
-          subtitle={'A view of each trade taken in this account'}
-          cardContent={<p>Trades log</p>}
+          subtitle={'A view of each trade taken in this account.'}
+          headerControls={[
+            <Link key={0} href={'/trades'}>
+              <Button className="" variant={"outline"}><IconExternalLink/>&nbsp;View All Trades</Button>
+            </Link>
+          ]}
+          cardContent={
+            <TradeTable
+              trades={trades}
+              totalElements={trades.length}
+              page={0}
+              pageSize={10}
+            />
+          }
         />
       </div>
     </div>

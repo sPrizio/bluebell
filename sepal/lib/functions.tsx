@@ -144,7 +144,7 @@ export function formatNegativePoints(val: number) {
     return '(' + formatNumberForDisplay(Math.abs(val)) + ')'
   }
 
-  return val
+  return formatNumberForDisplay(val)
 }
 
 /**
