@@ -30,16 +30,18 @@ export default function PageHeaderSection(
   //  RENDER
 
   return (
-    <div className={'flex items-center w-full pb-12'}>
-      <div className={'mr-6 bg-primary text-white p-4 rounded-lg'}>
-        {resolveIcon(iconCode, undefined, DEFAULT_PAGE_HEADER_SECTION_ICON_SIZE)}
+    <div className={'grid grid-cols-1 lg:grid-cols-2 gap-6 items-center pb-12'}>
+      <div className={'flex items-center'}>
+        <div className={'mr-6 bg-primary text-white p-4 rounded-lg'}>
+          {resolveIcon(iconCode, undefined, DEFAULT_PAGE_HEADER_SECTION_ICON_SIZE)}
+        </div>
+        <div className={''}>
+          <div className={'text-slate-700 text-xl lg:text-2xl font-bold'}>{title}</div>
+          <div className={'text-slate-700 text-sm lg:text-md'}>{subtitle}</div>
+        </div>
       </div>
-      <div className={'mr-6'}>
-        <div className={'text-slate-700 text-2xl font-bold'}>{title}</div>
-        <div className={'text-slate-700 text-md'}>{subtitle}</div>
-      </div>
-      <div className={'flex flex-1 justify-end'}>
-        <Breadcrumbs links={breadcrumbs} />
+      <div className={'flex items-center justify-end'}>
+        <Breadcrumbs links={breadcrumbs}/>
       </div>
     </div>
   )

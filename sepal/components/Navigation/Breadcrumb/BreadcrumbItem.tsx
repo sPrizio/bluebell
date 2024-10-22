@@ -24,24 +24,26 @@ export default function BreadcrumbItem(
   }>
 ) {
 
+  const size = ' text-xs lg:text-sm '
+
 
   //  RENDER
 
   let html =
     <Link href={href?.toLowerCase() === '/home' ? '/dashboard' : href} className={"inline-block [&:not(:first-child)]:ml-4 font-medium"}>
-      <span className={'text-sm ' + (!isLast ? 'mr-4' : '') + (active ? ' text-primary font-bold ' : '')}>
+      <span className={size + (!isLast ? 'mr-4' : '') + (active ? ' text-primary font-bold ' : '')}>
         {label}
       </span>
-      {!isLast ? <span>/</span> : null}
+      {!isLast ? <span className={size}>/</span> : null}
     </Link>
 
   if (active) {
     return (
       <div className={"inline-block [&:not(:first-child)]:ml-4 font-medium"}>
-        <span className={'text-sm ' + (!isLast ? 'mr-4' : '') + (active ? ' text-primary font-bold ' : '')}>
+        <span className={size + (!isLast ? 'mr-4' : '') + (active ? ' text-primary font-bold ' : '')}>
           {label}
         </span>
-        {!isLast ? <span>/</span> : null}
+        {!isLast ? <span className={size}>/</span> : null}
       </div>
     )
   } else {

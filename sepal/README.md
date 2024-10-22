@@ -11,22 +11,23 @@ Current Release: **Pre-release**
 - Dashboard
 - ALP
 - ADP
+- Transactions
 
 ### Integrated Pages
 None
 
 ### Pages In Progress or Not Started
-- Profile
-- Market News
 - Performance
-- Transactions
-- Login
 - Trades
+- Market News
+- Profile
+- Login
 
 ---
 
 ### Todo List
 - Work through static and integration pages v0.0.1
+- Deploy static site?
 - Set up mock api calls with expected data returns v0.0.2
 - Integrate mock api calls with actual backend v0.0.3
 - Implement security with login and registration pages v0.0.4

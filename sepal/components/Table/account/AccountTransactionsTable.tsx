@@ -20,6 +20,7 @@ import {
 } from "@/components/ui/dropdown-menu"
 import TransactionForm from "@/components/Form/transaction/TransactionForm";
 import BaseModal from "@/components/Modal/BaseModal";
+import DeleteTransactionForm from "@/components/Form/transaction/DeleteTransactionForm";
 
 
 /**
@@ -52,7 +53,6 @@ export default function AccountTransactionsTable(
   const [transaction, setTransaction] = useState<Transaction>()
 
   useEffect(() => {
-    console.log('show', showModal)
     if (showModal === 'edit') {
       setModalActive(true)
     } else if (showModal === 'none') {
@@ -169,10 +169,24 @@ export default function AccountTransactionsTable(
         transaction && transaction.date ?
           <BaseModal
             isOpen={modalActive && showModal === 'edit'}
-            key={0}
             title={'Edit Transaction'}
             description={'Keep track of your account\'s transactions by adding withdrawals & deposits.'}
             content={<TransactionForm account={account} mode={'edit'} transaction={transaction}/>}
+            closeHandler={() => {
+              if (showModal !== 'none' && modalActive) {
+                setShowModal('none');
+              }
+            }
+          }
+          /> : null
+      }
+      {
+        transaction && transaction.date ?
+          <BaseModal
+            isOpen={modalActive && showModal === 'delete'}
+            title={'Edit Transaction'}
+            description={'Keep track of your account\'s transactions by adding withdrawals & deposits.'}
+            content={<DeleteTransactionForm account={account} transaction={transaction} />}
             closeHandler={() => {
               if (showModal !== 'none' && modalActive) {
                 setShowModal('none');

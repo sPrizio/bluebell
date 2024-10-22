@@ -1,26 +1,29 @@
 'use client'
 
-import {Button} from "@/components/ui/button";
-import {Loader2} from "lucide-react";
 import {useEffect, useState} from "react";
 import {useSepalModalContext} from "@/lib/context/SepalContext";
-import {delay} from "@/lib/functions";
+import {useRouter} from "next/navigation";
 import {toast} from "@/hooks/use-toast";
-import {useRouter} from 'next/navigation'
+import {delay} from "@/lib/functions";
+import {Button} from "@/components/ui/button";
+import {Loader2} from "lucide-react";
 
 /**
- * Renders a form for deleting accounts
+ * Renders a form for deleting transactions
  *
  * @param account account
+ * @param transaction
  * @author Stephen Prizio
  * @version 0.0.1
  */
-export default function DeleteAccountForm(
+export default function DeleteTransactionForm(
   {
     account,
+    transaction
   }
     : Readonly<{
     account: Account,
+    transaction: Transaction
   }>
 ) {
 
@@ -34,7 +37,7 @@ export default function DeleteAccountForm(
       toast(
         {
           title: 'Deletion Successful!',
-          description: 'Your trading account was successfully deleted.',
+          description: 'The transaction was successfully deleted.',
           variant: 'success'
         }
       )
@@ -42,7 +45,7 @@ export default function DeleteAccountForm(
       toast(
         {
           title: 'Deletion Failed!',
-          description: 'An error occurred while deleting your trading account. Please try again.',
+          description: 'An error occurred while updating the transaction. Please try again.',
           variant: 'danger'
         }
       )
@@ -53,17 +56,17 @@ export default function DeleteAccountForm(
   //  GENERAL FUNCTIONS
 
   /**
-   * Deletes the account
+   * Deletes the transaction
    */
   async function handleDelete() {
 
     setIsLoading(true)
-    await delay(4000);
+    await delay(4000)
     setIsLoading(false)
 
     setSuccess('success')
     setOpen(false)
-    router.push('/accounts')
+    router.push(`/transactions?account=${account.accountNumber}`)
   }
 
 
@@ -71,7 +74,7 @@ export default function DeleteAccountForm(
 
   return (
     <div>
-      <div className={'mb-3'}>Are you sure you want to delete this account? This action cannot be undone.</div>
+      <div className={'mb-3'}>Are you sure you want to delete this transaction? This action cannot be undone.</div>
       <div className={'flex w-full justify-end items-center gap-4'}>
         <Button type="submit" className={'bg-primaryRed hover:bg-primaryRedLight text-white'} disabled={isLoading} onClick={handleDelete}>
           {isLoading ? <Loader2 className="mr-2 h-4 w-4 animate-spin"/> : null}
