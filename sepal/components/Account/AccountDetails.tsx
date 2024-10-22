@@ -3,7 +3,7 @@
 import React, {useEffect, useState} from "react";
 import BaseModal from "@/components/Modal/BaseModal";
 import {Button} from "@/components/ui/button";
-import {IconEdit, IconExternalLink, IconTrash} from "@tabler/icons-react";
+import {IconCirclePlus, IconEdit, IconExternalLink, IconPlus, IconTrash} from "@tabler/icons-react";
 import AccountForm from "@/components/Form/account/AccountForm";
 import DeleteAccountForm from "@/components/Form/account/DeleteAccountForm";
 import {BaseCard} from "@/components/Card/BaseCard";
@@ -126,6 +126,18 @@ export default function AccountDetails(
       </div>
       <div className={'sm:col-span-1 lg:col-span-2 xl:col-span-4'}>
         <div className={'flex gap-4 items-center justify-end'}>
+          {
+            (account?.active ?? false) ?
+              <div className={''}>
+                <BaseModal
+                  key={0}
+                  title={'Import Trades'}
+                  description={'Here you may manually import trades into the account for tracking.'}
+                  trigger={<Button className="" variant={"primary"}><IconCirclePlus/>&nbsp;Import Trades</Button>}
+                  content={<AccountForm mode={'edit'} account={account}/>}
+                />
+              </div> : null
+          }
           <div className={''}>
             <BaseModal
               key={0}
@@ -159,6 +171,11 @@ export default function AccountDetails(
                   <div key={0} className="flex items-center space-x-2">
                     <Label htmlFor="airplane-mode">Show as Points</Label>
                     <Switch id="airplane-mode" checked={showPoints} onCheckedChange={setShowPoints}/>
+                  </div>,
+                  <div key={1}>
+                    <Link href={`/transactions?account=${account?.accountNumber}`}>
+                      <Button variant={'outline'}><IconExternalLink size={18}/>&nbsp;Transactions</Button>
+                    </Link>
                   </div>
                 ]}
               />
@@ -240,6 +257,11 @@ export default function AccountDetails(
           title={'Performance'}
           subtitle={'A look at this account\'s recent daily performance.'}
           cardContent={<TradeRecordTable records={tradeRecords}/>}
+          headerControls={[
+            <Link key={0} href={`/performance?account=${account?.accountNumber}`}>
+              <Button className="" variant={"outline"}><IconExternalLink size={18}/>&nbsp;View Full Performance</Button>
+            </Link>
+          ]}
         />
       </div>
       <div className={'sm:col-span-1 lg:col-span-2 xl:col-span-4'}>
@@ -248,8 +270,8 @@ export default function AccountDetails(
           title={'Trades'}
           subtitle={'A view of each trade taken in this account.'}
           headerControls={[
-            <Link key={0} href={'/trades'}>
-              <Button className="" variant={"outline"}><IconExternalLink/>&nbsp;View All Trades</Button>
+            <Link key={0} href={`/trades?account=${account?.accountNumber}`}>
+              <Button className="" variant={"outline"}><IconExternalLink size={18}/>&nbsp;View All Trades</Button>
             </Link>
           ]}
           cardContent={

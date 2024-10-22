@@ -1790,3 +1790,26 @@ export const trades: Array<Trade> = [
     account: accounts[0]
   },
 ]
+
+export const phoneNumbers: Array<PhoneNumber> = [
+  {
+    uid: 'stephen-mobile',
+    phoneType: 'MOBILE',
+    countryCode: '1',
+    telephoneNumber: 5149411025,
+    display: '+1 (514) 941-1025'
+  }
+]
+
+export const sampleUser: User = {
+  uid: 'stephen',
+  apiToken: '1234-stephen',
+  firstName: 'Stephen',
+  lastName: 'Prizio',
+  username: 's.prizio',
+  email: 's.prizio@hotmail.com',
+  dateRegistered: '2024-01-25T01:08:00',
+  phones: phoneNumbers,
+  accounts: accounts,
+  roles: ['ADMIN', 'TRADER'],
+}

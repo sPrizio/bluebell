@@ -87,7 +87,7 @@ export default function TradeTable(
   //  RENDER
 
   return (
-    <div className={'mt-4 pb-2'}>
+    <div className={'mt-4 pb-2 min-h-[450px]'}>
       <Table>
         <TableHeader className={'border-b-2 border-primaryLight'}>
           <TableHead className={'text-center text-primary font-bold'}>Trade Id</TableHead>

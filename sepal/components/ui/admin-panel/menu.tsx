@@ -14,9 +14,20 @@ interface MenuProps {
   isOpen: boolean | undefined;
 }
 
-export function Menu({isOpen}: MenuProps) {
+export function Menu({isOpen}: Readonly<MenuProps>) {
   const pathname = usePathname();
   const menuList = getMenuList(pathname);
+
+  function matchHref(val: string, href: string) {
+    if (href.includes('?')) {
+      return pathname.startsWith(href.substr(0, href.indexOf('?')))
+    }
+
+    return pathname.startsWith(href)
+  }
+
+
+  //  RENDER
 
   return (
     <nav className="mt-8 h-full w-full">
@@ -54,7 +65,7 @@ export function Menu({isOpen}: MenuProps) {
                           <Button
                             variant={
                               (active === undefined &&
-                                pathname.startsWith(href)) ||
+                                matchHref(pathname, href)) ||
                               active
                                 ? "primary"
                                 : "ghost"
@@ -94,11 +105,7 @@ export function Menu({isOpen}: MenuProps) {
                     <CollapseMenuButton
                       icon={Icon}
                       label={label}
-                      active={
-                        active === undefined
-                          ? pathname.startsWith(href)
-                          : active
-                      }
+                      active={active === undefined ? matchHref(pathname, href) : active}
                       submenus={submenus}
                       isOpen={isOpen}
                     />

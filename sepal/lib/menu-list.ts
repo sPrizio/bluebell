@@ -60,7 +60,7 @@ export function getMenuList(pathname: string): Group[] {
           ]*/
         },
         {
-          href: "/transactions",
+          href: "/transactions?account=default",
           label: "Transactions",
           icon: ArrowRightLeft
         },

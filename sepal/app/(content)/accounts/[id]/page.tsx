@@ -4,7 +4,7 @@ import {useSepalPageInfoContext} from "@/lib/context/SepalContext";
 import React, {useEffect, useState} from "react";
 import {Icons} from "@/lib/enums";
 import {useParams, useRouter} from "next/navigation";
-import {isNumeric} from "@/lib/functions";
+import {delay, isNumeric} from "@/lib/functions";
 import {accounts} from "@/lib/sample-data";
 import {Loader2} from "lucide-react";
 import AccountDetails from "@/components/Account/AccountDetails";
@@ -57,7 +57,7 @@ export default function AccountDetailPage() {
   async function getAccount() {
 
     setIsLoading(true)
-    //await delay(2000)
+    await delay(2000)
 
     if (isNumeric(id)) {
       const accountTestId = parseInt(id)

@@ -42,10 +42,10 @@ export function BaseCard(
       {
         loading ?
           <div className="flex flex-col space-y-3">
-            <Skeleton className="h-[175px] w-[350px] rounded-xl"/>
+            <Skeleton className="h-[175px] w-1/2 rounded-xl"/>
             <div className="space-y-2">
-              <Skeleton className="h-4 w-[250px]"/>
-              <Skeleton className="h-4 w-[200px]"/>
+              <Skeleton className="h-4 w-2/5"/>
+              <Skeleton className="h-4 w-1/5"/>
             </div>
           </div>
           :
@@ -58,16 +58,18 @@ export function BaseCard(
                       <CardTitle>{title}</CardTitle>
                       {subtitle && subtitle.length > 0 ? <CardDescription>{subtitle}</CardDescription> : null}
                     </div>
-                    {
-                      headerControls?.map((item, key) => {
-                        return (
-                          <div key={key}>{item}</div>
-                        )
-                      })
-                    }
-                    {
-                      icon ? <div className={'text-primary'}>{icon}</div> : null
-                    }
+                    <div className={'flex items-center gap-4'}>
+                      {
+                        headerControls?.map((item, key) => {
+                          return (
+                            <div key={key}>{item}</div>
+                          )
+                        })
+                      }
+                      {
+                        icon ? <div className={'text-primary'}>{icon}</div> : null
+                      }
+                    </div>
                   </div>
                 </CardHeader>
                 : <div className={'p-6'}/>

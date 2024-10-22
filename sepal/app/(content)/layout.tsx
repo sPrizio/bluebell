@@ -5,6 +5,7 @@ import {SepalPageInfoContext} from "@/lib/context/SepalContext";
 import PageHeaderSection from "@/components/Section/PageHeaderSection";
 import {ScrollArea} from "@/components/ui/scroll-area";
 import {ContentLayout} from "@/components/ui/admin-panel/content-layout";
+import {sampleUser} from "@/lib/sample-data";
 
 /**
  * Generic layout for content pages
@@ -25,12 +26,24 @@ export default function ContentPageLayout(
   const [pageSubtitle, setPageSubtitle] = useState('')
   const [pageIconCode, setPageIconCode] = useState('')
   const [breadcrumbs, setBreadcrumbs] = useState<Array<AppLink>>([])
+  const [user, setUser] = useState<User>(sampleUser)
 
 
   //  RENDER
 
   return (
-    <SepalPageInfoContext.Provider value={{ pageTitle, pageSubtitle, pageIconCode, breadcrumbs, setPageTitle, setPageSubtitle, setPageIconCode, setBreadcrumbs }}>
+    <SepalPageInfoContext.Provider value={{
+      pageTitle,
+      pageSubtitle,
+      pageIconCode,
+      breadcrumbs,
+      user,
+      setPageTitle,
+      setPageSubtitle,
+      setPageIconCode,
+      setBreadcrumbs,
+      setUser
+    }}>
       <ContentLayout title={''}>
         <div className={""}>
           <PageHeaderSection

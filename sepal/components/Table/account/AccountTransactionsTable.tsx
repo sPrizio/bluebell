@@ -1,9 +1,45 @@
+'use client'
+
 import {Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow} from "@/components/ui/table";
 import Link from "next/link";
-import {IconExternalLink, IconPointFilled} from "@tabler/icons-react";
+import {IconEdit, IconExternalLink, IconPointFilled, IconTrash} from "@tabler/icons-react";
 import moment from "moment/moment";
 import {DateTime} from "@/lib/constants";
 import {formatNumberForDisplay} from "@/lib/functions";
+import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from "@/components/ui/select";
+import React, {useState} from "react";
+import {
+  Cloud,
+  CreditCard,
+  Github,
+  Keyboard,
+  LifeBuoy,
+  LogOut,
+  Mail,
+  MessageSquare,
+  Plus,
+  PlusCircle,
+  Settings,
+  User,
+  UserPlus,
+  Users,
+} from "lucide-react"
+
+import { Button } from "@/components/ui/button"
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuGroup,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuPortal,
+  DropdownMenuSeparator,
+  DropdownMenuShortcut,
+  DropdownMenuSub,
+  DropdownMenuSubContent,
+  DropdownMenuSubTrigger,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
 
 /**
  * Renders the account transactions as a table
@@ -15,11 +51,16 @@ import {formatNumberForDisplay} from "@/lib/functions";
 export default function AccountTransactionsTable(
   {
     transactions = [],
+    showActions = false
   }
     : Readonly<{
     transactions: Array<Transaction>,
+    showActions?: boolean
   }>
 ) {
+
+  const [action, setAction] = useState<string>()
+  const [transactionId, setTransactionId] = useState<string>()
 
 
   //  GENERAL FUNCTIONS
@@ -44,16 +85,6 @@ export default function AccountTransactionsTable(
 
   return (
     <Table>
-      <TableCaption>
-        <div className={"flex items-center justify-center gap-1"}>
-          <div className={""}>
-            <Link href={'#'}>View All Transactions</Link>
-          </div>
-          <div className={""}>
-            <Link href={'#'}><IconExternalLink size={18}/></Link>
-          </div>
-        </div>
-      </TableCaption>
       <TableHeader>
         <TableRow className={'hover:bg-transparent'}>
           <TableHead>Date</TableHead>
@@ -61,6 +92,11 @@ export default function AccountTransactionsTable(
           <TableHead className={'text-center'}>Type</TableHead>
           <TableHead className={'text-center'}>Value</TableHead>
           <TableHead className={'text-right'}>Status</TableHead>
+          {
+            showActions ?
+              <TableHead className={'text-right'} />
+              : null
+          }
         </TableRow>
       </TableHeader>
       <TableBody>
@@ -77,6 +113,31 @@ export default function AccountTransactionsTable(
                     {item.status}&nbsp;<span className={'inline-block ' + computeColors(item.status)}><IconPointFilled size={15} /></span>
                   </div>
                 </TableCell>
+                {
+                  showActions ?
+                    <TableCell className={'text-right flex items-center justify-end'}>
+                      <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                          <Button variant="outline">Actions</Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent className="w-48">
+                          <DropdownMenuLabel>Transaction Actions</DropdownMenuLabel>
+                          <DropdownMenuSeparator />
+                          <DropdownMenuGroup>
+                            <DropdownMenuItem className={'hover:cursor-pointer'}>
+                              <IconEdit/>
+                              <span>Edit</span>
+                            </DropdownMenuItem>
+                            <DropdownMenuItem className={'hover:cursor-pointer'}>
+                              <IconTrash/>
+                              <span>Delete</span>
+                            </DropdownMenuItem>
+                          </DropdownMenuGroup>
+                        </DropdownMenuContent>
+                      </DropdownMenu>
+                    </TableCell>
+                    : null
+                }
               </TableRow>
             )
           })

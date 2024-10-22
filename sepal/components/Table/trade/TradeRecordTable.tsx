@@ -1,8 +1,6 @@
-import {Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow} from "@/components/ui/table";
+import {Table, TableBody, TableCell, TableHead, TableHeader, TableRow} from "@/components/ui/table";
 import moment from "moment";
 import {DateTime} from "@/lib/constants";
-import Link from "next/link";
-import {IconExternalLink} from "@tabler/icons-react";
 import React from "react";
 
 /**
@@ -26,16 +24,6 @@ export default function TradeRecordTable(
 
   return (
     <Table>
-      <TableCaption>
-        <div className={"flex items-center justify-center gap-1"}>
-          <div className={""}>
-            <Link href={'/performance'}>View Full Performance</Link>
-          </div>
-          <div className={""}>
-            <Link href={'/performance'}><IconExternalLink size={18}/></Link>
-          </div>
-        </div>
-      </TableCaption>
       <TableHeader className={'border-b-2 border-primaryLight'}>
         <TableHead className={'text-primary font-bold'}>Date</TableHead>
         <TableHead className={'text-center text-primary font-bold'}>Trades</TableHead>
