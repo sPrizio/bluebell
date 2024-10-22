@@ -15,50 +15,69 @@ import {SepalModalContext, useSepalModalContext} from "@/lib/context/SepalContex
 /**
  * Basic, re-usable modal
  *
+ * @param isOpen is open
  * @param trigger component to trigger the modal
  * @param title modal title
+ * @param description subtitle
  * @param content modal content
+ * @param closeHandler custom handler on modal close
  * @author Stephen Prizio
  * @version 0.0.1
  */
 export default function BaseModal(
   {
-    trigger = <Button className={'bg-primary text-white'}>Hello</Button>,
+    isOpen = false,
+    trigger,
     title = '',
     description = '',
     content = null,
+    closeHandler
   }
     : Readonly<{
+    isOpen?: boolean,
     trigger?: ReactNode,
     title: string,
     description?: string,
-    content: ReactNode
+    content: ReactNode,
+    closeHandler?: Function
   }>
 ) {
 
-  const [open, setOpen] = useState(false)
+  const [open, setOpen] = useState(isOpen)
+
+  useEffect(() => {
+    setOpen(isOpen)
+  }, [isOpen]);
+
+  useEffect(() => {
+    if (!open) {
+      if (closeHandler) {
+        closeHandler.call({})
+      }
+    }
+  }, [open]);
 
 
   //  RENDER
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger asChild>
-        {trigger}
-      </DialogTrigger>
+      {
+        trigger ?
+          <DialogTrigger asChild>
+            {trigger}
+          </DialogTrigger> : null
+      }
       <DialogContent>
         <DialogHeader>
           <DialogTitle>{title}</DialogTitle>
           {description ? <DialogDescription>{description}</DialogDescription> : null}
         </DialogHeader>
         <div className="grid gap-4 py-4">
-          <SepalModalContext.Provider value={{ open, setOpen }}>
+          <SepalModalContext.Provider value={{open, setOpen}}>
             {content}
           </SepalModalContext.Provider>
         </div>
-        {/*<DialogFooter>
-          <Button type="submit" className={'bg-primary text-white'}>Save changes</Button>
-        </DialogFooter>*/}
       </DialogContent>
     </Dialog>
   )

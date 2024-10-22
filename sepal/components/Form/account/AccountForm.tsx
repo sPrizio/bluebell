@@ -28,7 +28,7 @@ import {Switch} from "@/components/ui/switch";
 /**
  * Renders a form that can create or update an account
  *
- * @param create should create
+ * @param create should create / edit
  * @param account account info
  * @author Stephen Prizio
  */
@@ -57,7 +57,7 @@ export default function AccountForm(
     if (success === 'success') {
       toast(
         {
-          title: isCreateMode() ? 'Creation Successful!' : 'Update Successful!',
+          title: isCreateMode() ? 'Account Created!' : 'Account Updated!',
           description: isCreateMode() ? 'Your new trading account was successfully created.' : 'Your trading account was updated successfully.',
           variant: 'success'
         }

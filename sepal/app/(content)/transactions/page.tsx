@@ -14,6 +14,7 @@ import {Button} from "@/components/ui/button";
 import {IconCirclePlus} from "@tabler/icons-react";
 import AccountForm from "@/components/Form/account/AccountForm";
 import BaseModal from "@/components/Modal/BaseModal";
+import TransactionForm from "@/components/Form/transaction/TransactionForm";
 
 /**
  * THe page that shows all of a user's account's transactions. Accounts can be cycled
@@ -77,9 +78,9 @@ export default function TransactionsPage() {
   async function getAccount() {
 
     setIsLoading(true)
-    await delay(2000)
 
     //TODO: temp
+    await delay(2000)
     if (accNumber === -1) {
       await getDefaultAccount()
       if (searchParams.get('account') !== 'default') {
@@ -147,21 +148,24 @@ export default function TransactionsPage() {
         </Select>
       </div>
       <div>
-        <BaseCard
-          loading={isLoading}
-          title={'Transactions'}
-          subtitle={'A look at all of your transactions for the given account.'}
-          cardContent={<AccountTransactionsTable transactions={accountTransactions} showActions={true}/>}
-          headerControls={[
-            <BaseModal
-              key={0}
-              title={'Add a New Transaction'}
-              description={'Temp'}
-              trigger={<Button className="w-full text-white"><IconCirclePlus/>&nbsp;Add Transaction</Button>}
-              content={<AccountForm mode={'create'}/>}
-            />
-          ]}
-        />
+        {
+          account && account.accountNumber ?
+            <BaseCard
+              loading={isLoading}
+              title={'Transactions'}
+              subtitle={'A look at all of your transactions for the given account.'}
+              cardContent={<AccountTransactionsTable account={account} transactions={accountTransactions} showActions={true} showBottomLink={false} />}
+              headerControls={[
+                <BaseModal
+                  key={0}
+                  title={'Add a new Transaction'}
+                  description={'Keep track of your account\'s transactions by adding withdrawals & deposits.'}
+                  trigger={<Button className="w-full text-white"><IconCirclePlus/>&nbsp;Add Transaction</Button>}
+                  content={<TransactionForm account={account} mode={'create'}/>}
+                />
+              ]}
+            /> : null
+        }
       </div>
     </div>
   )

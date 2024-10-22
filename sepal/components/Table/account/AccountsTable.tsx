@@ -57,7 +57,7 @@ export default function AccountsTable(
   //  RENDER
 
   return (
-    <div>
+    <div className={'pb-2'}>
       {
         accounts && accounts.length > 0 ?
           <Table>

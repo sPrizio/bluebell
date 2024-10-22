@@ -6,61 +6,61 @@ import {IconEdit, IconExternalLink, IconPointFilled, IconTrash} from "@tabler/ic
 import moment from "moment/moment";
 import {DateTime} from "@/lib/constants";
 import {formatNumberForDisplay} from "@/lib/functions";
-import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from "@/components/ui/select";
-import React, {useState} from "react";
-import {
-  Cloud,
-  CreditCard,
-  Github,
-  Keyboard,
-  LifeBuoy,
-  LogOut,
-  Mail,
-  MessageSquare,
-  Plus,
-  PlusCircle,
-  Settings,
-  User,
-  UserPlus,
-  Users,
-} from "lucide-react"
+import React, {useEffect, useState} from "react";
 
-import { Button } from "@/components/ui/button"
+import {Button} from "@/components/ui/button"
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuGroup,
   DropdownMenuItem,
   DropdownMenuLabel,
-  DropdownMenuPortal,
   DropdownMenuSeparator,
-  DropdownMenuShortcut,
-  DropdownMenuSub,
-  DropdownMenuSubContent,
-  DropdownMenuSubTrigger,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
+import TransactionForm from "@/components/Form/transaction/TransactionForm";
+import BaseModal from "@/components/Modal/BaseModal";
+
 
 /**
  * Renders the account transactions as a table
  *
+ * @param account account
  * @param transactions list of account transactions
- * @author Stephen Prizip
+ * @param showActions shows the modification actions
+ * @param showBottomLink show table caption
+ * @author Stephen Prizio
  * @version 0.0.1
  */
 export default function AccountTransactionsTable(
   {
+    account,
     transactions = [],
-    showActions = false
+    showActions = false,
+    showBottomLink = true
   }
     : Readonly<{
+    account: Account
     transactions: Array<Transaction>,
-    showActions?: boolean
+    showActions?: boolean,
+    showBottomLink?: boolean
   }>
 ) {
 
-  const [action, setAction] = useState<string>()
-  const [transactionId, setTransactionId] = useState<string>()
+  const [modalActive, setModalActive] = useState(false)
+  const [showModal, setShowModal] = useState<'edit' | 'delete' | 'none'>('none')
+  const [transaction, setTransaction] = useState<Transaction>()
+
+  useEffect(() => {
+    console.log('show', showModal)
+    if (showModal === 'edit') {
+      setModalActive(true)
+    } else if (showModal === 'none') {
+      setModalActive(false)
+    } else {
+      setModalActive(true)
+    }
+  }, [showModal]);
 
 
   //  GENERAL FUNCTIONS
@@ -84,65 +84,103 @@ export default function AccountTransactionsTable(
   //  RENDER
 
   return (
-    <Table>
-      <TableHeader>
-        <TableRow className={'hover:bg-transparent'}>
-          <TableHead>Date</TableHead>
-          <TableHead>Account</TableHead>
-          <TableHead className={'text-center'}>Type</TableHead>
-          <TableHead className={'text-center'}>Value</TableHead>
-          <TableHead className={'text-right'}>Status</TableHead>
-          {
-            showActions ?
-              <TableHead className={'text-right'} />
-              : null
-          }
-        </TableRow>
-      </TableHeader>
-      <TableBody>
+    <>
+      <Table>
         {
-          transactions?.map((item) => {
-            return (
-              <TableRow key={item.uid} className={'hover:bg-transparent'}>
-                <TableCell>{moment(item.date).format(DateTime.ISOShortMonthFullDayFormat)}</TableCell>
-                <TableCell>{item.account.name}</TableCell>
-                <TableCell className={'text-center'}>{item.type}</TableCell>
-                <TableCell className={'text-center'}>${formatNumberForDisplay(item.amount)}</TableCell>
-                <TableCell className={'text-right h-full'}>
-                  <div className={'flex items-center justify-end'}>
-                    {item.status}&nbsp;<span className={'inline-block ' + computeColors(item.status)}><IconPointFilled size={15} /></span>
-                  </div>
-                </TableCell>
-                {
-                  showActions ?
-                    <TableCell className={'text-right flex items-center justify-end'}>
-                      <DropdownMenu>
-                        <DropdownMenuTrigger asChild>
-                          <Button variant="outline">Actions</Button>
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent className="w-48">
-                          <DropdownMenuLabel>Transaction Actions</DropdownMenuLabel>
-                          <DropdownMenuSeparator />
-                          <DropdownMenuGroup>
-                            <DropdownMenuItem className={'hover:cursor-pointer'}>
-                              <IconEdit/>
-                              <span>Edit</span>
-                            </DropdownMenuItem>
-                            <DropdownMenuItem className={'hover:cursor-pointer'}>
-                              <IconTrash/>
-                              <span>Delete</span>
-                            </DropdownMenuItem>
-                          </DropdownMenuGroup>
-                        </DropdownMenuContent>
-                      </DropdownMenu>
-                    </TableCell>
-                    : null
-                }
-              </TableRow>
-            )
-          })
+          showBottomLink ?
+            <TableCaption>
+              <div className={"flex items-center justify-center gap-1 pb-2"}>
+                <div className={""}>
+                  <Link href={'/transactions?account=default'}>View All Transactions</Link>
+                </div>
+                <div className={""}>
+                  <Link href={'#'}><IconExternalLink size={18}/></Link>
+                </div>
+              </div>
+            </TableCaption> : null
         }
-      </TableBody>
-    </Table>
+        <TableHeader>
+          <TableRow className={'hover:bg-transparent'}>
+            <TableHead>Date</TableHead>
+            <TableHead>Account</TableHead>
+            <TableHead className={'text-center'}>Type</TableHead>
+            <TableHead className={'text-center'}>Value</TableHead>
+            <TableHead className={'text-right'}>Status</TableHead>
+            {
+              showActions ?
+                <TableHead className={'text-right'}/>
+                : null
+            }
+          </TableRow>
+        </TableHeader>
+        <TableBody>
+          {
+            transactions?.map((item) => {
+              return (
+                <TableRow key={item.uid} className={'hover:bg-transparent'}>
+                  <TableCell>{moment(item.date).format(DateTime.ISOShortMonthFullDayFormat)}</TableCell>
+                  <TableCell>{item.account.name}</TableCell>
+                  <TableCell className={'text-center'}>{item.type}</TableCell>
+                  <TableCell className={'text-center'}>${formatNumberForDisplay(item.amount)}</TableCell>
+                  <TableCell className={'text-right h-full'}>
+                    <div className={'flex items-center justify-end'}>
+                      {item.status}&nbsp;<span className={'inline-block ' + computeColors(item.status)}><IconPointFilled
+                      size={15}/></span>
+                    </div>
+                  </TableCell>
+                  {
+                    showActions ?
+                      <TableCell className={'text-right flex items-center justify-end'}>
+                        <DropdownMenu>
+                          <DropdownMenuTrigger asChild>
+                            <Button variant="outline">Actions</Button>
+                          </DropdownMenuTrigger>
+                          <DropdownMenuContent className="w-48">
+                            <DropdownMenuLabel>Transaction Actions</DropdownMenuLabel>
+                            <DropdownMenuSeparator/>
+                            <DropdownMenuGroup>
+                              <DropdownMenuItem className={'hover:cursor-pointer'} onClick={() => {
+                                setTransaction(item);
+                                setShowModal('edit');
+                              }}>
+                                <IconEdit/>
+                                <span>Edit</span>
+                              </DropdownMenuItem>
+                              <DropdownMenuItem className={'hover:cursor-pointer'} onClick={() => {
+                                setTransaction(item)
+                                setShowModal('delete')
+                              }}>
+                                <IconTrash/>
+                                <span>Delete</span>
+                              </DropdownMenuItem>
+                            </DropdownMenuGroup>
+                          </DropdownMenuContent>
+                        </DropdownMenu>
+                      </TableCell>
+                      : null
+                  }
+                </TableRow>
+              )
+            })
+          }
+        </TableBody>
+      </Table>
+      {
+        transaction && transaction.date ?
+          <BaseModal
+            isOpen={modalActive && showModal === 'edit'}
+            key={0}
+            title={'Edit Transaction'}
+            description={'Keep track of your account\'s transactions by adding withdrawals & deposits.'}
+            content={<TransactionForm account={account} mode={'edit'} transaction={transaction}/>}
+            closeHandler={() => {
+              if (showModal !== 'none' && modalActive) {
+                setShowModal('none');
+              }
+            }
+          }
+          /> : null
+      }
+    </>
   )
 }

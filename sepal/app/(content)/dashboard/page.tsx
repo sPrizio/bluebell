@@ -113,7 +113,7 @@ export default function DashboardPage() {
           <BaseCard
             title={'Transaction Activity'}
             subtitle={'Your most recent account transactions.'}
-            cardContent={<AccountTransactionsTable transactions={accountTransactions}/>}
+            cardContent={<AccountTransactionsTable account={accounts[0]} transactions={accountTransactions}/>}
           />
         </div>
       </div>

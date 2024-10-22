@@ -36,7 +36,7 @@ export default function TradeLogTable(
   return (
     <Table>
       <TableCaption>
-        <div className={"flex items-center justify-center gap-1"}>
+        <div className={"flex items-center justify-center gap-1 pb-2"}>
           <div className={""}>
             <Link href={'/performance'}>View Full Performance</Link>
           </div>
