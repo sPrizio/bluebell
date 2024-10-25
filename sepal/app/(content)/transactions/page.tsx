@@ -3,8 +3,8 @@
 import {useSepalPageInfoContext} from "@/lib/context/SepalContext";
 import React, {useEffect, useState} from "react";
 import {Icons} from "@/lib/enums";
-import {useSearchParams} from 'next/navigation'
-import {delay, isNumeric} from "@/lib/functions";
+import {notFound, useSearchParams} from 'next/navigation'
+import {delay, getAccount, getDefaultAccount, isNumeric} from "@/lib/functions";
 import {accounts, accountTransactions} from "@/lib/sample-data";
 import {useToast} from "@/hooks/use-toast";
 import {BaseCard} from "@/components/Card/BaseCard";
@@ -28,7 +28,7 @@ export default function TransactionsPage() {
   const searchParams = useSearchParams()
   const [isLoading, setIsLoading] = useState(false)
   const [accNumber, setAccNumber] = useState(getAccountNumber())
-  const [account, setAccount] = useState<Account>()
+  const [account, setAccount] = useState<Account | null>()
 
   const {
     pageTitle,
@@ -43,6 +43,23 @@ export default function TransactionsPage() {
     setUser
   } = useSepalPageInfoContext()
 
+  const acc = getAccount(accNumber, user.accounts)
+  if (!acc) {
+    return notFound()
+  }
+
+  useEffect(() => {
+    setPageTitle('Transactions')
+    setPageSubtitle('A list of transactions for trading account ' + accNumber)
+    setPageIconCode(Icons.Transactions)
+    setBreadcrumbs([
+      {label: 'Dashboard', href: '/dashboard', active: false},
+      {label: 'Accounts', href: '/accounts', active: false},
+      {label: accNumber.toString(), href: '/accounts/' + accNumber, active: false},
+      {label: 'Transactions', href: '/transactions', active: true},
+    ])
+  }, [])
+
   useEffect(() => {
     setPageTitle('Transactions')
     setPageSubtitle('A list of transactions for trading account ' + accNumber)
@@ -54,8 +71,9 @@ export default function TransactionsPage() {
       {label: 'Transactions', href: '/transactions', active: true},
     ])
 
-    getAccount()
-  }, [accNumber])
+    setAccNumber(accNumber)
+    setAccount(getAccount(accNumber, user.accounts))
+  }, [accNumber]);
 
 
   //  GENERAL FUNCTIONS
@@ -70,60 +88,6 @@ export default function TransactionsPage() {
     }
 
     return -1
-  }
-
-  /**
-   * Fetches the associated account information
-   */
-  async function getAccount() {
-
-    setIsLoading(true)
-
-    //TODO: temp
-    await delay(2000)
-    if (accNumber === -1) {
-      await getDefaultAccount()
-      if (searchParams.get('account') !== 'default') {
-        toast({
-          title: 'Invalid Account Number',
-          description: `The account number ${accNumber} is not valid. Returning the default account.`,
-          variant: 'danger'
-        })
-      }
-    } else {
-      for (let acc of accounts) {
-        if (acc.accountNumber === accNumber) {
-          setAccount(acc)
-          setAccNumber(acc.accountNumber)
-          setIsLoading(false)
-          return
-        }
-      }
-
-      // no account found
-      await getDefaultAccount()
-      toast({
-        title: 'Account Not Found',
-        description: `No account was found with the account number ${accNumber}. Returning the default account.`,
-        variant: 'warning'
-      })
-    }
-
-    setIsLoading(false)
-  }
-
-  /**
-   * Returns the default account of the portfolio
-   */
-  async function getDefaultAccount() {
-    setIsLoading(true)
-
-    //TODO: temp
-    await delay(2000)
-    setAccount(accounts[0])
-    setAccNumber(accounts[0].accountNumber)
-
-    setIsLoading(false)
   }
 
 
@@ -149,7 +113,7 @@ export default function TransactionsPage() {
       </div>
       <div>
         {
-          account && account.accountNumber ?
+          account?.accountNumber ?
             <BaseCard
               loading={isLoading}
               title={'Transactions'}

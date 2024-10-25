@@ -39,6 +39,7 @@ import cmc from '@/app/assets/brokers/cmc.png'
 import ftmo from '@/app/assets/brokers/ftmo.png'
 import td365 from '@/app/assets/brokers/td365.png'
 import td from '@/app/assets/brokers/td.png'
+import {accounts} from "@/lib/sample-data";
 
 /**
  * Returns the correct icon based on the given enum value
@@ -84,7 +85,7 @@ export function resolveIcon(iconCode: string, className = '', iconSize = 24) {
     case Icons.Transactions:
       return <IconArrowsRightLeft className={className} size={iconSize}/>;
     case Icons.Trades:
-      return <IconReplaceFilled className={className} size={iconSize} />;
+      return <IconReplaceFilled className={className} size={iconSize}/>;
     default:
       return null;
   }
@@ -237,14 +238,37 @@ export const delay = (ms: number) => new Promise(res => setTimeout(res, ms));
  *
  * @param num value
  */
-export const isNumeric = (num: any) => (typeof(num) === 'number' || typeof(num) === "string" && num.trim() !== '') && !isNaN(num as number);
+export const isNumeric = (num: any) => (typeof (num) === 'number' || typeof (num) === "string" && num.trim() !== '') && !isNaN(num as number);
 
 /**
  * Converts string array in an enum for zos
  *
  * @param val array of strings
  */
-export function safeConvertEnum(val: string[]) : [string, ...string[]] {
+export function safeConvertEnum(val: string[]): [string, ...string[]] {
   // @ts-ignore
   return val
+}
+
+/**
+ * Returns the first account that has a default account flag set to true
+ *
+ * @param accounts array of accounts
+ */
+export function getDefaultAccount(accounts: Array<Account>): Account | null {
+  return accounts.find(acc => acc.defaultAccount) ?? null
+}
+
+/**
+ * Attempts to find an account matching the given account number
+ *
+ * @param val account number
+ * @param accounts accounts list
+ */
+export function getAccount(val: number, accounts: Array<Account>): Account | null {
+  if (val === -1) {
+    return null
+  } else {
+    return accounts?.find(acc => acc.accountNumber === val) ?? null
+  }
 }
