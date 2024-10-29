@@ -1,3 +1,27 @@
+const accountTransactions: Array<Transaction> = [
+  {
+    uid: '1236',
+    date: '2024-10-08',
+    amount: 125.89,
+    status: 'Pending',//TODO: remove account from backend DTO
+    type: 'Withdrawal'
+  },
+  {
+    uid: '124',
+    date: '2024-10-06',
+    amount: 500.0,
+    status: 'Complete',
+    type: 'Deposit'
+  },
+  {
+    uid: '125',
+    date: '2024-10-01',
+    amount: 375.0,
+    status: 'Failed',
+    type: 'Deposit'
+  }
+]
+
 export const accounts: Array<Account> = [
   {
     uid: '1231',
@@ -12,7 +36,8 @@ export const accounts: Array<Account> = [
     broker: {uid: 'cmc_1', code: 'cmc', label: 'CMC Markets'},
     accountType: {uid: 'cfd', code: 'cfd', label: 'CFD'},
     tradePlatform: {uid: 'MT4', code: 'MT4', label: 'MT4'},
-    lastTraded: '2024-10-11T12:22:45'
+    lastTraded: '2024-10-11T12:22:45',
+    transactions: accountTransactions
   },
   {
     uid: '1232',
@@ -27,7 +52,8 @@ export const accounts: Array<Account> = [
     broker: {uid: 'ftmo_2', code: 'ftmo', label: 'FTMO'},
     accountType: {uid: 'cfd', code: 'cfd', label: 'CFD'},
     tradePlatform: {uid: 'MT4', code: 'MT4', label: 'MT4'},
-    lastTraded: '2024-10-01T16:09:45'
+    lastTraded: '2024-10-01T16:09:45',
+    transactions: accountTransactions
   },
   {
     uid: '1233',
@@ -42,7 +68,8 @@ export const accounts: Array<Account> = [
     broker: {uid: 'cmc_3', code: 'cmc', label: 'CMC Markets'},
     accountType: {uid: 'cfd', code: 'cfd', label: 'CFD'},
     tradePlatform: {uid: 'MT4', code: 'MT4', label: 'MT4'},
-    lastTraded: '2024-07-30T16:01:45'
+    lastTraded: '2024-07-30T16:01:45',
+    transactions: accountTransactions
   }
 ]
 
@@ -172,33 +199,6 @@ export const tradeLog: Array<TradeLog> = [
     start: '2024-10-06',
     end: '2024-10-07',
     records: tradeRecords.slice(0, 3)
-  }
-]
-
-export const accountTransactions: Array<Transaction> = [
-  {
-    uid: '1236',
-    date: '2024-10-08',
-    amount: 125.89,
-    status: 'Pending',
-    account: accounts[0],
-    type: 'Withdrawal'
-  },
-  {
-    uid: '124',
-    date: '2024-10-06',
-    amount: 500.0,
-    status: 'Complete',
-    account: accounts[0],
-    type: 'Deposit'
-  },
-  {
-    uid: '125',
-    date: '2024-10-01',
-    amount: 375.0,
-    status: 'Failed',
-    account: accounts[0],
-    type: 'Deposit'
   }
 ]
 
@@ -1813,3 +1813,201 @@ export const sampleUser: User = {
   accounts: accounts,
   roles: ['ADMIN', 'TRADER'],
 }
+
+export const dailyTradeRecords: Array<TradeRecord> = [
+  {
+    uid: 'tr-123',
+    start: '2024-10-08',
+    end: '2024-10-09',
+    largestLoss: -128.56,
+    largestWin: 215.89,
+    lossAverage: -96.36,
+    losses: 4,
+    lowestPoint: -100.25,
+    netProfit: 321.47,
+    points: 88.20,
+    pointsGained: 215.23,
+    pointsLost: -148.87,
+    profitability: 1.65,
+    retention: 56,
+    trades: 9,
+    winAverage: 117.55,
+    winPercentage: 51,
+    wins: 5,
+    account: accounts[0]
+  },
+  {
+    uid: 'tr-124',
+    start: '2024-10-09',
+    end: '2024-10-10',
+    largestLoss: -128.56,
+    largestWin: 215.89,
+    lossAverage: -96.36,
+    losses: 4,
+    lowestPoint: -100.25,
+    netProfit: 321.47,
+    points: 88.20,
+    pointsGained: 215.23,
+    pointsLost: -148.87,
+    profitability: 1.65,
+    retention: 56,
+    trades: 9,
+    winAverage: 117.55,
+    winPercentage: 51,
+    wins: 5,
+    account: accounts[0]
+  },
+  {
+    uid: 'tr-125',
+    start: '2024-10-10',
+    end: '2024-10-11',
+    largestLoss: -128.56,
+    largestWin: 215.89,
+    lossAverage: -96.36,
+    losses: 4,
+    lowestPoint: -100.25,
+    netProfit: 321.47,
+    points: 88.20,
+    pointsGained: 215.23,
+    pointsLost: -148.87,
+    profitability: 1.65,
+    retention: 56,
+    trades: 9,
+    winAverage: 117.55,
+    winPercentage: 51,
+    wins: 5,
+    account: accounts[0]
+  },
+  {
+    uid: 'tr-126',
+    start: '2024-10-11',
+    end: '2024-10-12',
+    largestLoss: -128.56,
+    largestWin: 215.89,
+    lossAverage: -96.36,
+    losses: 4,
+    lowestPoint: -100.25,
+    netProfit: 321.47,
+    points: 88.20,
+    pointsGained: 215.23,
+    pointsLost: -148.87,
+    profitability: 1.65,
+    retention: 56,
+    trades: 9,
+    winAverage: 117.55,
+    winPercentage: 51,
+    wins: 5,
+    account: accounts[0]
+  },
+  {
+    uid: 'tr-127',
+    start: '2024-10-14',
+    end: '2024-10-15',
+    largestLoss: -128.56,
+    largestWin: 215.89,
+    lossAverage: -96.36,
+    losses: 4,
+    lowestPoint: -100.25,
+    netProfit: 321.47,
+    points: 88.20,
+    pointsGained: 215.23,
+    pointsLost: -148.87,
+    profitability: 1.65,
+    retention: 56,
+    trades: 9,
+    winAverage: 117.55,
+    winPercentage: 51,
+    wins: 5,
+    account: accounts[0]
+  }
+]
+
+export const monthlyTradeRecords: Array<TradeRecord> = [
+  {
+    uid: 'tr-128',
+    start: '2024-08-01',
+    end: '2024-09-01',
+    largestLoss: -128.56,
+    largestWin: 215.89,
+    lossAverage: -96.36,
+    losses: 4,
+    lowestPoint: -100.25,
+    netProfit: 321.47,
+    points: 88.20,
+    pointsGained: 215.23,
+    pointsLost: -148.87,
+    profitability: 1.65,
+    retention: 56,
+    trades: 9,
+    winAverage: 117.55,
+    winPercentage: 51,
+    wins: 5,
+    account: accounts[0]
+  },
+  {
+    uid: 'tr-129',
+    start: '2024-09-01',
+    end: '2024-10-01',
+    largestLoss: -128.56,
+    largestWin: 215.89,
+    lossAverage: -96.36,
+    losses: 4,
+    lowestPoint: -100.25,
+    netProfit: 321.47,
+    points: 88.20,
+    pointsGained: 215.23,
+    pointsLost: -148.87,
+    profitability: 1.65,
+    retention: 56,
+    trades: 9,
+    winAverage: 117.55,
+    winPercentage: 51,
+    wins: 5,
+    account: accounts[0]
+  },
+  {
+    uid: 'tr-1210',
+    start: '2024-10-01',
+    end: '2024-11-01',
+    largestLoss: -128.56,
+    largestWin: 215.89,
+    lossAverage: -96.36,
+    losses: 4,
+    lowestPoint: -100.25,
+    netProfit: 321.47,
+    points: 88.20,
+    pointsGained: 215.23,
+    pointsLost: -148.87,
+    profitability: 1.65,
+    retention: 56,
+    trades: 9,
+    winAverage: 117.55,
+    winPercentage: 51,
+    wins: 5,
+    account: accounts[0]
+  }
+]
+
+export const yearlyTradeRecords: Array<TradeRecord> = [
+  {
+    uid: 'tr-1211',
+    start: '2024-01-01',
+    end: '2025-01-01',
+    largestLoss: -128.56,
+    largestWin: 215.89,
+    lossAverage: -96.36,
+    losses: 4,
+    lowestPoint: -100.25,
+    netProfit: 321.47,
+    points: 88.20,
+    pointsGained: 215.23,
+    pointsLost: -148.87,
+    profitability: 1.65,
+    retention: 56,
+    trades: 9,
+    winAverage: 117.55,
+    winPercentage: 51,
+    wins: 5,
+    account: accounts[0]
+  }
+]

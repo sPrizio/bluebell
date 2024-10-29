@@ -67,7 +67,9 @@ interface Account extends GenericApiType {
   broker: Broker,
   accountType: AccountType,
   tradePlatform: TradePlatform,
-  lastTraded: string
+  lastTraded: string,
+  //TODO: implement on backend
+  transactions: Array<Transaction>
 }
 
 // TODO: implement on backend
@@ -113,7 +115,6 @@ interface AccountDetails extends GenericApiType {
 
 interface Transaction extends GenericApiType {
   date: string,
-  account: Account,
   amount: number,
   type: 'Deposit' | 'Withdrawal'
   status: 'Pending' | 'Complete' | 'Failed'
@@ -154,7 +155,7 @@ interface TradeRecord extends GenericApiType {
   winAverage: number,
   winPercentage: number,
   wins: number,
-  account: Account
+  account: Account,
 }
 
 // TODO: implement on backend

@@ -31,6 +31,7 @@ public class UniqueIdentifierService {
      * @return uid
      */
     public String generateUid(final GenericEntity entity) {
+        //TODO: re-implemt this to make it more specific to entity type
         validateParameterIsNotNull(entity, "entity cannot be null");
         return Base64.encodeBase64String(entity.getId().toString().getBytes());
     }

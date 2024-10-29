@@ -40,6 +40,7 @@ import ftmo from '@/app/assets/brokers/ftmo.png'
 import td365 from '@/app/assets/brokers/td365.png'
 import td from '@/app/assets/brokers/td.png'
 import {accounts} from "@/lib/sample-data";
+import {ReadonlyURLSearchParams} from "next/navigation";
 
 /**
  * Returns the correct icon based on the given enum value
@@ -271,4 +272,25 @@ export function getAccount(val: number, accounts: Array<Account>): Account | nul
   } else {
     return accounts?.find(acc => acc.accountNumber === val) ?? null
   }
+}
+
+/**
+ * Fetches the account number requested by the page
+ *
+ * @param params search params
+ * @param accounts accounts list
+ */
+export function getAccountNumber(params: ReadonlyURLSearchParams, accounts: Array<Account>): number {
+
+  let val = params.get('account') ?? -1
+
+  if (val === 'default') {
+    return getDefaultAccount(accounts)?.accountNumber ?? -1;
+  }
+
+  if (val !== -1 && isNumeric(val)) {
+    return parseInt(val as string)
+  }
+
+  return -1
 }

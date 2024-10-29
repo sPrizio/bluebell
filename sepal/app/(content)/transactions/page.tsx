@@ -4,31 +4,22 @@ import {useSepalPageInfoContext} from "@/lib/context/SepalContext";
 import React, {useEffect, useState} from "react";
 import {Icons} from "@/lib/enums";
 import {notFound, useSearchParams} from 'next/navigation'
-import {delay, getAccount, getDefaultAccount, isNumeric} from "@/lib/functions";
-import {accounts, accountTransactions} from "@/lib/sample-data";
-import {useToast} from "@/hooks/use-toast";
+import {getAccount, getAccountNumber} from "@/lib/functions";
 import {BaseCard} from "@/components/Card/BaseCard";
 import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from "@/components/ui/select";
 import AccountTransactionsTable from "@/components/Table/account/AccountTransactionsTable";
 import {Button} from "@/components/ui/button";
 import {IconCirclePlus} from "@tabler/icons-react";
-import AccountForm from "@/components/Form/account/AccountForm";
 import BaseModal from "@/components/Modal/BaseModal";
 import TransactionForm from "@/components/Form/transaction/TransactionForm";
 
 /**
- * THe page that shows all of a user's account's transactions. Accounts can be cycled
+ * The page that shows all of a user's account's transactions. Accounts can be cycled
  *
  * @author Stephen Prizio
  * @version 0.0.1
  */
 export default function TransactionsPage() {
-
-  const {toast} = useToast();
-  const searchParams = useSearchParams()
-  const [isLoading, setIsLoading] = useState(false)
-  const [accNumber, setAccNumber] = useState(getAccountNumber())
-  const [account, setAccount] = useState<Account | null>()
 
   const {
     pageTitle,
@@ -42,6 +33,11 @@ export default function TransactionsPage() {
     setBreadcrumbs,
     setUser
   } = useSepalPageInfoContext()
+
+  const searchParams = useSearchParams()
+  const [isLoading, setIsLoading] = useState(false)
+  const [accNumber, setAccNumber] = useState(getAccountNumber(searchParams, user.accounts))
+  const [account, setAccount] = useState<Account | null>()
 
   const acc = getAccount(accNumber, user.accounts)
   if (!acc) {
@@ -76,21 +72,6 @@ export default function TransactionsPage() {
   }, [accNumber]);
 
 
-  //  GENERAL FUNCTIONS
-
-  /**
-   * Fetches the account number requested by the page
-   */
-  function getAccountNumber() {
-    let val = searchParams.get('account') ?? -1
-    if (val !== -1 && isNumeric(val)) {
-      return parseInt(val as string)
-    }
-
-    return -1
-  }
-
-
   //  RENDER
 
   return (
@@ -118,7 +99,7 @@ export default function TransactionsPage() {
               loading={isLoading}
               title={'Transactions'}
               subtitle={'A look at all of your transactions for the given account.'}
-              cardContent={<AccountTransactionsTable account={account} transactions={accountTransactions} showActions={true} showBottomLink={false} />}
+              cardContent={<AccountTransactionsTable account={account} transactions={account.transactions} showActions={true} showBottomLink={false} />}
               headerControls={[
                 <BaseModal
                   key={0}
