@@ -38,10 +38,10 @@ export default function TradeLogTable(
       <TableCaption>
         <div className={"flex items-center justify-center gap-1 pb-2"}>
           <div className={""}>
-            <Link href={'/performance'}>View Full Performance</Link>
+            <Link href={'/performance?account=default'}>View Full Performance</Link>
           </div>
           <div className={""}>
-            <Link href={'/performance'}><IconExternalLink size={18}/></Link>
+            <Link href={'/performance?account=default'}><IconExternalLink size={18}/></Link>
           </div>
         </div>
       </TableCaption>

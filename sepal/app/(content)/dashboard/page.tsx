@@ -10,7 +10,7 @@ import {resolveIcon} from "@/lib/functions";
 import AccountsTable from "@/components/Table/account/AccountsTable";
 import {IconCirclePlus} from "@tabler/icons-react";
 import TradeLogTable from "@/components/Table/trade/TradeLogTable";
-import {accounts, accountTransactions, chartData, tradeLog} from "@/lib/sample-data";
+import {accounts, chartData, tradeLog} from "@/lib/sample-data";
 import AccountTransactionsTable from "@/components/Table/account/AccountTransactionsTable";
 import PortfolioGrowthChart from "@/components/Chart/PortfolioGrowthChart";
 import BaseModal from "@/components/Modal/BaseModal";
@@ -116,7 +116,7 @@ export default function DashboardPage() {
             cardContent={
               <AccountTransactionsTable
                 account={accounts[0]}
-                transactions={accountTransactions}
+                transactions={accounts[0].transactions}
               />
             }
           />

@@ -39,7 +39,6 @@ import cmc from '@/app/assets/brokers/cmc.png'
 import ftmo from '@/app/assets/brokers/ftmo.png'
 import td365 from '@/app/assets/brokers/td365.png'
 import td from '@/app/assets/brokers/td.png'
-import {accounts} from "@/lib/sample-data";
 import {ReadonlyURLSearchParams} from "next/navigation";
 
 /**

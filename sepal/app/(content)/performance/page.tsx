@@ -4,14 +4,26 @@ import {notFound, useSearchParams} from "next/navigation";
 import React, {useEffect, useState} from "react";
 import {AggregateInterval, Icons} from "@/lib/enums";
 import {useSepalPageInfoContext} from "@/lib/context/SepalContext";
-import {delay, getAccount, getAccountNumber, getDefaultAccount, isNumeric} from "@/lib/functions";
+import {delay, getAccount, getAccountNumber} from "@/lib/functions";
 import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from "@/components/ui/select";
-import {dailyTradeRecords, monthlyTradeRecords, yearlyTradeRecords} from "@/lib/sample-data";
-import {BaseCard} from "@/components/Card/BaseCard";
+import {dailyTradeRecords, monthlyTradeRecords, tradeRecordControls, yearlyTradeRecords} from "@/lib/sample-data";
 import moment from "moment";
 import {DateTime} from "@/lib/constants";
-import TradeRecordContent from "@/components/Content/Trade/TradeRecordContent";
 import {Loader2} from "lucide-react";
+import {Button} from "@/components/ui/button";
+import {
+  Drawer,
+  DrawerClose,
+  DrawerContent,
+  DrawerDescription,
+  DrawerFooter,
+  DrawerHeader,
+  DrawerTitle,
+  DrawerTrigger,
+} from "@/components/ui/drawer"
+import {Label} from "@/components/ui/label";
+import {BaseCard} from "@/components/Card/BaseCard";
+import TradeRecordContent from "@/components/Content/Trade/TradeRecordContent";
 
 /**
  * The page that shows an account's performance over time
@@ -39,7 +51,15 @@ export default function PerformancePage() {
   const [accNumber, setAccNumber] = useState(getAccountNumber(searchParams, user.accounts))
   const [account, setAccount] = useState<Account | null>()
   const [aggInterval, setAggInterval] = useState<AggregateInterval>(AggregateInterval.DAILY)
+  const [userSelection, setUserSelection] = useState<UserTradeRecordControlSelection>({
+    aggInterval: aggInterval,
+    month: 'January',
+    year: '2024'
+  })
+  const [aggMonth, setAggMonth] = useState(userSelection.month)
+  const [aggYear, setAggYear] = useState(userSelection.year)
   const [tradeRecords, setTradeRecords] = useState<Array<TradeRecord>>([])
+  const [controls, setControls] = useState<TradeRecordControls>()
 
   const acc = getAccount(accNumber, user.accounts)
   if (!acc) {
@@ -54,7 +74,7 @@ export default function PerformancePage() {
       {label: 'Dashboard', href: '/dashboard', active: false},
       {label: 'Accounts', href: '/accounts', active: false},
       {label: accNumber.toString(), href: '/accounts/' + accNumber, active: false},
-      {label: 'Performance', href: '/performance', active: true},
+      {label: 'Performance', href: '/performance?account=default', active: true},
     ])
 
     getTradeRecords()
@@ -68,7 +88,7 @@ export default function PerformancePage() {
       {label: 'Dashboard', href: '/dashboard', active: false},
       {label: 'Accounts', href: '/accounts', active: false},
       {label: accNumber.toString(), href: '/accounts/' + accNumber, active: false},
-      {label: 'Performance', href: '/performance', active: true},
+      {label: 'Performance', href: '/performance?account=default', active: true},
     ])
 
     setAccNumber(accNumber)
@@ -78,7 +98,7 @@ export default function PerformancePage() {
 
   useEffect(() => {
     getTradeRecords()
-  }, [aggInterval]);
+  }, [aggInterval, aggMonth, aggYear]);
 
 
   //  GENERAL FUNCTIONS
@@ -91,17 +111,26 @@ export default function PerformancePage() {
     setIsLoading(true)
 
     await delay(2000);
+    await getTradeRecordControls()
 
     //TODO: TEMP
-    if (aggInterval === AggregateInterval.DAILY) {
+    if (userSelection.aggInterval === AggregateInterval.DAILY) {
       setTradeRecords(dailyTradeRecords)
-    } else if (aggInterval === AggregateInterval.MONTHLY) {
+    } else if (userSelection.aggInterval === AggregateInterval.MONTHLY) {
       setTradeRecords(monthlyTradeRecords)
     } else {
       setTradeRecords(yearlyTradeRecords)
     }
 
     setIsLoading(false)
+  }
+
+  //TODO: temp
+  /**
+   * Obtains the controls data for trade record filters
+   */
+  async function getTradeRecordControls() {
+    setControls(tradeRecordControls)
   }
 
   /**
@@ -120,15 +149,22 @@ export default function PerformancePage() {
     }
   }
 
+  /**
+   * Fetches the month entries for the correct year
+   */
+  function getMatchingYear() : TradeRecordControlsYearEntry | null {
+    return controls?.yearEntries.find(ye => ye.year === userSelection.year) ?? null
+  }
+
 
   //  RENDER
 
   return (
-    <div className={'grid grid-cols-1 gap-8'}>
+    <div className={''}>
       {
         isLoading ?
           <div className={'h-[72vh] flex items-center justify-center'}>
-            <div className={'grid grid-cols-1 justify-items-center gap-4'}>
+            <div className={'grid grid-cols-1 justify-items-center gap-8'}>
               <div>
                 <Loader2 className="animate-spin text-primary" size={50}/>
               </div>
@@ -137,49 +173,113 @@ export default function PerformancePage() {
           </div>
           :
           <>
-            <p>NEEDS A LOADING STATE</p>
-            <p>NEEDS DYNAMIC DATE CONTROLS</p>
-            <div className={'flex items-center justify-end gap-4'}>
-              <div>
-                <Select value={aggInterval.code} onValueChange={(val) => setAggInterval(AggregateInterval.get(val))}>
-                  <SelectTrigger className="w-[180px] bg-white">
-                    <SelectValue placeholder="Account"/>
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value={AggregateInterval.DAILY.code}>{AggregateInterval.DAILY.label}</SelectItem>
-                    <SelectItem value={AggregateInterval.MONTHLY.code}>{AggregateInterval.MONTHLY.label}</SelectItem>
-                    <SelectItem value={AggregateInterval.YEARLY.code}>{AggregateInterval.YEARLY.label}</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-              <div>
-                <Select value={accNumber.toString()} onValueChange={(val) => setAccNumber(parseInt(val))}>
-                  <SelectTrigger className="w-[180px] bg-white">
-                    <SelectValue placeholder="Account"/>
-                  </SelectTrigger>
-                  <SelectContent>
-                    {
-                      user.accounts.map(item => {
-                        return (
-                          <SelectItem key={item.uid} value={item.accountNumber.toString()}>{item.name}</SelectItem>
-                        )
-                      })
-                    }
-                  </SelectContent>
-                </Select>
+            <div className={'grid grid-cols-1 gap-8'}>
+              <div className={'flex items-center justify-end gap-4'}>
+                <div>
+                  <Select value={accNumber.toString()} onValueChange={(val) => setAccNumber(parseInt(val))}>
+                    <SelectTrigger className="w-[180px] bg-white">
+                      <SelectValue placeholder="Account"/>
+                    </SelectTrigger>
+                    <SelectContent>
+                      {
+                        user.accounts.map((item : Account) => {
+                          return (
+                            <SelectItem key={item.uid} value={item.accountNumber.toString()}>{item.name}</SelectItem>
+                          )
+                        })
+                      }
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div>
+                  <Drawer>
+                    <DrawerTrigger asChild>
+                      <Button variant="primary">Filters</Button>
+                    </DrawerTrigger>
+                    <DrawerContent>
+                      <div className="mx-auto w-full max-w-md">
+                        <DrawerHeader>
+                          <DrawerTitle>Filter Performance</DrawerTitle>
+                          <DrawerDescription>Look at your performance at specific points in time.</DrawerDescription>
+                        </DrawerHeader>
+                        <div className="grid grid-cols-3 items-center w-full gap-1.5 p-4">
+                          <div>
+                            <Label>Interval</Label>
+                            <Select value={userSelection.aggInterval.code} onValueChange={(val) => setUserSelection({...userSelection, aggInterval: AggregateInterval.get(val)})}>
+                              <SelectTrigger className="bg-white">
+                                <SelectValue placeholder="Account"/>
+                              </SelectTrigger>
+                              <SelectContent>
+                                <SelectItem value={AggregateInterval.DAILY.code}>{AggregateInterval.DAILY.label}</SelectItem>
+                                <SelectItem value={AggregateInterval.MONTHLY.code}>{AggregateInterval.MONTHLY.label}</SelectItem>
+                                <SelectItem value={AggregateInterval.YEARLY.code}>{AggregateInterval.YEARLY.label}</SelectItem>
+                              </SelectContent>
+                            </Select>
+                          </div>
+                          <div>
+                            <Label>Month</Label>
+                            <Select value={userSelection.month} onValueChange={(val) => setUserSelection({...userSelection, month: val})}>
+                              <SelectTrigger className="bg-white">
+                                <SelectValue placeholder="Account"/>
+                              </SelectTrigger>
+                              <SelectContent>
+                                {
+                                  getMatchingYear()?.monthEntries.map(item => {
+                                    return (
+                                      <SelectItem key={item.uid} value={item.month} disabled={item.value === 0}>{item.month}</SelectItem>
+                                    )
+                                  }) ?? <SelectItem value={'NA'}>N/A</SelectItem>
+                                }
+                              </SelectContent>
+                            </Select>
+                          </div>
+                          <div>
+                            <Label>Year</Label>
+                            <Select value={userSelection.year} onValueChange={(val) => setUserSelection({...userSelection, year: val})}>
+                              <SelectTrigger className="bg-white">
+                                <SelectValue placeholder="Account"/>
+                              </SelectTrigger>
+                              <SelectContent>
+                                {
+                                  tradeRecordControls.yearEntries?.map(item => {
+                                    return (
+                                      <SelectItem key={item.uid} value={item.year} disabled={item.monthEntries.length === 0}>{item.year}</SelectItem>
+                                    )
+                                  }) ?? <SelectItem value={'NA'}>N/A</SelectItem>
+                                }
+                              </SelectContent>
+                            </Select>
+                          </div>
+                        </div>
+                        <DrawerFooter className={''}>
+                          <Button variant={'primary'} onClick={() => {
+                            setAggInterval(userSelection.aggInterval)
+                            setAggMonth(userSelection.month)
+                            setAggYear(userSelection.year)
+                          }}>Submit</Button>
+                          <DrawerClose asChild>
+                            <Button variant="outline" onClick={() => setUserSelection({aggInterval: aggInterval, month: aggMonth, year: aggYear})}>Cancel</Button>
+                          </DrawerClose>
+                        </DrawerFooter>
+                      </div>
+                    </DrawerContent>
+                  </Drawer>
+                </div>
               </div>
             </div>
-            {
-              tradeRecords?.map(item => {
-                return (
-                  <BaseCard
-                    key={item.uid}
-                    title={formatDate(item.start)}
-                    cardContent={<TradeRecordContent tradeRecord={item} aggInterval={aggInterval}/>}
-                  />
-                )
-              })
-            }
+            <div className={'grid grid-cols-1 gap-8 mt-8'}>
+              {
+                tradeRecords?.map(item => {
+                  return (
+                    <BaseCard
+                      key={item.uid}
+                      title={formatDate(item.start)}
+                      cardContent={<TradeRecordContent tradeRecord={item} aggInterval={aggInterval}/>}
+                    />
+                  )
+                })
+              }
+            </div>
           </>
       }
     </div>

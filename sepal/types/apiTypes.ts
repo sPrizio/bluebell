@@ -117,7 +117,8 @@ interface Transaction extends GenericApiType {
   date: string,
   amount: number,
   type: 'Deposit' | 'Withdrawal'
-  status: 'Pending' | 'Complete' | 'Failed'
+  status: 'Pending' | 'Complete' | 'Failed',
+  accountNumber: number //TODO: implement this on backend
 }
 
 interface Trade extends GenericApiType {
@@ -163,6 +164,23 @@ interface TradeLog extends GenericApiType {
   start: string,
   end: string,
   records: Array<TradeRecord>
+}
+
+// TODO: implement on backend
+interface TradeRecordControlMonthEntry extends GenericApiType {
+  month: string,
+  value: number
+}
+
+// TODO: implement on backend
+interface TradeRecordControlsYearEntry extends GenericApiType {
+  year: string,
+  monthEntries: Array<TradeRecordControlMonthEntry>
+}
+
+// TODO: implement on backend
+interface TradeRecordControls extends GenericApiType {
+  yearEntries: Array<TradeRecordControlsYearEntry>
 }
 
 interface MarketNews extends GenericApiType {

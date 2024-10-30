@@ -1,3 +1,5 @@
+import {AggregateInterval} from "@/lib/enums";
+
 interface PageInfoContext {
   pageTitle: string,
   pageSubtitle: string,
@@ -26,4 +28,10 @@ interface AppLink {
   href: string,
   label: string,
   active: boolean
+}
+
+interface UserTradeRecordControlSelection {
+  aggInterval: AggregateInterval,
+  month: string,
+  year: string,
 }

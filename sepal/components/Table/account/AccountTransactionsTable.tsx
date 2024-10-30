@@ -119,7 +119,7 @@ export default function AccountTransactionsTable(
               return (
                 <TableRow key={item.uid} className={'hover:bg-transparent'}>
                   <TableCell>{moment(item.date).format(DateTime.ISOShortMonthFullDayFormat)}</TableCell>
-                  <TableCell>{item.account.name}</TableCell>
+                  <TableCell>{item.accountNumber}</TableCell>
                   <TableCell className={'text-center'}>{item.type}</TableCell>
                   <TableCell className={'text-center'}>${formatNumberForDisplay(item.amount)}</TableCell>
                   <TableCell className={'text-right h-full'}>

@@ -4,21 +4,24 @@ const accountTransactions: Array<Transaction> = [
     date: '2024-10-08',
     amount: 125.89,
     status: 'Pending',//TODO: remove account from backend DTO
-    type: 'Withdrawal'
+    type: 'Withdrawal',
+    accountNumber: 123
   },
   {
     uid: '124',
     date: '2024-10-06',
     amount: 500.0,
     status: 'Complete',
-    type: 'Deposit'
+    type: 'Deposit',
+    accountNumber: 123
   },
   {
     uid: '125',
     date: '2024-10-01',
     amount: 375.0,
     status: 'Failed',
-    type: 'Deposit'
+    type: 'Deposit',
+    accountNumber: 123
   }
 ]
 
@@ -2011,3 +2014,80 @@ export const yearlyTradeRecords: Array<TradeRecord> = [
     account: accounts[0]
   }
 ]
+
+export const tradeRecordControls: TradeRecordControls = {
+  uid: 'trc-123',
+  yearEntries: [
+    {
+      uid: 'trc-y-2023',
+      year: '2023',
+      monthEntries: [],
+    },
+    {
+      uid: 'trc-y-2024',
+      year: '2024',
+      monthEntries: [
+        {
+          uid: 'trc-m-jan',
+          month: 'January',
+          value: 2
+        },
+        {
+          uid: 'trc-m-feb',
+          month: 'February',
+          value: 0
+        },
+        {
+          uid: 'trc-m-mar',
+          month: 'March',
+          value: 0
+        },
+        {
+          uid: 'trc-m-apr',
+          month: 'April',
+          value: 2
+        },
+        {
+          uid: 'trc-m-may',
+          month: 'May',
+          value: 0
+        },
+        {
+          uid: 'trc-m-jun',
+          month: 'June',
+          value: 2
+        },
+        {
+          uid: 'trc-m-jul',
+          month: 'July',
+          value: 2
+        },
+        {
+          uid: 'trc-m-aug',
+          month: 'August',
+          value: 2
+        },
+        {
+          uid: 'trc-m-sep',
+          month: 'September',
+          value: 0
+        },
+        {
+          uid: 'trc-m-oct',
+          month: 'October',
+          value: 0
+        },
+        {
+          uid: 'trc-m-nov',
+          month: 'November',
+          value: 0
+        },
+        {
+          uid: 'trc-m-dec',
+          month: 'December',
+          value: 0
+        }
+      ]
+    }
+  ],
+}

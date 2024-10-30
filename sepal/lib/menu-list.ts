@@ -65,7 +65,7 @@ export function getMenuList(pathname: string): Group[] {
           icon: ArrowRightLeft
         },
         {
-          href: "/performance",
+          href: "/performance?account=default",
           label: "Performance",
           icon: ChartScatter
         },
