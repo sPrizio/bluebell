@@ -138,6 +138,13 @@ interface Trade extends GenericApiType {
   account: Account
 }
 
+//  TODO: implement this on backend
+interface TradeRecordEquityPoint extends GenericApiType {
+  tradeId: string,
+  netProfit: number,
+  netPoints: number
+}
+
 interface TradeRecord extends GenericApiType {
   end: string,
   largestLoss: number,
@@ -156,6 +163,7 @@ interface TradeRecord extends GenericApiType {
   winAverage: number,
   winPercentage: number,
   wins: number,
+  equityPoints: Array<TradeRecordEquityPoint> // TODO: implement this on backend
   account: Account,
 }
 

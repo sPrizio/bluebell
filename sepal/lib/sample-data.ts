@@ -76,135 +76,6 @@ export const accounts: Array<Account> = [
   }
 ]
 
-export const tradeRecords: Array<TradeRecord> = [
-  {
-    uid: '1234',
-    end: '2024-10-07',
-    largestLoss: -126.36,
-    largestWin: 214.56,
-    lossAverage: -89.63,
-    losses: 10,
-    lowestPoint: -89.63,
-    netProfit: 974.25,
-    points: 214.87,
-    pointsGained: 1293.63,
-    pointsLost: 855.11,
-    profitability: 1.36,
-    retention: 0.65,
-    start: '2024-10-06',
-    trades: 15,
-    winAverage: 202.33,
-    winPercentage: 51,
-    wins: 11,
-    account: accounts[0]
-  },
-  {
-    uid: '124',
-    end: '2024-10-07',
-    largestLoss: -126.36,
-    largestWin: 214.56,
-    lossAverage: -89.63,
-    losses: 10,
-    lowestPoint: -89.63,
-    netProfit: -974.25,
-    points: -214.87,
-    pointsGained: 1293.63,
-    pointsLost: 855.11,
-    profitability: 1.36,
-    retention: 0.65,
-    start: '2024-10-06',
-    trades: 15,
-    winAverage: 202.33,
-    winPercentage: 51,
-    wins: 11,
-    account: accounts[0]
-  },
-  {
-    uid: '125',
-    end: '2024-10-07',
-    largestLoss: -126.36,
-    largestWin: 214.56,
-    lossAverage: -89.63,
-    losses: 10,
-    lowestPoint: -89.63,
-    netProfit: 974.25,
-    points: 214.87,
-    pointsGained: 1293.63,
-    pointsLost: 855.11,
-    profitability: 1.36,
-    retention: 0.65,
-    start: '2024-10-06',
-    trades: 15,
-    winAverage: 202.33,
-    winPercentage: 51,
-    wins: 11,
-    account: accounts[0]
-  },
-  {
-    uid: '126',
-    end: '2024-10-07',
-    largestLoss: -126.36,
-    largestWin: 214.56,
-    lossAverage: -89.63,
-    losses: 10,
-    lowestPoint: -89.63,
-    netProfit: 974.25,
-    points: 214.87,
-    pointsGained: 1293.63,
-    pointsLost: 855.11,
-    profitability: 1.36,
-    retention: 0.65,
-    start: '2024-10-06',
-    trades: 15,
-    winAverage: 202.33,
-    winPercentage: 51,
-    wins: 11,
-    account: accounts[0]
-  },
-  {
-    uid: '127',
-    end: '2024-10-07',
-    largestLoss: -126.36,
-    largestWin: 214.56,
-    lossAverage: -89.63,
-    losses: 10,
-    lowestPoint: -89.63,
-    netProfit: 974.25,
-    points: 214.87,
-    pointsGained: 1293.63,
-    pointsLost: 855.11,
-    profitability: 1.36,
-    retention: 0.65,
-    start: '2024-10-06',
-    trades: 15,
-    winAverage: 202.33,
-    winPercentage: 51,
-    wins: 11,
-    account: accounts[0]
-  }
-]
-
-export const tradeLog: Array<TradeLog> = [
-  {
-    uid: '1235',
-    start: '2024-10-08',
-    end: '2024-10-09',
-    records: tradeRecords.slice(0, 1)
-  },
-  {
-    uid: '124',
-    start: '2024-10-07',
-    end: '2024-10-08',
-    records: tradeRecords.slice(0, 2)
-  },
-  {
-    uid: '125',
-    start: '2024-10-06',
-    end: '2024-10-07',
-    records: tradeRecords.slice(0, 3)
-  }
-]
-
 export const chartData: Array<PortfolioEquityPoint> = [
   {
     uid: '1237',
@@ -1817,6 +1688,70 @@ export const sampleUser: User = {
   roles: ['ADMIN', 'TRADER'],
 }
 
+export const tradeRecordEquityPoints: Array<TradeRecordEquityPoint> = [
+  //TODO: implement on backend, data always starts with zero
+  {
+    uid: 'trep-0',
+    tradeId: 'trep-0',
+    netProfit: 0,
+    netPoints: 0
+  },
+  {
+    uid: 'trep-1',
+    tradeId: 'trep-1',
+    netProfit: 156.36,
+    netPoints: 31.58
+  },
+  {
+    uid: 'trep-2',
+    tradeId: 'trep-2',
+    netProfit: -369.12,
+    netPoints: -69.56
+  },
+  {
+    uid: 'trep-3',
+    tradeId: 'trep-3',
+    netProfit: -45.21,
+    netPoints: -10.25
+  },
+  {
+    uid: 'trep-4',
+    tradeId: 'trep-4',
+    netProfit: 81.56,
+    netPoints: 8.96
+  },
+  {
+    uid: 'trep-5',
+    tradeId: 'trep-5',
+    netProfit: 201.84,
+    netPoints: 56.78
+  },
+  {
+    uid: 'trep-6',
+    tradeId: 'trep-6',
+    netProfit: 696.31,
+    netPoints: 105.89
+  },
+  {
+    uid: 'trep-7',
+    tradeId: 'trep-7',
+    netProfit: 401.25,
+    netPoints: 78.54
+  },
+  {
+    uid: 'trep-8',
+    tradeId: 'trep-8',
+    netProfit: 218.74,
+    netPoints: 55.23
+  },
+  {
+    uid: 'trep-9',
+    tradeId: 'trep-9',
+    netProfit: 900.56,
+    netPoints: 158.25
+  }
+]
+
 export const dailyTradeRecords: Array<TradeRecord> = [
   {
     uid: 'tr-123',
@@ -1837,7 +1772,8 @@ export const dailyTradeRecords: Array<TradeRecord> = [
     winAverage: 117.55,
     winPercentage: 51,
     wins: 5,
-    account: accounts[0]
+    account: accounts[0],
+    equityPoints: tradeRecordEquityPoints
   },
   {
     uid: 'tr-124',
@@ -1858,7 +1794,8 @@ export const dailyTradeRecords: Array<TradeRecord> = [
     winAverage: 117.55,
     winPercentage: 51,
     wins: 5,
-    account: accounts[0]
+    account: accounts[0],
+    equityPoints: tradeRecordEquityPoints
   },
   {
     uid: 'tr-125',
@@ -1879,7 +1816,8 @@ export const dailyTradeRecords: Array<TradeRecord> = [
     winAverage: 117.55,
     winPercentage: 51,
     wins: 5,
-    account: accounts[0]
+    account: accounts[0],
+    equityPoints: tradeRecordEquityPoints
   },
   {
     uid: 'tr-126',
@@ -1900,7 +1838,8 @@ export const dailyTradeRecords: Array<TradeRecord> = [
     winAverage: 117.55,
     winPercentage: 51,
     wins: 5,
-    account: accounts[0]
+    account: accounts[0],
+    equityPoints: tradeRecordEquityPoints
   },
   {
     uid: 'tr-127',
@@ -1921,7 +1860,8 @@ export const dailyTradeRecords: Array<TradeRecord> = [
     winAverage: 117.55,
     winPercentage: 51,
     wins: 5,
-    account: accounts[0]
+    account: accounts[0],
+    equityPoints: tradeRecordEquityPoints
   }
 ]
 
@@ -1945,7 +1885,8 @@ export const monthlyTradeRecords: Array<TradeRecord> = [
     winAverage: 117.55,
     winPercentage: 51,
     wins: 5,
-    account: accounts[0]
+    account: accounts[0],
+    equityPoints: tradeRecordEquityPoints
   },
   {
     uid: 'tr-129',
@@ -1966,7 +1907,8 @@ export const monthlyTradeRecords: Array<TradeRecord> = [
     winAverage: 117.55,
     winPercentage: 51,
     wins: 5,
-    account: accounts[0]
+    account: accounts[0],
+    equityPoints: tradeRecordEquityPoints
   },
   {
     uid: 'tr-1210',
@@ -1987,7 +1929,8 @@ export const monthlyTradeRecords: Array<TradeRecord> = [
     winAverage: 117.55,
     winPercentage: 51,
     wins: 5,
-    account: accounts[0]
+    account: accounts[0],
+    equityPoints: tradeRecordEquityPoints
   }
 ]
 
@@ -2011,7 +1954,8 @@ export const yearlyTradeRecords: Array<TradeRecord> = [
     winAverage: 117.55,
     winPercentage: 51,
     wins: 5,
-    account: accounts[0]
+    account: accounts[0],
+    equityPoints: tradeRecordEquityPoints
   }
 ]
 
@@ -2091,3 +2035,24 @@ export const tradeRecordControls: TradeRecordControls = {
     }
   ],
 }
+
+export const tradeLog: Array<TradeLog> = [
+  {
+    uid: '1235',
+    start: '2024-10-08',
+    end: '2024-10-09',
+    records: dailyTradeRecords.slice(0, 1)
+  },
+  {
+    uid: '124',
+    start: '2024-10-07',
+    end: '2024-10-08',
+    records: dailyTradeRecords.slice(0, 2)
+  },
+  {
+    uid: '125',
+    start: '2024-10-06',
+    end: '2024-10-07',
+    records: dailyTradeRecords.slice(0, 3)
+  }
+]

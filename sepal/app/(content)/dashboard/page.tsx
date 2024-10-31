@@ -12,7 +12,7 @@ import {IconCirclePlus} from "@tabler/icons-react";
 import TradeLogTable from "@/components/Table/trade/TradeLogTable";
 import {accounts, chartData, tradeLog} from "@/lib/sample-data";
 import AccountTransactionsTable from "@/components/Table/account/AccountTransactionsTable";
-import PortfolioGrowthChart from "@/components/Chart/PortfolioGrowthChart";
+import PortfolioGrowthChart from "@/components/Chart/Account/PortfolioGrowthChart";
 import BaseModal from "@/components/Modal/BaseModal";
 import AccountForm from "@/components/Form/account/AccountForm";
 

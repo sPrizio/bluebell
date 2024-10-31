@@ -42,6 +42,8 @@ export const DateTime = {
 
 export const Css = {
   ColorPrimary: 'rgb(0, 119, 228)',
+  ColorGreen: 'rgb(22, 163, 74)',
+  ColorRed: 'rgb(220, 38, 38)',
   ColorGraphAccPrimary: '#8884d8',
   ColorGraphAccSecondary: '#82ca9d',
   ColorGraphAccTertiary: '#bda74e',

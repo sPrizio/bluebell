@@ -12,8 +12,8 @@ import {Switch} from "@/components/ui/switch";
 import {Label} from "@/components/ui/label";
 import SimpleBanner from "@/components/Banner/SimpleBanner";
 import {delay} from "@/lib/functions";
-import {accountDetails, tradeRecords, trades} from "@/lib/sample-data";
-import AccountEquityChart from "@/components/Chart/AccountEquityChart";
+import {accountDetails, dailyTradeRecords, trades} from "@/lib/sample-data";
+import AccountEquityChart from "@/components/Chart/Account/AccountEquityChart";
 import {Progress} from "@/components/ui/progress";
 import AccountInsights from "@/components/Account/AccountInsights";
 import AccountStatistics from "@/components/Account/AccountStatistics";
@@ -33,7 +33,7 @@ export default function AccountDetails(
     account,
   }
     : Readonly<{
-    account?: Account
+    account: Account
   }>
 ) {
 
@@ -153,7 +153,7 @@ export default function AccountDetails(
               title={'Delete Trading Account'}
               trigger={<Button
                 className="bg-primaryRed text-white hover:bg-primaryRedLight"><IconTrash/>&nbsp;Delete</Button>}
-              content={<DeleteAccountForm/>}
+              content={<DeleteAccountForm account={account ?? null} />}
             />
           </div>
         </div>
@@ -256,7 +256,7 @@ export default function AccountDetails(
           loading={isLoading}
           title={'Performance'}
           subtitle={'A look at this account\'s recent daily performance.'}
-          cardContent={<TradeRecordTable records={tradeRecords}/>}
+          cardContent={<TradeRecordTable records={dailyTradeRecords}/>}
           headerControls={[
             <Link key={0} href={`/performance?account=${account?.accountNumber}`}>
               <Button className="" variant={"outline"}><IconExternalLink size={18}/>&nbsp;View Full Performance</Button>

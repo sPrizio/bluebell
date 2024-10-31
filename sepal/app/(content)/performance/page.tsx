@@ -7,8 +7,6 @@ import {useSepalPageInfoContext} from "@/lib/context/SepalContext";
 import {delay, getAccount, getAccountNumber} from "@/lib/functions";
 import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from "@/components/ui/select";
 import {dailyTradeRecords, monthlyTradeRecords, tradeRecordControls, yearlyTradeRecords} from "@/lib/sample-data";
-import moment from "moment";
-import {DateTime} from "@/lib/constants";
 import {Loader2} from "lucide-react";
 import {Button} from "@/components/ui/button";
 import {
@@ -22,8 +20,7 @@ import {
   DrawerTrigger,
 } from "@/components/ui/drawer"
 import {Label} from "@/components/ui/label";
-import {BaseCard} from "@/components/Card/BaseCard";
-import TradeRecordContent from "@/components/Content/Trade/TradeRecordContent";
+import TradeRecordCard from "@/components/Card/Trade/TradeRecordCard";
 
 /**
  * The page that shows an account's performance over time
@@ -68,7 +65,7 @@ export default function PerformancePage() {
 
   useEffect(() => {
     setPageTitle('Performance')
-    setPageSubtitle('A look a trading account\'s performance over time ' + accNumber)
+    setPageSubtitle(`A look at trading account ${accNumber} performance over time`)
     setPageIconCode(Icons.Performance)
     setBreadcrumbs([
       {label: 'Dashboard', href: '/dashboard', active: false},
@@ -82,7 +79,7 @@ export default function PerformancePage() {
 
   useEffect(() => {
     setPageTitle('Performance')
-    setPageSubtitle('A look a trading account\'s performance over time ' + accNumber)
+    setPageSubtitle(`A look at trading account ${accNumber} performance over time`)
     setPageIconCode(Icons.Performance)
     setBreadcrumbs([
       {label: 'Dashboard', href: '/dashboard', active: false},
@@ -131,22 +128,6 @@ export default function PerformancePage() {
    */
   async function getTradeRecordControls() {
     setControls(tradeRecordControls)
-  }
-
-  /**
-   * Formats the card date based on the aggregate interval
-   *
-   * @param val input date
-   */
-  function formatDate(val: string) {
-    switch (aggInterval) {
-      case AggregateInterval.DAILY:
-        return moment(val).format(DateTime.ISOMonthWeekDayFormat)
-      case AggregateInterval.MONTHLY:
-        return moment(val).format(DateTime.ISOMonthYearFormat)
-      default:
-        return moment(val).format(DateTime.ISOYearFormat)
-    }
   }
 
   /**
@@ -218,7 +199,7 @@ export default function PerformancePage() {
                           </div>
                           <div>
                             <Label>Month</Label>
-                            <Select value={userSelection.month} onValueChange={(val) => setUserSelection({...userSelection, month: val})}>
+                            <Select value={userSelection.month} disabled={userSelection.aggInterval.code !== AggregateInterval.DAILY.code} onValueChange={(val) => setUserSelection({...userSelection, month: val})}>
                               <SelectTrigger className="bg-white">
                                 <SelectValue placeholder="Account"/>
                               </SelectTrigger>
@@ -271,11 +252,7 @@ export default function PerformancePage() {
               {
                 tradeRecords?.map(item => {
                   return (
-                    <BaseCard
-                      key={item.uid}
-                      title={formatDate(item.start)}
-                      cardContent={<TradeRecordContent tradeRecord={item} aggInterval={aggInterval}/>}
-                    />
+                    <TradeRecordCard key={item.uid} tradeRecord={item} aggInterval={aggInterval} />
                   )
                 })
               }
