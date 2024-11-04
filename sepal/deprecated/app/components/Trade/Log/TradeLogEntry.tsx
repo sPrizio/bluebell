@@ -6,15 +6,15 @@ import moment from "moment";
 import {CoreConstants} from "@/app/constants";
 
 /**
- * Individual trade log entry using a TradeRecord
+ * Individual Trade log entry using a TradeRecord
  *
- * @param tradeRecord trade record
+ * @param tradeRecord Trade record
  * @author Stephen Prizio
  * @version 0.0.1
  */
 export default function TradeLogEntry({ tradeRecord }: {tradeRecord: TradeRecord}) {
 
-  const baseClass = "trade-log-entry"
+  const baseClass = "Trade-log-entry"
 
 
   //  RENDER

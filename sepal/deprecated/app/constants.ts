@@ -8,7 +8,7 @@ import {
 export const CoreConstants = {
   Routes: [
     {
-      route: '/account',
+      route: '/Account',
       label: 'Account',
       icon: 'MdAccountCircle',
     },
@@ -18,7 +18,7 @@ export const CoreConstants = {
       icon: 'MdDashboard',
     },
     {
-      route: '/trades',
+      route: '/trades?Account=default',
       label: 'Trade Log',
       icon: 'CgArrowsExchange',
     },
@@ -57,7 +57,7 @@ export const CoreConstants = {
     News: {
       Get: getNewsDomain() + '/get?date={date}',
       GetInterval: getNewsDomain() + '/get-for-interval?start={start}&end={end}',
-      Fetch: getNewsDomain() + '/fetch-news'
+      Fetch: getNewsDomain() + '/fetch-News'
     },
     Trade: {
       GetPaginated: getTradeDomain() + '/for-interval-paged?start={start}&end={end}&accountNumber={accountNumber}&page={page}',

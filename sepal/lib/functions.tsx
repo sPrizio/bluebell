@@ -251,7 +251,7 @@ export function safeConvertEnum(val: string[]): [string, ...string[]] {
 }
 
 /**
- * Returns the first account that has a default account flag set to true
+ * Returns the first Account that has a default Account flag set to true
  *
  * @param accounts array of accounts
  */
@@ -260,9 +260,9 @@ export function getDefaultAccount(accounts: Array<Account>): Account | null {
 }
 
 /**
- * Attempts to find an account matching the given account number
+ * Attempts to find an Account matching the given Account number
  *
- * @param val account number
+ * @param val Account number
  * @param accounts accounts list
  */
 export function getAccount(val: number, accounts: Array<Account>): Account | null {
@@ -274,7 +274,7 @@ export function getAccount(val: number, accounts: Array<Account>): Account | nul
 }
 
 /**
- * Fetches the account number requested by the page
+ * Fetches the Account number requested by the page
  *
  * @param params search params
  * @param accounts accounts list

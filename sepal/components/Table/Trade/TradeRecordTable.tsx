@@ -4,9 +4,9 @@ import {DateTime} from "@/lib/constants";
 import React from "react";
 
 /**
- * Renders a table of trade records
+ * Renders a table of Trade records
  *
- * @param records trade records
+ * @param records Trade records
  * @author Stephen Prizio
  * @version 0.0.1
  */
@@ -25,10 +25,12 @@ export default function TradeRecordTable(
   return (
     <Table>
       <TableHeader className={'border-b-2 border-primaryLight'}>
-        <TableHead className={'text-primary font-bold'}>Date</TableHead>
-        <TableHead className={'text-center text-primary font-bold'}>Trades</TableHead>
-        <TableHead className={'text-center text-primary font-bold'}>Win Rate</TableHead>
-        <TableHead className={'text-right text-primary font-bold'}>P & L</TableHead>
+        <TableRow>
+          <TableHead className={'text-primary font-bold'}>Date</TableHead>
+          <TableHead className={'text-center text-primary font-bold'}>Trades</TableHead>
+          <TableHead className={'text-center text-primary font-bold'}>Win Rate</TableHead>
+          <TableHead className={'text-right text-primary font-bold'}>P & L</TableHead>
+        </TableRow>
       </TableHeader>
       <TableBody>
         {

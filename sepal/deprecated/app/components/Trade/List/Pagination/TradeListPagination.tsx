@@ -2,7 +2,7 @@ import styles from './TradeListPagination.module.scss'
 import React from "react";
 
 /**
- * Pagination elements for a trade list
+ * Pagination elements for a Trade list
  *
  * @param page current page
  * @param pageSize size of page
@@ -30,7 +30,7 @@ function TradeListPagination(
     pageHandler: Function,
   }>) {
 
-  const baseClass = "trade-list-pagination";
+  const baseClass = "Trade-list-pagination";
 
 
   //  GENERAL FUNCTIONS

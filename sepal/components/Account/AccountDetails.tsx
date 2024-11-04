@@ -17,14 +17,14 @@ import AccountEquityChart from "@/components/Chart/Account/AccountEquityChart";
 import {Progress} from "@/components/ui/progress";
 import AccountInsights from "@/components/Account/AccountInsights";
 import AccountStatistics from "@/components/Account/AccountStatistics";
-import TradeRecordTable from "@/components/Table/trade/TradeRecordTable";
-import TradeTable from "@/components/Table/trade/TradeTable";
+import TradeRecordTable from "@/components/Table/Trade/TradeRecordTable";
+import TradeTable from "@/components/Table/Trade/TradeTable";
 import Link from "next/link";
 
 /**
- * Renders the account details layout
+ * Renders the Account details layout
  *
- * @param account account info
+ * @param account Account info
  * @author Stephen Prizio
  * @version 0.0.1
  */
@@ -49,7 +49,7 @@ export default function AccountDetails(
   //  GENERAL FUNCTIONS
 
   /**
-   * Fetches the account details
+   * Fetches the Account details
    */
   async function getAccountDetails() {
     setIsLoading(true)
@@ -120,7 +120,7 @@ export default function AccountDetails(
     <div className={'grid sm:grid-cols-1 lg:grid-cols-2 xl:grid-cols-4 gap-6'}>
       <div className={'sm:col-span-1 lg:col-span-2 xl:col-span-4'}>
         <SimpleBanner
-          text={(account?.active ?? false) ? 'This account is currently active.' : 'This account is marked currently inactive.'}
+          text={(account?.active ?? false) ? 'This Account is currently active.' : 'This Account is marked currently inactive.'}
           variant={(account?.active ?? false) ? 'info' : 'danger'}
         />
       </div>
@@ -132,7 +132,7 @@ export default function AccountDetails(
                 <BaseModal
                   key={0}
                   title={'Import Trades'}
-                  description={'Here you may manually import trades into the account for tracking.'}
+                  description={'Here you may manually import trades into the Account for tracking.'}
                   trigger={<Button className="" variant={"primary"}><IconCirclePlus/>&nbsp;Import Trades</Button>}
                   content={<AccountForm mode={'edit'} account={account}/>}
                 />
@@ -142,7 +142,7 @@ export default function AccountDetails(
             <BaseModal
               key={0}
               title={'Update Trading Account Information'}
-              description={'Here you can edit/update any account information. Note that some aspects of this account cannot be changed after account creation.'}
+              description={'Here you can edit/update any Account information. Note that some aspects of this Account cannot be changed after Account creation.'}
               trigger={<Button className="" variant={"outline"}><IconEdit/>&nbsp;Update</Button>}
               content={<AccountForm mode={'edit'} account={account}/>}
             />
@@ -165,7 +165,7 @@ export default function AccountDetails(
               <BaseCard
                 loading={isLoading}
                 title={'Account Equity'}
-                subtitle={'A look at the evolution of your account since inception.'}
+                subtitle={'A look at the evolution of your Account since inception.'}
                 cardContent={<AccountEquityChart data={accDetails?.equity ?? []} showPoints={showPoints}/>}
                 headerControls={[
                   <div key={0} className="flex items-center space-x-2">
@@ -231,7 +231,7 @@ export default function AccountDetails(
             <BaseCard
               loading={isLoading}
               title={'Insights'}
-              subtitle={'A quick look at some of the key markers of this account\'s performance.'}
+              subtitle={'A quick look at some of the key markers of this Account\'s performance.'}
               cardContent={<AccountInsights insights={accDetails.insights}/>}
             />
             :
@@ -244,7 +244,7 @@ export default function AccountDetails(
             <BaseCard
               loading={isLoading}
               title={'Statistics'}
-              subtitle={'A look some of this account\'s key statistical measures for performance.'}
+              subtitle={'A look some of this Account\'s key statistical measures for performance.'}
               cardContent={<AccountStatistics statistics={accDetails.statistics}/>}
             />
             :
@@ -255,7 +255,7 @@ export default function AccountDetails(
         <BaseCard
           loading={isLoading}
           title={'Performance'}
-          subtitle={'A look at this account\'s recent daily performance.'}
+          subtitle={'A look at this Account\'s recent daily performance.'}
           cardContent={<TradeRecordTable records={dailyTradeRecords}/>}
           headerControls={[
             <Link key={0} href={`/performance?account=${account?.accountNumber}`}>
@@ -268,7 +268,7 @@ export default function AccountDetails(
         <BaseCard
           loading={isLoading}
           title={'Trades'}
-          subtitle={'A view of each trade taken in this account.'}
+          subtitle={'A view of each Trade taken in this Account.'}
           headerControls={[
             <Link key={0} href={`/trades?account=${account?.accountNumber}`}>
               <Button className="" variant={"outline"}><IconExternalLink size={18}/>&nbsp;View All Trades</Button>

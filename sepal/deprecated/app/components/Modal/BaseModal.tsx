@@ -8,7 +8,7 @@ import {CgClose} from "react-icons/cg";
  *
  * @param active flag to show the modal
  * @param title modal title
- * @param content modal custom content
+ * @param content modal custom Content
  * @param hasControls if true, show section for buttons
  * @param submitHandler when buttons are shown, a submit handler is needed
  * @param closeHandler handle closing the modal

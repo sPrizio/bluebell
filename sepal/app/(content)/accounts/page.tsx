@@ -8,7 +8,7 @@ import {Button} from "@/components/ui/button";
 import {IconCirclePlus, IconSquareRoundedCheckFilled} from "@tabler/icons-react";
 import BaseModal from "@/components/Modal/BaseModal";
 import {accounts} from "@/lib/sample-data";
-import AccountsTable from "@/components/Table/account/AccountsTable";
+import AccountsTable from "@/components/Table/Account/AccountsTable";
 import AccountForm from "@/components/Form/account/AccountForm";
 
 /**
@@ -48,7 +48,7 @@ export default function AccountsPage() {
       <div className={'flex flex-row items-center justify-end'}>
         <div>
           <BaseModal title={'Add a new Trading Account'}
-                     description={'Adding a new account will include it as part of your portfolio. If you do not wish to track your account in your portfolio, mark it as inactive. These settings can be changed at anytime from the account page.'}
+                     description={'Adding a new Account will include it as part of your portfolio. If you do not wish to track your Account in your portfolio, mark it as inactive. These settings can be changed at anytime from the Account page.'}
                      trigger={<Button className="w-full text-white"><IconCirclePlus/>&nbsp;Add a new account</Button>}
                      content={<AccountForm mode={'create'}/>}
           />

@@ -5,7 +5,7 @@ import TradeHistoryChart from "@/app/components/Chart/Trade/TradeHistoryChart";
 import {TradeRecord} from "@/app/types/apiTypes";
 
 /**
- * The trade history component, used viewing trade records (summaries of trade sessions)
+ * The Trade history component, used viewing Trade records (summaries of Trade sessions)
  *
  * @param tradeRecord Trade Record
  * @author Stephen Prizio
@@ -13,7 +13,7 @@ import {TradeRecord} from "@/app/types/apiTypes";
  */
 function TradeHistory({tradeRecord = null}: Readonly<{ tradeRecord: TradeRecord | null }>) {
 
-  const baseClass = "trade-history"
+  const baseClass = "Trade-history"
 
 
   //  RENDER

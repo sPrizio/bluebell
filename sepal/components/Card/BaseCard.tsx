@@ -6,7 +6,7 @@ import {Skeleton} from "@/components/ui/skeleton";
  *
  * @param title card title
  * @param subtitle card subtitle
- * @param cardContent card content
+ * @param cardContent card Content
  * @param headerControl card header button
  * @param footerControls card footer buttons
  * @param loading loading flag on the card

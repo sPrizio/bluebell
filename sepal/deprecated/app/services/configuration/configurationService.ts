@@ -37,28 +37,28 @@ export function getChartDomain(): string {
 }
 
 /**
- * Gets the news url
+ * Gets the News url
  *
  * @returns {string} url
  */
 export function getNewsDomain(): string {
-    return getDomain('/news')
+    return getDomain('/News')
 }
 
 /**
- * Gets the trade url
+ * Gets the Trade url
  *
  * @returns {string} url
  */
 export function getTradeDomain(): string {
-    return getDomain('/trade')
+    return getDomain('/Trade')
 }
 
 /**
- * Gets the trade record url
+ * Gets the Trade record url
  *
  * @returns {string} url
  */
 export function getTradeRecordDomain(): string {
-    return getDomain('/trade-record')
+    return getDomain('/Trade-record')
 }

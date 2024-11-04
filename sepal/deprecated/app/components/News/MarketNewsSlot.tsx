@@ -9,10 +9,10 @@ import {FaExclamationCircle} from "react-icons/fa";
 import {BsShieldExclamation} from "react-icons/bs";
 
 /**
- * Component representing a news slot (a time and entry)
+ * Component representing a News slot (a time and entry)
  *
- * @param slot news slot
- * @param isPast if true, this news has already happened
+ * @param slot News slot
+ * @param isPast if true, this News has already happened
  * @author Stephen Prizio
  * @version 0.0.1
  */

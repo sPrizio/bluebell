@@ -12,7 +12,7 @@ import {TradeRecord} from "@/app/types/apiTypes";
  */
 function TradeHistorySummary({tradeRecord = null}: Readonly<{ tradeRecord: TradeRecord | null }>) {
 
-  const baseClass = "trade-history-summary"
+  const baseClass = "Trade-history-summary"
 
 
   //  RENDER

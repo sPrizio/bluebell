@@ -55,11 +55,11 @@ export function CRUDAccountSchema(accInfo: AccountCreationInfo | undefined) {
     defaultAccount: z.boolean(),
     balance: z.coerce.number().min(1, { message: 'Please enter a number between 1 and 999999999.' }).max(999999999, { message: 'Please enter a number between 1 and 999999999.' }),
     active: z.boolean(),
-    name: z.string().min(3, { message: 'Please enter an account name with a minimum of 3 characters.' }).max(75, { message: 'Please enter an account name with at most 75 characters.' }),
+    name: z.string().min(3, { message: 'Please enter an Account name with a minimum of 3 characters.' }).max(75, { message: 'Please enter an Account name with at most 75 characters.' }),
     accountNumber: z.coerce.number().min(1, { message: 'Please enter a number between 1 and 99999999999.' }).max(99999999999, { message: 'Please enter a number between 1 and 99999999999.' }),
     currency: z.enum(safeConvertEnum(accInfo?.currencies?.map(item => item.code) ?? []), { message: 'Please select one of the given currencies.' }),
     broker: z.enum(safeConvertEnum(accInfo?.brokers?.map(item => item.code) ?? []), { message: 'Please select one of the given brokers.' }),
-    accountType: z.enum(safeConvertEnum(accInfo?.accountTypes?.map(item => item.code) ?? []), { message: 'Please select one of the given account types.' }),
+    accountType: z.enum(safeConvertEnum(accInfo?.accountTypes?.map(item => item.code) ?? []), { message: 'Please select one of the given Account types.' }),
     tradePlatform: z.enum(safeConvertEnum(accInfo?.platforms?.map(item => item.code) ?? []), { message: 'Please select one of the given trading platforms.' })
   })
 }

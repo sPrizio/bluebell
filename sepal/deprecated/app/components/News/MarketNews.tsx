@@ -6,9 +6,9 @@ import {CoreConstants} from "@/app/constants";
 import MarketNewsSlot from "@/app/components/News/MarketNewsSlot";
 
 /**
- * Renders market news as a card component
+ * Renders market News as a card component
  *
- * @param news market news
+ * @param news market News
  * @param showOnlyImportant only show the important columns
  * @param hideDate hides the date row headers
  * @author Stephen Prizio

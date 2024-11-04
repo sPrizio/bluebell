@@ -9,7 +9,7 @@ export const metadata: Metadata = {
 /**
  * The base layout for the accounts listing page
  *
- * @param children content
+ * @param children Content
  * @author Stephen Prizio
  * @version 0.0.1
  */

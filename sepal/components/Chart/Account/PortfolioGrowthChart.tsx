@@ -13,9 +13,9 @@ import moment from "moment";
 import {formatNumberForDisplay} from "@/lib/functions";
 
 /**
- * Renders a chart to display an account's growth over time
+ * Renders a chart to display an Account's growth over time
  *
- * @param data account equity data points
+ * @param data Account equity data points
  * @author Stephen Prizio
  * @version 0.0.1
  */
@@ -58,7 +58,7 @@ export default function PortfolioGrowthChart(
   }
 
   /**
-   * Determines if the chart should show more than 1 account
+   * Determines if the chart should show more than 1 Account
    */
   function hasMultipleAccounts() {
 

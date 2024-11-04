@@ -11,11 +11,11 @@ import Image from "next/image";
  * @param title card title
  * @param subtitle card subtitle (if applicable)
  * @param hasBorder show a border underneath the title & subtitle section
- * @param content card content, can accept raw html or Components
+ * @param content card Content, can accept raw html or Components
  * @param controls a list of buttons to show in the footer of the card
- * @param loading loading flag, if true will show a spinner over the card content
+ * @param loading loading flag, if true will show a spinner over the card Content
  * @param hasError error flag, if true will show a default image and text
- * @param hasOverflow if true, will make the content of the card scrollable horizontally
+ * @param hasOverflow if true, will make the Content of the card scrollable horizontally
  *
  * @author Stephen Prizio
  * @version 0.0.1
@@ -68,7 +68,7 @@ function BaseCard(
   //  GENERAL FUNCTIONS
 
   /**
-   * Returns true if the content is overflowing
+   * Returns true if the Content is overflowing
    */
   function isOverflown() {
     if (hasOverflow) {

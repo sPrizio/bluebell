@@ -18,9 +18,9 @@ import {
 } from "@tabler/icons-react";
 
 /**
- * Renders a card for displaying trade records
+ * Renders a card for displaying Trade records
  *
- * @param tradeRecord trade record
+ * @param tradeRecord Trade record
  * @param aggInterval aggregated interval
  * @author Stephen Prizio
  * @version 0.0.1

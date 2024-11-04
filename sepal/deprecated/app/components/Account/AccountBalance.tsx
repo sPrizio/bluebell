@@ -4,14 +4,14 @@ import {formatNumberForDisplay} from "@/app/services/data/dataIntegrityService";
 import {HiOutlineTrendingUp} from "react-icons/hi";
 
 /**
- * Component that shows an account's balance
+ * Component that shows an Account's balance
  *
  * @author Stephen Prizio
  * @version 0.0.1
  */
 function AccountBalance() {
 
-  const baseClass = "account-balance"
+  const baseClass = "Account-balance"
 
 
   //  RENDER

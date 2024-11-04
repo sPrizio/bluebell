@@ -5,7 +5,7 @@ import {CoreConstants} from "@/app/constants";
 
 function TradeHistoryChart() {
 
-  const baseClass = "trade-history-chart"
+  const baseClass = "Trade-history-chart"
 
   const data = [
     {

@@ -19,7 +19,7 @@ import {SepalModalContext, useSepalModalContext} from "@/lib/context/SepalContex
  * @param trigger component to trigger the modal
  * @param title modal title
  * @param description subtitle
- * @param content modal content
+ * @param content modal Content
  * @param closeHandler custom handler on modal close
  * @author Stephen Prizio
  * @version 0.0.1

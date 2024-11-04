@@ -14,9 +14,9 @@ interface InternalEquityPoint {
 }
 
 /**
- * Renders a chart to display an account's growth over time
+ * Renders a chart to display an Account's growth over time
  *
- * @param data account equity data points
+ * @param data Account equity data points
  * @param showPoints show balance or points
  * @author Stephen Prizio
  * @version 0.0.1

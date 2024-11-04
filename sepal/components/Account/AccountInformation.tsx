@@ -5,9 +5,9 @@ import {DateTime} from "@/lib/constants";
 import {formatNumberForDisplay, getBrokerImageForCode, getFlagForCode} from "@/lib/functions";
 
 /**
- * Renders basic account information
+ * Renders basic Account information
  *
- * @param account account info
+ * @param account Account info
  * @author Stephen Prizio
  * @version 0.0.1
  */

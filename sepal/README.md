@@ -12,14 +12,14 @@ Current Release: **Pre-release**
 - ALP
 - ADP
 - Transactions
+- Performance
+- Trades
+- Market News
 
 ### Integrated Pages
 None
 
 ### Pages In Progress or Not Started
-- Performance
-- Trades
-- Market News
 - Profile
 - Login
 

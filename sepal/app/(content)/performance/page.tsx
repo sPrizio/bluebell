@@ -23,7 +23,7 @@ import {Label} from "@/components/ui/label";
 import TradeRecordCard from "@/components/Card/Trade/TradeRecordCard";
 
 /**
- * The page that shows an account's performance over time
+ * The page that shows an Account's performance over time
  *
  * @author Stephen Prizio
  * @version 0.0.1
@@ -71,7 +71,7 @@ export default function PerformancePage() {
       {label: 'Dashboard', href: '/dashboard', active: false},
       {label: 'Accounts', href: '/accounts', active: false},
       {label: accNumber.toString(), href: '/accounts/' + accNumber, active: false},
-      {label: 'Performance', href: '/performance?account=default', active: true},
+      {label: 'Performance', href: '/performance?Account=default', active: true},
     ])
 
     getTradeRecords()
@@ -85,7 +85,7 @@ export default function PerformancePage() {
       {label: 'Dashboard', href: '/dashboard', active: false},
       {label: 'Accounts', href: '/accounts', active: false},
       {label: accNumber.toString(), href: '/accounts/' + accNumber, active: false},
-      {label: 'Performance', href: '/performance?account=default', active: true},
+      {label: 'Performance', href: '/performance?Account=default', active: true},
     ])
 
     setAccNumber(accNumber)
@@ -101,7 +101,7 @@ export default function PerformancePage() {
   //  GENERAL FUNCTIONS
 
   /**
-   * Fetches the trade records
+   * Fetches the Trade records
    */
   async function getTradeRecords() {
 
@@ -124,7 +124,7 @@ export default function PerformancePage() {
 
   //TODO: temp
   /**
-   * Obtains the controls data for trade record filters
+   * Obtains the controls data for Trade record filters
    */
   async function getTradeRecordControls() {
     setControls(tradeRecordControls)

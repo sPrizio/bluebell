@@ -10,7 +10,7 @@ import {CoreConstants} from "@/app/constants";
 import {getAuthHeader} from "@/app/services/configuration/configurationService";
 
 /**
- * The default layout for the market news page
+ * The default layout for the market News page
  *
  * @param children react components
  * @author Stephen Prizio
@@ -18,7 +18,7 @@ import {getAuthHeader} from "@/app/services/configuration/configurationService";
  */
 export default function MarketNewsLayout({children}: { children: React.ReactNode }) {
 
-  const baseClass = "news-layout"
+  const baseClass = "News-layout"
   const [isLoading, setIsLoading] = useState(false)
 
   //  TODO TEMP: only show these controls if an admin is logged in
@@ -39,7 +39,7 @@ export default function MarketNewsLayout({children}: { children: React.ReactNode
   //  GENERAL FUNCTIONS
 
   /**
-   * Calls the fetch news endpoint to trigger flowerpot to obtain up-to-date news
+   * Calls the fetch News endpoint to trigger flowerpot to obtain up-to-date News
    */
   async function fetchNews() {
 

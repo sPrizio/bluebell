@@ -2,9 +2,9 @@ import React from "react";
 import {formatNumberForDisplay} from "@/lib/functions";
 
 /**
- * Renders an account's insights
+ * Renders an Account's insights
  *
- * @param insights account insights
+ * @param insights Account insights
  * @author Stephen Prizio
  * @version 0.0.1
  */

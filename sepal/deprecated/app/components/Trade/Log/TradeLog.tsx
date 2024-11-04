@@ -11,7 +11,7 @@ import TradeLogEntry from "@/app/components/Trade/Log/TradeLogEntry";
  */
 export default function TradeLog({tradeRecords = []}: Readonly<{ tradeRecords: TradeRecord[] }>) {
 
-  const baseClass = "trade-log"
+  const baseClass = "Trade-log"
 
 
   //  RENDER

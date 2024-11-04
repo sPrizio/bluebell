@@ -10,7 +10,7 @@ import {Loader2} from "lucide-react";
 import AccountDetails from "@/components/Account/AccountDetails";
 
 /**
- * Renders the account details page
+ * Renders the Account details page
  *
  * @author Stephen Prizio
  * @version 0.0.1
@@ -52,7 +52,7 @@ export default function AccountDetailPage() {
   //  GENERAL FUNCTIONS
 
   /**
-   * Fetches the associated account information
+   * Fetches the associated Account information
    */
   async function getAccount() {
 
@@ -74,7 +74,7 @@ export default function AccountDetailPage() {
   }
 
   /**
-   * Computes a dynamic account description
+   * Computes a dynamic Account description
    */
   function computeDescription() {
     let string = ''

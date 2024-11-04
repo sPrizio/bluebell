@@ -13,7 +13,7 @@ import {getAuthHeader} from "@/app/services/configuration/configurationService";
 import {StandardJsonResponse, TradeRecord} from "@/app/types/apiTypes";
 
 /**
- * Page that displays trade history for different time periods, aggregated by different intervals
+ * Page that displays Trade history for different time periods, aggregated by different intervals
  *
  * @author Stephen Prizio
  * @version 0.0.1
@@ -127,7 +127,7 @@ export default function TradingHistory() {
   }
 
   /**
-   * Obtains the most recent trade records
+   * Obtains the most recent Trade records
    */
   async function getTradeRecords() {
 
@@ -158,7 +158,7 @@ export default function TradingHistory() {
     setIsLoading(false)
   }
 
-  //TODO: trade history chart
+  //TODO: Trade history chart
 
   //  RENDER
 

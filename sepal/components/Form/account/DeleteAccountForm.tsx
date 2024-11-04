@@ -11,7 +11,7 @@ import {useRouter} from 'next/navigation'
 /**
  * Renders a form for deleting accounts
  *
- * @param account account
+ * @param account Account
  * @author Stephen Prizio
  * @version 0.0.1
  */
@@ -34,7 +34,7 @@ export default function DeleteAccountForm(
       toast(
         {
           title: 'Deletion Successful!',
-          description: 'Your trading account was successfully deleted.',
+          description: 'Your trading Account was successfully deleted.',
           variant: 'success'
         }
       )
@@ -42,7 +42,7 @@ export default function DeleteAccountForm(
       toast(
         {
           title: 'Deletion Failed!',
-          description: 'An error occurred while deleting your trading account. Please try again.',
+          description: 'An error occurred while deleting your trading Account. Please try again.',
           variant: 'danger'
         }
       )
@@ -53,7 +53,7 @@ export default function DeleteAccountForm(
   //  GENERAL FUNCTIONS
 
   /**
-   * Deletes the account
+   * Deletes the Account
    */
   async function handleDelete() {
 

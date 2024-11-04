@@ -3,13 +3,13 @@ import type {Metadata} from "next";
 
 export const metadata: Metadata = {
   title: "Performance - bluebell",
-  description: "View your account's performance",
+  description: "View your Account's performance",
 };
 
 /**
  * The base layout for the performance page
  *
- * @param children content
+ * @param children Content
  * @author Stephen Prizio
  * @version 0.0.1
  */

@@ -1,7 +1,7 @@
 /**
  * Renders a simple message banner
  *
- * @param text content
+ * @param text Content
  * @param alignment positioning
  * @param variant color variant
  * @author Stephen Prizio
@@ -40,7 +40,7 @@ export default function SimpleBanner(
   }
 
   /**
-   * Computes the alignment of the content
+   * Computes the alignment of the Content
    */
   function computeAlignment() {
     switch (alignment) {

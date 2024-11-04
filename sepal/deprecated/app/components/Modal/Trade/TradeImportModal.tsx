@@ -18,7 +18,7 @@ import {getAuthHeader} from "@/app/services/configuration/configurationService";
  */
 function TradeImportModal({active = false, closeHandler}: Readonly<{ active: boolean, closeHandler: Function }>) {
 
-  const baseClass = "trade-import-modal"
+  const baseClass = "Trade-import-modal"
 
   const [isLoading, setIsLoading] = useState(false)
   const [fileInputKey, setFileInputKey] = useState<number>(1)

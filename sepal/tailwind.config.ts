@@ -63,7 +63,10 @@ const config = {
   			primaryRedLight: '#f6c9c9',
   			primaryYellow: 'rgb(217, 119, 6)',
   			primaryYellowLight: '#fddeb9',
-  			primaryGrey: 'rgb(100, 116, 139)'
+  			primaryGrey: 'rgb(100, 116, 139)',
+				threatSevere: 'rgb(220, 38, 38)',
+				threatModerate: 'rgb(245, 154, 60)',
+				threatLow: 'rgb(249, 228, 46)',
   		},
   		fontFamily: {
   			sans: ["var(--font-sans)", ...fontFamily.sans]
@@ -82,7 +85,7 @@ const config = {
   					height: '0'
   				},
   				to: {
-  					height: 'var(--radix-accordion-content-height)'
+  					height: 'var(--radix-accordion-Content-height)'
   				}
   			},
   			'scroll': {
@@ -92,7 +95,7 @@ const config = {
   			},
   			'accordion-up': {
   				from: {
-  					height: 'var(--radix-accordion-content-height)'
+  					height: 'var(--radix-accordion-Content-height)'
   				},
   				to: {
   					height: '0'
@@ -103,12 +106,12 @@ const config = {
   					height: '0'
   				},
   				to: {
-  					height: 'var(--radix-collapsible-content-height)'
+  					height: 'var(--radix-collapsible-Content-height)'
   				}
   			},
   			'collapsible-up': {
   				from: {
-  					height: 'var(--radix-collapsible-content-height)'
+  					height: 'var(--radix-collapsible-Content-height)'
   				},
   				to: {
   					height: '0'

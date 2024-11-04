@@ -2,7 +2,7 @@ import {formatNumberForDisplay, resolveIcon} from "@/lib/functions";
 import {Icons} from "@/lib/enums";
 
 /**
- * Component that renders small cards meant to act as overview account summaries
+ * Component that renders small cards meant to act as overview Account summaries
  *
  * @param prefix text to inject before value
  * @param value value

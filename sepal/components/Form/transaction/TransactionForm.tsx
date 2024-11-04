@@ -20,7 +20,7 @@ import moment from "moment";
  * Renders a form that can create or update a transaction
  *
  * @param mode should create / edit
- * @param account account info
+ * @param account Account info
  * @param transaction transaction info
  * @author Stephen Prizio
  * @version 0.0.1
@@ -101,7 +101,7 @@ export default function TransactionForm(
   }
 
   /**
-   * Returns true if the form is set to be in create mode, i.e. creating a new account
+   * Returns true if the form is set to be in create mode, i.e. creating a new Account
    */
   function isCreateMode() {
     return mode === 'create';

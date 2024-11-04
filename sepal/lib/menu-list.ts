@@ -60,17 +60,17 @@ export function getMenuList(pathname: string): Group[] {
           ]*/
         },
         {
-          href: "/transactions?account=default",
+          href: "/transactions?Account=default",
           label: "Transactions",
           icon: ArrowRightLeft
         },
         {
-          href: "/performance?account=default",
+          href: "/performance?Account=default",
           label: "Performance",
           icon: ChartScatter
         },
         {
-          href: "/trades",
+          href: "/trades?Account=default",
           label: "Trades",
           icon: ReplaceAll
         }
@@ -80,7 +80,7 @@ export function getMenuList(pathname: string): Group[] {
       groupLabel: "Insights",
       menus: [
         {
-          href: "/market-news",
+          href: "/news",
           label: "Market News",
           icon: Newspaper
         },

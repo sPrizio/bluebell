@@ -17,7 +17,7 @@ import {DateTime} from "@/lib/constants";
 /**
  * Trade history table showing days and all accounts traded on that day
  *
- * @param log trade log
+ * @param log Trade log
  * @author Stephen Prizio
  * @version 0.0.1
  */
@@ -38,10 +38,10 @@ export default function TradeLogTable(
       <TableCaption>
         <div className={"flex items-center justify-center gap-1 pb-2"}>
           <div className={""}>
-            <Link href={'/performance?account=default'}>View Full Performance</Link>
+            <Link href={'/performance?Account=default'}>View Full Performance</Link>
           </div>
           <div className={""}>
-            <Link href={'/performance?account=default'}><IconExternalLink size={18}/></Link>
+            <Link href={'/performance?Account=default'}><IconExternalLink size={18}/></Link>
           </div>
         </div>
       </TableCaption>

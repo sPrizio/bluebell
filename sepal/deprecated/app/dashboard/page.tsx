@@ -36,7 +36,7 @@ export default function Dashboard() {
   //  GENERAL FUNCTIONS
 
   /**
-   * Obtains this week's news
+   * Obtains this week's News
    */
   async function getNews() {
 
@@ -65,7 +65,7 @@ export default function Dashboard() {
   }
 
   /**
-   * Obtains the most recent trade records
+   * Obtains the most recent Trade records
    */
   async function getTradeRecords() {
 
@@ -140,7 +140,7 @@ export default function Dashboard() {
             <BaseCard
               loading={isLoading}
               title={'Activity'}
-              subtitle={'A look at your account activity'}
+              subtitle={'A look at your Account activity'}
               hasBorder={false}
               hasOverflow={false}
               content={[<AccountActivity key={0} />]}

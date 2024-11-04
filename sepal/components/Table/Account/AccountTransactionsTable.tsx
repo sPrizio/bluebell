@@ -24,10 +24,10 @@ import DeleteTransactionForm from "@/components/Form/transaction/DeleteTransacti
 
 
 /**
- * Renders the account transactions as a table
+ * Renders the Account transactions as a table
  *
- * @param account account
- * @param transactions list of account transactions
+ * @param account Account
+ * @param transactions list of Account transactions
  * @param showActions shows the modification actions
  * @param showBottomLink show table caption
  * @author Stephen Prizio
@@ -91,7 +91,7 @@ export default function AccountTransactionsTable(
             <TableCaption>
               <div className={"flex items-center justify-center gap-1 pb-2"}>
                 <div className={""}>
-                  <Link href={'/transactions?account=default'}>View All Transactions</Link>
+                  <Link href={'/transactions?Account=default'}>View All Transactions</Link>
                 </div>
                 <div className={""}>
                   <Link href={'#'}><IconExternalLink size={18}/></Link>
@@ -170,7 +170,7 @@ export default function AccountTransactionsTable(
           <BaseModal
             isOpen={modalActive && showModal === 'edit'}
             title={'Edit Transaction'}
-            description={'Keep track of your account\'s transactions by adding withdrawals & deposits.'}
+            description={'Keep track of your Account\'s transactions by adding withdrawals & deposits.'}
             content={<TransactionForm account={account} mode={'edit'} transaction={transaction}/>}
             closeHandler={() => {
               if (showModal !== 'none' && modalActive) {
@@ -185,7 +185,7 @@ export default function AccountTransactionsTable(
           <BaseModal
             isOpen={modalActive && showModal === 'delete'}
             title={'Edit Transaction'}
-            description={'Keep track of your account\'s transactions by adding withdrawals & deposits.'}
+            description={'Keep track of your Account\'s transactions by adding withdrawals & deposits.'}
             content={<DeleteTransactionForm account={account} transaction={transaction} />}
             closeHandler={() => {
               if (showModal !== 'none' && modalActive) {

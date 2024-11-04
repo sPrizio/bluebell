@@ -11,7 +11,7 @@ import {Loader2} from "lucide-react";
 /**
  * Renders a form for deleting transactions
  *
- * @param account account
+ * @param account Account
  * @param transaction
  * @author Stephen Prizio
  * @version 0.0.1

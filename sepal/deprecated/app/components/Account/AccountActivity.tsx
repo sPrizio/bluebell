@@ -5,14 +5,14 @@ import {CoreConstants} from "@/app/constants";
 import {formatNumberForDisplay} from "@/app/services/data/dataIntegrityService";
 
 /**
- * Component that shows an account's activity
+ * Component that shows an Account's activity
  *
  * @author Stephen Prizio
  * @version 0.0.1
  */
 export default function AccountActivity() {
 
-  const baseClass = "account-activity";
+  const baseClass = "Account-activity";
 
   const data = [
     {

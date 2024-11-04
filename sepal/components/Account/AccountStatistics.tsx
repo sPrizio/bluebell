@@ -2,9 +2,9 @@ import React from "react";
 import {formatNumberForDisplay} from "@/lib/functions";
 
 /**
- * Renders the account's statistics
+ * Renders the Account's statistics
  *
- * @param statistics account statistics
+ * @param statistics Account statistics
  * @author Stephen Prizio
  * @version 0.0.1
  */

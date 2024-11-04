@@ -8,14 +8,14 @@ import {HiOutlineTrendingDown, HiOutlineTrendingUp} from "react-icons/hi";
 import {FaArrowsAltH} from "react-icons/fa";
 
 /**
- * Renders the account equity graph
+ * Renders the Account equity graph
  *
  * @author Stephen Prizio
  * @version 0.0.1
  */
 function AccountEquityChart() {
 
-  const baseClass = "account-equity-chart"
+  const baseClass = "Account-equity-chart"
   const data = [
     {
       "date": "2024-01-01",

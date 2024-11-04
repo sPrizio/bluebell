@@ -50,7 +50,7 @@ function NavBar() {
             </Link>
           </div>
           <div className={styles[`${baseClass}__item`]}>
-            <NavBarItem route={'/trades'} label={'Trades'} active={'/trades' === currentTab}
+            <NavBarItem route={'/trades?Account=default'} label={'Trades'} active={'/trades' === currentTab}
                         icon={resolveIcon('CgArrowsExchange')} handler={handleClick}/>
           </div>
           <div className={styles[`${baseClass}__item`]}>
@@ -58,7 +58,7 @@ function NavBar() {
                         icon={resolveIcon('MdOutlineHistory')} handler={handleClick}/>
           </div>
           <div className={styles[`${baseClass}__item`]}>
-            <NavBarItem route={'/news'} label={'Market News'} active={'/news' === currentTab}
+            <NavBarItem route={'/News'} label={'Market News'} active={'/News' === currentTab}
                         icon={resolveIcon('FaNewspaper')} handler={handleClick}/>
           </div>
           <div className={styles[`${baseClass}__item`]}>
@@ -72,7 +72,7 @@ function NavBar() {
             <UserMenu
               active={userMenuActive}
               options={[
-                {label: 'Account', link: '/account', icon: 'VscAccount'},
+                {label: 'Account', link: '/Account', icon: 'VscAccount'},
                 {label: 'Report an Issue', link: '/report', icon: 'BsPatchExclamation'},
                 {label: 'Switch Accounts', link: '/swap', icon: 'PiUserSwitchLight'},
                 {label: 'Sign Out', link: '/logout', icon: 'RiLogoutCircleLine'}

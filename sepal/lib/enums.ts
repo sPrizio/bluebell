@@ -23,7 +23,7 @@ export enum Icons {
 }
 
 /**
- * Enum representing trade record intervals for aggregating data
+ * Enum representing Trade record intervals for aggregating data
  */
 export class AggregateInterval {
 

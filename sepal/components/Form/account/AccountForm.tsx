@@ -26,10 +26,10 @@ import {CRUDAccountSchema} from "@/lib/constants";
 import {Switch} from "@/components/ui/switch";
 
 /**
- * Renders a form that can create or update an account
+ * Renders a form that can create or update an Account
  *
  * @param create should create / edit
- * @param account account info
+ * @param account Account info
  * @author Stephen Prizio
  */
 export default function AccountForm(
@@ -58,7 +58,7 @@ export default function AccountForm(
       toast(
         {
           title: isCreateMode() ? 'Account Created!' : 'Account Updated!',
-          description: isCreateMode() ? 'Your new trading account was successfully created.' : 'Your trading account was updated successfully.',
+          description: isCreateMode() ? 'Your new trading Account was successfully created.' : 'Your trading Account was updated successfully.',
           variant: 'success'
         }
       )
@@ -66,7 +66,7 @@ export default function AccountForm(
       toast(
         {
           title: isCreateMode() ? 'Creation Failed!' : 'Update Failed!',
-          description: isCreateMode() ? 'An error occurred while creating new trading account. Please check your inputs and try again.' : 'An error occurred while updating your trading account. Please check your inputs and try again.',
+          description: isCreateMode() ? 'An error occurred while creating new trading Account. Please check your inputs and try again.' : 'An error occurred while updating your trading Account. Please check your inputs and try again.',
           variant: 'danger'
         }
       )
@@ -77,7 +77,7 @@ export default function AccountForm(
   const formSchema = CRUDAccountSchema(accInfo)
 
   if (!isCreateMode() && (!account || !account.accountNumber)) {
-    throw new Error('Missing account for edit mode');
+    throw new Error('Missing Account for edit mode');
   }
 
   const form = useForm<z.infer<typeof formSchema>>({
@@ -116,7 +116,7 @@ export default function AccountForm(
   }
 
   /**
-   * Fetches the account creation information
+   * Fetches the Account creation information
    */
   async function getAccountCreationInfo() {
 
@@ -129,7 +129,7 @@ export default function AccountForm(
   }
 
   /**
-   * Returns true if the form is set to be in create mode, i.e. creating a new account
+   * Returns true if the form is set to be in create mode, i.e. creating a new Account
    */
   function isCreateMode() {
     return mode === 'create';

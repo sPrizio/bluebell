@@ -14,7 +14,7 @@ const fontSans = FontSans({
 export const metadata: Metadata = {
   title: "bluebell",
   description: "bluebell Wealth Management is a software system designed to help track a trader's progress as they navigate the wonderfully tumultuous environment that is the stock market. " +
-    "The system will aim to track trades through each day, offer basic insights and helpful news as well as a place to manage trading accounts. Additionally, bluebell offers basic " +
+    "The system will aim to track trades through each day, offer basic insights and helpful News as well as a place to manage trading accounts. Additionally, bluebell offers basic " +
     "charting capabilities for back-testing and custom strategies that leverage real-world data to establish a successful trading system that can be used to execute mechanical systems trades",
 };
 

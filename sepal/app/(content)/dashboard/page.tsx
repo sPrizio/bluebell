@@ -5,13 +5,13 @@ import {Icons} from "@/lib/enums";
 import {useSepalPageInfoContext} from "@/lib/context/SepalContext";
 import {BaseCard} from "@/components/Card/BaseCard";
 import {Button} from "@/components/ui/button";
-import DashboardContent from "@/components/Card/content/DashboardContent";
+import DashboardContent from "@/components/Card/Content/DashboardContent";
 import {resolveIcon} from "@/lib/functions";
-import AccountsTable from "@/components/Table/account/AccountsTable";
+import AccountsTable from "@/components/Table/Account/AccountsTable";
 import {IconCirclePlus} from "@tabler/icons-react";
-import TradeLogTable from "@/components/Table/trade/TradeLogTable";
+import TradeLogTable from "@/components/Table/Trade/TradeLogTable";
 import {accounts, chartData, tradeLog} from "@/lib/sample-data";
-import AccountTransactionsTable from "@/components/Table/account/AccountTransactionsTable";
+import AccountTransactionsTable from "@/components/Table/Account/AccountTransactionsTable";
 import PortfolioGrowthChart from "@/components/Chart/Account/PortfolioGrowthChart";
 import BaseModal from "@/components/Modal/BaseModal";
 import AccountForm from "@/components/Form/account/AccountForm";
@@ -112,7 +112,7 @@ export default function DashboardPage() {
         <div className={""}>
           <BaseCard
             title={'Transaction Activity'}
-            subtitle={'Your most recent account transactions.'}
+            subtitle={'Your most recent Account transactions.'}
             cardContent={
               <AccountTransactionsTable
                 account={accounts[0]}

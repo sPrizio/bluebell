@@ -7,14 +7,14 @@ import {notFound, useSearchParams} from 'next/navigation'
 import {getAccount, getAccountNumber} from "@/lib/functions";
 import {BaseCard} from "@/components/Card/BaseCard";
 import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from "@/components/ui/select";
-import AccountTransactionsTable from "@/components/Table/account/AccountTransactionsTable";
+import AccountTransactionsTable from "@/components/Table/Account/AccountTransactionsTable";
 import {Button} from "@/components/ui/button";
 import {IconCirclePlus} from "@tabler/icons-react";
 import BaseModal from "@/components/Modal/BaseModal";
 import TransactionForm from "@/components/Form/transaction/TransactionForm";
 
 /**
- * The page that shows all of a user's account's transactions. Accounts can be cycled
+ * The page that shows all of a user's Account's transactions. Accounts can be cycled
  *
  * @author Stephen Prizio
  * @version 0.0.1
@@ -46,7 +46,7 @@ export default function TransactionsPage() {
 
   useEffect(() => {
     setPageTitle('Transactions')
-    setPageSubtitle('A list of transactions for trading account ' + accNumber)
+    setPageSubtitle('A list of transactions for trading Account ' + accNumber)
     setPageIconCode(Icons.Transactions)
     setBreadcrumbs([
       {label: 'Dashboard', href: '/dashboard', active: false},
@@ -58,7 +58,7 @@ export default function TransactionsPage() {
 
   useEffect(() => {
     setPageTitle('Transactions')
-    setPageSubtitle('A list of transactions for trading account ' + accNumber)
+    setPageSubtitle('A list of transactions for trading Account ' + accNumber)
     setPageIconCode(Icons.Transactions)
     setBreadcrumbs([
       {label: 'Dashboard', href: '/dashboard', active: false},
@@ -83,7 +83,7 @@ export default function TransactionsPage() {
           </SelectTrigger>
           <SelectContent>
             {
-              user.accounts.map(item => {
+              user.accounts.map((item : Account) => {
                 return (
                   <SelectItem key={item.uid} value={item.accountNumber.toString()}>{item.name}</SelectItem>
                 )
@@ -98,13 +98,13 @@ export default function TransactionsPage() {
             <BaseCard
               loading={isLoading}
               title={'Transactions'}
-              subtitle={'A look at all of your transactions for the given account.'}
+              subtitle={'A look at all of your transactions for the given Account.'}
               cardContent={<AccountTransactionsTable account={account} transactions={account.transactions} showActions={true} showBottomLink={false} />}
               headerControls={[
                 <BaseModal
                   key={0}
                   title={'Add a new Transaction'}
-                  description={'Keep track of your account\'s transactions by adding withdrawals & deposits.'}
+                  description={'Keep track of your Account\'s transactions by adding withdrawals & deposits.'}
                   trigger={<Button className="w-full text-white"><IconCirclePlus/>&nbsp;Add Transaction</Button>}
                   content={<TransactionForm account={account} mode={'create'}/>}
                 />

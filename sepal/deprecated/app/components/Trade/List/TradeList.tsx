@@ -26,7 +26,7 @@ function TradeList({hasAdmin = false, trades, paginationHandler}: Readonly<{
   paginationHandler: Function
 }>) {
 
-  const baseClass = 'trade-list'
+  const baseClass = 'Trade-list'
   const [adminDeleteActive, setAdminDeleteActive] = useState(false)
 
 

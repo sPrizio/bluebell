@@ -8,9 +8,9 @@ import {ContentLayout} from "@/components/ui/admin-panel/content-layout";
 import {sampleUser} from "@/lib/sample-data";
 
 /**
- * Generic layout for content pages
+ * Generic layout for Content pages
  *
- * @param children content
+ * @param children Content
  * @author Stephen Prizio
  * @version 0.0.1
  */

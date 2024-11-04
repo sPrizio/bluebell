@@ -10,14 +10,14 @@ import MarketNews from "@/app/components/News/MarketNews";
 import {getAuthHeader} from "@/app/services/configuration/configurationService";
 
 /**
- * The market news page
+ * The market News page
  *
  * @author Stephen Prizio
  * @version 0.0.1
  */
 export default function News() {
 
-  const baseClass = "news-page"
+  const baseClass = "News-page"
 
   const [isLoading, setIsLoading] = useState(false)
   const [news, setNews] = useState<Array<News>>([])
@@ -27,7 +27,7 @@ export default function News() {
   }, []);
 
   /**
-   * Obtains this week's news
+   * Obtains this week's News
    */
   async function getNews() {
 
