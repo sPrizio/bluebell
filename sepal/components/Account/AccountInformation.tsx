@@ -3,6 +3,7 @@ import {Table, TableBody, TableCell, TableRow} from "@/components/ui/table";
 import moment from "moment";
 import {DateTime} from "@/lib/constants";
 import {formatNumberForDisplay, getBrokerImageForCode, getFlagForCode} from "@/lib/functions";
+import Badge from "@/components/Badge/Badge";
 
 /**
  * Renders basic Account information
@@ -81,7 +82,7 @@ export default function AccountInformation(
           </TableRow>
           <TableRow className={'hover:bg-transparent'}>
             <TableCell className={getHeaderColumnStyles()}>Status</TableCell>
-            <TableCell>{(account?.active ?? false ? 'Active' : 'Inactive')}</TableCell>
+            <TableCell>{(account?.active ?? false ? <Badge text={'Active'} variant={'success'} /> : <Badge text={'Inactive'} variant={'danger'} />)}</TableCell>
           </TableRow>
           <TableRow className={'hover:bg-transparent'}>
             <TableCell className={getHeaderColumnStyles()}>Broker</TableCell>

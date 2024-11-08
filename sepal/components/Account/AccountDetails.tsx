@@ -120,7 +120,7 @@ export default function AccountDetails(
     <div className={'grid sm:grid-cols-1 lg:grid-cols-2 xl:grid-cols-4 gap-6'}>
       <div className={'sm:col-span-1 lg:col-span-2 xl:col-span-4'}>
         <SimpleBanner
-          text={(account?.active ?? false) ? 'This Account is currently active.' : 'This Account is marked currently inactive.'}
+          text={(account?.active ?? false) ? 'This account is currently active.' : 'This account is marked currently inactive.'}
           variant={(account?.active ?? false) ? 'info' : 'danger'}
         />
       </div>

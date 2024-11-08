@@ -754,6 +754,13 @@ export const phoneNumbers: Array<PhoneNumber> = [
     countryCode: '1',
     telephoneNumber: 5149411025,
     display: '+1 (514) 941-1025'
+  },
+  {
+    uid: 'stephen-work',
+    phoneType: 'WORK',
+    countryCode: '1',
+    telephoneNumber: 5141234567,
+    display: '+1 (514) 123-4567'
   }
 ]
 

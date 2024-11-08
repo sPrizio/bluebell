@@ -7,6 +7,7 @@ import {formatNumberForDisplay, getBrokerImageForCode, getFlagForCode, getRoundF
 import moment from "moment";
 import {DateTime} from "@/lib/constants";
 import {useRouter} from "next/navigation";
+import Badge from "@/components/Badge/Badge";
 
 /**
  * Renders a table containing the user's active accounts
@@ -130,15 +131,21 @@ export default function AccountsTable(
                           <TableCell className={''}>
                             {
                               (item.accountCloseTime === '-1' || !item.accountCloseTime || item.accountCloseTime.length === 0) ?
-                                <p>Active</p> : moment(item.accountCloseTime).format(DateTime.ISOShortMonthDayYearWithTimeFormat)
+                                <Badge text={'Open'} variant={'success'} /> : moment(item.accountCloseTime).format(DateTime.ISOShortMonthDayYearWithTimeFormat)
                             }
                           </TableCell>
-                          <TableCell className={'text-center flex items-center justify-center'}>
-                            {getFlagForCode(item.currency.label)}
+                          <TableCell className={'text-center flex items-center justify-center h-full'}>
+                            <div className={'mt-2'}>
+                              {getFlagForCode(item.currency.label)}
+                            </div>
                           </TableCell>
                           <TableCell className={'text-center'}>{item.tradePlatform.label}</TableCell>
                           <TableCell className={'text-center'}>{item.accountType.label}</TableCell>
-                          <TableCell className={'text-center flex items-center justify-center'}>{getBrokerImage(item.broker.code)}</TableCell>
+                          <TableCell className={'text-center flex items-center justify-center'}>
+                            <div className={'mt-2'}>
+                              {getBrokerImage(item.broker.code)}
+                            </div>
+                          </TableCell>
                           <TableCell className={''}>{moment(item.lastTraded).format(DateTime.ISOShortMonthDayYearWithTimeFormat)}</TableCell>
                           <TableCell className="text-right">${formatNumberForDisplay(item.balance)}</TableCell>
                         </TableRow>

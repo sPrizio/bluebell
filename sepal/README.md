@@ -22,6 +22,7 @@ None
 ### Pages In Progress or Not Started
 - Profile
 - Login
+- Registration Modal (from Login page)
 
 ---
 
