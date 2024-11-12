@@ -5,7 +5,7 @@ import {useEffect, useState} from "react";
 import {Icons} from "@/lib/enums";
 import {BaseCard} from "@/components/Card/BaseCard";
 import {Button} from "@/components/ui/button";
-import {delay} from "@/lib/functions";
+import {delay} from "@/lib/functions/util-functions";
 import {Loader2} from "lucide-react";
 import {marketNews} from "@/lib/sample-data";
 import NewsTable from "@/components/Table/News/NewsTable";

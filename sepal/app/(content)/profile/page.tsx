@@ -5,13 +5,11 @@ import React, {useEffect, useState} from "react";
 import {Icons} from "@/lib/enums";
 import {BaseCard} from "@/components/Card/BaseCard";
 import {Button} from "@/components/ui/button";
-import {Loader2} from "lucide-react";
-import {IconCirclePlus, IconEdit} from "@tabler/icons-react";
-import TransactionForm from "@/components/Form/transaction/TransactionForm";
+import {IconEdit} from "@tabler/icons-react";
 import BaseModal from "@/components/Modal/BaseModal";
-import AccountForm from "@/components/Form/account/AccountForm";
 import moment from "moment";
 import {DateTime} from "@/lib/constants";
+import UserForm from "@/components/Form/User/UserForm";
 
 /**
  * Renders the user profile page
@@ -72,7 +70,6 @@ export default function ProfilePage() {
 
   return (
     <div className={''}>
-      <p>BUILD OUT UPDATE FORM</p>
       <BaseCard
         title={'Profile Information'}
         subtitle={'Your profile at a glance'}
@@ -107,10 +104,10 @@ export default function ProfilePage() {
         headerControls={[
           <BaseModal
             key={0}
-            title={'Update Trading Account Information'}
-            description={'Here you can edit/update any Account information. Note that some aspects of this Account cannot be changed after Account creation.'}
+            title={'Update Profile Information'}
+            description={'Here you can edit/update any Profile information. Note that some aspects of this profile cannot be changed after registration.'}
             trigger={<Button className="" variant={"outline"}><IconEdit/>&nbsp;Edit</Button>}
-            content={<></>}
+            content={<UserForm mode={'edit'} user={user} />}
           />
         ]}
       />

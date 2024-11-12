@@ -2,7 +2,7 @@ import React from "react";
 import {Table, TableBody, TableCell, TableRow} from "@/components/ui/table";
 import moment from "moment";
 import {DateTime} from "@/lib/constants";
-import {formatNumberForDisplay, getBrokerImageForCode, getFlagForCode} from "@/lib/functions";
+import {formatNumberForDisplay, getBrokerImageForCode, getFlagForCode} from "@/lib/functions/util-functions";
 import Badge from "@/components/Badge/Badge";
 
 /**

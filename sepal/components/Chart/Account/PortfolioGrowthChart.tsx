@@ -10,7 +10,7 @@ import {IconPointFilled} from "@tabler/icons-react";
 import Please from 'pleasejs/dist/Please';
 import {BaseCard} from "@/components/Card/BaseCard";
 import moment from "moment";
-import {formatNumberForDisplay} from "@/lib/functions";
+import {formatNumberForDisplay} from "@/lib/functions/util-functions";
 
 /**
  * Renders a chart to display an Account's growth over time

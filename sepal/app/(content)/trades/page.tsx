@@ -3,7 +3,7 @@
 import {useSepalPageInfoContext} from "@/lib/context/SepalContext";
 import {notFound, useSearchParams} from "next/navigation";
 import React, {useEffect, useState} from "react";
-import {delay, getAccount, getAccountNumber} from "@/lib/functions";
+import {delay, getAccount, getAccountNumber} from "@/lib/functions/util-functions";
 import {Icons} from "@/lib/enums";
 import {trades} from "@/lib/sample-data";
 import {Loader2} from "lucide-react";
@@ -50,7 +50,7 @@ export default function TradesPage() {
       {label: 'Dashboard', href: '/dashboard', active: false},
       {label: 'Accounts', href: '/accounts', active: false},
       {label: accNumber.toString(), href: '/accounts/' + accNumber, active: false},
-      {label: 'Trades', href: '/trades?Account=default', active: true},
+      {label: 'Trades', href: '/trades?account=default', active: true},
     ])
 
     getTrades()
@@ -64,7 +64,7 @@ export default function TradesPage() {
       {label: 'Dashboard', href: '/dashboard', active: false},
       {label: 'Accounts', href: '/accounts', active: false},
       {label: accNumber.toString(), href: '/accounts/' + accNumber, active: false},
-      {label: 'Trades', href: '/trades?Account=default', active: true},
+      {label: 'Trades', href: '/trades?account=default', active: true},
     ])
 
     setAccNumber(accNumber)

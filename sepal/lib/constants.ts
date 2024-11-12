@@ -1,10 +1,13 @@
 //  each page has a header section that can contain an icon, this is the icon's size
 import {z} from "zod";
-import {safeConvertEnum} from "@/lib/functions";
+import {safeConvertEnum} from "@/lib/functions/util-functions";
+import {hasEmail, hasUsername} from "@/lib/functions/account-functions";
 
 export const DEFAULT_PAGE_HEADER_SECTION_ICON_SIZE = 36;
 
 export const BASE_COLORS = ['red', 'green', 'blue', 'orange', 'pink', 'grey', 'black']
+
+export const PHONE_REGEX = "^\\s*(?:\\+?(\\d{1,3}))?[-. (]*(\\d{3})[-. )]*(\\d{3})[-. ]*(\\d{4})(?: *x(\\d+))?\\s*$";
 
 export const ApiCredentials = {
   AuthHeader: 'fp-api_token',
@@ -72,5 +75,23 @@ export function CRUDTransactionSchema() {
     type: z.enum(safeConvertEnum(['Deposit', 'Withdrawal']), { message: 'Please select a transaction type.' }),
     amount: z.coerce.number().min(1, { message: 'Please enter a number between 1 and 999999999.' }).max(999999999, { message: 'Please enter a number between 1 and 999999999.' }),
     account: z.coerce.number()
+  })
+}
+
+export function CRUDUserSchema(editMode: boolean) {
+  return z.object({
+    firstName: z.string().min(3, { message: 'Please enter a first name with a minimum of 3 characters.' }).max(75, { message: 'Please enter a first name with at most 75 characters.' }),
+    lastName: z.string().min(3, { message: 'Please enter a last name with a minimum of 3 characters.' }).max(75, { message: 'Please enter a last name with at most 75 characters.' }),
+    username: z.string().min(3, { message: 'Please enter a username with a minimum of 3 characters.' }).max(75, { message: 'Please enter a username with at most 75 characters.' }).refine((val) => !hasUsername(val, editMode), { message: 'Username already in use. Please try another one.' }),
+    email: z.string().email().refine((val) => !hasEmail(val, editMode), { message: 'Email already in use. Please try another one.' }),
+    phoneType: z.enum(safeConvertEnum(['MOBILE', 'HOME', 'OTHER']), {message: 'Please select one of the given phone types.'}),
+    telephoneNumber: z.string().min(10, { message: 'Please enter a phone number with a minimum of 10 digits.' }).max(10, { message: 'Please enter a maximum of 10 digits' })
+  })
+}
+
+export function LoginSchema() {
+  return z.object({
+    username: z.string().min(3, { message: 'Please enter a username with a minimum of 3 characters.' }).max(75, { message: 'Please enter a username with at most 75 characters.' }),
+    password: z.string().min(8, { message: 'Please enter a password with a minimum of 8 characters.' })
   })
 }

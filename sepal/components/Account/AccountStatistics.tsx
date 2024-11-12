@@ -1,5 +1,5 @@
 import React from "react";
-import {formatNumberForDisplay} from "@/lib/functions";
+import {formatNumberForDisplay} from "@/lib/functions/util-functions";
 
 /**
  * Renders the Account's statistics

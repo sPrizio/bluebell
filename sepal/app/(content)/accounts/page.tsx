@@ -9,7 +9,7 @@ import {IconCirclePlus, IconSquareRoundedCheckFilled} from "@tabler/icons-react"
 import BaseModal from "@/components/Modal/BaseModal";
 import {accounts} from "@/lib/sample-data";
 import AccountsTable from "@/components/Table/Account/AccountsTable";
-import AccountForm from "@/components/Form/account/AccountForm";
+import AccountForm from "@/components/Form/Account/AccountForm";
 
 /**
  * The page that shows all of a user's accounts

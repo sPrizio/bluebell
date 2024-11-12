@@ -4,7 +4,7 @@ import {Table, TableBody, TableCell, TableHead, TableHeader, TableRow} from "@/c
 import moment from "moment/moment";
 import {DateTime} from "@/lib/constants";
 import React, {useEffect, useState} from "react";
-import {formatNegativePoints, formatNumberForDisplay} from "@/lib/functions";
+import {formatNegativePoints, formatNumberForDisplay} from "@/lib/functions/util-functions";
 import {
   Pagination,
   PaginationContent,

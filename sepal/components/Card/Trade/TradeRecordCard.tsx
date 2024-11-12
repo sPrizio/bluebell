@@ -8,7 +8,7 @@ import {DateTime} from "@/lib/constants";
 import {Label} from "@/components/ui/label";
 import {Switch} from "@/components/ui/switch";
 import {useState} from "react";
-import {formatNegativePoints, formatNumberForDisplay} from "@/lib/functions";
+import {formatNegativePoints, formatNumberForDisplay} from "@/lib/functions/util-functions";
 import {
   IconArrowUp,
   IconArrowUpCircle, IconCircleArrowDownFilled,

@@ -10,7 +10,7 @@ import {
 } from "@/components/ui/table"
 import {IconExternalLink} from "@tabler/icons-react";
 import Link from "next/link";
-import {formatNegativePoints, formatNumberForDisplay} from "@/lib/functions";
+import {formatNegativePoints, formatNumberForDisplay} from "@/lib/functions/util-functions";
 import moment from "moment";
 import {DateTime} from "@/lib/constants";
 
@@ -38,10 +38,10 @@ export default function TradeLogTable(
       <TableCaption>
         <div className={"flex items-center justify-center gap-1 pb-2"}>
           <div className={""}>
-            <Link href={'/performance?Account=default'}>View Full Performance</Link>
+            <Link href={'/performance?account=default'}>View Full Performance</Link>
           </div>
           <div className={""}>
-            <Link href={'/performance?Account=default'}><IconExternalLink size={18}/></Link>
+            <Link href={'/performance?account=default'}><IconExternalLink size={18}/></Link>
           </div>
         </div>
       </TableCaption>

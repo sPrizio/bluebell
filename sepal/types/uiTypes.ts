@@ -1,6 +1,6 @@
 import {AggregateInterval} from "@/lib/enums";
 
-interface PageInfoContext {
+export interface PageInfoContext {
   pageTitle: string,
   pageSubtitle: string,
   pageIconCode: string,
@@ -13,24 +13,24 @@ interface PageInfoContext {
   setUser: React.Dispatch<React.SetStateAction<User>>,
 }
 
-interface SidebarNavigationLinkType {
+export interface SidebarNavigationLinkType {
   label: string,
   href: string,
   icon: React.ReactNode
 }
 
-interface ModalContext {
+export interface ModalContext {
   open: boolean,
   setOpen: React.Dispatch<React.SetStateAction<boolean>>
 }
 
-interface AppLink {
+export interface AppLink {
   href: string,
   label: string,
   active: boolean
 }
 
-interface UserTradeRecordControlSelection {
+export interface UserTradeRecordControlSelection {
   aggInterval: AggregateInterval,
   month: string,
   year: string,

@@ -6,7 +6,7 @@ import {NameType, ValueType,} from 'recharts/types/component/DefaultTooltipConte
 import {Css, DateTime} from "@/lib/constants";
 import {BaseCard} from "@/components/Card/BaseCard";
 import moment from "moment";
-import {formatNumberForDisplay} from "@/lib/functions";
+import {formatNumberForDisplay} from "@/lib/functions/util-functions";
 
 interface InternalEquityPoint {
   date: string,

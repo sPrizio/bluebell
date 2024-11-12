@@ -1,4 +1,4 @@
-import {formatNumberForDisplay, resolveIcon} from "@/lib/functions";
+import {formatNumberForDisplay, resolveIcon} from "@/lib/functions/util-functions";
 import {Icons} from "@/lib/enums";
 
 /**

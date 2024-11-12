@@ -5,7 +5,7 @@ import Link from "next/link";
 import {IconEdit, IconExternalLink, IconPointFilled, IconTrash} from "@tabler/icons-react";
 import moment from "moment/moment";
 import {DateTime} from "@/lib/constants";
-import {formatNumberForDisplay} from "@/lib/functions";
+import {formatNumberForDisplay} from "@/lib/functions/util-functions";
 import React, {useEffect, useState} from "react";
 
 import {Button} from "@/components/ui/button"
@@ -18,9 +18,9 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import TransactionForm from "@/components/Form/transaction/TransactionForm";
+import TransactionForm from "@/components/Form/Transaction/TransactionForm";
 import BaseModal from "@/components/Modal/BaseModal";
-import DeleteTransactionForm from "@/components/Form/transaction/DeleteTransactionForm";
+import DeleteTransactionForm from "@/components/Form/Transaction/DeleteTransactionForm";
 
 
 /**
@@ -91,7 +91,7 @@ export default function AccountTransactionsTable(
             <TableCaption>
               <div className={"flex items-center justify-center gap-1 pb-2"}>
                 <div className={""}>
-                  <Link href={'/transactions?Account=default'}>View All Transactions</Link>
+                  <Link href={'/transactions?account=default'}>View All Transactions</Link>
                 </div>
                 <div className={""}>
                   <Link href={'#'}><IconExternalLink size={18}/></Link>

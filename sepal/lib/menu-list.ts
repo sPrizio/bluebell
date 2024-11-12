@@ -60,17 +60,17 @@ export function getMenuList(pathname: string): Group[] {
           ]*/
         },
         {
-          href: "/transactions?Account=default",
+          href: "/transactions?account=default",
           label: "Transactions",
           icon: ArrowRightLeft
         },
         {
-          href: "/performance?Account=default",
+          href: "/performance?account=default",
           label: "Performance",
           icon: ChartScatter
         },
         {
-          href: "/trades?Account=default",
+          href: "/trades?account=default",
           label: "Trades",
           icon: ReplaceAll
         }

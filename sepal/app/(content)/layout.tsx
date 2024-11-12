@@ -3,9 +3,11 @@
 import React, {useState} from "react";
 import {SepalPageInfoContext} from "@/lib/context/SepalContext";
 import PageHeaderSection from "@/components/Section/PageHeaderSection";
-import {ScrollArea} from "@/components/ui/scroll-area";
 import {ContentLayout} from "@/components/ui/admin-panel/content-layout";
 import {sampleUser} from "@/lib/sample-data";
+import {AppLink} from "@/types/uiTypes";
+import AdminPanelLayout from "@/components/ui/admin-panel/admin-panel-layout";
+import {Toaster} from "@/components/ui/toaster";
 
 /**
  * Generic layout for Content pages
@@ -44,19 +46,22 @@ export default function ContentPageLayout(
       setBreadcrumbs,
       setUser
     }}>
-      <ContentLayout title={''}>
-        <div className={""}>
-          <PageHeaderSection
-            title={pageTitle}
-            subtitle={pageSubtitle}
-            iconCode={pageIconCode}
-            breadcrumbs={breadcrumbs}
-          />
-          <div className={''}>
-            {children}
+      <AdminPanelLayout>
+        <ContentLayout title={''}>
+          <div className={""}>
+            <PageHeaderSection
+              title={pageTitle}
+              subtitle={pageSubtitle}
+              iconCode={pageIconCode}
+              breadcrumbs={breadcrumbs}
+            />
+            <div className={''}>
+              {children}
+            </div>
           </div>
-        </div>
-      </ContentLayout>
+        </ContentLayout>
+        <Toaster />
+      </AdminPanelLayout>
     </SepalPageInfoContext.Provider>
   )
 }

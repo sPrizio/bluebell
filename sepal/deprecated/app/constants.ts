@@ -18,7 +18,7 @@ export const CoreConstants = {
       icon: 'MdDashboard',
     },
     {
-      route: '/trades?Account=default',
+      route: '/trades?account=default',
       label: 'Trade Log',
       icon: 'CgArrowsExchange',
     },

@@ -20,7 +20,7 @@ import {accountCreationInfo} from "@/lib/sample-data";
 import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from "@/components/ui/select";
 import {Loader2} from "lucide-react";
 import {useSepalModalContext} from "@/lib/context/SepalContext";
-import {delay} from "@/lib/functions";
+import {delay} from "@/lib/functions/util-functions";
 import { useToast } from "@/hooks/use-toast"
 import {CRUDAccountSchema} from "@/lib/constants";
 import {Switch} from "@/components/ui/switch";
@@ -31,6 +31,7 @@ import {Switch} from "@/components/ui/switch";
  * @param create should create / edit
  * @param account Account info
  * @author Stephen Prizio
+ * @version 0.0.1
  */
 export default function AccountForm(
   {

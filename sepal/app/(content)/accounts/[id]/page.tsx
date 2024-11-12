@@ -4,7 +4,7 @@ import {useSepalPageInfoContext} from "@/lib/context/SepalContext";
 import React, {useEffect, useState} from "react";
 import {Icons} from "@/lib/enums";
 import {useParams, useRouter} from "next/navigation";
-import {delay, isNumeric} from "@/lib/functions";
+import {delay, isNumeric} from "@/lib/functions/util-functions";
 import {accounts} from "@/lib/sample-data";
 import {Loader2} from "lucide-react";
 import AccountDetails from "@/components/Account/AccountDetails";

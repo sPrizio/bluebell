@@ -50,7 +50,7 @@ function NavBar() {
             </Link>
           </div>
           <div className={styles[`${baseClass}__item`]}>
-            <NavBarItem route={'/trades?Account=default'} label={'Trades'} active={'/trades' === currentTab}
+            <NavBarItem route={'/trades?account=default'} label={'Trades'} active={'/trades' === currentTab}
                         icon={resolveIcon('CgArrowsExchange')} handler={handleClick}/>
           </div>
           <div className={styles[`${baseClass}__item`]}>

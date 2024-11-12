@@ -4,14 +4,14 @@ import {useSepalPageInfoContext} from "@/lib/context/SepalContext";
 import React, {useEffect, useState} from "react";
 import {Icons} from "@/lib/enums";
 import {notFound, useSearchParams} from 'next/navigation'
-import {getAccount, getAccountNumber} from "@/lib/functions";
+import {getAccount, getAccountNumber} from "@/lib/functions/util-functions";
 import {BaseCard} from "@/components/Card/BaseCard";
 import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from "@/components/ui/select";
 import AccountTransactionsTable from "@/components/Table/Account/AccountTransactionsTable";
 import {Button} from "@/components/ui/button";
 import {IconCirclePlus} from "@tabler/icons-react";
 import BaseModal from "@/components/Modal/BaseModal";
-import TransactionForm from "@/components/Form/transaction/TransactionForm";
+import TransactionForm from "@/components/Form/Transaction/TransactionForm";
 
 /**
  * The page that shows all of a user's Account's transactions. Accounts can be cycled

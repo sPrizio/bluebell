@@ -3,8 +3,6 @@ import "./globals.css";
 import {Inter as FontSans} from "next/font/google"
 import {cn} from "@/lib/utils";
 import React from "react";
-import {Toaster} from "@/components/ui/toaster";
-import AdminPanelLayout from "@/components/ui/admin-panel/admin-panel-layout";
 
 const fontSans = FontSans({
   subsets: ["latin"],
@@ -34,10 +32,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={cn("min-h-screen font-sans antialiased text-slate-600 bg-[#f6f8fb] tracking-tighter", fontSans.variable)}>
-      <AdminPanelLayout>
-        {children}
-        <Toaster />
-      </AdminPanelLayout>
+      {children}
       </body>
     </html>
   );

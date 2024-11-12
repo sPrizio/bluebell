@@ -4,7 +4,7 @@ import {Button} from "@/components/ui/button";
 import {Loader2} from "lucide-react";
 import {useEffect, useState} from "react";
 import {useSepalModalContext} from "@/lib/context/SepalContext";
-import {delay} from "@/lib/functions";
+import {delay} from "@/lib/functions/util-functions";
 import {toast} from "@/hooks/use-toast";
 import {useRouter} from 'next/navigation'
 

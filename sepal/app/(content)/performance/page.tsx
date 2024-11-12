@@ -4,7 +4,7 @@ import {notFound, useSearchParams} from "next/navigation";
 import React, {useEffect, useState} from "react";
 import {AggregateInterval, Icons} from "@/lib/enums";
 import {useSepalPageInfoContext} from "@/lib/context/SepalContext";
-import {delay, getAccount, getAccountNumber} from "@/lib/functions";
+import {delay, getAccount, getAccountNumber} from "@/lib/functions/util-functions";
 import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from "@/components/ui/select";
 import {dailyTradeRecords, monthlyTradeRecords, tradeRecordControls, yearlyTradeRecords} from "@/lib/sample-data";
 import {Loader2} from "lucide-react";
@@ -21,6 +21,7 @@ import {
 } from "@/components/ui/drawer"
 import {Label} from "@/components/ui/label";
 import TradeRecordCard from "@/components/Card/Trade/TradeRecordCard";
+import {UserTradeRecordControlSelection} from "@/types/uiTypes";
 
 /**
  * The page that shows an Account's performance over time
@@ -71,7 +72,7 @@ export default function PerformancePage() {
       {label: 'Dashboard', href: '/dashboard', active: false},
       {label: 'Accounts', href: '/accounts', active: false},
       {label: accNumber.toString(), href: '/accounts/' + accNumber, active: false},
-      {label: 'Performance', href: '/performance?Account=default', active: true},
+      {label: 'Performance', href: '/performance?account=default', active: true},
     ])
 
     getTradeRecords()
@@ -85,7 +86,7 @@ export default function PerformancePage() {
       {label: 'Dashboard', href: '/dashboard', active: false},
       {label: 'Accounts', href: '/accounts', active: false},
       {label: accNumber.toString(), href: '/accounts/' + accNumber, active: false},
-      {label: 'Performance', href: '/performance?Account=default', active: true},
+      {label: 'Performance', href: '/performance?account=default', active: true},
     ])
 
     setAccNumber(accNumber)
