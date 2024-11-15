@@ -85,7 +85,17 @@ export function CRUDUserSchema(editMode: boolean) {
     username: z.string().min(3, { message: 'Please enter a username with a minimum of 3 characters.' }).max(75, { message: 'Please enter a username with at most 75 characters.' }).refine((val) => !hasUsername(val, editMode), { message: 'Username already in use. Please try another one.' }),
     email: z.string().email().refine((val) => !hasEmail(val, editMode), { message: 'Email already in use. Please try another one.' }),
     phoneType: z.enum(safeConvertEnum(['MOBILE', 'HOME', 'OTHER']), {message: 'Please select one of the given phone types.'}),
-    telephoneNumber: z.string().min(10, { message: 'Please enter a phone number with a minimum of 10 digits.' }).max(10, { message: 'Please enter a maximum of 10 digits' })
+    telephoneNumber: z.string().min(10, { message: 'Please enter a phone number with a minimum of 10 digits.' }).max(10, { message: 'Please enter a maximum of 10 digits' }),
+    password: z.string().min(8, { message: 'Please enter a password with a minimum of 8 characters.' }),
+    confirmPassword: z.string().min(8, { message: 'Please enter a password with a minimum of 8 characters.' })
+  }).superRefine(({ confirmPassword, password }, ctx) => {
+    if (confirmPassword !== password) {
+      ctx.addIssue({
+        code: "custom",
+        message: "The passwords do not match. Please re-check your inputs",
+        path: ['confirmPassword']
+      });
+    }
   })
 }
 
@@ -93,5 +103,11 @@ export function LoginSchema() {
   return z.object({
     username: z.string().min(3, { message: 'Please enter a username with a minimum of 3 characters.' }).max(75, { message: 'Please enter a username with at most 75 characters.' }),
     password: z.string().min(8, { message: 'Please enter a password with a minimum of 8 characters.' })
+  })
+}
+
+export function ForgotPasswordSchema() {
+  return z.object({
+    email: z.string().email({ message: 'Please enter a valid email address.' }),
   })
 }

@@ -69,7 +69,9 @@ export default function UserForm(
       username: user?.username ?? '',
       email: user?.email ?? '',
       phoneType: user?.phones?.[0]?.phoneType.toUpperCase() ?? 'MOBILE',
-      telephoneNumber: user?.phones?.[0]?.telephoneNumber.toString() ?? ''
+      telephoneNumber: user?.phones?.[0]?.telephoneNumber.toString() ?? '',
+      password: 'this is a temp password that is unused.',
+      confirmPassword: 'this is a temp password that is unused.',
     }
   })
 

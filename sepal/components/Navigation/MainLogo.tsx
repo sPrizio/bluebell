@@ -1,4 +1,5 @@
 'use client'
+
 import Image from "next/image";
 import brandTertiary from '../../app/assets/brand/bluebell/bluebell_tertiary.png';
 import brandWhite from '../../app/assets/brand/bluebell/bluebell_white.png';
@@ -16,9 +17,11 @@ import Link from "next/link";
 export default function MainLogo(
   {
     variant = 'primary',
+    size = 65
   }
     : Readonly<{
     variant?: 'primary' | 'secondary' | 'tertiary' | 'white' | 'transparent',
+    size?: number;
   }>
 ) {
 
@@ -63,7 +66,7 @@ export default function MainLogo(
 
   return (
     <Link href={'/home'}>
-      <Image src={determineImage()} height={windowSize[0] < 992 ? 50 : 65} alt={'Brand Logo'}/>
+      <Image src={determineImage()} height={windowSize[0] < 992 ? 50 : size} alt={'Brand Logo'}/>
     </Link>
   )
 }
