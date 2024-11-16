@@ -16,15 +16,15 @@ Current Release: **Pre-release**
 - Trades
 - Market News
 - Profile
+- Forgot Password
+- Register Page
+- Login Page
 
 ### Integrated Pages
 None
 
 ### Pages In Progress or Not Started
-- Login
-- Registration Modal (from Login page)
 - Loading & Compiling transitory page
-- Forgot Password
 
 ---
 

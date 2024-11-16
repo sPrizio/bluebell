@@ -2,6 +2,8 @@
 import {z} from "zod";
 import {safeConvertEnum} from "@/lib/functions/util-functions";
 import {hasEmail, hasUsername} from "@/lib/functions/account-functions";
+import {isValidPassword} from "@/lib/functions/security-functions";
+import parsePhoneNumberFromString from "libphonenumber-js";
 
 export const DEFAULT_PAGE_HEADER_SECTION_ICON_SIZE = 36;
 
@@ -85,10 +87,41 @@ export function CRUDUserSchema(editMode: boolean) {
     username: z.string().min(3, { message: 'Please enter a username with a minimum of 3 characters.' }).max(75, { message: 'Please enter a username with at most 75 characters.' }).refine((val) => !hasUsername(val, editMode), { message: 'Username already in use. Please try another one.' }),
     email: z.string().email().refine((val) => !hasEmail(val, editMode), { message: 'Email already in use. Please try another one.' }),
     phoneType: z.enum(safeConvertEnum(['MOBILE', 'HOME', 'OTHER']), {message: 'Please select one of the given phone types.'}),
-    telephoneNumber: z.string().min(10, { message: 'Please enter a phone number with a minimum of 10 digits.' }).max(10, { message: 'Please enter a maximum of 10 digits' }),
+    telephoneNumber: z.string().min(10, { message: 'A phone number was be exactly 10 digits.' }).max(10, { message: 'A phone number must be exactly 10 digits.' }).transform((arg, ctx) => {
+      const phone = parsePhoneNumberFromString(arg, {
+        // set this to use a default country when the phone number omits country code
+        defaultCountry: 'US',
+
+        // set to false to require that the whole string is exactly a phone number,
+        // otherwise, it will search for a phone number anywhere within the string
+        extract: false,
+      });
+
+      // when it's good
+      if (phone && phone.isValid()) {
+        console.log(phone.formatNational());
+        return phone.formatNational();
+      }
+
+      // when it's not
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: 'The phone number was invalid.',
+      });
+
+      return z.NEVER;
+    }),
     password: z.string().min(8, { message: 'Please enter a password with a minimum of 8 characters.' }),
     confirmPassword: z.string().min(8, { message: 'Please enter a password with a minimum of 8 characters.' })
   }).superRefine(({ confirmPassword, password }, ctx) => {
+    if (!isValidPassword(password)) {
+      ctx.addIssue({
+        code: 'custom',
+        message: 'Password did not satisfy acceptance criteria. Please ensure your password contains a mix of letters, digits & symbols.',
+        path: ['password'],
+      })
+    }
+
     if (confirmPassword !== password) {
       ctx.addIssue({
         code: "custom",
