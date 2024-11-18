@@ -24,7 +24,6 @@ Current Release: **Pre-release**
 None
 
 ### Pages In Progress or Not Started
-- Loading & Compiling transitory page
 
 ---
 

@@ -55,8 +55,7 @@ export default function AccountsPage() {
         </div>
       </div>
       <div className={'flex items-center text-sm justify-end w-full'}>
-        *&nbsp;The&nbsp;&nbsp;<span className={'inline-block'}><IconSquareRoundedCheckFilled className={'text-primary'} /></span>&nbsp;&nbsp;indicates a default account. A default account
-        is the account that will be shown in the performance section on initial view. The default account can be changed at any time.
+        <span className={'inline-block'}><IconSquareRoundedCheckFilled className={'text-primary'} /></span>&nbsp;&nbsp;indicates default account.
       </div>
       <div className={''}>
         <BaseCard
