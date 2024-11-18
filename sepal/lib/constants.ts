@@ -160,3 +160,20 @@ export function ForgotPasswordSchema() {
     email: z.string().email({ message: 'Please enter a valid email address.' }),
   })
 }
+
+export function TradeImportSchema() {
+  return z.object({
+    filename: z
+      .instanceof(FileList)
+      .refine((file) => file?.length == 1, 'File is required.'),
+  })/*.superRefine(({ filename }, ctx) => {
+    const suffix = filename.substring(filename.indexOf('.') + 1);
+    if (!(suffix === 'csv' || suffix === 'html')) {
+      ctx.addIssue({
+        code: "custom",
+        message: "The given file was not a csv or html file.",
+        path: ['filename']
+      });
+    }
+  })*/
+}

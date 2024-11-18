@@ -20,6 +20,7 @@ import AccountStatistics from "@/components/Account/AccountStatistics";
 import TradeRecordTable from "@/components/Table/Trade/TradeRecordTable";
 import TradeTable from "@/components/Table/Trade/TradeTable";
 import Link from "next/link";
+import ImportTradesForm from "@/components/Form/Trade/ImportTradesForm";
 
 /**
  * Renders the Account details layout
@@ -132,9 +133,9 @@ export default function AccountDetails(
                 <BaseModal
                   key={0}
                   title={'Import Trades'}
-                  description={'Here you may manually import trades into the Account for tracking.'}
+                  description={'Here you may manually import trades into the account for tracking.'}
                   trigger={<Button className="" variant={"primary"}><IconCirclePlus/>&nbsp;Import Trades</Button>}
-                  content={<AccountForm mode={'edit'} account={account}/>}
+                  content={<ImportTradesForm />}
                 />
               </div> : null
           }
