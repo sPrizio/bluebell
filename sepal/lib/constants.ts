@@ -113,7 +113,7 @@ export function CRUDUserSchema(editMode: boolean) {
     }),
     password: z.string().min(8, { message: 'Please enter a password with a minimum of 8 characters.' }),
     confirmPassword: z.string().min(8, { message: 'Please enter a password with a minimum of 8 characters.' })
-  }).superRefine(({ confirmPassword, password }, ctx) => {
+  }).superRefine(({ confirmPassword, password, username, email }, ctx) => {
     if (!isValidPassword(password)) {
       ctx.addIssue({
         code: 'custom',
@@ -127,6 +127,22 @@ export function CRUDUserSchema(editMode: boolean) {
         code: "custom",
         message: "The passwords do not match. Please re-check your inputs",
         path: ['confirmPassword']
+      });
+    }
+
+    if (hasUsername(username, editMode)) {
+      ctx.addIssue({
+        code: "custom",
+        message: "That username is already taken, please try another.",
+        path: ['username']
+      });
+    }
+
+    if (hasEmail(email, editMode)) {
+      ctx.addIssue({
+        code: "custom",
+        message: "That email is already in use, please try another.",
+        path: ['email']
       });
     }
   })

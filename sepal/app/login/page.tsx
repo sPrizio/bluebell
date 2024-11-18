@@ -19,8 +19,8 @@ import {
   IconMailFilled
 } from "@tabler/icons-react";
 import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from "@/components/ui/select";
-import {isValidPassword} from "@/lib/functions/security-functions";
 import parsePhoneNumberFromString from "libphonenumber-js";
+import SimpleMessage from "@/components/Message/SimpleMessage";
 
 /**
  * Renders the login page
@@ -143,10 +143,14 @@ export default function Login() {
       case 'register':
         return ' max-w-[450px] '
       default:
-        return ' max-w-[375px] '
+        return ' max-w-[400px] '
     }
   }
 
+  /**
+   * Cleans the phone number for display purposes
+   * @param val
+   */
   function sanitizeTelephoneNumber(val: string) {
 
     let returnVal = val.replace(/[^0-9]/gi, '')
@@ -175,6 +179,7 @@ export default function Login() {
     <div className={'h-[100vh] flex items-center justify-center w-full'}>
       <div className={'grid grid-cols-1 justify-items-center w-full'}>
         <div className={'mb-6'}>
+          <p>Existing username/email messages notifications</p>
           <div className={'flex items-center justify-center'}>
             <MainLogo size={100}/>
           </div>
@@ -182,6 +187,18 @@ export default function Login() {
         <div className={'bg-white rounded-2xl shadow-lg p-8 w-4/5 lg:w-3/5 ' + computeMaxWidth()}>
           <div className={'grid grid-cols-1 items-center mb-6 text-center'}>
             <div className={'font-bold tracking-tighter text-md text-tertiary p-2'}>{computeDisplayText()}</div>
+            {
+              (state === 'login' && success === 'failed') ?
+                <SimpleMessage text={'An error occurred during login. Please check your inputs and try again.'} variant={'danger'} alignment={'left'} /> : null
+            }
+            {
+              (state === 'forgot' && success === 'success') ?
+                <SimpleMessage text={'If an account associated with the given email exists, a password email will have been sent.'} variant={'info'} /> : null
+            }
+            {
+              (state === 'register' && success === 'failed') ?
+                <SimpleMessage text={'Your account could not be created. Please check your inputs and try again.'} variant={'danger'} /> : null
+            }
           </div>
           {
             state === 'login' ?
@@ -256,11 +273,20 @@ export default function Login() {
                 <div className={'col-span-2 mt-8 text-center'}>
                   <div className={'grid grid-cols-2 gap-2 items-center'}>
                     <div className={'text-left'}>
-                      <Button variant={'ghost'} className={'text-current'} onClick={() => setState('forgot')}>Trouble
-                        logging in?</Button>
+                      <Button variant={'ghost'} className={'text-current'} onClick={() => {
+                        setState('forgot')
+                        setSuccess('undefined')
+                      }}>
+                        Trouble logging in?
+                      </Button>
                     </div>
                     <div className={'text-right'}>
-                      <Button variant={'ghost'} className={'text-current'} onClick={() => setState("register")}>Create Account</Button>
+                      <Button variant={'ghost'} className={'text-current'} onClick={() => {
+                        setState("register")
+                        setSuccess('undefined')
+                      }}>
+                        Create Account
+                      </Button>
                     </div>
                   </div>
                 </div>
@@ -498,6 +524,7 @@ export default function Login() {
                                 <div className={'mt-2'}>
                                   <Button type="button" className={'w-full'} variant={"ghost"} onClick={() => {
                                     setShowRegisterForm(false)
+                                    setSuccess('undefined')
                                     registerForm.reset()
                                   }}>
                                     Cancel
