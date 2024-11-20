@@ -11,10 +11,13 @@ import com.bluebell.planter.core.models.entities.system.PhoneNumber;
 import com.bluebell.planter.core.repositories.system.PhoneNumberRepository;
 import jakarta.annotation.Resource;
 import org.apache.commons.collections4.MapUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
 import java.util.Map;
 import java.util.Optional;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import static com.bluebell.planter.core.validation.GenericValidator.validateNonNegativeValue;
 import static com.bluebell.planter.core.validation.GenericValidator.validateParameterIsNotNull;
@@ -132,9 +135,32 @@ public class PhoneNumberService {
 
         phoneNumber.setPhoneType(PhoneType.valueOf(ud.get("phoneType").toString()));
         phoneNumber.setCountryCode(Short.parseShort(ud.get("countryCode").toString()));
-        phoneNumber.setTelephoneNumber(Long.parseLong(ud.get("telephoneNumber").toString()));
+        phoneNumber.setTelephoneNumber(parseTelephoneNumber(ud.get("telephoneNumber").toString()));
         phoneNumber.setUser(user);
 
         return this.phoneNumberRepository.save(phoneNumber);
+    }
+
+    /**
+     * Parses a phone number
+     *
+     * @param telephoneNumber input string
+     * @return long
+     */
+    private Long parseTelephoneNumber(final String telephoneNumber) {
+
+        if (StringUtils.isEmpty(telephoneNumber)) {
+            throw new UnsupportedOperationException("Invalid phone number");
+        }
+
+        Pattern pattern = Pattern.compile(CoreConstants.PHONE_NUMBER_REGEX);
+        Matcher matcher = pattern.matcher(telephoneNumber);
+        boolean found = matcher.find();
+
+        if (found) {
+            return Long.parseLong(matcher.group(2) + matcher.group(3) + matcher.group(4));
+        }
+
+        throw new UnsupportedOperationException("Invalid phone number");
     }
 }

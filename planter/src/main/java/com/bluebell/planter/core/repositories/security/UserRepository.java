@@ -29,4 +29,11 @@ public interface UserRepository extends PagingAndSortingRepository<User, Long>, 
      * @return {@link User}, can return null
      */
     User findUserByEmail(final String email);
+
+    /**
+     * Deletes a {@link User} by their email
+     *
+     * @param email email
+     */
+    void deleteUserByEmail(final String email);
 }

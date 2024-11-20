@@ -2,6 +2,8 @@ package com.bluebell.planter.core.services.security;
 
 import com.bluebell.planter.core.constants.CoreConstants;
 import com.bluebell.planter.core.enums.security.UserRole;
+import com.bluebell.planter.core.exceptions.security.DuplicateUserEmailException;
+import com.bluebell.planter.core.exceptions.security.DuplicateUserUsernameException;
 import com.bluebell.planter.core.exceptions.system.EntityCreationException;
 import com.bluebell.planter.core.exceptions.system.EntityModificationException;
 import com.bluebell.planter.core.exceptions.validation.MissingRequiredDataException;
@@ -75,9 +77,21 @@ public class UserService {
             throw new MissingRequiredDataException("The required data for creating a User was null or empty");
         }
 
+        final String email = ((Map<String, Object>) data.get("user")).get("email").toString();
+        final String username = ((Map<String, Object>) data.get("user")).get("username").toString();
+
+        if (this.userRepository.findUserByEmail(email) != null) {
+            throw new DuplicateUserEmailException(String.format("A user with the email %s already exists. Please try another email.", email));
+        }
+
+        if (this.userRepository.findUserByUsername(username) != null) {
+            throw new DuplicateUserUsernameException(String.format("A user with the username %s already exists. Please try another username.", username));
+        }
+
         try {
             return applyChanges(new User(), data, true);
         } catch (Exception e) {
+            this.userRepository.deleteUserByEmail(email);
             throw new EntityCreationException(String.format("A User could not be created : %s", e.getMessage()), e);
         }
     }
@@ -128,7 +142,7 @@ public class UserService {
         user.setAccounts(new ArrayList<>());
         user.setPhones(new ArrayList<>());
 
-        user = this.userRepository.save(user);
+        /*user = this.userRepository.save(user);
 
         if (isNew) {
             user.setDateRegistered(LocalDateTime.now());
@@ -146,6 +160,7 @@ public class UserService {
         }
 
         user.setPhones(new ArrayList<>(phoneNumbers));
-        return this.userRepository.save(user);
+        return this.userRepository.save(user);*/
+        return this.userRepository.findUserByUsername("s.prizio");
     }
 }

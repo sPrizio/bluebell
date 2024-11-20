@@ -44,7 +44,7 @@ public class User implements GenericEntity {
     private String lastName;
 
     @Setter
-    @Column
+    @Column(unique = true, name = "username")
     private String username;
 
     @Setter
