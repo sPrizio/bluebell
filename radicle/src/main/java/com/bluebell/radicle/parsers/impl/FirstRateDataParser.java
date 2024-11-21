@@ -14,16 +14,15 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
-import java.util.stream.Collectors;
 
 /**
- * Parses data from FirstData
+ * Parses data from FirstData from data files
  *
  * @author Stephen Prizio
- * @version 0.0.1
+ * @version 0.0.2
  */
 @NoArgsConstructor
-public class FirstRateDataParser implements MarketPriceParser {
+public class FirstRateDataParser extends AbstractDataParser implements MarketPriceParser {
 
     private boolean isTest = false;
 
@@ -92,20 +91,7 @@ public class FirstRateDataParser implements MarketPriceParser {
             default -> marketPrices = new AggregatedMarketPrices(new TreeSet<>(), interval);
         }
 
-        final Map<LocalDate, AggregatedMarketPrices> masterCollection = new HashMap<>();
-        marketPrices.marketPrices().forEach(marketPrice -> {
-            final AggregatedMarketPrices mapPrices;
-            if (masterCollection.containsKey(marketPrice.date().toLocalDate())) {
-                mapPrices = masterCollection.get(marketPrice.date().toLocalDate());
-            } else {
-                mapPrices = new AggregatedMarketPrices(new TreeSet<>(), interval);
-            }
-
-            mapPrices.marketPrices().add(marketPrice);
-            masterCollection.put(marketPrice.date().toLocalDate(), mapPrices);
-        });
-
-        return masterCollection;
+        return generateMasterCollection(marketPrices, interval);
     }
 
 
