@@ -24,7 +24,7 @@ import java.util.Map;
  * Executes the anther module. Primarily used for testing strategies and obtaining meta-data
  *
  * @author Stephen Prizio
- * @version 0.0.1
+ * @version 0.0.2
  */
 public class Anther {
 
@@ -36,10 +36,10 @@ public class Anther {
     private static final boolean GENERATE_CUMULATIVE_REPORTS = true;
     private static final boolean COMPUTE_DECISIONS = false;
 
-    private static final ChronoUnit UNIT = ChronoUnit.YEARS;
-    private static final RadicleTimeInterval TIME_INTERVAL = RadicleTimeInterval.FIFTEEN_MINUTE;
-    private static final LocalDate START = LocalDate.of(2024, 1, 1);
-    private static final LocalDate END = LocalDate.of(2025, 1, 1);
+    private static final ChronoUnit UNIT = ChronoUnit.MONTHS;
+    private static final RadicleTimeInterval TIME_INTERVAL = RadicleTimeInterval.THIRTY_MINUTE;
+    private static final LocalDate START = LocalDate.of(2024, 2, 1);
+    private static final LocalDate END = LocalDate.of(2024, 3, 1);
 
     /**
      * Main function
@@ -74,7 +74,7 @@ public class Anther {
     private static void runBloom(final LocalDate start, final LocalDate end, final RadicleTimeInterval timeInterval, final ChronoUnit unit) {
 
         if (RUN_SIMULATION) {
-            final BloomSimulation bloomSimulation = new BloomSimulation(start, end, timeInterval, unit);
+            final BloomSimulation bloomSimulation = new BloomSimulation("US100", start, end, timeInterval, unit);
             final BloomReportingService strategyReportingService = new BloomReportingService();
             final SimulationResult<BloomStrategyParameters> simulationResult = bloomSimulation.simulate();
 
@@ -104,7 +104,7 @@ public class Anther {
     private static void runSprout(final LocalDate start, final LocalDate end, final RadicleTimeInterval timeInterval, final ChronoUnit unit) {
 
         if (RUN_SIMULATION) {
-            final SproutSimulation sproutSimulation = new SproutSimulation(start, end, timeInterval, unit);
+            final SproutSimulation sproutSimulation = new SproutSimulation("US100", start, end, timeInterval, unit);
             final SproutReportingService strategyReportingService = new SproutReportingService();
             final SimulationResult<SproutStrategyParameters> simulationResult = sproutSimulation.simulate();
 

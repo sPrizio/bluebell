@@ -17,7 +17,7 @@ import java.util.Objects;
  * @param low lowest price
  * @param close close price
  * @author Stephen Prizio
- * @version 0.0.1
+ * @version 0.0.2
  */
 public record MarketPrice(
         LocalDateTime date,
@@ -44,7 +44,7 @@ public record MarketPrice(
      * @return true if the close was GREATER than the open
      */
     public boolean isBullish() {
-        return this.close > this.open;
+        return this.close > this.open && Math.abs(this.close - this.open) > 1.25;
     }
 
     /**
@@ -53,7 +53,7 @@ public record MarketPrice(
      * @return true if close was LESS than the open
      */
     public boolean isBearish() {
-        return this.close < this.open;
+        return this.close < this.open && Math.abs(this.close - this.open) > 1.25;
     }
 
     /**

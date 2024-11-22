@@ -10,9 +10,6 @@ import lombok.Getter;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 
-import java.math.BigDecimal;
-import java.math.MathContext;
-import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
@@ -21,7 +18,7 @@ import java.util.*;
  * Representation of the result of executing a {@link Strategy}
  *
  * @author Stephen Prizio
- * @version 0.0.1
+ * @version 0.0.2
  */
 @Getter
 public class StrategyResult<P extends BasicStrategyParameters> {
@@ -66,8 +63,6 @@ public class StrategyResult<P extends BasicStrategyParameters> {
 
     private final Double relativeDrawdown;
 
-    private final boolean scaleProfits;
-
     private final double initialBalance;
 
     private final List<CumulativeStrategyReportEntry> cumulativeReportEntries;
@@ -75,7 +70,7 @@ public class StrategyResult<P extends BasicStrategyParameters> {
 
     //  CONSTRUCTORS
 
-    public StrategyResult(final P strategyParameters, final LocalDate start, final LocalDate end, final Collection<Trade> trades, final LimitParameter buyLimit, final LimitParameter sellLimit, final double pricePerPoint, final boolean scaleProfits, final double initialBalance) {
+    public StrategyResult(final P strategyParameters, final LocalDate start, final LocalDate end, final Collection<Trade> trades, final LimitParameter buyLimit, final LimitParameter sellLimit, final double pricePerPoint, final double initialBalance) {
 
         this.strategyParameters = strategyParameters;
         this.start = start;
@@ -99,7 +94,6 @@ public class StrategyResult<P extends BasicStrategyParameters> {
         this.averageTradeDuration = calculateAverageTradeDuration(trades);
         this.maxDrawdown = null;
         this.relativeDrawdown = null;
-        this.scaleProfits = scaleProfits;
         this.initialBalance = initialBalance;
         this.netProfit = calculateNetProfit();
         this.cumulativeReportEntries = new ArrayList<>();
@@ -258,38 +252,11 @@ public class StrategyResult<P extends BasicStrategyParameters> {
     //  HELPERS
 
     /**
-     * Calculates the net profit. If scaleProfits is true, will attempt a rudimentary scaling based on the pricePerPoint value.
-     * Example: Account balance of $30,000 and a price per point of $9.55/pt yields should equal approximately the same as
-     *          $38,000 and $12.95/pt
+     * Calculates the net profit.
      *
-     * 9.55 = 1% of $30,000
-     * 9.55 = 300
      * @return net profit
      */
     private double calculateNetProfit() {
-
-        if (this.scaleProfits) {
-            BigDecimal onePercent = BigDecimal.valueOf(this.initialBalance).multiply(BigDecimal.valueOf(0.01));
-            BigDecimal multiplier = BigDecimal.valueOf(this.pricePerPoint).divide(onePercent, new MathContext(10, RoundingMode.HALF_EVEN));
-
-            double runningBalance = this.initialBalance;
-            final Iterator<Trade> iterator = this.trades.iterator();
-            int count = 0;
-
-            while (iterator.hasNext()) {
-                final Trade trade = iterator.next();
-                count += 1;
-
-                if (count == 1) {
-                    runningBalance = this.mathService.add(runningBalance, trade.calculateProfit(this.pricePerPoint));
-                } else {
-                    runningBalance = this.mathService.add(runningBalance, trade.calculateProfit(BigDecimal.valueOf(runningBalance).multiply(BigDecimal.valueOf(0.01)).multiply(multiplier).setScale(2, RoundingMode.HALF_EVEN).doubleValue()));
-                }
-            }
-
-            return this.mathService.subtract(runningBalance, this.initialBalance);
-        }
-
         return this.mathService.multiply(this.points, this.pricePerPoint);
     }
 

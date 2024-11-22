@@ -8,15 +8,13 @@ import com.bluebell.anther.models.simulation.SimulationResult;
 import com.bluebell.anther.models.strategy.StrategyResult;
 import com.bluebell.anther.simulation.Simulation;
 import com.bluebell.anther.strategies.impl.Bloom;
+import com.bluebell.radicle.enums.DataSource;
 import com.bluebell.radicle.enums.RadicleTimeInterval;
 import com.bluebell.radicle.models.AggregatedMarketPrices;
-import com.bluebell.radicle.parsers.impl.FirstRateDataParser;
 import com.bluebell.radicle.services.MathService;
-import org.apache.commons.collections4.MapUtils;
 
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
-import java.time.temporal.TemporalAdjusters;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -26,13 +24,15 @@ import java.util.Map;
  * Implementation of {@link Simulation} specific for the {@link Bloom} strategy
  *
  * @author Stephen Prizio
- * @version 0.0.1
+ * @version 0.0.2
  */
 public class BloomSimulation implements Simulation<BloomStrategyParameters> {
 
     private static final String DESCRIPTION = "%s:%s Candle";
 
     private final MathService mathService = new MathService();
+
+    private final String symbol;
 
     private final LocalDate start;
 
@@ -42,7 +42,8 @@ public class BloomSimulation implements Simulation<BloomStrategyParameters> {
 
     private final ChronoUnit unit;
 
-    public BloomSimulation(final LocalDate start, final LocalDate end, final RadicleTimeInterval timeInterval, final ChronoUnit unit) {
+    public BloomSimulation(final String symbol, final LocalDate start, final LocalDate end, final RadicleTimeInterval timeInterval, final ChronoUnit unit) {
+        this.symbol = symbol;
         this.start = start;
         this.end = end;
         this.timeInterval = timeInterval;
@@ -59,7 +60,7 @@ public class BloomSimulation implements Simulation<BloomStrategyParameters> {
         int startingHour = 9;
         int startingMinute = 30;
 
-        final Map<LocalDate, AggregatedMarketPrices> marketData = getMarketData();
+        final Map<LocalDate, AggregatedMarketPrices> marketData = getMarketData(this.timeInterval, DataSource.FIRST_RATE_DATA, this.symbol);
         final Map<LocalDate, List<StrategyResult<BloomStrategyParameters>>> map = new HashMap<>();
         final List<StrategyResult<BloomStrategyParameters>> entries = new ArrayList<>();
 
@@ -95,15 +96,6 @@ public class BloomSimulation implements Simulation<BloomStrategyParameters> {
     //  HELPERS
 
     /**
-     * Obtains the market data for the simulation
-     *
-     * @return {@link Map} of {@link AggregatedMarketPrices}
-     */
-    private Map<LocalDate, AggregatedMarketPrices> getMarketData() {
-        return new FirstRateDataParser().parseMarketPricesByDate(this.timeInterval);
-    }
-
-    /**
      * Dynamically obtains the parameters for simulating a strategy
      *
      * @param startHour start hour
@@ -119,23 +111,22 @@ public class BloomSimulation implements Simulation<BloomStrategyParameters> {
         final double lotSize = 0.28;
         final double pricePerPoint = 5.6;
         final boolean breakEvenStop = false;
-        final boolean scaleProfits = false;
         final double initialBalance = 30000.0;
 
         final Map<LocalDate, BloomStrategyParameters> map = new HashMap<>();
 
-        map.put(LocalDate.of(2013, 1, 1), new BloomStrategyParameters(variance, normalize, breakEvenStop, absoluteTarget, new BasicStrategyParameters(String.format(DESCRIPTION, startHour, startMinute), new LimitParameter(TradeType.BUY, 6.1, 3.1), new LimitParameter(TradeType.SELL, 6.83, 3.42), startHour, startMinute, lotSize, pricePerPoint, scaleProfits, initialBalance)));
-        map.put(LocalDate.of(2014, 1, 1), new BloomStrategyParameters(variance, normalize, breakEvenStop, absoluteTarget, new BasicStrategyParameters(String.format(DESCRIPTION, startHour, startMinute), new LimitParameter(TradeType.BUY, 8.0, 4.0), new LimitParameter(TradeType.SELL, 9.11, 4.56), startHour, startMinute, lotSize, pricePerPoint, scaleProfits, initialBalance)));
-        map.put(LocalDate.of(2015, 1, 1), new BloomStrategyParameters(variance, normalize, breakEvenStop, absoluteTarget, new BasicStrategyParameters(String.format(DESCRIPTION, startHour, startMinute), new LimitParameter(TradeType.BUY, 14.89, 7.45), new LimitParameter(TradeType.SELL, 12.88, 6.44), startHour, startMinute, lotSize, pricePerPoint, scaleProfits, initialBalance)));
-        map.put(LocalDate.of(2016, 1, 1), new BloomStrategyParameters(variance, normalize, breakEvenStop, absoluteTarget, new BasicStrategyParameters(String.format(DESCRIPTION, startHour, startMinute), new LimitParameter(TradeType.BUY, 12.29, 6.15), new LimitParameter(TradeType.SELL, 9.79, 4.9), startHour, startMinute, lotSize, pricePerPoint, scaleProfits, initialBalance)));
-        map.put(LocalDate.of(2017, 1, 1), new BloomStrategyParameters(variance, normalize, breakEvenStop, absoluteTarget, new BasicStrategyParameters(String.format(DESCRIPTION, startHour, startMinute), new LimitParameter(TradeType.BUY, 9.88, 4.94), new LimitParameter(TradeType.SELL, 8.2, 4.1), startHour, startMinute, lotSize, pricePerPoint, scaleProfits, initialBalance)));
-        map.put(LocalDate.of(2018, 1, 1), new BloomStrategyParameters(variance, normalize, breakEvenStop, absoluteTarget, new BasicStrategyParameters(String.format(DESCRIPTION, startHour, startMinute), new LimitParameter(TradeType.BUY, 20.81, 10.41), new LimitParameter(TradeType.SELL, 25.47, 12.74), startHour, startMinute, lotSize, pricePerPoint, scaleProfits, initialBalance)));
-        map.put(LocalDate.of(2019, 1, 1), new BloomStrategyParameters(variance, normalize, breakEvenStop, absoluteTarget, new BasicStrategyParameters(String.format(DESCRIPTION, startHour, startMinute), new LimitParameter(TradeType.BUY, 18.37, 9.19), new LimitParameter(TradeType.SELL, 17.12, 8.56), startHour, startMinute, lotSize, pricePerPoint, scaleProfits, initialBalance)));
-        map.put(LocalDate.of(2020, 1, 1), new BloomStrategyParameters(variance, normalize, breakEvenStop, absoluteTarget, new BasicStrategyParameters(String.format(DESCRIPTION, startHour, startMinute), new LimitParameter(TradeType.BUY, 49.53, 24.77), new LimitParameter(TradeType.SELL, 55.98, 28.0), startHour, startMinute, lotSize, pricePerPoint, scaleProfits, initialBalance)));
-        map.put(LocalDate.of(2021, 1, 1), new BloomStrategyParameters(variance, normalize, breakEvenStop, absoluteTarget, new BasicStrategyParameters(String.format(DESCRIPTION, startHour, startMinute), new LimitParameter(TradeType.BUY, 48.22, 24.11), new LimitParameter(TradeType.SELL, 39.03, 19.52), startHour, startMinute, lotSize, pricePerPoint, scaleProfits, initialBalance)));
-        map.put(LocalDate.of(2022, 1, 1), new BloomStrategyParameters(variance, normalize, breakEvenStop, absoluteTarget, new BasicStrategyParameters(String.format(DESCRIPTION, startHour, startMinute), new LimitParameter(TradeType.BUY, 70.35, 35.18), new LimitParameter(TradeType.SELL, 64.13, 32.07), startHour, startMinute, lotSize, pricePerPoint, scaleProfits, initialBalance)));
-        map.put(LocalDate.of(2023, 1, 1), new BloomStrategyParameters(variance, normalize, breakEvenStop, absoluteTarget, new BasicStrategyParameters(String.format(DESCRIPTION, startHour, startMinute), new LimitParameter(TradeType.BUY, 41.84, 20.92), new LimitParameter(TradeType.SELL, 48.93, 24.47), startHour, startMinute, lotSize, pricePerPoint, scaleProfits, initialBalance)));
-        map.put(LocalDate.of(2024, 1, 1), new BloomStrategyParameters(variance, normalize, breakEvenStop, absoluteTarget, new BasicStrategyParameters(String.format(DESCRIPTION, startHour, startMinute), new LimitParameter(TradeType.BUY, 52.04, 26.02), new LimitParameter(TradeType.SELL, 45.61, 22.81), startHour, startMinute, lotSize, pricePerPoint, scaleProfits, initialBalance)));
+        map.put(LocalDate.of(2013, 1, 1), new BloomStrategyParameters(variance, normalize, breakEvenStop, absoluteTarget, startHour, startMinute, new BasicStrategyParameters(String.format(DESCRIPTION, startHour, startMinute), new LimitParameter(TradeType.BUY, 6.1, 3.1), new LimitParameter(TradeType.SELL, 6.83, 3.42), lotSize, pricePerPoint, initialBalance)));
+        map.put(LocalDate.of(2014, 1, 1), new BloomStrategyParameters(variance, normalize, breakEvenStop, absoluteTarget, startHour, startMinute, new BasicStrategyParameters(String.format(DESCRIPTION, startHour, startMinute), new LimitParameter(TradeType.BUY, 8.0, 4.0), new LimitParameter(TradeType.SELL, 9.11, 4.56), lotSize, pricePerPoint, initialBalance)));
+        map.put(LocalDate.of(2015, 1, 1), new BloomStrategyParameters(variance, normalize, breakEvenStop, absoluteTarget, startHour, startMinute, new BasicStrategyParameters(String.format(DESCRIPTION, startHour, startMinute), new LimitParameter(TradeType.BUY, 14.89, 7.45), new LimitParameter(TradeType.SELL, 12.88, 6.44), lotSize, pricePerPoint, initialBalance)));
+        map.put(LocalDate.of(2016, 1, 1), new BloomStrategyParameters(variance, normalize, breakEvenStop, absoluteTarget, startHour, startMinute, new BasicStrategyParameters(String.format(DESCRIPTION, startHour, startMinute), new LimitParameter(TradeType.BUY, 12.29, 6.15), new LimitParameter(TradeType.SELL, 9.79, 4.9), lotSize, pricePerPoint, initialBalance)));
+        map.put(LocalDate.of(2017, 1, 1), new BloomStrategyParameters(variance, normalize, breakEvenStop, absoluteTarget, startHour, startMinute, new BasicStrategyParameters(String.format(DESCRIPTION, startHour, startMinute), new LimitParameter(TradeType.BUY, 9.88, 4.94), new LimitParameter(TradeType.SELL, 8.2, 4.1), lotSize, pricePerPoint, initialBalance)));
+        map.put(LocalDate.of(2018, 1, 1), new BloomStrategyParameters(variance, normalize, breakEvenStop, absoluteTarget, startHour, startMinute, new BasicStrategyParameters(String.format(DESCRIPTION, startHour, startMinute), new LimitParameter(TradeType.BUY, 20.81, 10.41), new LimitParameter(TradeType.SELL, 25.47, 12.74), lotSize, pricePerPoint, initialBalance)));
+        map.put(LocalDate.of(2019, 1, 1), new BloomStrategyParameters(variance, normalize, breakEvenStop, absoluteTarget, startHour, startMinute, new BasicStrategyParameters(String.format(DESCRIPTION, startHour, startMinute), new LimitParameter(TradeType.BUY, 18.37, 9.19), new LimitParameter(TradeType.SELL, 17.12, 8.56), lotSize, pricePerPoint, initialBalance)));
+        map.put(LocalDate.of(2020, 1, 1), new BloomStrategyParameters(variance, normalize, breakEvenStop, absoluteTarget, startHour, startMinute, new BasicStrategyParameters(String.format(DESCRIPTION, startHour, startMinute), new LimitParameter(TradeType.BUY, 49.53, 24.77), new LimitParameter(TradeType.SELL, 55.98, 28.0), lotSize, pricePerPoint, initialBalance)));
+        map.put(LocalDate.of(2021, 1, 1), new BloomStrategyParameters(variance, normalize, breakEvenStop, absoluteTarget, startHour, startMinute, new BasicStrategyParameters(String.format(DESCRIPTION, startHour, startMinute), new LimitParameter(TradeType.BUY, 48.22, 24.11), new LimitParameter(TradeType.SELL, 39.03, 19.52), lotSize, pricePerPoint, initialBalance)));
+        map.put(LocalDate.of(2022, 1, 1), new BloomStrategyParameters(variance, normalize, breakEvenStop, absoluteTarget, startHour, startMinute, new BasicStrategyParameters(String.format(DESCRIPTION, startHour, startMinute), new LimitParameter(TradeType.BUY, 70.35, 35.18), new LimitParameter(TradeType.SELL, 64.13, 32.07), lotSize, pricePerPoint, initialBalance)));
+        map.put(LocalDate.of(2023, 1, 1), new BloomStrategyParameters(variance, normalize, breakEvenStop, absoluteTarget, startHour, startMinute, new BasicStrategyParameters(String.format(DESCRIPTION, startHour, startMinute), new LimitParameter(TradeType.BUY, 41.84, 20.92), new LimitParameter(TradeType.SELL, 48.93, 24.47), lotSize, pricePerPoint, initialBalance)));
+        map.put(LocalDate.of(2024, 1, 1), new BloomStrategyParameters(variance, normalize, breakEvenStop, absoluteTarget, startHour, startMinute, new BasicStrategyParameters(String.format(DESCRIPTION, startHour, startMinute), new LimitParameter(TradeType.BUY, 52.04, 26.02), new LimitParameter(TradeType.SELL, 45.61, 22.81), lotSize, pricePerPoint, initialBalance)));
 
         return map;
     }

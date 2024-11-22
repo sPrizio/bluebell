@@ -21,7 +21,7 @@ import java.util.*;
  * to capture this trend via straddling.
  *
  * @author Stephen Prizio
- * @version 0.0.1
+ * @version 0.0.2
  */
 @Getter
 public class Bloom implements Strategy<BloomStrategyParameters> {
@@ -95,7 +95,7 @@ public class Bloom implements Strategy<BloomStrategyParameters> {
             }
         }
 
-        final StrategyResult<BloomStrategyParameters> result = new StrategyResult<>(this.strategyParameters, startDate, endDate, this.closedTrades.values(), this.strategyParameters.getBuyLimit(), this.strategyParameters.getSellLimit(), this.strategyParameters.getPricePerPoint(), this.strategyParameters.isScaleProfits(), this.strategyParameters.getInitialBalance());
+        final StrategyResult<BloomStrategyParameters> result = new StrategyResult<>(this.strategyParameters, startDate, endDate, this.closedTrades.values(), this.strategyParameters.getBuyLimit(), this.strategyParameters.getSellLimit(), this.strategyParameters.getPricePerPoint(), this.strategyParameters.getInitialBalance());
         this.openTrades.clear();
         this.closedTrades.clear();
 

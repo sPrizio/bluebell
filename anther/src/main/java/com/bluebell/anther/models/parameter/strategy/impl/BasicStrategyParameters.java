@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
  * Static parameters that don't change for anything
  *
  * @author Stephen Prizio
- * @version 0.0.1
+ * @version 0.0.2
  */
 @Getter
 @NoArgsConstructor
@@ -23,15 +23,9 @@ public class BasicStrategyParameters implements StrategyParameters {
 
     private LimitParameter sellLimit;
 
-    private int startHour;
-
-    private int startMinute;
-
     private double lotSize;
 
     private double pricePerPoint;
-
-    private boolean scaleProfits;
 
     private double initialBalance;
 
@@ -44,13 +38,13 @@ public class BasicStrategyParameters implements StrategyParameters {
         if (o == null || getClass() != o.getClass()) return false;
 
         BasicStrategyParameters that = (BasicStrategyParameters) o;
-        return this.startHour == that.startHour && this.startMinute == that.startMinute;
+        return this.description.equals(that.description);
     }
 
     @Override
     public int hashCode() {
-        int result = this.startHour;
-        result = 31 * result + this.startMinute;
+        int result = this.description.hashCode();
+        result = (int) (31 * result + this.lotSize);
         return result;
     }
 }

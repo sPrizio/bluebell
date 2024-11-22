@@ -2,24 +2,24 @@ package com.bluebell.anther.simulation;
 
 import com.bluebell.anther.models.parameter.strategy.impl.BasicStrategyParameters;
 import com.bluebell.anther.models.parameter.strategy.impl.BloomStrategyParameters;
-import com.bluebell.anther.models.parameter.strategy.impl.SproutStrategyParameters;
 import com.bluebell.anther.models.simulation.SimulationResult;
-import com.bluebell.anther.models.strategy.StrategyResult;
 import com.bluebell.anther.strategies.Strategy;
+import com.bluebell.radicle.enums.DataSource;
+import com.bluebell.radicle.enums.RadicleTimeInterval;
 import com.bluebell.radicle.models.AggregatedMarketPrices;
+import com.bluebell.radicle.parsers.impl.FirstRateDataParser;
+import com.bluebell.radicle.parsers.impl.TradingViewDataParser;
 import org.apache.commons.collections4.MapUtils;
 
 import java.time.LocalDate;
-import java.time.temporal.ChronoUnit;
 import java.time.temporal.TemporalAdjusters;
-import java.util.List;
 import java.util.Map;
 
 /**
  * Class representation of a simulation. A simulation refers to executing a {@link Strategy} over a given period of time
  *
  * @author Stephen Prizio
- * @version 0.0.1
+ * @version 0.0.2
  */
 public interface Simulation<P extends BasicStrategyParameters> {
 
@@ -61,5 +61,19 @@ public interface Simulation<P extends BasicStrategyParameters> {
         }
 
         throw new UnsupportedOperationException("No parameters found");
+    }
+
+    /**
+     * Obtains the market data for the simulation
+     *
+     * @return {@link Map} of {@link AggregatedMarketPrices}
+     */
+    default Map<LocalDate, AggregatedMarketPrices> getMarketData(final RadicleTimeInterval timeInterval, final DataSource dataSource, final String symbol) {
+
+        if (dataSource == DataSource.FIRST_RATE_DATA) {
+            return new FirstRateDataParser().parseMarketPricesByDate(timeInterval);
+        } else {
+            return new TradingViewDataParser(false, symbol).parseMarketPricesByDate(timeInterval);
+        }
     }
 }

@@ -1,6 +1,7 @@
 package com.bluebell.anther.strategies.impl;
 
 import com.bluebell.anther.enums.TradeSignal;
+import com.bluebell.anther.enums.TradeType;
 import com.bluebell.anther.models.parameter.strategy.impl.SproutStrategyParameters;
 import com.bluebell.anther.models.strategy.StrategyResult;
 import com.bluebell.anther.models.trade.Trade;
@@ -11,6 +12,7 @@ import com.bluebell.radicle.services.MathService;
 import lombok.Getter;
 
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -21,7 +23,7 @@ import java.util.Map;
  * In cases like these, a small (or large) reversal is likely taking place
  *
  * @author Stephen Prizio
- * @version 0.0.1
+ * @version 0.0.2
  */
 @Getter
 public class Sprout implements Strategy<SproutStrategyParameters> {
@@ -44,6 +46,10 @@ public class Sprout implements Strategy<SproutStrategyParameters> {
     }
 
 
+    //  TODO: max 3 trades per day
+    //  TODO: code cleanup for Sprout.mq4
+
+
     //  METHODS
 
     @Override
@@ -51,43 +57,53 @@ public class Sprout implements Strategy<SproutStrategyParameters> {
 
         for (final Map.Entry<LocalDate, AggregatedMarketPrices> entry : prices.entrySet()) {
 
+            //  disregard data if it falls outside of the requested interval period
             if (entry.getKey().isBefore(startDate) || (entry.getKey().isAfter(endDate) || entry.getKey().isEqual(endDate))) {
                 continue;
             }
 
+            int count = 0;
             final List<MarketPrice> marketPrices = new ArrayList<>(entry.getValue().marketPrices());
-            for (int i = 2; i < marketPrices.size(); i++) {
+
+            for (int i = 0; i < marketPrices.size(); i++) {
+
+                if (!isWithinWindow(marketPrices.get(i).date().toLocalTime()) || count == 3) {
+                    continue;
+                }
+
                 final MarketPrice referencePrice = marketPrices.get(i - 2);
                 final MarketPrice signalPrice = marketPrices.get(i - 1);
                 final MarketPrice currentPrice = marketPrices.get(i);
 
                 final TradeSignal tradeSignal = getTradeSignal(referencePrice, signalPrice, currentPrice);
-                if (tradeSignal != TradeSignal.NO_SIGNAL && hasConfirmation(tradeSignal, referencePrice, signalPrice, currentPrice)) {
+                if (tradeSignal != TradeSignal.NO_SIGNAL && this.openTrades.isEmpty()/* && hasConfirmation(tradeSignal, referencePrice, signalPrice, currentPrice)*/) {
                     final double price = tradeSignal == TradeSignal.BUY_SIGNAL ? signalPrice.high() : signalPrice.low();
 
-                    if (signalPrice.getBodySize(true) <= this.strategyParameters.getAllowableRisk()) {
-                        final Trade trade = openTrade(
-                                tradeSignal.getTradeType(),
-                                this.strategyParameters.getLotSize(),
-                                currentPrice.date(),
-                                price,
-                                tradeSignal == TradeSignal.BUY_SIGNAL ? calculateActualLimit(signalPrice.getFullSize(true), price, false, false) : calculateActualLimit(signalPrice.getFullSize(true), price, true, false),
-                                tradeSignal == TradeSignal.BUY_SIGNAL ? calculateActualLimit(signalPrice.getFullSize(true), price, true, true) : calculateActualLimit(signalPrice.getFullSize(true), price, false, true)
-                        );
+                    final Trade trade = openTrade(
+                            tradeSignal.getTradeType(),
+                            this.strategyParameters.getLotSize(),
+                            currentPrice.date(),
+                            price,
+                            calculateDynamicVariance(signalPrice, tradeSignal.getTradeType()),
+                            tradeSignal == TradeSignal.BUY_SIGNAL ? calculateActualLimit(signalPrice.getFullSize(true), price, true, true) : calculateActualLimit(signalPrice.getFullSize(true), price, false, true)
+                    );
 
-                        this.openTrades.put(trade.getId(), trade);
-                    }
+                    this.openTrades.put(trade.getId(), trade);
+                    count += 1;
                 }
 
-                //  check each market price to see if any of the open trades were hit
-                checkTrades(this.openTrades, this.closedTrades, currentPrice);
 
-                //  close the trading day
-                closeDay(currentPrice, this.openTrades, this.closedTrades);
+                if (isExitBar(currentPrice)) {
+                    //  close the trading day
+                    closeDay(currentPrice, this.openTrades, this.closedTrades);
+                } else {
+                    //  check each market price to see if any of the open trades were hit
+                    checkTrades(this.openTrades, this.closedTrades, currentPrice);
+                }
             }
         }
 
-        final StrategyResult<SproutStrategyParameters> result = new StrategyResult<>(this.strategyParameters, startDate, endDate, this.closedTrades.values(), this.strategyParameters.getBuyLimit(), this.strategyParameters.getSellLimit(), this.strategyParameters.getPricePerPoint(), this.strategyParameters.isScaleProfits(), this.strategyParameters.getInitialBalance());
+        final StrategyResult<SproutStrategyParameters> result = new StrategyResult<>(this.strategyParameters, startDate, endDate, this.closedTrades.values(), this.strategyParameters.getBuyLimit(), this.strategyParameters.getSellLimit(), this.strategyParameters.getPricePerPoint(), this.strategyParameters.getInitialBalance());
         this.openTrades.clear();
         this.closedTrades.clear();
 
@@ -108,6 +124,27 @@ public class Sprout implements Strategy<SproutStrategyParameters> {
     //  HELPERS
 
     /**
+     * Calculates the dynamically variant stop loss
+     *
+     * @param price signal price
+     * @param tradeType {@link TradeType}
+     * @return stop loss price
+     */
+    private double calculateDynamicVariance(final MarketPrice price, final TradeType tradeType) {
+
+        double point;
+        final double diff = this.mathService.multiply(Math.abs(this.mathService.subtract(price.high(), price.low())), this.strategyParameters.getVariance());
+
+        if (tradeType == TradeType.BUY) {
+            point = price.low();
+        } else {
+            point = price.high();
+        }
+
+        return tradeType == TradeType.BUY ? (point + diff) : (point - diff);
+    }
+
+    /**
      * Computes trade signals
      *
      * @param ref     reference price
@@ -122,38 +159,27 @@ public class Sprout implements Strategy<SproutStrategyParameters> {
             return TradeSignal.NO_SIGNAL;
         }
 
-        TradeSignal result = TradeSignal.NO_SIGNAL;
-        if (signal.high() > ref.high() && current.low() < signal.low()) {
-            result = TradeSignal.SELL_SIGNAL;
-        } else if (signal.low() < ref.low() && current.high() > signal.high()) {
-            result = TradeSignal.BUY_SIGNAL;
-        }
+        final double refHigh = ref.high();
+        final double refLow = ref.low();
 
-        return result;
-    }
+        final double sigHigh = signal.high();
+        final double sigLow = signal.low();
 
-    /**
-     * Returns true if a new high/low was set (returns false if a new high and a new low were set at the same time)
-     *
-     * @param isHigh if true, look for highs
-     * @param ref reference price
-     * @param signal signal price
-     * @return true if new high/low was set
-     */
-    private boolean newMarker(final boolean isHigh, final MarketPrice ref, final MarketPrice signal) {
-        if (!isHigh) {
-            return signal.high() > ref.high() && signal.low() > ref.low();
+        if (sigLow < refLow && current.high() > sigHigh && hasConfirmation(TradeSignal.BUY_SIGNAL, ref, signal, current)) {
+            return TradeSignal.BUY_SIGNAL;
+        } else if (sigHigh > refHigh && current.low() < sigLow && hasConfirmation(TradeSignal.SELL_SIGNAL, ref, signal, current)) {
+            return TradeSignal.SELL_SIGNAL;
         } else {
-            return signal.low() < ref.low() && signal.high() < ref.high();
+            return TradeSignal.NO_SIGNAL;
         }
     }
 
     /**
      * Computes the limit based on the given parameters. Pass -1 to not include the window calculation
      *
-     * @param window    overrides limit if it is greater than the given limit
-     * @param price     start price
-     * @param shouldAdd add or subtract
+     * @param window            overrides limit if it is greater than the given limit
+     * @param price             start price
+     * @param shouldAdd         add or subtract
      * @param includeMultiplier multiply for tp
      * @return limit
      */
@@ -170,6 +196,8 @@ public class Sprout implements Strategy<SproutStrategyParameters> {
         final double profitWindow = this.mathService.multiply(window, this.strategyParameters.getProfitMultiplier());
         if (profitWindow < this.strategyParameters.getMinimumReward()) {
             return calculateLimit(price, this.strategyParameters.getMinimumReward(), shouldAdd);
+        } else if (profitWindow > this.strategyParameters.getAllowableReward()) {
+            return calculateLimit(price, this.strategyParameters.getAllowableReward(), shouldAdd);
         } else {
             return calculateLimit(price, profitWindow, shouldAdd);
         }
@@ -179,9 +207,9 @@ public class Sprout implements Strategy<SproutStrategyParameters> {
      * Calculates the confirmation of the given {@link TradeSignal}
      *
      * @param tradeSignal {@link TradeSignal}
-     * @param ref reference bar
-     * @param signal signal bar
-     * @param current current bar
+     * @param ref         reference bar
+     * @param signal      signal bar
+     * @param current     current bar
      * @return true if trade is confirmed and valid to enter
      */
     private boolean hasConfirmation(final TradeSignal tradeSignal, final MarketPrice ref, final MarketPrice signal, final MarketPrice current) {
@@ -193,5 +221,15 @@ public class Sprout implements Strategy<SproutStrategyParameters> {
         }
 
         return false;
+    }
+
+    /**
+     * Returns true if the given {@link LocalTime} is within the trading window
+     *
+     * @param localTime {@link LocalTime}
+     * @return true if after 10:30 am and before 4:30 pm
+     */
+    private boolean isWithinWindow(final LocalTime localTime) {
+        return (localTime.isAfter(LocalTime.of(9, 30))) && (localTime.isBefore(LocalTime.of(16, 30)));
     }
 }

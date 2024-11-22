@@ -21,7 +21,7 @@ import java.util.*;
  * Extends the {@link StrategyReportingService} specific for {@link Sprout}
  *
  * @author Stephen Prizio
- * @version 0.0.1
+ * @version 0.0.2
  */
 public class SproutReportingService extends StrategyReportingService<Sprout, SproutStrategyParameters> {
 
@@ -46,7 +46,7 @@ public class SproutReportingService extends StrategyReportingService<Sprout, Spr
             final String key = generateKey(sr);
             List<Trade> trades = new ArrayList<>();
             if (map.containsKey(key)) {
-                trades = map.get(key);
+                trades = new ArrayList<>(map.get(key));
             }
 
             trades.addAll(sr.getTrades());

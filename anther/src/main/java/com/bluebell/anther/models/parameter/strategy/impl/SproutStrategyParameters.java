@@ -2,7 +2,6 @@ package com.bluebell.anther.models.parameter.strategy.impl;
 
 import com.bluebell.anther.models.parameter.strategy.StrategyParameters;
 import com.bluebell.anther.strategies.impl.Sprout;
-import com.bluebell.radicle.services.MathService;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -10,7 +9,7 @@ import lombok.NoArgsConstructor;
  * {@link Sprout}-specific strategy parameters
  *
  * @author Stephen Prizio
- * @version 0.0.1
+ * @version 0.0.2
  */
 @Getter
 @NoArgsConstructor
@@ -20,27 +19,30 @@ public class SproutStrategyParameters extends BasicStrategyParameters implements
 
     private double allowableRisk;
 
+    private double allowableReward;
+
     private double minimumRisk;
 
     private double minimumReward;
 
-    public SproutStrategyParameters(final double profitMultiplier, final double allowableRisk, final double minimumRisk, final double minimumReward, final BasicStrategyParameters basicStrategyParameters) {
+    private double variance;
+
+    public SproutStrategyParameters(final double profitMultiplier, final double allowableRisk, final double allowableReward, final double minimumRisk, final double minimumReward, final double variance, final BasicStrategyParameters basicStrategyParameters) {
         super(
                 basicStrategyParameters.getDescription(),
                 basicStrategyParameters.getBuyLimit(),
                 basicStrategyParameters.getSellLimit(),
-                basicStrategyParameters.getStartHour(),
-                basicStrategyParameters.getStartMinute(),
                 basicStrategyParameters.getLotSize(),
                 basicStrategyParameters.getPricePerPoint(),
-                basicStrategyParameters.isScaleProfits(),
                 basicStrategyParameters.getInitialBalance()
         );
 
         this.profitMultiplier = profitMultiplier;
         this.allowableRisk = allowableRisk;
+        this.allowableReward = allowableReward;
         this.minimumRisk = minimumRisk;
         this.minimumReward = minimumReward;
+        this.variance = variance;
     }
 
 

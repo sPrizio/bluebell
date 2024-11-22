@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
  * {@link Bloom}-specific strategy parameters
  *
  * @author Stephen Prizio
- * @version 0.0.1
+ * @version 0.0.2
  */
 @Getter
 @NoArgsConstructor
@@ -23,16 +23,17 @@ public class BloomStrategyParameters extends BasicStrategyParameters implements 
 
     private double absoluteProfitTarget;
 
-    public BloomStrategyParameters(final double variance, final boolean normalize, final boolean breakEvenStop, final double absoluteProfitTarget, final BasicStrategyParameters basicStrategyParameters) {
+    private int startHour;
+
+    private int startMinute;
+
+    public BloomStrategyParameters(final double variance, final boolean normalize, final boolean breakEvenStop, final double absoluteProfitTarget, final int startHour, final int startMinute, final BasicStrategyParameters basicStrategyParameters) {
         super(
                 basicStrategyParameters.getDescription(),
                 basicStrategyParameters.getBuyLimit(),
                 basicStrategyParameters.getSellLimit(),
-                basicStrategyParameters.getStartHour(),
-                basicStrategyParameters.getStartMinute(),
                 basicStrategyParameters.getLotSize(),
                 basicStrategyParameters.getPricePerPoint(),
-                basicStrategyParameters.isScaleProfits(),
                 basicStrategyParameters.getInitialBalance()
         );
 
@@ -40,6 +41,8 @@ public class BloomStrategyParameters extends BasicStrategyParameters implements 
         this.normalize = normalize;
         this.breakEvenStop = breakEvenStop;
         this.absoluteProfitTarget = absoluteProfitTarget;
+        this.startHour = startHour;
+        this.startMinute = startMinute;
     }
 
 
