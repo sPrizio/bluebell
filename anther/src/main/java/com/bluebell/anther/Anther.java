@@ -36,10 +36,10 @@ public class Anther {
     private static final boolean GENERATE_CUMULATIVE_REPORTS = true;
     private static final boolean COMPUTE_DECISIONS = false;
 
-    private static final ChronoUnit UNIT = ChronoUnit.MONTHS;
+    private static final ChronoUnit UNIT = ChronoUnit.DAYS;
     private static final RadicleTimeInterval TIME_INTERVAL = RadicleTimeInterval.THIRTY_MINUTE;
-    private static final LocalDate START = LocalDate.of(2024, 2, 1);
-    private static final LocalDate END = LocalDate.of(2024, 3, 1);
+    private static final LocalDate START = LocalDate.of(2024, 1, 26);
+    private static final LocalDate END = LocalDate.of(2024, 2, 1);
 
     /**
      * Main function

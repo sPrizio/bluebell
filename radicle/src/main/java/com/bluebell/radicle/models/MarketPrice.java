@@ -38,6 +38,8 @@ public record MarketPrice(
 
     //  METHODS
 
+    //  TODO: need to find a way to override this and make it dynamic to sprout or to the data source to include a standard error margin
+
     /**
      * Returns true if this is a bullish price movement
      *
@@ -143,10 +145,30 @@ public record MarketPrice(
         return this.open != 0.0 && this.close != 0.0;
     }
 
+    /**
+     * Disregard prices that engulf another in both directions
+     *
+     * @param anotherPrice {@link MarketPrice}
+     * @return true if candle engulfs given candle
+     */
+    public boolean isMutuallyExclusive(final MarketPrice anotherPrice) {
+        return this.high > anotherPrice.high() && this.low < anotherPrice.low();
+    }
+
+    /**
+     * Returns true if the current market price is bullish or has a hammer formation
+     *
+     * @return true / false
+     */
     public boolean hasBullishIndication() {
         return isBullish() || isHammer();
     }
 
+    /**
+     * Returns true if the current market price is bearish or has a tombstone formation
+     *
+     * @return true / false
+     */
     public boolean hasBearishIndication() {
         return isBearish() || isTombstone();
     }

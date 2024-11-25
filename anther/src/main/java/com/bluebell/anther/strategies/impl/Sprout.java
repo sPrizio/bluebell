@@ -46,7 +46,6 @@ public class Sprout implements Strategy<SproutStrategyParameters> {
     }
 
 
-    //  TODO: max 3 trades per day
     //  TODO: code cleanup for Sprout.mq4
 
 
@@ -165,6 +164,11 @@ public class Sprout implements Strategy<SproutStrategyParameters> {
         final double sigHigh = signal.high();
         final double sigLow = signal.low();
 
+        //  look for mutually exclusive prices
+        if (current.isMutuallyExclusive(signal) || signal.isMutuallyExclusive(ref)) {
+            return TradeSignal.NO_SIGNAL;
+        }
+
         if (sigLow < refLow && current.high() > sigHigh && hasConfirmation(TradeSignal.BUY_SIGNAL, ref, signal, current)) {
             return TradeSignal.BUY_SIGNAL;
         } else if (sigHigh > refHigh && current.low() < sigLow && hasConfirmation(TradeSignal.SELL_SIGNAL, ref, signal, current)) {
@@ -215,9 +219,9 @@ public class Sprout implements Strategy<SproutStrategyParameters> {
     private boolean hasConfirmation(final TradeSignal tradeSignal, final MarketPrice ref, final MarketPrice signal, final MarketPrice current) {
 
         if (tradeSignal == TradeSignal.BUY_SIGNAL) {
-            return signal.hasBullishIndication();
+            return current.low() > signal.low() && signal.hasBullishIndication();
         } else if (tradeSignal == TradeSignal.SELL_SIGNAL) {
-            return signal.hasBearishIndication();
+            return current.high() < signal.high() && signal.hasBearishIndication();
         }
 
         return false;
