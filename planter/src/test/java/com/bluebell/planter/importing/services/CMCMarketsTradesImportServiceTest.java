@@ -7,6 +7,7 @@ import com.bluebell.planter.core.repositories.account.AccountRepository;
 import com.bluebell.planter.core.repositories.security.UserRepository;
 import com.bluebell.planter.core.repositories.trade.TradeRepository;
 import com.bluebell.planter.importing.exceptions.TradeImportFailureException;
+import com.bluebell.planter.importing.services.trade.CMCMarketsTradesImportService;
 import jakarta.annotation.Resource;
 import jakarta.transaction.Transactional;
 import org.assertj.core.groups.Tuple;
@@ -35,7 +36,7 @@ import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
  * Testing class for {@link CMCMarketsTradesImportService}
  *
  * @author Stephen Prizio
- * @version 0.0.3
+ * @version 0.0.7
  */
 @SpringBootTest
 @RunWith(SpringRunner.class)

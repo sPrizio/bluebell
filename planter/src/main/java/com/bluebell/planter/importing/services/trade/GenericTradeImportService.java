@@ -1,5 +1,6 @@
-package com.bluebell.planter.importing.services;
+package com.bluebell.planter.importing.services.trade;
 
+import com.bluebell.planter.core.constants.CoreConstants;
 import com.bluebell.planter.core.enums.trade.platform.TradePlatform;
 import com.bluebell.planter.core.models.entities.account.Account;
 import org.apache.commons.lang3.StringUtils;
@@ -13,20 +14,20 @@ import static com.bluebell.planter.core.validation.GenericValidator.validatePara
 
 
 /**
- * Generic importing service to handle incoming files, will delegate to specific import services
+ * Generic importing service to handle incoming trade files, will delegate to specific import services
  *
  * @author Stephen Prizio
- * @version 0.0.4
+ * @version 0.0.7
  */
 @Service
-public class GenericImportService {
+public class GenericTradeImportService {
 
     private final CMCMarketsTradesImportService cmcMarketsTradesImportService;
 
     private final MetaTrader4TradesImportService metaTrader4TradesImportService;
 
     @Autowired
-    public GenericImportService(final CMCMarketsTradesImportService cmcMarketsTradesImportService, final MetaTrader4TradesImportService metaTrader4TradesImportService) {
+    public GenericTradeImportService(final CMCMarketsTradesImportService cmcMarketsTradesImportService, final MetaTrader4TradesImportService metaTrader4TradesImportService) {
         this.cmcMarketsTradesImportService = cmcMarketsTradesImportService;
         this.metaTrader4TradesImportService = metaTrader4TradesImportService;
     }
@@ -41,9 +42,9 @@ public class GenericImportService {
      * @param account     {@link Account}
      * @return import message
      */
-    public String importTrades(InputStream inputStream, final Account account) {
+    public String importTrades(final InputStream inputStream, final Account account) {
 
-        validateParameterIsNotNull(inputStream, "import stream cannot be null");
+        validateParameterIsNotNull(inputStream, CoreConstants.Validation.Trade.IMPORT_STREAM_CANNOT_BE_NULL);
 
         try {
             if (account.getTradePlatform().equals(TradePlatform.CMC_MARKETS)) {

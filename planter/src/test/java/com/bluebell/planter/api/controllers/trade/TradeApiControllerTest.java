@@ -7,7 +7,7 @@ import com.bluebell.planter.core.models.entities.account.Account;
 import com.bluebell.planter.core.models.entities.trade.Trade;
 import com.bluebell.planter.core.services.platform.UniqueIdentifierService;
 import com.bluebell.planter.core.services.trade.TradeService;
-import com.bluebell.planter.importing.services.GenericImportService;
+import com.bluebell.planter.importing.services.trade.GenericTradeImportService;
 import org.apache.commons.lang3.StringUtils;
 import org.junit.Before;
 import org.junit.Test;
@@ -44,7 +44,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  * Testing class for {@link TradeApiController}
  *
  * @author Stephen Prizio
- * @version 0.0.5
+ * @version 0.0.7
  */
 @SpringBootTest
 @AutoConfigureMockMvc(addFilters = false)
@@ -63,7 +63,7 @@ public class TradeApiControllerTest extends AbstractGenericTest {
     private MockMvc mockMvc;
 
     @MockBean
-    private GenericImportService genericImportService;
+    private GenericTradeImportService genericTradeImportService;
 
     @Autowired
     private WebApplicationContext webApplicationContext;
@@ -76,7 +76,7 @@ public class TradeApiControllerTest extends AbstractGenericTest {
 
     @Before
     public void setUp() {
-        Mockito.when(this.genericImportService.importTrades(any(), any())).thenReturn(StringUtils.EMPTY);
+        Mockito.when(this.genericTradeImportService.importTrades(any(), any())).thenReturn(StringUtils.EMPTY);
         Mockito.when(this.tradeService.findAllByTradeType(TradeType.BUY, TEST_ACCOUNT)).thenReturn(List.of(TEST_TRADE_1));
         Mockito.when(this.tradeService.findAllTradesWithinTimespan(any(), any(), any())).thenReturn(List.of(TEST_TRADE_1, TEST_TRADE_2));
         Mockito.when(this.tradeService.findTradeByTradeId("testId1", TEST_ACCOUNT)).thenReturn(Optional.of(TEST_TRADE_1));

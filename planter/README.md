@@ -32,5 +32,6 @@ Current Release: **Pre-release**
 - **0.0.4** : Forex Factory calendar integration
 - **0.0.5** : Trade Record Integration
 - **0.0.6** : Charting Implementation
-- **0.0.7** (In Progress) : Integrating with **sepal**
+- **0.0.7** (In Progress) : Import MT4 Strategy Results
+- **0.0.8** (In Progress) : Integrating with **sepal**
 

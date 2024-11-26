@@ -1,4 +1,4 @@
-package com.bluebell.planter.importing.services;
+package com.bluebell.planter.importing.services.trade;
 
 import com.bluebell.planter.core.enums.trade.info.TradeType;
 import com.bluebell.planter.core.enums.trade.platform.TradePlatform;
@@ -32,7 +32,7 @@ import java.util.Objects;
  * Service-layer for importing trades into the system from CMC Markets
  *
  * @author Stephen Prizio
- * @version 0.0.4
+ * @version 0.0.7
  */
 @Service("cmcMarketsTradesImportService")
 public class CMCMarketsTradesImportService implements ImportService {

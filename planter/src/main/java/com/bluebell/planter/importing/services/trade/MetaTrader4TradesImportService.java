@@ -1,4 +1,4 @@
-package com.bluebell.planter.importing.services;
+package com.bluebell.planter.importing.services.trade;
 
 import com.bluebell.planter.core.enums.trade.info.TradeType;
 import com.bluebell.planter.core.enums.trade.platform.TradePlatform;
@@ -8,7 +8,7 @@ import com.bluebell.planter.core.repositories.account.AccountRepository;
 import com.bluebell.planter.core.repositories.trade.TradeRepository;
 import com.bluebell.planter.importing.ImportService;
 import com.bluebell.planter.importing.exceptions.TradeImportFailureException;
-import com.bluebell.planter.importing.records.MetaTrade4TradeWrapper;
+import com.bluebell.planter.importing.records.MetaTrader4TradeWrapper;
 import jakarta.annotation.Resource;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -30,7 +30,7 @@ import java.util.regex.Pattern;
  * Service-layer for importing trades into the system from the MetaTrader4 platform
  *
  * @author Stephen Prizio
- * @version 0.0.4
+ * @version 0.0.7
  */
 @Service("metaTrader4TradesImportService")
 public class MetaTrader4TradesImportService implements ImportService {
@@ -55,7 +55,7 @@ public class MetaTrader4TradesImportService implements ImportService {
      * @param delimiter unit delimiter
      */
     @Override
-    public void importTrades(String filePath, Character delimiter, final Account account) {
+    public void importTrades(final String filePath, final Character delimiter, final Account account) {
         try {
             importFile(new BufferedReader(new FileReader(ResourceUtils.getFile(filePath))), account);
         } catch (Exception e) {
@@ -71,7 +71,7 @@ public class MetaTrader4TradesImportService implements ImportService {
      * @param delimiter   unit delimiter
      */
     @Override
-    public void importTrades(InputStream inputStream, Character delimiter, final Account account) {
+    public void importTrades(final InputStream inputStream, final Character delimiter, final Account account) {
         importFile(new BufferedReader(new InputStreamReader(inputStream)), account);
     }
 
@@ -90,20 +90,20 @@ public class MetaTrader4TradesImportService implements ImportService {
             bufferedReader.lines().forEach(stringBuilder::append);
 
             final List<String> content = getContent(stringBuilder.toString());
-            List<MetaTrade4TradeWrapper> trades =
+            List<MetaTrader4TradeWrapper> trades =
                     content
                             .stream()
                             .map(this::generateWrapper)
                             .filter(Objects::nonNull)
-                            .sorted(Comparator.comparing(MetaTrade4TradeWrapper::getOpenTime))
+                            .sorted(Comparator.comparing(MetaTrader4TradeWrapper::getOpenTime))
                             .toList();
 
             final Map<String, Trade> tradeMap = new HashMap<>();
             final Map<String, Trade> existingTrades = new HashMap<>();
 
             this.tradeRepository.findAllByAccount(account).forEach(trade -> existingTrades.put(trade.getTradeId(), trade));
-            final List<MetaTrade4TradeWrapper> buyTrades = trades.stream().filter(trade -> !existingTrades.containsKey(trade.ticketNumber())).filter(trade -> matchTradeType(trade.type(), TradeType.BUY)).toList();
-            final List<MetaTrade4TradeWrapper> sellTrades = trades.stream().filter(trade -> !existingTrades.containsKey(trade.ticketNumber())).filter(trade -> matchTradeType(trade.type(), TradeType.SELL)).toList();
+            final List<MetaTrader4TradeWrapper> buyTrades = trades.stream().filter(trade -> !existingTrades.containsKey(trade.ticketNumber())).filter(trade -> matchTradeType(trade.type(), TradeType.BUY)).toList();
+            final List<MetaTrader4TradeWrapper> sellTrades = trades.stream().filter(trade -> !existingTrades.containsKey(trade.ticketNumber())).filter(trade -> matchTradeType(trade.type(), TradeType.SELL)).toList();
 
             buyTrades.forEach(trade -> tradeMap.put(trade.ticketNumber(), createNewTrade(trade, TradeType.BUY, account)));
             sellTrades.forEach(trade -> tradeMap.put(trade.ticketNumber(), createNewTrade(trade, TradeType.SELL, account)));
@@ -152,12 +152,12 @@ public class MetaTrader4TradesImportService implements ImportService {
     }
 
     /**
-     * Generates a {@link MetaTrade4TradeWrapper} from the given string
+     * Generates a {@link MetaTrader4TradeWrapper} from the given string
      *
      * @param string input value
-     * @return {@link MetaTrade4TradeWrapper}
+     * @return {@link MetaTrader4TradeWrapper}
      */
-    private MetaTrade4TradeWrapper generateWrapper(final String string) {
+    private MetaTrader4TradeWrapper generateWrapper(final String string) {
 
         if (StringUtils.isEmpty(string)) {
             return null;
@@ -180,7 +180,7 @@ public class MetaTrader4TradesImportService implements ImportService {
             return null;
         }
 
-        return new MetaTrade4TradeWrapper(
+        return new MetaTrader4TradeWrapper(
                 data.get(0),
                 LocalDateTime.parse(data.get(1), DateTimeFormatter.ofPattern("yyyy.MM.dd HH:mm:ss")),
                 LocalDateTime.parse(data.get(8), DateTimeFormatter.ofPattern("yyyy.MM.dd HH:mm:ss")),
@@ -208,13 +208,13 @@ public class MetaTrader4TradesImportService implements ImportService {
     }
 
     /**
-     * Creates a new {@link Trade} from a {@link MetaTrade4TradeWrapper}
+     * Creates a new {@link Trade} from a {@link MetaTrader4TradeWrapper}
      *
-     * @param wrapper   {@link MetaTrade4TradeWrapper}
+     * @param wrapper   {@link MetaTrader4TradeWrapper}
      * @param tradeType {@link TradeType}
      * @return {@link Trade}
      */
-    private Trade createNewTrade(final MetaTrade4TradeWrapper wrapper, final TradeType tradeType, final Account account) {
+    private Trade createNewTrade(final MetaTrader4TradeWrapper wrapper, final TradeType tradeType, final Account account) {
 
         Trade trade = new Trade();
 

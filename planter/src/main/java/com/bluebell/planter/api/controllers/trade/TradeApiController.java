@@ -9,7 +9,7 @@ import com.bluebell.planter.core.enums.trade.info.TradeType;
 import com.bluebell.planter.core.models.entities.security.User;
 import com.bluebell.planter.core.models.entities.trade.Trade;
 import com.bluebell.planter.core.services.trade.TradeService;
-import com.bluebell.planter.importing.services.GenericImportService;
+import com.bluebell.planter.importing.services.trade.GenericTradeImportService;
 import com.bluebell.planter.security.aspects.ValidateApiToken;
 import com.bluebell.planter.security.constants.SecurityConstants;
 import jakarta.annotation.Resource;
@@ -34,7 +34,7 @@ import static com.bluebell.planter.importing.validation.ImportValidator.validate
  * Api controller for {@link Trade}
  *
  * @author Stephen Prizio
- * @version 0.0.5
+ * @version 0.0.7
  */
 @RestController
 @RequestMapping("${base.api.controller.endpoint}/trade")
@@ -43,8 +43,8 @@ public class TradeApiController extends AbstractApiController {
 
     private static final String TRADE_ID = "tradeId";
 
-    @Resource(name = "genericImportService")
-    private GenericImportService genericImportService;
+    @Resource(name = "genericTradeImportService")
+    private GenericTradeImportService genericTradeImportService;
 
     @Resource(name = "tradeDTOConverter")
     private TradeDTOConverter tradeDTOConverter;
@@ -163,7 +163,7 @@ public class TradeApiController extends AbstractApiController {
         final User user = (User) request.getAttribute(SecurityConstants.USER_REQUEST_KEY);
         validateImportFileExtension(file, getAccountForId(user, accountNumber).getTradePlatform().getFormats(), "The given file %s was not of a valid format", file.getOriginalFilename());
 
-        String result = this.genericImportService.importTrades(file.getInputStream(), getAccountForId(user, accountNumber));
+        String result = this.genericTradeImportService.importTrades(file.getInputStream(), getAccountForId(user, accountNumber));
         if (StringUtils.isEmpty(result)) {
             return new StandardJsonResponse(true, true, StringUtils.EMPTY);
         }

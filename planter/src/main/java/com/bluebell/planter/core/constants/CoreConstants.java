@@ -7,7 +7,7 @@ import java.time.Year;
  * Constants used for the core package
  *
  * @author Stephen Prizio
- * @version 0.0.4
+ * @version 0.0.7
  */
 public class CoreConstants {
 
@@ -160,6 +160,8 @@ public class CoreConstants {
             public static final String TRADE_TYPE_CANNOT_BE_NULL = "tradeType cannot be null";
 
             public static final String TRADE_ID_CANNOT_BE_NULL = "tradeId cannot be null";
+
+            public static final String IMPORT_STREAM_CANNOT_BE_NULL = "import stream cannot be null";
         }
 
         public static class DataIntegrity {
