@@ -21,6 +21,9 @@ import {
 import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from "@/components/ui/select";
 import parsePhoneNumberFromString from "libphonenumber-js";
 import SimpleMessage from "@/components/Message/SimpleMessage";
+import {registerUser} from "@/lib/functions/account-functions";
+import {useToast} from "@/hooks/use-toast";
+import {Toaster} from "@/components/ui/toaster";
 
 /**
  * Renders the login page
@@ -30,9 +33,10 @@ import SimpleMessage from "@/components/Message/SimpleMessage";
  */
 export default function Login() {
 
+  const {toast} = useToast();
   const [isLoading, setIsLoading] = useState(false)
   const [success, setSuccess] = useState<'success' | 'failed' | 'undefined'>('undefined')
-  const [state, setState] = useState<'login' | 'register' | 'forgot'>('register')
+  const [state, setState] = useState<'login' | 'register' | 'forgot'>('login')
   const [showRegisterForm, setShowRegisterForm] = useState(false)
 
   const loginFormSchema = LoginSchema()
@@ -109,13 +113,35 @@ export default function Login() {
    * @param values form values
    */
   async function onRegisterSubmit(values: z.infer<typeof registerFormSchema>) {
-    // Do something with the form values.
-    // ✅ This will be type-safe and validated.
-    setIsLoading(true)
-    await delay(4000);
-    console.log(values)
 
-    setSuccess("success")
+    setIsLoading(true)
+    await delay(2000);
+
+    const user = await registerUser(values)
+    if (!user) {
+      toast({
+        title: "Account Creation Error",
+        description: "An error occurred during account creation. Please check your inputs and try again.",
+        variant: "danger",
+      })
+      setSuccess('failed')
+    } else {
+      console.log(user)
+      //if success, perform login(user)
+      //once successful login, redirect to dashboard
+
+      //TODO: hook into user context to fetch the user info
+      //TODO: redirect to login page with success toast
+
+      toast({
+        title: "Account Created",
+        description: "Your account was successfully created. Welcome to bluebell!",
+        variant: "success",
+      })
+      setSuccess('success')
+    }
+
+    setIsLoading(false)
     setIsLoading(false)
   }
 
@@ -179,7 +205,6 @@ export default function Login() {
     <div className={'h-[100vh] flex items-center justify-center w-full'}>
       <div className={'grid grid-cols-1 justify-items-center w-full'}>
         <div className={'mb-6'}>
-          <p>Existing username/email messages notifications</p>
           <div className={'flex items-center justify-center'}>
             <MainLogo size={100}/>
           </div>
@@ -562,6 +587,7 @@ export default function Login() {
           }
         </div>
       </div>
+      <Toaster />
     </div>
   )
 }

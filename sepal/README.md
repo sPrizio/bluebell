@@ -7,9 +7,8 @@ Current Release: **Pre-release**
 
 ---
 
-### Static Pages
+### Static-only Pages
 - Dashboard
-- ALP
 - ADP
 - Transactions
 - Performance
@@ -21,9 +20,17 @@ Current Release: **Pre-release**
 - Login Page
 
 ### Integrated Pages
-None
+- ALP
 
-### Pages In Progress or Not Started
+### Integration TODOs
+- Integrate customer registration to create users on the backend
+- Need a fetch user context to imitate logging in
+- once user is created, look at empty state across all pages
+- allow account creation and create first account
+- update empty state across app
+- allow trade imports
+- look at how state is updated
+- start integrating pages
 
 ---
 
@@ -37,3 +44,4 @@ None
 
 ### Version History
 - **0.0.1** : Core functionality and initial page designs (static only)
+- (In progress) **0.0.2** : Integrating with Backend

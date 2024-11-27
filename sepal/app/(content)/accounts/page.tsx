@@ -15,15 +15,17 @@ import AccountForm from "@/components/Form/Account/AccountForm";
  * The page that shows all of a user's accounts
  *
  * @author Stephen Prizio
- * @version 0.0.1
+ * @version 0.0.2
  */
 export default function AccountsPage() {
 
   const {
+    user,
     pageTitle,
     pageSubtitle,
     pageIconCode,
     breadcrumbs,
+    setUser,
     setPageTitle,
     setPageSubtitle,
     setPageIconCode,
@@ -38,10 +40,13 @@ export default function AccountsPage() {
       {label: 'Dashboard', href: '/dashboard', active: false},
       {label: 'Accounts', href: '/accounts', active: true},
     ])
-  }, [])
+  }, [user])
 
 
   //  RENDER
+
+  const activeAccounts = user?.accounts?.filter(acc => acc.active) ?? []
+  const inActiveAccounts = user?.accounts?.filter(acc => !acc.active) ?? []
 
   return (
     <div className={'grid grid-cols-1 gap-8 w-full'}>
@@ -57,32 +62,44 @@ export default function AccountsPage() {
       <div className={'flex items-center text-sm justify-end w-full'}>
         <span className={'inline-block'}><IconSquareRoundedCheckFilled className={'text-primary'} /></span>&nbsp;&nbsp;indicates default account.
       </div>
-      <div className={''}>
-        <BaseCard
-          title={'Active Accounts'}
-          subtitle={'All actively traded accounts.'}
-          cardContent={
-            <AccountsTable
-              accounts={accounts.filter(acc => acc.active)}
-              allowAccountSelection={true}
-              showCompactTable={false}
-            />
-          }
-        />
-      </div>
-      <div className={''}>
-        <BaseCard
-          title={'Inactive Accounts'}
-          subtitle={'Inactive or disabled accounts are ones that are not currently being traded.'}
-          cardContent={
-            <AccountsTable
-              accounts={accounts.filter(acc => !acc.active)}
-              allowAccountSelection={true}
-              showCompactTable={false}
-            />
-          }
-        />
-      </div>
+      {
+        activeAccounts.length === 0 && inActiveAccounts.length === 0 &&
+        <div className={'text-center'}>
+            No accounts found. Try adding one!
+        </div>
+      }
+      {
+        activeAccounts.length > 0 &&
+          <div className={''}>
+              <BaseCard
+                  title={'Active Accounts'}
+                  subtitle={'All actively traded accounts.'}
+                  cardContent={
+                    <AccountsTable
+                      accounts={activeAccounts}
+                      allowAccountSelection={true}
+                      showCompactTable={false}
+                    />
+                  }
+              />
+          </div>
+      }
+      {
+        inActiveAccounts.length > 0 &&
+          <div className={''}>
+              <BaseCard
+                  title={'Inactive Accounts'}
+                  subtitle={'Inactive or disabled accounts are ones that are not currently being traded.'}
+                  cardContent={
+                    <AccountsTable
+                      accounts={inActiveAccounts}
+                      allowAccountSelection={true}
+                      showCompactTable={false}
+                    />
+                  }
+              />
+          </div>
+      }
     </div>
   )
 }

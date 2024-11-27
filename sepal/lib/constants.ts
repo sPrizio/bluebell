@@ -2,7 +2,7 @@
 import {z} from "zod";
 import {safeConvertEnum} from "@/lib/functions/util-functions";
 import {hasEmail, hasUsername} from "@/lib/functions/account-functions";
-import {isValidPassword} from "@/lib/functions/security-functions";
+import {getAccountDomain, getUserDomain, isValidPassword} from "@/lib/functions/security-functions";
 import parsePhoneNumberFromString from "libphonenumber-js";
 
 export const DEFAULT_PAGE_HEADER_SECTION_ICON_SIZE = 36;
@@ -14,7 +14,21 @@ export const PHONE_REGEX = "^\\s*(?:\\+?(\\d{1,3}))?[-. (]*(\\d{3})[-. )]*(\\d{3
 export const ApiCredentials = {
   AuthHeader: 'fp-api_token',
   TestAccountNumber: '28331289',
-  TestUserToken: 'Zmxvd2VycG90X2FwaV90b2tlbiZzLnByaXppb0Bob3RtYWlsLmNvbSYyMDI0LTA1LTAxVDEyOjE2OjQ3',
+  TestUserToken: 'Zmxvd2VycG90X2FwaV90b2tlbiZzLnByaXppb0Bob3RtYWlsLmNvbSYyMDI0LTExLTIwVDEzOjU2OjE1',
+}
+
+export const ApiUrls = {
+  Account: {
+    CreateAccount: getAccountDomain() + '/create-account',
+    GetCurrencies: getAccountDomain() + '/currencies',
+    GetAccountTypes: getAccountDomain() + '/account-types',
+    GetBrokers: getAccountDomain() + '/brokers',
+    GetTradePlatforms: getAccountDomain() + '/trade-platforms',
+  },
+  User: {
+    GetUser: getUserDomain() + '/get?username={username}',
+    RegisterUser: getUserDomain() + '/create',
+  }
 }
 
 export const DateTime = {
@@ -99,7 +113,6 @@ export function CRUDUserSchema(editMode: boolean) {
 
       // when it's good
       if (phone && phone.isValid()) {
-        console.log(phone.formatNational());
         return phone.formatNational();
       }
 
@@ -166,14 +179,5 @@ export function TradeImportSchema() {
     filename: z
       .instanceof(FileList)
       .refine((file) => file?.length == 1, 'File is required.'),
-  })/*.superRefine(({ filename }, ctx) => {
-    const suffix = filename.substring(filename.indexOf('.') + 1);
-    if (!(suffix === 'csv' || suffix === 'html')) {
-      ctx.addIssue({
-        code: "custom",
-        message: "The given file was not a csv or html file.",
-        path: ['filename']
-      });
-    }
-  })*/
+  })
 }

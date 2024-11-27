@@ -16,7 +16,6 @@ import {
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
 import {useEffect, useState} from "react";
-import {accountCreationInfo} from "@/lib/sample-data";
 import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from "@/components/ui/select";
 import {Loader2} from "lucide-react";
 import {useSepalModalContext} from "@/lib/context/SepalContext";
@@ -24,6 +23,7 @@ import {delay} from "@/lib/functions/util-functions";
 import { useToast } from "@/hooks/use-toast"
 import {CRUDAccountSchema} from "@/lib/constants";
 import {Switch} from "@/components/ui/switch";
+import {createAccount, getAccountCreationInfo} from "@/lib/functions/account-functions";
 
 /**
  * Renders a form that can create or update an Account
@@ -51,7 +51,7 @@ export default function AccountForm(
   const [success, setSuccess] = useState<'success' | 'failed' | 'undefined'>('undefined')
 
   useEffect(() => {
-    getAccountCreationInfo();
+    getAccCreationInfo();
   }, [])
 
   useEffect(() => {
@@ -105,26 +105,33 @@ export default function AccountForm(
    * @param values form values
    */
   async function onSubmit(values: z.infer<typeof formSchema>) {
-    // Do something with the form values.
-    // ✅ This will be type-safe and validated.
-    setIsLoading(true)
-    await delay(4000);
-    console.log(values)
-    setIsLoading(false)
 
-    setSuccess('success')
+    setIsLoading(true)
+    await delay(1500);
+
+    const res = await createAccount(values);
+    if (!res) {
+      setSuccess('failed');
+    } else {
+      setSuccess('success')
+    }
+
+    setIsLoading(false)
+    console.log(res)
+
     setOpen(false)
   }
 
   /**
    * Fetches the Account creation information
    */
-  async function getAccountCreationInfo() {
+  async function getAccCreationInfo() {
 
     setIsLoading(true)
 
-    await delay(2000)
-    setAccInfo(accountCreationInfo)
+    const data = await getAccountCreationInfo()
+    console.log(data)
+    setAccInfo(data ?? { currencies: [], brokers: [], accountTypes: [], platforms: []})
 
     setIsLoading(false)
   }
@@ -205,7 +212,7 @@ export default function AccountForm(
                       <SelectContent>
                         <SelectItem value={'default'}>Select a currency</SelectItem>
                         {
-                          accountCreationInfo?.currencies?.map((item : Currency) => {
+                          accInfo?.currencies?.map((item : Currency) => {
                             return (
                               <SelectItem key={item.uid} value={item.code}>{item.label}</SelectItem>
                             )
@@ -234,7 +241,7 @@ export default function AccountForm(
                       <SelectContent>
                         <SelectItem value={'default'}>Select a broker</SelectItem>
                         {
-                          accountCreationInfo?.brokers?.map((item : Broker) => {
+                          accInfo?.brokers?.map((item : Broker) => {
                             return (
                               <SelectItem key={item.uid} value={item.code}>{item.label}</SelectItem>
                             )
@@ -263,7 +270,7 @@ export default function AccountForm(
                       <SelectContent>
                         <SelectItem value={'default'}>Select a security type</SelectItem>
                         {
-                          accountCreationInfo?.accountTypes?.map((item : AccountType) => {
+                          accInfo?.accountTypes?.map((item : AccountType) => {
                             return (
                               <SelectItem key={item.uid} value={item.code}>{item.label}</SelectItem>
                             )
@@ -295,7 +302,7 @@ export default function AccountForm(
                       <SelectContent>
                         <SelectItem value={'default'}>Select a trading platform</SelectItem>
                         {
-                          accountCreationInfo?.platforms?.map((item : TradePlatform) => {
+                          accInfo?.platforms?.map((item : TradePlatform) => {
                             return (
                               <SelectItem key={item.uid} value={item.code}>{item.label}</SelectItem>
                             )

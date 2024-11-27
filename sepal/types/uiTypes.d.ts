@@ -5,12 +5,12 @@ export interface PageInfoContext {
   pageSubtitle: string,
   pageIconCode: string,
   breadcrumbs: Array<AppLink>,
-  user: User
+  user: User | null,
   setPageTitle: React.Dispatch<React.SetStateAction<string>>,
   setPageSubtitle: React.Dispatch<React.SetStateAction<string>>,
   setPageIconCode: React.Dispatch<React.SetStateAction<string>>,
   setBreadcrumbs: React.Dispatch<React.SetStateAction<Array<AppLink>>>,
-  setUser: React.Dispatch<React.SetStateAction<User>>,
+  setUser: React.Dispatch<React.SetStateAction<User | null>>,
 }
 
 export interface SidebarNavigationLinkType {

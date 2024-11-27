@@ -135,7 +135,7 @@ export default function AccountDetails(
                   title={'Import Trades'}
                   description={'Here you may manually import trades into the account for tracking.'}
                   trigger={<Button className="" variant={"primary"}><IconCirclePlus/>&nbsp;Import Trades</Button>}
-                  content={<ImportTradesForm />}
+                  content={<ImportTradesForm account={account} />}
                 />
               </div> : null
           }

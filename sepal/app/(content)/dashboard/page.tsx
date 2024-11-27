@@ -4,17 +4,13 @@ import React, {useEffect} from "react";
 import {Icons} from "@/lib/enums";
 import {useSepalPageInfoContext} from "@/lib/context/SepalContext";
 import {BaseCard} from "@/components/Card/BaseCard";
-import {Button} from "@/components/ui/button";
 import DashboardContent from "@/components/Card/Content/DashboardContent";
 import {resolveIcon} from "@/lib/functions/util-functions";
 import AccountsTable from "@/components/Table/Account/AccountsTable";
-import {IconCirclePlus} from "@tabler/icons-react";
 import TradeLogTable from "@/components/Table/Trade/TradeLogTable";
 import {accounts, chartData, tradeLog} from "@/lib/sample-data";
 import AccountTransactionsTable from "@/components/Table/Account/AccountTransactionsTable";
 import PortfolioGrowthChart from "@/components/Chart/Account/PortfolioGrowthChart";
-import BaseModal from "@/components/Modal/BaseModal";
-import AccountForm from "@/components/Form/Account/AccountForm";
 
 /**
  * The page that shows an overview of a user's portfolio

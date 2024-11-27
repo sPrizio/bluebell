@@ -1,4 +1,5 @@
 import {createContext, useContext} from "react";
+import {ModalContext, PageInfoContext} from "@/types/uiTypes";
 
 //  page information context
 export const SepalPageInfoContext = createContext<PageInfoContext | undefined>(undefined);

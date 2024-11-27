@@ -21,8 +21,7 @@ interface PhoneNumber extends GenericApiType {
   display: string
 }
 
-// TODO: implement on backend
-interface AccountCreationInfo extends GenericApiType {
+interface AccountCreationInfo {
   currencies: Array<Currency>,
   brokers: Array<Broker>,
   platforms: Array<TradePlatform>,

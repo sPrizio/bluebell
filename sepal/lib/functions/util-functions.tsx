@@ -87,7 +87,7 @@ export function resolveIcon(iconCode: string, className = '', iconSize = 24) {
     case Icons.Trades:
       return <IconReplaceFilled className={className} size={iconSize}/>;
     default:
-      return null;
+      return <span>-</span>;
   }
 }
 
@@ -172,7 +172,7 @@ export function getFlagForCode(val: string, height = 25, width = 25) {
     case "AUD":
       return <Image src={aud} height={height} width={width} alt={'Australia'}/>
     default:
-      return null;
+      return <span>-</span>;
   }
 }
 
@@ -200,7 +200,7 @@ export function getRoundFlagForCode(val: string, height = 25, width = 25) {
     case "AUD":
       return <Image src={audRound} height={height} width={width} alt={'Australia'}/>
     default:
-      return null;
+      return <span>-</span>;
   }
 }
 
@@ -213,16 +213,17 @@ export function getRoundFlagForCode(val: string, height = 25, width = 25) {
  */
 export function getBrokerImageForCode(val: string, height = 25, width = 25) {
   switch (val) {
-    case 'cmc':
+    case 'CMC_MARKETS':
       return <Image src={cmc} alt={'CMC Markets Logo'} height={height} width={width}/>
-    case 'ftmo':
+    case 'FTMO':
       return <Image src={ftmo} alt={'FTMO Logo'} height={height} width={width}/>
     case 'td365':
       return <Image src={td365} alt={'TD365 Logo'} height={height} width={width}/>
     case 'td':
       return <Image src={td} alt={'TD (Toronto-Dominion) Logo'} height={height} width={width}/>
+    case '':
     default:
-      return null;
+      return <span>-</span>;
   }
 }
 

@@ -3,7 +3,7 @@
 import {Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow,} from "@/components/ui/table"
 import {IconExternalLink, IconSquareRoundedCheckFilled} from "@tabler/icons-react";
 import Link from "next/link";
-import {formatNumberForDisplay, getBrokerImageForCode, getFlagForCode, getRoundFlagForCode} from "@/lib/functions/util-functions";
+import {formatNumberForDisplay, getBrokerImageForCode, getFlagForCode} from "@/lib/functions/util-functions";
 import moment from "moment";
 import {DateTime} from "@/lib/constants";
 import {useRouter} from "next/navigation";
@@ -45,9 +45,14 @@ export default function AccountsTable(
    * @param val incoming key
    */
   function getBrokerImage(val: string): React.ReactNode {
-    return getBrokerImageForCode(val.toLowerCase(), 25, 25)
+    return getBrokerImageForCode(val ?? '', 25, 25)
   }
 
+  /**
+   * Redirect to account page based on input value
+   *
+   * @param val account number
+   */
   function redirectToAccount(val: number) {
     if (allowAccountSelection) {
       router.push(`/accounts/${val}`)
@@ -108,8 +113,8 @@ export default function AccountsTable(
                       return (
                         <TableRow key={item.uid} className={allowAccountSelection ? 'hover:cursor-pointer' : 'hover:bg-transparent'}>
                           <TableCell>{item.name}</TableCell>
-                          <TableCell className={'text-center'}>{item.accountType.label}</TableCell>
-                          <TableCell className={'text-center'}>{item.broker.label}</TableCell>
+                          <TableCell className={'text-center'}>{item.accountType?.label ?? '-'}</TableCell>
+                          <TableCell className={'text-center'}>{item.broker?.label ?? ''}</TableCell>
                           <TableCell className="text-right">${formatNumberForDisplay(item.balance)}</TableCell>
                         </TableRow>
                       )
@@ -135,18 +140,21 @@ export default function AccountsTable(
                             }
                           </TableCell>
                           <TableCell className={'text-center flex items-center justify-center h-full'}>
-                            <div className={'mt-2'}>
-                              {getFlagForCode(item.currency.label)}
+                            <div className={''}>
+                              {getFlagForCode(item.currency?.code ?? '')}
                             </div>
                           </TableCell>
-                          <TableCell className={'text-center'}>{item.tradePlatform.label}</TableCell>
-                          <TableCell className={'text-center'}>{item.accountType.label}</TableCell>
+                          <TableCell className={'text-center'}>{item.tradePlatform?.label ?? '-'}</TableCell>
+                          <TableCell className={'text-center'}>{item.accountType?.label ?? '-'}</TableCell>
                           <TableCell className={'text-center flex items-center justify-center'}>
-                            <div className={'mt-2'}>
+                            <div className={''}>
                               {getBrokerImage(item.broker.code)}
                             </div>
                           </TableCell>
-                          <TableCell className={''}>{moment(item.lastTraded).format(DateTime.ISOShortMonthDayYearWithTimeFormat)}</TableCell>
+                          <TableCell className={''}>
+                            {item.lastTraded && moment(item.lastTraded).format(DateTime.ISOShortMonthDayYearWithTimeFormat)}
+                            {!item.lastTraded && <span>No trades</span>}
+                          </TableCell>
                           <TableCell className="text-right">${formatNumberForDisplay(item.balance)}</TableCell>
                         </TableRow>
                       )
