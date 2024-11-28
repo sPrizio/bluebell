@@ -4,7 +4,7 @@ import com.bluebell.planter.core.constants.CoreConstants;
 import com.bluebell.planter.core.enums.system.FlowerpotTimeInterval;
 import com.bluebell.planter.core.models.entities.account.Account;
 import com.bluebell.planter.core.models.entities.trade.Trade;
-import com.bluebell.planter.core.models.nonentities.TradeRecord;
+import com.bluebell.planter.core.models.nonentities.records.trade.TradeRecord;
 import com.bluebell.radicle.services.MathService;
 import jakarta.annotation.Resource;
 import org.apache.commons.collections4.CollectionUtils;
@@ -23,7 +23,7 @@ import static com.bluebell.planter.core.validation.GenericValidator.validatePara
  * Service-layer for calculating {@link TradeRecord}s
  *
  * @author Stephen Prizio
- * @version 0.0.6
+ * @version 0.0.7
  */
 @Service
 public class TradeRecordService {
@@ -53,7 +53,7 @@ public class TradeRecordService {
         validateParameterIsNotNull(account, CoreConstants.Validation.Account.ACCOUNT_CANNOT_BE_NULL);
         validateParameterIsNotNull(flowerpotTimeInterval, CoreConstants.Validation.System.TIME_INTERVAL_CANNOT_BE_NULL);
 
-        final int limit = (count == CoreConstants.MAX_RESULT_SIZE) ? 1000000 : count;
+        final int limit = (count == CoreConstants.MAX_RESULT_SIZE) ? 1000000000 : count;
         LocalDate tempStart = flowerpotTimeInterval == FlowerpotTimeInterval.MONTHLY ? start.with(TemporalAdjusters.firstDayOfMonth()) : start;
         LocalDate tempEnd = tempStart.plus(flowerpotTimeInterval.amount, flowerpotTimeInterval.unit);
 

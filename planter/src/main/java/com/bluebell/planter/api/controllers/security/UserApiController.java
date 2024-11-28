@@ -16,10 +16,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
-import java.util.TreeSet;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static com.bluebell.planter.core.validation.GenericValidator.validateJsonIntegrity;
@@ -29,7 +26,7 @@ import static com.bluebell.planter.core.validation.GenericValidator.validateJson
  * API controller for {@link User}
  *
  * @author Stephen Prizio
- * @version 0.0.2
+ * @version 0.0.7
  */
 @RestController
 @RequestMapping("${base.api.controller.endpoint}/user")
@@ -49,6 +46,20 @@ public class UserApiController extends AbstractApiController {
 
 
     //  ----------------- GET REQUESTS -----------------
+
+    /**
+     * Returns a {@link StandardJsonResponse} containing a {@link User} with the given username
+     *
+     * @param username username
+     * @param request {@link HttpServletRequest}
+     * @return {@link StandardJsonResponse}
+     */
+    @ValidateApiToken
+    @GetMapping("/get")
+    public StandardJsonResponse getUser(final @RequestParam String username, final HttpServletRequest request) throws InterruptedException {
+        final Optional<User> user = this.userService.findUserByUsername(username);
+        return user.map(value -> new StandardJsonResponse(true, this.userDTOConverter.convert(value), StringUtils.EMPTY)).orElseGet(() -> new StandardJsonResponse(false, null, String.format("No user found for username %s", username)));
+    }
 
     /**
      * Returns a {@link StandardJsonResponse} containing all of the {@link Country} codes

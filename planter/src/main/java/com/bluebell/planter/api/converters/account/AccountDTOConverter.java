@@ -2,7 +2,7 @@ package com.bluebell.planter.api.converters.account;
 
 import com.bluebell.planter.api.converters.GenericDTOConverter;
 import com.bluebell.planter.api.models.dto.account.AccountDTO;
-import com.bluebell.planter.api.models.records.currency.CurrencyDisplay;
+import com.bluebell.planter.api.models.records.EnumDisplay;
 import com.bluebell.planter.core.models.entities.account.Account;
 import com.bluebell.planter.core.services.platform.UniqueIdentifierService;
 import com.bluebell.radicle.services.MathService;
@@ -13,7 +13,7 @@ import org.springframework.stereotype.Component;
  * Converts {@link Account}s into {@link AccountDTO}s
  *
  * @author Stephen Prizio
- * @version 0.0.1
+ * @version 0.0.7
  */
 @Component("accountDTOConverter")
 public class AccountDTOConverter implements GenericDTOConverter<Account, AccountDTO> {
@@ -42,11 +42,12 @@ public class AccountDTOConverter implements GenericDTOConverter<Account, Account
         accountDTO.setActive(entity.isActive());
         accountDTO.setBalance(this.mathService.getDouble(entity.getBalance()));
         accountDTO.setName(entity.getName());
-        accountDTO.setCurrency(new CurrencyDisplay(entity.getCurrency().getIsoCode(), entity.getCurrency().getLabel()));
+        accountDTO.setCurrency(new EnumDisplay(entity.getCurrency().getIsoCode(), entity.getCurrency().getLabel()));
         accountDTO.setAccountNumber(entity.getAccountNumber());
-        accountDTO.setAccountType(entity.getAccountType().getLabel());
-        accountDTO.setBroker(entity.getBroker().getName());
+        accountDTO.setAccountType(new EnumDisplay(entity.getAccountType().getLabel(), entity.getAccountType().getLabel()));
+        accountDTO.setBroker(new EnumDisplay(entity.getBroker().getCode(), entity.getBroker().getName()));
         accountDTO.setLastTraded(entity.getLastTraded());
+        accountDTO.setTradePlatform(new EnumDisplay(entity.getTradePlatform().getCode(), entity.getTradePlatform().getLabel()));
 
         return accountDTO;
     }

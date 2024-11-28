@@ -10,6 +10,7 @@ import com.bluebell.planter.core.enums.account.Currency;
 import com.bluebell.planter.core.enums.trade.platform.TradePlatform;
 import com.bluebell.planter.core.models.entities.account.Account;
 import com.bluebell.planter.core.models.entities.security.User;
+import com.bluebell.planter.core.models.nonentities.records.account.AccountDetails;
 import com.bluebell.planter.core.services.account.AccountService;
 import com.bluebell.planter.security.aspects.ValidateApiToken;
 import com.bluebell.planter.security.constants.SecurityConstants;
@@ -21,6 +22,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import static com.bluebell.planter.core.validation.GenericValidator.validateJsonIntegrity;
 
@@ -29,7 +31,7 @@ import static com.bluebell.planter.core.validation.GenericValidator.validateJson
  * API Controller for {@link Account}
  *
  * @author Stephen Prizio
- * @version 0.0.3
+ * @version 0.0.7
  */
 @RestController
 @RequestMapping("${base.api.controller.endpoint}/account")
@@ -55,7 +57,7 @@ public class AccountApiController extends AbstractApiController {
      */
     @ValidateApiToken
     @GetMapping("/currencies")
-    public StandardJsonResponse getCurrencies() {
+    public StandardJsonResponse getCurrencies(final HttpServletRequest request) {
         return new StandardJsonResponse(true, Arrays.stream(Currency.values()).map(c -> new PairEntry(c.getIsoCode(), c.getLabel(), c.getSymbol())).toList(), StringUtils.EMPTY);
     }
 
@@ -66,7 +68,7 @@ public class AccountApiController extends AbstractApiController {
      */
     @ValidateApiToken
     @GetMapping("/account-types")
-    public StandardJsonResponse getAccountTypes() {
+    public StandardJsonResponse getAccountTypes(final HttpServletRequest request) {
         return new StandardJsonResponse(true, Arrays.stream(AccountType.values()).map(at -> new PairEntry(at.getLabel().toUpperCase(), at.getLabel(), StringUtils.EMPTY)).toList(), StringUtils.EMPTY);
     }
 
@@ -77,7 +79,7 @@ public class AccountApiController extends AbstractApiController {
      */
     @ValidateApiToken
     @GetMapping("/brokers")
-    public StandardJsonResponse getBrokers() {
+    public StandardJsonResponse getBrokers(final HttpServletRequest request) {
         return new StandardJsonResponse(true, Arrays.stream(Broker.values()).map(b -> new PairEntry(b.getCode(), b.getName(), StringUtils.EMPTY)).toList(), StringUtils.EMPTY);
     }
 
@@ -88,8 +90,22 @@ public class AccountApiController extends AbstractApiController {
      */
     @ValidateApiToken
     @GetMapping("/trade-platforms")
-    public StandardJsonResponse getTradePlatforms() {
+    public StandardJsonResponse getTradePlatforms(final HttpServletRequest request) {
         return new StandardJsonResponse(true, Arrays.stream(TradePlatform.values()).map(tp -> new PairEntry(tp.getCode(), tp.getLabel(), StringUtils.EMPTY)).toList(), StringUtils.EMPTY);
+    }
+
+    /**
+     * Returns a {@link StandardJsonResponse} containing a {@link AccountDetails} object
+     *
+     * @param accountNumber account number
+     * @param request {@link HttpServletRequest}
+     * @return {@link StandardJsonResponse}
+     */
+    @ValidateApiToken
+    @GetMapping("/get-details")
+    public StandardJsonResponse getDetails(final @RequestParam("accountNumber") Long accountNumber, final HttpServletRequest request) {
+        final Optional<Account> account = this.accountService.findAccountByAccountNumber(accountNumber);
+        return account.map(value -> new StandardJsonResponse(true, this.accountService.getAccountDetails(value), StringUtils.EMPTY)).orElseGet(() -> new StandardJsonResponse(false, null, String.format("No account was found for account numer %d", accountNumber)));
     }
 
 

@@ -83,6 +83,11 @@ public class CoreConstants {
     public static final int DEFAULT_TRADE_RECORD_COLLECTION_SIZE = 10;
 
     /**
+     * The current risk-free rate based on the 10-yr Government of Canada bonds
+     */
+    public static final double RISK_FREE_RATE_CANADA = 3.26;
+
+    /**
      * Validation messages used throughout the system, organized according to the entity packages
      */
     public static class Validation {

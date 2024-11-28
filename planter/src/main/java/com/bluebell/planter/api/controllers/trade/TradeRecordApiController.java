@@ -5,7 +5,7 @@ import com.bluebell.planter.api.models.records.json.StandardJsonResponse;
 import com.bluebell.planter.core.constants.CoreConstants;
 import com.bluebell.planter.core.enums.system.FlowerpotTimeInterval;
 import com.bluebell.planter.core.models.entities.security.User;
-import com.bluebell.planter.core.models.nonentities.TradeRecord;
+import com.bluebell.planter.core.models.nonentities.records.trade.TradeRecord;
 import com.bluebell.planter.core.services.trade.TradeRecordService;
 import com.bluebell.planter.security.aspects.ValidateApiToken;
 import com.bluebell.planter.security.constants.SecurityConstants;
@@ -25,7 +25,7 @@ import static com.bluebell.planter.core.validation.GenericValidator.validateLoca
  * Api controller for {@link TradeRecord}
  *
  * @author Stephen Prizio
- * @version 0.0.6
+ * @version 0.0.7
  */
 @RestController
 @RequestMapping("${base.api.controller.endpoint}/trade-record")

@@ -1,4 +1,4 @@
-package com.bluebell.planter.core.models.nonentities;
+package com.bluebell.planter.core.models.nonentities.records.trade;
 
 import com.bluebell.planter.core.models.entities.trade.Trade;
 
@@ -24,7 +24,7 @@ import java.time.LocalDate;
  * @param retention percentage of points won of total points
  *
  * @author Stephen Prizio
- * @version 0.0.6
+ * @version 0.0.7
  */
 public record TradeRecord(
         LocalDate start,

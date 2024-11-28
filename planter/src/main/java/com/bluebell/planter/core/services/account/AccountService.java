@@ -9,6 +9,7 @@ import com.bluebell.planter.core.exceptions.system.EntityCreationException;
 import com.bluebell.planter.core.exceptions.validation.MissingRequiredDataException;
 import com.bluebell.planter.core.models.entities.account.Account;
 import com.bluebell.planter.core.models.entities.security.User;
+import com.bluebell.planter.core.models.nonentities.records.account.AccountDetails;
 import com.bluebell.planter.core.repositories.account.AccountRepository;
 import jakarta.annotation.Resource;
 import org.apache.commons.collections4.MapUtils;
@@ -24,7 +25,7 @@ import static com.bluebell.planter.core.validation.GenericValidator.validatePara
  * Service-layer for {@link Account} entities
  *
  * @author Stephen Prizio
- * @version 0.0.3
+ * @version 0.0.7
  */
 @Service
 public class AccountService {
@@ -32,8 +33,31 @@ public class AccountService {
     @Resource(name = "accountRepository")
     private AccountRepository accountRepository;
 
+    @Resource(name = "accountDetailsService")
+    private AccountDetailsService accountDetailsService;
+
 
     //  METHODS
+
+    /**
+     * Returns an {@link AccountDetails} for the given {@link Account}
+     *
+     * @param account {@link Account}
+     * @return {@link AccountDetails}
+     */
+    public AccountDetails getAccountDetails(final Account account) {
+
+        validateParameterIsNotNull(account, CoreConstants.Validation.Account.ACCOUNT_CANNOT_BE_NULL);
+
+        return new AccountDetails(
+                account,
+                this.accountDetailsService.calculateConsistencyScore(account),
+                this.accountDetailsService.calculateEquityPoints(account),
+                this.accountDetailsService.obtainInsights(account),
+                this.accountDetailsService.obtainStatistics(account),
+                CoreConstants.RISK_FREE_RATE_CANADA
+        );
+    }
 
     /**
      * Obtains an {@link Account} for the given account number
@@ -92,8 +116,16 @@ public class AccountService {
         account.setCurrency(Currency.get(acc.get("currency").toString()));
         account.setAccountType(AccountType.valueOf(acc.get("type").toString()));
         account.setBroker(Broker.valueOf(acc.get("broker").toString()));
+
+        if (Boolean.parseBoolean(acc.get("isDefault").toString())) {
+            user.getAccounts().forEach(a -> {
+                a.setDefaultAccount(false);
+                this.accountRepository.save(a);
+            });
+        }
+
         account.setDefaultAccount(isDefault);
-        account.setTradePlatform(TradePlatform.valueOf(acc.get("tradePlatform").toString()));
+        account.setTradePlatform(TradePlatform.getByCode(acc.get("tradePlatform").toString()));
 
         return this.accountRepository.save(account);
     }

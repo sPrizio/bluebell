@@ -17,7 +17,7 @@ import com.bluebell.planter.core.models.entities.news.MarketNewsSlot;
 import com.bluebell.planter.core.models.entities.security.User;
 import com.bluebell.planter.core.models.entities.system.PhoneNumber;
 import com.bluebell.planter.core.models.entities.trade.Trade;
-import com.bluebell.planter.core.models.nonentities.TradeRecord;
+import com.bluebell.planter.core.models.nonentities.records.trade.TradeRecord;
 import com.bluebell.planter.integration.models.responses.forexfactory.CalendarNewsEntryResponse;
 import com.bluebell.planter.security.constants.SecurityConstants;
 import org.springframework.test.web.servlet.request.RequestPostProcessor;
@@ -32,7 +32,7 @@ import java.util.List;
  * Parent-level testing class to provide testing assistance
  *
  * @author Stephen Prizio
- * @version 0.0.6
+ * @version 0.0.7
  */
 public abstract class AbstractGenericTest {
 

@@ -45,3 +45,6 @@ Current Release: **Pre-release**
 ### Version History
 - **0.0.1** : Core functionality and initial page designs (static only)
 - (In progress) **0.0.2** : Integrating with Backend
+
+### Bugs
+- Cannot set a default account properly (possible issue with conditional logic in Planter)

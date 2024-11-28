@@ -1,6 +1,6 @@
 package com.bluebell.planter.core.enums.system;
 
-import com.bluebell.planter.core.models.nonentities.TradeRecord;
+import com.bluebell.planter.core.models.nonentities.records.trade.TradeRecord;
 import org.apache.commons.lang3.StringUtils;
 
 import java.time.temporal.ChronoUnit;
@@ -9,7 +9,7 @@ import java.time.temporal.ChronoUnit;
  * Enum representing various time intervals for {@link TradeRecord}s
  *
  * @author Stephen Prizio
- * @version 0.0.6
+ * @version 0.0.7
  */
 public enum FlowerpotTimeInterval {
     DAILY(ChronoUnit.DAYS, 1),
