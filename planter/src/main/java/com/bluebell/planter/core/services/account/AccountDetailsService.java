@@ -76,7 +76,7 @@ public class AccountDetailsService {
      */
     public AccountInsights obtainInsights(final Account account) {
 
-        final List<TradeRecord> tradeRecords = this.tradeRecordService.getTradeRecords(LocalDate.MIN, LocalDate.MAX, account, FlowerpotTimeInterval.DAILY, -1);
+        final List<TradeRecord> tradeRecords = this.tradeRecordService.getTradeRecords(account.getAccountOpenTime().minusYears(1).toLocalDate(), LocalDate.now().plusYears(1), account, FlowerpotTimeInterval.DAILY, -1);
         final List<CumulativeTrade> cumulativeTrades = generativeCumulativeTrades(account);
 
         return new AccountInsights(
@@ -187,11 +187,14 @@ public class AccountDetailsService {
      */
     private double calculateSharpeRatio(final Account account) {
 
-        final List<TradeRecord> monthlyRecords = this.tradeRecordService.getTradeRecords(LocalDate.MIN, LocalDate.MAX, account, FlowerpotTimeInterval.MONTHLY, -1);
+        final List<TradeRecord> monthlyRecords = this.tradeRecordService.getTradeRecords(account.getAccountOpenTime().minusYears(1).toLocalDate(), LocalDate.now().plusYears(1), account, FlowerpotTimeInterval.MONTHLY, -1);
         final double averageMonthlyReturn = monthlyRecords.stream().mapToInt(tr -> this.mathService.wholePercentage(tr.netProfit(), account.getBalance())).average().orElse(0.0);
         final double std = new StandardDeviation().evaluate(monthlyRecords.stream().mapToDouble(TradeRecord::netProfit).toArray());
 
-        return this.mathService.divide(this.mathService.subtract(averageMonthlyReturn, CoreConstants.RISK_FREE_RATE_CANADA), std);
-
+        if (Double.isNaN(std)) {
+            return 0.0;
+        } else {
+            return this.mathService.divide(this.mathService.subtract(averageMonthlyReturn, CoreConstants.RISK_FREE_RATE_CANADA), std);
+        }
     }
 }

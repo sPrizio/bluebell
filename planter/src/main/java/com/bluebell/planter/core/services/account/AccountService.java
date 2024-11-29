@@ -6,6 +6,7 @@ import com.bluebell.planter.core.enums.account.Broker;
 import com.bluebell.planter.core.enums.account.Currency;
 import com.bluebell.planter.core.enums.trade.platform.TradePlatform;
 import com.bluebell.planter.core.exceptions.system.EntityCreationException;
+import com.bluebell.planter.core.exceptions.system.EntityModificationException;
 import com.bluebell.planter.core.exceptions.validation.MissingRequiredDataException;
 import com.bluebell.planter.core.models.entities.account.Account;
 import com.bluebell.planter.core.models.entities.security.User;
@@ -85,9 +86,51 @@ public class AccountService {
         }
 
         try {
-            return applyChanges(new Account(), data, user);
+            return applyChanges(new Account(), data, user, true);
         } catch (Exception e) {
             throw new EntityCreationException(String.format("An Account could not be created : %s", e.getMessage()), e);
+        }
+    }
+
+    /**
+     * Updates an existing {@link Account}
+     *
+     * @param account {@link Account} to update
+     * @param data {@link Map}
+     * @param user {@link User}
+     * @return updated {@link Account}
+     */
+    public Account updateAccount(final Account account, final Map<String, Object> data, final User user) {
+
+        validateParameterIsNotNull(account, CoreConstants.Validation.Account.ACCOUNT_CANNOT_BE_NULL);
+        validateParameterIsNotNull(user, CoreConstants.Validation.Security.User.USER_CANNOT_BE_NULL);
+
+        if (MapUtils.isEmpty(data)) {
+            throw new MissingRequiredDataException("The required data for updating an Account was null or empty");
+        }
+
+        try {
+            return applyChanges(account, data, user, false);
+        } catch (Exception e) {
+            throw new EntityModificationException(String.format("An error occurred while modifying the Account : %s", e.getMessage()), e);
+        }
+    }
+
+    /**
+     * Attempts to delete the given {@link Account}
+     *
+     * @param account {@link Account}
+     * @return true if successfully deleted
+     */
+    public boolean deleteAccount(final Account account) {
+
+        validateParameterIsNotNull(account, CoreConstants.Validation.Account.ACCOUNT_CANNOT_BE_NULL);
+
+        try {
+            this.accountRepository.delete(account);
+            return true;
+        } catch (Exception e) {
+            return false;
         }
     }
 
@@ -102,30 +145,36 @@ public class AccountService {
      * @param user    {@link User}
      * @return updated {@link Account}
      */
-    private Account applyChanges(Account account, final Map<String, Object> data, final User user) {
+    private Account applyChanges(Account account, final Map<String, Object> data, final User user, final boolean isNew) {
 
         final Map<String, Object> acc = (Map<String, Object>) data.get("account");
-        final boolean isDefault = user.getAccounts().isEmpty();
 
-        account.setAccountOpenTime(LocalDateTime.now());
-        account.setActive(true);
+        if (isNew) {
+            account.setAccountOpenTime(LocalDateTime.now());
+            account.setActive(true);
+            account.setUser(user);
+        } else {
+            account.setActive(Boolean.parseBoolean(acc.get("active").toString()));
+        }
+
         account.setBalance(Double.parseDouble(acc.get("balance").toString()));
-        account.setUser(user);
         account.setName(acc.get("name").toString());
         account.setAccountNumber(Long.parseLong(acc.get("number").toString()));
         account.setCurrency(Currency.get(acc.get("currency").toString()));
         account.setAccountType(AccountType.valueOf(acc.get("type").toString()));
         account.setBroker(Broker.valueOf(acc.get("broker").toString()));
+        account.setTradePlatform(TradePlatform.getByCode(acc.get("tradePlatform").toString()));
 
         if (Boolean.parseBoolean(acc.get("isDefault").toString())) {
             user.getAccounts().forEach(a -> {
                 a.setDefaultAccount(false);
                 this.accountRepository.save(a);
             });
-        }
 
-        account.setDefaultAccount(isDefault);
-        account.setTradePlatform(TradePlatform.getByCode(acc.get("tradePlatform").toString()));
+            account.setDefaultAccount(true);
+        } else {
+            account.setDefaultAccount(false);
+        }
 
         return this.accountRepository.save(account);
     }

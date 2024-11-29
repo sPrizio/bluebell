@@ -26,7 +26,7 @@ import static com.bluebell.planter.core.validation.GenericValidator.validatePara
  * Service-layer for {@link User} entities
  *
  * @author Stephen Prizio
- * @version 0.0.2
+ * @version 0.0.7
  */
 @Service
 public class UserService {
@@ -142,7 +142,7 @@ public class UserService {
         user.setAccounts(new ArrayList<>());
         user.setPhones(new ArrayList<>());
 
-        /*user = this.userRepository.save(user);
+        user = this.userRepository.save(user);
 
         if (isNew) {
             user.setDateRegistered(LocalDateTime.now());
@@ -160,7 +160,6 @@ public class UserService {
         }
 
         user.setPhones(new ArrayList<>(phoneNumbers));
-        return this.userRepository.save(user);*/
-        return this.userRepository.findUserByUsername("s.prizio");
+        return this.userRepository.save(user);
     }
 }

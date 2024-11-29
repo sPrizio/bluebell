@@ -55,6 +55,7 @@ public class MarketNewsApiController extends AbstractApiController {
     @GetMapping("/get")
     public StandardJsonResponse getNews(final @RequestParam("date") String date, final HttpServletRequest request) {
 
+        //  TODO: temp
         this.strategyImportService.importTrades("C:\\Users\\Stephen\\Desktop\\StrategyTester.htm", ',', null);
 
         validate(date);

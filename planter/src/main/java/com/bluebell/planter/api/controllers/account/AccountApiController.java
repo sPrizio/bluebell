@@ -38,6 +38,8 @@ import static com.bluebell.planter.core.validation.GenericValidator.validateJson
 @CrossOrigin(origins = "*", methods = {RequestMethod.GET, RequestMethod.DELETE, RequestMethod.POST, RequestMethod.PUT})
 public class AccountApiController extends AbstractApiController {
 
+    private static final String ACCOUNT = "account";
+
     @Resource(name = "accountDTOConverter")
     private AccountDTOConverter accountDTOConverter;
 
@@ -105,7 +107,7 @@ public class AccountApiController extends AbstractApiController {
     @GetMapping("/get-details")
     public StandardJsonResponse getDetails(final @RequestParam("accountNumber") Long accountNumber, final HttpServletRequest request) {
         final Optional<Account> account = this.accountService.findAccountByAccountNumber(accountNumber);
-        return account.map(value -> new StandardJsonResponse(true, this.accountService.getAccountDetails(value), StringUtils.EMPTY)).orElseGet(() -> new StandardJsonResponse(false, null, String.format("No account was found for account numer %d", accountNumber)));
+        return account.map(value -> new StandardJsonResponse(true, this.accountService.getAccountDetails(value), StringUtils.EMPTY)).orElseGet(() -> new StandardJsonResponse(false, null, String.format("No account was found for account number %d", accountNumber)));
     }
 
 
@@ -121,8 +123,38 @@ public class AccountApiController extends AbstractApiController {
     @ValidateApiToken
     @PostMapping("/create-account")
     public StandardJsonResponse postCreateNewAccount(final HttpServletRequest request, final @RequestBody Map<String, Object> requestBody) {
-        validateJsonIntegrity(requestBody, List.of("account"), "json did not contain of the required keys : %s", List.of("account"));
+        validateJsonIntegrity(requestBody, List.of(ACCOUNT), "json did not contain of the required keys : %s", List.of(ACCOUNT));
         final User user = (User) request.getAttribute(SecurityConstants.USER_REQUEST_KEY);
         return new StandardJsonResponse(true, this.accountDTOConverter.convert(this.accountService.createNewAccount(requestBody, user)), StringUtils.EMPTY);
+    }
+
+
+    //  ----------------- PUT REQUESTS -----------------
+
+    /**
+     * Returns an updated {@link Account}
+     *
+     * @param accountNumber account number
+     * @param request {@link HttpServletRequest}
+     * @param requestBody json request
+     * @return {@link StandardJsonResponse}
+     */
+    @ValidateApiToken
+    @PutMapping("/update-account")
+    public StandardJsonResponse putUpdateAccount(final @RequestParam("accountNumber") long accountNumber, final HttpServletRequest request, final @RequestBody Map<String, Object> requestBody) {
+        validateJsonIntegrity(requestBody, List.of(ACCOUNT), "json did not contain of the required keys : %s", List.of(ACCOUNT));
+        final User user = (User) request.getAttribute(SecurityConstants.USER_REQUEST_KEY);
+        final Optional<Account> account = this.accountService.findAccountByAccountNumber(accountNumber);
+        return account.map(value -> new StandardJsonResponse(true, this.accountDTOConverter.convert(this.accountService.updateAccount(value, requestBody, user)), StringUtils.EMPTY)).orElseGet(() -> new StandardJsonResponse(false, null, String.format("No account was found for account number %d", accountNumber)));
+    }
+
+
+    //  ----------------- DELETE REQUESTS -----------------
+
+    @ValidateApiToken
+    @DeleteMapping("/delete-account")
+    public StandardJsonResponse deleteAccount(final @RequestParam("accountNumber") long accountNumber, final HttpServletRequest request) {
+        final Optional<Account> account = this.accountService.findAccountByAccountNumber(accountNumber);
+        return account.map(value -> new StandardJsonResponse(this.accountService.deleteAccount(account.get()), null, StringUtils.EMPTY)).orElseGet(() -> new StandardJsonResponse(false, null, String.format("No account was found for account number %d", accountNumber)));
     }
 }

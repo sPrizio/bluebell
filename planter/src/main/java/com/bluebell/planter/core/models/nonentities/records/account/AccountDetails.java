@@ -1,6 +1,7 @@
 package com.bluebell.planter.core.models.nonentities.records.account;
 
 import com.bluebell.planter.core.models.entities.account.Account;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import java.util.List;
 
@@ -16,5 +17,5 @@ import java.util.List;
  * @author Stephen Prizio
  * @version 0.0.7
  */
-public record AccountDetails(Account account, int consistency, List<AccountEquityPoint> equity, AccountInsights insights, AccountStatistics statistics, double riskFreeRate) {
+public record AccountDetails(@JsonIgnore Account account, int consistency, List<AccountEquityPoint> equity, AccountInsights insights, AccountStatistics statistics, double riskFreeRate) {
 }

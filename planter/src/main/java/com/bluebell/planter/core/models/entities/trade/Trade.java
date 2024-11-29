@@ -14,7 +14,7 @@ import java.time.LocalDateTime;
  * Class representation of a trade in the market, a buy or sell exchange
  *
  * @author Stephen Prizio
- * @version 0.0.1
+ * @version 0.0.7
  */
 @Getter
 @Entity
@@ -74,6 +74,6 @@ public class Trade implements GenericEntity {
     private double takeProfit;
 
     @Setter
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.REFRESH)
     private Account account;
 }

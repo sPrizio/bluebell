@@ -44,7 +44,7 @@ public class AccountDTOConverter implements GenericDTOConverter<Account, Account
         accountDTO.setName(entity.getName());
         accountDTO.setCurrency(new EnumDisplay(entity.getCurrency().getIsoCode(), entity.getCurrency().getLabel()));
         accountDTO.setAccountNumber(entity.getAccountNumber());
-        accountDTO.setAccountType(new EnumDisplay(entity.getAccountType().getLabel(), entity.getAccountType().getLabel()));
+        accountDTO.setAccountType(new EnumDisplay(entity.getAccountType().getCode(), entity.getAccountType().getLabel()));
         accountDTO.setBroker(new EnumDisplay(entity.getBroker().getCode(), entity.getBroker().getName()));
         accountDTO.setLastTraded(entity.getLastTraded());
         accountDTO.setTradePlatform(new EnumDisplay(entity.getTradePlatform().getCode(), entity.getTradePlatform().getLabel()));

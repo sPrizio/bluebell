@@ -53,7 +53,6 @@ public class TradeRecordService {
         validateParameterIsNotNull(account, CoreConstants.Validation.Account.ACCOUNT_CANNOT_BE_NULL);
         validateParameterIsNotNull(flowerpotTimeInterval, CoreConstants.Validation.System.TIME_INTERVAL_CANNOT_BE_NULL);
 
-        final int limit = (count == CoreConstants.MAX_RESULT_SIZE) ? 1000000000 : count;
         LocalDate tempStart = flowerpotTimeInterval == FlowerpotTimeInterval.MONTHLY ? start.with(TemporalAdjusters.firstDayOfMonth()) : start;
         LocalDate tempEnd = tempStart.plus(flowerpotTimeInterval.amount, flowerpotTimeInterval.unit);
 
@@ -65,7 +64,11 @@ public class TradeRecordService {
             tempEnd = tempEnd.plus(flowerpotTimeInterval.amount, flowerpotTimeInterval.unit);
         }
 
-        return records.stream().filter(tr -> tr.trades() > 0).sorted(Comparator.reverseOrder()).limit(limit).toList();
+        if (count == CoreConstants.MAX_RESULT_SIZE) {
+            return records.stream().filter(tr -> tr.trades() > 0).sorted(Comparator.reverseOrder()).toList();
+        } else {
+            return records.stream().filter(tr -> tr.trades() > 0).sorted(Comparator.reverseOrder()).limit(count).toList();
+        }
     }
 
 

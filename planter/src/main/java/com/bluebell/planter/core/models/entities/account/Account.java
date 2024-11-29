@@ -18,7 +18,7 @@ import java.util.List;
  * Class representation of a trading account, an entity that can hold {@link Trade}s and other information
  *
  * @author Stephen Prizio
- * @version 0.0.3
+ * @version 0.0.7
  */
 @Getter
 @Setter
@@ -69,7 +69,7 @@ public class Account implements GenericEntity {
     @OneToMany(mappedBy = "account", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Trade> trades;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.REFRESH)
     private User user;
 
 
