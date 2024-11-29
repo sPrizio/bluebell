@@ -3,9 +3,8 @@
 import {useSepalPageInfoContext} from "@/lib/context/SepalContext";
 import {notFound, useSearchParams} from "next/navigation";
 import React, {useEffect, useState} from "react";
-import {delay, getAccount, getAccountNumber} from "@/lib/functions/util-functions";
+import {getAccount, getAccountNumber} from "@/lib/functions/util-functions";
 import {Icons} from "@/lib/enums";
-import {trades} from "@/lib/sample-data";
 import {Loader2} from "lucide-react";
 import TradeTable from "@/components/Table/Trade/TradeTable";
 import {BaseCard} from "@/components/Card/BaseCard";
@@ -34,10 +33,10 @@ export default function TradesPage() {
 
   const searchParams = useSearchParams()
   const [isLoading, setIsLoading] = useState(false)
-  const [accNumber, setAccNumber] = useState(getAccountNumber(searchParams, user.accounts))
+  const [accNumber, setAccNumber] = useState(getAccountNumber(searchParams, user?.accounts))
   const [aggTrades, setAggTrades] = useState<Array<Trade>>([])
 
-  const acc = getAccount(accNumber, user.accounts)
+  const acc = getAccount(accNumber, user?.accounts)
   if (!acc) {
     return notFound()
   }
@@ -52,8 +51,6 @@ export default function TradesPage() {
       {label: accNumber.toString(), href: '/accounts/' + accNumber, active: false},
       {label: 'Trades', href: '/trades?account=default', active: true},
     ])
-
-    getTrades()
   }, [])
 
   useEffect(() => {
@@ -68,24 +65,10 @@ export default function TradesPage() {
     ])
 
     setAccNumber(accNumber)
-    getTrades()
   }, [accNumber]);
 
 
   //  GENERAL FUNCTIONS
-
-  /**
-   * Fetches the accounts trades
-   */
-  async function getTrades() {
-
-    setIsLoading(true)
-
-    await delay(2000)
-    setAggTrades(trades)
-
-    setIsLoading(false)
-  }
 
 
   //  RENDER
@@ -112,7 +95,7 @@ export default function TradesPage() {
                   </SelectTrigger>
                   <SelectContent>
                     {
-                      user.accounts.map((item: Account) => {
+                      user?.accounts.map((item: Account) => {
                         return (
                           <SelectItem key={item.uid} value={item.accountNumber.toString()}>{item.name}</SelectItem>
                         )
@@ -129,8 +112,7 @@ export default function TradesPage() {
                 subtitle={'A view of each Trade taken in this account.'}
                 cardContent={
                   <TradeTable
-                    trades={aggTrades}
-                    totalElements={aggTrades.length}
+                    account={acc}
                     page={0}
                     pageSize={25}
                   />

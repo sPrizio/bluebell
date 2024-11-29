@@ -19,6 +19,7 @@ import {getPagedTrades} from "@/lib/functions/trade-functions";
 /**
  * Renders a table of trades
  *
+ * @param account account
  * @param pageSize elements per page
  * @param page current page
  * @author Stephen Prizio
@@ -61,7 +62,7 @@ export default function TradeTable(
 
     setIsLoading(true)
 
-    const trs = await getPagedTrades(account.accountNumber, moment(account.accountOpenTime).format(DateTime.ISODateTimeFormat), moment().add(1, 'years').format(DateTime.ISODateTimeFormat), currentPage, pageSize)
+    const trs = await getPagedTrades(account?.accountNumber ?? '', moment(account?.accountOpenTime).format(DateTime.ISODateTimeFormat), moment().add(1, 'years').format(DateTime.ISODateTimeFormat), currentPage, pageSize)
     setData(trs ?? [])
 
     //  TODO: temp update backend to include a new paginated response type
@@ -101,7 +102,7 @@ export default function TradeTable(
 
   return (
     <div className={'mt-4 pb-2 flex flex-col'}>
-      {data?.length === 0 && <div className="text-center my-4 text-slate-500">No trades found.</div>}
+      {(data?.length ?? 0) === 0 && <div className="text-center my-4 text-slate-500">No trades found.</div>}
       {
         (data?.length ?? 0) > 0 &&
           <div className={'min-h-[450px]'}>

@@ -257,7 +257,7 @@ export function safeConvertEnum(val: string[]): [string, ...string[]] {
  * @param accounts array of accounts
  */
 export function getDefaultAccount(accounts: Array<Account>): Account | null {
-  return accounts.find(acc => acc.defaultAccount) ?? null
+  return accounts?.find(acc => acc.defaultAccount) ?? null
 }
 
 /**
