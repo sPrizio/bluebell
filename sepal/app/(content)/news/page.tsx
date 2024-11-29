@@ -5,16 +5,17 @@ import {useEffect, useState} from "react";
 import {Icons} from "@/lib/enums";
 import {BaseCard} from "@/components/Card/BaseCard";
 import {Button} from "@/components/ui/button";
-import {delay} from "@/lib/functions/util-functions";
 import {Loader2} from "lucide-react";
-import {marketNews} from "@/lib/sample-data";
 import NewsTable from "@/components/Table/News/NewsTable";
+import {fetchNews, getNews} from "@/lib/functions/news-functions";
+import moment from "moment";
+import {DateTime} from "@/lib/constants";
 
 /**
  * Renders the market News page
  *
  * @author Stephen Prizio
- * @version 0.0.1
+ * @version 0.0.2
  */
 export default function MarketNewsPage() {
 
@@ -32,7 +33,7 @@ export default function MarketNewsPage() {
   } = useSepalPageInfoContext()
 
   const [isLoading, setIsLoading] = useState(false)
-  const [news, setNews] = useState<Array<MarketNews>>(marketNews)
+  const [news, setNews] = useState<Array<MarketNews>>()
 
   useEffect(() => {
     setPageTitle('Market News')
@@ -42,18 +43,35 @@ export default function MarketNewsPage() {
       {label: 'Dashboard', href: '/dashboard', active: false},
       {label: 'Market News', href: '/market-News', active: true},
     ])
+
+    getTheNews()
   }, [])
+
+  async function getTheNews() {
+
+    setIsLoading(true)
+
+    const data = await getNews(moment().startOf('week').add(1, 'days').format(DateTime.ISODateFormat), moment().startOf('week').add(6, 'days').format(DateTime.ISODateFormat))
+    if (data && data.length > 0) {
+      setNews(data)
+    }
+
+    setIsLoading(false)
+  }
 
   /**
    * Fetches the market news
    */
-  async function getMarketNews() {
+  async function fetch() {
 
     setIsLoading(true)
 
-    //  TODO: temp
-    await delay(3000)
-    setNews(marketNews)
+    const data = await fetchNews()
+    if (data) {
+      window.location.reload()
+    } else {
+      console.log('Error fetching the news.')
+    }
 
     setIsLoading(false)
   }
@@ -73,7 +91,7 @@ export default function MarketNewsPage() {
               Update
             </Button>
             :
-            <Button key={0} onClick={getMarketNews} variant={"outline"}>Update</Button>
+            <Button key={0} onClick={fetch} variant={"outline"}>Update</Button>
         ]}
         cardContent={<NewsTable news={news} />}
       />

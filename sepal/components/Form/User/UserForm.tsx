@@ -13,6 +13,7 @@ import {Input} from "@/components/ui/input";
 import {Button} from "@/components/ui/button";
 import {Loader2} from "lucide-react";
 import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from "@/components/ui/select";
+import {updateUser} from "@/lib/functions/account-functions";
 
 /**
  * Renders a form that can create or update a User
@@ -20,7 +21,7 @@ import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from "@/c
  * @param mode should create / edit
  * @param user User info
  * @author Stephen Prizio
- * @version 0.0.1
+ * @version 0.0.2
  */
 export default function UserForm(
   {
@@ -70,8 +71,8 @@ export default function UserForm(
       email: user?.email ?? '',
       phoneType: user?.phones?.[0]?.phoneType.toUpperCase() ?? 'MOBILE',
       telephoneNumber: user?.phones?.[0]?.telephoneNumber.toString() ?? '',
-      password: 'this is a temp password that is unused.',
-      confirmPassword: 'this is a temp password that is unused.',
+      password: 'this is a temp password that is unused.!!',
+      confirmPassword: 'this is a temp password that is unused.!!',
     }
   })
 
@@ -84,15 +85,28 @@ export default function UserForm(
    * @param values form values
    */
   async function onSubmit(values: z.infer<typeof formSchema>) {
-    // Do something with the form values.
-    // ✅ This will be type-safe and validated.
-    setIsLoading(true)
-    await delay(4000);
-    console.log(values)
 
-    setSuccess("success")
-    setIsLoading(false)
-    setOpen(false)
+    setIsLoading(true)
+
+    let data
+    if (isCreateMode()) {
+      await delay(4000)
+      data = null
+      console.log(values)
+    } else {
+      data = await updateUser(user?.username, values)
+    }
+
+    if (!data) {
+      setSuccess('failed');
+      setIsLoading(false)
+      setOpen(false)
+    } else {
+      setSuccess('success')
+      setIsLoading(false)
+      setOpen(false)
+      window.location.reload()
+    }
   }
 
   /**

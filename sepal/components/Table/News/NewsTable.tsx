@@ -3,14 +3,14 @@
 import {Table, TableBody, TableCell, TableHead, TableHeader, TableRow} from "@/components/ui/table";
 import moment from "moment";
 import {DateTime} from "@/lib/constants";
-import {IconArticleFilled, IconNews} from "@tabler/icons-react";
+import {IconNews} from "@tabler/icons-react";
 
 /**
  * Renders the market news table
  *
  * @param news market news
  * @author Stephen Prizio
- * @version 0.0.1
+ * @version 0.0.2
  */
 export default function NewsTable(
   {
@@ -21,7 +21,8 @@ export default function NewsTable(
   }>
 ) {
 
-  const background = ' bg-primary bg-opacity-5 '
+  const background = ' bg-primary bg-opacity-5 hover:bg-primary hover:bg-opacity-5 '
+  const pastStyle = ' opacity-25 '
 
 
   //  GENERAL FUNCTIONS
@@ -63,13 +64,13 @@ export default function NewsTable(
           {
             news?.map((news) => (
               <>
-                <TableRow key={news.uid} className={'hover:bg-transparent ' + (news.active ? `${background}`: '')}>
+                <TableRow key={news.uid} className={'hover:bg-transparent ' + (news.active ? `${background}`: '') + (news.past ? `${pastStyle}` : '')}>
                   <TableCell className={'font-semibold text-primary'}
                              colSpan={7}>{moment(news.date).format(DateTime.ISOLongMonthDayYearFormat)}</TableCell>
                 </TableRow>
                 {
                   (news.slots?.length ?? 0) === 0 ?
-                    <TableRow className={'hover:bg-transparent ' + (news.active ? `${background}`: '')}>
+                    <TableRow className={'hover:bg-transparent ' + (news.active ? `${background}`: '') + (news.past ? `${pastStyle}` : '')}>
                       <TableCell className={'text-slate-400 text-center'} colSpan={7}>No news today.</TableCell>
                     </TableRow> : null
                 }
@@ -78,7 +79,7 @@ export default function NewsTable(
                     return (slot.entries?.length ?? 0) > 0 ?
                       slot.entries.map((entry, index) => {
                         return (
-                          <TableRow key={slot.uid} className={'hover:bg-transparent border-0 ' + (news.active ? `${background}`: '')}>
+                          <TableRow key={slot.uid} className={'hover:bg-transparent border-0 ' + (news.active ? `${background}`: '') + (news.past ? `${pastStyle}` : '')}>
                             <TableCell/>
                             {index === 0 ? <TableCell className={''}>{slot.time}</TableCell> : <TableCell/>}
                             <TableCell className={''}>{entry.country}</TableCell>

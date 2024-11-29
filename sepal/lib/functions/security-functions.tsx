@@ -7,7 +7,7 @@ import {ApiCredentials} from "@/lib/constants";
  */
 export function isValidPassword(val: string): boolean {
 
-  const allowedSymbols = ['!', '@', '#', '$', '%', '&', '*', '-', '_', '+']
+  const allowedSymbols = ['!', '@', '#', '$', '%', '&', '*', '-', '_', '+', ' ']
 
   let hasAlphanumeric = (/^[a-z0-9]+$/i.exec(val)?.length ?? -1) > 0;
   let hasSymbols = false;

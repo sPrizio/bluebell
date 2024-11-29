@@ -125,6 +125,55 @@ export async function registerUser(values: any): Promise<User | null> {
   return null;
 }
 
+/**
+ * Performs the user registration api call
+ *
+ * @param values form values
+ */
+export async function updateUser(username: string, values: any): Promise<User | null> {
+
+  let ret = {
+    user: {
+      firstName: values?.firstName ?? '',
+      lastName: values?.lastName ?? '',
+      username: values?.username ?? '',
+      email: values?.email ?? '',
+      phoneNumbers: [
+        {
+          phoneNumber: {
+            phoneType: values?.phoneType ?? '',
+            countryCode: 1,
+            telephoneNumber: values?.telephoneNumber ?? '',
+          }
+        }
+      ]
+    }
+  }
+
+  let headers = getAuthHeader()
+  headers['Content-Type'] = 'application/json'
+
+  try {
+    const res =
+      await fetch(ApiUrls.User.UpdateUser.replace('{username}', username), {
+        method: 'PUT',
+        headers: headers,
+        body: JSON.stringify(ret)
+      })
+
+    if (res.ok) {
+      const data = await res.json()
+      if (data.success) {
+        return data.data
+      }
+    }
+  } catch (e) {
+    console.log(e)
+  }
+
+  return null;
+}
+
 export async function getCurrencies(): Promise<Array<Currency> | null> {
 
   let headers = getAuthHeader()

@@ -15,7 +15,7 @@ import UserForm from "@/components/Form/User/UserForm";
  * Renders the user profile page
  *
  * @author Stephen Prizio
- * @version 0.0.1
+ * @version 0.0.2
  */
 export default function ProfilePage() {
 
@@ -75,16 +75,16 @@ export default function ProfilePage() {
         subtitle={'Your profile at a glance'}
         cardContent={
           <div className={'my-4 grid grid-cols-1 lg:grid-cols-3 gap-4'}>
-            {basicCell('First Name', user.firstName)}
-            {basicCell('Last Name', user.lastName)}
-            {basicCell('Username', user.username)}
-            {basicCell('Email', user.email)}
-            {basicCell('Date Registered', moment(user.dateRegistered).format(DateTime.ISOLongMonthDayYearWithTimeFormat))}
-            {basicCell('Roles', formatRoles(user.roles))}
+            {basicCell('First Name', user?.firstName)}
+            {basicCell('Last Name', user?.lastName)}
+            {basicCell('Username', user?.username)}
+            {basicCell('Email', user?.email)}
+            {basicCell('Date Registered', moment(user?.dateRegistered).format(DateTime.ISOLongMonthDayYearWithTimeFormat))}
+            {basicCell('Roles', formatRoles(user?.roles))}
             <div className={'flex flex-col gap-1'}>
               <div className={'text-xxs uppercase font-bold tracking-normal text-primary'}>Phone Numbers</div>
               {
-                user.phones?.map((phone: PhoneNumber) => {
+                user?.phones?.map((phone: PhoneNumber) => {
                     return (
                       <div key={phone.uid} className={'flex gap-2'}>
                         <div className={'basis-[75px]'}>
