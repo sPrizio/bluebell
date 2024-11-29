@@ -2,7 +2,13 @@
 import {z} from "zod";
 import {safeConvertEnum} from "@/lib/functions/util-functions";
 import {hasEmail, hasUsername} from "@/lib/functions/account-functions";
-import {getAccountDomain, getUserDomain, isValidPassword} from "@/lib/functions/security-functions";
+import {
+  getAccountDomain,
+  getTradeDomain,
+  getTradeRecordDomain,
+  getUserDomain,
+  isValidPassword
+} from "@/lib/functions/security-functions";
 import parsePhoneNumberFromString from "libphonenumber-js";
 
 export const DEFAULT_PAGE_HEADER_SECTION_ICON_SIZE = 36;
@@ -20,10 +26,19 @@ export const ApiCredentials = {
 export const ApiUrls = {
   Account: {
     CreateAccount: getAccountDomain() + '/create-account',
+    UpdateAccount: getAccountDomain() + '/update-account?accountNumber={accountNumber}',
+    DeleteAccount: getAccountDomain() + '/delete-account?accountNumber={accountNumber}',
     GetCurrencies: getAccountDomain() + '/currencies',
     GetAccountTypes: getAccountDomain() + '/account-types',
     GetBrokers: getAccountDomain() + '/brokers',
     GetTradePlatforms: getAccountDomain() + '/trade-platforms',
+    GetDetails: getAccountDomain() + '/get-details?accountNumber={accountNumber}',
+  },
+  Trade: {
+    GetPagedTrades: getTradeDomain() + '/for-interval-paged?accountNumber={accountNumber}&start={start}&end={end}&page={page}&pageSize={pageSize}',
+  },
+  TradeRecord: {
+    GetTradeRecords: getTradeRecordDomain() + '/for-interval?accountNumber={accountNumber}&start={start}&end={end}&interval={interval}&count={count}',
   },
   User: {
     GetUser: getUserDomain() + '/get?username={username}',

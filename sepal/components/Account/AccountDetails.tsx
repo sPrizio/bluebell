@@ -3,7 +3,7 @@
 import React, {useEffect, useState} from "react";
 import BaseModal from "@/components/Modal/BaseModal";
 import {Button} from "@/components/ui/button";
-import {IconCirclePlus, IconEdit, IconExternalLink, IconPlus, IconTrash} from "@tabler/icons-react";
+import {IconCirclePlus, IconEdit, IconExternalLink, IconTrash} from "@tabler/icons-react";
 import AccountForm from "@/components/Form/Account/AccountForm";
 import DeleteAccountForm from "@/components/Form/Account/DeleteAccountForm";
 import {BaseCard} from "@/components/Card/BaseCard";
@@ -11,8 +11,6 @@ import AccountInformation from "@/components/Account/AccountInformation";
 import {Switch} from "@/components/ui/switch";
 import {Label} from "@/components/ui/label";
 import SimpleBanner from "@/components/Banner/SimpleBanner";
-import {delay} from "@/lib/functions/util-functions";
-import {accountDetails, dailyTradeRecords, trades} from "@/lib/sample-data";
 import AccountEquityChart from "@/components/Chart/Account/AccountEquityChart";
 import {Progress} from "@/components/ui/progress";
 import AccountInsights from "@/components/Account/AccountInsights";
@@ -21,13 +19,17 @@ import TradeRecordTable from "@/components/Table/Trade/TradeRecordTable";
 import TradeTable from "@/components/Table/Trade/TradeTable";
 import Link from "next/link";
 import ImportTradesForm from "@/components/Form/Trade/ImportTradesForm";
+import {getAccountDetails} from "@/lib/functions/account-functions";
+import {getTradeRecords} from "@/lib/functions/trade-functions";
+import moment from "moment";
+import {DateTime} from "@/lib/constants";
 
 /**
  * Renders the Account details layout
  *
  * @param account Account info
  * @author Stephen Prizio
- * @version 0.0.1
+ * @version 0.0.2
  */
 export default function AccountDetails(
   {
@@ -41,22 +43,63 @@ export default function AccountDetails(
   const [isLoading, setIsLoading] = useState(false)
   const [accDetails, setAccDetails] = useState<AccountDetails>()
   const [showPoints, setShowPoints] = useState(false)
+  const [recentTradeRecords, setRecentTradeRecords] = useState<Array<TradeRecord>>([])
 
   useEffect(() => {
-    getAccountDetails()
+    getAccDetails()
+    getRecentTradeRecords()
   }, []);
 
 
   //  GENERAL FUNCTIONS
 
   /**
-   * Fetches the Account details
+   * Fetches the account details
    */
-  async function getAccountDetails() {
+  async function getAccDetails() {
+
     setIsLoading(true)
 
-    await delay(3000)
-    setAccDetails(accountDetails)
+    const data = await getAccountDetails(account.accountNumber)
+    setAccDetails(data ?? {
+      account: account,
+      consistency: 0.0,
+      equity: [],
+      insights: {
+        tradingDays: 0,
+        trades: 0,
+        maxDailyLoss: 0.0,
+        maxTotalLoss: 0.0,
+        maxDailyProfit: 0.0,
+        maxProfit: 0.0,
+      },
+      statistics: {
+        balance: 0.0,
+        averageProfit: 0.0,
+        averageLoss: 0.0,
+        numberOfTrades: 0,
+        rrr: 0.0,
+        lots: 0.0,
+        expectancy: 0.0,
+        winPercentage: 0,
+        profitFactor: 0.0,
+        retention: 0.0,
+        sharpeRatio: 0.0,
+      },
+    })
+
+    setIsLoading(false)
+  }
+
+  /**
+   * Fetches the recent trade records
+   */
+  async function getRecentTradeRecords() {
+
+    setIsLoading(true)
+
+    const data = await getTradeRecords(account.accountNumber, moment().subtract(6, 'days').format(DateTime.ISODateFormat), moment().format(DateTime.ISODateFormat), 'DAILY', 6)
+    setRecentTradeRecords(data ?? [])
 
     setIsLoading(false)
   }
@@ -166,12 +209,12 @@ export default function AccountDetails(
               <BaseCard
                 loading={isLoading}
                 title={'Account Equity'}
-                subtitle={'A look at the evolution of your Account since inception.'}
+                subtitle={'A look at the evolution of your account since inception.'}
                 cardContent={<AccountEquityChart data={accDetails?.equity ?? []} showPoints={showPoints}/>}
                 headerControls={[
                   <div key={0} className="flex items-center space-x-2">
                     <Label htmlFor="airplane-mode">Show as Points</Label>
-                    <Switch id="airplane-mode" checked={showPoints} onCheckedChange={setShowPoints}/>
+                    <Switch id="airplane-mode" checked={showPoints} onCheckedChange={setShowPoints} disabled={(accDetails?.equity ?? []).length <= 1} />
                   </div>,
                   <div key={1}>
                     <Link href={`/transactions?account=${account?.accountNumber}`}>
@@ -232,7 +275,7 @@ export default function AccountDetails(
             <BaseCard
               loading={isLoading}
               title={'Insights'}
-              subtitle={'A quick look at some of the key markers of this Account\'s performance.'}
+              subtitle={'A quick look at some of the key markers of this account\'s performance.'}
               cardContent={<AccountInsights insights={accDetails.insights}/>}
             />
             :
@@ -256,8 +299,8 @@ export default function AccountDetails(
         <BaseCard
           loading={isLoading}
           title={'Performance'}
-          subtitle={'A look at this Account\'s recent daily performance.'}
-          cardContent={<TradeRecordTable records={dailyTradeRecords}/>}
+          subtitle={'A look at this account\'s recent daily performance.'}
+          cardContent={<TradeRecordTable records={recentTradeRecords}/>}
           headerControls={[
             <Link key={0} href={`/performance?account=${account?.accountNumber}`}>
               <Button className="" variant={"outline"}><IconExternalLink size={18}/>&nbsp;View Full Performance</Button>
@@ -269,7 +312,7 @@ export default function AccountDetails(
         <BaseCard
           loading={isLoading}
           title={'Trades'}
-          subtitle={'A view of each Trade taken in this Account.'}
+          subtitle={'A view of each trade taken in this account.'}
           headerControls={[
             <Link key={0} href={`/trades?account=${account?.accountNumber}`}>
               <Button className="" variant={"outline"}><IconExternalLink size={18}/>&nbsp;View All Trades</Button>
@@ -277,8 +320,7 @@ export default function AccountDetails(
           ]}
           cardContent={
             <TradeTable
-              trades={trades}
-              totalElements={trades.length}
+              account={account}
               page={0}
               pageSize={10}
             />

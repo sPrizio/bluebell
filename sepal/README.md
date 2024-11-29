@@ -9,7 +9,6 @@ Current Release: **Pre-release**
 
 ### Static-only Pages
 - Dashboard
-- ADP
 - Transactions
 - Performance
 - Trades
@@ -21,6 +20,7 @@ Current Release: **Pre-release**
 
 ### Integrated Pages
 - ALP
+- ADP
 
 ### Integration TODOs
 - Integrate customer registration to create users on the backend
@@ -35,11 +35,11 @@ Current Release: **Pre-release**
 ---
 
 ### Todo List
-- Work through static pages v0.0.1
 - Integrate mock api calls with actual backend v0.0.2
 - Check empty state for everything once integrations are done (per page basis) v0.0.3
 - Deploy Site v0.0.4
 - Implement security with login and registration pages v0.0.4
+- Implement importing of trades
 ---
 
 ### Version History
@@ -47,4 +47,5 @@ Current Release: **Pre-release**
 - (In progress) **0.0.2** : Integrating with Backend
 
 ### Bugs
-- Cannot set a default account properly (possible issue with conditional logic in Planter)
+- TODO's on the various functions
+- Add documentation to the various functions files

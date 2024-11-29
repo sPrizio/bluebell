@@ -8,7 +8,7 @@ import React from "react";
  *
  * @param records Trade records
  * @author Stephen Prizio
- * @version 0.0.1
+ * @version 0.0.2
  */
 export default function TradeRecordTable(
   {
@@ -21,6 +21,10 @@ export default function TradeRecordTable(
 
 
   //  RENDER
+
+  if (records.length === 0) {
+    return <div className={'text-center mt-4'}><p className={'text-slate-500'}>No recent activity.</p></div>
+  }
 
   return (
     <Table>

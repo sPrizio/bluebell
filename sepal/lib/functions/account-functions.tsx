@@ -281,3 +281,91 @@ export async function createAccount(values: any): Promise<Account | null> {
 
   return null;
 }
+
+export async function updateAccount(accNumber: val, values: any): Promise<Account | null> {
+
+  let ret = {
+    account: {
+      balance: values?.balance ?? '',
+      name: values?.name ?? '',
+      number: values?.accountNumber ?? '',
+      currency: values?.currency ?? '',
+      type: values?.accountType ?? '',
+      broker: values?.broker ?? '',
+      tradePlatform: values?.tradePlatform ?? '',
+      isDefault: values?.defaultAccount ?? '',
+      active: values?.active ?? '',
+    }
+  }
+
+  let headers = getAuthHeader()
+  headers['Content-Type'] = 'application/json'
+
+  try {
+    const res =
+      await fetch(ApiUrls.Account.UpdateAccount.replace('{accountNumber}', accNumber), {
+        method: 'PUT',
+        headers: headers,
+        body: JSON.stringify(ret)
+      })
+
+    if (res.ok) {
+      const data = await res.json()
+      if (data.success) {
+        return data.data
+      }
+    }
+  } catch (e) {
+    console.log(e)
+  }
+
+  return null;
+}
+
+export async function deleteAccount(accNumber: val): Promise<boolean | null> {
+
+  let headers = getAuthHeader()
+  headers['Content-Type'] = 'application/json'
+
+  try {
+    const res =
+      await fetch(ApiUrls.Account.DeleteAccount.replace('{accountNumber}', accNumber), {
+        method: 'DELETE',
+        headers: headers,
+      })
+
+    if (res.ok) {
+      const data = await res.json()
+      return !!data.success;
+    }
+  } catch (e) {
+    console.log(e)
+  }
+
+  return null;
+}
+
+export async function getAccountDetails(accNumber: number): Promise<AccountDetails | null> {
+
+  let headers = getAuthHeader()
+  headers['Content-Type'] = 'application/json'
+
+  try {
+    const res =
+      await fetch(ApiUrls.Account.GetDetails.replace('{accountNumber}', accNumber.toString()), {
+        method: 'GET',
+        headers: headers,
+      })
+
+    if (res.ok) {
+      const data = await res.json()
+      if (data.success) {
+        return data.data
+      }
+    }
+  } catch (e) {
+    console.log(e)
+  }
+
+  return null;
+}

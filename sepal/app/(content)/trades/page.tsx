@@ -15,7 +15,7 @@ import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from "@/c
  * Renders the Trade history page
  *
  * @author Stephen Prizio
- * @version 0.0.1
+ * @version 0.0.2
  */
 export default function TradesPage() {
 
@@ -126,7 +126,7 @@ export default function TradesPage() {
               <BaseCard
                 loading={isLoading}
                 title={'Trades'}
-                subtitle={'A view of each Trade taken in this Account.'}
+                subtitle={'A view of each Trade taken in this account.'}
                 cardContent={
                   <TradeTable
                     trades={aggTrades}

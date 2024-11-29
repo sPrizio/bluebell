@@ -1,7 +1,7 @@
 'use client'
 
 import React, {useEffect, useState} from "react";
-import {Area, ComposedChart, ResponsiveContainer, Tooltip, TooltipProps, YAxis} from "recharts";
+import {Area, ComposedChart, ReferenceLine, ResponsiveContainer, Tooltip, TooltipProps, YAxis} from "recharts";
 import {NameType, ValueType,} from 'recharts/types/component/DefaultTooltipContent';
 import {Css, DateTime} from "@/lib/constants";
 import {BaseCard} from "@/components/Card/BaseCard";
@@ -19,14 +19,14 @@ interface InternalEquityPoint {
  * @param data Account equity data points
  * @param showPoints show balance or points
  * @author Stephen Prizio
- * @version 0.0.1
+ * @version 0.0.2
  */
 export default function AccountEquityChart(
   {
     data = [],
     showPoints = false,
   }
-    : Readonly<{
+  : Readonly<{
     data: Array<AccountEquityPoint>,
     showPoints?: boolean
   }>
@@ -36,9 +36,9 @@ export default function AccountEquityChart(
 
   useEffect(() => {
     if (showPoints) {
-      setChartData(data.map(item => ({ date: item.date, value: item.points })))
+      setChartData(data.map(item => ({date: item.date, value: item.points})))
     } else {
-      setChartData(data.map(item => ({ date: item.date, value: item.amount })))
+      setChartData(data.map(item => ({date: item.date, value: item.amount})))
     }
   }, [showPoints]);
 
@@ -109,21 +109,30 @@ export default function AccountEquityChart(
 
   return (
     <div className={'flex items-center justify-center pb-2'}>
-      <div className={'w-[100%]'}>
-        <ResponsiveContainer width='100%' minHeight={400}>
-          <ComposedChart data={chartData}>
-            <defs>
-              <linearGradient id="color" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="5%" stopColor={`${Css.ColorPrimary}`} stopOpacity={0.8}/>
-                <stop offset="95%" stopColor={`${Css.ColorPrimary}`} stopOpacity={0}/>
-              </linearGradient>
-            </defs>
-            <YAxis orientation={'right'} hide={true} dominantBaseline={getMin()} domain={['dataMin', 'dataMax']} />
-            <Tooltip content={tooltip}/>
-            <Area type="monotone" dot={false} dataKey="value" stroke={`${Css.ColorPrimary}`} strokeWidth={4} fill="url(#color)"/>
-          </ComposedChart>
-        </ResponsiveContainer>
-      </div>
+      {
+        (!data || data.length <= 1) &&
+          <div className="mt-4 flex flex-col items-center">
+              <p className={'text-slate-500'}>No trades to show. Come back after trading a bit!</p>
+          </div>
+      }
+      {
+        data && data.length > 1 &&
+          <div className={'w-[100%]'}>
+              <ResponsiveContainer width='100%' minHeight={400}>
+                  <ComposedChart data={chartData}>
+                      <defs>
+                          <linearGradient id="color" x1="0" y1="0" x2="0" y2="1">
+                              <stop offset="5%" stopColor={`${Css.ColorPrimary}`} stopOpacity={0.8}/>
+                              <stop offset="95%" stopColor={`${Css.ColorPrimary}`} stopOpacity={0}/>
+                          </linearGradient>
+                      </defs>
+                      <YAxis orientation={'right'} hide={true} dominantBaseline={getMin()} domain={['dataMin', 'dataMax']}/>
+                      <Tooltip content={tooltip}/>
+                      <Area type="monotone" dot={false} dataKey="value" stroke={`${Css.ColorPrimary}`} strokeWidth={4} fill="url(#color)"/>
+                  </ComposedChart>
+              </ResponsiveContainer>
+          </div>
+      }
     </div>
   )
 }

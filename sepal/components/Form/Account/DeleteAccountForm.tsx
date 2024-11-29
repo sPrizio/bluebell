@@ -4,16 +4,16 @@ import {Button} from "@/components/ui/button";
 import {Loader2} from "lucide-react";
 import {useEffect, useState} from "react";
 import {useSepalModalContext} from "@/lib/context/SepalContext";
-import {delay} from "@/lib/functions/util-functions";
 import {toast} from "@/hooks/use-toast";
 import {useRouter} from 'next/navigation'
+import {deleteAccount} from "@/lib/functions/account-functions";
 
 /**
  * Renders a form for deleting accounts
  *
  * @param account Account
  * @author Stephen Prizio
- * @version 0.0.1
+ * @version 0.0.2
  */
 export default function DeleteAccountForm(
   {
@@ -34,7 +34,7 @@ export default function DeleteAccountForm(
       toast(
         {
           title: 'Deletion Successful!',
-          description: 'Your trading Account was successfully deleted.',
+          description: 'Your trading account was successfully deleted.',
           variant: 'success'
         }
       )
@@ -42,7 +42,7 @@ export default function DeleteAccountForm(
       toast(
         {
           title: 'Deletion Failed!',
-          description: 'An error occurred while deleting your trading Account. Please try again.',
+          description: 'An error occurred while deleting your trading account. Please try again.',
           variant: 'danger'
         }
       )
@@ -53,17 +53,24 @@ export default function DeleteAccountForm(
   //  GENERAL FUNCTIONS
 
   /**
-   * Deletes the Account
+   * Deletes the account
    */
   async function handleDelete() {
 
     setIsLoading(true)
-    await delay(4000);
-    setIsLoading(false)
 
-    setSuccess('success')
-    setOpen(false)
-    router.push('/accounts')
+    const data = await deleteAccount(account.accountNumber)
+    if (data) {
+      setSuccess('success')
+      setIsLoading(false)
+      setOpen(false)
+      router.push('/accounts')
+      window.location.reload()
+    } else {
+      setSuccess('failed')
+      setIsLoading(false)
+      setOpen(false)
+    }
   }
 
 

@@ -36,22 +36,17 @@ interface PortfolioEquityPoint extends GenericApiType {
   [others: string]: any
 }
 
-// TODO: implement on backend
 interface AccountOption extends GenericApiType {
   code: string,
   label: string
 }
 
-// TODO: implement on backend
 interface Currency extends AccountOption {}
 
-// TODO: implement on backend
 interface AccountType extends AccountOption {}
 
-// TODO: implement on backend
 interface TradePlatform extends AccountOption {}
 
-// TODO: implement on backend
 interface Broker extends AccountOption {}
 
 interface Account extends GenericApiType {
@@ -71,15 +66,13 @@ interface Account extends GenericApiType {
   transactions: Array<Transaction>
 }
 
-// TODO: implement on backend
-interface AccountEquityPoint extends GenericApiType {
+interface AccountEquityPoint {
   date: string,
   amount: number,
   points: number
 }
 
-// TODO: implement on backend
-interface AccountInsights extends GenericApiType {
+interface AccountInsights {
   tradingDays: number,
   trades: number,
   maxDailyLoss: number,
@@ -88,8 +81,7 @@ interface AccountInsights extends GenericApiType {
   maxProfit: number,
 }
 
-// TODO: implement on backend
-interface AccountStatistics extends GenericApiType {
+interface AccountStatistics {
   balance: number,
   averageProfit: number,
   averageLoss: number,
@@ -103,8 +95,7 @@ interface AccountStatistics extends GenericApiType {
   sharpeRatio: number;
 }
 
-// TODO: implement on backend
-interface AccountDetails extends GenericApiType {
+interface AccountDetails {
   account: Account,
   consistency: number,
   equity: Array<AccountEquityPoint>,

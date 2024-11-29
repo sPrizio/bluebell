@@ -14,55 +14,60 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from "@/components/ui/pagination"
+import {getPagedTrades} from "@/lib/functions/trade-functions";
 
 /**
  * Renders a table of trades
  *
- * @param trades array of trades
+ * @param pageSize elements per page
+ * @param page current page
  * @author Stephen Prizio
- * @version 0.0.1
+ * @version 0.0.2
  */
 export default function TradeTable(
   {
-    trades = [],
-    totalElements = 100,
+    account,
     pageSize = 10,
     page = 0
   }
     : Readonly<{
-    trades: Array<Trade>,
-    totalElements?: number,
+    account: Account,
     pageSize?: number,
     page?: number
   }>
 ) {
 
   const [isLoading, setIsLoading] = useState(false)
+  const [totalElements, setTotalElements] = useState(100)
   const [currentPage, setCurrentPage] = useState(page)
   const [data, setData] = useState<Array<Trade>>()
   const [pages, setPages] = useState(calculatePages())
 
   useEffect(() => {
-    getTrades();
+    getAccTrades();
   }, []);
 
   useEffect(() => {
-    getTrades()
+    getAccTrades()
   }, [currentPage]);
 
 
   //  GENERAL FUNCTIONS
 
-  //TODO: TEMP
-  function getTrades() {
+  /**
+   * Fetches the paginated trades list
+   */
+  async function getAccTrades() {
 
     setIsLoading(true)
 
-    console.log(data)
-    console.log(trades)
-    console.log(currentPage)
+    const trs = await getPagedTrades(account.accountNumber, moment(account.accountOpenTime).format(DateTime.ISODateTimeFormat), moment().add(1, 'years').format(DateTime.ISODateTimeFormat), currentPage, pageSize)
+    setData(trs ?? [])
 
-    setData(trades.slice((pageSize * currentPage), (pageSize * (currentPage + 1))))
+    //  TODO: temp update backend to include a new paginated response type
+    //  TODO: this can be done once we import trades
+    //  TODO: add loading state
+    //setData(trades.slice((pageSize * currentPage), (pageSize * (currentPage + 1))))
 
     setIsLoading(false)
   }
@@ -95,94 +100,105 @@ export default function TradeTable(
   //  RENDER
 
   return (
-    <div className={'mt-4 pb-2 min-h-[450px] flex flex-col'}>
-      <div className={'flex-grow'}>
-        <Table>
-          <TableHeader className={'border-b-2 border-primaryLight'}>
-            <TableRow>
-              <TableHead />
-              <TableHead className={'text-center text-primary font-bold'}>Trade Id</TableHead>
-              <TableHead className={'text-left text-primary font-bold'}>Product</TableHead>
-              <TableHead className={'text-left text-primary font-bold'}>Open Time</TableHead>
-              <TableHead className={'text-center text-primary font-bold'}>Open Price</TableHead>
-              <TableHead className={'text-center text-primary font-bold'}>Lot Size</TableHead>
-              <TableHead className={'text-left text-primary font-bold'}>Close Time</TableHead>
-              <TableHead className={'text-center text-primary font-bold'}>Close Price</TableHead>
-              <TableHead className={'text-right text-primary font-bold'}>Net Profit</TableHead>
-              <TableHead className={'text-right text-primary font-bold'}>Points</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {
-              data?.map((item, key) => {
-                return (
-                  <TableRow key={item.uid} className={'hover:bg-transparent'}>
-                    <TableCell>{key + 1}</TableCell>
-                    <TableCell className={'text-center'}>{item.tradeId}</TableCell>
-                    <TableCell className={'text-left'}>{item.product}</TableCell>
-                    <TableCell className={'text-left'}>{moment(item.tradeOpenTime).format(DateTime.ISOShortMonthDayYearWithTimeFormat)}</TableCell>
-                    <TableCell className={'text-center'}>{formatNumberForDisplay(item.openPrice)}</TableCell>
-                    <TableCell className={'text-center'}>{item.lotSize}</TableCell>
-                    <TableCell className={'text-left'}>{moment(item.tradeCloseTime).format(DateTime.ISOShortMonthDayYearWithTimeFormat)}</TableCell>
-                    <TableCell className={'text-center'}>{formatNumberForDisplay(item.closePrice)}</TableCell>
-                    <TableCell className={'text-right'}>$&nbsp;{formatNumberForDisplay(item.netProfit)}</TableCell>
-                    <TableCell className={'text-right'}>{formatNegativePoints(item.points)}</TableCell>
-                  </TableRow>
-                )
-              })
-            }
-          </TableBody>
-        </Table>
-      </div>
-      <div className={'mt-4'}>
-        <Pagination className={'flex items-center justify-end text-right'}>
-          <PaginationContent>
-            {
-              currentPage > 0 ?
-                <PaginationItem onClick={(e) => handleClick(e, currentPage - 1)}>
-                  <PaginationPrevious href="#"/>
-                </PaginationItem> : null
-            }
-            {
-              currentPage > 1 ?
-                <PaginationItem>
-                  <PaginationEllipsis />
-                </PaginationItem> : null
-            }
-            {
-              currentPage > 0 ?
-                <PaginationItem onClick={(e) => handleClick(e, currentPage - 1)}>
-                  <PaginationLink href="#">{currentPage}</PaginationLink>
-                </PaginationItem> : null
-            }
-            <PaginationItem>
-              <PaginationLink href="#" isActive>
-                {currentPage + 1}
-              </PaginationLink>
-            </PaginationItem>
-            {
-              (currentPage + 1) < pages ?
-                <PaginationItem onClick={(e) => handleClick(e, currentPage + 1)}>
-                  <PaginationLink href="#">
-                    {currentPage + 2}
-                  </PaginationLink>
-                </PaginationItem> : null
-            }
-            {
-              (currentPage + 1) < (pages - 1) ?
-                <PaginationItem>
-                  <PaginationEllipsis />
-                </PaginationItem> : null
-            }
-            {
-              (currentPage + 1) < pages ?
-                <PaginationItem onClick={(e) => handleClick(e, currentPage + 1)}>
-                  <PaginationNext href="#" />
-                </PaginationItem> : null
-            }
-          </PaginationContent>
-        </Pagination>
-      </div>
+    <div className={'mt-4 pb-2 flex flex-col'}>
+      {data?.length === 0 && <div className="text-center my-4 text-slate-500">No trades found.</div>}
+      {
+        (data?.length ?? 0) > 0 &&
+          <div className={'min-h-[450px]'}>
+              <div className={'flex-grow'}>
+                  <Table>
+                      <TableHeader className={'border-b-2 border-primaryLight'}>
+                          <TableRow>
+                              <TableHead/>
+                              <TableHead className={'text-center text-primary font-bold'}>Trade Id</TableHead>
+                              <TableHead className={'text-left text-primary font-bold'}>Product</TableHead>
+                              <TableHead className={'text-left text-primary font-bold'}>Open Time</TableHead>
+                              <TableHead className={'text-center text-primary font-bold'}>Open Price</TableHead>
+                              <TableHead className={'text-center text-primary font-bold'}>Lot Size</TableHead>
+                              <TableHead className={'text-left text-primary font-bold'}>Close Time</TableHead>
+                              <TableHead className={'text-center text-primary font-bold'}>Close Price</TableHead>
+                              <TableHead className={'text-right text-primary font-bold'}>Net Profit</TableHead>
+                              <TableHead className={'text-right text-primary font-bold'}>Points</TableHead>
+                          </TableRow>
+                      </TableHeader>
+                      <TableBody>
+                        {
+                          data?.map((item, key) => {
+                            return (
+                              <TableRow key={item.uid} className={'hover:bg-transparent'}>
+                                <TableCell>{key + 1}</TableCell>
+                                <TableCell className={'text-center'}>{item.tradeId}</TableCell>
+                                <TableCell className={'text-left'}>{item.product}</TableCell>
+                                <TableCell
+                                  className={'text-left'}>{moment(item.tradeOpenTime).format(DateTime.ISOShortMonthDayYearWithTimeFormat)}</TableCell>
+                                <TableCell
+                                  className={'text-center'}>{formatNumberForDisplay(item.openPrice)}</TableCell>
+                                <TableCell className={'text-center'}>{item.lotSize}</TableCell>
+                                <TableCell
+                                  className={'text-left'}>{moment(item.tradeCloseTime).format(DateTime.ISOShortMonthDayYearWithTimeFormat)}</TableCell>
+                                <TableCell
+                                  className={'text-center'}>{formatNumberForDisplay(item.closePrice)}</TableCell>
+                                <TableCell
+                                  className={'text-right'}>$&nbsp;{formatNumberForDisplay(item.netProfit)}</TableCell>
+                                <TableCell className={'text-right'}>{formatNegativePoints(item.points)}</TableCell>
+                              </TableRow>
+                            )
+                          })
+                        }
+                      </TableBody>
+                  </Table>
+              </div>
+              <div className={'mt-4'}>
+                  <Pagination className={'flex items-center justify-end text-right'}>
+                      <PaginationContent>
+                        {
+                          currentPage > 0 ?
+                            <PaginationItem onClick={(e) => handleClick(e, currentPage - 1)}>
+                              <PaginationPrevious href="#"/>
+                            </PaginationItem> : null
+                        }
+                        {
+                          currentPage > 1 ?
+                            <PaginationItem>
+                              <PaginationEllipsis/>
+                            </PaginationItem> : null
+                        }
+                        {
+                          currentPage > 0 ?
+                            <PaginationItem onClick={(e) => handleClick(e, currentPage - 1)}>
+                              <PaginationLink href="#">{currentPage}</PaginationLink>
+                            </PaginationItem> : null
+                        }
+                          <PaginationItem>
+                              <PaginationLink href="#" isActive>
+                                {currentPage + 1}
+                              </PaginationLink>
+                          </PaginationItem>
+                        {
+                          (currentPage + 1) < pages ?
+                            <PaginationItem onClick={(e) => handleClick(e, currentPage + 1)}>
+                              <PaginationLink href="#">
+                                {currentPage + 2}
+                              </PaginationLink>
+                            </PaginationItem> : null
+                        }
+                        {
+                          (currentPage + 1) < (pages - 1) ?
+                            <PaginationItem>
+                              <PaginationEllipsis/>
+                            </PaginationItem> : null
+                        }
+                        {
+                          (currentPage + 1) < pages ?
+                            <PaginationItem onClick={(e) => handleClick(e, currentPage + 1)}>
+                              <PaginationNext href="#"/>
+                            </PaginationItem> : null
+                        }
+                      </PaginationContent>
+                  </Pagination>
+              </div>
+          </div>
+      }
     </div>
   )
 }

@@ -10,7 +10,7 @@ import Badge from "@/components/Badge/Badge";
  *
  * @param account Account info
  * @author Stephen Prizio
- * @version 0.0.1
+ * @version 0.0.2
  */
 export default function AccountInformation(
   {
@@ -60,12 +60,8 @@ export default function AccountInformation(
           <TableRow className={'hover:bg-transparent'}>
             <TableCell className={getHeaderColumnStyles()}>Date Closed</TableCell>
             <TableCell>
-              {
-                account?.accountCloseTime === '-1' ?
-                  <span>Open</span>
-                  :
-                  moment(account?.accountCloseTime).format(DateTime.ISOShortMonthDayYearFormat)
-              }
+              {account?.accountCloseTime && account?.accountCloseTime !== '-1' && moment(account?.accountCloseTime).format(DateTime.ISOShortMonthDayYearFormat)}
+              {(!account?.accountCloseTime || account.accountCloseTime === '-1') && <span>Open</span>}
             </TableCell>
           </TableRow>
           <TableRow className={'hover:bg-transparent'}>
@@ -94,7 +90,10 @@ export default function AccountInformation(
           </TableRow>
           <TableRow className={'hover:bg-transparent'}>
             <TableCell className={getHeaderColumnStyles()}>Last Traded</TableCell>
-            <TableCell>{moment(account?.lastTraded).format(DateTime.ISOShortMonthDayYearFormat)}</TableCell>
+            <TableCell>
+              {account?.lastTraded && moment(account.lastTraded).format(DateTime.ISOShortMonthDayYearFormat)}
+              {(!account?.lastTraded) && <span>No trades</span>}
+            </TableCell>
           </TableRow>
           <TableRow className={'hover:bg-transparent'}>
             <TableCell className={getHeaderColumnStyles(true)}>Default Account</TableCell>

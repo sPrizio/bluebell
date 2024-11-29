@@ -3,9 +3,8 @@
 import {useSepalPageInfoContext} from "@/lib/context/SepalContext";
 import React, {useEffect, useState} from "react";
 import {Icons} from "@/lib/enums";
-import {useParams, useRouter} from "next/navigation";
+import {useParams} from "next/navigation";
 import {delay, isNumeric} from "@/lib/functions/util-functions";
-import {accounts} from "@/lib/sample-data";
 import {Loader2} from "lucide-react";
 import AccountDetails from "@/components/Account/AccountDetails";
 
@@ -13,20 +12,21 @@ import AccountDetails from "@/components/Account/AccountDetails";
  * Renders the Account details page
  *
  * @author Stephen Prizio
- * @version 0.0.1
+ * @version 0.0.2
  */
 export default function AccountDetailPage() {
 
   const [account, setAccount] = useState<Account>()
-  const router = useRouter();
   const { id } : { id: string } = useParams();
   const [isLoading, setIsLoading] = useState<boolean>(false)
 
   const {
+    user,
     pageTitle,
     pageSubtitle,
     pageIconCode,
     breadcrumbs,
+    setUser,
     setPageTitle,
     setPageSubtitle,
     setPageIconCode,
@@ -42,11 +42,9 @@ export default function AccountDetailPage() {
       {label: 'Accounts', href: '/accounts', active: false},
       {label: `${id}`, href: `/accounts/${id}`, active: true}
     ])
-  }, [account])
 
-  useEffect(() => {
     getAccount()
-  }, []);
+  }, [account, user])
 
 
   //  GENERAL FUNCTIONS
@@ -61,7 +59,7 @@ export default function AccountDetailPage() {
 
     if (isNumeric(id)) {
       const accountTestId = parseInt(id)
-      for (let acc of accounts) {
+      for (let acc of user?.accounts ?? []) {
         if (acc.accountNumber === accountTestId) {
           setAccount(acc)
           setIsLoading(false)

@@ -1,29 +1,20 @@
 'use client'
 
-import { zodResolver } from "@hookform/resolvers/zod"
-import { useForm } from "react-hook-form"
-import { z } from "zod"
+import {zodResolver} from "@hookform/resolvers/zod"
+import {useForm} from "react-hook-form"
+import {z} from "zod"
 
-import { Button } from "@/components/ui/button"
-import {
-  Form,
-  FormControl,
-  FormDescription,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form"
-import { Input } from "@/components/ui/input"
+import {Button} from "@/components/ui/button"
+import {Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage,} from "@/components/ui/form"
+import {Input} from "@/components/ui/input"
 import {useEffect, useState} from "react";
 import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from "@/components/ui/select";
 import {Loader2} from "lucide-react";
 import {useSepalModalContext} from "@/lib/context/SepalContext";
-import {delay} from "@/lib/functions/util-functions";
-import { useToast } from "@/hooks/use-toast"
+import {useToast} from "@/hooks/use-toast"
 import {CRUDAccountSchema} from "@/lib/constants";
 import {Switch} from "@/components/ui/switch";
-import {createAccount, getAccountCreationInfo} from "@/lib/functions/account-functions";
+import {createAccount, getAccountCreationInfo, updateAccount} from "@/lib/functions/account-functions";
 
 /**
  * Renders a form that can create or update an Account
@@ -31,7 +22,7 @@ import {createAccount, getAccountCreationInfo} from "@/lib/functions/account-fun
  * @param create should create / edit
  * @param account Account info
  * @author Stephen Prizio
- * @version 0.0.1
+ * @version 0.0.2
  */
 export default function AccountForm(
   {
@@ -59,7 +50,7 @@ export default function AccountForm(
       toast(
         {
           title: isCreateMode() ? 'Account Created!' : 'Account Updated!',
-          description: isCreateMode() ? 'Your new trading Account was successfully created.' : 'Your trading Account was updated successfully.',
+          description: isCreateMode() ? 'Your new trading account was successfully created.' : 'Your trading account was updated successfully.',
           variant: 'success'
         }
       )
@@ -67,7 +58,7 @@ export default function AccountForm(
       toast(
         {
           title: isCreateMode() ? 'Creation Failed!' : 'Update Failed!',
-          description: isCreateMode() ? 'An error occurred while creating new trading Account. Please check your inputs and try again.' : 'An error occurred while updating your trading Account. Please check your inputs and try again.',
+          description: isCreateMode() ? 'An error occurred while creating new trading Account. Please check your inputs and try again.' : 'An error occurred while updating your trading account. Please check your inputs and try again.',
           variant: 'danger'
         }
       )
@@ -107,9 +98,14 @@ export default function AccountForm(
   async function onSubmit(values: z.infer<typeof formSchema>) {
 
     setIsLoading(true)
-    await delay(1500);
 
-    const res = await createAccount(values);
+    let res
+    if (isCreateMode()) {
+      res = await createAccount(values);
+    } else {
+      res = await updateAccount(account?.accountNumber, values);
+    }
+
     if (!res) {
       setSuccess('failed');
     } else {
@@ -117,9 +113,9 @@ export default function AccountForm(
     }
 
     setIsLoading(false)
-    console.log(res)
 
     setOpen(false)
+    window.location.reload()
   }
 
   /**
@@ -130,7 +126,6 @@ export default function AccountForm(
     setIsLoading(true)
 
     const data = await getAccountCreationInfo()
-    console.log(data)
     setAccInfo(data ?? { currencies: [], brokers: [], accountTypes: [], platforms: []})
 
     setIsLoading(false)
