@@ -2,7 +2,7 @@
 Planter is a trading app designed to help track a trader's progress as they navigate the wonderfully tumultuous environment that is the market.
 This app will aim to track trades through each day, offer basic insights and helpful news as well as a place to manage trading accounts.
 
-Current Version: **0.0.6**\
+Current Version: **0.0.7**\
 Current Release: **Pre-release**
 
 ---
@@ -23,6 +23,7 @@ Current Release: **Pre-release**
 - Improve Trade import service to include withdrawals and deposits (for withdrawal example, look at live CFD account)
 - When importing trades to an account that is inactive, mark it as active
 - Accounts that have not been traded on for 1 calendar year should be marked as inactive (use a cronjob for this)
+- Improvements to UniqueIdentifierService to really make everyone possible entity unique
 ---
 
 ### Version History
@@ -32,6 +33,6 @@ Current Release: **Pre-release**
 - **0.0.4** : Forex Factory calendar integration
 - **0.0.5** : Trade Record Integration
 - **0.0.6** : Charting Implementation
-- **0.0.7** (In Progress) : Import MT4 Strategy Results
-- **0.0.8** (In Progress) : Integrating with **sepal**
+- **0.0.7** (In Progress) : Integrating with **sepal**
+- **0.0.8** (In Progress) : Import MT4 Strategy Results
 

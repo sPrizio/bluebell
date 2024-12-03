@@ -1,6 +1,7 @@
 package com.bluebell.planter.api.converters.account;
 
 import com.bluebell.planter.api.converters.GenericDTOConverter;
+import com.bluebell.planter.api.converters.transaction.TransactionDTOConverter;
 import com.bluebell.planter.api.models.dto.account.AccountDTO;
 import com.bluebell.planter.api.models.records.EnumDisplay;
 import com.bluebell.planter.core.models.entities.account.Account;
@@ -19,6 +20,9 @@ import org.springframework.stereotype.Component;
 public class AccountDTOConverter implements GenericDTOConverter<Account, AccountDTO> {
 
     private final MathService mathService = new MathService();
+
+    @Resource(name = "transactionDTOConverter")
+    private TransactionDTOConverter transactionDTOConverter;
 
     @Resource(name = "uniqueIdentifierService")
     private UniqueIdentifierService uniqueIdentifierService;
@@ -48,6 +52,7 @@ public class AccountDTOConverter implements GenericDTOConverter<Account, Account
         accountDTO.setBroker(new EnumDisplay(entity.getBroker().getCode(), entity.getBroker().getName()));
         accountDTO.setLastTraded(entity.getLastTraded());
         accountDTO.setTradePlatform(new EnumDisplay(entity.getTradePlatform().getCode(), entity.getTradePlatform().getLabel()));
+        accountDTO.setTransactions(this.transactionDTOConverter.convertAll(entity.getTransactions()));
 
         return accountDTO;
     }

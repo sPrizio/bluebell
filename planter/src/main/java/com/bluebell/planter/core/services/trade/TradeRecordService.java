@@ -3,7 +3,9 @@ package com.bluebell.planter.core.services.trade;
 import com.bluebell.planter.core.constants.CoreConstants;
 import com.bluebell.planter.core.enums.system.FlowerpotTimeInterval;
 import com.bluebell.planter.core.models.entities.account.Account;
+import com.bluebell.planter.core.models.entities.security.User;
 import com.bluebell.planter.core.models.entities.trade.Trade;
+import com.bluebell.planter.core.models.nonentities.records.trade.TradeLog;
 import com.bluebell.planter.core.models.nonentities.records.trade.TradeRecord;
 import com.bluebell.radicle.services.MathService;
 import jakarta.annotation.Resource;
@@ -12,9 +14,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.time.temporal.TemporalAdjusters;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
+import java.util.*;
 
 import static com.bluebell.planter.core.validation.GenericValidator.validateDatesAreNotMutuallyExclusive;
 import static com.bluebell.planter.core.validation.GenericValidator.validateParameterIsNotNull;
@@ -42,6 +42,7 @@ public class TradeRecordService {
      * @param start start of time period
      * @param end end of time period
      * @param account {@link Account}
+     * @param flowerpotTimeInterval {@link FlowerpotTimeInterval}
      * @param count number of results
      * @return {@link List} of {@link TradeRecord}
      */
@@ -69,6 +70,36 @@ public class TradeRecordService {
         } else {
             return records.stream().filter(tr -> tr.trades() > 0).sorted(Comparator.reverseOrder()).limit(count).toList();
         }
+    }
+
+    /**
+     * Obtains a {@link TradeLog}
+     *
+     * @param user {@link User}
+     * @param start start of time period
+     * @param end end of time period
+     * @param flowerpotTimeInterval {@link FlowerpotTimeInterval}
+     * @param count number of results
+     * @return {@link TradeLog}
+     */
+    public List<TradeLog> getTradeLog(final User user, final LocalDate start, final LocalDate end, final FlowerpotTimeInterval flowerpotTimeInterval, final int count) {
+
+        final Map<LocalDate, List<TradeRecord>> map = new HashMap<>();
+        final List<TradeRecord> tradeRecords = user.getAccounts().stream().map(acc -> getTradeRecords(start, end, acc, flowerpotTimeInterval, count)).toList().stream().flatMap(List::stream).toList();
+
+        for (final TradeRecord trec : tradeRecords) {
+            List<TradeRecord> temp;
+            if (map.containsKey(trec.start())) {
+                temp = new ArrayList<>(map.get(trec.start()));
+            } else {
+                temp = new ArrayList<>();
+            }
+
+            temp.add(trec);
+            map.put(trec.start(), temp);
+        }
+
+        return map.values().stream().map(records -> new TradeLog(start, end, records)).toList();
     }
 
 

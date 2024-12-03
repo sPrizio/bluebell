@@ -133,8 +133,11 @@ public class UserService {
         Map<String, Object> ud = (Map<String, Object>) data.get("user");
         Set<PhoneNumber> phoneNumbers = (CollectionUtils.isEmpty(user.getPhones())) ? new HashSet<>() : new HashSet<>(user.getPhones());
 
+        if (isNew) {
+            user.setPassword(ud.get("password").toString());
+        }
+
         user.setEmail(ud.get("email").toString());
-        user.setPassword(ud.get("password").toString());
         user.setLastName(ud.get("lastName").toString());
         user.setFirstName(ud.get("firstName").toString());
         user.setUsername(ud.get("username").toString());
@@ -147,6 +150,11 @@ public class UserService {
         if (isNew) {
             user.setDateRegistered(LocalDateTime.now());
             user.setApiToken(this.apiTokenService.generateApiToken(user));
+        }
+
+        if (!isNew) {
+            user.getPhones().forEach(ph -> this.phoneNumberService.deletePhoneNumber(ph));
+            user = this.userRepository.save(user);
         }
 
         List<Map<String, Object>> phoneData = (List<Map<String, Object>>) ud.get("phoneNumbers");

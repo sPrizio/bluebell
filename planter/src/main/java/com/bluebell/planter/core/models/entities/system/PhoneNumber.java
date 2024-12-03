@@ -11,7 +11,7 @@ import lombok.Setter;
  * Class representation of a phone number
  *
  * @author Stephen Prizio
- * @version 0.0.1
+ * @version 0.0.7
  */
 @Entity
 @Table(name = "phone_numbers")
@@ -39,7 +39,7 @@ public class PhoneNumber implements GenericEntity {
 
     @Getter
     @Setter
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.REFRESH)
     private User user;
 
 

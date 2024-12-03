@@ -1,12 +1,14 @@
 package com.bluebell.planter.api.models.dto.account;
 
 import com.bluebell.planter.api.models.dto.GenericDTO;
+import com.bluebell.planter.api.models.dto.transaction.TransactionDTO;
 import com.bluebell.planter.api.models.records.EnumDisplay;
 import com.bluebell.planter.core.models.entities.account.Account;
 import lombok.Getter;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 /**
  * A DTO representation for {@link Account}
@@ -43,4 +45,6 @@ public class AccountDTO implements GenericDTO {
     private EnumDisplay tradePlatform;
 
     private LocalDateTime lastTraded;
+
+    private List<TransactionDTO> transactions;
 }

@@ -7,6 +7,7 @@ import com.bluebell.planter.core.enums.trade.platform.TradePlatform;
 import com.bluebell.planter.core.models.entities.GenericEntity;
 import com.bluebell.planter.core.models.entities.security.User;
 import com.bluebell.planter.core.models.entities.trade.Trade;
+import com.bluebell.planter.core.models.entities.transaction.Transaction;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -68,6 +69,9 @@ public class Account implements GenericEntity {
 
     @OneToMany(mappedBy = "account", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Trade> trades;
+
+    @OneToMany(mappedBy = "account", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<Transaction> transactions;
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.REFRESH)
     private User user;

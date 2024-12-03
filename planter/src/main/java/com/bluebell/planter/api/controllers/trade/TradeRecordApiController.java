@@ -5,6 +5,7 @@ import com.bluebell.planter.api.models.records.json.StandardJsonResponse;
 import com.bluebell.planter.core.constants.CoreConstants;
 import com.bluebell.planter.core.enums.system.FlowerpotTimeInterval;
 import com.bluebell.planter.core.models.entities.security.User;
+import com.bluebell.planter.core.models.nonentities.records.trade.TradeLog;
 import com.bluebell.planter.core.models.nonentities.records.trade.TradeRecord;
 import com.bluebell.planter.core.services.trade.TradeRecordService;
 import com.bluebell.planter.security.aspects.ValidateApiToken;
@@ -44,10 +45,12 @@ public class TradeRecordApiController extends AbstractApiController {
     /**
      * Returns a {@link List} of {@link TradeRecord}
      *
-     * @param request {@link HttpServletRequest}
+     * @param request       {@link HttpServletRequest}
      * @param accountNumber account number
-     * @param start start date
-     * @param end end date
+     * @param start         start date
+     * @param end           end date
+     * @param interval      interval
+     * @param count         limit
      * @return {@link StandardJsonResponse}
      */
     @ValidateApiToken
@@ -61,9 +64,7 @@ public class TradeRecordApiController extends AbstractApiController {
             final @RequestParam(value = "count", defaultValue = "" + CoreConstants.DEFAULT_TRADE_RECORD_COLLECTION_SIZE, required = false) int count
     ) {
 
-        validateLocalDateFormat(start, CoreConstants.DATE_FORMAT, String.format(CoreConstants.Validation.DateTime.START_DATE_INVALID_FORMAT, start, CoreConstants.DATE_FORMAT));
-        validateLocalDateFormat(end, CoreConstants.DATE_FORMAT, String.format(CoreConstants.Validation.DateTime.START_DATE_INVALID_FORMAT, end, CoreConstants.DATE_FORMAT));
-
+        validate(start, end);
         if (!EnumUtils.isValidEnumIgnoreCase(FlowerpotTimeInterval.class, interval)) {
             return new StandardJsonResponse(false, null, String.format("%s is not a valid time interval", interval));
         }
@@ -71,5 +72,33 @@ public class TradeRecordApiController extends AbstractApiController {
         final User user = (User) request.getAttribute(SecurityConstants.USER_REQUEST_KEY);
         final List<TradeRecord> records = this.tradeRecordService.getTradeRecords(LocalDate.parse(start, DateTimeFormatter.ISO_DATE), LocalDate.parse(end, DateTimeFormatter.ISO_DATE), getAccountForId(user, accountNumber), FlowerpotTimeInterval.getInterval(interval), count);
         return new StandardJsonResponse(true, records, StringUtils.EMPTY);
+    }
+
+    /**
+     * Returns a {@link TradeLog}
+     *
+     * @param request  {@link HttpServletRequest}
+     * @param start    start date
+     * @param end      end date
+     * @param interval interval
+     * @param count    limit
+     * @return {@link StandardJsonResponse}
+     */
+    @ValidateApiToken
+    @GetMapping("/trade-log")
+    public StandardJsonResponse getTradeLog(
+            final HttpServletRequest request,
+            final @RequestParam("start") String start,
+            final @RequestParam("end") String end,
+            final @RequestParam("interval") String interval,
+            final @RequestParam(value = "count", defaultValue = "" + CoreConstants.DEFAULT_TRADE_RECORD_COLLECTION_SIZE, required = false) int count) {
+
+        validate(start, end);
+        if (!EnumUtils.isValidEnumIgnoreCase(FlowerpotTimeInterval.class, interval)) {
+            return new StandardJsonResponse(false, null, String.format("%s is not a valid time interval", interval));
+        }
+
+        final User user = (User) request.getAttribute(SecurityConstants.USER_REQUEST_KEY);
+        return new StandardJsonResponse(true, this.tradeRecordService.getTradeLog(user, LocalDate.parse(start, DateTimeFormatter.ISO_DATE), LocalDate.parse(end, DateTimeFormatter.ISO_DATE), FlowerpotTimeInterval.getInterval(interval), count), StringUtils.EMPTY);
     }
 }

@@ -7,7 +7,9 @@ import com.bluebell.planter.core.enums.account.Currency;
 import com.bluebell.planter.core.enums.system.Country;
 import com.bluebell.planter.core.enums.system.Language;
 import com.bluebell.planter.core.enums.system.PhoneType;
+import com.bluebell.planter.core.models.entities.account.Account;
 import com.bluebell.planter.core.models.entities.security.User;
+import com.bluebell.planter.core.models.entities.transaction.Transaction;
 import com.bluebell.planter.core.services.security.UserService;
 import com.bluebell.planter.security.aspects.ValidateApiToken;
 import com.bluebell.planter.security.constants.SecurityConstants;
@@ -56,7 +58,7 @@ public class UserApiController extends AbstractApiController {
      */
     @ValidateApiToken
     @GetMapping("/get")
-    public StandardJsonResponse getUser(final @RequestParam String username, final HttpServletRequest request) throws InterruptedException {
+    public StandardJsonResponse getUser(final @RequestParam String username, final HttpServletRequest request) {
         final Optional<User> user = this.userService.findUserByUsername(username);
         return user.map(value -> new StandardJsonResponse(true, this.userDTOConverter.convert(value), StringUtils.EMPTY)).orElseGet(() -> new StandardJsonResponse(false, null, String.format("No user found for username %s", username)));
     }
@@ -120,6 +122,13 @@ public class UserApiController extends AbstractApiController {
     @GetMapping("/languages")
     public StandardJsonResponse getLanguages() {
         return new StandardJsonResponse(true, Language.values(), StringUtils.EMPTY);
+    }
+
+    @ValidateApiToken
+    @GetMapping("/recent-transactions")
+    public StandardJsonResponse getRecentTransactions(final HttpServletRequest request) {
+        final User user = (User) request.getAttribute(SecurityConstants.USER_REQUEST_KEY);
+        return new StandardJsonResponse(true, user.getAccounts().stream().map(Account::getTransactions).flatMap(List::stream).sorted(Comparator.comparing(Transaction::getTransactionDate)).limit(5).toList(), StringUtils.EMPTY);
     }
 
 
