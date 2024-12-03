@@ -1,34 +1,38 @@
 'use client'
 
 import React, {useEffect, useState} from "react";
-import {Area, ComposedChart, Legend, Line, ResponsiveContainer, Tooltip, TooltipProps} from "recharts";
+import {Area, ComposedChart, Legend, Line, ResponsiveContainer, Tooltip, TooltipProps, YAxis} from "recharts";
 import {NameType, ValueType,} from 'recharts/types/component/DefaultTooltipContent';
-import {chartData} from "@/lib/sample-data";
 import {BASE_COLORS, Css, DateTime} from "@/lib/constants";
 import {IconPointFilled} from "@tabler/icons-react";
 // @ts-ignore
 import Please from 'pleasejs/dist/Please';
 import {BaseCard} from "@/components/Card/BaseCard";
 import moment from "moment";
-import {formatNumberForDisplay} from "@/lib/functions/util-functions";
+import {flattenObject, formatNumberForDisplay} from "@/lib/functions/util-functions";
 
 /**
  * Renders a chart to display an Account's growth over time
  *
+ * @param isNew if new, show base chart
  * @param data Account equity data points
  * @author Stephen Prizio
- * @version 0.0.1
+ * @version 0.0.2
  */
 export default function PortfolioGrowthChart(
   {
+    isNew = false,
     data = [],
   }
     : Readonly<{
+    isNew: boolean;
     data: Array<PortfolioEquityPoint>,
   }>
 ) {
 
   const [colors, setColors] = useState<Array<string>>([])
+  const [accChartData, setAccChartData] = useState<Array<PortfolioEquityPoint>>(data)
+
   useEffect(() => {
     const colors = []
     for (let i = 0; i < data.length; i++) {
@@ -40,6 +44,7 @@ export default function PortfolioGrowthChart(
     }
 
     setColors(colors)
+    setAccChartData(data.map(d => flattenObject(d)))
   }, [])
 
 
@@ -51,7 +56,7 @@ export default function PortfolioGrowthChart(
   function getChartKeys() {
 
     if (data.length > 0) {
-      return Object.keys(data[0]).filter(key => key !== 'date' && key !== 'portfolio' && key !== 'uid');
+      return Object.keys(data[0]?.accounts ?? []).filter(key => key !== 'date' && key !== 'portfolio' && key !== 'uid');
     }
 
     return [];
@@ -145,7 +150,7 @@ export default function PortfolioGrowthChart(
     <div className={'flex items-center justify-center pb-2'}>
       <div className={'w-[100%]'}>
         <ResponsiveContainer width='100%' minHeight={300}>
-          <ComposedChart data={chartData}>
+          <ComposedChart data={accChartData}>
             <defs>
               <linearGradient id="color" x1="0" y1="0" x2="0" y2="1">
                 <stop offset="5%" stopColor={`${Css.ColorPrimary}`} stopOpacity={0.8}/>
@@ -163,6 +168,7 @@ export default function PortfolioGrowthChart(
                   )
                 }) : null
             }
+            {isNew && <YAxis type="number" domain={[30000, 'dataMax + 100']} allowDataOverflow hide={true} />}
             <Area type="monotone" dot={false} dataKey="portfolio" stackId="1" stroke={`${Css.ColorPrimary}`}
                   strokeWidth={4} fill="url(#color)"/>
           </ComposedChart>

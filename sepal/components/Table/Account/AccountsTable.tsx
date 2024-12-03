@@ -17,7 +17,7 @@ import Badge from "@/components/Badge/Badge";
  * @param allowAccountSelection allow clicking on rows
  * @param showCompactTable minimal table flag
  * @author Stephen Prizio
- * @version 0.0.1
+ * @version 0.0.2
  */
 export default function AccountsTable(
   {
@@ -70,7 +70,7 @@ export default function AccountsTable(
             {
               showAllLink ?
                 <TableCaption>
-                  <div className={"flex items-center justify-center gap-1"}>
+                  <div className={"flex items-center justify-center gap-1 pb-2 mt-4 text-sm"}>
                     <div className={""}>
                       <Link href={'/accounts'}>View All Accounts</Link>
                     </div>

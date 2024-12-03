@@ -8,7 +8,6 @@ Current Release: **Pre-release**
 ---
 
 ### Static-only Pages
-- Dashboard
 - Forgot Password
 - Register Page (External vendors)
 - Login Page
@@ -17,23 +16,21 @@ Current Release: **Pre-release**
 
 ### Integration TODOs
 - Need a fetch user context to imitate logging in
-- once user is created, look at empty state across all pages
-- update empty state across app
 - allow trade imports
 - look at how state is updated
 
 ---
 
 ### Todo List
-- Integrate with backend v0.0.2
 - Implement importing of trades v0.0.3
 - Deploy Site v0.0.4
 - Implement security with login and registration pages v0.0.5
+- Complete total integration v0.0.6
 ---
 
 ### Version History
 - **0.0.1** : Core functionality and initial page designs (static only)
-- (In progress) **0.0.2** : Integrating with Backend
+- **0.0.2** : Integrating with Backend
 
 ### Bugs
 - TODO's on the various functions

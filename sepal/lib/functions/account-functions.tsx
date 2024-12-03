@@ -331,7 +331,7 @@ export async function createAccount(values: any): Promise<Account | null> {
   return null;
 }
 
-export async function updateAccount(accNumber: val, values: any): Promise<Account | null> {
+export async function updateAccount(accNumber: number, values: any): Promise<Account | null> {
 
   let ret = {
     account: {
@@ -352,7 +352,7 @@ export async function updateAccount(accNumber: val, values: any): Promise<Accoun
 
   try {
     const res =
-      await fetch(ApiUrls.Account.UpdateAccount.replace('{accountNumber}', accNumber), {
+      await fetch(ApiUrls.Account.UpdateAccount.replace('{accountNumber}', accNumber.toString()), {
         method: 'PUT',
         headers: headers,
         body: JSON.stringify(ret)
@@ -371,14 +371,14 @@ export async function updateAccount(accNumber: val, values: any): Promise<Accoun
   return null;
 }
 
-export async function deleteAccount(accNumber: val): Promise<boolean | null> {
+export async function deleteAccount(accNumber: number): Promise<boolean | null> {
 
   let headers = getAuthHeader()
   headers['Content-Type'] = 'application/json'
 
   try {
     const res =
-      await fetch(ApiUrls.Account.DeleteAccount.replace('{accountNumber}', accNumber), {
+      await fetch(ApiUrls.Account.DeleteAccount.replace('{accountNumber}', accNumber.toString()), {
         method: 'DELETE',
         headers: headers,
       })
@@ -402,6 +402,31 @@ export async function getAccountDetails(accNumber: number): Promise<AccountDetai
   try {
     const res =
       await fetch(ApiUrls.Account.GetDetails.replace('{accountNumber}', accNumber.toString()), {
+        method: 'GET',
+        headers: headers,
+      })
+
+    if (res.ok) {
+      const data = await res.json()
+      if (data.success) {
+        return data.data
+      }
+    }
+  } catch (e) {
+    console.log(e)
+  }
+
+  return null;
+}
+
+export async function getRecentTransactions(): Promise<Array<Transaction> | null> {
+
+  let headers = getAuthHeader()
+  headers['Content-Type'] = 'application/json'
+
+  try {
+    const res =
+      await fetch(ApiUrls.User.GetRecentTransactions, {
         method: 'GET',
         headers: headers,
       })

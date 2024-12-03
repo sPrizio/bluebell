@@ -3,7 +3,7 @@ import {z} from "zod";
 import {safeConvertEnum} from "@/lib/functions/util-functions";
 import {hasEmail, hasUsername} from "@/lib/functions/account-functions";
 import {
-  getAccountDomain, getNewsDomain,
+  getAccountDomain, getNewsDomain, getPortfolioDomain,
   getTradeDomain,
   getTradeRecordDomain,
   getUserDomain,
@@ -38,13 +38,18 @@ export const ApiUrls = {
     GetNews: getNewsDomain() + '/get-for-interval?start={start}&end={end}',
     FetchNews: getNewsDomain() + '/fetch-news',
   },
+  Portfolio: {
+    GetPortfolio: getPortfolioDomain() + '/get'
+  },
   Trade: {
     GetPagedTrades: getTradeDomain() + '/for-interval-paged?accountNumber={accountNumber}&start={start}&end={end}&page={page}&pageSize={pageSize}',
   },
   TradeRecord: {
     GetTradeRecords: getTradeRecordDomain() + '/for-interval?accountNumber={accountNumber}&start={start}&end={end}&interval={interval}&count={count}',
+    GetTradeLog: getTradeRecordDomain() + '/trade-log?start={start}&end={end}&interval={interval}&count={count}'
   },
   User: {
+    GetRecentTransactions: getUserDomain() + '/recent-transactions',
     GetUser: getUserDomain() + '/get?username={username}',
     UpdateUser: getUserDomain() + '/update?username={username}',
     RegisterUser: getUserDomain() + '/create',

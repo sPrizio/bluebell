@@ -28,12 +28,27 @@ interface AccountCreationInfo {
   accountTypes: Array<AccountType>
 }
 
-// TODO: implement on backend
+interface PortfolioAccountEquityPoints {
+  [others: string]: number
+}
+
 interface PortfolioEquityPoint extends GenericApiType {
   date: string,
   portfolio: number
+  accounts: PortfolioAccountEquityPoints
+}
 
-  [others: string]: any
+interface Portfolio extends GenericApiType {
+  isNew: boolean,
+  netWorth: number
+  deltaNetWorth: number,
+  trades: number,
+  deltaTrades: number,
+  deposits: number,
+  deltaDeposits: number,
+  withdrawals: number,
+  deltaWithdrawals: number,
+  equity: Array<PortfolioEquityPoint>,
 }
 
 interface AccountOption extends GenericApiType {
@@ -62,7 +77,6 @@ interface Account extends GenericApiType {
   accountType: AccountType,
   tradePlatform: TradePlatform,
   lastTraded: string,
-  //TODO: implement on backend
   transactions: Array<Transaction>
 }
 
@@ -108,7 +122,8 @@ interface Transaction extends GenericApiType {
   amount: number,
   type: 'Deposit' | 'Withdrawal'
   status: 'Pending' | 'Complete' | 'Failed',
-  accountNumber: number //TODO: implement this on backend
+  accountNumber: number,
+  accountName: string
 }
 
 interface Trade extends GenericApiType {
@@ -157,7 +172,6 @@ interface TradeRecord extends GenericApiType {
   account: Account,
 }
 
-// TODO: implement on backend
 interface TradeLog extends GenericApiType {
   start: string,
   end: string,

@@ -102,3 +102,12 @@ export function getUserDomain(): string {
 export function getAccountDomain(): string {
   return getDomain('/account')
 }
+
+/**
+ * Gets the account url
+ *
+ * @returns {string} url
+ */
+export function getPortfolioDomain(): string {
+  return getDomain('/portfolio')
+}

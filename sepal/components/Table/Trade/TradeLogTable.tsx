@@ -19,13 +19,13 @@ import {DateTime} from "@/lib/constants";
  *
  * @param log Trade log
  * @author Stephen Prizio
- * @version 0.0.1
+ * @version 0.0.2
  */
 export default function TradeLogTable(
   {
     log = [],
   }
-    : Readonly<{
+  : Readonly<{
     log: Array<TradeLog>,
   }>
 ) {
@@ -34,56 +34,63 @@ export default function TradeLogTable(
   //  RENDER
 
   return (
-    <Table>
-      <TableCaption>
-        <div className={"flex items-center justify-center gap-1 pb-2"}>
-          <div className={""}>
-            <Link href={'/performance?account=default'}>View Full Performance</Link>
-          </div>
-          <div className={""}>
-            <Link href={'/performance?account=default'}><IconExternalLink size={18}/></Link>
-          </div>
-        </div>
-      </TableCaption>
-      <TableHeader>
-        <TableRow className={'hover:bg-transparent'}>
-          <TableHead>Date</TableHead>
-          <TableHead>Account</TableHead>
-          <TableHead className={'text-center'}>Trades</TableHead>
-          <TableHead className={'text-center'}>Win %</TableHead>
-          <TableHead className={'text-center'}>Points</TableHead>
-          <TableHead className="text-right">P & L</TableHead>
-        </TableRow>
-      </TableHeader>
-      <TableBody>
-        {
-          log?.map((item) => {
-            return (
-              <React.Fragment key={item.uid}>
-                <TableRow key={item.uid} className={'hover:bg-transparent'}>
-                  <TableCell colSpan={6} className={'text-primary font-semibold'}>
-                    {moment(item.end).format(DateTime.ISOMonthWeekDayFormat)}
-                  </TableCell>
-                </TableRow>
+    <>
+      {(!log || log.length === 0) && <div className={'text-center text-slate-500 pb-2 mb-4 text-sm'}>No recent trade records.</div>}
+      {
+        log.length > 0 &&
+          <Table>
+              <TableCaption>
+                  <div className={"flex items-center justify-center gap-1 pb-2 mt-4 text-sm"}>
+                      <div className={""}>
+                          <Link href={'/performance?account=default'}>View Full Performance</Link>
+                      </div>
+                      <div className={""}>
+                          <Link href={'/performance?account=default'}><IconExternalLink size={18}/></Link>
+                      </div>
+                  </div>
+              </TableCaption>
+              <TableHeader>
+                  <TableRow className={'hover:bg-transparent'}>
+                      <TableHead>Date</TableHead>
+                      <TableHead>Account</TableHead>
+                      <TableHead className={'text-center'}>Trades</TableHead>
+                      <TableHead className={'text-center'}>Win %</TableHead>
+                      <TableHead className={'text-center'}>Points</TableHead>
+                      <TableHead className="text-right">P & L</TableHead>
+                  </TableRow>
+              </TableHeader>
+              <TableBody>
                 {
-                  item?.records?.map((rec) => {
+                  log?.map((item) => {
                     return (
-                      <TableRow key={rec.uid} className={'border-b-0 hover:bg-transparent'}>
-                        <TableCell className={'invisible'}>{moment(rec.end).format(DateTime.ISOMonthWeekDayFormat)}</TableCell>
-                        <TableCell>{rec.account.name}</TableCell>
-                        <TableCell className={'text-center'}>{rec.trades}</TableCell>
-                        <TableCell className={'text-center'}>{rec.winPercentage}%</TableCell>
-                        <TableCell className={'text-center'}>{formatNegativePoints(rec.points)}</TableCell>
-                        <TableCell className="text-right">${formatNumberForDisplay(rec.netProfit)}</TableCell>
-                      </TableRow>
+                      <React.Fragment key={item.uid}>
+                        <TableRow key={item.uid} className={'hover:bg-transparent'}>
+                          <TableCell colSpan={6} className={'text-primary font-semibold'}>
+                            {moment(item.end).format(DateTime.ISOMonthWeekDayFormat)}
+                          </TableCell>
+                        </TableRow>
+                        {
+                          item?.records?.map((rec) => {
+                            return (
+                              <TableRow key={rec.uid} className={'border-b-0 hover:bg-transparent'}>
+                                <TableCell
+                                  className={'invisible'}>{moment(rec.end).format(DateTime.ISOMonthWeekDayFormat)}</TableCell>
+                                <TableCell>{rec.account.name}</TableCell>
+                                <TableCell className={'text-center'}>{rec.trades}</TableCell>
+                                <TableCell className={'text-center'}>{rec.winPercentage}%</TableCell>
+                                <TableCell className={'text-center'}>{formatNegativePoints(rec.points)}</TableCell>
+                                <TableCell className="text-right">${formatNumberForDisplay(rec.netProfit)}</TableCell>
+                              </TableRow>
+                            )
+                          }) ?? null
+                        }
+                      </React.Fragment>
                     )
                   }) ?? null
                 }
-              </React.Fragment>
-            )
-          }) ?? null
-        }
-      </TableBody>
-    </Table>
+              </TableBody>
+          </Table>
+      }
+    </>
   )
 }
