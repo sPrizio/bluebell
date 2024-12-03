@@ -95,3 +95,41 @@ export async function getPagedTrades(accNumber: number, start: string, end: stri
 
   return null;
 }
+
+/**
+ * Performs the user registration api call
+ *
+ * @param accNumber account number
+ * @param file File
+ */
+export async function importTrades(accNumber: number, file: File | null): Promise<boolean | null> {
+
+  let headers = getAuthHeader()
+  if (!file) {
+    return false;
+  }
+
+  try {
+    const formData = new FormData();
+    formData.append('file', file);
+    formData.append('fileName', file.name);
+
+    const res =
+      await fetch(ApiUrls.Trade.ImportTrades.replace('{accountNumber}', accNumber.toString()).replace('{isStrategy}', 'true'), {
+        method: 'POST',
+        headers: headers,
+        body: formData
+      })
+
+    if (res.ok) {
+      const data = await res.json()
+      if (data.success) {
+        return data.data
+      }
+    }
+  } catch (e) {
+    console.log(e)
+  }
+
+  return null;
+}

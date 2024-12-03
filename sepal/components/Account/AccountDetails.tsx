@@ -170,7 +170,7 @@ export default function AccountDetails(
       </div>
       <div className={'sm:col-span-1 lg:col-span-2 xl:col-span-4'}>
         <div className={'flex gap-4 items-center justify-end'}>
-          {
+          {/*{
             (account?.active ?? false) ?
               <div className={''}>
                 <BaseModal
@@ -181,7 +181,16 @@ export default function AccountDetails(
                   content={<ImportTradesForm account={account} />}
                 />
               </div> : null
-          }
+          }*/}
+          <div className={''}>
+            <BaseModal
+              key={0}
+              title={'Import Trades'}
+              description={'Here you may manually import trades into the account for tracking.'}
+              trigger={<Button className="" variant={"primary"}><IconCirclePlus/>&nbsp;Import Trades</Button>}
+              content={<ImportTradesForm account={account}/>}
+            />
+          </div>
           <div className={''}>
             <BaseModal
               key={0}
@@ -197,7 +206,7 @@ export default function AccountDetails(
               title={'Delete Trading Account'}
               trigger={<Button
                 className="bg-primaryRed text-white hover:bg-primaryRedLight"><IconTrash/>&nbsp;Delete</Button>}
-              content={<DeleteAccountForm account={account ?? null} />}
+              content={<DeleteAccountForm account={account ?? null}/>}
             />
           </div>
         </div>

@@ -1,6 +1,6 @@
 'use client'
 
-import {useState} from "react";
+import {useEffect, useState} from "react";
 import {useSepalModalContext} from "@/lib/context/SepalContext";
 import {TradeImportSchema} from "@/lib/constants";
 import {useForm} from "react-hook-form";
@@ -11,6 +11,8 @@ import {Form, FormControl, FormDescription, FormField, FormItem, FormLabel, Form
 import {Input} from "@/components/ui/input";
 import {Button} from "@/components/ui/button";
 import {Loader2} from "lucide-react";
+import {importTrades} from "@/lib/functions/trade-functions";
+import {useToast} from "@/hooks/use-toast"
 
 /**
  * Renders a form that can import trades
@@ -28,15 +30,28 @@ export default function ImportTradesForm(
   }>
 ) {
 
+  const { toast } = useToast();
   const [isLoading, setIsLoading] = useState(false)
-  const [file, setFile] = useState<File | null>(null)
+  const [success, setSuccess] = useState<'success' | 'failed' | 'undefined'>('undefined')
 
-  const { open, setOpen } = useSepalModalContext()
+  const {open, setOpen} = useSepalModalContext()
   const formSchema = TradeImportSchema()
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
   })
+
+  useEffect(() => {
+    if (success === 'failed') {
+      toast(
+        {
+          title: 'Trade Import Failed!',
+          description: 'An error occurred while importing your trades. Please check your file and try again.',
+          variant: 'danger'
+        }
+      )
+    }
+  }, [success]);
 
 
   //  GENERAL FUNCTIONS
@@ -47,20 +62,20 @@ export default function ImportTradesForm(
    * @param values form values
    */
   async function onSubmit(values: z.infer<typeof formSchema>) {
-    // Do something with the form values.
-    // ✅ This will be type-safe and validated.
+
     setIsLoading(true)
-    await delay(4000);
-    console.log(values)
-    setIsLoading(false)
+    const data = await importTrades(account.accountNumber, values.filename[0])
 
-    console.log(file)
-    //file[0]
-
-    //setSuccess('success')
-    setOpen(false)
-    setFile(null)
-    //window.location.reload()
+    if (data) {
+      setSuccess('success')
+      setIsLoading(false)
+      setOpen(false)
+      window.location.reload()
+    } else {
+      setSuccess('failed')
+      setIsLoading(false)
+      setOpen(false)
+    }
   }
 
 

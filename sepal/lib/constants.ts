@@ -43,6 +43,7 @@ export const ApiUrls = {
   },
   Trade: {
     GetPagedTrades: getTradeDomain() + '/for-interval-paged?accountNumber={accountNumber}&start={start}&end={end}&page={page}&pageSize={pageSize}',
+    ImportTrades: getTradeDomain() + '/import-trades?accountNumber={accountNumber}&isStrategy={isStrategy}',
   },
   TradeRecord: {
     GetTradeRecords: getTradeRecordDomain() + '/for-interval?accountNumber={accountNumber}&start={start}&end={end}&interval={interval}&count={count}',
