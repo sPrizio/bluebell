@@ -4,11 +4,11 @@ import com.bluebell.planter.core.enums.trade.info.TradeType;
 import com.bluebell.planter.core.enums.trade.platform.TradePlatform;
 import com.bluebell.planter.core.models.entities.account.Account;
 import com.bluebell.planter.core.models.entities.trade.Trade;
-import com.bluebell.planter.core.repositories.account.AccountRepository;
 import com.bluebell.planter.core.repositories.trade.TradeRepository;
 import com.bluebell.planter.importing.ImportService;
 import com.bluebell.planter.importing.exceptions.TradeImportFailureException;
 import com.bluebell.planter.importing.records.CMCTradeWrapper;
+import com.bluebell.planter.importing.services.AbstractImportService;
 import jakarta.annotation.Resource;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -35,14 +35,11 @@ import java.util.Objects;
  * @version 0.0.7
  */
 @Service("cmcMarketsTradesImportService")
-public class CMCMarketsTradesImportService implements ImportService {
+public class CMCMarketsTradesImportService extends AbstractImportService implements ImportService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(CMCMarketsTradesImportService.class);
     private static final List<String> BUY_SIGNALS = List.of("Buy Trade");
     private static final List<String> SELL_SIGNALS = List.of("Sell Trade");
-
-    @Resource(name = "accountRepository")
-    private AccountRepository accountRepository;
 
     @Resource(name = "tradeRepository")
     private TradeRepository tradeRepository;
@@ -119,8 +116,7 @@ public class CMCMarketsTradesImportService implements ImportService {
             takeProfits.stream().filter(trade -> tradeMap.containsKey(trade.orderNumber())).forEach(trade -> tradeMap.put(trade.orderNumber(), updateTrade(trade, tradeMap.get(trade.orderNumber()), account)));
             promotionalPayments.forEach(trade -> tradeMap.put(trade.orderNumber(), createPromotionalPayment(trade, account)));
 
-            this.tradeRepository.saveAll(tradeMap.values());
-            this.accountRepository.save(account);
+            refreshAccount(tradeMap, existingTrades, account);
         } catch (Exception e) {
             LOGGER.error("The import process failed with reason : {}", e.getMessage(), e);
             throw new TradeImportFailureException(String.format("The import process failed with reason : %s", e.getMessage()), e);
@@ -176,21 +172,6 @@ public class CMCMarketsTradesImportService implements ImportService {
      */
     private String sanitizeString(String string) {
         return string.replace("\"", StringUtils.EMPTY);
-    }
-
-    /**
-     * Safely parses a {@link String} into a {@link Double}
-     *
-     * @param string {@link String}
-     * @return {@link Double}
-     */
-    private double safeParseDouble(final String string) {
-
-        if (StringUtils.isEmpty(string) || string.equals("-")) {
-            return 0.0;
-        }
-
-        return Double.parseDouble(string.replaceAll("[^\\d.-]", StringUtils.EMPTY).trim());
     }
 
     /**

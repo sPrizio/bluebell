@@ -1,15 +1,11 @@
 package com.bluebell.planter.importing.services.trade;
 
-import com.bluebell.planter.core.enums.trade.info.TradeType;
-import com.bluebell.planter.core.enums.trade.platform.TradePlatform;
+import com.bluebell.planter.core.constants.CoreConstants;
 import com.bluebell.planter.core.models.entities.account.Account;
-import com.bluebell.planter.core.models.entities.trade.Trade;
-import com.bluebell.planter.core.repositories.account.AccountRepository;
-import com.bluebell.planter.core.repositories.trade.TradeRepository;
 import com.bluebell.planter.importing.ImportService;
 import com.bluebell.planter.importing.exceptions.TradeImportFailureException;
 import com.bluebell.planter.importing.records.MetaTrader4TradeWrapper;
-import jakarta.annotation.Resource;
+import com.bluebell.planter.importing.services.AbstractImportService;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,7 +18,10 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -33,23 +32,15 @@ import java.util.regex.Pattern;
  * @version 0.0.7
  */
 @Service("metaTrader4TradesImportService")
-public class MetaTrader4TradesImportService implements ImportService {
+public class MetaTrader4TradesImportService extends AbstractImportService implements ImportService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(MetaTrader4TradesImportService.class);
-    private static final List<String> BUY_SIGNALS = List.of("buy");
-    private static final List<String> SELL_SIGNALS = List.of("sell");
-
-    @Resource(name = "accountRepository")
-    private AccountRepository accountRepository;
-
-    @Resource(name = "tradeRepository")
-    private TradeRepository tradeRepository;
 
 
     //  METHODS
 
     /**
-     * Imports trades from a CSV file from the CMC platform
+     * Imports trades from a CSV file from the MT4 platform
      *
      * @param filePath  file path
      * @param delimiter unit delimiter
@@ -65,7 +56,7 @@ public class MetaTrader4TradesImportService implements ImportService {
     }
 
     /**
-     * Imports trades from a CSV file from the CMC platform
+     * Imports trades from a CSV file from the MT4 platform
      *
      * @param inputStream {@link InputStream}
      * @param delimiter   unit delimiter
@@ -98,18 +89,7 @@ public class MetaTrader4TradesImportService implements ImportService {
                             .sorted(Comparator.comparing(MetaTrader4TradeWrapper::getOpenTime))
                             .toList();
 
-            final Map<String, Trade> tradeMap = new HashMap<>();
-            final Map<String, Trade> existingTrades = new HashMap<>();
-
-            this.tradeRepository.findAllByAccount(account).forEach(trade -> existingTrades.put(trade.getTradeId(), trade));
-            final List<MetaTrader4TradeWrapper> buyTrades = trades.stream().filter(trade -> !existingTrades.containsKey(trade.ticketNumber())).filter(trade -> matchTradeType(trade.type(), TradeType.BUY)).toList();
-            final List<MetaTrader4TradeWrapper> sellTrades = trades.stream().filter(trade -> !existingTrades.containsKey(trade.ticketNumber())).filter(trade -> matchTradeType(trade.type(), TradeType.SELL)).toList();
-
-            buyTrades.forEach(trade -> tradeMap.put(trade.ticketNumber(), createNewTrade(trade, TradeType.BUY, account)));
-            sellTrades.forEach(trade -> tradeMap.put(trade.ticketNumber(), createNewTrade(trade, TradeType.SELL, account)));
-
-            this.tradeRepository.saveAll(tradeMap.values());
-            this.accountRepository.save(account);
+            mt4TradeCleanup(account, trades);
         } catch (Exception e) {
             LOGGER.error("The import process failed with reason : {}", e.getMessage(), e);
             throw new TradeImportFailureException(String.format("The import process failed with reason : %s", e.getMessage()), e);
@@ -135,20 +115,7 @@ public class MetaTrader4TradesImportService implements ImportService {
         }
 
         final String tradeContent = string.substring(startIndex, string.indexOf("Closed P/L:"));
-        final Pattern pattern = Pattern.compile("<tr.*?>(.*?)<\\/tr>");
-        final Matcher matcher = pattern.matcher(tradeContent);
-
-        final List<String> entries = new ArrayList<>();
-        while (matcher.find()) {
-            entries.add(
-                    matcher.group()
-                            .replaceAll("<tr.*?>", StringUtils.EMPTY)
-                            .replace("</tr>", StringUtils.EMPTY)
-                            .trim()
-            );
-        }
-
-        return entries;
+        return parseMetaTrader4Trade(tradeContent);
     }
 
     /**
@@ -163,19 +130,7 @@ public class MetaTrader4TradesImportService implements ImportService {
             return null;
         }
 
-        final Pattern pattern = Pattern.compile("<td.*?>(.*?)<\\/td>");
-        final Matcher matcher = pattern.matcher(string);
-        final List<String> data = new ArrayList<>();
-
-        while (matcher.find()) {
-            data.add(
-                    matcher.group()
-                            .replaceAll("<td.*?>", StringUtils.EMPTY)
-                            .replace("</td>", StringUtils.EMPTY)
-                            .trim()
-            );
-        }
-
+        final List<String> data = parseMetaTrader4Trade(string);
         if (data.size() != 14) {
             return null;
         }
@@ -193,45 +148,5 @@ public class MetaTrader4TradesImportService implements ImportService {
                 Double.parseDouble(data.get(9)),
                 Double.parseDouble(data.get(13).replace(" ", StringUtils.EMPTY).replace(",", StringUtils.EMPTY).trim())
         );
-    }
-
-    /**
-     * Determines whether the given trade should be considered
-     *
-     * @param trade     trade name
-     * @param tradeType {@link TradeType}
-     * @return true if matches keywords
-     */
-    private boolean matchTradeType(final String trade, final TradeType tradeType) {
-        final List<String> matchers = tradeType.equals(TradeType.BUY) ? BUY_SIGNALS : SELL_SIGNALS;
-        return matchers.stream().anyMatch(trade::contains);
-    }
-
-    /**
-     * Creates a new {@link Trade} from a {@link MetaTrader4TradeWrapper}
-     *
-     * @param wrapper   {@link MetaTrader4TradeWrapper}
-     * @param tradeType {@link TradeType}
-     * @return {@link Trade}
-     */
-    private Trade createNewTrade(final MetaTrader4TradeWrapper wrapper, final TradeType tradeType, final Account account) {
-
-        Trade trade = new Trade();
-
-        trade.setTradeId(wrapper.ticketNumber());
-        trade.setTradePlatform(TradePlatform.METATRADER4);
-        trade.setProduct(wrapper.item());
-        trade.setTradeType(tradeType);
-        trade.setClosePrice(wrapper.closePrice());
-        trade.setTradeCloseTime(wrapper.closeTime());
-        trade.setTradeOpenTime(wrapper.openTime());
-        trade.setLotSize(wrapper.size());
-        trade.setNetProfit(wrapper.profit());
-        trade.setOpenPrice(wrapper.openPrice());
-        trade.setStopLoss(wrapper.stopLoss());
-        trade.setTakeProfit(wrapper.takeProfit());
-        trade.setAccount(account);
-
-        return trade;
     }
 }

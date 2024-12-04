@@ -62,12 +62,6 @@ public class CoreConstants {
     public static final String DATE_TIME_FORMAT = "yyyy-MM-dd'T'HH:mm:ss";
 
     /**
-     * Global Phone number regex
-     * (1) = country, (2) = area code, (3) = exchange, (4) = subscriber, (5) = extension where (x) indicates matcher group
-     */
-    public static final String PHONE_NUMBER_REGEX = "^\\s*(?:\\+?(\\d{1,3}))?[-. (]*(\\d{3})[-. )]*(\\d{3})[-. ]*(\\d{4})(?: *x(\\d+))?\\s*$";
-
-    /**
      * The default Eastern Timezone
      */
     public static final String EASTERN_TIMEZONE = "America/Toronto";
@@ -201,6 +195,41 @@ public class CoreConstants {
             public static final String END_DATE_INVALID_FORMAT = "The end date %s was not of the expected format %s";
 
             public static final String MUTUALLY_EXCLUSIVE_DATES = "start date was after end date or vice versa";
+        }
+    }
+
+    /**
+     * Regex strings & expressions
+     */
+    public static class Regex {
+
+        private Regex() {
+            throw new UnsupportedOperationException(String.format(NO_INSTANTIATION, getClass().getName()));
+        }
+
+        /**
+         * Global Phone number regex
+         * (1) = country, (2) = area code, (3) = exchange, (4) = subscriber, (5) = extension where (x) indicates matcher group
+         */
+        public static final String PHONE_NUMBER_REGEX = "^\\s*(?:\\+?(\\d{1,3}))?[-. (]*(\\d{3})[-. )]*(\\d{3})[-. ]*(\\d{4})(?: *x(\\d+))?\\s*$";
+
+        public static class Import {
+
+            private Import() {
+                throw new UnsupportedOperationException(String.format(NO_INSTANTIATION, getClass().getName()));
+            }
+
+            public static final String MT4_HTML_TABLE_CELL = "<td.*?>(.*?)<\\/td>";
+
+            public static final String MT4_HTML_TABLE_CELL_START = "<td.*?>";
+
+            public static final String MT4_HTML_TABLE_CELL_END = "</td>";
+
+            public static final String MT4_HTML_TABLE_ROW = "<tr.*?>(.*?)<\\/tr>";
+
+            public static final String MT4_HTML_TABLE_ROW_START = "<tr.*?>";
+
+            public static final String MT4_HTML_TABLE_ROW_END = "</tr>";
         }
     }
 }

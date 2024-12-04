@@ -5,6 +5,7 @@ import com.bluebell.planter.core.enums.strategy.StrategyPlatform;
 import com.bluebell.planter.core.enums.trade.platform.TradePlatform;
 import com.bluebell.planter.core.models.entities.account.Account;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.InputStream;
@@ -20,19 +21,32 @@ import static com.bluebell.planter.core.validation.GenericValidator.validatePara
 @Service
 public class GenericStrategyImportService {
 
+    private final MetaTrader4StrategyImportService metaTrader4StrategyImportService;
+
+    @Autowired
+    public GenericStrategyImportService(final MetaTrader4StrategyImportService metaTrader4StrategyImportService) {
+        this.metaTrader4StrategyImportService = metaTrader4StrategyImportService;
+    }
+
 
     //  METHODS
 
+    /**
+     * Imports the strategy report
+     *
+     * @param inputStream {@link InputStream}
+     * @param account {@link Account}
+     * @return result
+     */
     public String importReport(final InputStream inputStream, final Account account) {
 
         validateParameterIsNotNull(inputStream, CoreConstants.Validation.Trade.IMPORT_STREAM_CANNOT_BE_NULL);
 
         try {
-            if (getStrategyPlatformForTradePlatform(account.getTradePlatform()).equals(TradePlatform.BLUEBELL)) {
-                //this.cmcMarketsTradesImportService.importTrades(inputStream, ',', account);
+            if (getStrategyPlatformForTradePlatform(account.getTradePlatform()).equals(StrategyPlatform.BLUEBELL)) {
                 return StringUtils.EMPTY;
-            } else if (getStrategyPlatformForTradePlatform(account.getTradePlatform()).equals(TradePlatform.METATRADER4)) {
-                //this.metaTrader4TradesImportService.importTrades(inputStream, null, account);
+            } else if (getStrategyPlatformForTradePlatform(account.getTradePlatform()).equals(StrategyPlatform.METATRADER4)) {
+                this.metaTrader4StrategyImportService.importTrades(inputStream, null, account);
                 return StringUtils.EMPTY;
             }
         } catch (Exception e) {

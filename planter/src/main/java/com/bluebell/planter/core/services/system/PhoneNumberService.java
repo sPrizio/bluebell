@@ -26,7 +26,7 @@ import static com.bluebell.planter.core.validation.GenericValidator.validatePara
  * Service-layer for {@link PhoneNumber} entities
  *
  * @author Stephen Prizio
- * @version 0.0.3
+ * @version 0.0.7
  */
 @Service
 public class PhoneNumberService {
@@ -153,7 +153,7 @@ public class PhoneNumberService {
             throw new UnsupportedOperationException("Invalid phone number");
         }
 
-        Pattern pattern = Pattern.compile(CoreConstants.PHONE_NUMBER_REGEX);
+        Pattern pattern = Pattern.compile(CoreConstants.Regex.PHONE_NUMBER_REGEX);
         Matcher matcher = pattern.matcher(telephoneNumber);
         boolean found = matcher.find();
 

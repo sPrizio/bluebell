@@ -8,9 +8,11 @@ import com.bluebell.planter.core.models.entities.GenericEntity;
 import com.bluebell.planter.core.models.entities.security.User;
 import com.bluebell.planter.core.models.entities.trade.Trade;
 import com.bluebell.planter.core.models.entities.transaction.Transaction;
+import com.bluebell.radicle.services.MathService;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import org.apache.commons.collections4.CollectionUtils;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -79,6 +81,22 @@ public class Account implements GenericEntity {
 
     //  METHODS
 
+    /**
+     * Refreshes certain account attributes when necessary
+     *
+     * @return {@link Account} with updated values
+     */
+    public Account refreshAccount() {
+
+        final MathService mathService = new MathService();
+
+        Account account = this;
+        account.setBalance(mathService.add(this.balance, calculateNetProfit()));
+        account.setLastTraded(calculateLastTraded());
+
+        return account;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -91,6 +109,35 @@ public class Account implements GenericEntity {
 
     @Override
     public int hashCode() {
-        return (int) (accountNumber ^ (accountNumber >>> 32));
+        return Long.hashCode(accountNumber);
+    }
+
+
+    //  HELPERS
+
+    /**
+     * Calculates the netProfit of this account
+     *
+     * @return double
+     */
+    private double calculateNetProfit() {
+        if (CollectionUtils.isNotEmpty(this.trades)) {
+            return this.trades.stream().mapToDouble(Trade::getNetProfit).sum();
+        } else {
+            return 0.0;
+        }
+    }
+
+    /**
+     * Calculates the most recently traded date & time
+     *
+     * @return most recently closed {@link Trade}
+     */
+    private LocalDateTime calculateLastTraded() {
+        if (CollectionUtils.isEmpty(this.trades)) {
+            return null;
+        } else {
+            return this.trades.stream().map(Trade::getTradeCloseTime).max(LocalDateTime::compareTo).get();
+        }
     }
 }

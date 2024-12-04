@@ -35,7 +35,7 @@ public record MetaTrader4TradeWrapper(
                 ticketNumber == null ? wrapper.ticketNumber() : ticketNumber,
                 openTime == null ? wrapper.openTime() : openTime,
                 closeTime == null ? wrapper.closeTime() : closeTime,
-                type == null ? wrapper.type() : type,
+                wrapper.type(),
                 size == 0.0 ? wrapper.size() : size,
                 item == null ? wrapper.ticketNumber() : ticketNumber,
                 openPrice == 0.0 ? wrapper.openPrice() : openPrice,

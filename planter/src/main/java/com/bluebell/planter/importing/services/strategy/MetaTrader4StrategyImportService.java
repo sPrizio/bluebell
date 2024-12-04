@@ -1,15 +1,14 @@
 package com.bluebell.planter.importing.services.strategy;
 
+import com.bluebell.planter.core.constants.CoreConstants;
 import com.bluebell.planter.core.models.entities.account.Account;
-import com.bluebell.planter.core.models.entities.trade.Trade;
-import com.bluebell.planter.core.repositories.account.AccountRepository;
-import com.bluebell.planter.core.repositories.trade.TradeRepository;
 import com.bluebell.planter.importing.ImportService;
 import com.bluebell.planter.importing.enums.MetaTrader4TradeType;
 import com.bluebell.planter.importing.exceptions.StrategyImportFailureException;
 import com.bluebell.planter.importing.exceptions.TradeImportFailureException;
 import com.bluebell.planter.importing.records.MetaTrader4TradeWrapper;
-import jakarta.annotation.Resource;
+import com.bluebell.planter.importing.services.AbstractImportService;
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -33,24 +32,16 @@ import java.util.regex.Pattern;
  * @version 0.0.7
  */
 @Service("metaTrader4StrategyImportService")
-public class MetaTrader4StrategyImportService implements ImportService {
+public class MetaTrader4StrategyImportService extends AbstractImportService implements ImportService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(MetaTrader4StrategyImportService.class);
     private static final String DELIMITER = "%bb%";
-    private static final List<String> BUY_SIGNALS = List.of("buy");
-    private static final List<String> SELL_SIGNALS = List.of("sell");
-
-    @Resource(name = "accountRepository")
-    private AccountRepository accountRepository;
-
-    @Resource(name = "tradeRepository")
-    private TradeRepository tradeRepository;
 
 
     //  METHODS
 
     /**
-     * Imports trades from a CSV file from the Metatrader 4 platform
+     * Imports trades from a CSV file from the MetaTrader 4 platform
      *
      * @param filePath  file path
      * @param delimiter unit delimiter
@@ -66,7 +57,7 @@ public class MetaTrader4StrategyImportService implements ImportService {
     }
 
     /**
-     * Imports trades from a CSV file from the Metatrader 4 platform
+     * Imports trades from a CSV file from the MetaTrader 4 platform
      *
      * @param inputStream {@link InputStream}
      * @param delimiter   unit delimiter
@@ -103,16 +94,11 @@ public class MetaTrader4StrategyImportService implements ImportService {
                             .sorted(Comparator.comparing(MetaTrader4TradeWrapper::getOpenTime))
                             .toList();
 
-            final Map<String, Trade> tradeMap = new HashMap<>();
-            final Map<String, Trade> existingTrades = new HashMap<>();
+            mt4TradeCleanup(account, trades);
         } catch (Exception e) {
             LOGGER.error("The import process failed with reason : {}", e.getMessage(), e);
             throw new StrategyImportFailureException(String.format("The import process failed with reason : %s", e.getMessage()), e);
         }
-
-
-        //  TODO: code cleanup for duplicates
-        //  TODO: finish import code
     }
 
     /**
@@ -134,7 +120,7 @@ public class MetaTrader4StrategyImportService implements ImportService {
         }
 
         final List<String> reportContent = Arrays.stream(string.substring(startIndex).split(DELIMITER)).toList();
-        final Pattern pattern = Pattern.compile("<tr.*?>(.*?)<\\/tr>");
+        final Pattern pattern = Pattern.compile(CoreConstants.Regex.Import.MT4_HTML_TABLE_ROW);
 
         final List<String> entries = new ArrayList<>();
         reportContent.forEach(rc -> {
@@ -142,8 +128,8 @@ public class MetaTrader4StrategyImportService implements ImportService {
             while (matcher.find()) {
                 entries.add(
                         matcher.group()
-                                .replaceAll("<tr.*?>", StringUtils.EMPTY)
-                                .replace("</tr>", StringUtils.EMPTY)
+                                .replaceAll(CoreConstants.Regex.Import.MT4_HTML_TABLE_ROW_START, StringUtils.EMPTY)
+                                .replace(CoreConstants.Regex.Import.MT4_HTML_TABLE_ROW_END, StringUtils.EMPTY)
                                 .trim()
                 );
             }
@@ -187,20 +173,8 @@ public class MetaTrader4StrategyImportService implements ImportService {
             return null;
         }
 
-        final Pattern pattern = Pattern.compile("<td.*?>(.*?)<\\/td>");
-        final Matcher matcher = pattern.matcher(string);
-        final List<String> data = new ArrayList<>();
-
-        while (matcher.find()) {
-            data.add(
-                    matcher.group()
-                            .replaceAll("<td.*?>", StringUtils.EMPTY)
-                            .replace("</td>", StringUtils.EMPTY)
-                            .trim()
-            );
-        }
-
-        if (safeParseInt(data.get(0)) == -1 || data.size() < 8 || data.size() > 10) {
+        final List<String> data = parseMetaTrader4Trade(string);
+        if (CollectionUtils.isEmpty(data) || safeParseInt(data.get(0)) == -1 || data.size() < 8 || data.size() > 10) {
             return null;
         }
 
@@ -236,19 +210,5 @@ public class MetaTrader4StrategyImportService implements ImportService {
         }
 
         return null;
-    }
-
-    /**
-     * Safely parses an integer
-     *
-     * @param s test string
-     * @return integer
-     */
-    private int safeParseInt(final String s) {
-        try {
-            return Integer.parseInt(s);
-        } catch (NumberFormatException e) {
-            return -1;
-        }
     }
 }

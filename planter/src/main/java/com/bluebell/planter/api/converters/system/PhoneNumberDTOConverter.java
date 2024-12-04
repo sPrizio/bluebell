@@ -16,7 +16,7 @@ import java.util.regex.Pattern;
  * Converter that converts {@link PhoneNumber}s into {@link PhoneNumberDTO}s
  *
  * @author Stephen Prizio
- * @version 0.0.2
+ * @version 0.0.7
  */
 @Component("phoneNumberDTOConverter")
 public class PhoneNumberDTOConverter implements GenericDTOConverter<PhoneNumber, PhoneNumberDTO> {
@@ -57,7 +57,7 @@ public class PhoneNumberDTOConverter implements GenericDTOConverter<PhoneNumber,
     private String getDisplayString(final PhoneNumber entity) {
 
         final String num = "+" + entity.getCountryCode() + entity.getTelephoneNumber();
-        final Pattern pattern = Pattern.compile(CoreConstants.PHONE_NUMBER_REGEX);
+        final Pattern pattern = Pattern.compile(CoreConstants.Regex.PHONE_NUMBER_REGEX);
         final Matcher matcher = pattern.matcher(num);
 
         if (matcher.find()) {

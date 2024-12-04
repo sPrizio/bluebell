@@ -9,6 +9,7 @@ import com.bluebell.planter.core.enums.trade.info.TradeType;
 import com.bluebell.planter.core.models.entities.security.User;
 import com.bluebell.planter.core.models.entities.trade.Trade;
 import com.bluebell.planter.core.services.trade.TradeService;
+import com.bluebell.planter.importing.services.strategy.GenericStrategyImportService;
 import com.bluebell.planter.importing.services.trade.GenericTradeImportService;
 import com.bluebell.planter.security.aspects.ValidateApiToken;
 import com.bluebell.planter.security.constants.SecurityConstants;
@@ -42,6 +43,9 @@ import static com.bluebell.planter.importing.validation.ImportValidator.validate
 public class TradeApiController extends AbstractApiController {
 
     private static final String TRADE_ID = "tradeId";
+
+    @Resource(name = "genericStrategyImportService")
+    private GenericStrategyImportService genericStrategyImportService;
 
     @Resource(name = "genericTradeImportService")
     private GenericTradeImportService genericTradeImportService;
@@ -158,12 +162,12 @@ public class TradeApiController extends AbstractApiController {
      */
     @ValidateApiToken
     @PostMapping("/import-trades")
-    public StandardJsonResponse postImportTrades(final HttpServletRequest request, final @RequestParam("accountNumber") long accountNumber, final @RequestParam("file") MultipartFile file) throws IOException {
+    public StandardJsonResponse postImportTrades(final HttpServletRequest request, final @RequestParam("accountNumber") long accountNumber, final @RequestParam("isStrategy") boolean isStrategy, final @RequestParam("file") MultipartFile file) throws IOException {
 
         final User user = (User) request.getAttribute(SecurityConstants.USER_REQUEST_KEY);
         validateImportFileExtension(file, getAccountForId(user, accountNumber).getTradePlatform().getFormats(), "The given file %s was not of a valid format", file.getOriginalFilename());
 
-        String result = this.genericTradeImportService.importTrades(file.getInputStream(), getAccountForId(user, accountNumber));
+        final String result = isStrategy ? this.genericStrategyImportService.importReport(file.getInputStream(), getAccountForId(user, accountNumber)) : this.genericTradeImportService.importTrades(file.getInputStream(), getAccountForId(user, accountNumber));
         if (StringUtils.isEmpty(result)) {
             return new StandardJsonResponse(true, true, StringUtils.EMPTY);
         }
