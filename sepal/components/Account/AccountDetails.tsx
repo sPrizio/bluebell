@@ -20,9 +20,7 @@ import TradeTable from "@/components/Table/Trade/TradeTable";
 import Link from "next/link";
 import ImportTradesForm from "@/components/Form/Trade/ImportTradesForm";
 import {getAccountDetails} from "@/lib/functions/account-functions";
-import {getTradeRecords} from "@/lib/functions/trade-functions";
-import moment from "moment";
-import {DateTime} from "@/lib/constants";
+import {getRecentTradeRecords} from "@/lib/functions/trade-functions";
 
 /**
  * Renders the Account details layout
@@ -40,14 +38,16 @@ export default function AccountDetails(
   }>
 ) {
 
+  const tradeRecordReportLookback = 8;
   const [isLoading, setIsLoading] = useState(false)
   const [accDetails, setAccDetails] = useState<AccountDetails>()
+  const [accEquity, setAccEquity] = useState<Array<AccountEquityPoint>>([])
   const [showPoints, setShowPoints] = useState(false)
-  const [recentTradeRecords, setRecentTradeRecords] = useState<Array<TradeRecord>>([])
+  const [recentTradeRecords, setRecentTradeRecords] = useState<TradeRecordReport | null>(null)
 
   useEffect(() => {
     getAccDetails()
-    getRecentTradeRecords()
+    getAccRecentTradeRecords()
   }, []);
 
 
@@ -61,6 +61,8 @@ export default function AccountDetails(
     setIsLoading(true)
 
     const data = await getAccountDetails(account.accountNumber)
+
+    setAccEquity(data?.equity ?? [])
     setAccDetails(data ?? {
       account: account,
       consistency: 0.0,
@@ -94,12 +96,14 @@ export default function AccountDetails(
   /**
    * Fetches the recent trade records
    */
-  async function getRecentTradeRecords() {
+  async function getAccRecentTradeRecords() {
 
     setIsLoading(true)
 
-    const data = await getTradeRecords(account.accountNumber, moment().subtract(6, 'days').format(DateTime.ISODateFormat), moment().format(DateTime.ISODateFormat), 'DAILY', 6)
-    setRecentTradeRecords(data ?? [])
+    const data = await getRecentTradeRecords(account.accountNumber, 'DAILY', tradeRecordReportLookback)
+    setRecentTradeRecords(data)
+
+    console.log(data)
 
     setIsLoading(false)
   }
@@ -164,7 +168,7 @@ export default function AccountDetails(
     <div className={'grid sm:grid-cols-1 lg:grid-cols-2 xl:grid-cols-4 gap-6'}>
       <div className={'sm:col-span-1 lg:col-span-2 xl:col-span-4'}>
         <SimpleBanner
-          text={(account?.active ?? false) ? 'This account is currently active.' : 'This account is marked currently inactive.'}
+          text={(account?.active ?? false) ? 'This account is currently active.' : 'This account is inactive.'}
           variant={(account?.active ?? false) ? 'info' : 'danger'}
         />
       </div>
@@ -219,7 +223,7 @@ export default function AccountDetails(
                 loading={isLoading}
                 title={'Account Equity'}
                 subtitle={'A look at the evolution of your account since inception.'}
-                cardContent={<AccountEquityChart data={accDetails?.equity ?? []} showPoints={showPoints}/>}
+                cardContent={<AccountEquityChart key={accEquity.length} data={accEquity} showPoints={showPoints}/>}
                 headerControls={[
                   <div key={0} className="flex items-center space-x-2">
                     <Label htmlFor="airplane-mode">Show as Points</Label>
@@ -297,7 +301,7 @@ export default function AccountDetails(
             <BaseCard
               loading={isLoading}
               title={'Statistics'}
-              subtitle={'A look some of this Account\'s key statistical measures for performance.'}
+              subtitle={'A look some of this account\'s key statistical measures for performance.'}
               cardContent={<AccountStatistics statistics={accDetails.statistics}/>}
             />
             :
@@ -308,8 +312,8 @@ export default function AccountDetails(
         <BaseCard
           loading={isLoading}
           title={'Performance'}
-          subtitle={'A look at this account\'s recent daily performance.'}
-          cardContent={<TradeRecordTable records={recentTradeRecords}/>}
+          subtitle={`Reviewing the last ${tradeRecordReportLookback} days of daily trading performances.`}
+          cardContent={<TradeRecordTable report={recentTradeRecords} showTotals={true} />}
           headerControls={[
             <Link key={0} href={`/performance?account=${account?.accountNumber}`}>
               <Button className="" variant={"outline"}><IconExternalLink size={18}/>&nbsp;View Full Performance</Button>

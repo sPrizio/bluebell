@@ -47,6 +47,7 @@ export const ApiUrls = {
   },
   TradeRecord: {
     GetTradeRecords: getTradeRecordDomain() + '/for-interval?accountNumber={accountNumber}&start={start}&end={end}&interval={interval}&count={count}',
+    GetRecentTradeRecords: getTradeRecordDomain() + '/recent?accountNumber={accountNumber}&interval={interval}&count={count}',
     GetTradeLog: getTradeRecordDomain() + '/trade-log?start={start}&end={end}&interval={interval}&count={count}'
   },
   User: {
@@ -202,6 +203,7 @@ export function ForgotPasswordSchema() {
 
 export function TradeImportSchema() {
   return z.object({
+    isStrategy: z.boolean().default(false),
     filename: z
       .instanceof(FileList)
       .refine((file) => file?.length == 1, 'File is required.'),

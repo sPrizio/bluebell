@@ -1,7 +1,7 @@
 'use client'
 
 import React, {useEffect, useState} from "react";
-import {Area, ComposedChart, ReferenceLine, ResponsiveContainer, Tooltip, TooltipProps, YAxis} from "recharts";
+import {Area, ComposedChart, ResponsiveContainer, Tooltip, TooltipProps, YAxis} from "recharts";
 import {NameType, ValueType,} from 'recharts/types/component/DefaultTooltipContent';
 import {Css, DateTime} from "@/lib/constants";
 import {BaseCard} from "@/components/Card/BaseCard";
@@ -33,12 +33,11 @@ export default function AccountEquityChart(
 ) {
 
   const [chartData, setChartData] = useState<Array<InternalEquityPoint>>()
-
   useEffect(() => {
     if (showPoints) {
-      setChartData(data.map(item => ({date: item.date, value: item.points})))
+      setChartData(data.map(item => ({date: item.date, value: item.cumPoints})))
     } else {
-      setChartData(data.map(item => ({date: item.date, value: item.amount})))
+      setChartData(data.map(item => ({date: item.date, value: item.cumAmount})))
     }
   }, [showPoints]);
 
@@ -117,7 +116,7 @@ export default function AccountEquityChart(
       }
       {
         data && data.length > 1 &&
-          <div className={'w-[100%]'}>
+          <div className={'w-[100%]'} key={showPoints.toString()}>
               <ResponsiveContainer width='100%' minHeight={400}>
                   <ComposedChart data={chartData}>
                       <defs>

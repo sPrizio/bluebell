@@ -103,7 +103,7 @@ export default function AccountForm(
     if (isCreateMode()) {
       res = await createAccount(values);
     } else {
-      res = await updateAccount(account?.accountNumber, values);
+      res = await updateAccount(account?.accountNumber ?? -1, values);
     }
 
     if (!res) {

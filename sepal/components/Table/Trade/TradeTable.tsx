@@ -102,7 +102,7 @@ export default function TradeTable(
 
   return (
     <div className={'mt-4 pb-2 flex flex-col'}>
-      {(data?.length ?? 0) === 0 && <div className="text-center my-4 text-slate-500">No trades found.</div>}
+      {(data?.length ?? 0) === 0 && <div className="text-center text-sm my-4 text-slate-500">No trades found.</div>}
       {
         (data?.length ?? 0) > 0 &&
           <div className={'min-h-[450px]'}>

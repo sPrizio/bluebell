@@ -83,7 +83,9 @@ interface Account extends GenericApiType {
 interface AccountEquityPoint {
   date: string,
   amount: number,
-  points: number
+  points: number,
+  cumAmount: number,
+  cumPoints: number
 }
 
 interface AccountInsights {
@@ -148,6 +150,19 @@ interface TradeRecordEquityPoint extends GenericApiType {
   tradeId: string,
   netProfit: number,
   netPoints: number
+}
+
+interface TradeRecordTotals {
+  count: number,
+  trades: number,
+  winPercentage: number,
+  netProfit: number,
+  netPoints: number
+}
+
+interface TradeRecordReport {
+  tradeRecords: Array<TradeRecord>,
+  tradeRecordTotals: TradeRecordTotals
 }
 
 interface TradeRecord extends GenericApiType {

@@ -5,7 +5,6 @@ import {useSepalModalContext} from "@/lib/context/SepalContext";
 import {TradeImportSchema} from "@/lib/constants";
 import {useForm} from "react-hook-form";
 import {zodResolver} from "@hookform/resolvers/zod";
-import {delay} from "@/lib/functions/util-functions";
 import {z} from "zod";
 import {Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage} from "@/components/ui/form";
 import {Input} from "@/components/ui/input";
@@ -13,13 +12,14 @@ import {Button} from "@/components/ui/button";
 import {Loader2} from "lucide-react";
 import {importTrades} from "@/lib/functions/trade-functions";
 import {useToast} from "@/hooks/use-toast"
+import {Switch} from "@/components/ui/switch";
 
 /**
  * Renders a form that can import trades
  *
  * @param account account info
  * @author Stephen Prizio
- * @version 0.0.1
+ * @version 0.0.2
  */
 export default function ImportTradesForm(
   {
@@ -64,7 +64,7 @@ export default function ImportTradesForm(
   async function onSubmit(values: z.infer<typeof formSchema>) {
 
     setIsLoading(true)
-    const data = await importTrades(account.accountNumber, values.filename[0])
+    const data = await importTrades(account.accountNumber, values.filename[0], values.isStrategy)
 
     if (data) {
       setSuccess('success')
@@ -102,6 +102,33 @@ export default function ImportTradesForm(
                     <FormDescription>
                       only .csv & .html files are currently supported for file importing.
                     </FormDescription>
+                  </FormItem>
+                )}
+              />
+            </div>
+            <div className={''}>
+              <FormField
+                control={form.control}
+                name="isStrategy"
+                render={({field}) => (
+                  <FormItem>
+                    <div className={'flex items-center gap-4 w-full'}>
+                      <div className={'w-full'}>
+                        <FormLabel className="!text-current">Simulated Account</FormLabel>
+                      </div>
+                      <div className={'flex items-center justify-end text-right'}>
+                        <FormControl>
+                          <Switch
+                            checked={field.value}
+                            onCheckedChange={field.onChange}
+                          />
+                        </FormControl>
+                      </div>
+                    </div>
+                    <FormDescription>
+                      Select this option if you're importing strategy/simulation results and not actual trades.
+                    </FormDescription>
+                    <FormMessage className={'text-primaryRed font-semibold'}/>
                   </FormItem>
                 )}
               />

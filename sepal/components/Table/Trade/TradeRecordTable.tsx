@@ -2,6 +2,7 @@ import {Table, TableBody, TableCell, TableHead, TableHeader, TableRow} from "@/c
 import moment from "moment";
 import {DateTime} from "@/lib/constants";
 import React from "react";
+import {formatNumberForDisplay} from "@/lib/functions/util-functions";
 
 /**
  * Renders a table of Trade records
@@ -12,25 +13,30 @@ import React from "react";
  */
 export default function TradeRecordTable(
   {
-    records = [],
+    report,
+    showTotals = false,
   }
     : Readonly<{
-    records: Array<TradeRecord>,
+    report: TradeRecordReport | null,
+    showTotals?: boolean,
   }>
 ) {
 
 
   //  RENDER
 
-  if (records.length === 0) {
+  if ((report?.tradeRecords?.length ?? 0) === 0) {
     return <div className={'text-center mt-4'}><p className={'text-slate-500'}>No recent activity.</p></div>
   }
+
 
   return (
     <Table>
       <TableHeader className={'border-b-2 border-primaryLight'}>
-        <TableRow>
+        <TableRow className={'hover:bg-transparent'}>
           <TableHead className={'text-primary font-bold'}>Date</TableHead>
+          <TableHead />
+          <TableHead />
           <TableHead className={'text-center text-primary font-bold'}>Trades</TableHead>
           <TableHead className={'text-center text-primary font-bold'}>Win Rate</TableHead>
           <TableHead className={'text-right text-primary font-bold'}>P & L</TableHead>
@@ -38,16 +44,29 @@ export default function TradeRecordTable(
       </TableHeader>
       <TableBody>
         {
-          records?.map(item => {
+          report?.tradeRecords?.map(item => {
             return (
               <TableRow key={item.uid} className={'hover:bg-transparent'}>
-                <TableCell>{moment(item.end).format(DateTime.ISOMonthWeekDayFormat)}</TableCell>
+                <TableCell className={'w-[40px]'}>{moment(item.start).format(DateTime.ISOWeekdayFormat)}</TableCell>
+                <TableCell className={'w-[50px]'}>{moment(item.start).format(DateTime.ISOMonthFormat)}</TableCell>
+                <TableCell className={'w-[25px]'}>{moment(item.start).format(DateTime.ISODayFormat)}</TableCell>
                 <TableCell className={'text-center'}>{item.trades}</TableCell>
                 <TableCell className={'text-center'}>{item.winPercentage}%</TableCell>
-                <TableCell className={'text-right font-bold ' + (item.netProfit >= 0 ? 'text-primaryGreen' : 'text-primaryRed')}>$&nbsp;{item.netProfit}</TableCell>
+                <TableCell className={'text-right font-semibold ' + (item.netProfit >= 0 ? 'text-primaryGreen' : 'text-primaryRed')}>$&nbsp;{formatNumberForDisplay(item.netProfit)}</TableCell>
               </TableRow>
             )
           })
+        }
+        {
+          showTotals && (report?.tradeRecords?.length ?? 0) > 0 &&
+          <TableRow className={'hover:bg-transparent !border-t-2 !border-primaryLight text-primary'}>
+              <TableCell className={'font-bold'}>{report?.tradeRecordTotals?.count ?? 0}&nbsp;days</TableCell>
+              <TableCell />
+              <TableCell />
+              <TableCell className={'text-center font-bold'}>{report?.tradeRecordTotals?.trades ?? 0}</TableCell>
+              <TableCell className={'text-center font-bold'}>{report?.tradeRecordTotals?.winPercentage ?? 0}%</TableCell>
+              <TableCell className={'text-right font-bold '}>$&nbsp;{formatNumberForDisplay(report?.tradeRecordTotals?.netProfit ?? 0)}</TableCell>
+          </TableRow>
         }
       </TableBody>
     </Table>
