@@ -2,6 +2,7 @@ package com.bluebell.planter.api.controllers.trade;
 
 import com.bluebell.planter.AbstractGenericTest;
 import com.bluebell.planter.api.constants.ApiConstants;
+import com.bluebell.planter.core.models.nonentities.records.trade.TradeRecordReport;
 import com.bluebell.planter.core.services.trade.TradeRecordService;
 import org.junit.Before;
 import org.junit.Test;
@@ -30,7 +31,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  * Testing class for {@link TradeRecordApiController}
  *
  * @author Stephen Prizio
- * @version 0.0.5
+ * @version 0.0.7
  */
 @SpringBootTest
 @AutoConfigureMockMvc(addFilters = false)
@@ -45,7 +46,7 @@ public class TradeRecordApiControllerTest extends AbstractGenericTest {
 
     @Before
     public void setUp() {
-        Mockito.when(this.tradeRecordService.getTradeRecords(any(), any(), any(), any(), anyInt())).thenReturn(List.of(generateTradeRecord()));
+        Mockito.when(this.tradeRecordService.getTradeRecords(any(), any(), any(), any(), anyInt())).thenReturn(new TradeRecordReport(List.of(generateTradeRecord()), null));
     }
 
 

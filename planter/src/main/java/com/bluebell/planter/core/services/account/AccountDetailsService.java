@@ -62,10 +62,30 @@ public class AccountDetailsService {
         validateParameterIsNotNull(account, CoreConstants.Validation.Account.ACCOUNT_CANNOT_BE_NULL);
 
         if (CollectionUtils.isEmpty(account.getTrades())) {
-            return List.of(new AccountEquityPoint(account.getAccountOpenTime(), account.getBalance(), 0.0));
+            return List.of(new AccountEquityPoint(account.getAccountOpenTime(), account.getBalance(), 0.0, account.getBalance(), 0.0));
         }
 
-        return account.getTrades().stream().map(trade -> new AccountEquityPoint(trade.getTradeCloseTime(), trade.getNetProfit(), this.mathService.subtract(trade.getClosePrice(), trade.getOpenPrice()))).toList();
+        final List<AccountEquityPoint> equityPoints = new ArrayList<>();
+
+        final List<Trade> trades = account.getTrades();
+        final double starterBalance = this.mathService.subtract(account.getBalance(), account.getTrades().stream().mapToDouble(Trade::getNetProfit).sum());
+
+        for (int i = 0; i < trades.size(); i++) {
+            final Trade trade = trades.get(i);
+            final double points = (trade.getNetProfit() < 0) ? this.mathService.multiply(-1.0, Math.abs(this.mathService.subtract(trade.getClosePrice(), trade.getOpenPrice()))) : Math.abs(this.mathService.subtract(trade.getClosePrice(), trade.getOpenPrice()));
+
+            if (i == 0) {
+                equityPoints.add(new AccountEquityPoint(trade.getTradeCloseTime(), trade.getNetProfit(), points, this.mathService.add(starterBalance, trade.getNetProfit()), points));
+            } else {
+                final double cumAmount = this.mathService.add(equityPoints.get(i - 1).cumAmount(), trade.getNetProfit());
+                final double cumPoints = this.mathService.add(equityPoints.get(i - 1).cumPoints(), points);
+
+                equityPoints.add(new AccountEquityPoint(trade.getTradeCloseTime(), trade.getNetProfit(), points, cumAmount, cumPoints));
+            }
+        }
+
+        equityPoints.addFirst(new AccountEquityPoint(trades.getFirst().getTradeCloseTime().minusDays(1), 0.0, 0.0, starterBalance, 0.0));
+        return equityPoints;
     }
 
     /**
@@ -76,7 +96,7 @@ public class AccountDetailsService {
      */
     public AccountInsights obtainInsights(final Account account) {
 
-        final List<TradeRecord> tradeRecords = this.tradeRecordService.getTradeRecords(account.getAccountOpenTime().minusYears(1).toLocalDate(), LocalDate.now().plusYears(1), account, FlowerpotTimeInterval.DAILY, -1);
+        final List<TradeRecord> tradeRecords = this.tradeRecordService.getTradeRecords(account.getAccountOpenTime().minusYears(1).toLocalDate(), LocalDate.now().plusYears(1), account, FlowerpotTimeInterval.DAILY, -1).tradeRecords();
         final List<CumulativeTrade> cumulativeTrades = generativeCumulativeTrades(account);
 
         return new AccountInsights(
@@ -111,7 +131,7 @@ public class AccountDetailsService {
                 trades.stream().mapToDouble(Trade::getLotSize).sum(),
                 trades.stream().mapToDouble(Trade::getNetProfit).average().orElse(0.0),
                 this.mathService.wholePercentage(positiveProfitCount, this.mathService.getDouble(trades.size())),
-                this.mathService.divide(positiveProfit, negativeProfit),
+                this.mathService.divide(positiveProfit, Math.abs(negativeProfit)),
                 this.mathService.wholePercentage(positiveProfit, this.mathService.add(positiveProfit, Math.abs(negativeProfit))),
                 calculateSharpeRatio(account)
         );
@@ -187,7 +207,7 @@ public class AccountDetailsService {
      */
     private double calculateSharpeRatio(final Account account) {
 
-        final List<TradeRecord> monthlyRecords = this.tradeRecordService.getTradeRecords(account.getAccountOpenTime().minusYears(1).toLocalDate(), LocalDate.now().plusYears(1), account, FlowerpotTimeInterval.MONTHLY, -1);
+        final List<TradeRecord> monthlyRecords = this.tradeRecordService.getTradeRecords(account.getAccountOpenTime().minusYears(1).toLocalDate(), LocalDate.now().plusYears(1), account, FlowerpotTimeInterval.MONTHLY, -1).tradeRecords();
         final double averageMonthlyReturn = monthlyRecords.stream().mapToInt(tr -> this.mathService.wholePercentage(tr.netProfit(), account.getBalance())).average().orElse(0.0);
         final double std = new StandardDeviation().evaluate(monthlyRecords.stream().mapToDouble(TradeRecord::netProfit).toArray());
 

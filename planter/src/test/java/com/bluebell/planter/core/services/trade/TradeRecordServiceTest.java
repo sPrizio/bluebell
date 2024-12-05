@@ -24,7 +24,7 @@ import static org.mockito.ArgumentMatchers.any;
  * Testing class for {@link TradeRecordService}
  *
  * @author Stephen Prizio
- * @version 0.0.6
+ * @version 0.0.7
  */
 @SpringBootTest
 @RunWith(SpringRunner.class)
@@ -81,7 +81,7 @@ public class TradeRecordServiceTest extends AbstractGenericTest {
 
     @Test
     public void test_getTradeRecords_success() {
-        assertThat(this.tradeRecordService.getTradeRecords(LocalDate.of(2022, 8, 20), LocalDate.of(2022, 8, 25), generateTestAccount(), FlowerpotTimeInterval.DAILY, CoreConstants.MAX_RESULT_SIZE))
+        assertThat(this.tradeRecordService.getTradeRecords(LocalDate.of(2022, 8, 20), LocalDate.of(2022, 8, 25), generateTestAccount(), FlowerpotTimeInterval.DAILY, CoreConstants.MAX_RESULT_SIZE).tradeRecords())
                 .isNotEmpty()
                 .element(0)
                 .extracting("lowestPoint", "points", "trades", "profitability")
