@@ -1,13 +1,14 @@
 package com.bluebell.radicle.parsers.impl;
 
 import com.bluebell.radicle.enums.RadicleTimeInterval;
+import com.bluebell.radicle.exceptions.parser.FirstRateDataParsingException;
 import com.bluebell.radicle.models.AggregatedMarketPrices;
 import com.bluebell.radicle.models.MarketPrice;
 import com.bluebell.radicle.parsers.MarketPriceParser;
-import lombok.NoArgsConstructor;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.LineIterator;
+import org.apache.commons.lang3.StringUtils;
 
 import java.io.File;
 import java.time.LocalDate;
@@ -21,10 +22,9 @@ import java.util.*;
  * @author Stephen Prizio
  * @version 0.0.2
  */
-@NoArgsConstructor
 public class FirstRateDataParser extends AbstractDataParser implements MarketPriceParser {
 
-    private boolean isTest = false;
+    private final boolean isTest;
 
     public FirstRateDataParser(final boolean isTest) {
         this.isTest = isTest;
@@ -70,7 +70,7 @@ public class FirstRateDataParser extends AbstractDataParser implements MarketPri
                 ));
             }
         } catch (Exception e) {
-            System.out.printf(e.getMessage(), e);
+            throw new FirstRateDataParsingException(String.format("An error occurred while parsing the file. Error: %s", e.getMessage()), e);
         }
 
         return new AggregatedMarketPrices(marketPrices, interval);
@@ -81,13 +81,13 @@ public class FirstRateDataParser extends AbstractDataParser implements MarketPri
 
         final AggregatedMarketPrices marketPrices;
         switch (interval) {
-            case ONE_MINUTE -> marketPrices = parseMarketPrices(this.isTest ? "NDX_1min_sample.csv" : "NDX_full_1min.txt", RadicleTimeInterval.ONE_MINUTE);
-            case FIVE_MINUTE -> marketPrices = parseMarketPrices(this.isTest ? "NDX_5min_sample.csv" : "NDX_full_5min.txt", RadicleTimeInterval.FIVE_MINUTE);
+            case ONE_MINUTE -> marketPrices = parseMarketPrices(computeFileName(RadicleTimeInterval.ONE_MINUTE), RadicleTimeInterval.ONE_MINUTE);
+            case FIVE_MINUTE -> marketPrices = parseMarketPrices(computeFileName(RadicleTimeInterval.FIVE_MINUTE), RadicleTimeInterval.FIVE_MINUTE);
             case TEN_MINUTE -> marketPrices = parseDynamicMarketPrices(RadicleTimeInterval.TEN_MINUTE);
             case FIFTEEN_MINUTE -> marketPrices = parseDynamicMarketPrices(RadicleTimeInterval.FIFTEEN_MINUTE);
-            case THIRTY_MINUTE -> marketPrices = parseMarketPrices(this.isTest ? "NDX_30min_sample.csv" : "NDX_full_30min.txt", RadicleTimeInterval.THIRTY_MINUTE);
-            case ONE_HOUR -> marketPrices = parseMarketPrices(this.isTest ? "NDX_1hour_sample.csv" : "NDX_full_1hour.txt", RadicleTimeInterval.ONE_HOUR);
-            case ONE_DAY -> marketPrices = parseMarketPrices(this.isTest ? "" : "NDX_1day_sample.csv", RadicleTimeInterval.ONE_DAY);
+            case THIRTY_MINUTE -> marketPrices = parseMarketPrices(computeFileName(RadicleTimeInterval.THIRTY_MINUTE), RadicleTimeInterval.THIRTY_MINUTE);
+            case ONE_HOUR -> marketPrices = parseMarketPrices(computeFileName(RadicleTimeInterval.ONE_HOUR), RadicleTimeInterval.ONE_HOUR);
+            case ONE_DAY -> marketPrices = parseMarketPrices(computeFileName(RadicleTimeInterval.ONE_DAY), RadicleTimeInterval.ONE_DAY);
             default -> marketPrices = new AggregatedMarketPrices(new TreeSet<>(), interval);
         }
 
@@ -98,6 +98,29 @@ public class FirstRateDataParser extends AbstractDataParser implements MarketPri
     //  HELPERS
 
     /**
+     * Computes the filename depending on whether this parser was instantiated as a testing instance
+     *
+     * @param interval {@link RadicleTimeInterval}
+     * @return filename
+     */
+    private String computeFileName(final RadicleTimeInterval interval) {
+
+        String prefix;
+        final String format = this.isTest ? "NDX_%s_sample.csv" : "NDX_full_%s.txt";
+
+        switch (interval) {
+            case ONE_MINUTE -> prefix = "1min";
+            case FIVE_MINUTE -> prefix = "5min";
+            case THIRTY_MINUTE -> prefix = "30min";
+            case ONE_HOUR -> prefix = "1hour";
+            case ONE_DAY -> prefix = "1day";
+            default -> throw new FirstRateDataParsingException(String.format("%s is currently not a supported interval", interval));
+        }
+
+        return String.format(format, prefix);
+    }
+
+    /**
      * Computes the market prices for an interval that doesn't directly map to a file
      *
      * @param interval {@link RadicleTimeInterval}
@@ -105,7 +128,7 @@ public class FirstRateDataParser extends AbstractDataParser implements MarketPri
      */
     private AggregatedMarketPrices parseDynamicMarketPrices(final RadicleTimeInterval interval) {
 
-        final AggregatedMarketPrices smallerPrices = parseMarketPrices(this.isTest ? "NDX_1min_sample.csv" : "NDX_full_1min.txt", RadicleTimeInterval.ONE_MINUTE);
+        final AggregatedMarketPrices smallerPrices = parseMarketPrices(computeFileName(RadicleTimeInterval.ONE_MINUTE), RadicleTimeInterval.ONE_MINUTE);
         if (CollectionUtils.isEmpty(smallerPrices.marketPrices())) {
             return new AggregatedMarketPrices(Collections.emptySortedSet(), interval);
         }
