@@ -21,7 +21,7 @@ import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
  * Testing class for {@link ApexChartService}
  *
  * @author Stephen Prizio
- * @version 0.0.6
+ * @version 0.0.7
  */
 @SpringBootTest
 @RunWith(SpringRunner.class)
@@ -67,10 +67,12 @@ public class ApexChartServiceTest extends AbstractGenericTest {
 
     @Test
     public void test_getChartData_success() {
+        this.apexChartService.setTest(true);
         assertThat(this.apexChartService.getChartData(LocalDate.MIN, LocalDate.MAX, IntradayInterval.FIVE_MINUTES))
-                .hasSize(329181)
+                .hasSize(790)
                 .first()
                 .extracting("x", "y")
                 .contains(1715607000000L, new double[]{18228.4, 18233.5, 18204.06, 18204.16});
+        this.apexChartService.setTest(false);
     }
 }

@@ -28,7 +28,7 @@ import static org.mockito.ArgumentMatchers.any;
  * Testing class for {@link UserService}
  *
  * @author Stephen Prizio
- * @version 0.0.3
+ * @version 0.0.7
  */
 @SpringBootTest
 @RunWith(SpringRunner.class)
@@ -98,7 +98,7 @@ public class UserServiceTest extends AbstractGenericTest {
         Map<String, Object> map = Map.of("bad", "input");
         assertThatExceptionOfType(EntityCreationException.class)
                 .isThrownBy(() -> this.userService.createUser(map))
-                .withMessage("A User could not be created : Cannot invoke \"java.util.Map.get(Object)\" because \"ud\" is null");
+                .withMessage("A User could not be created : Cannot invoke \"java.util.Map.get(Object)\" because the return value of \"java.util.Map.get(Object)\" is null");
     }
 
     @Test

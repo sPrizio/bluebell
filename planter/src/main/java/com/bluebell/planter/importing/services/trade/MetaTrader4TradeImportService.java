@@ -1,6 +1,5 @@
 package com.bluebell.planter.importing.services.trade;
 
-import com.bluebell.planter.core.constants.CoreConstants;
 import com.bluebell.planter.core.models.entities.account.Account;
 import com.bluebell.planter.importing.ImportService;
 import com.bluebell.planter.importing.exceptions.TradeImportFailureException;
@@ -18,12 +17,9 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 /**
  * Service-layer for importing trades into the system from the MetaTrader4 platform
@@ -31,10 +27,10 @@ import java.util.regex.Pattern;
  * @author Stephen Prizio
  * @version 0.0.7
  */
-@Service("metaTrader4TradesImportService")
-public class MetaTrader4TradesImportService extends AbstractImportService implements ImportService {
+@Service("metaTrader4TradeImportService")
+public class MetaTrader4TradeImportService extends AbstractImportService implements ImportService {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(MetaTrader4TradesImportService.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(MetaTrader4TradeImportService.class);
 
 
     //  METHODS
@@ -115,7 +111,7 @@ public class MetaTrader4TradesImportService extends AbstractImportService implem
         }
 
         final String tradeContent = string.substring(startIndex, string.indexOf("Closed P/L:"));
-        return parseMetaTrader4Trade(tradeContent);
+        return parseMetaTrader4TradeList(tradeContent);
     }
 
     /**

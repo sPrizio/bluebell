@@ -8,6 +8,7 @@ import com.bluebell.radicle.enums.RadicleTimeInterval;
 import com.bluebell.radicle.models.AggregatedMarketPrices;
 import com.bluebell.radicle.models.MarketPrice;
 import com.bluebell.radicle.parsers.impl.FirstRateDataParser;
+import lombok.Setter;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.MapUtils;
 import org.springframework.stereotype.Service;
@@ -23,12 +24,12 @@ import static com.bluebell.planter.core.validation.GenericValidator.validatePara
  * apexcharts implementation of {@link ChartService}
  *
  * @author Stephen Prizio
- * @version 0.0.6
+ * @version 0.0.7
  */
 @Service
 public class ApexChartService implements ChartService<ApexChartCandleStick> {
 
-    private final FirstRateDataParser firstRateDataParser = new FirstRateDataParser(false);
+    private FirstRateDataParser firstRateDataParser = new FirstRateDataParser(false);
 
 
     //  METHODS
@@ -83,5 +84,12 @@ public class ApexChartService implements ChartService<ApexChartCandleStick> {
         });
 
         return candleSticks.stream().sorted(Comparator.comparing(ApexChartCandleStick::getX)).toList();
+    }
+
+
+    //  MUTATORS
+
+    public void setTest(final boolean test) {
+        this.firstRateDataParser = new FirstRateDataParser(test);
     }
 }
