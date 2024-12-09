@@ -8,6 +8,7 @@ import com.bluebell.planter.core.models.entities.account.Account;
 import com.bluebell.planter.core.services.platform.UniqueIdentifierService;
 import com.bluebell.radicle.services.MathService;
 import jakarta.annotation.Resource;
+import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.stereotype.Component;
 
 /**
@@ -52,7 +53,10 @@ public class AccountDTOConverter implements GenericDTOConverter<Account, Account
         accountDTO.setBroker(new EnumDisplay(entity.getBroker().getCode(), entity.getBroker().getName()));
         accountDTO.setLastTraded(entity.getLastTraded());
         accountDTO.setTradePlatform(new EnumDisplay(entity.getTradePlatform().getCode(), entity.getTradePlatform().getLabel()));
-        accountDTO.setTransactions(this.transactionDTOConverter.convertAll(entity.getTransactions()));
+
+        if (CollectionUtils.isNotEmpty( entity.getTransactions())) {
+            accountDTO.setTransactions(this.transactionDTOConverter.convertAll(entity.getTransactions()));
+        }
 
         return accountDTO;
     }

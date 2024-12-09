@@ -7,7 +7,7 @@ import com.bluebell.planter.core.repositories.account.AccountRepository;
 import com.bluebell.planter.core.repositories.security.UserRepository;
 import com.bluebell.planter.core.repositories.trade.TradeRepository;
 import com.bluebell.planter.importing.exceptions.TradeImportFailureException;
-import com.bluebell.planter.importing.services.trade.MetaTrader4TradesImportService;
+import com.bluebell.planter.importing.services.trade.CMCMarketsTradeImportService;
 import jakarta.annotation.Resource;
 import jakarta.transaction.Transactional;
 import org.assertj.core.groups.Tuple;
@@ -31,8 +31,9 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
+
 /**
- * Testing class for {@link MetaTrader4TradesImportService}
+ * Testing class for {@link CMCMarketsTradeImportService}
  *
  * @author Stephen Prizio
  * @version 0.0.7
@@ -41,17 +42,16 @@ import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 @RunWith(SpringRunner.class)
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
-public class MetaTrader4TradesImportServiceTest extends AbstractGenericTest {
+public class CMCMarketsTradeImportServiceTest extends AbstractGenericTest {
 
     private User user;
-
     private Account account;
 
     @Resource(name = "accountRepository")
     private AccountRepository accountRepository;
 
-    @Resource(name = "metaTrader4TradesImportService")
-    private MetaTrader4TradesImportService metaTrader4TradesImportService;
+    @Resource(name = "cmcMarketsTradeImportService")
+    private CMCMarketsTradeImportService cmcMarketsTradeImportService;
 
     @Resource(name = "tradeRepository")
     private TradeRepository tradeRepository;
@@ -84,7 +84,7 @@ public class MetaTrader4TradesImportServiceTest extends AbstractGenericTest {
     @Transactional
     public void test_importTrades_failure() {
         assertThatExceptionOfType(TradeImportFailureException.class)
-                .isThrownBy(() -> this.metaTrader4TradesImportService.importTrades("src/main/resources/testing/NotFound.htm", ';', this.account))
+                .isThrownBy(() -> this.cmcMarketsTradeImportService.importTrades("src/main/resources/testing/NotFound.csv", ';', this.account))
                 .withMessageContaining("The import process failed with reason");
     }
 
@@ -94,15 +94,15 @@ public class MetaTrader4TradesImportServiceTest extends AbstractGenericTest {
     @WithMockUser(username = "test")
     public void test_importTrades_success() {
 
-        this.metaTrader4TradesImportService.importTrades("classpath:testing/Statement.htm", ';', this.account);
+        this.cmcMarketsTradeImportService.importTrades("classpath:testing/History.csv", ';', this.account);
 
         assertThat(this.tradeRepository.findAll())
-                .hasSize(41)
+                .hasSize(3)
                 .extracting("tradeId", "lotSize", "tradeOpenTime", "tradeCloseTime", "openPrice", "closePrice", "netProfit")
                 .contains(
-                        Tuple.tuple("62952792", 3.5, LocalDateTime.of(2023, 6, 8, 16, 49, 22), LocalDateTime.of(2023, 6, 8, 16, 51, 52), 14347.90, 14351.60, 17.31),
-                        Tuple.tuple("62973223", 3.5, LocalDateTime.of(2023, 6, 8, 20, 2, 20), LocalDateTime.of(2023, 6, 8, 20, 6, 48), 14464.10, 14472.80, -40.67),
-                        Tuple.tuple("62861228", 3.5, LocalDateTime.of(2023, 6, 7, 16, 47, 26), LocalDateTime.of(2023, 6, 7, 16, 49, 3), 14640.20, 14628.30, -55.79)
+                        Tuple.tuple("O5-77-5H7P05", 0.80, LocalDateTime.of(2022, 8, 24, 11, 23), LocalDateTime.of(2022, 8, 24, 11, 27), 12960.00, 12972.38, 12.78),
+                        Tuple.tuple("O5-77-5H7MXX", 0.75, LocalDateTime.of(2022, 8, 24, 11, 13), LocalDateTime.of(2022, 8, 24, 11, 14), 12935.17, 12943.36, -8.0),
+                        Tuple.tuple("1109841303", 0.0, LocalDateTime.of(2022, 8, 24, 11, 14), LocalDateTime.of(2022, 8, 24, 11, 14), 0.0, 0.0, 8.0)
                 );
     }
 
@@ -112,11 +112,11 @@ public class MetaTrader4TradesImportServiceTest extends AbstractGenericTest {
     @WithMockUser(username = "test")
     public void testImportTrades_success_unchanged() {
 
-        this.metaTrader4TradesImportService.importTrades("classpath:testing/Statement.htm", ';', this.account);
-        this.metaTrader4TradesImportService.importTrades("classpath:testing/Statement.htm", ';', this.account);
+        this.cmcMarketsTradeImportService.importTrades("classpath:testing/History.csv", ';', this.account);
+        this.cmcMarketsTradeImportService.importTrades("classpath:testing/History.csv", ';', this.account);
 
         assertThat(this.tradeRepository.findAll())
-                .hasSize(41);
+                .hasSize(3);
     }
 
     @Test
@@ -125,15 +125,33 @@ public class MetaTrader4TradesImportServiceTest extends AbstractGenericTest {
     @WithMockUser(username = "test")
     public void test_importTrades_success_inputStream() throws Exception {
 
-        this.metaTrader4TradesImportService.importTrades(new FileInputStream(ResourceUtils.getFile("classpath:testing/Statement.htm")), ';', this.account);
+        this.cmcMarketsTradeImportService.importTrades(new FileInputStream(ResourceUtils.getFile("classpath:testing/History.csv")), ';', this.account);
 
         assertThat(this.tradeRepository.findAll())
-                .hasSize(41)
+                .hasSize(3)
                 .extracting("tradeId", "lotSize", "tradeOpenTime", "tradeCloseTime", "openPrice", "closePrice", "netProfit")
                 .contains(
-                        Tuple.tuple("62952792", 3.5, LocalDateTime.of(2023, 6, 8, 16, 49, 22), LocalDateTime.of(2023, 6, 8, 16, 51, 52), 14347.90, 14351.60, 17.31),
-                        Tuple.tuple("62973223", 3.5, LocalDateTime.of(2023, 6, 8, 20, 2, 20), LocalDateTime.of(2023, 6, 8, 20, 6, 48), 14464.10, 14472.80, -40.67),
-                        Tuple.tuple("62861228", 3.5, LocalDateTime.of(2023, 6, 7, 16, 47, 26), LocalDateTime.of(2023, 6, 7, 16, 49, 3), 14640.20, 14628.30, -55.79)
+                        Tuple.tuple("O5-77-5H7P05", 0.80, LocalDateTime.of(2022, 8, 24, 11, 23), LocalDateTime.of(2022, 8, 24, 11, 27), 12960.00, 12972.38, 12.78),
+                        Tuple.tuple("O5-77-5H7MXX", 0.75, LocalDateTime.of(2022, 8, 24, 11, 13), LocalDateTime.of(2022, 8, 24, 11, 14), 12935.17, 12943.36, -8.0),
+                        Tuple.tuple("1109841303", 0.0, LocalDateTime.of(2022, 8, 24, 11, 14), LocalDateTime.of(2022, 8, 24, 11, 14), 0.0, 0.0, 8.0)
                 );
+    }
+
+    @Test
+    @Order(5)
+    @Transactional
+    public void test_importTrades_dateFailure() {
+        assertThatExceptionOfType(TradeImportFailureException.class)
+                .isThrownBy(() -> this.cmcMarketsTradeImportService.importTrades("classpath:testing/History_variable.csv", ';', this.account))
+                .withMessageContaining("The import process failed with reason");
+    }
+
+    @Test
+    @Order(6)
+    @Transactional
+    public void test_importTrades_badData() {
+        assertThatExceptionOfType(TradeImportFailureException.class)
+                .isThrownBy(() -> this.cmcMarketsTradeImportService.importTrades("classpath:testing/History_bad.csv", ';', this.account))
+                .withMessageContaining("The import process failed with reason");
     }
 }

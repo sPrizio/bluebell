@@ -5,9 +5,9 @@ import com.bluebell.planter.core.enums.trade.platform.TradePlatform;
 import com.bluebell.planter.core.exceptions.validation.IllegalParameterException;
 import com.bluebell.planter.core.models.entities.account.Account;
 import com.bluebell.planter.importing.exceptions.TradeImportFailureException;
-import com.bluebell.planter.importing.services.trade.CMCMarketsTradesImportService;
+import com.bluebell.planter.importing.services.trade.CMCMarketsTradeImportService;
 import com.bluebell.planter.importing.services.trade.GenericTradeImportService;
-import com.bluebell.planter.importing.services.trade.MetaTrader4TradesImportService;
+import com.bluebell.planter.importing.services.trade.MetaTrader4TradeImportService;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -36,10 +36,10 @@ public class GenericTradeImportServiceTest extends AbstractGenericTest {
     private final Account BAD_ACCOUNT = generateTestAccount();
 
     @MockBean
-    private CMCMarketsTradesImportService cmcMarketsTradesImportService;
+    private CMCMarketsTradeImportService cmcMarketsTradeImportService;
 
     @MockBean
-    private MetaTrader4TradesImportService metaTrader4TradesImportService;
+    private MetaTrader4TradeImportService metaTrader4TradeImportService;
 
     private GenericTradeImportService genericTradeImportService;
 
@@ -47,10 +47,10 @@ public class GenericTradeImportServiceTest extends AbstractGenericTest {
     @Before
     public void setUp() throws Exception {
         BAD_ACCOUNT.setAccountNumber(-1);
-        this.genericTradeImportService = new GenericTradeImportService(this.cmcMarketsTradesImportService, metaTrader4TradesImportService);
-        Mockito.doNothing().when(this.cmcMarketsTradesImportService).importTrades(TEST_FILE.getInputStream(), ',', generateTestAccount());
-        Mockito.doThrow(new TradeImportFailureException("Test Exception")).when(this.cmcMarketsTradesImportService).importTrades(TEST_FILE.getInputStream(), '|', generateTestAccount());
-        Mockito.doThrow(new TradeImportFailureException("Test Exception")).when(this.cmcMarketsTradesImportService).importTrades(TEST_FILE.getInputStream(), ',', BAD_ACCOUNT);
+        this.genericTradeImportService = new GenericTradeImportService(this.cmcMarketsTradeImportService, metaTrader4TradeImportService);
+        Mockito.doNothing().when(this.cmcMarketsTradeImportService).importTrades(TEST_FILE.getInputStream(), ',', generateTestAccount());
+        Mockito.doThrow(new TradeImportFailureException("Test Exception")).when(this.cmcMarketsTradeImportService).importTrades(TEST_FILE.getInputStream(), '|', generateTestAccount());
+        Mockito.doThrow(new TradeImportFailureException("Test Exception")).when(this.cmcMarketsTradeImportService).importTrades(TEST_FILE.getInputStream(), ',', BAD_ACCOUNT);
     }
 
     @Test

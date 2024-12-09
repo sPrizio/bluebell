@@ -10,6 +10,8 @@ import com.bluebell.planter.core.enums.system.Country;
 import com.bluebell.planter.core.enums.system.PhoneType;
 import com.bluebell.planter.core.enums.trade.info.TradeType;
 import com.bluebell.planter.core.enums.trade.platform.TradePlatform;
+import com.bluebell.planter.core.enums.transaction.TransactionStatus;
+import com.bluebell.planter.core.enums.transaction.TransactionType;
 import com.bluebell.planter.core.models.entities.account.Account;
 import com.bluebell.planter.core.models.entities.news.MarketNews;
 import com.bluebell.planter.core.models.entities.news.MarketNewsEntry;
@@ -17,6 +19,7 @@ import com.bluebell.planter.core.models.entities.news.MarketNewsSlot;
 import com.bluebell.planter.core.models.entities.security.User;
 import com.bluebell.planter.core.models.entities.system.PhoneNumber;
 import com.bluebell.planter.core.models.entities.trade.Trade;
+import com.bluebell.planter.core.models.entities.transaction.Transaction;
 import com.bluebell.planter.core.models.nonentities.records.trade.TradeRecord;
 import com.bluebell.planter.integration.models.responses.forexfactory.CalendarNewsEntryResponse;
 import com.bluebell.planter.security.constants.SecurityConstants;
@@ -120,6 +123,44 @@ public abstract class AbstractGenericTest {
                 1.83,
                 65
         );
+    }
+
+    /**
+     * Generates a test deposit {@link Transaction}
+     *
+     * @return {@link Transaction}
+     */
+    public Transaction generateTestDepositTransaction() {
+
+        Transaction transaction = new Transaction();
+
+        transaction.setTransactionDate(LocalDateTime.of(2024, 12, 6, 12, 0, 0));
+        transaction.setName("Test Deposit");
+        transaction.setTransactionType(TransactionType.DEPOSIT);
+        transaction.setTransactionStatus(TransactionStatus.COMPLETED);
+        transaction.setAmount(125.0);
+        transaction.setAccount(generateTestAccount());
+
+        return transaction;
+    }
+
+    /**
+     * Generates a test withdrawal {@link Transaction}
+     *
+     * @return {@link Transaction}
+     */
+    public Transaction generateTestWithdrawalTransaction() {
+
+        Transaction transaction = new Transaction();
+
+        transaction.setTransactionDate(LocalDateTime.of(2024, 12, 6, 14, 0, 0));
+        transaction.setName("Test Withdrawal");
+        transaction.setTransactionType(TransactionType.WITHDRAWAL);
+        transaction.setTransactionStatus(TransactionStatus.FAILED);
+        transaction.setAmount(-96.30);
+        transaction.setAccount(generateTestAccount());
+
+        return transaction;
     }
 
     /**

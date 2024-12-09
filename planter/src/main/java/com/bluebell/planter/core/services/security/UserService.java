@@ -77,18 +77,21 @@ public class UserService {
             throw new MissingRequiredDataException("The required data for creating a User was null or empty");
         }
 
-        final String email = ((Map<String, Object>) data.get("user")).get("email").toString();
-        final String username = ((Map<String, Object>) data.get("user")).get("username").toString();
-
-        if (this.userRepository.findUserByEmail(email) != null) {
-            throw new DuplicateUserEmailException(String.format("A user with the email %s already exists. Please try another email.", email));
-        }
-
-        if (this.userRepository.findUserByUsername(username) != null) {
-            throw new DuplicateUserUsernameException(String.format("A user with the username %s already exists. Please try another username.", username));
-        }
+        String email = "";
+        String username;
 
         try {
+            email = ((Map<String, Object>) data.get("user")).get("email").toString();
+            username = ((Map<String, Object>) data.get("user")).get("username").toString();
+
+            if (this.userRepository.findUserByEmail(email) != null) {
+                throw new DuplicateUserEmailException(String.format("A user with the email %s already exists. Please try another email.", email));
+            }
+
+            if (this.userRepository.findUserByUsername(username) != null) {
+                throw new DuplicateUserUsernameException(String.format("A user with the username %s already exists. Please try another username.", username));
+            }
+
             return applyChanges(new User(), data, true);
         } catch (Exception e) {
             this.userRepository.deleteUserByEmail(email);

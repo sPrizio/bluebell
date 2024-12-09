@@ -5,7 +5,6 @@ import com.bluebell.planter.api.converters.news.MarketNewsDTOConverter;
 import com.bluebell.planter.api.models.records.json.StandardJsonResponse;
 import com.bluebell.planter.core.models.entities.news.MarketNews;
 import com.bluebell.planter.core.services.news.MarketNewsService;
-import com.bluebell.planter.importing.services.strategy.MetaTrader4StrategyImportService;
 import com.bluebell.planter.security.aspects.ValidateApiToken;
 import jakarta.annotation.Resource;
 import jakarta.servlet.http.HttpServletRequest;
@@ -35,10 +34,6 @@ public class MarketNewsApiController extends AbstractApiController {
     private MarketNewsService marketNewsService;
 
 
-    @Resource
-    private MetaTrader4StrategyImportService strategyImportService;
-
-
     //  METHODS
 
 
@@ -54,10 +49,6 @@ public class MarketNewsApiController extends AbstractApiController {
     @ValidateApiToken
     @GetMapping("/get")
     public StandardJsonResponse getNews(final @RequestParam("date") String date, final HttpServletRequest request) {
-
-        //  TODO: temp
-        this.strategyImportService.importTrades("C:\\Users\\Stephen\\Desktop\\StrategyTester.htm", ',', null);
-
         validate(date);
         final Optional<MarketNews> news = this.marketNewsService.findMarketNewsForDate(LocalDate.parse(date));
         return news.map(marketNews -> new StandardJsonResponse(true, this.marketNewsDTOConverter.convert(marketNews), StringUtils.EMPTY)).orElseGet(() -> new StandardJsonResponse(false, null, String.format("No news for the given date %s", date)));

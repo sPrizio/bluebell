@@ -22,14 +22,14 @@ import static com.bluebell.planter.core.validation.GenericValidator.validatePara
 @Service
 public class GenericTradeImportService {
 
-    private final CMCMarketsTradesImportService cmcMarketsTradesImportService;
+    private final CMCMarketsTradeImportService cmcMarketsTradeImportService;
 
-    private final MetaTrader4TradesImportService metaTrader4TradesImportService;
+    private final MetaTrader4TradeImportService metaTrader4TradeImportService;
 
     @Autowired
-    public GenericTradeImportService(final CMCMarketsTradesImportService cmcMarketsTradesImportService, final MetaTrader4TradesImportService metaTrader4TradesImportService) {
-        this.cmcMarketsTradesImportService = cmcMarketsTradesImportService;
-        this.metaTrader4TradesImportService = metaTrader4TradesImportService;
+    public GenericTradeImportService(final CMCMarketsTradeImportService cmcMarketsTradeImportService, final MetaTrader4TradeImportService metaTrader4TradeImportService) {
+        this.cmcMarketsTradeImportService = cmcMarketsTradeImportService;
+        this.metaTrader4TradeImportService = metaTrader4TradeImportService;
     }
 
 
@@ -48,10 +48,10 @@ public class GenericTradeImportService {
 
         try {
             if (account.getTradePlatform().equals(TradePlatform.CMC_MARKETS)) {
-                this.cmcMarketsTradesImportService.importTrades(inputStream, ',', account);
+                this.cmcMarketsTradeImportService.importTrades(inputStream, ',', account);
                 return StringUtils.EMPTY;
             } else if (account.getTradePlatform().equals(TradePlatform.METATRADER4)) {
-                this.metaTrader4TradesImportService.importTrades(inputStream, null, account);
+                this.metaTrader4TradeImportService.importTrades(inputStream, null, account);
                 return StringUtils.EMPTY;
             }
         } catch (Exception e) {

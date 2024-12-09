@@ -77,7 +77,7 @@ public class TradeRecordApiControllerTest extends AbstractGenericTest {
 
         this.mockMvc.perform(get("/api/v1/trade-record/for-interval").with(testUserContext()).params(map))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.message", containsString("BAD is not a valid time interval")));
+                .andExpect(jsonPath("$.message", containsString("BAD was not a valid interval")));
     }
 
     @Test
@@ -91,8 +91,8 @@ public class TradeRecordApiControllerTest extends AbstractGenericTest {
 
         this.mockMvc.perform(get("/api/v1/trade-record/for-interval").with(testUserContext()).params(map))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.data[0].points", is(47.36)))
-                .andExpect(jsonPath("$.data[0].wins", is(9)))
-                .andExpect(jsonPath("$.data[0].lossAverage", is(-74.32)));
+                .andExpect(jsonPath("$.data.tradeRecords[0].points", is(47.36)))
+                .andExpect(jsonPath("$.data.tradeRecords[0].wins", is(9)))
+                .andExpect(jsonPath("$.data.tradeRecords[0].lossAverage", is(-74.32)));
     }
 }

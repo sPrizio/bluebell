@@ -1,5 +1,9 @@
 package com.bluebell.planter.api.controllers.account;
 
+import com.bluebell.planter.core.enums.account.AccountType;
+import com.bluebell.planter.core.enums.account.Broker;
+import com.bluebell.planter.core.enums.account.Currency;
+import com.bluebell.planter.core.enums.trade.platform.TradePlatform;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.bluebell.planter.AbstractGenericTest;
 import com.bluebell.planter.api.constants.ApiConstants;
@@ -32,7 +36,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  * Testing class for {@link com.bluebell.planter.api.controllers.account.AccountApiController}
  *
  * @author Stephen Prizio
- * @version 0.0.3
+ * @version 0.0.7
  */
 @SpringBootTest
 @AutoConfigureMockMvc(addFilters = false)
@@ -65,7 +69,7 @@ public class AccountApiControllerTest extends AbstractGenericTest {
     public void test_getCurrencies_success() throws Exception {
         this.mockMvc.perform(get("/api/v1/account/currencies"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.data[0].code", is("USD")));
+                .andExpect(jsonPath("$.data[0].code", is(Currency.values()[0].getIsoCode())));
     }
 
 
@@ -75,7 +79,7 @@ public class AccountApiControllerTest extends AbstractGenericTest {
     public void test_getAccountTypes_success() throws Exception {
         this.mockMvc.perform(get("/api/v1/account/account-types"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.data[0].code", is("SHARES")));
+                .andExpect(jsonPath("$.data[0].code", is(AccountType.values()[0].getCode())));
     }
 
 
@@ -85,7 +89,7 @@ public class AccountApiControllerTest extends AbstractGenericTest {
     public void test_getBrokers_success() throws Exception {
         this.mockMvc.perform(get("/api/v1/account/brokers"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.data[0].code", is("CMC_MARKETS")));
+                .andExpect(jsonPath("$.data[0].code", is(Broker.values()[0].getCode())));
     }
 
 
@@ -95,7 +99,7 @@ public class AccountApiControllerTest extends AbstractGenericTest {
     public void test_getTradePlatforms_success() throws Exception {
         this.mockMvc.perform(get("/api/v1/account/trade-platforms"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.data[0].code", is("CMC_MARKETS")));
+                .andExpect(jsonPath("$.data[0].code", is(TradePlatform.values()[0].getCode())));
     }
 
 

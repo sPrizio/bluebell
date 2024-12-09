@@ -33,7 +33,7 @@ import static org.mockito.ArgumentMatchers.anyString;
  * Testing class for {@link AccountService}
  *
  * @author Stephen Prizio
- * @version 0.0.3
+ * @version 0.0.7
  */
 @SpringBootTest
 @RunWith(SpringRunner.class)
@@ -113,7 +113,8 @@ public class AccountServiceTest extends AbstractGenericTest {
                                 "broker", "CMC_MARKETS",
                                 "dailyStop", "55",
                                 "dailyStopType", "POINTS",
-                                "tradePlatform", "METATRADER4"
+                                "tradePlatform", "METATRADER4",
+                                "isDefault", "true"
                         )
                 );
 

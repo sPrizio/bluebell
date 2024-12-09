@@ -11,13 +11,12 @@ import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
-import java.util.TreeSet;
 
 /**
  * Parses a {@link File} url into a {@link List} of {@link MarketPrice}
  *
  * @author Stephen Prizio
- * @version 0.0.1
+ * @version 0.0.2
  */
 public interface MarketPriceParser {
 

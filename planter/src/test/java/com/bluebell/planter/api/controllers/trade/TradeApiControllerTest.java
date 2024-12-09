@@ -213,6 +213,7 @@ public class TradeApiControllerTest extends AbstractGenericTest {
 
         MultiValueMap<String, String> map = new LinkedMultiValueMap<>();
         map.put("accountNumber", List.of("1234"));
+        map.put("isStrategy", List.of("false"));
 
         mockMvc1.perform(MockMvcRequestBuilders.multipart("/api/v1/trade/import-trades").file(TEST_FILE).with(testUserContext()).params(map))
                 .andExpect(status().isOk())

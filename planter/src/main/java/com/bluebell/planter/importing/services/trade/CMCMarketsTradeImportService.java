@@ -34,10 +34,10 @@ import java.util.Objects;
  * @author Stephen Prizio
  * @version 0.0.7
  */
-@Service("cmcMarketsTradesImportService")
-public class CMCMarketsTradesImportService extends AbstractImportService implements ImportService {
+@Service("cmcMarketsTradeImportService")
+public class CMCMarketsTradeImportService extends AbstractImportService implements ImportService {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(CMCMarketsTradesImportService.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(CMCMarketsTradeImportService.class);
     private static final List<String> BUY_SIGNALS = List.of("Buy Trade");
     private static final List<String> SELL_SIGNALS = List.of("Sell Trade");
 

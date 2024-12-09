@@ -80,6 +80,30 @@ public abstract class AbstractImportService {
     }
 
     /**
+     * Parses a list of mt4 trade rows into a list trade cells
+     *
+     * @param string string
+     * @return list of strings
+     */
+    protected List<String> parseMetaTrader4TradeList(final String string) {
+
+        final Pattern pattern = Pattern.compile(CoreConstants.Regex.Import.MT4_HTML_TABLE_ROW);
+        final Matcher matcher = pattern.matcher(string);
+
+        final List<String> entries = new ArrayList<>();
+        while (matcher.find()) {
+            entries.add(
+                    matcher.group()
+                            .replaceAll(CoreConstants.Regex.Import.MT4_HTML_TABLE_ROW_START, StringUtils.EMPTY)
+                            .replace(CoreConstants.Regex.Import.MT4_HTML_TABLE_ROW_END, StringUtils.EMPTY)
+                            .trim()
+            );
+        }
+
+        return entries;
+    }
+
+    /**
      * Parse MT4 html to obtain data in the form of a list
      *
      * @param string html string
