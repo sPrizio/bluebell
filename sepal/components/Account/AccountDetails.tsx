@@ -334,8 +334,6 @@ export default function AccountDetails(
           cardContent={
             <TradeTable
               account={account}
-              page={0}
-              pageSize={10}
             />
           }
         />

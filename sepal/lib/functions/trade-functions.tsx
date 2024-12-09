@@ -94,7 +94,7 @@ export async function getTradeLog(start: string, end: string, interval: string, 
   return null;
 }
 
-export async function getPagedTrades(accNumber: number, start: string, end: string, page: number, pageSize: number): Promise<Array<Trade> | null> {
+export async function getPagedTrades(accNumber: number, start: string, end: string, page: number, pageSize: number): Promise<PagedTrades | null> {
 
   let headers = getAuthHeader()
   headers['Content-Type'] = 'application/json'

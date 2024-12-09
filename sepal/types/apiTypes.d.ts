@@ -193,6 +193,14 @@ interface TradeLog extends GenericApiType {
   records: Array<TradeRecord>
 }
 
+interface PagedTrades {
+  currentPage: number,
+  pageSize: number,
+  totalPages: number,
+  totalTrades: number,
+  trades: Array<Trade>
+}
+
 // TODO: implement on backend
 interface TradeRecordControlMonthEntry extends GenericApiType {
   month: string,

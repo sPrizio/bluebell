@@ -113,8 +113,6 @@ export default function TradesPage() {
                 cardContent={
                   <TradeTable
                     account={acc}
-                    page={0}
-                    pageSize={25}
                   />
                 }
               />

@@ -20,27 +20,22 @@ import {getPagedTrades} from "@/lib/functions/trade-functions";
  * Renders a table of trades
  *
  * @param account account
- * @param pageSize elements per page
- * @param page current page
  * @author Stephen Prizio
  * @version 0.0.2
  */
 export default function TradeTable(
   {
     account,
-    pageSize = 10,
-    page = 0
   }
     : Readonly<{
     account: Account,
-    pageSize?: number,
-    page?: number
   }>
 ) {
 
   const [isLoading, setIsLoading] = useState(false)
-  const [totalElements, setTotalElements] = useState(100)
-  const [currentPage, setCurrentPage] = useState(page)
+  const [totalElements, setTotalElements] = useState(0)
+  const [currentPage, setCurrentPage] = useState(0)
+  const [pageSize, setPageSize] = useState(10)
   const [data, setData] = useState<Array<Trade>>()
   const [pages, setPages] = useState(calculatePages())
 
@@ -63,12 +58,11 @@ export default function TradeTable(
     setIsLoading(true)
 
     const trs = await getPagedTrades(account?.accountNumber ?? '', moment(account?.accountOpenTime).format(DateTime.ISODateTimeFormat), moment().add(1, 'years').format(DateTime.ISODateTimeFormat), currentPage, pageSize)
-    setData(trs ?? [])
 
-    //  TODO: temp update backend to include a new paginated response type
-    //  TODO: this can be done once we import trades
-    //  TODO: add loading state
-    //setData(trades.slice((pageSize * currentPage), (pageSize * (currentPage + 1))))
+    setTotalElements(trs?.totalTrades ?? 0)
+    setPages(trs?.totalPages ?? 10)
+    setData(trs?.trades ?? [])
+    setPageSize(trs?.pageSize ?? 0)
 
     setIsLoading(false)
   }
@@ -110,7 +104,6 @@ export default function TradeTable(
                   <Table>
                       <TableHeader className={'border-b-2 border-primaryLight'}>
                           <TableRow>
-                              <TableHead/>
                               <TableHead className={'text-center text-primary font-bold'}>Trade Id</TableHead>
                               <TableHead className={'text-left text-primary font-bold'}>Product</TableHead>
                               <TableHead className={'text-left text-primary font-bold'}>Open Time</TableHead>
@@ -127,7 +120,6 @@ export default function TradeTable(
                           data?.map((item, key) => {
                             return (
                               <TableRow key={item.uid} className={'hover:bg-transparent'}>
-                                <TableCell>{key + 1}</TableCell>
                                 <TableCell className={'text-center'}>{item.tradeId}</TableCell>
                                 <TableCell className={'text-left'}>{item.product}</TableCell>
                                 <TableCell
