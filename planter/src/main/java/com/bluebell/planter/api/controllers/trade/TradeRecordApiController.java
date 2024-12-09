@@ -6,8 +6,9 @@ import com.bluebell.planter.core.constants.CoreConstants;
 import com.bluebell.planter.core.enums.system.FlowerpotTimeInterval;
 import com.bluebell.planter.core.models.entities.security.User;
 import com.bluebell.planter.core.models.nonentities.records.trade.TradeLog;
-import com.bluebell.planter.core.models.nonentities.records.trade.TradeRecord;
-import com.bluebell.planter.core.models.nonentities.records.trade.TradeRecordReport;
+import com.bluebell.planter.core.models.nonentities.records.tradeRecord.TradeRecord;
+import com.bluebell.planter.core.models.nonentities.records.tradeRecord.TradeRecordReport;
+import com.bluebell.planter.core.models.nonentities.records.tradeRecord.controls.TradeRecordControls;
 import com.bluebell.planter.core.services.trade.TradeRecordService;
 import com.bluebell.planter.security.aspects.ValidateApiToken;
 import com.bluebell.planter.security.constants.SecurityConstants;
@@ -98,6 +99,31 @@ public class TradeRecordApiController extends AbstractApiController {
         final User user = (User) request.getAttribute(SecurityConstants.USER_REQUEST_KEY);
         final TradeRecordReport records = this.tradeRecordService.getRecentTradeRecords(getAccountForId(user, accountNumber), FlowerpotTimeInterval.getInterval(interval), count);
         return new StandardJsonResponse(true, records, StringUtils.EMPTY);
+    }
+
+    /**
+     * Returns {@link TradeRecordControls} for the account
+     *
+     * @param request       {@link HttpServletRequest}
+     * @param accountNumber account number
+     * @param interval      interval
+     * @return {@link StandardJsonResponse}
+     */
+    @ValidateApiToken
+    @GetMapping("/trade-record-controls")
+    public StandardJsonResponse getRecentTradeRecords(
+            final HttpServletRequest request,
+            final @RequestParam("accountNumber") long accountNumber,
+            final @RequestParam("interval") String interval
+    ) {
+
+        if (!EnumUtils.isValidEnumIgnoreCase(FlowerpotTimeInterval.class, interval)) {
+            return new StandardJsonResponse(false, null, String.format(CoreConstants.Validation.DataIntegrity.INVALID_INTERVAL, interval));
+        }
+
+        final User user = (User) request.getAttribute(SecurityConstants.USER_REQUEST_KEY);
+        final TradeRecordControls controls = this.tradeRecordService.getTradeRecordControls(getAccountForId(user, accountNumber), FlowerpotTimeInterval.getInterval(interval));
+        return new StandardJsonResponse(true, controls, StringUtils.EMPTY);
     }
 
     //  TODO: fix max loss bug (not showing the right number)

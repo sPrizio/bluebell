@@ -2,7 +2,7 @@ package com.bluebell.planter.api.controllers.trade;
 
 import com.bluebell.planter.AbstractGenericTest;
 import com.bluebell.planter.api.constants.ApiConstants;
-import com.bluebell.planter.core.models.nonentities.records.trade.TradeRecordReport;
+import com.bluebell.planter.core.models.nonentities.records.tradeRecord.TradeRecordReport;
 import com.bluebell.planter.core.services.trade.TradeRecordService;
 import org.junit.Before;
 import org.junit.Test;

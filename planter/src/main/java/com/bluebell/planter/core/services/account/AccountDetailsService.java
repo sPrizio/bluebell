@@ -9,7 +9,7 @@ import com.bluebell.planter.core.models.nonentities.records.account.AccountEquit
 import com.bluebell.planter.core.models.nonentities.records.account.AccountInsights;
 import com.bluebell.planter.core.models.nonentities.records.account.AccountStatistics;
 import com.bluebell.planter.core.models.nonentities.records.trade.CumulativeTrade;
-import com.bluebell.planter.core.models.nonentities.records.trade.TradeRecord;
+import com.bluebell.planter.core.models.nonentities.records.tradeRecord.TradeRecord;
 import com.bluebell.planter.core.services.trade.TradeRecordService;
 import com.bluebell.radicle.services.MathService;
 import jakarta.annotation.Resource;

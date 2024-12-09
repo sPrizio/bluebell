@@ -1,6 +1,6 @@
 package com.bluebell.planter.core.exceptions.trade;
 
-import com.bluebell.planter.core.models.nonentities.records.trade.TradeRecord;
+import com.bluebell.planter.core.models.nonentities.records.tradeRecord.TradeRecord;
 
 /**
  * Exception thrown when an occurs computing {@link TradeRecord}s

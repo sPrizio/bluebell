@@ -1,5 +1,7 @@
 package com.bluebell.planter.core.models.nonentities.records.trade;
 
+import com.bluebell.planter.core.models.nonentities.records.tradeRecord.TradeRecord;
+
 import java.time.LocalDate;
 import java.util.List;
 

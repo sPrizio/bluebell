@@ -20,7 +20,8 @@ import com.bluebell.planter.core.models.entities.security.User;
 import com.bluebell.planter.core.models.entities.system.PhoneNumber;
 import com.bluebell.planter.core.models.entities.trade.Trade;
 import com.bluebell.planter.core.models.entities.transaction.Transaction;
-import com.bluebell.planter.core.models.nonentities.records.trade.TradeRecord;
+import com.bluebell.planter.core.models.nonentities.records.tradeRecord.TradeRecord;
+import com.bluebell.planter.core.models.nonentities.records.tradeRecord.TradeRecordEquityPoint;
 import com.bluebell.planter.integration.models.responses.forexfactory.CalendarNewsEntryResponse;
 import com.bluebell.planter.security.constants.SecurityConstants;
 import org.springframework.test.web.servlet.request.RequestPostProcessor;
@@ -121,7 +122,12 @@ public abstract class AbstractGenericTest {
                 7,
                 16,
                 1.83,
-                65
+                65,
+                List.of(
+                        new TradeRecordEquityPoint(1, 50.0, 10.0, 50.0, 10.0),
+                        new TradeRecordEquityPoint(2, -25.0, -5.0, 25.0, 5.0),
+                        new TradeRecordEquityPoint(3, 100.0, 20.0, 125.0, 25.0)
+                )
         );
     }
 

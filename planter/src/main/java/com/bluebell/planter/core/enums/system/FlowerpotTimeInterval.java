@@ -1,6 +1,6 @@
 package com.bluebell.planter.core.enums.system;
 
-import com.bluebell.planter.core.models.nonentities.records.trade.TradeRecord;
+import com.bluebell.planter.core.models.nonentities.records.tradeRecord.TradeRecord;
 import org.apache.commons.lang3.StringUtils;
 
 import java.time.temporal.ChronoUnit;

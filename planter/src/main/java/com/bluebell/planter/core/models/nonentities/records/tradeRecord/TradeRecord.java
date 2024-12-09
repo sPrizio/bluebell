@@ -1,8 +1,9 @@
-package com.bluebell.planter.core.models.nonentities.records.trade;
+package com.bluebell.planter.core.models.nonentities.records.tradeRecord;
 
 import com.bluebell.planter.core.models.entities.trade.Trade;
 
 import java.time.LocalDate;
+import java.util.List;
 
 /**
  * Class representation of a collection of {@link Trade}s and their statistics
@@ -43,7 +44,8 @@ public record TradeRecord(
         int losses,
         int trades,
         double profitability,
-        int retention
+        int retention,
+        List<TradeRecordEquityPoint> equityPoints
 ) implements Comparable<TradeRecord> {
 
     @Override

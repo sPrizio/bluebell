@@ -6,10 +6,14 @@ import com.bluebell.planter.core.exceptions.trade.TradeRecordComputationExceptio
 import com.bluebell.planter.core.models.entities.account.Account;
 import com.bluebell.planter.core.models.entities.security.User;
 import com.bluebell.planter.core.models.entities.trade.Trade;
-import com.bluebell.planter.core.models.nonentities.records.trade.TradeLog;
-import com.bluebell.planter.core.models.nonentities.records.trade.TradeRecord;
-import com.bluebell.planter.core.models.nonentities.records.trade.TradeRecordReport;
-import com.bluebell.planter.core.models.nonentities.records.trade.TradeRecordTotals;
+import com.bluebell.planter.core.models.nonentities.records.trade.*;
+import com.bluebell.planter.core.models.nonentities.records.tradeRecord.TradeRecord;
+import com.bluebell.planter.core.models.nonentities.records.tradeRecord.TradeRecordEquityPoint;
+import com.bluebell.planter.core.models.nonentities.records.tradeRecord.TradeRecordReport;
+import com.bluebell.planter.core.models.nonentities.records.tradeRecord.TradeRecordTotals;
+import com.bluebell.planter.core.models.nonentities.records.tradeRecord.controls.TradeRecordControls;
+import com.bluebell.planter.core.models.nonentities.records.tradeRecord.controls.TradeRecordControlsMonthEntry;
+import com.bluebell.planter.core.models.nonentities.records.tradeRecord.controls.TradeRecordControlsYearEntry;
 import com.bluebell.radicle.services.MathService;
 import jakarta.annotation.Resource;
 import org.apache.commons.collections4.CollectionUtils;
@@ -17,9 +21,9 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.Month;
 import java.time.temporal.TemporalAdjusters;
 import java.util.*;
-import java.util.stream.Collectors;
 
 import static com.bluebell.planter.core.validation.GenericValidator.validateDatesAreNotMutuallyExclusive;
 import static com.bluebell.planter.core.validation.GenericValidator.validateParameterIsNotNull;
@@ -141,8 +145,66 @@ public class TradeRecordService {
         return map.values().stream().map(records -> new TradeLog(start, end, records)).toList();
     }
 
+    /**
+     * Generates a {@link TradeRecordControls} for an {@link Account}s trades
+     *
+     * @param account {@link Account}
+     * @param flowerpotTimeInterval {@link FlowerpotTimeInterval}
+     * @return {@link TradeRecordControls}
+     */
+    public TradeRecordControls getTradeRecordControls(final Account account, final FlowerpotTimeInterval flowerpotTimeInterval) {
+
+        final List<Trade> trades = account.getTrades();
+        final Map<String, Map<String, Integer>> map = new HashMap<>();
+
+        for (final Trade trade : trades) {
+            final String yearKey = String.valueOf(trade.getTradeCloseTime().getYear());
+            final Map<String, Integer> monthMap;
+
+            if (map.containsKey(yearKey)) {
+                monthMap = map.get(yearKey);
+            } else {
+                monthMap = generateMonthMap();
+            }
+
+            final String monthKey = trade.getTradeCloseTime().getMonth().toString();
+            final int count;
+            count = monthMap.getOrDefault(monthKey, 0);
+
+            monthMap.put(monthKey, count + 1);
+            map.put(yearKey, monthMap);
+        }
+
+        return new TradeRecordControls(map.entrySet().stream().map(entry -> new TradeRecordControlsYearEntry(entry.getKey(), entry.getValue().entrySet().stream().map(e -> new TradeRecordControlsMonthEntry(Month.valueOf(e.getKey().toUpperCase()).getValue(), e.getKey(), e.getValue())).sorted(Comparator.comparing(TradeRecordControlsMonthEntry::monthNumber)).toList())).toList());
+    }
+
 
     //  HELPERS
+
+    /**
+     * Initializes a map of months
+     *
+     * @return {@link Map}
+     */
+    private Map<String, Integer> generateMonthMap() {
+
+        final Map<String, Integer> monthMap = new HashMap<>();
+
+        monthMap.put("JANUARY", 0);
+        monthMap.put("FEBRUARY", 0);
+        monthMap.put("MARCH", 0);
+        monthMap.put("APRIL", 0);
+        monthMap.put("MAY", 0);
+        monthMap.put("JUNE", 0);
+        monthMap.put("JULY", 0);
+        monthMap.put("AUGUST", 0);
+        monthMap.put("SEPTEMBER", 0);
+        monthMap.put("OCTOBER", 0);
+        monthMap.put("NOVEMBER", 0);
+        monthMap.put("DECEMBER", 0);
+
+        return monthMap;
+    }
 
     /**
      * Generates a {@link TradeRecord} from the given {@link List} of {@link Trade}s for the given start and end dates
@@ -155,7 +217,7 @@ public class TradeRecordService {
     private TradeRecord generateRecord(final LocalDate start, final LocalDate end, final List<Trade> trades) {
 
         if (CollectionUtils.isEmpty(trades)) {
-            return new TradeRecord(start, end, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+            return new TradeRecord(start, end, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, Collections.emptyList());
         }
 
         final List<Trade> tradesWon = trades.stream().filter(t -> t.getNetProfit() > 0.0).sorted(Comparator.comparing(Trade::getNetProfit).reversed()).toList();
@@ -165,7 +227,6 @@ public class TradeRecordService {
         final double pointsGained = this.mathService.getDouble(tradesWon.stream().mapToDouble(this::getPoints).sum());
         final double pointsLost = this.mathService.getDouble(tradesLost.stream().mapToDouble(this::getPoints).sum());
         final double largestWin = tradesWon.isEmpty() ? 0.0 : this.mathService.getDouble(tradesWon.getFirst().getNetProfit());
-        ;
         final double winAverage = this.mathService.getDouble(tradesWon.stream().mapToDouble(Trade::getNetProfit).average().orElse(0.0));
         final double largestLoss = tradesLost.isEmpty() ? 0.0 : this.mathService.getDouble(tradesLost.getFirst().getNetProfit());
         final double lossAverage = this.mathService.getDouble(tradesLost.stream().mapToDouble(Trade::getNetProfit).average().orElse(0.0));
@@ -189,7 +250,8 @@ public class TradeRecordService {
                 losses,
                 trades.size(),
                 this.mathService.divide(pointsGained, pointsLost),
-                this.mathService.wholePercentage(pointsGained, this.mathService.add(pointsGained, Math.abs(pointsLost)))
+                this.mathService.wholePercentage(pointsGained, this.mathService.add(pointsGained, Math.abs(pointsLost))),
+                computeTradeRecordEquityPoints(trades)
         );
     }
 
@@ -243,5 +305,36 @@ public class TradeRecordService {
 
 
         return new TradeRecordTotals(tradeRecords.size(), (wins + losses), this.mathService.wholePercentage(wins, (wins + losses)), netProfit, netPoints);
+    }
+
+    /**
+     * Computes a {@link List} of {@link TradeRecordEquityPoint}s
+     *
+     * @param trades {@link List} of {@link Trade}s
+     * @return {@link List} of {@link TradeRecordEquityPoint}s
+     */
+    private List<TradeRecordEquityPoint> computeTradeRecordEquityPoints(final List<Trade> trades) {
+
+        if (CollectionUtils.isEmpty(trades)) {
+            return Collections.emptyList();
+        }
+
+        final List<TradeRecordEquityPoint> equityPoints = new ArrayList<>();
+        for (int i = 0; i < trades.size(); i++) {
+            final Trade trade = trades.get(i);
+            final double points = (trade.getNetProfit() < 0) ? this.mathService.multiply(-1.0, Math.abs(this.mathService.subtract(trade.getClosePrice(), trade.getOpenPrice()))) : Math.abs(this.mathService.subtract(trade.getClosePrice(), trade.getOpenPrice()));
+
+            if (i == 0) {
+                equityPoints.add(new TradeRecordEquityPoint(1, trade.getNetProfit(), points, this.mathService.add(0.0, trade.getNetProfit()), points));
+            } else {
+                final double cumAmount = this.mathService.add(equityPoints.get(i - 1).cumAmount(), trade.getNetProfit());
+                final double cumPoints = this.mathService.add(equityPoints.get(i - 1).cumPoints(), points);
+
+                equityPoints.add(new TradeRecordEquityPoint(i + 1, trade.getNetProfit(), points, cumAmount, cumPoints));
+            }
+        }
+
+        equityPoints.addFirst(new TradeRecordEquityPoint(0, 0.0, 0.0, 0.0, 0.0));
+        return equityPoints;
     }
 }
