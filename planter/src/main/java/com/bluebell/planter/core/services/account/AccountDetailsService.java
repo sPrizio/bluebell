@@ -19,6 +19,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 import static com.bluebell.planter.core.validation.GenericValidator.validateParameterIsNotNull;
@@ -67,7 +68,7 @@ public class AccountDetailsService {
 
         final List<AccountEquityPoint> equityPoints = new ArrayList<>();
 
-        final List<Trade> trades = account.getTrades();
+        final List<Trade> trades = account.getTrades().stream().sorted(Comparator.comparing(Trade::getTradeCloseTime).thenComparing(Trade::getTradeOpenTime)).toList();
         final double starterBalance = this.mathService.subtract(account.getBalance(), account.getTrades().stream().mapToDouble(Trade::getNetProfit).sum());
 
         for (int i = 0; i < trades.size(); i++) {

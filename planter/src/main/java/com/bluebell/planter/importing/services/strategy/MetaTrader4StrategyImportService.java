@@ -36,6 +36,8 @@ public class MetaTrader4StrategyImportService extends AbstractImportService impl
 
     private static final Logger LOGGER = LoggerFactory.getLogger(MetaTrader4StrategyImportService.class);
     private static final String DELIMITER = "%bb%";
+    private static final String PRODUCT_TARGET = "Symbol</td>";
+    private String product = "";
 
 
     //  METHODS
@@ -119,6 +121,9 @@ public class MetaTrader4StrategyImportService extends AbstractImportService impl
             throw new TradeImportFailureException("The import file is not properly formatted.");
         }
 
+        final String productId = string.substring(string.indexOf(PRODUCT_TARGET), string.indexOf(CoreConstants.Regex.Import.MT4_HTML_TABLE_ROW_END)).replace(PRODUCT_TARGET, StringUtils.EMPTY);
+        this.product = getProductName(productId);
+
         final List<String> reportContent = Arrays.stream(string.substring(startIndex).split(DELIMITER)).toList();
         final Pattern pattern = Pattern.compile(CoreConstants.Regex.Import.MT4_HTML_TABLE_ROW);
 
@@ -136,6 +141,33 @@ public class MetaTrader4StrategyImportService extends AbstractImportService impl
         });
 
         return entries;
+    }
+
+    /**
+     * Obtains the product/symbol name for the strategy import process
+     *
+     * @param string filtered name string
+     * @return product name / symbol
+     */
+    private String getProductName(final String string) {
+
+        final Pattern test = Pattern.compile(CoreConstants.Regex.Import.MT4_HTML_TABLE_CELL);
+        final List<String> entries = new ArrayList<>();
+        final Matcher matcher = test.matcher(string);
+        while (matcher.find()) {
+            entries.add(
+                    matcher.group()
+                            .replaceAll(CoreConstants.Regex.Import.MT4_HTML_TABLE_CELL_START, StringUtils.EMPTY)
+                            .replace(CoreConstants.Regex.Import.MT4_HTML_TABLE_CELL_END, StringUtils.EMPTY)
+                            .trim()
+            );
+        }
+
+        if (CollectionUtils.isNotEmpty(entries)) {
+            return entries.getFirst();
+        }
+
+        return StringUtils.EMPTY;
     }
 
     /**
@@ -186,7 +218,7 @@ public class MetaTrader4StrategyImportService extends AbstractImportService impl
                     null,
                     type,
                     Double.parseDouble(data.get(4)),
-                    "",
+                    this.product,
                     Double.parseDouble(data.get(5)),
                     Double.parseDouble(data.get(6)),
                     Double.parseDouble(data.get(7)),
@@ -200,7 +232,7 @@ public class MetaTrader4StrategyImportService extends AbstractImportService impl
                     LocalDateTime.parse(data.get(1), DateTimeFormatter.ofPattern("yyyy.MM.dd HH:mm")),
                     type,
                     Double.parseDouble(data.get(4)),
-                    "",
+                    this.product,
                     0.0,
                     Double.parseDouble(data.get(6)),
                     Double.parseDouble(data.get(7)),

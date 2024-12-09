@@ -4,6 +4,7 @@ import com.bluebell.planter.api.controllers.AbstractApiController;
 import com.bluebell.planter.api.converters.trade.TradeDTOConverter;
 import com.bluebell.planter.api.models.dto.trade.TradeDTO;
 import com.bluebell.planter.api.models.records.json.StandardJsonResponse;
+import com.bluebell.planter.api.models.records.trade.PagedTrades;
 import com.bluebell.planter.core.constants.CoreConstants;
 import com.bluebell.planter.core.enums.trade.info.TradeType;
 import com.bluebell.planter.core.models.entities.security.User;
@@ -130,7 +131,7 @@ public class TradeApiController extends AbstractApiController {
 
         final User user = (User) request.getAttribute(SecurityConstants.USER_REQUEST_KEY);
         Page<Trade> trades = this.tradeService.findAllTradesWithinTimespan(LocalDateTime.parse(start, DateTimeFormatter.ISO_DATE_TIME), LocalDateTime.parse(end, DateTimeFormatter.ISO_DATE_TIME), getAccountForId(user, accountNumber), page, pageSize);
-        return new StandardJsonResponse(true, trades.map(tr -> this.tradeDTOConverter.convert(tr)), StringUtils.EMPTY);
+        return new StandardJsonResponse(true, new PagedTrades(trades.getPageable().getPageNumber(), trades.getPageable().getPageSize(), trades.map(tr -> this.tradeDTOConverter.convert(tr)).stream().toList(), trades.getNumberOfElements(), trades.getTotalPages()), StringUtils.EMPTY);
     }
 
 
