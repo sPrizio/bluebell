@@ -63,6 +63,35 @@ export async function getRecentTradeRecords(accNumber: number, interval: string,
   return null;
 }
 
+export async function getTradeRecordControls(accNumber: number, interval: string): Promise<TradeRecordControls | null> {
+
+  let headers = getAuthHeader()
+  headers['Content-Type'] = 'application/json'
+
+  try {
+    const res =
+      await fetch(
+        ApiUrls.TradeRecord.GetTradeRecordControls
+          .replace('{accountNumber}', accNumber.toString())
+          .replace('{interval}', interval), {
+          method: 'GET',
+          headers: headers,
+        }
+      )
+
+    if (res.ok) {
+      const data = await res.json()
+      if (data.success) {
+        return data.data
+      }
+    }
+  } catch (e) {
+    console.log(e)
+  }
+
+  return null;
+}
+
 export async function getTradeLog(start: string, end: string, interval: string, count: number): Promise<Array<TradeLog> | null> {
 
   let headers = getAuthHeader()

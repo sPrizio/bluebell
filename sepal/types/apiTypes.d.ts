@@ -145,11 +145,12 @@ interface Trade extends GenericApiType {
   account: Account
 }
 
-//  TODO: implement this on backend
-interface TradeRecordEquityPoint extends GenericApiType {
-  tradeId: string,
-  netProfit: number,
-  netPoints: number
+interface TradeRecordEquityPoint {
+  count: number,
+  amount: number,
+  points: number,
+  cumAmount: number,
+  cumPoints: number
 }
 
 interface TradeRecordTotals {
@@ -183,7 +184,7 @@ interface TradeRecord extends GenericApiType {
   winAverage: number,
   winPercentage: number,
   wins: number,
-  equityPoints: Array<TradeRecordEquityPoint> // TODO: implement this on backend
+  equityPoints: Array<TradeRecordEquityPoint>
   account: Account,
 }
 
@@ -201,19 +202,16 @@ interface PagedTrades {
   trades: Array<Trade>
 }
 
-// TODO: implement on backend
 interface TradeRecordControlMonthEntry extends GenericApiType {
   month: string,
   value: number
 }
 
-// TODO: implement on backend
 interface TradeRecordControlsYearEntry extends GenericApiType {
   year: string,
   monthEntries: Array<TradeRecordControlMonthEntry>
 }
 
-// TODO: implement on backend
 interface TradeRecordControls extends GenericApiType {
   yearEntries: Array<TradeRecordControlsYearEntry>
 }

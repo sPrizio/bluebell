@@ -48,7 +48,8 @@ export const ApiUrls = {
   TradeRecord: {
     GetTradeRecords: getTradeRecordDomain() + '/for-interval?accountNumber={accountNumber}&start={start}&end={end}&interval={interval}&count={count}',
     GetRecentTradeRecords: getTradeRecordDomain() + '/recent?accountNumber={accountNumber}&interval={interval}&count={count}',
-    GetTradeLog: getTradeRecordDomain() + '/trade-log?start={start}&end={end}&interval={interval}&count={count}'
+    GetTradeLog: getTradeRecordDomain() + '/trade-log?start={start}&end={end}&interval={interval}&count={count}',
+    GetTradeRecordControls: getTradeRecordDomain() + '/trade-record-controls?accountNumber={accountNumber}&interval={interval}',
   },
   User: {
     GetRecentTransactions: getUserDomain() + '/recent-transactions',

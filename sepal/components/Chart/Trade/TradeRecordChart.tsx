@@ -3,11 +3,18 @@ import React, {useEffect, useState} from "react";
 import {Css} from "@/lib/constants";
 
 interface ChartPoint {
-  id: string,
+  id: string | number,
   value: number
 }
 
-
+/**
+ * Renders a chart showing a trade records equity over a count of trades
+ *
+ * @param data array of trade record equity points
+ * @param showAsPoints show points instead of balance
+ * @author Stephen Prizio
+ * @version 0.0.2
+ */
 export default function TradeRecordChart(
   {
     data,
@@ -23,17 +30,17 @@ export default function TradeRecordChart(
 
   useEffect(() => {
     if (showAsPoints) {
-      setChartData(data.map(item => ({id: item.tradeId, value: item.netPoints})))
+      setChartData(data?.map(item => ({id: item.count, value: item.cumPoints})) ?? [])
     } else {
-      setChartData(data.map(item => ({id: item.tradeId, value: item.netProfit})))
+      setChartData(data?.map(item => ({id: item.count, value: item.cumAmount})) ?? [])
     }
   }, []);
 
   useEffect(() => {
     if (showAsPoints) {
-      setChartData(data.map(item => ({id: item.tradeId, value: item.netPoints})))
+      setChartData(data?.map(item => ({id: item.count, value: item.cumPoints})) ?? [])
     } else {
-      setChartData(data.map(item => ({id: item.tradeId, value: item.netProfit})))
+      setChartData(data?.map(item => ({id: item.count, value: item.cumAmount})) ?? [])
     }
   }, [showAsPoints]);
 
@@ -60,10 +67,9 @@ export default function TradeRecordChart(
       <ResponsiveContainer width={'100%'} height={300}>
         <AreaChart data={chartData}>
           <defs>
-            <linearGradient id={"split_"} x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0%" stopColor={`${Css.ColorGreen}`} stopOpacity={0.5}/>
-              <stop offset={computeGradientOffset()} stopColor={'#FFFFFF'} stopOpacity={0.5}/>
-              <stop offset="100%" stopColor={`${Css.ColorRed}`} stopOpacity={0.5}/>
+            <linearGradient id="color" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="5%" stopColor={`${Css.ColorPrimary}`} stopOpacity={0.65}/>
+              <stop offset="95%" stopColor={`${Css.ColorPrimary}`} stopOpacity={0}/>
             </linearGradient>
           </defs>
           <ReferenceLine
@@ -74,10 +80,10 @@ export default function TradeRecordChart(
           <Area
             type="monotone"
             dataKey={'value'}
-            strokeWidth={2}
+            strokeWidth={4}
             stroke={`${Css.ColorPrimary}`}
             fillOpacity={1}
-            fill="url(#split_)"
+            fill="url(#color)"
           />
         </AreaChart>
       </ResponsiveContainer>

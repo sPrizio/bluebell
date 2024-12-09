@@ -22,7 +22,7 @@ import {
 import {Label} from "@/components/ui/label";
 import TradeRecordCard from "@/components/Card/Trade/TradeRecordCard";
 import {UserTradeRecordControlSelection} from "@/types/uiTypes";
-import {getTradeRecords} from "@/lib/functions/trade-functions";
+import {getRecentTradeRecords, getTradeRecordControls, getTradeRecords} from "@/lib/functions/trade-functions";
 import moment from "moment";
 import {DateTime} from "@/lib/constants";
 
@@ -49,12 +49,12 @@ export default function PerformancePage() {
 
   const searchParams = useSearchParams()
   const [isLoading, setIsLoading] = useState(false)
-  const [accNumber, setAccNumber] = useState(getAccountNumber(searchParams, user?.accounts))
+  const [accNumber, setAccNumber] = useState(getAccountNumber(searchParams, user?.accounts ?? []))
   const [account, setAccount] = useState<Account | null>()
   const [aggInterval, setAggInterval] = useState<AggregateInterval>(AggregateInterval.DAILY)
   const [userSelection, setUserSelection] = useState<UserTradeRecordControlSelection>({
     aggInterval: aggInterval,
-    month: 'January',
+    month: 'JANUARY',
     year: '2024'
   })
   const [aggMonth, setAggMonth] = useState(userSelection.month)
@@ -62,7 +62,7 @@ export default function PerformancePage() {
   const [tradeRecords, setTradeRecords] = useState<Array<TradeRecord>>([])
   const [controls, setControls] = useState<TradeRecordControls>()
 
-  const acc = getAccount(accNumber, user?.accounts)
+  const acc = getAccount(accNumber, user?.accounts ?? [])
   if (!acc) {
     return notFound()
   }
@@ -78,7 +78,7 @@ export default function PerformancePage() {
       {label: 'Performance', href: '/performance?account=default', active: true},
     ])
 
-    getTradeRecords()
+    getAccTradeRecords()
   }, [])
 
   useEffect(() => {
@@ -93,7 +93,7 @@ export default function PerformancePage() {
     ])
 
     setAccNumber(accNumber)
-    setAccount(getAccount(accNumber, user.accounts))
+    setAccount(getAccount(accNumber, user?.accounts ?? []))
     getAccTradeRecords()
   }, [accNumber]);
 
@@ -104,6 +104,9 @@ export default function PerformancePage() {
 
   //  GENERAL FUNCTIONS
 
+  /**
+   * Formats the date for parsing
+   */
   function formatDate() {
     return userSelection.year + '-' + userSelection.month + '-01'
   }
@@ -115,20 +118,13 @@ export default function PerformancePage() {
 
     setIsLoading(true)
 
-    await getTradeRecordControls()
-    const data = await getTradeRecords(accNumber, moment(formatDate(), DateTime.ISODateLongMonthFormat).format(DateTime.ISODateFormat),  moment(formatDate(), DateTime.ISODateLongMonthFormat).format(DateTime.ISODateFormat), userSelection.aggInterval.code, -1)
-    setTradeRecords(data ?? [])
+    const controls = await getTradeRecordControls(accNumber, userSelection.aggInterval.code)
+    setControls(controls)
+    //const data = await getTradeRecords(accNumber, moment(formatDate(), DateTime.ISODateLongMonthFormat).format(DateTime.ISODateFormat),  moment(formatDate(), DateTime.ISODateLongMonthFormat).format(DateTime.ISODateFormat), userSelection.aggInterval.code, -1)
+    const data = await getRecentTradeRecords(accNumber, userSelection.aggInterval.code, 50)
+    setTradeRecords(data?.tradeRecords ?? [])
 
     setIsLoading(false)
-  }
-
-  //TODO: temp
-  /**
-   * Obtains the controls data for Trade record filters
-   */
-  async function getTradeRecordControls() {
-    await delay(2000);
-    setControls(tradeRecordControls)
   }
 
   /**
@@ -164,11 +160,11 @@ export default function PerformancePage() {
                     </SelectTrigger>
                     <SelectContent>
                       {
-                        user.accounts.map((item: Account) => {
+                        user?.accounts?.map((item: Account) => {
                           return (
                             <SelectItem key={item.uid} value={item.accountNumber.toString()}>{item.name}</SelectItem>
                           )
-                        })
+                        }) ?? null
                       }
                     </SelectContent>
                   </Select>

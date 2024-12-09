@@ -11,12 +11,10 @@ Current Release: **Pre-release**
 - Forgot Password
 - Register Page (External vendors)
 - Login Page
-- ADP (import trades)
 - Performance (Filters)
 
 ### Integration TODOs
 - Need a fetch user context to imitate logging in
-- allow trade imports
 - look at how state is updated
 
 ---
@@ -46,3 +44,4 @@ Current Release: **Pre-release**
 - Passed news day should start auto-collapsed
 - Custom create new account page (like the 404) for handling /default
 - Creating an account or updating the account can include account close times
+- Trades Page -> Filters for dates and trades (and sorting by date)

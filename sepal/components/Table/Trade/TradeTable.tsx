@@ -20,22 +20,28 @@ import {getPagedTrades} from "@/lib/functions/trade-functions";
  * Renders a table of trades
  *
  * @param account account
+ * @param initialPageSize initial page size
+ * @param initialPage initial page
  * @author Stephen Prizio
  * @version 0.0.2
  */
 export default function TradeTable(
   {
     account,
+    initialPageSize = 10,
+    initialPage = 0,
   }
     : Readonly<{
     account: Account,
+    initialPageSize?: number
+    initialPage?: number
   }>
 ) {
 
   const [isLoading, setIsLoading] = useState(false)
   const [totalElements, setTotalElements] = useState(0)
   const [currentPage, setCurrentPage] = useState(0)
-  const [pageSize, setPageSize] = useState(10)
+  const [pageSize, setPageSize] = useState(initialPageSize)
   const [data, setData] = useState<Array<Trade>>()
   const [pages, setPages] = useState(calculatePages())
 
