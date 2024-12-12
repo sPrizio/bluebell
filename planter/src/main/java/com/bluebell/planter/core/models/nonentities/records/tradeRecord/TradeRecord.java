@@ -1,5 +1,6 @@
 package com.bluebell.planter.core.models.nonentities.records.tradeRecord;
 
+import com.bluebell.planter.core.enums.system.FlowerpotTimeInterval;
 import com.bluebell.planter.core.models.entities.trade.Trade;
 
 import java.time.LocalDate;
@@ -23,6 +24,10 @@ import java.util.List;
  * @param losses trades lost
  * @param profitability points won / points lost
  * @param retention percentage of points won of total points
+ * @param interval {@link FlowerpotTimeInterval}
+ * @param trades total trades
+ * @param points net points
+ * @param equityPoints {@link List} of {@link TradeRecordEquityPoint}s
  *
  * @author Stephen Prizio
  * @version 0.0.7
@@ -45,11 +50,28 @@ public record TradeRecord(
         int trades,
         double profitability,
         int retention,
+        FlowerpotTimeInterval interval,
         List<TradeRecordEquityPoint> equityPoints
 ) implements Comparable<TradeRecord> {
 
     @Override
     public int compareTo(final TradeRecord o) {
         return this.start.compareTo(o.start());
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+
+        TradeRecord that = (TradeRecord) o;
+        return this.end.equals(that.end) && this.start.equals(that.start) && this.interval == that.interval;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = this.start.hashCode();
+        result = 31 * result + this.end.hashCode();
+        result = 31 * result + this.interval.hashCode();
+        return result;
     }
 }

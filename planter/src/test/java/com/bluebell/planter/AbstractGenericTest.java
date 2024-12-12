@@ -7,6 +7,7 @@ import com.bluebell.planter.core.enums.account.Currency;
 import com.bluebell.planter.core.enums.news.MarketNewsSeverity;
 import com.bluebell.planter.core.enums.security.UserRole;
 import com.bluebell.planter.core.enums.system.Country;
+import com.bluebell.planter.core.enums.system.FlowerpotTimeInterval;
 import com.bluebell.planter.core.enums.system.PhoneType;
 import com.bluebell.planter.core.enums.trade.info.TradeType;
 import com.bluebell.planter.core.enums.trade.platform.TradePlatform;
@@ -123,6 +124,7 @@ public abstract class AbstractGenericTest {
                 16,
                 1.83,
                 65,
+                FlowerpotTimeInterval.DAILY,
                 List.of(
                         new TradeRecordEquityPoint(1, 50.0, 10.0, 50.0, 10.0),
                         new TradeRecordEquityPoint(2, -25.0, -5.0, 25.0, 5.0),

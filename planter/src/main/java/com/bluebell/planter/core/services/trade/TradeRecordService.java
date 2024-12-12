@@ -6,7 +6,7 @@ import com.bluebell.planter.core.exceptions.trade.TradeRecordComputationExceptio
 import com.bluebell.planter.core.models.entities.account.Account;
 import com.bluebell.planter.core.models.entities.security.User;
 import com.bluebell.planter.core.models.entities.trade.Trade;
-import com.bluebell.planter.core.models.nonentities.records.trade.*;
+import com.bluebell.planter.core.models.nonentities.records.trade.TradeLog;
 import com.bluebell.planter.core.models.nonentities.records.tradeRecord.TradeRecord;
 import com.bluebell.planter.core.models.nonentities.records.tradeRecord.TradeRecordEquityPoint;
 import com.bluebell.planter.core.models.nonentities.records.tradeRecord.TradeRecordReport;
@@ -68,7 +68,7 @@ public class TradeRecordService {
 
         final List<TradeRecord> records = new ArrayList<>();
         while (tempStart.isBefore(end) || tempStart.isEqual(end)) {
-            records.add(generateRecord(tempStart, tempEnd, this.tradeService.findAllTradesWithinTimespan(tempStart.atStartOfDay(), tempEnd.atStartOfDay(), account)));
+            records.add(generateRecord(tempStart, tempEnd, this.tradeService.findAllTradesWithinTimespan(tempStart.atStartOfDay(), tempEnd.atStartOfDay(), account), flowerpotTimeInterval));
 
             tempStart = tempStart.plus(flowerpotTimeInterval.amount, flowerpotTimeInterval.unit);
             tempEnd = tempEnd.plus(flowerpotTimeInterval.amount, flowerpotTimeInterval.unit);
@@ -87,15 +87,14 @@ public class TradeRecordService {
     /**
      * Obtains a {@link List} of the most recent {@link TradeRecord}s for the given {@link Account}
      *
-     * @param account {@link Account}
+     * @param account               {@link Account}
      * @param flowerpotTimeInterval {@link FlowerpotTimeInterval}
-     * @param count limit
+     * @param count                 limit
      * @return {@link List} of {@link TradeRecord}
      */
     public TradeRecordReport getRecentTradeRecords(final Account account, final FlowerpotTimeInterval flowerpotTimeInterval, final int count) {
 
-        final LocalDateTime lastTraded = account.getLastTraded();
-        if (lastTraded == null) {
+        if (account.getLastTraded() == null) {
             return new TradeRecordReport(Collections.emptyList(), null);
         }
 
@@ -104,11 +103,15 @@ public class TradeRecordService {
             throw new TradeRecordComputationException("This account doesn't have any closed trades. This must be revised!");
         }
 
-        final List<TradeRecord> tradeRecords = new ArrayList<>();
-        LocalDateTime compare = lastTraded;
-        while (tradeRecords.size() < count && (compare.isAfter(firstTraded) || compare.isEqual(firstTraded))) {
-            tradeRecords.addAll(getTradeRecords(compare.minusMonths(1).toLocalDate(), compare.toLocalDate(), account, flowerpotTimeInterval, -1).tradeRecords());
-            compare = compare.minusMonths(1);
+        //  TODO: give this a starting month
+
+        final Set<TradeRecord> tradeRecords = new HashSet<>();
+        final LocalDateTime start = flowerpotTimeInterval == FlowerpotTimeInterval.DAILY ? firstTraded.with(TemporalAdjusters.firstDayOfMonth()) : firstTraded.with(TemporalAdjusters.firstDayOfYear());
+        LocalDateTime compare = flowerpotTimeInterval == FlowerpotTimeInterval.DAILY ? account.getLastTraded().with(TemporalAdjusters.firstDayOfNextMonth()) : account.getLastTraded().with(TemporalAdjusters.firstDayOfNextYear());
+
+        while (tradeRecords.size() < count && (compare.isAfter(start) || compare.isEqual(start))) {
+            tradeRecords.addAll(getTradeRecords(compare.minus(flowerpotTimeInterval.amount, flowerpotTimeInterval.unit).toLocalDate(), compare.toLocalDate(), account, flowerpotTimeInterval, -1).tradeRecords());
+            compare = compare.minus(flowerpotTimeInterval.amount, flowerpotTimeInterval.unit);
         }
 
         final List<TradeRecord> finalList = tradeRecords.stream().sorted(Comparator.reverseOrder()).limit(count).toList();
@@ -148,7 +151,7 @@ public class TradeRecordService {
     /**
      * Generates a {@link TradeRecordControls} for an {@link Account}s trades
      *
-     * @param account {@link Account}
+     * @param account               {@link Account}
      * @param flowerpotTimeInterval {@link FlowerpotTimeInterval}
      * @return {@link TradeRecordControls}
      */
@@ -209,15 +212,16 @@ public class TradeRecordService {
     /**
      * Generates a {@link TradeRecord} from the given {@link List} of {@link Trade}s for the given start and end dates
      *
-     * @param start  {@link LocalDate}
-     * @param end    {@link LocalDate}
-     * @param trades {@link List} of {@link Trade}
+     * @param start                 {@link LocalDate}
+     * @param end                   {@link LocalDate}
+     * @param trades                {@link List} of {@link Trade}
+     * @param flowerpotTimeInterval {@link FlowerpotTimeInterval}
      * @return {@link TradeRecord}
      */
-    private TradeRecord generateRecord(final LocalDate start, final LocalDate end, final List<Trade> trades) {
+    private TradeRecord generateRecord(final LocalDate start, final LocalDate end, final List<Trade> trades, final FlowerpotTimeInterval flowerpotTimeInterval) {
 
         if (CollectionUtils.isEmpty(trades)) {
-            return new TradeRecord(start, end, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, Collections.emptyList());
+            return new TradeRecord(start, end, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, FlowerpotTimeInterval.DAILY, Collections.emptyList());
         }
 
         final List<Trade> tradesWon = trades.stream().filter(t -> t.getNetProfit() > 0.0).sorted(Comparator.comparing(Trade::getNetProfit).reversed()).toList();
@@ -251,6 +255,7 @@ public class TradeRecordService {
                 trades.size(),
                 this.mathService.divide(pointsGained, pointsLost),
                 this.mathService.wholePercentage(pointsGained, this.mathService.add(pointsGained, Math.abs(pointsLost))),
+                flowerpotTimeInterval,
                 computeTradeRecordEquityPoints(trades)
         );
     }
