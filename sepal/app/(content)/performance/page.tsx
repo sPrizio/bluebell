@@ -4,7 +4,7 @@ import {notFound, useSearchParams} from "next/navigation";
 import React, {useEffect, useState} from "react";
 import {AggregateInterval, Icons} from "@/lib/enums";
 import {useSepalPageInfoContext} from "@/lib/context/SepalContext";
-import {delay, getAccount, getAccountNumber} from "@/lib/functions/util-functions";
+import {capitalize, getAccount, getAccountNumber} from "@/lib/functions/util-functions";
 import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from "@/components/ui/select";
 import {tradeRecordControls} from "@/lib/sample-data";
 import {Loader2} from "lucide-react";
@@ -22,7 +22,7 @@ import {
 import {Label} from "@/components/ui/label";
 import TradeRecordCard from "@/components/Card/Trade/TradeRecordCard";
 import {UserTradeRecordControlSelection} from "@/types/uiTypes";
-import {getRecentTradeRecords, getTradeRecordControls, getTradeRecords} from "@/lib/functions/trade-functions";
+import {getTradeRecordControls, getTradeRecords} from "@/lib/functions/trade-functions";
 import moment from "moment";
 import {DateTime} from "@/lib/constants";
 
@@ -60,7 +60,7 @@ export default function PerformancePage() {
   const [aggMonth, setAggMonth] = useState(userSelection.month)
   const [aggYear, setAggYear] = useState(userSelection.year)
   const [tradeRecords, setTradeRecords] = useState<Array<TradeRecord>>([])
-  const [controls, setControls] = useState<TradeRecordControls>()
+  const [controls, setControls] = useState<TradeRecordControls | null>()
 
   const acc = getAccount(accNumber, user?.accounts ?? [])
   if (!acc) {
@@ -78,7 +78,7 @@ export default function PerformancePage() {
       {label: 'Performance', href: '/performance?account=default', active: true},
     ])
 
-    getAccTradeRecords()
+    getAccTradeRecordControls()
   }, [])
 
   useEffect(() => {
@@ -94,21 +94,50 @@ export default function PerformancePage() {
 
     setAccNumber(accNumber)
     setAccount(getAccount(accNumber, user?.accounts ?? []))
-    getAccTradeRecords()
+    getAccTradeRecordControls()
   }, [accNumber]);
 
   useEffect(() => {
     getAccTradeRecords()
-  }, [aggInterval, aggMonth, aggYear]);
+  }, [aggInterval, aggMonth, aggYear, controls]);
 
 
   //  GENERAL FUNCTIONS
 
   /**
-   * Formats the date for parsing
+   * Calculates the most recent month with values
+   *
+   * @param ctrls trade record controls
    */
-  function formatDate() {
-    return userSelection.year + '-' + userSelection.month + '-01'
+  function getLastMonth(ctrls: TradeRecordControls | null) {
+    return ctrls?.yearEntries?.slice(-1)?.[0]?.monthEntries?.filter(me => me.value > 0)?.slice(-1)?.[0].month ?? ''
+  }
+
+  /**
+   * Returns a moment object based on the current filters
+   *
+   * @param val month or year unit
+   */
+  function getMoment(val: 'month' | 'year') {
+    return moment(userSelection.year + '-' + userSelection.month + '-01', DateTime.ISODateLongMonthFormat).startOf(val)
+  }
+
+  /**
+   * Fetches the filters/controls for viewing trade records
+   */
+  async function getAccTradeRecordControls() {
+
+    setIsLoading(true)
+
+    const controls = await getTradeRecordControls(accNumber, userSelection.aggInterval.code)
+    setControls(controls)
+
+    setUserSelection({
+      ...userSelection,
+      month: getLastMonth(controls)
+    })
+
+    setIsLoading(false)
   }
 
   /**
@@ -118,11 +147,16 @@ export default function PerformancePage() {
 
     setIsLoading(true)
 
-    const controls = await getTradeRecordControls(accNumber, userSelection.aggInterval.code)
-    setControls(controls)
-    //const data = await getTradeRecords(accNumber, moment(formatDate(), DateTime.ISODateLongMonthFormat).format(DateTime.ISODateFormat),  moment(formatDate(), DateTime.ISODateLongMonthFormat).format(DateTime.ISODateFormat), userSelection.aggInterval.code, -1)
-    const data = await getRecentTradeRecords(accNumber, userSelection.aggInterval.code, 50)
-    setTradeRecords(data?.tradeRecords ?? [])
+    if (userSelection.aggInterval.code === 'YEARLY') {
+      const data = await getTradeRecords(accNumber, getMoment('year').subtract(50, 'years').format(DateTime.ISODateFormat), getMoment('year').add(1, 'years').format(DateTime.ISODateFormat), userSelection.aggInterval.code, 50)
+      setTradeRecords(data?.tradeRecords ?? [])
+    } else if (userSelection.aggInterval.code === 'MONTHLY') {
+      const data = await getTradeRecords(accNumber,  getMoment('year').format(DateTime.ISODateFormat), getMoment('year').add(1, 'years').format(DateTime.ISODateFormat), userSelection.aggInterval.code, 50)
+      setTradeRecords(data?.tradeRecords ?? [])
+    } else {
+      const data = await getTradeRecords(accNumber,  getMoment('month').format(DateTime.ISODateFormat), getMoment('month').add(1, 'months').format(DateTime.ISODateFormat), userSelection.aggInterval.code, 50)
+      setTradeRecords(data?.tradeRecords ?? [])
+    }
 
     setIsLoading(false)
   }
@@ -220,7 +254,7 @@ export default function PerformancePage() {
                                                     getMatchingYear()?.monthEntries.map(item => {
                                                       return (
                                                         <SelectItem key={item.uid} value={item.month}
-                                                                    disabled={item.value === 0}>{item.month}</SelectItem>
+                                                                    disabled={item.value === 0}>{capitalize(item.month)}</SelectItem>
                                                       )
                                                     }) ?? <SelectItem value={'NA'}>N/A</SelectItem>
                                                   }

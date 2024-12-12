@@ -318,3 +318,17 @@ export const flattenObject = (obj: any) => {
 
   return flattened
 }
+
+/**
+ * Capitalizes a string
+ *
+ * @param {string} str input string
+ * @returns {string} capitalized string
+ */
+export const capitalize = (str: string): string => {
+  return str
+    .replace(/-/g, ' ')
+    .split(' ')
+    .map((word) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+    .join(' ');
+};

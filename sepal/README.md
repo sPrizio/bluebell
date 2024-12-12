@@ -11,7 +11,6 @@ Current Release: **Pre-release**
 - Forgot Password
 - Register Page (External vendors)
 - Login Page
-- Performance (Filters)
 
 ### Integration TODOs
 - Need a fetch user context to imitate logging in
@@ -36,8 +35,6 @@ Current Release: **Pre-release**
 - Inline edit/delete for phone numbers 
 - Image screwing up the alignment in the accounts table
 - Cannot create an inactive account
-- Fix stuff in TradeTable.tsx
-- Correctly fetch trade record controls once we have imported trades to test with
 
 ## Improvements
 - Collapsible table rows for each date in the Market News table
