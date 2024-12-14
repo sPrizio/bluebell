@@ -92,7 +92,7 @@ export async function getTradeRecordControls(accNumber: number, interval: string
   return null;
 }
 
-export async function getTradeLog(start: string, end: string, interval: string, count: number): Promise<Array<TradeLog> | null> {
+export async function getTradeLog(start: string, end: string, interval: string, count: number): Promise<TradeLog | null> {
 
   let headers = getAuthHeader()
   headers['Content-Type'] = 'application/json'

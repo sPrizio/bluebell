@@ -50,6 +50,15 @@ export default function PortfolioGrowthChart(
 
   //  GENERAL FUNCTIONS
 
+  function computeGradientLimit() {
+    const tempPoints = data
+    const min = Math.min(...tempPoints.map(i => i.portfolio))
+    const max = Math.max(...tempPoints.map(i => i.portfolio))
+
+
+    return Math.round(((max - min) / max) * 100.0) + '%'
+  }
+
   /**
    * Gets all the chart keys
    */
@@ -154,7 +163,7 @@ export default function PortfolioGrowthChart(
             <defs>
               <linearGradient id="color" x1="0" y1="0" x2="0" y2="1">
                 <stop offset="5%" stopColor={`${Css.ColorPrimary}`} stopOpacity={0.8}/>
-                <stop offset="95%" stopColor={`${Css.ColorPrimary}`} stopOpacity={0}/>
+                <stop offset={computeGradientLimit()} stopColor={`${Css.ColorPrimary}`} stopOpacity={0}/>
               </linearGradient>
             </defs>
             <Legend content={legend} verticalAlign={'top'} height={40}/>
@@ -168,7 +177,7 @@ export default function PortfolioGrowthChart(
                   )
                 }) : null
             }
-            {isNew && <YAxis type="number" domain={[30000, 'dataMax + 100']} allowDataOverflow hide={true} />}
+            <YAxis dataKey={'portfolio'} type="number" domain={['dataMin', 'dataMax']} hide={true} />
             <Area type="monotone" dot={false} dataKey="portfolio" stackId="1" stroke={`${Css.ColorPrimary}`}
                   strokeWidth={4} fill="url(#color)"/>
           </ComposedChart>

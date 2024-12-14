@@ -54,7 +54,7 @@ export default function DashboardPage() {
   const [isLoading, setIsLoading] = useState(false)
   const [portfolioInfo, setPortfolioInfo] = useState<Portfolio | null>()
   const [recentTransactions, setRecentTransactions] = useState<Array<Transaction> | null>()
-  const [tradeLog, setTradeLog] = useState<Array<TradeLog> | null>()
+  const [tradeLog, setTradeLog] = useState<TradeLog | null>()
 
 
   //  GENERAL FUNCTIONS
@@ -92,7 +92,7 @@ export default function DashboardPage() {
 
     setIsLoading(true)
 
-    const data = await getTradeLog(moment().subtract(5, 'days').format(DateTime.ISODateFormat), moment().format(DateTime.ISODateFormat), 'DAILY', -1);
+    const data = await getTradeLog(moment().subtract(5, 'days').format(DateTime.ISODateFormat), moment().format(DateTime.ISODateFormat), 'DAILY', 6);
     setTradeLog(data)
 
     setIsLoading(false)
@@ -153,7 +153,7 @@ export default function DashboardPage() {
                 <BaseCard
                   title={'Portfolio Growth'}
                   subtitle={'A look back at your portfolio\'s performance over the last 6 months.'}
-                  cardContent={<PortfolioGrowthChart isNew={portfolioInfo?.isNew ?? false} data={portfolioInfo?.equity ?? []}/>}
+                  cardContent={<PortfolioGrowthChart key={portfolioInfo?.equity.length} isNew={portfolioInfo?.isNew ?? false} data={portfolioInfo?.equity ?? []}/>}
                 />
               </div>
               <div className={""}>
@@ -174,7 +174,7 @@ export default function DashboardPage() {
                 <BaseCard
                   title={'Trade Log'}
                   subtitle={'Your performance over the last few days.'}
-                  cardContent={<TradeLogTable log={tradeLog ?? []}/>}
+                  cardContent={<TradeLogTable log={tradeLog} showTotals={true}/>}
                 />
               </div>
               <div className={""}>

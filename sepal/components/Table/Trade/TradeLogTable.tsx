@@ -18,15 +18,18 @@ import {DateTime} from "@/lib/constants";
  * Trade history table showing days and all accounts traded on that day
  *
  * @param log Trade log
+ * @param showTotals show totals row
  * @author Stephen Prizio
  * @version 0.0.2
  */
 export default function TradeLogTable(
   {
-    log = [],
+    log,
+    showTotals = false
   }
   : Readonly<{
-    log: Array<TradeLog>,
+    log: TradeLog | null | undefined,
+    showTotals?: boolean
   }>
 ) {
 
@@ -35,9 +38,9 @@ export default function TradeLogTable(
 
   return (
     <>
-      {(!log || log.length === 0) && <div className={'text-center text-slate-500 pb-2 mb-4 text-sm'}>No recent trade records.</div>}
+      {(!log || (log?.entries?.length ?? 0) === 0) && <div className={'text-center text-slate-500 pb-2 mb-4 text-sm'}>No recent trade records.</div>}
       {
-        log.length > 0 &&
+        (log?.entries?.length ?? 0) > 0 &&
           <Table>
               <TableCaption>
                   <div className={"flex items-center justify-center gap-1 pb-2 mt-4 text-sm"}>
@@ -61,10 +64,10 @@ export default function TradeLogTable(
               </TableHeader>
               <TableBody>
                 {
-                  log?.map((item) => {
+                  log?.entries.map((item) => {
                     return (
-                      <React.Fragment key={item.uid}>
-                        <TableRow key={item.uid} className={'hover:bg-transparent'}>
+                      <React.Fragment key={item.start}>
+                        <TableRow key={item.start} className={'hover:bg-transparent'}>
                           <TableCell colSpan={6} className={'text-primary font-semibold'}>
                             {moment(item.end).format(DateTime.ISOMonthWeekDayFormat)}
                           </TableCell>
@@ -72,17 +75,28 @@ export default function TradeLogTable(
                         {
                           item?.records?.map((rec) => {
                             return (
-                              <TableRow key={rec.uid} className={'border-b-0 hover:bg-transparent'}>
+                              <TableRow key={rec.accountNumber} className={'border-b-0 hover:bg-transparent'}>
                                 <TableCell
-                                  className={'invisible'}>{moment(rec.end).format(DateTime.ISOMonthWeekDayFormat)}</TableCell>
-                                <TableCell>{rec.account.name}</TableCell>
-                                <TableCell className={'text-center'}>{rec.trades}</TableCell>
-                                <TableCell className={'text-center'}>{rec.winPercentage}%</TableCell>
-                                <TableCell className={'text-center'}>{formatNegativePoints(rec.points)}</TableCell>
-                                <TableCell className="text-right">${formatNumberForDisplay(rec.netProfit)}</TableCell>
+                                  className={'invisible'}>{moment(item.end).format(DateTime.ISOMonthWeekDayFormat)}</TableCell>
+                                <TableCell>{rec?.accountName ?? ''}</TableCell>
+                                <TableCell className={'text-center'}>{rec.report.tradeRecordTotals.trades}</TableCell>
+                                <TableCell className={'text-center'}>{rec.report.tradeRecordTotals.winPercentage}%</TableCell>
+                                <TableCell className={'text-center'}>{formatNegativePoints(rec.report.tradeRecordTotals.netPoints)}</TableCell>
+                                <TableCell className="text-right">$&nbsp;{formatNumberForDisplay(rec.report.tradeRecordTotals.netProfit)}</TableCell>
                               </TableRow>
                             )
                           }) ?? null
+                        }
+                        {
+                          showTotals &&
+                            <TableRow className={'hover:bg-transparent !border-t-2 !border-primaryLight text-primary'}>
+                                <TableCell className={'font-bold'}>Totals</TableCell>
+                                <TableCell className={'font-bold'}>{item.totals.accountsTraded ?? 0}&nbsp;&nbsp;{(item.totals.accountsTraded ?? 0) === 1 ? 'account' : 'accounts'}</TableCell>
+                                <TableCell className={'text-center font-bold'}>{item.totals.trades ?? 0}</TableCell>
+                                <TableCell className={'text-center font-bold'}>{item.totals.winPercentage ?? 0}%</TableCell>
+                                <TableCell className={'text-center font-bold'}>{formatNegativePoints(item.totals.netPoints ?? 0)}</TableCell>
+                                <TableCell className={'text-right font-bold '}>$&nbsp;{formatNumberForDisplay(item.totals.netProfit)}</TableCell>
+                            </TableRow>
                         }
                       </React.Fragment>
                     )

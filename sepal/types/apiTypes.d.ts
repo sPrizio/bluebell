@@ -188,10 +188,29 @@ interface TradeRecord extends GenericApiType {
   account: Account,
 }
 
-interface TradeLog extends GenericApiType {
+interface TradeLog {
+  entries: Array<TradeLogEntry>
+}
+
+interface TradeLogEntry {
   start: string,
   end: string,
-  records: Array<TradeRecord>
+  records: Array<TradeLogEntryRecord>,
+  totals: TradeLogEntryRecordTotals
+}
+
+interface TradeLogEntryRecord {
+  accountNumber: number,
+  accountName: string,
+  report: TradeRecordReport
+}
+
+interface TradeLogEntryRecordTotals {
+  accountsTraded: number,
+  netProfit: number,
+  netPoints: number,
+  winPercentage: number,
+  trades: number,
 }
 
 interface PagedTrades {

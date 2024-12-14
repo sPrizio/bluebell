@@ -94,6 +94,7 @@ export const Css = {
   ColorGraphAccPrimary: '#8884d8',
   ColorGraphAccSecondary: '#82ca9d',
   ColorGraphAccTertiary: '#bda74e',
+  ColorWhite: '#FFFFFF',
   FontFamily: 'Inter, sans-serif',
 }
 
