@@ -18,6 +18,7 @@ import java.time.LocalDateTime;
 import java.time.temporal.TemporalAdjusters;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 /**
@@ -41,6 +42,9 @@ public class PortfolioService {
      * @return {@link Portfolio}
      */
     public Portfolio getPortfolio(final User user) {
+
+        //  TODO: fix portfolio chart data points
+        //  TODO: fix trade log, needs to show recent trade records
 
         final List<Account> accounts = user.getAccounts();
         List<PortfolioEquityPoint> equityPoints = computeEquityPoints(user);
@@ -123,27 +127,31 @@ public class PortfolioService {
     private List<PortfolioEquityPoint> computeEquityPoints(final User user) {
 
         final List<PortfolioEquityPoint> points = new ArrayList<>();
-        final LocalDateTime limit = LocalDate.now().with(TemporalAdjusters.firstDayOfNextMonth()).atStartOfDay();
-        LocalDateTime compare = limit.minusMonths(6);
-        final LocalDateTime temp = compare;
+        final LocalDateTime limit = LocalDate.now().with(TemporalAdjusters.firstDayOfMonth()).atStartOfDay();
 
         //  only look at accounts that were last traded within the timespan to reduce number of trades considered
-        final List<Account> relevantAccounts = user.getAccounts().stream().filter(acc -> isWithinTimespan(temp, limit, acc.getLastTraded())).toList();
-        while (compare.isBefore(limit)) {
+        final List<Account> relevantAccounts = user.getAccounts().stream().filter(acc -> isWithinTimespan(limit.minusMonths(6), limit, acc.getLastTraded())).toList();
+        LocalDateTime compare = limit;
+        double starterBalance = this.mathService.getDouble(user.getAccounts().stream().mapToDouble(Account::getBalance).sum());
+
+        while (compare.isAfter(limit.minusMonths(6))) {
             LocalDateTime start = compare;
             LocalDateTime end = compare.plusMonths(1);
 
             final List<PortfolioAccountEquityPoint> accountEquityPoints = new ArrayList<>();
             for (final Account account : relevantAccounts) {
                 final List<Trade> relevant = account.getTrades().stream().filter(tr -> isWithinTimespan(start, end, tr.getTradeCloseTime())).toList();
-                accountEquityPoints.add(new PortfolioAccountEquityPoint(account.getName(), relevant.stream().mapToDouble(Trade::getNetProfit).sum()));
+                accountEquityPoints.add(new PortfolioAccountEquityPoint(account.getName(), this.mathService.getDouble(relevant.stream().mapToDouble(Trade::getNetProfit).sum())));
             }
 
-            points.add(new PortfolioEquityPoint(compare.toLocalDate(), this.mathService.getDouble(accountEquityPoints.stream().mapToDouble(PortfolioAccountEquityPoint::value).sum()), accountEquityPoints));
-            compare = compare.plusMonths(1);
+            starterBalance -= this.mathService.getDouble(accountEquityPoints.stream().mapToDouble(PortfolioAccountEquityPoint::value).sum());
+            points.add(new PortfolioEquityPoint(compare.toLocalDate(), starterBalance, accountEquityPoints));
+
+
+            compare = compare.minusMonths(1);
         }
 
-        return points;
+        return points.stream().sorted(Comparator.comparing(PortfolioEquityPoint::date)).toList();
     }
 
     /**

@@ -6,14 +6,17 @@ import com.bluebell.planter.core.exceptions.trade.TradeRecordComputationExceptio
 import com.bluebell.planter.core.models.entities.account.Account;
 import com.bluebell.planter.core.models.entities.security.User;
 import com.bluebell.planter.core.models.entities.trade.Trade;
-import com.bluebell.planter.core.models.nonentities.records.trade.TradeLog;
-import com.bluebell.planter.core.models.nonentities.records.tradeRecord.TradeRecord;
-import com.bluebell.planter.core.models.nonentities.records.tradeRecord.TradeRecordEquityPoint;
-import com.bluebell.planter.core.models.nonentities.records.tradeRecord.TradeRecordReport;
-import com.bluebell.planter.core.models.nonentities.records.tradeRecord.TradeRecordTotals;
-import com.bluebell.planter.core.models.nonentities.records.tradeRecord.controls.TradeRecordControls;
-import com.bluebell.planter.core.models.nonentities.records.tradeRecord.controls.TradeRecordControlsMonthEntry;
-import com.bluebell.planter.core.models.nonentities.records.tradeRecord.controls.TradeRecordControlsYearEntry;
+import com.bluebell.planter.core.models.nonentities.records.tradelog.TradeLog;
+import com.bluebell.planter.core.models.nonentities.records.tradelog.TradeLogEntry;
+import com.bluebell.planter.core.models.nonentities.records.tradelog.TradeLogEntryRecord;
+import com.bluebell.planter.core.models.nonentities.records.tradelog.TradeLogEntryRecordTotals;
+import com.bluebell.planter.core.models.nonentities.records.traderecord.TradeRecord;
+import com.bluebell.planter.core.models.nonentities.records.traderecord.TradeRecordEquityPoint;
+import com.bluebell.planter.core.models.nonentities.records.traderecord.TradeRecordReport;
+import com.bluebell.planter.core.models.nonentities.records.traderecord.TradeRecordTotals;
+import com.bluebell.planter.core.models.nonentities.records.traderecord.controls.TradeRecordControls;
+import com.bluebell.planter.core.models.nonentities.records.traderecord.controls.TradeRecordControlsMonthEntry;
+import com.bluebell.planter.core.models.nonentities.records.traderecord.controls.TradeRecordControlsYearEntry;
 import com.bluebell.radicle.services.MathService;
 import jakarta.annotation.Resource;
 import org.apache.commons.collections4.CollectionUtils;
@@ -103,18 +106,22 @@ public class TradeRecordService {
             throw new TradeRecordComputationException("This account doesn't have any closed trades. This must be revised!");
         }
 
-        //  TODO: give this a starting month
-
         final Set<TradeRecord> tradeRecords = new HashSet<>();
         final LocalDateTime start = flowerpotTimeInterval == FlowerpotTimeInterval.DAILY ? firstTraded.with(TemporalAdjusters.firstDayOfMonth()) : firstTraded.with(TemporalAdjusters.firstDayOfYear());
         LocalDateTime compare = flowerpotTimeInterval == FlowerpotTimeInterval.DAILY ? account.getLastTraded().with(TemporalAdjusters.firstDayOfNextMonth()) : account.getLastTraded().with(TemporalAdjusters.firstDayOfNextYear());
 
-        while (tradeRecords.size() < count && (compare.isAfter(start) || compare.isEqual(start))) {
+        while ((compare.isAfter(start) || compare.isEqual(start))) {
             tradeRecords.addAll(getTradeRecords(compare.minus(flowerpotTimeInterval.amount, flowerpotTimeInterval.unit).toLocalDate(), compare.toLocalDate(), account, flowerpotTimeInterval, -1).tradeRecords());
             compare = compare.minus(flowerpotTimeInterval.amount, flowerpotTimeInterval.unit);
         }
 
-        final List<TradeRecord> finalList = tradeRecords.stream().sorted(Comparator.reverseOrder()).limit(count).toList();
+        final List<TradeRecord> finalList;
+        if (count == CoreConstants.MAX_RESULT_SIZE) {
+            finalList = tradeRecords.stream().sorted(Comparator.reverseOrder()).toList();
+        } else {
+            finalList = tradeRecords.stream().sorted(Comparator.reverseOrder()).limit(count).toList();
+        }
+
         return new TradeRecordReport(finalList, computeTotals(finalList));
     }
 
@@ -128,24 +135,41 @@ public class TradeRecordService {
      * @param count                 number of results
      * @return {@link TradeLog}
      */
-    public List<TradeLog> getTradeLog(final User user, final LocalDate start, final LocalDate end, final FlowerpotTimeInterval flowerpotTimeInterval, final int count) {
+    public TradeLog getTradeLog(final User user, final LocalDate start, final LocalDate end, final FlowerpotTimeInterval flowerpotTimeInterval, final int count) {
 
-        final Map<LocalDate, List<TradeRecord>> map = new HashMap<>();
-        final List<TradeRecord> tradeRecords = user.getAccounts().stream().map(acc -> getTradeRecords(start, end, acc, flowerpotTimeInterval, count).tradeRecords()).toList().stream().flatMap(List::stream).toList();
+        final List<Account> accounts = user.getAccounts();
+        final List<TradeLogEntry> entries = new ArrayList<>();
 
-        for (final TradeRecord trec : tradeRecords) {
-            List<TradeRecord> temp;
-            if (map.containsKey(trec.start())) {
-                temp = new ArrayList<>(map.get(trec.start()));
-            } else {
-                temp = new ArrayList<>();
+        if (CollectionUtils.isNotEmpty(accounts)) {
+            final List<TradeLogEntryRecord> records = new ArrayList<>();
+            accounts.forEach(acc -> records.add(new TradeLogEntryRecord(
+                    acc,
+                    acc.getAccountNumber(),
+                    acc.getName(),
+                    getRecentTradeRecords(acc, flowerpotTimeInterval, count)
+            )));
+
+            if (CollectionUtils.isNotEmpty(records)) {
+                final int trades = records.stream().mapToInt(tr -> tr.report().tradeRecordTotals().trades()).sum();
+
+                entries.add(
+                        new TradeLogEntry(
+                                records.getLast().report().tradeRecords().getLast().end(),
+                                records.getFirst().report().tradeRecords().getFirst().start(),
+                                records,
+                                new TradeLogEntryRecordTotals(
+                                        accounts.size(),
+                                        this.mathService.getDouble(records.stream().mapToDouble(tr -> tr.report().tradeRecordTotals().netProfit()).sum()),
+                                        this.mathService.getDouble(records.stream().mapToDouble(tr -> tr.report().tradeRecordTotals().netPoints()).sum()),
+                                        trades,
+                                        this.mathService.wholePercentage(records.stream().mapToInt(tr -> tr.report().tradeRecordTotals().tradesWon()).sum(), trades)
+                                )
+                        )
+                );
             }
-
-            temp.add(trec);
-            map.put(trec.start(), temp);
         }
 
-        return map.values().stream().map(records -> new TradeLog(start, end, records)).toList();
+        return new TradeLog(entries);
     }
 
     /**
@@ -309,7 +333,7 @@ public class TradeRecordService {
         final double netPoints = this.mathService.getDouble(tradeRecords.stream().mapToDouble(TradeRecord::points).sum());
 
 
-        return new TradeRecordTotals(tradeRecords.size(), (wins + losses), this.mathService.wholePercentage(wins, (wins + losses)), netProfit, netPoints);
+        return new TradeRecordTotals(tradeRecords.size(), (wins + losses), wins, losses, this.mathService.wholePercentage(wins, (wins + losses)), netProfit, netPoints);
     }
 
     /**

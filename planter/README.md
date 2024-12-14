@@ -19,11 +19,10 @@ Current Release: **Pre-release**
 ---
 
 ### Todo List
-- Update back-end to support the changes from Sepal
 - Improve Trade import service to include withdrawals and deposits (for withdrawal example, look at live CFD account)
 - When importing trades to an account that is inactive, mark it as active
 - Accounts that have not been traded on for 1 calendar year should be marked as inactive (use a cronjob for this)
-- Improvements to UniqueIdentifierService to really make everyone possible entity unique
+- Improvements to UniqueIdentifierService to really make every possible entity unique
 ---
 
 ### Version History

@@ -1,6 +1,6 @@
-package com.bluebell.planter.core.models.nonentities.records.tradeRecord.controls;
+package com.bluebell.planter.core.models.nonentities.records.traderecord.controls;
 
-import com.bluebell.planter.core.models.nonentities.records.tradeRecord.TradeRecord;
+import com.bluebell.planter.core.models.nonentities.records.traderecord.TradeRecord;
 
 import java.util.List;
 

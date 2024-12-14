@@ -39,7 +39,7 @@ public class PortfolioApiController extends AbstractApiController {
      */
     @ValidateApiToken
     @GetMapping("/get")
-    public StandardJsonResponse getCurrencies(final HttpServletRequest request) {
+    public StandardJsonResponse getPortfolio(final HttpServletRequest request) {
         final User user = (User) request.getAttribute(SecurityConstants.USER_REQUEST_KEY);
         return new StandardJsonResponse(true, this.portfolioService.getPortfolio(user), StringUtils.EMPTY);
     }

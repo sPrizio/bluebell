@@ -1,4 +1,4 @@
-package com.bluebell.planter.core.models.nonentities.records.tradeRecord.controls;
+package com.bluebell.planter.core.models.nonentities.records.traderecord.controls;
 
 /**
  * Class representation of a {@link TradeRecordControls} for a single month

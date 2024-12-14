@@ -1,4 +1,4 @@
-package com.bluebell.planter.core.models.nonentities.records.tradeRecord;
+package com.bluebell.planter.core.models.nonentities.records.traderecord;
 
 import com.bluebell.planter.core.enums.system.FlowerpotTimeInterval;
 import com.bluebell.planter.core.models.entities.trade.Trade;

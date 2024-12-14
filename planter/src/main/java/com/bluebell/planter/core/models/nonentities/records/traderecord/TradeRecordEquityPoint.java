@@ -1,4 +1,4 @@
-package com.bluebell.planter.core.models.nonentities.records.tradeRecord;
+package com.bluebell.planter.core.models.nonentities.records.traderecord;
 
 /**
  * Class representation of a {@link TradeRecord}'s equity per count of trades, meant to be used on a chart
