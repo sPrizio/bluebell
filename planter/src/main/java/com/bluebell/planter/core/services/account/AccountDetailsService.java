@@ -15,8 +15,11 @@ import com.bluebell.radicle.services.MathService;
 import jakarta.annotation.Resource;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.math3.stat.descriptive.moment.StandardDeviation;
+import org.javatuples.Triplet;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -100,13 +103,28 @@ public class AccountDetailsService {
         final List<TradeRecord> tradeRecords = this.tradeRecordService.getTradeRecords(account.getAccountOpenTime().minusYears(1).toLocalDate(), LocalDate.now().plusYears(1), account, FlowerpotTimeInterval.DAILY, -1).tradeRecords();
         final List<CumulativeTrade> cumulativeTrades = generativeCumulativeTrades(account);
 
+        final double initialBalance = account.getInitialBalance();
+        final double currentPL = cumulativeTrades.getLast().netProfit();
+        final double biggestLoss = cumulativeTrades.stream().mapToDouble(CumulativeTrade::singleProfit).min().orElse(0.0);
+        final double largestGain = cumulativeTrades.stream().mapToDouble(CumulativeTrade::singleProfit).max().orElse(0.0);
+        final double drawdown = calculateDrawdown(cumulativeTrades);
+        final double maxProfit = cumulativeTrades.stream().mapToDouble(CumulativeTrade::netProfit).max().orElse(0.0);
+
+        //  TODO: include approximated drawdown by adding the average loss to the drawdown to give a close estimate
+        //  TODO: calculate drawdown for negative accounts as well, use the lowest of both values
+
         return new AccountInsights(
                 tradeRecords.size(),
-                account.getTrades().size(),
-                tradeRecords.stream().mapToDouble(TradeRecord::netProfit).min().orElse(0.0),
-                cumulativeTrades.stream().mapToDouble(CumulativeTrade::netProfit).min().orElse(0.0),
-                tradeRecords.stream().mapToDouble(TradeRecord::netProfit).max().orElse(0.0),
-                cumulativeTrades.stream().mapToDouble(CumulativeTrade::netProfit).max().orElse(0.0)
+                currentPL,
+                biggestLoss,
+                largestGain,
+                drawdown,
+                maxProfit,
+                BigDecimal.valueOf(currentPL).divide(BigDecimal.valueOf(initialBalance), 25, RoundingMode.HALF_EVEN).multiply(BigDecimal.valueOf(100.0)).setScale(2, RoundingMode.HALF_EVEN).abs().doubleValue(),
+                BigDecimal.valueOf(biggestLoss).divide(BigDecimal.valueOf(initialBalance), 25, RoundingMode.HALF_EVEN).multiply(BigDecimal.valueOf(100.0)).setScale(2, RoundingMode.HALF_EVEN).abs().doubleValue(),
+                BigDecimal.valueOf(largestGain).divide(BigDecimal.valueOf(initialBalance), 25, RoundingMode.HALF_EVEN).multiply(BigDecimal.valueOf(100.0)).setScale(2, RoundingMode.HALF_EVEN).abs().doubleValue(),
+                BigDecimal.valueOf(drawdown).divide(BigDecimal.valueOf(initialBalance), 25, RoundingMode.HALF_EVEN).multiply(BigDecimal.valueOf(100.0)).setScale(2, RoundingMode.HALF_EVEN).abs().doubleValue(),
+                BigDecimal.valueOf(maxProfit).divide(BigDecimal.valueOf(initialBalance), RoundingMode.HALF_EVEN).multiply(BigDecimal.valueOf(100.0)).doubleValue()
         );
     }
 
@@ -118,7 +136,7 @@ public class AccountDetailsService {
      */
     public AccountStatistics obtainStatistics(final Account account) {
 
-        final List<Trade> trades = account.getTrades();
+        final List<Trade> trades = account.getTrades().stream().sorted(Comparator.comparing(Trade::getTradeCloseTime)).toList();
         final double positiveProfitCount = this.mathService.getDouble(trades.stream().mapToDouble(Trade::getNetProfit).filter(d -> d > 0).count());
         final double positiveProfit = this.mathService.getDouble(trades.stream().mapToDouble(Trade::getNetProfit).filter(d -> d > 0).sum());
         final double negativeProfit = this.mathService.getDouble(trades.stream().mapToDouble(Trade::getNetProfit).filter(d -> d < 0).sum());
@@ -142,6 +160,42 @@ public class AccountDetailsService {
     //  HELPERS
 
     /**
+     * Computes the drawdown between cumulative trades
+     *
+     * @param cumulativeTrades {@link List} of {@link CumulativeTrade}
+     * @return drawdown price
+     */
+    private double calculateDrawdown(final List<CumulativeTrade> cumulativeTrades) {
+
+        double drawdown = 0.0;
+        double max = 0.0;
+
+        final List<Triplet<Integer, CumulativeTrade, Boolean>> highEntries = new ArrayList<>();
+        for (int i = 0; i < cumulativeTrades.size(); i++) {
+            boolean hitMax = cumulativeTrades.get(i).netProfit() > max;
+            highEntries.add(Triplet.with(i, cumulativeTrades.get(i), hitMax));
+
+            if (hitMax) {
+                max = cumulativeTrades.get(i).netProfit();
+            }
+        }
+
+        final List<Integer> indices = highEntries.stream().filter(Triplet::getValue2).map(Triplet::getValue0).toList();
+        if (CollectionUtils.isNotEmpty(indices) && indices.size() > 1) {
+            for (int i = 0; i < indices.size() - 1; i++) {
+                final List<CumulativeTrade> subList = cumulativeTrades.subList(indices.get(i), indices.get(i + 1) + 1);
+                final double calc = this.mathService.subtract(subList.getFirst().netProfit(), subList.stream().mapToDouble(CumulativeTrade::netProfit).min().orElse(0.0));
+
+                if (calc > drawdown) {
+                    drawdown = calc;
+                }
+            }
+        }
+
+        return drawdown;
+    }
+
+    /**
      * Generates a {@link List} of {@link CumulativeTrade}s
      *
      * @param account {@link Account}
@@ -149,7 +203,7 @@ public class AccountDetailsService {
      */
     private List<CumulativeTrade> generativeCumulativeTrades(final Account account) {
 
-        final List<Trade> trades = account.getTrades();
+        final List<Trade> trades = account.getTrades().stream().sorted(Comparator.comparing(Trade::getTradeCloseTime)).toList();
         final List<CumulativeTrade> cumulativeTrades = new ArrayList<>();
 
         int count = 0;
@@ -159,10 +213,10 @@ public class AccountDetailsService {
         for (final Trade trade : trades) {
             count += 1;
             cumProfit += trade.getNetProfit();
-            final double np  = Math.abs(this.mathService.subtract(trade.getClosePrice(), trade.getOpenPrice()));
+            final double np = Math.abs(this.mathService.subtract(trade.getClosePrice(), trade.getOpenPrice()));
             cumPoints += (trade.getNetProfit() < 0) ? this.mathService.multiply(-1.0, np) : np;
 
-            cumulativeTrades.add(new CumulativeTrade(trade.getTradeCloseTime(), count, cumProfit, cumPoints));
+            cumulativeTrades.add(new CumulativeTrade(trade.getTradeCloseTime(), count, trade.getNetProfit(), (trade.getNetProfit() < 0) ? this.mathService.multiply(-1.0, np) : np, cumProfit, cumPoints));
         }
 
         return cumulativeTrades;
@@ -179,6 +233,7 @@ public class AccountDetailsService {
         final List<Trade> trades =
                 account.getTrades()
                         .stream()
+                        .sorted(Comparator.comparing(Trade::getTradeCloseTime))
                         .filter(tr -> tr.getStopLoss() > 0.0)
                         .filter(tr -> tr.getTakeProfit() > 0.0)
                         .toList();

@@ -28,6 +28,8 @@ public class AccountDTO implements GenericDTO {
 
     private LocalDateTime accountCloseTime;
 
+    private double initialBalance;
+
     private double balance;
 
     private boolean active;

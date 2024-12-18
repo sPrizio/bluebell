@@ -26,4 +26,5 @@ open module com.bluebell.planter {
     requires spring.boot.autoconfigure;
     requires org.aspectj.weaver;
     requires commons.math3;
+    requires javatuples;
 }

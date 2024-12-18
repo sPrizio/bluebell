@@ -181,7 +181,7 @@ public class TradeRecordService {
      */
     public TradeRecordControls getTradeRecordControls(final Account account, final FlowerpotTimeInterval flowerpotTimeInterval) {
 
-        final List<Trade> trades = account.getTrades();
+        final List<Trade> trades = account.getTrades().stream().sorted(Comparator.comparing(Trade::getTradeCloseTime)).toList();
         final Map<String, Map<String, Integer>> map = new HashMap<>();
 
         for (final Trade trade : trades) {

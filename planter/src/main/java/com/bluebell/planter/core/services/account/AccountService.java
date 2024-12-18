@@ -30,6 +30,8 @@ import static com.bluebell.planter.core.validation.GenericValidator.validatePara
  */
 @Service
 public class AccountService {
+    
+    private static final String BALANCE_KEY = "balance";
 
     @Resource(name = "accountRepository")
     private AccountRepository accountRepository;
@@ -153,11 +155,13 @@ public class AccountService {
             account.setAccountOpenTime(LocalDateTime.now());
             account.setActive(true);
             account.setUser(user);
+            account.setBalance(Double.parseDouble(acc.get(BALANCE_KEY).toString()));
+            account.setInitialBalance(Double.parseDouble(acc.get(BALANCE_KEY).toString()));
         } else {
             account.setActive(Boolean.parseBoolean(acc.get("active").toString()));
+            account.setBalance(Double.parseDouble(acc.get(BALANCE_KEY).toString()));
         }
-
-        account.setBalance(Double.parseDouble(acc.get("balance").toString()));
+        
         account.setName(acc.get("name").toString());
         account.setAccountNumber(Long.parseLong(acc.get("number").toString()));
         account.setCurrency(Currency.get(acc.get("currency").toString()));

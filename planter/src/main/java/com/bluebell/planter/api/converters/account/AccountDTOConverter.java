@@ -45,6 +45,7 @@ public class AccountDTOConverter implements GenericDTOConverter<Account, Account
         accountDTO.setAccountOpenTime(entity.getAccountOpenTime());
         accountDTO.setAccountCloseTime(entity.getAccountCloseTime());
         accountDTO.setActive(entity.isActive());
+        accountDTO.setInitialBalance(entity.getInitialBalance());
         accountDTO.setBalance(this.mathService.getDouble(entity.getBalance()));
         accountDTO.setName(entity.getName());
         accountDTO.setCurrency(new EnumDisplay(entity.getCurrency().getIsoCode(), entity.getCurrency().getLabel()));

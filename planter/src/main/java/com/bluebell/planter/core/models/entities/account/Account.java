@@ -43,6 +43,9 @@ public class Account implements GenericEntity {
     private LocalDateTime accountCloseTime;
 
     @Column
+    private double initialBalance;
+
+    @Column
     private double balance;
 
     @Column

@@ -43,9 +43,6 @@ public class PortfolioService {
      */
     public Portfolio getPortfolio(final User user) {
 
-        //  TODO: fix portfolio chart data points
-        //  TODO: fix trade log, needs to show recent trade records
-
         final List<Account> accounts = user.getAccounts();
         List<PortfolioEquityPoint> equityPoints = computeEquityPoints(user);
         boolean isNew = false;

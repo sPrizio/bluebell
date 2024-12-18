@@ -184,6 +184,7 @@ public abstract class AbstractGenericTest {
         account.setDefaultAccount(true);
         account.setAccountOpenTime(LocalDateTime.of(2022, 10, 25, 22, 48, 0));
         account.setBalance(1000.0);
+        account.setInitialBalance(1000.0);
         account.setActive(true);
         account.setAccountType(AccountType.CFD);
         account.setAccountNumber(1234);

@@ -97,6 +97,8 @@ public class CoreConstants {
             }
 
             public static final String ACCOUNT_CANNOT_BE_NULL = "account cannot be null";
+
+            public static final String ACCOUNT_NOT_FOUND = "Account not found";
         }
 
         public static class Security {
@@ -174,6 +176,10 @@ public class CoreConstants {
             public static final String UID_CANNOT_BE_NULL = "uid cannot be null";
 
             public static final String INVALID_INTERVAL = "%s was not a valid interval";
+
+            public static final String INVALID_FILTER = "%s was not a valid filter";
+
+            public static final String INVALID_WEEKDAY = "%s was not a valid weekday";
 
             public static final String BAD_LOCALE_ENUM = "One of the given locales was not a valid Currency or Country";
         }
