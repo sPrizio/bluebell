@@ -2,18 +2,18 @@ import React from "react";
 import type {Metadata} from "next";
 
 export const metadata: Metadata = {
-  title: "Performance - bluebell",
-  description: "View your account's performance",
+  title: "Analysis - bluebell",
+  description: "Analyze various aspects of you account's performance",
 };
 
 /**
- * The base layout for the performance page
+ * The base layout for the analysis page
  *
  * @param children Content
  * @author Stephen Prizio
- * @version 0.0.1
+ * @version 0.0.2
  */
-export default function AccountsLayout(
+export default function AnalysisLayout(
   {
     children,
   }: Readonly<{

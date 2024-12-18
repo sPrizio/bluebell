@@ -3,13 +3,14 @@ import {z} from "zod";
 import {safeConvertEnum} from "@/lib/functions/util-functions";
 import {hasEmail, hasUsername} from "@/lib/functions/account-functions";
 import {
-  getAccountDomain, getNewsDomain, getPortfolioDomain,
+  getAccountDomain, getAnalysisDomain, getNewsDomain, getPortfolioDomain,
   getTradeDomain,
   getTradeRecordDomain,
   getUserDomain,
   isValidPassword
 } from "@/lib/functions/security-functions";
 import parsePhoneNumberFromString from "libphonenumber-js";
+import {AccountCreationInfo} from "@/types/apiTypes";
 
 export const DEFAULT_PAGE_HEADER_SECTION_ICON_SIZE = 36;
 
@@ -33,6 +34,11 @@ export const ApiUrls = {
     GetBrokers: getAccountDomain() + '/brokers',
     GetTradePlatforms: getAccountDomain() + '/trade-platforms',
     GetDetails: getAccountDomain() + '/get-details?accountNumber={accountNumber}',
+  },
+  Analysis: {
+    TimeBuckets: getAnalysisDomain() + '/time-buckets?accountNumber={accountNumber}&filter={filter}&isOpened={isOpened}',
+    Weekdays: getAnalysisDomain() + '/weekdays?accountNumber={accountNumber}&filter={filter}',
+    WeekdaysTimeBuckets: getAnalysisDomain() + '/weekdays-time-buckets?accountNumber={accountNumber}&weekday={weekday}&filter={filter}',
   },
   News: {
     GetNews: getNewsDomain() + '/get-for-interval?start={start}&end={end}',

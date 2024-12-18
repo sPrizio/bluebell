@@ -6,7 +6,6 @@ import {AggregateInterval, Icons} from "@/lib/enums";
 import {useSepalPageInfoContext} from "@/lib/context/SepalContext";
 import {capitalize, getAccount, getAccountNumber} from "@/lib/functions/util-functions";
 import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from "@/components/ui/select";
-import {tradeRecordControls} from "@/lib/sample-data";
 import {Loader2} from "lucide-react";
 import {Button} from "@/components/ui/button";
 import {
@@ -25,6 +24,7 @@ import {UserTradeRecordControlSelection} from "@/types/uiTypes";
 import {getTradeRecordControls, getTradeRecords} from "@/lib/functions/trade-functions";
 import moment from "moment";
 import {DateTime} from "@/lib/constants";
+import {Account, TradeRecord, TradeRecordControls, TradeRecordControlsYearEntry} from "@/types/apiTypes";
 
 /**
  * The page that shows an account's performance over time
@@ -273,7 +273,7 @@ export default function PerformancePage() {
                                                 </SelectTrigger>
                                                 <SelectContent>
                                                   {
-                                                    tradeRecordControls.yearEntries?.map(item => {
+                                                    controls?.yearEntries?.map(item => {
                                                       return (
                                                         <SelectItem key={item.uid} value={item.year}
                                                                     disabled={item.monthEntries.length === 0}>{item.year}</SelectItem>

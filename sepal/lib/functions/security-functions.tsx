@@ -95,6 +95,15 @@ export function getUserDomain(): string {
 }
 
 /**
+ * Gets the analysis url
+ *
+ * @returns {string} url
+ */
+export function getAnalysisDomain(): string {
+  return getDomain('/analysis')
+}
+
+/**
  * Gets the account url
  *
  * @returns {string} url

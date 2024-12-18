@@ -10,12 +10,13 @@ import Please from 'pleasejs/dist/Please';
 import {BaseCard} from "@/components/Card/BaseCard";
 import moment from "moment";
 import {flattenObject, formatNumberForDisplay} from "@/lib/functions/util-functions";
+import { PortfolioEquityPoint } from "@/types/apiTypes";
 
 /**
- * Renders a chart to display an Account's growth over time
+ * Renders a chart to display an account's growth over time
  *
  * @param isNew if new, show base chart
- * @param data Account equity data points
+ * @param data account equity data points
  * @author Stephen Prizio
  * @version 0.0.2
  */
@@ -72,7 +73,7 @@ export default function PortfolioGrowthChart(
   }
 
   /**
-   * Determines if the chart should show more than 1 Account
+   * Determines if the chart should show more than 1 account
    */
   function hasMultipleAccounts() {
 
@@ -137,7 +138,7 @@ export default function PortfolioGrowthChart(
                         {item.dataKey}
                       </div>
                       <div className={'grow justify-end text-right'}>
-                        ${formatNumberForDisplay(item.value)}
+                        $&nbsp;{formatNumberForDisplay(item.value)}
                       </div>
                     </div>
                   )

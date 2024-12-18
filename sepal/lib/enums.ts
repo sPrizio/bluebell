@@ -19,7 +19,8 @@ export enum Icons {
   ArrowBarDown = 'arrow-bar-down',
   ArrowBarUp = 'arrow-bar-up',
   Mountain = 'mountain',
-  Trades = 'trades'
+  Trades = 'trades',
+  Analysis = 'analysis',
 }
 
 /**

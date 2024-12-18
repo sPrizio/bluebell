@@ -16,6 +16,7 @@ import {getRecentTransactions} from "@/lib/functions/account-functions";
 import {getTradeLog} from "@/lib/functions/trade-functions";
 import moment from "moment/moment";
 import {DateTime} from "@/lib/constants";
+import {Portfolio, Transaction, TradeLog} from "@/types/apiTypes";
 
 /**
  * The page that shows an overview of a user's portfolio
@@ -118,7 +119,7 @@ export default function DashboardPage() {
               <div className={""}>
                 <BaseCard
                   title={'Net Worth'}
-                  cardContent={<DashboardContent prefix={'$'} value={portfolioInfo?.netWorth ?? 0}
+                  cardContent={<DashboardContent prefix={'$ '} value={portfolioInfo?.netWorth ?? 0}
                                                  delta={portfolioInfo?.deltaNetWorth ?? 0}/>}
                   icon={resolveIcon(Icons.ChartDoughnut, '', 30)}
                 />

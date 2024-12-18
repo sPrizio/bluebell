@@ -14,6 +14,7 @@ import {Button} from "@/components/ui/button";
 import {Loader2} from "lucide-react";
 import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from "@/components/ui/select";
 import {updateUser} from "@/lib/functions/account-functions";
+import {User} from "@/types/apiTypes";
 
 /**
  * Renders a form that can create or update a User
@@ -94,7 +95,7 @@ export default function UserForm(
       data = null
       console.log(values)
     } else {
-      data = await updateUser(user?.username, values)
+      data = await updateUser(user?.username ?? '', values)
     }
 
     if (!data) {
@@ -110,7 +111,7 @@ export default function UserForm(
   }
 
   /**
-   * Returns true if the form is set to be in create mode, i.e. creating a new Account
+   * Returns true if the form is set to be in create mode, i.e. creating a new account
    */
   function isCreateMode() {
     return mode === 'create';

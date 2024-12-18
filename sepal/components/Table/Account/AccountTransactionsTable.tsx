@@ -21,10 +21,11 @@ import {
 import TransactionForm from "@/components/Form/Transaction/TransactionForm";
 import BaseModal from "@/components/Modal/BaseModal";
 import DeleteTransactionForm from "@/components/Form/Transaction/DeleteTransactionForm";
+import {Account, Transaction} from "@/types/apiTypes";
 
 
 /**
- * Renders the Account transactions as a table
+ * Renders the account transactions as a table
  *
  * @param account Account
  * @param transactions list of Account transactions

@@ -8,6 +8,7 @@ import moment from "moment";
 import {DateTime} from "@/lib/constants";
 import {useRouter} from "next/navigation";
 import Badge from "@/components/Badge/Badge";
+import {Account} from "@/types/apiTypes";
 
 /**
  * Renders a table containing the user's active accounts
@@ -115,7 +116,7 @@ export default function AccountsTable(
                           <TableCell>{item.name}</TableCell>
                           <TableCell className={'text-center'}>{item.accountType?.label ?? '-'}</TableCell>
                           <TableCell className={'text-center'}>{item.broker?.label ?? ''}</TableCell>
-                          <TableCell className="text-right">${formatNumberForDisplay(item.balance)}</TableCell>
+                          <TableCell className="text-right">$&nbsp;{formatNumberForDisplay(item.balance)}</TableCell>
                         </TableRow>
                       )
                     }) ?? null
@@ -155,7 +156,7 @@ export default function AccountsTable(
                             {item.lastTraded && moment(item.lastTraded).format(DateTime.ISOShortMonthDayYearWithTimeFormat)}
                             {!item.lastTraded && <span>No trades</span>}
                           </TableCell>
-                          <TableCell className="text-right">${formatNumberForDisplay(item.balance)}</TableCell>
+                          <TableCell className="text-right">$&nbsp;{formatNumberForDisplay(item.balance)}</TableCell>
                         </TableRow>
                       )
                     }) ?? null

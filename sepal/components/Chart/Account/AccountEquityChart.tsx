@@ -7,6 +7,7 @@ import {Css, DateTime} from "@/lib/constants";
 import {BaseCard} from "@/components/Card/BaseCard";
 import moment from "moment";
 import {formatNumberForDisplay} from "@/lib/functions/util-functions";
+import {AccountEquityPoint} from "@/types/apiTypes";
 
 interface InternalEquityPoint {
   date: string,
@@ -88,7 +89,7 @@ export default function AccountEquityChart(
                         {showPoints ? 'Points' : 'Balance'}
                       </div>
                       <div className={'grow justify-end text-right'}>
-                        {showPoints ? formatNumberForDisplay(item.value) : '$' + formatNumberForDisplay(item.value)}
+                        {showPoints ? formatNumberForDisplay(item.value) : '$ ' + formatNumberForDisplay(item.value)}
                       </div>
                     </div>
                   )

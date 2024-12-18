@@ -6,7 +6,7 @@ import {
   LayoutDashboard,
   LogOut,
   LucideIcon,
-  Newspaper, ReplaceAll
+  Newspaper, ReplaceAll, Search
 } from "lucide-react";
 
 type Submenu = {
@@ -68,6 +68,11 @@ export function getMenuList(pathname: string): Group[] {
           href: "/performance?account=default",
           label: "Performance",
           icon: ChartScatter
+        },
+        {
+          href: "/analysis?account=default",
+          label: 'Analysis',
+          icon: Search
         },
         {
           href: "/trades?account=default",

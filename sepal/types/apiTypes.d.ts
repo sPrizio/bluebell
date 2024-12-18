@@ -88,16 +88,21 @@ interface AccountEquityPoint {
   cumPoints: number
 }
 
-interface AccountInsights {
-  tradingDays: number,
-  trades: number,
-  maxDailyLoss: number,
-  maxTotalLoss: number,
-  maxDailyProfit: number,
+interface AccountInsightsType {
   maxProfit: number,
+  tradingDays: number,
+  biggestLoss: number,
+  largestGain: number,
+  currentPL: number,
+  drawdown: number,
+  biggestLossDelta: number,
+  largestGainDelta: number,
+  currentPLDelta: number,
+  drawdownDelta: number,
+  maxProfitDelta: number
 }
 
-interface AccountStatistics {
+interface AccountStatisticsType {
   balance: number,
   averageProfit: number,
   averageLoss: number,
@@ -115,8 +120,8 @@ interface AccountDetails {
   account: Account,
   consistency: number,
   equity: Array<AccountEquityPoint>,
-  insights: AccountInsights,
-  statistics: AccountStatistics
+  insights: AccountInsightsType,
+  statistics: AccountStatisticsType
 }
 
 interface Transaction extends GenericApiType {
@@ -235,6 +240,12 @@ interface TradeRecordControls extends GenericApiType {
   yearEntries: Array<TradeRecordControlsYearEntry>
 }
 
+interface AnalysisResult {
+  label: string,
+  value: number,
+  count: number
+}
+
 interface MarketNews extends GenericApiType {
   date: string,
   slots: Array<MarketNewsSlot>,
@@ -257,3 +268,7 @@ interface MarketNewsEntry extends GenericApiType {
   forecast: string,
   previous: string
 }
+
+export type FilterSelector = 'POINTS' | 'PROFIT' | 'PERCENTAGE'
+
+export type Weekday = 'MONDAY' | 'TUESDAY' | 'WEDNESDAY' | 'THURSDAY' | 'FRIDAY'

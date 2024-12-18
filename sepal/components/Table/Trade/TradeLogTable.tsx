@@ -13,6 +13,7 @@ import Link from "next/link";
 import {formatNegativePoints, formatNumberForDisplay} from "@/lib/functions/util-functions";
 import moment from "moment";
 import {DateTime} from "@/lib/constants";
+import {TradeLog} from "@/types/apiTypes";
 
 /**
  * Trade history table showing days and all accounts traded on that day

@@ -13,7 +13,7 @@ import {
   IconLogout,
   IconMountain,
   IconNews,
-  IconReplaceFilled,
+  IconReplaceFilled, IconSearch,
   IconUserCircle
 } from "@tabler/icons-react";
 import Image from "next/image";
@@ -86,6 +86,8 @@ export function resolveIcon(iconCode: string, className = '', iconSize = 24) {
       return <IconArrowsRightLeft className={className} size={iconSize}/>;
     case Icons.Trades:
       return <IconReplaceFilled className={className} size={iconSize}/>;
+    case Icons.Analysis:
+      return <IconSearch className={className} size={iconSize}/>;
     default:
       return <span>-</span>;
   }
@@ -122,6 +124,10 @@ export function emptyObject(object: any) {
  * @param val number to format
  */
 export function formatNumberForDisplay(val: number | string) {
+
+  if (!val) {
+    return '0.00'
+  }
 
   if (typeof val === 'string') {
     try {

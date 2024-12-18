@@ -7,11 +7,12 @@ import {useSepalModalContext} from "@/lib/context/SepalContext";
 import {toast} from "@/hooks/use-toast";
 import {useRouter} from 'next/navigation'
 import {deleteAccount} from "@/lib/functions/account-functions";
+import {Account} from "@/types/apiTypes";
 
 /**
  * Renders a form for deleting accounts
  *
- * @param account Account
+ * @param account account
  * @author Stephen Prizio
  * @version 0.0.2
  */

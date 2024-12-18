@@ -7,9 +7,9 @@ import {BaseCard} from "@/components/Card/BaseCard";
 import {Button} from "@/components/ui/button";
 import {IconCirclePlus, IconSquareRoundedCheckFilled} from "@tabler/icons-react";
 import BaseModal from "@/components/Modal/BaseModal";
-import {accounts} from "@/lib/sample-data";
 import AccountsTable from "@/components/Table/Account/AccountsTable";
 import AccountForm from "@/components/Form/Account/AccountForm";
+import {Account} from "@/types/apiTypes";
 
 /**
  * The page that shows all of a user's accounts
@@ -45,8 +45,8 @@ export default function AccountsPage() {
 
   //  RENDER
 
-  const activeAccounts = user?.accounts?.filter(acc => acc.active) ?? []
-  const inActiveAccounts = user?.accounts?.filter(acc => !acc.active) ?? []
+  const activeAccounts = user?.accounts?.filter((acc : Account) => acc.active) ?? []
+  const inActiveAccounts = user?.accounts?.filter((acc : Account) => !acc.active) ?? []
 
   return (
     <div className={'grid grid-cols-1 gap-8 w-full'}>

@@ -42,3 +42,4 @@ Current Release: **Pre-release**
 - Custom create new account page (like the 404) for handling /default
 - Creating an account or updating the account can include account close times
 - Trades Page -> Filters for dates and trades (and sorting by date)
+- Loader Component that Performance page uses should be turned into external component and all pages should be using it
