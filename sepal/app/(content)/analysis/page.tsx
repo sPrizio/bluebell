@@ -9,9 +9,10 @@ import {Loader2} from "lucide-react";
 import {BaseCard} from "@/components/Card/BaseCard";
 import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from "@/components/ui/select";
 import TimeBucketAnalysis from "@/components/Analysis/TimeBucketAnalysis";
-import {Account, FilterSelector, Weekday} from "@/types/apiTypes";
+import {Account, FilterSelector, TradeDurationFilterSelector, Weekday} from "@/types/apiTypes";
 import WeekdayAnalysis from "@/components/Analysis/WeekdayAnalysis";
 import WeekdayTimeBucketAnalysis from "@/components/Analysis/WeekdayTimeBucketAnalysis";
+import TradeDurationAnalysis from "@/components/Analysis/TradeDurationAnalysis";
 
 /**
  * The page that shows an analysis of an account's performance
@@ -41,7 +42,9 @@ export default function AnalysisPage() {
   const [closedTbType, setClosedTbType] = useState<FilterSelector>('PROFIT')
   const [wdType, setWdType] = useState<FilterSelector>('PROFIT')
   const [tbWdType, setTbWdType] = useState<FilterSelector>('PROFIT')
+  const [tdType, setTdType] = useState<FilterSelector>('PROFIT')
   const [weekday, setWeekday] = useState<Weekday>('MONDAY')
+  const [tdFilter, setTdFilter] = useState<TradeDurationFilterSelector>('ALL')
 
   useEffect(() => {
     setPageTitle('Analysis')
@@ -156,7 +159,7 @@ export default function AnalysisPage() {
             <div>
               <BaseCard
                 title={'Weekday Performance'}
-                subtitle={'How your trades performed for each day of the week'}
+                subtitle={'How your trades performed for each day of the week.'}
                 headerControls={[select(wdType, setWdType)]}
                 cardContent={<WeekdayAnalysis accountNumber={accNumber} filter={wdType}/>}
               />
@@ -164,7 +167,7 @@ export default function AnalysisPage() {
             <div>
               <BaseCard
                 title={'Weekday & Time Bucket Performance'}
-                subtitle={'How your trades performed at different times on a specific weekday'}
+                subtitle={'How your trades performed at different times on a specific weekday.'}
                 headerControls={[
                   <div key={0}>
                     <Select value={weekday} onValueChange={(val) => setWeekday(val as Weekday)}>
@@ -186,7 +189,28 @@ export default function AnalysisPage() {
               />
             </div>
             <div>
-              Add average trade duration for a new analysis card<br/>
+              <BaseCard
+                title={'Trade Duration Performance'}
+                subtitle={'How your trades performed for various lengths of time.'}
+                headerControls={[
+                  <div key={0}>
+                    <Select value={tdFilter} onValueChange={(val) => setTdFilter(val as TradeDurationFilterSelector)}>
+                      <SelectTrigger className="w-[120px] bg-white">
+                        <SelectValue placeholder={'Select a value...'}/>
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value={'ALL'}>All Trades</SelectItem>
+                        <SelectItem value={'WINS'}>Wins Only</SelectItem>
+                        <SelectItem value={'LOSSES'}>Losses Only</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>,
+                  select(tdType, setTdType)
+                ]}
+                cardContent={<TradeDurationAnalysis accountNumber={accNumber} filter={tdType} tdFilter={tdFilter} />}
+              />
+            </div>
+            <div>
               Add average count and change color of bar if the count is above average/std<br/>
             </div>
           </div>

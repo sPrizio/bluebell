@@ -40,6 +40,7 @@ import ftmo from '@/app/assets/brokers/ftmo.png'
 import td365 from '@/app/assets/brokers/td365.png'
 import td from '@/app/assets/brokers/td.png'
 import {ReadonlyURLSearchParams} from "next/navigation";
+import { Account } from "@/types/apiTypes";
 
 /**
  * Returns the correct icon based on the given enum value
@@ -338,3 +339,19 @@ export const capitalize = (str: string): string => {
     .map((word) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
     .join(' ');
 };
+
+/**
+ * Formats the given number of seconds into a pretty display string
+ *
+ * @param {number} seconds elapsed
+ * @returns {string} formatted string
+ */
+export function formatTimeElapsed(seconds: number): string {
+  if (seconds < 60) {
+    return seconds + 's'
+  } else if (seconds < 3600) {
+    return Math.floor(seconds / 60) + 'm ' + (seconds % 60) + 's'
+  } else {
+    return Math.floor(seconds / 3600) + 'h ' + Math.floor((seconds % 3600) / 60) + 'm ' + ((seconds % 3600) % 60) + 's'
+  }
+}

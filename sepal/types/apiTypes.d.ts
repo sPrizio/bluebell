@@ -113,7 +113,11 @@ interface AccountStatisticsType {
   winPercentage: number,
   profitFactor: number,
   retention: number,
-  sharpeRatio: number;
+  sharpeRatio: number,
+  tradeDuration: number,
+  winDuration: number,
+  lossDuration: number,
+  assumedDrawdown: number
 }
 
 interface AccountDetails {
@@ -270,5 +274,7 @@ interface MarketNewsEntry extends GenericApiType {
 }
 
 export type FilterSelector = 'POINTS' | 'PROFIT' | 'PERCENTAGE'
+
+export type TradeDurationFilterSelector = 'ALL' | 'WINS' | 'LOSSES'
 
 export type Weekday = 'MONDAY' | 'TUESDAY' | 'WEDNESDAY' | 'THURSDAY' | 'FRIDAY'

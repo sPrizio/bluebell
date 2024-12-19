@@ -90,3 +90,33 @@ export async function getWeekdaysTimeBucketsAnalysis(accNumber: number, weekday:
 
   return null;
 }
+
+export async function getTradeDurationAnalysis(accNumber: number, tradeDurationFilter: string, filter: string): Promise<Array<AnalysisResult> | null> {
+
+  let headers = getAuthHeader()
+  headers['Content-Type'] = 'application/json'
+
+  try {
+    const res =
+      await fetch(
+        ApiUrls.Analysis.TradeDuration
+          .replace('{accountNumber}', accNumber.toString())
+          .replace('{tradeDurationFilter}', tradeDurationFilter)
+          .replace('{filter}', filter), {
+          method: 'GET',
+          headers: headers,
+        }
+      )
+
+    if (res.ok) {
+      const data = await res.json()
+      if (data.success) {
+        return data.data
+      }
+    }
+  } catch (e) {
+    console.log(e)
+  }
+
+  return null;
+}

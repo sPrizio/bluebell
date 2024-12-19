@@ -37,6 +37,7 @@ export const ApiUrls = {
   },
   Analysis: {
     TimeBuckets: getAnalysisDomain() + '/time-buckets?accountNumber={accountNumber}&filter={filter}&isOpened={isOpened}',
+    TradeDuration: getAnalysisDomain() + '/trade-durations?accountNumber={accountNumber}&filter={filter}&tradeDurationFilter={tradeDurationFilter}',
     Weekdays: getAnalysisDomain() + '/weekdays?accountNumber={accountNumber}&filter={filter}',
     WeekdaysTimeBuckets: getAnalysisDomain() + '/weekdays-time-buckets?accountNumber={accountNumber}&weekday={weekday}&filter={filter}',
   },
