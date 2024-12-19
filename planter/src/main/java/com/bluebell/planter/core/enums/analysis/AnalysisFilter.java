@@ -12,8 +12,7 @@ import lombok.Getter;
 public enum AnalysisFilter {
     POINTS("POINTS", "Points"),
     PROFIT("PROFIT", "Profit"),
-    WIN_PERCENTAGE("PERCENTAGE", "Win %"),
-    ;
+    WIN_PERCENTAGE("PERCENTAGE", "Win %");
 
     private final String code;
 

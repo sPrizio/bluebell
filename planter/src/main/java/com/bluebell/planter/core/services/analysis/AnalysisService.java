@@ -1,6 +1,7 @@
 package com.bluebell.planter.core.services.analysis;
 
 import com.bluebell.planter.core.enums.analysis.AnalysisFilter;
+import com.bluebell.planter.core.enums.analysis.TradeDurationFilter;
 import com.bluebell.planter.core.models.entities.account.Account;
 import com.bluebell.planter.core.models.entities.trade.Trade;
 import com.bluebell.planter.core.models.nonentities.records.analysis.AnalysisResult;
@@ -14,6 +15,7 @@ import java.time.DayOfWeek;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.TextStyle;
+import java.time.temporal.ChronoUnit;
 import java.util.*;
 
 /**
@@ -100,6 +102,48 @@ public class AnalysisService {
                         .toList();
     }
 
+    /**
+     * Computes the trade duration analysis
+     *
+     * @param account             {@link Account}
+     * @param analysisFilter      {@link AnalysisFilter}
+     * @param tradeDurationFilter {@link TradeDurationFilter}
+     * @return {@link List} of {@link AnalysisResult}
+     */
+    public List<AnalysisResult> computeTradeDurationAnalysis(final Account account, final AnalysisFilter analysisFilter, final TradeDurationFilter tradeDurationFilter) {
+
+        final Map<Long, Triplet<Integer, Double, List<Trade>>> map = new HashMap<>();
+        map.put((Long) 5L, Triplet.with(0, 0.0, Collections.emptyList()));
+        map.put((Long) 30L, Triplet.with(0, 0.0, Collections.emptyList()));
+        map.put((Long) 60L, Triplet.with(0, 0.0, Collections.emptyList()));
+        map.put((Long) 90L, Triplet.with(0, 0.0, Collections.emptyList()));
+        map.put((Long) 120L, Triplet.with(0, 0.0, Collections.emptyList()));
+        map.put((Long) 150L, Triplet.with(0, 0.0, Collections.emptyList()));
+        map.put((Long) 180L, Triplet.with(0, 0.0, Collections.emptyList()));
+        map.put((Long) 210L, Triplet.with(0, 0.0, Collections.emptyList()));
+        map.put((Long) 99999L, Triplet.with(0, 0.0, Collections.emptyList()));
+
+        final List<Trade> trades = account.getTrades().stream().sorted(Comparator.comparing(Trade::getTradeCloseTime)).toList();
+        trades.forEach(trade -> {
+            final Long key = getTradeDurationKey(trade);
+            if (map.containsKey(key)) {
+                map.replace(key, increment(map.get(key), trade, analysisFilter));
+            } else {
+                map.put(key, increment(Triplet.with(0, 0.0, new ArrayList<>()), trade, analysisFilter));
+            }
+        });
+
+        final List<AnalysisResult> results = new ArrayList<>();
+        map
+                .entrySet()
+                .stream()
+                .sorted(Map.Entry.comparingByKey())
+                .toList()
+                .forEach(e -> results.add(new AnalysisResult(e.getKey().toString(), e.getValue().getValue1(), e.getValue().getValue0())));
+
+        return results;
+    }
+
 
     //  HELPERS
 
@@ -183,6 +227,36 @@ public class AnalysisService {
     }
 
     /**
+     * Computes a trade duration key
+     *
+     * @param trade {@link Trade}
+     * @return {@link Long}
+     */
+    private Long getTradeDurationKey(final Trade trade) {
+
+        final long val = Math.abs(ChronoUnit.MINUTES.between(trade.getTradeCloseTime(), trade.getTradeOpenTime()));
+        if (val < 5) {
+            return (Long) 5L;
+        } else if (val < 30) {
+            return (Long) 30L;
+        } else if (val < 60) {
+            return (Long) 60L;
+        } else if (val < 90) {
+            return (Long) 90L;
+        } else if (val < 120) {
+            return (Long) 120L;
+        } else if (val < 150) {
+            return (Long) 150L;
+        } else if (val < 180) {
+            return (Long) 180L;
+        } else if (val < 210) {
+            return (Long) 210L;
+        }
+
+        return (Long) 99999L;
+    }
+
+    /**
      * Increments the counter for analysis objects with the given {@link Trade}
      *
      * @param triplet        initial {@link Triplet}
@@ -194,7 +268,7 @@ public class AnalysisService {
 
         int count = triplet.getValue0();
         double val = triplet.getValue1();
-        final List<Trade> trades = triplet.getValue2();
+        final List<Trade> trades = new ArrayList<>(triplet.getValue2());
         trades.add(trade);
 
         switch (analysisFilter) {

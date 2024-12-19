@@ -21,6 +21,7 @@ import org.springframework.stereotype.Service;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -110,9 +111,6 @@ public class AccountDetailsService {
         final double drawdown = calculateDrawdown(cumulativeTrades);
         final double maxProfit = cumulativeTrades.stream().mapToDouble(CumulativeTrade::netProfit).max().orElse(0.0);
 
-        //  TODO: include approximated drawdown by adding the average loss to the drawdown to give a close estimate
-        //  TODO: calculate drawdown for negative accounts as well, use the lowest of both values
-
         return new AccountInsights(
                 tradeRecords.size(),
                 currentPL,
@@ -140,11 +138,13 @@ public class AccountDetailsService {
         final double positiveProfitCount = this.mathService.getDouble(trades.stream().mapToDouble(Trade::getNetProfit).filter(d -> d > 0).count());
         final double positiveProfit = this.mathService.getDouble(trades.stream().mapToDouble(Trade::getNetProfit).filter(d -> d > 0).sum());
         final double negativeProfit = this.mathService.getDouble(trades.stream().mapToDouble(Trade::getNetProfit).filter(d -> d < 0).sum());
+        final double drawdown = calculateDrawdown(generativeCumulativeTrades(account));
+        final double averageLoss = trades.stream().mapToDouble(Trade::getNetProfit).filter(d -> d < 0).average().orElse(0.0);
 
         return new AccountStatistics(
                 account.getBalance(),
                 trades.stream().mapToDouble(Trade::getNetProfit).filter(d -> d > 0).average().orElse(0.0),
-                trades.stream().mapToDouble(Trade::getNetProfit).filter(d -> d < 0).average().orElse(0.0),
+                averageLoss,
                 trades.size(),
                 calculateRiskToRewardRatio(account),
                 trades.stream().mapToDouble(Trade::getLotSize).sum(),
@@ -152,7 +152,11 @@ public class AccountDetailsService {
                 this.mathService.wholePercentage(positiveProfitCount, this.mathService.getDouble(trades.size())),
                 this.mathService.divide(positiveProfit, Math.abs(negativeProfit)),
                 this.mathService.wholePercentage(positiveProfit, this.mathService.add(positiveProfit, Math.abs(negativeProfit))),
-                calculateSharpeRatio(account)
+                calculateSharpeRatio(account),
+                Math.round(trades.stream().mapToLong(tr -> Math.abs(ChronoUnit.SECONDS.between(tr.getTradeOpenTime(), tr.getTradeCloseTime()))).average().orElse(0.0)),
+                Math.round(trades.stream().filter(tr -> tr.getNetProfit() > 0).mapToLong(tr -> Math.abs(ChronoUnit.SECONDS.between(tr.getTradeOpenTime(), tr.getTradeCloseTime()))).average().orElse(0.0)),
+                Math.round(trades.stream().filter(tr -> tr.getNetProfit() < 0).mapToLong(tr -> Math.abs(ChronoUnit.SECONDS.between(tr.getTradeOpenTime(), tr.getTradeCloseTime()))).average().orElse(0.0)),
+                this.mathService.add(Math.abs(drawdown), Math.abs(averageLoss))
         );
     }
 

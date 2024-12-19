@@ -16,8 +16,28 @@ import com.bluebell.planter.core.models.entities.account.Account;
  * @param profitFactor size of your profits in relation to your losses
  * @param retention percentage points retained in trading (>50% indicates profitability)
  * @param sharpeRatio sharpe ratio
+ * @param tradeDuration average trade duration in seconds
+ * @param winDuration average win trade duration in seconds
+ * @param lossDuration average loss trade duration in seconds
+ * @param assumedDrawdown calculated drawdown plus average loss
  * @author Stephen Prizio
  * @version 0.0.7
  */
-public record AccountStatistics(double balance, double averageProfit, double averageLoss, int numberOfTrades, double rrr, double lots, double expectancy, double winPercentage, double profitFactor, double retention, double sharpeRatio) {
+public record AccountStatistics(
+        double balance,
+        double averageProfit,
+        double averageLoss,
+        int numberOfTrades,
+        double rrr,
+        double lots,
+        double expectancy,
+        double winPercentage,
+        double profitFactor,
+        double retention,
+        double sharpeRatio,
+        long tradeDuration,
+        long winDuration,
+        long lossDuration,
+        double assumedDrawdown
+) {
 }

@@ -4,6 +4,7 @@ import com.bluebell.planter.api.controllers.AbstractApiController;
 import com.bluebell.planter.api.models.records.json.StandardJsonResponse;
 import com.bluebell.planter.core.constants.CoreConstants;
 import com.bluebell.planter.core.enums.analysis.AnalysisFilter;
+import com.bluebell.planter.core.enums.analysis.TradeDurationFilter;
 import com.bluebell.planter.core.models.entities.account.Account;
 import com.bluebell.planter.core.models.nonentities.records.analysis.AnalysisResult;
 import com.bluebell.planter.core.services.account.AccountService;
@@ -17,6 +18,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.DayOfWeek;
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -43,7 +45,7 @@ public class AnalysisApiController extends AbstractApiController {
     //  ----------------- GET REQUESTS -----------------
 
     /**
-     * Returns a {@link StandardJsonResponse} containing {@link java.util.List} of {@link AnalysisResult}s
+     * Returns a {@link StandardJsonResponse} containing a {@link List} of {@link AnalysisResult}s
      *
      * @param accountNumber account number
      * @param filter {@link AnalysisFilter}
@@ -69,7 +71,7 @@ public class AnalysisApiController extends AbstractApiController {
     }
 
     /**
-     * Returns a {@link StandardJsonResponse} containing {@link java.util.List} of {@link AnalysisResult}s
+     * Returns a {@link StandardJsonResponse} containing a {@link List} of {@link AnalysisResult}s
      *
      * @param accountNumber account number
      * @param filter {@link AnalysisFilter}
@@ -93,7 +95,7 @@ public class AnalysisApiController extends AbstractApiController {
     }
 
     /**
-     * Returns a {@link StandardJsonResponse} containing {@link java.util.List} of {@link AnalysisResult}s
+     * Returns a {@link StandardJsonResponse} containing a {@link List} of {@link AnalysisResult}s
      *
      * @param accountNumber account number
      * @param filter {@link AnalysisFilter}
@@ -120,5 +122,35 @@ public class AnalysisApiController extends AbstractApiController {
 
         final Optional<Account> account = this.accountService.findAccountByAccountNumber(accountNumber);
         return account.map(value -> new StandardJsonResponse(true, this.analysisService.computeWeekdayTimeBucketAnalysis(value, DayOfWeek.valueOf(weekday.toUpperCase()), RadicleTimeInterval.THIRTY_MINUTE, AnalysisFilter.getAnalysisFilter(filter.toUpperCase())), StringUtils.EMPTY)).orElseGet(() -> new StandardJsonResponse(true, null, CoreConstants.Validation.Account.ACCOUNT_NOT_FOUND));
+    }
+
+    /**
+     * Returns a {@link StandardJsonResponse} containing a {@link List} of {@link AnalysisResult}
+     *
+     * @param accountNumber account number
+     * @param filter {@link AnalysisFilter}
+     * @param tradeDurationFilter {@link TradeDurationFilter}
+     * @param request {@link HttpServletRequest}
+     * @return {@link StandardJsonResponse}
+     */
+    @ValidateApiToken
+    @GetMapping("/trade-durations")
+    public StandardJsonResponse getTradeDurationsAnalysis(
+            final @RequestParam("accountNumber") long accountNumber,
+            final @RequestParam("filter") String filter,
+            final @RequestParam("tradeDurationFilter") String tradeDurationFilter,
+            final HttpServletRequest request
+    ) {
+
+        if (AnalysisFilter.getAnalysisFilter(filter) == null) {
+            return new StandardJsonResponse(false, null, String.format(CoreConstants.Validation.DataIntegrity.INVALID_FILTER, filter));
+        }
+
+        if (TradeDurationFilter.getTradeDurationFilter(tradeDurationFilter) == null) {
+            return new StandardJsonResponse(false, null, String.format(CoreConstants.Validation.DataIntegrity.INVALID_FILTER, tradeDurationFilter));
+        }
+
+        final Optional<Account> account = this.accountService.findAccountByAccountNumber(accountNumber);
+        return account.map(value -> new StandardJsonResponse(true, this.analysisService.computeTradeDurationAnalysis(value, AnalysisFilter.getAnalysisFilter(filter.toUpperCase()), TradeDurationFilter.getTradeDurationFilter(tradeDurationFilter.toUpperCase())), StringUtils.EMPTY)).orElseGet(() -> new StandardJsonResponse(true, null, CoreConstants.Validation.Account.ACCOUNT_NOT_FOUND));
     }
 }
