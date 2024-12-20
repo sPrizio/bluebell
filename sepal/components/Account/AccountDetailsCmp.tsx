@@ -21,15 +21,16 @@ import Link from "next/link";
 import ImportTradesForm from "@/components/Form/Trade/ImportTradesForm";
 import {getAccountDetails} from "@/lib/functions/account-functions";
 import {getRecentTradeRecords} from "@/lib/functions/trade-functions";
+import {Account, AccountEquityPoint, TradeRecordReport, AccountDetails} from "@/types/apiTypes";
 
 /**
- * Renders the Account details layout
+ * Renders the account details layout
  *
  * @param account Account info
  * @author Stephen Prizio
  * @version 0.0.2
  */
-export default function AccountDetails(
+export default function AccountDetailsCmp(
   {
     account,
   }
@@ -103,8 +104,6 @@ export default function AccountDetails(
     const data = await getRecentTradeRecords(account.accountNumber, 'DAILY', tradeRecordReportLookback)
     setRecentTradeRecords(data)
 
-    console.log(data)
-
     setIsLoading(false)
   }
 
@@ -167,51 +166,41 @@ export default function AccountDetails(
   return (
     <div className={'grid sm:grid-cols-1 lg:grid-cols-2 xl:grid-cols-4 gap-6'}>
       <div className={'sm:col-span-1 lg:col-span-2 xl:col-span-4'}>
-        <SimpleBanner
-          text={(account?.active ?? false) ? 'This account is currently active.' : 'This account is inactive.'}
-          variant={(account?.active ?? false) ? 'info' : 'danger'}
-        />
-      </div>
-      <div className={'sm:col-span-1 lg:col-span-2 xl:col-span-4'}>
-        <div className={'flex gap-4 items-center justify-end'}>
-          {/*{
-            (account?.active ?? false) ?
-              <div className={''}>
-                <BaseModal
-                  key={0}
-                  title={'Import Trades'}
-                  description={'Here you may manually import trades into the account for tracking.'}
-                  trigger={<Button className="" variant={"primary"}><IconCirclePlus/>&nbsp;Import Trades</Button>}
-                  content={<ImportTradesForm account={account} />}
-                />
-              </div> : null
-          }*/}
-          <div className={''}>
-            <BaseModal
-              key={0}
-              title={'Import Trades'}
-              description={'Here you may manually import trades into the account for tracking.'}
-              trigger={<Button className="" variant={"primary"}><IconCirclePlus/>&nbsp;Import Trades</Button>}
-              content={<ImportTradesForm account={account}/>}
+        <div className={'flex gap-12 items-center'}>
+          <div className={'flex-1'}>
+            <SimpleBanner
+              text={(account?.active ?? false) ? 'This account is currently active.' : 'This account is inactive.'}
+              variant={(account?.active ?? false) ? 'info' : 'danger'}
             />
           </div>
-          <div className={''}>
-            <BaseModal
-              key={0}
-              title={'Update Trading Account Information'}
-              description={'Here you can edit/update any Account information. Note that some aspects of this Account cannot be changed after Account creation.'}
-              trigger={<Button className="" variant={"outline"}><IconEdit/>&nbsp;Update</Button>}
-              content={<AccountForm mode={'edit'} account={account}/>}
-            />
-          </div>
-          <div className={''}>
-            <BaseModal
-              key={1}
-              title={'Delete Trading Account'}
-              trigger={<Button
-                className="bg-primaryRed text-white hover:bg-primaryRedLight"><IconTrash/>&nbsp;Delete</Button>}
-              content={<DeleteAccountForm account={account ?? null}/>}
-            />
+          <div className={'flex gap-4 items-center justify-end'}>
+            <div className={''}>
+              <BaseModal
+                key={0}
+                title={'Import Trades'}
+                description={'Here you may manually import trades into the account for tracking.'}
+                trigger={<Button className="" variant={"primary"}><IconCirclePlus/>&nbsp;Import Trades</Button>}
+                content={<ImportTradesForm account={account}/>}
+              />
+            </div>
+            <div className={''}>
+              <BaseModal
+                key={0}
+                title={'Update Trading Account Information'}
+                description={'Here you can edit/update any Account information. Note that some aspects of this Account cannot be changed after Account creation.'}
+                trigger={<Button className="" variant={"outline"}><IconEdit/>&nbsp;Update</Button>}
+                content={<AccountForm mode={'edit'} account={account}/>}
+              />
+            </div>
+            <div className={''}>
+              <BaseModal
+                key={1}
+                title={'Delete Trading Account'}
+                trigger={<Button
+                  className="bg-primaryRed text-white hover:bg-primaryRedLight"><IconTrash/>&nbsp;Delete</Button>}
+                content={<DeleteAccountForm account={account ?? null}/>}
+              />
+            </div>
           </div>
         </div>
       </div>
@@ -227,7 +216,8 @@ export default function AccountDetails(
                 headerControls={[
                   <div key={0} className="flex items-center space-x-2">
                     <Label htmlFor="airplane-mode">Show as Points</Label>
-                    <Switch id="airplane-mode" checked={showPoints} onCheckedChange={setShowPoints} disabled={(accDetails?.equity ?? []).length <= 1} />
+                    <Switch id="airplane-mode" checked={showPoints} onCheckedChange={setShowPoints}
+                            disabled={(accDetails?.equity ?? []).length <= 1}/>
                   </div>,
                   <div key={1}>
                     <Link href={`/transactions?account=${account?.accountNumber}`}>

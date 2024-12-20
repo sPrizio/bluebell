@@ -4,9 +4,10 @@ import {useSepalPageInfoContext} from "@/lib/context/SepalContext";
 import React, {useEffect, useState} from "react";
 import {Icons} from "@/lib/enums";
 import {useParams} from "next/navigation";
-import {delay, isNumeric} from "@/lib/functions/util-functions";
+import {isNumeric} from "@/lib/functions/util-functions";
 import {Loader2} from "lucide-react";
-import AccountDetails from "@/components/Account/AccountDetails";
+import AccountDetailsCmp from "@/components/Account/AccountDetailsCmp";
+import {Account} from "@/types/apiTypes";
 
 /**
  * Renders the Account details page
@@ -55,7 +56,6 @@ export default function AccountDetailPage() {
   async function getAccount() {
 
     setIsLoading(true)
-    await delay(2000)
 
     if (isNumeric(id)) {
       const accountTestId = parseInt(id)
@@ -104,7 +104,7 @@ export default function AccountDetailPage() {
           </div>
           :
           <div className={'grid grid-cols-1 gap-4'}>
-            {!account ? <div>No Content</div> : <AccountDetails account={account} />}
+            {!account ? <div>No Content</div> : <AccountDetailsCmp account={account} />}
           </div>
       }
     </div>

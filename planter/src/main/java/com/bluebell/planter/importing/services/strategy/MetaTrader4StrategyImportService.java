@@ -214,7 +214,7 @@ public class MetaTrader4StrategyImportService extends AbstractImportService impl
         if (data.size() == 9 && MetaTrader4TradeType.isEntry(type)) {
             return new MetaTrader4TradeWrapper(
                     data.get(3),
-                    LocalDateTime.parse(data.get(1), DateTimeFormatter.ofPattern("yyyy.MM.dd HH:mm")),
+                    LocalDateTime.parse(data.get(1), DateTimeFormatter.ofPattern("yyyy.MM.dd HH:mm")).minusHours(7),
                     null,
                     type,
                     Double.parseDouble(data.get(4)),
@@ -229,7 +229,7 @@ public class MetaTrader4StrategyImportService extends AbstractImportService impl
             return new MetaTrader4TradeWrapper(
                     data.get(3),
                     null,
-                    LocalDateTime.parse(data.get(1), DateTimeFormatter.ofPattern("yyyy.MM.dd HH:mm")),
+                    LocalDateTime.parse(data.get(1), DateTimeFormatter.ofPattern("yyyy.MM.dd HH:mm")).minusHours(7),
                     type,
                     Double.parseDouble(data.get(4)),
                     this.product,

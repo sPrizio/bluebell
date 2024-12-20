@@ -20,9 +20,10 @@ Current Release: **Pre-release**
 
 ### Todo List
 - Improve Trade import service to include withdrawals and deposits (for withdrawal example, look at live CFD account)
-- When importing trades to an account that is inactive, mark it as active
 - Accounts that have not been traded on for 1 calendar year should be marked as inactive (use a cronjob for this)
 - Improvements to UniqueIdentifierService to really make every possible entity unique
+- CSV import service for FTMO
+- Add testing
 ---
 
 ### Version History
@@ -32,6 +33,6 @@ Current Release: **Pre-release**
 - **0.0.4** : Forex Factory calendar integration
 - **0.0.5** : Trade Record Integration
 - **0.0.6** : Charting Implementation
-- **0.0.7** (In Progress) : Integrating with **sepal**
-- **0.0.8** (In Progress) : Import MT4 Strategy Results
+- **0.0.7** : Integrating with **sepal**
+- **0.0.8** (In Progress) : Import FTMO Results
 

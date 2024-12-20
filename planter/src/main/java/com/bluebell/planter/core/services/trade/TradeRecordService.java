@@ -146,26 +146,28 @@ public class TradeRecordService {
                     acc,
                     acc.getAccountNumber(),
                     acc.getName(),
-                    getRecentTradeRecords(acc, flowerpotTimeInterval, count)
+                    getTradeRecords(start, end, acc, flowerpotTimeInterval, count)
             )));
 
             if (CollectionUtils.isNotEmpty(records)) {
                 final int trades = records.stream().mapToInt(tr -> tr.report().tradeRecordTotals().trades()).sum();
 
-                entries.add(
-                        new TradeLogEntry(
-                                records.getLast().report().tradeRecords().getLast().end(),
-                                records.getFirst().report().tradeRecords().getFirst().start(),
-                                records,
-                                new TradeLogEntryRecordTotals(
-                                        accounts.size(),
-                                        this.mathService.getDouble(records.stream().mapToDouble(tr -> tr.report().tradeRecordTotals().netProfit()).sum()),
-                                        this.mathService.getDouble(records.stream().mapToDouble(tr -> tr.report().tradeRecordTotals().netPoints()).sum()),
-                                        trades,
-                                        this.mathService.wholePercentage(records.stream().mapToInt(tr -> tr.report().tradeRecordTotals().tradesWon()).sum(), trades)
-                                )
-                        )
-                );
+                if (trades != 0) {
+                    entries.add(
+                            new TradeLogEntry(
+                                    records.getLast().report().tradeRecords().getLast().end(),
+                                    records.getFirst().report().tradeRecords().getFirst().start(),
+                                    records,
+                                    new TradeLogEntryRecordTotals(
+                                            accounts.size(),
+                                            this.mathService.getDouble(records.stream().mapToDouble(tr -> tr.report().tradeRecordTotals().netProfit()).sum()),
+                                            this.mathService.getDouble(records.stream().mapToDouble(tr -> tr.report().tradeRecordTotals().netPoints()).sum()),
+                                            trades,
+                                            this.mathService.wholePercentage(records.stream().mapToInt(tr -> tr.report().tradeRecordTotals().tradesWon()).sum(), trades)
+                                    )
+                            )
+                    );
+                }
             }
         }
 

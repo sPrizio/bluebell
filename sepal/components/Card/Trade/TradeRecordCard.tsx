@@ -9,13 +9,8 @@ import {Label} from "@/components/ui/label";
 import {Switch} from "@/components/ui/switch";
 import {useState} from "react";
 import {formatNegativePoints, formatNumberForDisplay} from "@/lib/functions/util-functions";
-import {
-  IconArrowUp,
-  IconArrowUpCircle, IconCircleArrowDownFilled,
-  IconCircleArrowUpFilled,
-  IconCircleCheckFilled,
-  IconXboxXFilled
-} from "@tabler/icons-react";
+import {IconCircleCheckFilled, IconXboxXFilled} from "@tabler/icons-react";
+import {TradeRecord} from "@/types/apiTypes";
 
 /**
  * Renders a card for displaying Trade records
@@ -23,7 +18,7 @@ import {
  * @param tradeRecord Trade record
  * @param aggInterval aggregated interval
  * @author Stephen Prizio
- * @version 0.0.1
+ * @version 0.0.2
  */
 export default function TradeRecordCard(
   {

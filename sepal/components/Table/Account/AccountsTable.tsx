@@ -140,15 +140,15 @@ export default function AccountsTable(
                                 <Badge text={'Open'} variant={'success'} /> : moment(item.accountCloseTime).format(DateTime.ISOShortMonthDayYearWithTimeFormat)
                             }
                           </TableCell>
-                          <TableCell className={'text-center flex items-center justify-center h-full'}>
-                            <div className={''}>
+                          <TableCell className={'text-center'}>
+                            <div className={'flex items-center justify-center'}>
                               {getFlagForCode(item.currency?.code ?? '')}
                             </div>
                           </TableCell>
                           <TableCell className={'text-center'}>{item.tradePlatform?.label ?? '-'}</TableCell>
                           <TableCell className={'text-center'}>{item.accountType?.label ?? '-'}</TableCell>
-                          <TableCell className={'text-center flex items-center justify-center'}>
-                            <div className={''}>
+                          <TableCell className={'text-center'}>
+                            <div className={'flex items-center justify-center'}>
                               {getBrokerImage(item.broker.code)}
                             </div>
                           </TableCell>

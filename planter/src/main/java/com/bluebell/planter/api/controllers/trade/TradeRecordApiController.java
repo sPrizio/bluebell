@@ -126,10 +126,6 @@ public class TradeRecordApiController extends AbstractApiController {
         return new StandardJsonResponse(true, controls, StringUtils.EMPTY);
     }
 
-    //  TODO: fix max loss bug (not showing the right number)
-
-    //  TODO: include drawdown percentages next to max loss
-
     /**
      * Returns a {@link TradeLog}
      *

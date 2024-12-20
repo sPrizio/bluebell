@@ -33,12 +33,13 @@ Current Release: **Pre-release**
 - TODO's on the various functions
 - Add documentation to the various functions files
 - Inline edit/delete for phone numbers 
-- Image screwing up the alignment in the accounts table
 - Cannot create an inactive account
+- Dashboard should only show active accounts
+- Performance cards need to be improved, drawdown values are incorrect
 
 ## Improvements
 - Collapsible table rows for each date in the Market News table
-- Passed news day should start auto-collapsed
+- Previous news days should start auto-collapsed
 - Custom create new account page (like the 404) for handling /default
 - Creating an account or updating the account can include account close times
 - Trades Page -> Filters for dates and trades (and sorting by date)
