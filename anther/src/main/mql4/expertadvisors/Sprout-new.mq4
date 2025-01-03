@@ -5,7 +5,7 @@
 //+------------------------------------------------------------------+
 #property copyright "Stephen Prizio"
 #property link      "https://www.bluebell.com"
-#property version   "1.00"
+#property version   "1.10"
 #property strict
 
 enum tradeSignal {
@@ -478,8 +478,8 @@ void SetBreakEvenStop() {
 }
 
 /*
-   Control Statistics. Sprout Version 1.0
-   As of July 29th, 2024 (exclusive)
+   Control Statistics. Sprout Version 1.1
+   As of January 1st, 2025 (exclusive)
    Parameters:
       online = true;
       lotSize = 0.25;
@@ -489,7 +489,7 @@ void SetBreakEvenStop() {
       minimumReward = 65.0;
       profitMultiplier = 2.0;
       tradesLimit = 3;
-      allowBreakEvenStop = true;
+      allowBreakEvenStop = false;
       breakEvenStopLevel = 55;
       stopLevelOffset = 0.0;
 
@@ -504,11 +504,11 @@ void SetBreakEvenStop() {
 */
 /*
    +------------------------------------------------------------------+
-   | Trades                                                        342 |
-   | Net Profit                                             $13,817.35 |
-   | Profitability                                                1.40 |
-   | Win %                                                      53.22% |
-   | Max Drawdown                                    $2,703.65 (7.62%) |
-   | Relative Drawdown                               $2,703.65 (7.62%) |
+   | Trades                                                        440 |
+   | Net Profit                                             $19,367.15 |
+   | Profitability                                                1.35 |
+   | Win %                                                      52.50% |
+   | Max Drawdown                                    $3,285.30 (8.95%) |
+   | Relative Drawdown                               $3,285.30 (8.95%) |
    +------------------------------------------------------------------+
 */
