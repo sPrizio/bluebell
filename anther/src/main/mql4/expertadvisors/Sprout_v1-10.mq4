@@ -17,15 +17,7 @@ enum tradeSignal {
 
 input bool online = true;
 input double lotSize = 0.25;
-input double allowableRisk = 65.0;
-input double allowableReward = 85.0;
-input double minimumRisk = 35.0;
-input double minimumReward = 65.0;
-input double profitMultiplier = 2.0;
 input int tradesLimit = 3;
-input bool allowBreakEvenStop = true;
-input int breakEvenStopLevel = 55.0;
-input double stopLevelOffset = 0.0;
 
 // Global Variables
 int activeTradeId = -1;
@@ -33,8 +25,7 @@ int slippage = 10;
 datetime globalTime;
 bool canTrade = false;
 int tradesToday = 0;
-double todaysProfit = 0.0;
-double openingBalance = AccountBalance();
+double activeAtr = -1.0;
 
 /*
    +------------------------------------------------------------------+
@@ -76,10 +67,6 @@ void OnTick() {
       if (canTrade) {
          LookForTradeSignals();
       }
-
-      if (HasActiveTrade()) {
-         SetBreakEvenStop();
-      }
    }
 }
 
@@ -94,8 +81,6 @@ void OnBar() {
       if (IsNewDay()) {
          canTrade = false;
          tradesToday = 0;
-         todaysProfit = 0.0;
-         openingBalance = AccountBalance();
       }
 
       if (IsTradeWindowOpen()) {
@@ -106,8 +91,12 @@ void OnBar() {
          CloseDay();
       }
 
-      if (openingBalance != AccountBalance()) {
-         todaysProfit = AccountBalance() - openingBalance;
+      if (!HasOpenTrades()) {
+         activeAtr = -1.0;
+      }
+
+      if (activeTradeId != -1.0 && activeAtr != -1.0 && iATR(_Symbol, _Period, 14, 1) < activeAtr) {
+         CloseDay();
       }
    }
 }
@@ -139,12 +128,19 @@ bool IsNewDay() {
    return TimeHour(globalTime) == 1 && TimeMinute(globalTime) == 0;
 }
 
+/*
+   Checks for end of the day
+
+   @return true if the day has ended
+*/
 bool IsEndOfDay() {
    return TimeHour(globalTime) > 22 && TimeHour(globalTime) <= 23;
 }
 
 /*
    Checks if the trading window for this strategy is open
+
+   @return true if the trading window has opened
 */
 bool IsTradeWindowOpen() {
 
@@ -207,6 +203,7 @@ void CloseDay() {
          }
 
          activeTradeId = -1;
+         activeAtr = -1.0;
       }
    }
 }
@@ -289,17 +286,6 @@ bool HasTradeConfirmation(int signal) {
    return false;
 }
 
-bool ShouldTrade(int signal) {
-   /*if (signal == BUY_SIGNAL) {
-      return todaysProfit <= 0.0;
-   } else if (signal == SELL_SIGNAL) {
-      return todaysProfit <= 0.0;
-   }
-
-   return false;*/
-   return true;
-}
-
 /*
    Looks for trade signals on each tick
 
@@ -313,11 +299,12 @@ int LookForTradeSignals() {
    double sigHigh = High[1];
    double sigLow = Low[1];
 
-   if (sigLow < refLow && Bid > sigHigh && HasTradeConfirmation(BUY_SIGNAL) && ShouldTrade(BUY_SIGNAL)) {
+   if (sigLow < refLow && Bid > sigHigh && HasTradeConfirmation(BUY_SIGNAL)) {
       canTrade = false;
       OpenStandardTrade(GetFullSize(), BUY_SIGNAL);
+
       return BUY_SIGNAL;
-   } else if (sigHigh > refHigh && Ask < sigLow && HasTradeConfirmation(SELL_SIGNAL) && ShouldTrade(SELL_SIGNAL)) {
+   } else if (sigHigh > refHigh && Ask < sigLow && HasTradeConfirmation(SELL_SIGNAL)) {
       canTrade = false;
       OpenStandardTrade(GetFullSize(), SELL_SIGNAL);
       return SELL_SIGNAL;
@@ -327,80 +314,45 @@ int LookForTradeSignals() {
 }
 
 /*
-   Specialized function to calculate sl and tp
-
-   @return sl and tp prices
-*/
-double CalculateActualLimit(double price, double window, bool shouldAdd, bool includeMultiplier) {
-
-   if (!includeMultiplier) {
-      if (window < minimumRisk) {
-         return CalculateLimit(price, minimumRisk, shouldAdd);
-      } else if (window > allowableRisk) {
-         return CalculateLimit(price, allowableRisk, shouldAdd);
-      } else {
-         return CalculateLimit(price, window, shouldAdd);
-      }
-   }
-
-   double profitWindow = window * profitMultiplier;
-   if (profitWindow < minimumReward) {
-      return CalculateLimit(price, minimumReward, shouldAdd);
-   } else if (profitWindow > allowableReward) {
-      return CalculateLimit(price, allowableReward, shouldAdd);
-   } else {
-      return CalculateLimit(price, profitWindow, shouldAdd);
-   }
-}
-
-/*
-   Used to calculate sl and tp
-
-   @return sl or tp price
-*/
-double CalculateLimit(double price, double increment, bool shouldAdd) {
-
-   if (shouldAdd) {
-      return price + increment;
-   } else {
-      return price - increment;
-   }
-}
-
-/*
    Opens a standard market order, depending the on given signal. The window acts as the stop loss and the window * profit multiplier acts
    as the take profit
 */
 void OpenStandardTrade(double window, int signal) {
+
+   double risk = MathAbs(High[1] - Low[1]) * 0.95;
+   if (((risk / Open[1]) * 100.0) > 0.65) {
+      return;
+   }
+
    if (signal == BUY_SIGNAL) {
-      //int val = OrderSend(_Symbol, OP_BUY, lotSize, Ask, slippage, CalculateActualLimit(Bid, window, false, false), CalculateActualLimit(Bid, window, true, true), "Sprout Buy", 911);
-      //int val = OrderSend(_Symbol, OP_BUY, lotSize, Ask, slippage, Low[1], CalculateActualLimit(Bid, window, true, true), "Sprout Buy", 911);
-      int val = OrderSend(_Symbol, OP_BUY, lotSize, Ask, slippage, TEMP(true), CalculateActualLimit(Bid, window, true, true), "Sprout Buy", 911);
+      int val = OrderSend(_Symbol, OP_BUY, lotSize, Ask, slippage, CalculateStopLoss(true), Bid + (Bid * (0.5 / 100.0)), "Sprout Buy", 911);
       if (val == -1) {
          Print(StringFormat("An error occurred while trying to open a Buy at %d:%.2d", TimeHour(globalTime), TimeMinute(globalTime)));
          Print(GetLastError());
       } else {
          activeTradeId = val;
+         activeAtr = iATR(_Symbol, _Period, 14, 1);
          tradesToday +=1;
       }
    } else if (signal == SELL_SIGNAL) {
-      //int val = OrderSend(_Symbol, OP_SELL, lotSize, Bid, slippage, CalculateActualLimit(Ask, window, true, false), CalculateActualLimit(Ask, window, false, true), "Sprout Sell", 911);
-      //int val = OrderSend(_Symbol, OP_SELL, lotSize, Bid, slippage, High[1], CalculateActualLimit(Ask, window, false, true), "Sprout Sell", 911);
-      int val = OrderSend(_Symbol, OP_SELL, lotSize, Bid, slippage, TEMP(false), CalculateActualLimit(Ask, window, false, true), "Sprout Sell", 911);
+      int val = OrderSend(_Symbol, OP_SELL, lotSize, Bid, slippage, CalculateStopLoss(false), Ask - (Ask * (0.5 / 100.0)), "Sprout Sell", 911);
       if (val == -1) {
          Print(StringFormat("An error occurred while trying to open a Sell at %d:%.2d", TimeHour(globalTime), TimeMinute(globalTime)));
          Print(GetLastError());
       } else {
          activeTradeId = val;
+         activeAtr = iATR(_Symbol, _Period, 14, 1);
          tradesToday +=1;
       }
    }
 }
 
 /*
-TODO
+   Calculates the stop loss based on the previous candle
+
+   @return stop loss price
 */
-double TEMP(bool buy) {
+double CalculateStopLoss(bool buy) {
 
    double diff = MathAbs(High[1] - Low[1]) * 0.05;
    double point = 0.0;
@@ -411,7 +363,7 @@ double TEMP(bool buy) {
       point = High[1];
    }
 
-   return buy ? (point + diff) : (point - buy);
+   return buy ? (point + diff) : (point - diff);
 }
 
 /*
@@ -428,70 +380,12 @@ int GetOrderType() {
 }
 
 /*
-   Determines if a trade is currently active
-
-   @returns true if a trade is active
-*/
-bool HasActiveTrade() {
-
-   if (activeTradeId != -1) {
-      return true;
-   } else if (HasOpenTrades()) {
-      for (int pos = 0; pos < OrdersTotal(); pos++) {
-         if (OrderSelect(pos, SELECT_BY_POS)) {
-            if (StringFind(OrderComment(), "Sprout") != -1) {
-               activeTradeId = OrderTicket();
-            }
-         }
-      }
-   }
-
-   return activeTradeId != -1;
-}
-
-/*
-   Handle break even stops
-*/
-void SetBreakEvenStop() {
-   if (HasActiveTrade() && allowBreakEvenStop && breakEvenStopLevel > 0) {
-      double currentPrice = -1.0;
-      double difference = 0.0;
-
-      if (GetOrderType() == OP_BUY) {
-         currentPrice = Bid;
-         difference = stopLevelOffset * -1.0;
-      } else if (GetOrderType() == OP_SELL) {
-         currentPrice = Ask;
-         difference = stopLevelOffset;
-      }
-
-      if (currentPrice != -1 && OrderSelect(activeTradeId, SELECT_BY_TICKET)) {
-         if (MathAbs(OrderStopLoss() - OrderOpenPrice()) > 0 && MathAbs(currentPrice - OrderOpenPrice()) > breakEvenStopLevel) {
-            Print("Trade has moved far enough into profit, setting Stop Loss to breakeven.");
-
-            if (OrderModify(OrderTicket(), OrderOpenPrice(), OrderOpenPrice() + difference, OrderTakeProfit(), 0))  {
-               Print("Break-even Stop Loss was successfully set.");
-            }
-         }
-      }
-   }
-}
-
-/*
-   Control Statistics. Sprout Version 1.1
+   Control Statistics. Sprout Version 1.0
    As of January 1st, 2025 (exclusive)
    Parameters:
       online = true;
       lotSize = 0.25;
-      allowableRisk = 65.0;
-      allowableReward = 85.0;
-      minimumRisk = 35.0;
-      minimumReward = 65.0;
-      profitMultiplier = 2.0;
       tradesLimit = 3;
-      allowBreakEvenStop = false;
-      breakEvenStopLevel = 55;
-      stopLevelOffset = 0.0;
 
       // Global Variables
       activeTradeId = -1;
@@ -499,16 +393,15 @@ void SetBreakEvenStop() {
       globalTime;
       canTrade = false;
       tradesToday = 0;
-      todaysProfit = 0.0;
-      openingBalance = AccountBalance();
+      activeAtr = -1.0;
 */
 /*
    +------------------------------------------------------------------+
-   | Trades                                                        440 |
-   | Net Profit                                             $19,367.15 |
-   | Profitability                                                1.35 |
-   | Win %                                                      52.50% |
-   | Max Drawdown                                    $3,285.30 (8.95%) |
-   | Relative Drawdown                               $3,285.30 (8.95%) |
+   | Trades                                                        428 |
+   | Net Profit                                             $23,981.70 |
+   | Profitability                                                1.53 |
+   | Win %                                                      51.17% |
+   | Max Drawdown                                   $3,950.80 (10.92%) |
+   | Relative Drawdown                              $3,950.80 (10.92%) |
    +------------------------------------------------------------------+
 */
