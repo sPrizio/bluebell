@@ -129,6 +129,7 @@ export async function registerUser(values: any): Promise<User | null> {
 /**
  * Performs the user registration api call
  *
+ * @param username username
  * @param values form values
  */
 export async function updateUser(username: string, values: any): Promise<User | null> {
@@ -175,6 +176,9 @@ export async function updateUser(username: string, values: any): Promise<User | 
   return null;
 }
 
+/**
+ * Obtains the system's currencies
+ */
 export async function getCurrencies(): Promise<Array<Currency> | null> {
 
   const headers = getAuthHeader()
@@ -200,6 +204,9 @@ export async function getCurrencies(): Promise<Array<Currency> | null> {
   return null;
 }
 
+/**
+ * Obtains the systems brokers
+ */
 export async function getBrokers(): Promise<Array<Broker> | null> {
 
   const headers = getAuthHeader()
@@ -225,6 +232,9 @@ export async function getBrokers(): Promise<Array<Broker> | null> {
   return null;
 }
 
+/**
+ * Obtains the system's trade platforms
+ */
 export async function getTradePlatforms(): Promise<Array<TradePlatform> | null> {
 
   const headers = getAuthHeader()
@@ -250,6 +260,9 @@ export async function getTradePlatforms(): Promise<Array<TradePlatform> | null> 
   return null;
 }
 
+/**
+ * Obtains the system's account types
+ */
 export async function getAccountTypes(): Promise<Array<AccountType> | null> {
 
   const headers = getAuthHeader()
@@ -275,6 +288,9 @@ export async function getAccountTypes(): Promise<Array<AccountType> | null> {
   return null;
 }
 
+/**
+ * Obtains account creation info, which refers to the various system values needed when configuring a new account
+ */
 export async function getAccountCreationInfo(): Promise<AccountCreationInfo | null> {
 
   const headers = getAuthHeader()
@@ -293,10 +309,16 @@ export async function getAccountCreationInfo(): Promise<AccountCreationInfo | nu
   };
 }
 
+/**
+ * Creates a new account
+ *
+ * @param values account values
+ */
 export async function createAccount(values: any): Promise<Account | null> {
 
   const ret = {
     account: {
+      active: values?.active ?? '',
       balance: values?.balance ?? '',
       name: values?.name ?? '',
       number: values?.accountNumber ?? '',
@@ -332,6 +354,12 @@ export async function createAccount(values: any): Promise<Account | null> {
   return null;
 }
 
+/**
+ * Updates an existing account with the given payload
+ *
+ * @param accNumber account number
+ * @param values updated values
+ */
 export async function updateAccount(accNumber: number, values: any): Promise<Account | null> {
 
   const ret = {
@@ -372,6 +400,11 @@ export async function updateAccount(accNumber: number, values: any): Promise<Acc
   return null;
 }
 
+/**
+ * Deletes an account
+ *
+ * @param accNumber account number
+ */
 export async function deleteAccount(accNumber: number): Promise<boolean | null> {
 
   const headers = getAuthHeader()
@@ -395,6 +428,11 @@ export async function deleteAccount(accNumber: number): Promise<boolean | null> 
   return null;
 }
 
+/**
+ * Obtains account information for the given account number
+ *
+ * @param accNumber account number
+ */
 export async function getAccountDetails(accNumber: number): Promise<AccountDetails | null> {
 
   const headers = getAuthHeader()
@@ -420,6 +458,9 @@ export async function getAccountDetails(accNumber: number): Promise<AccountDetai
   return null;
 }
 
+/**
+ * Obtains a list of the recent transactions, this will default to the default account
+ */
 export async function getRecentTransactions(): Promise<Array<Transaction> | null> {
 
   const headers = getAuthHeader()

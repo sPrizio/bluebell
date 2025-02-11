@@ -2,6 +2,9 @@ import {getAuthHeader} from "@/lib/functions/security-functions";
 import {ApiUrls} from "@/lib/constants";
 import { Portfolio } from "@/types/apiTypes";
 
+/**
+ * Fetches the User's portfolio
+ */
 export async function getPortfolio(): Promise<Portfolio | null> {
 
   const headers = getAuthHeader()

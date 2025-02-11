@@ -30,6 +30,9 @@ export async function fetchNews(): Promise<boolean | null> {
 
 /**
  * Obtains the market news for the given time span
+ *
+ * @param start start of time period
+ * @param end end of time period
  */
 export async function getNews(start: string, end: string): Promise<Array<MarketNews> | null> {
 

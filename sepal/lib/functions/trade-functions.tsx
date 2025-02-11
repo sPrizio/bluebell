@@ -2,6 +2,15 @@ import {getAuthHeader} from "@/lib/functions/security-functions";
 import {ApiUrls} from "@/lib/constants";
 import {PagedTrades, TradeLog, TradeRecordControls, TradeRecordReport} from "@/types/apiTypes";
 
+/**
+ * Fetches a list of trade records for the given time period
+ *
+ * @param accNumber account number
+ * @param start start of time period
+ * @param end end of time period
+ * @param interval aggregate interval
+ * @param count limit results
+ */
 export async function getTradeRecords(accNumber: number, start: string, end: string, interval: string, count: number): Promise<TradeRecordReport | null> {
 
   const headers = getAuthHeader()
@@ -34,6 +43,13 @@ export async function getTradeRecords(accNumber: number, start: string, end: str
   return null;
 }
 
+/**
+ * Fetches a list of recent trade records
+ *
+ * @param accNumber account number
+ * @param interval aggregate interval
+ * @param count limit results
+ */
 export async function getRecentTradeRecords(accNumber: number, interval: string, count: number): Promise<TradeRecordReport | null> {
 
   const headers = getAuthHeader()
@@ -64,6 +80,12 @@ export async function getRecentTradeRecords(accNumber: number, interval: string,
   return null;
 }
 
+/**
+ * Fetches filters for viewing trade records
+ *
+ * @param accNumber account number
+ * @param interval aggregate interval
+ */
 export async function getTradeRecordControls(accNumber: number, interval: string): Promise<TradeRecordControls | null> {
 
   const headers = getAuthHeader()
@@ -93,6 +115,14 @@ export async function getTradeRecordControls(accNumber: number, interval: string
   return null;
 }
 
+/**
+ * Fetches the trade log
+ *
+ * @param start start of time period
+ * @param end end of time period
+ * @param interval aggregate interval
+ * @param count limit results
+ */
 export async function getTradeLog(start: string, end: string, interval: string, count: number): Promise<TradeLog | null> {
 
   const headers = getAuthHeader()
@@ -124,6 +154,15 @@ export async function getTradeLog(start: string, end: string, interval: string, 
   return null;
 }
 
+/**
+ * Fetches paginated trades
+ *
+ * @param accNumber account number
+ * @param start start of time period
+ * @param end end of time period
+ * @param page current page
+ * @param pageSize page size
+ */
 export async function getPagedTrades(accNumber: number, start: string, end: string, page: number, pageSize: number): Promise<PagedTrades | null> {
 
   const headers = getAuthHeader()

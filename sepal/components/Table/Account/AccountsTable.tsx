@@ -96,9 +96,9 @@ export default function AccountsTable(
                     <TableHead className={'w-[150px]'}>Number</TableHead>
                     <TableHead className={'w-[175px]'}>Name</TableHead>
                     <TableHead className={'w-[175px]'}>Opened</TableHead>
-                    <TableHead className={'w-[175px]'}>Closed</TableHead>
+                    {/*<TableHead className={'w-[175px]'}>Status</TableHead>*/}
                     <TableHead className={'w-[60px] text-center'}>Currency</TableHead>
-                    <TableHead className={'w-[85px] text-center'}>Platform</TableHead>
+                    <TableHead className={'w-[125px] text-center'}>Platform</TableHead>
                     <TableHead className={'w-[85px] text-center'}>Type</TableHead>
                     <TableHead className={'w-[60px] text-center'}>Broker</TableHead>
                     <TableHead className={'w-[175px]'}>Last Traded</TableHead>
@@ -133,13 +133,13 @@ export default function AccountsTable(
                           </TableCell>
                           <TableCell className={''}>{item.accountNumber}</TableCell>
                           <TableCell>{item.name}</TableCell>
-                          <TableCell className={''}>{moment(item.accountOpenTime).format(DateTime.ISOShortMonthDayYearWithTimeFormat)}</TableCell>
-                          <TableCell className={''}>
+                          <TableCell className={''}>{moment(item.accountOpenTime).format(DateTime.ISOShortMonthShortDayYearWithTimeFormat)}</TableCell>
+                          {/*<TableCell className={''}>
                             {
                               (item.accountCloseTime === '-1' || !item.accountCloseTime || item.accountCloseTime.length === 0) ?
-                                <Badge text={'Open'} variant={'success'} /> : moment(item.accountCloseTime).format(DateTime.ISOShortMonthDayYearWithTimeFormat)
+                                <Badge text={'Open'} variant={'success'} /> : <Badge text={'Closed'} variant={'danger'} />/*moment(item.accountCloseTime).format(DateTime.ISOShortMonthDayYearWithTimeFormat)*/
                             }
-                          </TableCell>
+                          {/*</TableCell>*/}
                           <TableCell className={'text-center'}>
                             <div className={'flex items-center justify-center'}>
                               {getFlagForCode(item.currency?.code ?? '')}

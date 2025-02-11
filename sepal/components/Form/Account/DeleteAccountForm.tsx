@@ -8,6 +8,7 @@ import {toast} from "@/hooks/use-toast";
 import {useRouter} from 'next/navigation'
 import {deleteAccount} from "@/lib/functions/account-functions";
 import {Account} from "@/types/apiTypes";
+import {delay} from "@/lib/functions/util-functions";
 
 /**
  * Renders a form for deleting accounts
@@ -66,6 +67,7 @@ export default function DeleteAccountForm(
       setIsLoading(false)
       setOpen(false)
       router.push('/accounts')
+      await delay(1000)
       window.location.reload()
     } else {
       setSuccess('failed')

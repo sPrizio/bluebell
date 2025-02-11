@@ -2,6 +2,13 @@ import {getAuthHeader} from "@/lib/functions/security-functions";
 import {ApiUrls} from "@/lib/constants";
 import { AnalysisResult } from "@/types/apiTypes";
 
+/**
+ * Obtains the analysis for time buckets
+ *
+ * @param accNumber account number
+ * @param filter filter (points or profit or win %)
+ * @param isOpened show opened or closed trades (opened if true)
+ */
 export async function getTimeBucketsAnalysis(accNumber: number, filter: string, isOpened: boolean): Promise<Array<AnalysisResult> | null> {
 
   const headers = getAuthHeader()
@@ -32,6 +39,12 @@ export async function getTimeBucketsAnalysis(accNumber: number, filter: string, 
   return null;
 }
 
+/**
+ * Obtains the analysis for weekdays
+ *
+ * @param accNumber account number
+ * @param filter filter (points or profit or win %)
+ */
 export async function getWeekdaysAnalysis(accNumber: number, filter: string): Promise<Array<AnalysisResult> | null> {
 
   const headers = getAuthHeader()
@@ -61,6 +74,13 @@ export async function getWeekdaysAnalysis(accNumber: number, filter: string): Pr
   return null;
 }
 
+/**
+ * Obtains the analysis for time buckets and weekdays
+ *
+ * @param accNumber account number
+ * @param weekday day of week
+ * @param filter filter (points or profit or win %)
+ */
 export async function getWeekdaysTimeBucketsAnalysis(accNumber: number, weekday: string, filter: string): Promise<Array<AnalysisResult> | null> {
 
   const headers = getAuthHeader()
@@ -91,6 +111,12 @@ export async function getWeekdaysTimeBucketsAnalysis(accNumber: number, weekday:
   return null;
 }
 
+/**
+ * Obtains the analysis for trade duration
+ * @param accNumber account number
+ * @param tradeDurationFilter opened or closed
+ * @param filter filter (points or profit or win %)
+ */
 export async function getTradeDurationAnalysis(accNumber: number, tradeDurationFilter: string, filter: string): Promise<Array<AnalysisResult> | null> {
 
   const headers = getAuthHeader()

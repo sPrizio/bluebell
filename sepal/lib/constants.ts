@@ -88,6 +88,7 @@ export const DateTime = {
   ISOShortestMonthFormat: 'MM',
   ISOShortMonthDayYearFormat: 'MMM Do[,] YYYY',
   ISOShortMonthDayYearWithTimeFormat: 'MMM Do[,] YYYY [at] H:mm',
+  ISOShortMonthShortDayYearWithTimeFormat: 'MMM D[,] YYYY [at] H:mm',
   ISOShortHourFormat: 'H:mm',
   ISOShortTimeFormat: 'HH:mm',
   ISOTimeFormat: 'HH:mm:ss',
