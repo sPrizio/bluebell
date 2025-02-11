@@ -172,9 +172,9 @@ public class TradeApiControllerTest extends AbstractGenericTest {
 
         this.mockMvc.perform(get("/api/v1/trade/for-interval-paged").with(testUserContext()).params(map))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.data.content[0].openPrice", is(13083.41)))
-                .andExpect(jsonPath("$.data.content[0].closePrice", is(13098.67)))
-                .andExpect(jsonPath("$.data.content[0].netProfit", is(14.85)));
+                .andExpect(jsonPath("$.data.trades[0].openPrice", is(13083.41)))
+                .andExpect(jsonPath("$.data.trades[0].closePrice", is(13098.67)))
+                .andExpect(jsonPath("$.data.trades[0].netProfit", is(14.85)));
     }
 
 

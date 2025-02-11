@@ -18,7 +18,7 @@ import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
  * @author Stephen Prizio
  * @version 0.0.2
  */
-public class TradingViewDataParserTest {
+class TradingViewDataParserTest {
 
     private final TradingViewDataParser tradingViewDataParser = new TradingViewDataParser(true, "US100");
 

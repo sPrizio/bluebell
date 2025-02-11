@@ -26,6 +26,10 @@ Current Release: **Pre-release**
 - Add testing
 ---
 
+### Improvements
+- Add @Api documentation for Swagger in Controller endpoints. Make it look nice
+---
+
 ### Version History
 - **0.0.1** : Basic data modeling & Trade Import feature. Allows users with multiple trading accounts to import trades into their accounts from supported brokers.
 - **0.0.2** : API Controller Authentication

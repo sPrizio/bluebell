@@ -5,10 +5,11 @@ import com.bluebell.radicle.exceptions.parser.FirstRateDataParsingException;
 import com.bluebell.radicle.models.AggregatedMarketPrices;
 import com.bluebell.radicle.models.MarketPrice;
 import com.bluebell.radicle.parsers.MarketPriceParser;
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.LineIterator;
-import org.apache.commons.lang3.StringUtils;
 
 import java.io.File;
 import java.time.LocalDate;
@@ -25,6 +26,10 @@ import java.util.*;
 public class FirstRateDataParser extends AbstractDataParser implements MarketPriceParser {
 
     private final boolean isTest;
+
+    public FirstRateDataParser() {
+        this.isTest = false;
+    }
 
     public FirstRateDataParser(final boolean isTest) {
         this.isTest = isTest;

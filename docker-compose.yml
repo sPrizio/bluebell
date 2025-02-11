@@ -1,0 +1,43 @@
+version: "3.8"
+
+services:
+  planter:
+    build:
+      context: .
+      dockerfile: planter/Dockerfile
+    ports:
+      - "8080:8080"
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:mariadb://db:3306/bluebell
+      - SPRING_DATASOURCE_USERNAME=admin
+      - SPRING_DATASOURCE_PASSWORD=nimda
+    depends_on:
+      db:
+        condition: service_healthy
+      sepal:
+        condition: service_started
+
+  sepal:
+    build:
+      context: .
+      dockerfile: sepal/Dockerfile
+    ports:
+      - "3000:3000"
+
+  db:
+    image: mariadb:11.7-rc
+    environment:
+      - MYSQL_ROOT_PASSWORD=admin
+    volumes:
+      - mariadb-data:/var/lib/mysql
+      - ./planter/src/main/resources/db/init.sql:/docker-entrypoint-initdb.d/init.sql
+    ports:
+      - "3307:3306" # changing 3306 on host machine to 3307
+    healthcheck:
+      test: ["CMD", "mariadb-admin" ,"ping", "-h", "localhost", "--password=admin"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: always
+volumes:
+  mariadb-data:
