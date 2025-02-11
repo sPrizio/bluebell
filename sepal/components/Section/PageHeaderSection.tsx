@@ -1,6 +1,7 @@
 import {resolveIcon} from "@/lib/functions/util-functions";
 import {DEFAULT_PAGE_HEADER_SECTION_ICON_SIZE} from "@/lib/constants";
 import Breadcrumbs from "@/components/Navigation/Breadcrumb/Breadcrumbs";
+import { AppLink } from "@/types/uiTypes";
 
 /**
  * A generic page header section

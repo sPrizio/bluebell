@@ -9,6 +9,7 @@ import {Loader2} from "lucide-react";
 import TradeTable from "@/components/Table/Trade/TradeTable";
 import {BaseCard} from "@/components/Card/BaseCard";
 import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from "@/components/ui/select";
+import {Account, Trade } from "@/types/apiTypes";
 
 /**
  * Renders the Trade history page

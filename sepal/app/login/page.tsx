@@ -179,7 +179,7 @@ export default function Login() {
    */
   function sanitizeTelephoneNumber(val: string) {
 
-    let returnVal = val.replace(/[^0-9]/gi, '')
+    const returnVal = val.replace(/[^0-9]/gi, '')
     if (returnVal.length < 11) {
       const phone = parsePhoneNumberFromString(returnVal, {
         // set this to use a default country when the phone number omits country code

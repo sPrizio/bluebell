@@ -254,7 +254,7 @@ export const isNumeric = (num: any) => (typeof (num) === 'number' || typeof (num
  * @param val array of strings
  */
 export function safeConvertEnum(val: string[]): [string, ...string[]] {
-  // @ts-ignore
+  // @ts-expect-error : will fail if bad enum type
   return val
 }
 
@@ -289,7 +289,7 @@ export function getAccount(val: number, accounts: Array<Account>): Account | nul
  */
 export function getAccountNumber(params: ReadonlyURLSearchParams, accounts: Array<Account>): number {
 
-  let val = params.get('account') ?? -1
+  const val = params.get('account') ?? -1
 
   if (val === 'default') {
     return getDefaultAccount(accounts)?.accountNumber ?? -1;

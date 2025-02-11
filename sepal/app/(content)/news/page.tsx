@@ -10,6 +10,7 @@ import NewsTable from "@/components/Table/News/NewsTable";
 import {fetchNews, getNews} from "@/lib/functions/news-functions";
 import moment from "moment";
 import {DateTime} from "@/lib/constants";
+import {MarketNews} from "@/types/apiTypes";
 
 /**
  * Renders the market News page

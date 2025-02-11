@@ -9,10 +9,10 @@ export function isValidPassword(val: string): boolean {
 
   const allowedSymbols = ['!', '@', '#', '$', '%', '&', '*', '-', '_', '+', ' ']
 
-  let hasAlphanumeric = (/^[a-z0-9]+$/i.exec(val)?.length ?? -1) > 0;
+  const hasAlphanumeric = (/^[a-z0-9]+$/i.exec(val)?.length ?? -1) > 0;
   let hasSymbols = false;
 
-  for (let str of allowedSymbols) {
+  for (const str of allowedSymbols) {
     if (val.includes(str)) {
       hasSymbols = true;
       break

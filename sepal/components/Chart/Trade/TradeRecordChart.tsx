@@ -1,6 +1,7 @@
 import {Area, AreaChart, ReferenceLine, ResponsiveContainer} from "recharts";
 import React, {useEffect, useState} from "react";
 import {Css} from "@/lib/constants";
+import {TradeRecordEquityPoint} from "@/types/apiTypes";
 
 interface ChartPoint {
   id: string | number,

@@ -29,7 +29,7 @@ export default function BreadcrumbItem(
 
   //  RENDER
 
-  let html =
+  const html =
     <Link href={href?.toLowerCase() === '/home' ? '/dashboard' : href} className={"inline-block [&:not(:first-child)]:ml-4 font-medium"}>
       <span className={size + (!isLast ? 'mr-4' : '') + (active ? ' text-primary font-bold ' : '')}>
         {label}

@@ -4,7 +4,7 @@ import { AnalysisResult } from "@/types/apiTypes";
 
 export async function getTimeBucketsAnalysis(accNumber: number, filter: string, isOpened: boolean): Promise<Array<AnalysisResult> | null> {
 
-  let headers = getAuthHeader()
+  const headers = getAuthHeader()
   headers['Content-Type'] = 'application/json'
 
   try {
@@ -34,7 +34,7 @@ export async function getTimeBucketsAnalysis(accNumber: number, filter: string, 
 
 export async function getWeekdaysAnalysis(accNumber: number, filter: string): Promise<Array<AnalysisResult> | null> {
 
-  let headers = getAuthHeader()
+  const headers = getAuthHeader()
   headers['Content-Type'] = 'application/json'
 
   try {
@@ -63,7 +63,7 @@ export async function getWeekdaysAnalysis(accNumber: number, filter: string): Pr
 
 export async function getWeekdaysTimeBucketsAnalysis(accNumber: number, weekday: string, filter: string): Promise<Array<AnalysisResult> | null> {
 
-  let headers = getAuthHeader()
+  const headers = getAuthHeader()
   headers['Content-Type'] = 'application/json'
 
   try {
@@ -93,7 +93,7 @@ export async function getWeekdaysTimeBucketsAnalysis(accNumber: number, weekday:
 
 export async function getTradeDurationAnalysis(accNumber: number, tradeDurationFilter: string, filter: string): Promise<Array<AnalysisResult> | null> {
 
-  let headers = getAuthHeader()
+  const headers = getAuthHeader()
   headers['Content-Type'] = 'application/json'
 
   try {

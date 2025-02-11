@@ -1,9 +1,10 @@
 import {getAuthHeader} from "@/lib/functions/security-functions";
 import {ApiUrls} from "@/lib/constants";
+import {PagedTrades, TradeLog, TradeRecordControls, TradeRecordReport} from "@/types/apiTypes";
 
 export async function getTradeRecords(accNumber: number, start: string, end: string, interval: string, count: number): Promise<TradeRecordReport | null> {
 
-  let headers = getAuthHeader()
+  const headers = getAuthHeader()
   headers['Content-Type'] = 'application/json'
 
   try {
@@ -35,7 +36,7 @@ export async function getTradeRecords(accNumber: number, start: string, end: str
 
 export async function getRecentTradeRecords(accNumber: number, interval: string, count: number): Promise<TradeRecordReport | null> {
 
-  let headers = getAuthHeader()
+  const headers = getAuthHeader()
   headers['Content-Type'] = 'application/json'
 
   try {
@@ -65,7 +66,7 @@ export async function getRecentTradeRecords(accNumber: number, interval: string,
 
 export async function getTradeRecordControls(accNumber: number, interval: string): Promise<TradeRecordControls | null> {
 
-  let headers = getAuthHeader()
+  const headers = getAuthHeader()
   headers['Content-Type'] = 'application/json'
 
   try {
@@ -94,7 +95,7 @@ export async function getTradeRecordControls(accNumber: number, interval: string
 
 export async function getTradeLog(start: string, end: string, interval: string, count: number): Promise<TradeLog | null> {
 
-  let headers = getAuthHeader()
+  const headers = getAuthHeader()
   headers['Content-Type'] = 'application/json'
 
   try {
@@ -125,7 +126,7 @@ export async function getTradeLog(start: string, end: string, interval: string, 
 
 export async function getPagedTrades(accNumber: number, start: string, end: string, page: number, pageSize: number): Promise<PagedTrades | null> {
 
-  let headers = getAuthHeader()
+  const headers = getAuthHeader()
   headers['Content-Type'] = 'application/json'
 
   try {
@@ -164,7 +165,7 @@ export async function getPagedTrades(accNumber: number, start: string, end: stri
  */
 export async function importTrades(accNumber: number, file: File | null, isStrategy: boolean): Promise<boolean | null> {
 
-  let headers = getAuthHeader()
+  const headers = getAuthHeader()
   if (!file) {
     return false;
   }

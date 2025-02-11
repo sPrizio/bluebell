@@ -1,5 +1,6 @@
 import {ApiUrls} from "@/lib/constants";
 import {getAuthHeader} from "@/lib/functions/security-functions";
+import { Account, AccountCreationInfo, AccountDetails, AccountType, Broker, Currency, TradePlatform, Transaction, User } from "@/types/apiTypes";
 
 /**
  * Searches for an existing username that matches the given value
@@ -52,7 +53,7 @@ export function hasEmail(email: string, editMode: boolean): boolean {
  */
 export async function getUser(val: string): Promise<User | null> {
 
-  let headers = getAuthHeader()
+  const headers = getAuthHeader()
   headers['Content-Type'] = 'application/json'
 
   try {
@@ -82,7 +83,7 @@ export async function getUser(val: string): Promise<User | null> {
  */
 export async function registerUser(values: any): Promise<User | null> {
 
-  let ret = {
+  const ret = {
     user: {
       firstName: values?.firstName ?? '',
       lastName: values?.lastName ?? '',
@@ -101,7 +102,7 @@ export async function registerUser(values: any): Promise<User | null> {
     }
   }
 
-  let headers = getAuthHeader()
+  const headers = getAuthHeader()
   headers['Content-Type'] = 'application/json'
 
   try {
@@ -132,7 +133,7 @@ export async function registerUser(values: any): Promise<User | null> {
  */
 export async function updateUser(username: string, values: any): Promise<User | null> {
 
-  let ret = {
+  const ret = {
     user: {
       firstName: values?.firstName ?? '',
       lastName: values?.lastName ?? '',
@@ -150,7 +151,7 @@ export async function updateUser(username: string, values: any): Promise<User | 
     }
   }
 
-  let headers = getAuthHeader()
+  const headers = getAuthHeader()
   headers['Content-Type'] = 'application/json'
 
   try {
@@ -176,7 +177,7 @@ export async function updateUser(username: string, values: any): Promise<User | 
 
 export async function getCurrencies(): Promise<Array<Currency> | null> {
 
-  let headers = getAuthHeader()
+  const headers = getAuthHeader()
   headers['Content-Type'] = 'application/json'
 
   try {
@@ -201,7 +202,7 @@ export async function getCurrencies(): Promise<Array<Currency> | null> {
 
 export async function getBrokers(): Promise<Array<Broker> | null> {
 
-  let headers = getAuthHeader()
+  const headers = getAuthHeader()
   headers['Content-Type'] = 'application/json'
 
   try {
@@ -226,7 +227,7 @@ export async function getBrokers(): Promise<Array<Broker> | null> {
 
 export async function getTradePlatforms(): Promise<Array<TradePlatform> | null> {
 
-  let headers = getAuthHeader()
+  const headers = getAuthHeader()
   headers['Content-Type'] = 'application/json'
 
   try {
@@ -251,7 +252,7 @@ export async function getTradePlatforms(): Promise<Array<TradePlatform> | null> 
 
 export async function getAccountTypes(): Promise<Array<AccountType> | null> {
 
-  let headers = getAuthHeader()
+  const headers = getAuthHeader()
   headers['Content-Type'] = 'application/json'
 
   try {
@@ -276,7 +277,7 @@ export async function getAccountTypes(): Promise<Array<AccountType> | null> {
 
 export async function getAccountCreationInfo(): Promise<AccountCreationInfo | null> {
 
-  let headers = getAuthHeader()
+  const headers = getAuthHeader()
   headers['Content-Type'] = 'application/json'
 
   const currencies = await getCurrencies()
@@ -294,7 +295,7 @@ export async function getAccountCreationInfo(): Promise<AccountCreationInfo | nu
 
 export async function createAccount(values: any): Promise<Account | null> {
 
-  let ret = {
+  const ret = {
     account: {
       balance: values?.balance ?? '',
       name: values?.name ?? '',
@@ -307,7 +308,7 @@ export async function createAccount(values: any): Promise<Account | null> {
     }
   }
 
-  let headers = getAuthHeader()
+  const headers = getAuthHeader()
   headers['Content-Type'] = 'application/json'
 
   try {
@@ -333,7 +334,7 @@ export async function createAccount(values: any): Promise<Account | null> {
 
 export async function updateAccount(accNumber: number, values: any): Promise<Account | null> {
 
-  let ret = {
+  const ret = {
     account: {
       balance: values?.balance ?? '',
       name: values?.name ?? '',
@@ -347,7 +348,7 @@ export async function updateAccount(accNumber: number, values: any): Promise<Acc
     }
   }
 
-  let headers = getAuthHeader()
+  const headers = getAuthHeader()
   headers['Content-Type'] = 'application/json'
 
   try {
@@ -373,7 +374,7 @@ export async function updateAccount(accNumber: number, values: any): Promise<Acc
 
 export async function deleteAccount(accNumber: number): Promise<boolean | null> {
 
-  let headers = getAuthHeader()
+  const headers = getAuthHeader()
   headers['Content-Type'] = 'application/json'
 
   try {
@@ -396,7 +397,7 @@ export async function deleteAccount(accNumber: number): Promise<boolean | null> 
 
 export async function getAccountDetails(accNumber: number): Promise<AccountDetails | null> {
 
-  let headers = getAuthHeader()
+  const headers = getAuthHeader()
   headers['Content-Type'] = 'application/json'
 
   try {
@@ -421,7 +422,7 @@ export async function getAccountDetails(accNumber: number): Promise<AccountDetai
 
 export async function getRecentTransactions(): Promise<Array<Transaction> | null> {
 
-  let headers = getAuthHeader()
+  const headers = getAuthHeader()
   headers['Content-Type'] = 'application/json'
 
   try {

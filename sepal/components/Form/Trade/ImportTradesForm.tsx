@@ -13,6 +13,7 @@ import {Loader2} from "lucide-react";
 import {importTrades} from "@/lib/functions/trade-functions";
 import {useToast} from "@/hooks/use-toast"
 import {Switch} from "@/components/ui/switch";
+import {Account} from "@/types/apiTypes";
 
 /**
  * Renders a form that can import trades
@@ -126,7 +127,7 @@ export default function ImportTradesForm(
                       </div>
                     </div>
                     <FormDescription>
-                      Select this option if you're importing strategy/simulation results and not actual trades.
+                      Select this option if you&apos;re importing strategy/simulation results and not actual trades.
                     </FormDescription>
                     <FormMessage className={'text-primaryRed font-semibold'}/>
                   </FormItem>

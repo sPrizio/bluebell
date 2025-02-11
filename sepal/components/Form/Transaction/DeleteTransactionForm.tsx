@@ -7,6 +7,7 @@ import {toast} from "@/hooks/use-toast";
 import {delay} from "@/lib/functions/util-functions";
 import {Button} from "@/components/ui/button";
 import {Loader2} from "lucide-react";
+import {Account, Transaction} from "@/types/apiTypes";
 
 /**
  * Renders a form for deleting transactions

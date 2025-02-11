@@ -21,7 +21,12 @@ export function Toaster() {
    *
    * @param val variant
    */
-  function computeIcon(val: string) {
+  function computeIcon(val?: "default" | "destructive" | "danger" | "warning" | "info" | "success" | null | undefined) {
+
+    if (!val || val.length < 1) {
+      return <IconInfoSquareRoundedFilled size={40} className={'text-primary'}/>
+    }
+
     switch (val) {
       case 'success':
         return <IconCircleCheckFilled size={40} className={'text-primaryGreen'}/>

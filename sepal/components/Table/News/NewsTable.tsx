@@ -4,6 +4,7 @@ import {Table, TableBody, TableCell, TableHead, TableHeader, TableRow} from "@/c
 import moment from "moment";
 import {DateTime} from "@/lib/constants";
 import {IconNews} from "@tabler/icons-react";
+import { MarketNews } from "@/types/apiTypes";
 
 /**
  * Renders the market news table
@@ -17,7 +18,7 @@ export default function NewsTable(
     news = [],
   }
     : Readonly<{
-    news: Array<MarketNews>,
+    news?: Array<MarketNews>,
   }>
 ) {
 

@@ -5,7 +5,7 @@ import {Area, ComposedChart, Legend, Line, ResponsiveContainer, Tooltip, Tooltip
 import {NameType, ValueType,} from 'recharts/types/component/DefaultTooltipContent';
 import {BASE_COLORS, Css, DateTime} from "@/lib/constants";
 import {IconPointFilled} from "@tabler/icons-react";
-// @ts-ignore
+// @ts-expect-error : error in import due to 3rd party library
 import Please from 'pleasejs/dist/Please';
 import {BaseCard} from "@/components/Card/BaseCard";
 import moment from "moment";

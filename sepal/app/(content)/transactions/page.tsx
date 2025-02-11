@@ -13,6 +13,7 @@ import {IconCirclePlus} from "@tabler/icons-react";
 import BaseModal from "@/components/Modal/BaseModal";
 import TransactionForm from "@/components/Form/Transaction/TransactionForm";
 import {Loader2} from "lucide-react";
+import { Account } from "@/types/apiTypes";
 
 /**
  * The page that shows all of a user's Account's transactions. Accounts can be cycled

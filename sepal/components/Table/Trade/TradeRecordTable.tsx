@@ -3,6 +3,7 @@ import moment from "moment";
 import {DateTime} from "@/lib/constants";
 import React from "react";
 import {formatNumberForDisplay} from "@/lib/functions/util-functions";
+import {TradeRecordReport} from "@/types/apiTypes";
 
 /**
  * Renders a table of Trade records

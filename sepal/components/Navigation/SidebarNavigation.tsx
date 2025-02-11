@@ -8,6 +8,7 @@ import MainLogo from "@/components/Navigation/MainLogo";
 import MobileLogo from "@/components/Navigation/MobileLogo";
 import SidebarNavigationLink from "@/components/Navigation/SidebarNavigationLink";
 import {usePathname} from "next/navigation";
+import {SidebarNavigationLinkType} from "@/types/uiTypes";
 
 /**
  * Sidebar navigation component

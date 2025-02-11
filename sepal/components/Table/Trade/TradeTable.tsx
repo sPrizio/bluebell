@@ -15,6 +15,7 @@ import {
   PaginationPrevious,
 } from "@/components/ui/pagination"
 import {getPagedTrades} from "@/lib/functions/trade-functions";
+import {Account, Trade} from "@/types/apiTypes";
 
 /**
  * Renders a table of trades
@@ -89,7 +90,7 @@ export default function TradeTable(
    */
   function calculatePages() {
 
-    let val = totalElements;
+    const val = totalElements;
     if (val % pageSize === 0) {
       return val / pageSize
     }

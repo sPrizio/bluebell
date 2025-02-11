@@ -69,12 +69,17 @@ export default function AccountDetailsCmp(
       consistency: 0.0,
       equity: [],
       insights: {
-        tradingDays: 0,
-        trades: 0,
-        maxDailyLoss: 0.0,
-        maxTotalLoss: 0.0,
-        maxDailyProfit: 0.0,
         maxProfit: 0.0,
+        tradingDays: 0,
+        biggestLoss: 0.0,
+        largestGain: 0.0,
+        currentPL: 0.0,
+        drawdown: 0.0,
+        biggestLossDelta: 0.0,
+        largestGainDelta: 0.0,
+        currentPLDelta: 0.0,
+        drawdownDelta: 0.0,
+        maxProfitDelta: 0.0
       },
       statistics: {
         balance: 0.0,
@@ -88,6 +93,10 @@ export default function AccountDetailsCmp(
         profitFactor: 0.0,
         retention: 0.0,
         sharpeRatio: 0.0,
+        tradeDuration: 0,
+        winDuration: 0,
+        lossDuration: 0,
+        assumedDrawdown: 0.0
       },
     })
 

@@ -1,12 +1,13 @@
 import {ApiUrls} from "@/lib/constants";
 import {getAuthHeader} from "@/lib/functions/security-functions";
+import {MarketNews} from "@/types/apiTypes";
 
 /**
  * Triggers the fetch news endpoint
  */
 export async function fetchNews(): Promise<boolean | null> {
 
-  let headers = getAuthHeader()
+  const headers = getAuthHeader()
   headers['Content-Type'] = 'application/json'
 
   try {
@@ -32,7 +33,7 @@ export async function fetchNews(): Promise<boolean | null> {
  */
 export async function getNews(start: string, end: string): Promise<Array<MarketNews> | null> {
 
-  let headers = getAuthHeader()
+  const headers = getAuthHeader()
   headers['Content-Type'] = 'application/json'
 
   try {

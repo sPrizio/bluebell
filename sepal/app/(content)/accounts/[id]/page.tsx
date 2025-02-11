@@ -59,7 +59,7 @@ export default function AccountDetailPage() {
 
     if (isNumeric(id)) {
       const accountTestId = parseInt(id)
-      for (let acc of user?.accounts ?? []) {
+      for (const acc of user?.accounts ?? []) {
         if (acc.accountNumber === accountTestId) {
           setAccount(acc)
           setIsLoading(false)

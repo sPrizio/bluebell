@@ -4,6 +4,7 @@ import moment from "moment";
 import {DateTime} from "@/lib/constants";
 import {formatNumberForDisplay, getBrokerImageForCode, getFlagForCode} from "@/lib/functions/util-functions";
 import Badge from "@/components/Badge/Badge";
+import {Account} from "@/types/apiTypes";
 
 /**
  * Renders basic Account information

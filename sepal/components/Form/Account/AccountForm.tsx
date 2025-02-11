@@ -15,6 +15,7 @@ import {useToast} from "@/hooks/use-toast"
 import {CRUDAccountSchema} from "@/lib/constants";
 import {Switch} from "@/components/ui/switch";
 import {createAccount, getAccountCreationInfo, updateAccount} from "@/lib/functions/account-functions";
+import {Account, AccountCreationInfo, AccountType, Broker, Currency, TradePlatform} from "@/types/apiTypes"
 
 /**
  * Renders a form that can create or update an Account

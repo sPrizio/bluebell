@@ -10,6 +10,7 @@ import BaseModal from "@/components/Modal/BaseModal";
 import moment from "moment";
 import {DateTime} from "@/lib/constants";
 import UserForm from "@/components/Form/User/UserForm";
+import {PhoneNumber} from "@/types/apiTypes";
 
 /**
  * Renders the user profile page

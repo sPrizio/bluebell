@@ -15,6 +15,7 @@ import {Loader2} from "lucide-react";
 import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from "@/components/ui/select";
 import {Input} from "@/components/ui/input";
 import moment from "moment";
+import {Account, Transaction} from "@/types/apiTypes";
 
 /**
  * Renders a form that can create or update a transaction

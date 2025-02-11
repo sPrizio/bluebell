@@ -8,6 +8,7 @@ import {AppLink} from "@/types/uiTypes";
 import AdminPanelLayout from "@/components/ui/admin-panel/admin-panel-layout";
 import {Toaster} from "@/components/ui/toaster";
 import {getUser} from "@/lib/functions/account-functions";
+import {User} from "@/types/apiTypes";
 
 /**
  * Generic layout for Content pages
