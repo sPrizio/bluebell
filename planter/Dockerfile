@@ -4,6 +4,9 @@ WORKDIR /app
 
 COPY . ./
 
+# Set the Spring profile to 'prod' for production
+ENV SPRING_PROFILES_ACTIVE=prod
+
 # Ensure the entire project (including Radicle) is built first
 RUN mvn clean install -DskipTests
 

@@ -11,6 +11,7 @@ services:
       - SPRING_DATASOURCE_URL=jdbc:mariadb://db:3306/bluebell
       - SPRING_DATASOURCE_USERNAME=admin
       - SPRING_DATASOURCE_PASSWORD=nimda
+      - SPRING_PROFILES_ACTIVE=prod
     depends_on:
       db:
         condition: service_healthy

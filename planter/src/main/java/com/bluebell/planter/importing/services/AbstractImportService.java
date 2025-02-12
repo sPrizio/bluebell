@@ -7,16 +7,15 @@ import com.bluebell.planter.core.models.entities.account.Account;
 import com.bluebell.planter.core.models.entities.trade.Trade;
 import com.bluebell.planter.core.repositories.account.AccountRepository;
 import com.bluebell.planter.core.repositories.trade.TradeRepository;
+import com.bluebell.planter.importing.records.FTMOTradeWrapper;
 import com.bluebell.planter.importing.records.MetaTrader4TradeWrapper;
 import com.bluebell.radicle.services.MathService;
 import jakarta.annotation.Resource;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -24,8 +23,9 @@ import java.util.regex.Pattern;
  * Parent-level import service for re-usable functionality
  *
  * @author Stephen Prizio
- * @version 0.0.7
+ * @version 0.0.8
  */
+@Slf4j
 @Service("abstractImportService")
 public abstract class AbstractImportService {
 
@@ -80,6 +80,27 @@ public abstract class AbstractImportService {
     }
 
     /**
+     * Cleans up MT4 trades during the import process from FTMO
+     *
+     * @param account {@link Account}
+     * @param trades {@link List} of {@link FTMOTradeWrapper}s
+     */
+    protected void ftmoTradeCleanup(final Account account, final List<FTMOTradeWrapper> trades) {
+
+        final Map<String, Trade> tradeMap = new HashMap<>();
+        final Map<String, Trade> existingTrades = new HashMap<>();
+
+        this.tradeRepository.findAllByAccount(account).forEach(trade -> existingTrades.put(trade.getTradeId(), trade));
+        final List<FTMOTradeWrapper> buyTrades = trades.stream().filter(trade -> !existingTrades.containsKey(trade.ticketNumber())).filter(trade -> matchTradeType(trade.type(), TradeType.BUY)).toList();
+        final List<FTMOTradeWrapper> sellTrades = trades.stream().filter(trade -> !existingTrades.containsKey(trade.ticketNumber())).filter(trade -> matchTradeType(trade.type(), TradeType.SELL)).toList();
+
+        buyTrades.forEach(trade -> tradeMap.put(trade.ticketNumber(), createNewTrade(trade, TradeType.BUY, account)));
+        sellTrades.forEach(trade -> tradeMap.put(trade.ticketNumber(), createNewTrade(trade, TradeType.SELL, account)));
+
+        refreshAccount(tradeMap, existingTrades, account);
+    }
+
+    /**
      * Parses a list of mt4 trade rows into a list trade cells
      *
      * @param string string
@@ -125,6 +146,21 @@ public abstract class AbstractImportService {
         }
 
         return data;
+    }
+
+    /**
+     * Parses a string into a list of strings separated by commas
+     *
+     * @param string string
+     * @return {@link List} of {@link String}
+     */
+    protected List<String> parseCsvTrade(final String string) {
+        try {
+            return Arrays.stream(string.split(";")).toList();
+        } catch (Exception e) {
+            LOGGER.error(e.getMessage(), e);
+            return Collections.emptyList();
+        }
     }
 
     /**
@@ -182,6 +218,34 @@ public abstract class AbstractImportService {
         trade.setOpenPrice(wrapper.openPrice());
         trade.setStopLoss(wrapper.stopLoss());
         trade.setTakeProfit(wrapper.takeProfit());
+        trade.setAccount(account);
+
+        return trade;
+    }
+
+    /**
+     * Creates a new {@link Trade} from a {@link MetaTrader4TradeWrapper}
+     *
+     * @param ftmoWrapper   {@link MetaTrader4TradeWrapper}
+     * @param tradeType {@link TradeType}
+     * @return {@link Trade}
+     */
+    private Trade createNewTrade(final FTMOTradeWrapper ftmoWrapper, final TradeType tradeType, final Account account) {
+
+        Trade trade = new Trade();
+
+        trade.setTradeId(ftmoWrapper.ticketNumber());
+        trade.setTradePlatform(TradePlatform.METATRADER4);
+        trade.setProduct(ftmoWrapper.item());
+        trade.setLotSize(ftmoWrapper.size());
+        trade.setNetProfit(ftmoWrapper.profit());
+        trade.setOpenPrice(ftmoWrapper.openPrice());
+        trade.setStopLoss(ftmoWrapper.stopLoss());
+        trade.setTakeProfit(ftmoWrapper.takeProfit());
+        trade.setTradeType(tradeType);
+        trade.setClosePrice(ftmoWrapper.closePrice());
+        trade.setTradeCloseTime(ftmoWrapper.closeTime());
+        trade.setTradeOpenTime(ftmoWrapper.openTime());
         trade.setAccount(account);
 
         return trade;

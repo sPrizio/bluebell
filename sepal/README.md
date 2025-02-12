@@ -15,7 +15,6 @@ Current Release: **Pre-release**
 ### Integration TODOs
 - Need a fetch user context to imitate logging in
 - look at how state is updated
-\
 ---
 
 ### Todo List

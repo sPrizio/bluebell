@@ -32,7 +32,7 @@ import static com.bluebell.planter.core.validation.GenericValidator.validatePara
  * Service-layer implementation of {@link AccountDetails}
  *
  * @author Stephen Prizio
- * @version 0.0.7
+ * @version 0.0.8
  */
 @Service("accountDetailsService")
 public class AccountDetailsService {
@@ -102,7 +102,14 @@ public class AccountDetailsService {
     public AccountInsights obtainInsights(final Account account) {
 
         final List<TradeRecord> tradeRecords = this.tradeRecordService.getTradeRecords(account.getAccountOpenTime().minusYears(1).toLocalDate(), LocalDate.now().plusYears(1), account, FlowerpotTimeInterval.DAILY, -1).tradeRecords();
+        if (CollectionUtils.isEmpty(tradeRecords)) {
+            return new AccountInsights(0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,0.0);
+        }
+
         final List<CumulativeTrade> cumulativeTrades = generativeCumulativeTrades(account);
+        if (CollectionUtils.isEmpty(cumulativeTrades)) {
+            return new AccountInsights(0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,0.0);
+        }
 
         final double initialBalance = account.getInitialBalance();
         final double currentPL = cumulativeTrades.getLast().netProfit();

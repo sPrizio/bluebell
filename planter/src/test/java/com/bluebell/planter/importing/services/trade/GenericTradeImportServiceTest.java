@@ -1,13 +1,10 @@
-package com.bluebell.planter.importing.services;
+package com.bluebell.planter.importing.services.trade;
 
 import com.bluebell.planter.AbstractGenericTest;
 import com.bluebell.planter.core.enums.trade.platform.TradePlatform;
 import com.bluebell.planter.core.exceptions.validation.IllegalParameterException;
 import com.bluebell.planter.core.models.entities.account.Account;
 import com.bluebell.planter.importing.exceptions.TradeImportFailureException;
-import com.bluebell.planter.importing.services.trade.CMCMarketsTradeImportService;
-import com.bluebell.planter.importing.services.trade.GenericTradeImportService;
-import com.bluebell.planter.importing.services.trade.MetaTrader4TradeImportService;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -25,7 +22,7 @@ import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
  * Testing class for {@link GenericTradeImportService}
  *
  * @author Stephen Prizio
- * @version 0.0.7
+ * @version 0.0.8
  */
 @SpringBootTest
 @RunWith(SpringRunner.class)

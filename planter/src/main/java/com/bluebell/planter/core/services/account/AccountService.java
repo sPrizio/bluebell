@@ -18,6 +18,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 
 import static com.bluebell.planter.core.validation.GenericValidator.validateParameterIsNotNull;
@@ -26,11 +27,12 @@ import static com.bluebell.planter.core.validation.GenericValidator.validatePara
  * Service-layer for {@link Account} entities
  *
  * @author Stephen Prizio
- * @version 0.0.7
+ * @version 0.0.8
  */
 @Service
 public class AccountService {
-    
+
+    private static final String ACTIVE_KEY = "active";
     private static final String BALANCE_KEY = "balance";
 
     @Resource(name = "accountRepository")
@@ -153,12 +155,18 @@ public class AccountService {
 
         if (isNew) {
             account.setAccountOpenTime(LocalDateTime.now());
-            account.setActive(true);
+
+            if (!Objects.isNull(acc.get(ACTIVE_KEY))) {
+                account.setActive(Boolean.parseBoolean(acc.get(ACTIVE_KEY).toString()));
+            } else {
+                account.setActive(true);
+            }
+
             account.setUser(user);
             account.setBalance(Double.parseDouble(acc.get(BALANCE_KEY).toString()));
             account.setInitialBalance(Double.parseDouble(acc.get(BALANCE_KEY).toString()));
         } else {
-            account.setActive(Boolean.parseBoolean(acc.get("active").toString()));
+            account.setActive(Boolean.parseBoolean(acc.get(ACTIVE_KEY).toString()));
             account.setBalance(Double.parseDouble(acc.get(BALANCE_KEY).toString()));
         }
         
