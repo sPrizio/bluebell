@@ -17,10 +17,11 @@ import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
  * Testing class for {@link UniqueIdentifierService}
  *
  * @author Stephen Prizio
- * @version 0.0.3
+ * @version 0.0.8
  */
 public class UniqueIdentifierServiceTest extends AbstractGenericTest {
 
+    private static final String TEST_UID = "MTE4JWNvbS5ibHVlYmVsbC5wbGFudGVyLmNvcmUubW9kZWxzLmVudGl0aWVzLnRyYWRlLlRyYWRl";
     private final UniqueIdentifierService uniqueIdentifierService = new UniqueIdentifierService();
 
     private final Trade mockedTrade = Mockito.mock(Trade.class, Mockito.RETURNS_DEEP_STUBS);
@@ -43,7 +44,7 @@ public class UniqueIdentifierServiceTest extends AbstractGenericTest {
     @Test
     public void test_generateUid_success() {
         assertThat(this.uniqueIdentifierService.generateUid(this.mockedTrade))
-                .isEqualTo("MTE4");
+                .isEqualTo(TEST_UID);
     }
 
 
@@ -65,7 +66,7 @@ public class UniqueIdentifierServiceTest extends AbstractGenericTest {
     @Test
     public void test_retrieveId_success() {
         TradeDTO tradeDTO = new TradeDTO();
-        tradeDTO.setUid("MTE4");
+        tradeDTO.setUid(TEST_UID);
 
         assertThat(this.uniqueIdentifierService.retrieveId(tradeDTO.getUid()))
                 .isEqualTo(118L);
@@ -83,7 +84,7 @@ public class UniqueIdentifierServiceTest extends AbstractGenericTest {
 
     @Test
     public void test_retrieveIdForUid_success() {
-        assertThat(this.uniqueIdentifierService.retrieveIdForUid("MTE4"))
+        assertThat(this.uniqueIdentifierService.retrieveIdForUid(TEST_UID))
                 .isEqualTo(118L);
     }
 }

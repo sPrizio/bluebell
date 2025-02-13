@@ -21,7 +21,6 @@ Current Release: **Pre-release**
 ### Todo List
 - Improve Trade import service to include withdrawals and deposits (for withdrawal example, look at live CFD account)
 - Accounts that have not been traded on for 1 calendar year should be marked as inactive (use a cronjob for this)
-- Improvements to UniqueIdentifierService to really make every possible entity unique
 - Add testing
 ---
 

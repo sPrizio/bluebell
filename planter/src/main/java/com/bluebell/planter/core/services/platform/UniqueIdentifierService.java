@@ -16,10 +16,12 @@ import static com.bluebell.planter.core.validation.GenericValidator.validatePara
  * Service for handling computations regarding unique identifiers that are typical used on {@link GenericDTO}s
  *
  * @author Stephen Prizio
- * @version 0.0.1
+ * @version 0.0.8
  */
 @Service
 public class UniqueIdentifierService {
+
+    private static final String DELIMITER = "%";
 
 
     //  METHODS
@@ -31,9 +33,8 @@ public class UniqueIdentifierService {
      * @return uid
      */
     public String generateUid(final GenericEntity entity) {
-        //TODO: re-implement this to make it more specific to entity type
         validateParameterIsNotNull(entity, "entity cannot be null");
-        return Base64.encodeBase64String(entity.getId().toString().getBytes());
+        return Base64.encodeBase64String((entity.getId().toString() + DELIMITER + entity.getClass().getName()).getBytes());
     }
 
     /**
@@ -43,13 +44,14 @@ public class UniqueIdentifierService {
      * @return id
      */
     public long retrieveId(final String uid) {
+
         validateParameterIsNotNull(uid, CoreConstants.Validation.DataIntegrity.UID_CANNOT_BE_NULL);
 
         if (StringUtils.isEmpty(uid)) {
             throw new UnsupportedOperationException("uid is missing");
         }
 
-        return Long.parseLong(new String(Base64.decodeBase64(uid), StandardCharsets.UTF_8));
+        return Long.parseLong(new String(Base64.decodeBase64(uid), StandardCharsets.UTF_8).split(DELIMITER)[0]);
     }
 
     /**
@@ -60,6 +62,6 @@ public class UniqueIdentifierService {
      */
     public long retrieveIdForUid(final String uid) {
         validateParameterIsNotNull(uid, CoreConstants.Validation.DataIntegrity.UID_CANNOT_BE_NULL);
-        return Long.parseLong(new String(Base64.decodeBase64(uid), StandardCharsets.UTF_8));
+        return Long.parseLong(new String(Base64.decodeBase64(uid), StandardCharsets.UTF_8).split(DELIMITER)[0]);
     }
 }
