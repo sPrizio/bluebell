@@ -35,7 +35,7 @@ import static com.bluebell.planter.core.validation.GenericValidator.validatePara
  * Service-layer for calculating {@link TradeRecord}s
  *
  * @author Stephen Prizio
- * @version 0.0.7
+ * @version 0.0.9
  */
 @Service
 public class TradeRecordService {
@@ -101,7 +101,7 @@ public class TradeRecordService {
             return new TradeRecordReport(Collections.emptyList(), null);
         }
 
-        final LocalDateTime firstTraded = account.getTrades().getFirst().getTradeCloseTime();
+        final LocalDateTime firstTraded = account.getTrades().get(0).getTradeCloseTime();
         if (firstTraded == null) {
             throw new TradeRecordComputationException("This account doesn't have any closed trades. This must be revised!");
         }
@@ -155,8 +155,8 @@ public class TradeRecordService {
                 if (trades != 0) {
                     entries.add(
                             new TradeLogEntry(
-                                    records.getLast().report().tradeRecords().getLast().end(),
-                                    records.getFirst().report().tradeRecords().getFirst().start(),
+                                    records.get(records.size() - 1).report().tradeRecords().get(records.size() - 1).end(),
+                                    records.get(0).report().tradeRecords().get(0).start(),
                                     records,
                                     new TradeLogEntryRecordTotals(
                                             accounts.size(),
@@ -256,9 +256,9 @@ public class TradeRecordService {
         final double netProfit = this.mathService.getDouble(trades.stream().mapToDouble(Trade::getNetProfit).sum());
         final double pointsGained = this.mathService.getDouble(tradesWon.stream().mapToDouble(this::getPoints).sum());
         final double pointsLost = this.mathService.getDouble(tradesLost.stream().mapToDouble(this::getPoints).sum());
-        final double largestWin = tradesWon.isEmpty() ? 0.0 : this.mathService.getDouble(tradesWon.getFirst().getNetProfit());
+        final double largestWin = tradesWon.isEmpty() ? 0.0 : this.mathService.getDouble(tradesWon.get(0).getNetProfit());
         final double winAverage = this.mathService.getDouble(tradesWon.stream().mapToDouble(Trade::getNetProfit).average().orElse(0.0));
-        final double largestLoss = tradesLost.isEmpty() ? 0.0 : this.mathService.getDouble(tradesLost.getFirst().getNetProfit());
+        final double largestLoss = tradesLost.isEmpty() ? 0.0 : this.mathService.getDouble(tradesLost.get(0).getNetProfit());
         final double lossAverage = this.mathService.getDouble(tradesLost.stream().mapToDouble(Trade::getNetProfit).average().orElse(0.0));
         final int wins = tradesWon.size();
         final int losses = tradesLost.size();
@@ -309,7 +309,7 @@ public class TradeRecordService {
         }
 
         double sum = 0.0;
-        double lowest = trades.getFirst().getNetProfit();
+        double lowest = trades.get(0).getNetProfit();
 
         for (Trade trade : trades) {
             sum = this.mathService.add(sum, trade.getNetProfit());
@@ -365,7 +365,7 @@ public class TradeRecordService {
             }
         }
 
-        equityPoints.addFirst(new TradeRecordEquityPoint(0, 0.0, 0.0, 0.0, 0.0));
+        equityPoints.add(0, new TradeRecordEquityPoint(0, 0.0, 0.0, 0.0, 0.0));
         return equityPoints;
     }
 }

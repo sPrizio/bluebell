@@ -205,11 +205,11 @@ public class Bloom implements Strategy<BloomStrategyParameters> {
         }
 
         switch (tradeType) {
-            case TradeType.BUY -> {
+            case BUY -> {
                 tp = this.strategyParameters.getBuyLimit().getTakeProfit();
                 sl = this.strategyParameters.getSellLimit().getStopLoss();
             }
-            case TradeType.SELL -> {
+            case SELL -> {
                 tp = this.strategyParameters.getSellLimit().getTakeProfit();
                 sl = this.strategyParameters.getBuyLimit().getStopLoss();
             }

@@ -5,8 +5,6 @@ import com.bluebell.radicle.exceptions.parser.FirstRateDataParsingException;
 import com.bluebell.radicle.models.AggregatedMarketPrices;
 import com.bluebell.radicle.models.MarketPrice;
 import com.bluebell.radicle.parsers.MarketPriceParser;
-import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.LineIterator;
@@ -164,10 +162,10 @@ public class FirstRateDataParser extends AbstractDataParser implements MarketPri
                         new MarketPrice(
                                 compare,
                                 interval,
-                                localPrices.getFirst() != null ? localPrices.getFirst().open() : 0.0,
+                                CollectionUtils.isNotEmpty(localPrices) ? localPrices.get(0).open() : 0.0,
                                 new ArrayList<>(localPrices).stream().filter(Objects::nonNull).mapToDouble(MarketPrice::high).max().orElse(0.0),
                                 new ArrayList<>(localPrices).stream().filter(Objects::nonNull).mapToDouble(MarketPrice::low).min().orElse(0.0),
-                                localPrices.getLast() != null ? localPrices.getLast().close() : 0.0
+                                CollectionUtils.isNotEmpty(localPrices) ? localPrices.get(localPrices.size() - 1).close() : 0.0
                         )
                 );
             }

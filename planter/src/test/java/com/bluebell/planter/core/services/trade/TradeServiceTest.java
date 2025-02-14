@@ -31,7 +31,7 @@ import static org.mockito.ArgumentMatchers.any;
  * Testing class for {@link TradeService}
  *
  * @author Stephen Prizio
- * @version 0.0.5
+ * @version 0.0.9
  */
 @SpringBootTest
 @RunWith(SpringRunner.class)
@@ -60,7 +60,7 @@ public class TradeServiceTest extends AbstractGenericTest {
         Mockito.when(this.tradeRepository.findAllTradesWithinDate(TEST1, TEST1.plusYears(1).toLocalDate().atStartOfDay(), TEST_ACCOUNT)).thenReturn(List.of(TEST_TRADE_1, TEST_TRADE_2));
         Mockito.when(this.tradeRepository.findAllTradesWithinDate(TEST1, TEST2, TEST_ACCOUNT)).thenReturn(List.of(TEST_TRADE_1, TEST_TRADE_2));
         Mockito.when(this.tradeRepository.findTradeByTradeIdAndAccount("testId1", TEST_ACCOUNT)).thenReturn(TEST_TRADE_1);
-        Mockito.when(this.tradeRepository.findAllTradesWithinDate(any(), any(), any(), any())).thenReturn(new PageImpl<>(List.of(TEST_TRADE_1, TEST_TRADE_2)));
+        Mockito.when(this.tradeRepository.findAllTradesWithinDatePaged(any(), any(), any(), any())).thenReturn(new PageImpl<>(List.of(TEST_TRADE_1, TEST_TRADE_2)));
         Mockito.when(this.tradeRepository.findTradeByTradeIdAndAccount("123", TEST_ACCOUNT)).thenReturn(generateTestBuyTrade());
     }
 

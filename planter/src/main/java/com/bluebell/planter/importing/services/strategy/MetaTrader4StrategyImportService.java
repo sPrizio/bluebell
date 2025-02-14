@@ -29,7 +29,7 @@ import java.util.regex.Pattern;
  * Service-layer for importing trades into the system from the MetaTrader4 platform
  *
  * @author Stephen Prizio
- * @version 0.0.7
+ * @version 0.0.9
  */
 @Service("metaTrader4StrategyImportService")
 public class MetaTrader4StrategyImportService extends AbstractImportService implements ImportService {
@@ -164,7 +164,7 @@ public class MetaTrader4StrategyImportService extends AbstractImportService impl
         }
 
         if (CollectionUtils.isNotEmpty(entries)) {
-            return entries.getFirst();
+            return entries.get(0);
         }
 
         return StringUtils.EMPTY;

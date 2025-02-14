@@ -63,7 +63,7 @@ public class SproutReportingService extends StrategyReportingService<Sprout, Spr
                         .append("\n")
                         .append("\n");
 
-                final double pricePerPoint = simulationResult.result().entrySet().iterator().next().getValue().getFirst().getStrategyParameters().getPricePerPoint();
+                final double pricePerPoint = simulationResult.result().entrySet().iterator().next().getValue().get(0).getStrategyParameters().getPricePerPoint();
                 final List<CumulativeStrategyReportEntry> entries = getCumulativeReportEntries(value, pricePerPoint);
                 entries.forEach(entry -> stringBuilder
                         .append(formatNumber(entry.points()))

@@ -17,7 +17,7 @@ import java.util.List;
  * Data-access layer for {@link Trade} entities
  *
  * @author Stephen Prizio
- * @version 0.0.2
+ * @version 0.0.9
  */
 @Repository
 public interface TradeRepository extends PagingAndSortingRepository<Trade, Long>, CrudRepository<Trade, Long> {
@@ -52,7 +52,7 @@ public interface TradeRepository extends PagingAndSortingRepository<Trade, Long>
      * @return {@link List} of {@link Trade}s
      */
     @Query("SELECT t FROM Trade t WHERE t.tradeOpenTime >= ?1 AND t.tradeOpenTime < ?2 AND t.account = ?3 ORDER BY t.tradeOpenTime ASC")
-    Page<Trade> findAllTradesWithinDate(final LocalDateTime start, final LocalDateTime end, final Account account, final Pageable pageable);
+    Page<Trade> findAllTradesWithinDatePaged(final LocalDateTime start, final LocalDateTime end, final Account account, final Pageable pageable);
 
     /**
      * Returns a {@link Trade} for the given tradeId

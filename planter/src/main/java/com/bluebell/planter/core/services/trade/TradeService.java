@@ -21,7 +21,7 @@ import static com.bluebell.planter.core.validation.GenericValidator.validatePara
  * Service-layer for {@link Trade} entities
  *
  * @author Stephen Prizio
- * @version 0.0.1
+ * @version 0.0.9
  */
 @Service
 public class TradeService {
@@ -81,7 +81,7 @@ public class TradeService {
         validateDatesAreNotMutuallyExclusive(start, end, CoreConstants.Validation.DateTime.MUTUALLY_EXCLUSIVE_DATES);
         validateParameterIsNotNull(account, CoreConstants.Validation.Account.ACCOUNT_CANNOT_BE_NULL);
 
-        return this.tradeRepository.findAllTradesWithinDate(start.toLocalDate().atStartOfDay(), end.toLocalDate().atStartOfDay(), account, PageRequest.of(page, pageSize));
+        return this.tradeRepository.findAllTradesWithinDatePaged(start.toLocalDate().atStartOfDay(), end.toLocalDate().atStartOfDay(), account, PageRequest.of(page, pageSize));
     }
 
     /**

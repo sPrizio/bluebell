@@ -1,7 +1,6 @@
 package com.bluebell.anther.engine.impl;
 
 import com.bluebell.anther.engine.DecisionEngine;
-import com.bluebell.anther.enums.TradeType;
 import com.bluebell.anther.models.engine.Decision;
 import com.bluebell.anther.models.parameter.strategy.impl.BloomStrategyParameters;
 import com.bluebell.anther.models.simulation.SimulationResult;
@@ -40,7 +39,8 @@ public class BloomDecisionEngine implements DecisionEngine<Bloom, BloomStrategyP
 
     @Override
     public Decision<BloomStrategyParameters> decide(final SimulationResult<BloomStrategyParameters> simulationResult) {
-        return consider(simulationResult).getLast();
+        List<Decision<BloomStrategyParameters>> decisions = consider(simulationResult);
+        return decisions.get(decisions.size() - 1);
     }
 
     @Override
@@ -48,13 +48,13 @@ public class BloomDecisionEngine implements DecisionEngine<Bloom, BloomStrategyP
 
         final List<Pair<CumulativeData, Integer>> decisions = new ArrayList<>();
         final List<CumulativeData> data = getData(simulationResult);
-        int limit = CollectionUtils.isNotEmpty(data) ? data.getFirst().entries().size() : 0;
+        int limit = CollectionUtils.isNotEmpty(data) ? data.get(0).entries().size() : 0;
 
         int windowCounter = 1;
 
         decisions.add(Pair.with(data.get(30), 0));
-        CumulativeData currentDecision = data.getFirst();
-        CumulativeData currentMax = data.getFirst();
+        CumulativeData currentDecision = data.get(0);
+        CumulativeData currentMax = data.get(0);
 
         for (int i = 0; i < limit; i++) {
             if (windowCounter == this.window) {
@@ -241,7 +241,7 @@ public class BloomDecisionEngine implements DecisionEngine<Bloom, BloomStrategyP
 
         while (iterator.hasNext()) {
             Map.Entry<LocalDate, List<StrategyResult<BloomStrategyParameters>>> entry = iterator.next();
-            map.put(entry.getKey(), entry.getValue().getFirst().getTrades().size());
+            map.put(entry.getKey(), entry.getValue().get(0).getTrades().size());
         }
 
         return map.values().stream().mapToInt(i -> i).sum();
@@ -273,12 +273,12 @@ public class BloomDecisionEngine implements DecisionEngine<Bloom, BloomStrategyP
             }
 
             List<Pair<Integer, Integer>> pairs = new ArrayList<>();
-            if (map.containsKey(decisions.getLast())) {
-                pairs = new ArrayList<>(map.get(decisions.getLast()));
+            if (map.containsKey(decisions.get(decisions.size() - 1))) {
+                pairs = new ArrayList<>(map.get(decisions.get(decisions.size() - 1)));
             }
 
-            pairs.add(Pair.with(decisions.getLast().index(), getTradesSize(simulationResult)));
-            map.put(decisions.getLast(), pairs);
+            pairs.add(Pair.with(decisions.get(decisions.size() - 1).index(), getTradesSize(simulationResult)));
+            map.put(decisions.get(decisions.size() - 1), pairs);
         }
 
         return map;

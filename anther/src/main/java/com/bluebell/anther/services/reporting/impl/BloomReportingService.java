@@ -62,11 +62,11 @@ public class BloomReportingService extends StrategyReportingService<Bloom, Bloom
             try (FileOutputStream os = new FileOutputStream(tempFile)) {
                 stringBuilder
                         .append("Cumulative Trace for the ").append(deconstructedKey.getValue0()).append(":").append(deconstructedKey.getValue1()).append(" candle with a variance of ").append(deconstructedKey.getValue2()).append("%")
-                        .append("\nNormalization: ").append(simulationResult.result().entrySet().iterator().next().getValue().getFirst().getStrategyParameters().isNormalize())
+                        .append("\nNormalization: ").append(simulationResult.result().entrySet().iterator().next().getValue().get(0).getStrategyParameters().isNormalize())
                         .append("\n")
                         .append("\n");
 
-                final double pricePerPoint = simulationResult.result().entrySet().iterator().next().getValue().getFirst().getStrategyParameters().getPricePerPoint();
+                final double pricePerPoint = simulationResult.result().entrySet().iterator().next().getValue().get(0).getStrategyParameters().getPricePerPoint();
                 final List<CumulativeStrategyReportEntry> entries = getCumulativeReportEntries(value, pricePerPoint);
                 entries.forEach(entry -> stringBuilder
                         .append(formatNumber(entry.points()))

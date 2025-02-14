@@ -27,4 +27,7 @@ open module com.bluebell.planter {
     requires org.aspectj.weaver;
     requires commons.math3;
     requires javatuples;
+    requires io.swagger.v3.oas.annotations;
+    requires com.google.auto.service;
+    requires com.bluebell.planterannotationprocessor;
 }

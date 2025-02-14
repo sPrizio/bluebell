@@ -25,7 +25,7 @@ import java.util.List;
  * Service-layer for {@link Portfolio}
  *
  * @author Stephen Prizio
- * @version 0.0.7
+ * @version 0.0.9
  */
 @Service("portfolioService")
 public class PortfolioService {
@@ -49,7 +49,7 @@ public class PortfolioService {
         final LocalDate limit = LocalDate.now().with(TemporalAdjusters.firstDayOfNextMonth());
         final double netWorth = this.mathService.getDouble(user.getAccounts().stream().mapToDouble(Account::getBalance).sum());
 
-        if (CollectionUtils.isEmpty(equityPoints) || CollectionUtils.isEmpty(equityPoints.getFirst().accounts())) {
+        if (CollectionUtils.isEmpty(equityPoints) || CollectionUtils.isEmpty(equityPoints.get(0).accounts())) {
             isNew = true;
             equityPoints = List.of(new PortfolioEquityPoint(limit, netWorth, Collections.emptyList()), new PortfolioEquityPoint(limit, netWorth, Collections.emptyList()));
         }

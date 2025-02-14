@@ -22,7 +22,7 @@ import java.util.*;
  * Service-layer for computing analysis of {@link Account}s
  *
  * @author Stephen Prizio
- * @version 0.0.7
+ * @version 0.0.9
  */
 @Service
 public class AnalysisService {
@@ -272,10 +272,10 @@ public class AnalysisService {
         trades.add(trade);
 
         switch (analysisFilter) {
-            case AnalysisFilter.PROFIT -> {
+            case PROFIT -> {
                 return Triplet.with(count + 1, this.mathService.add(val, trade.getNetProfit()), trades);
             }
-            case AnalysisFilter.POINTS -> {
+            case POINTS -> {
                 final double np = Math.abs(this.mathService.subtract(trade.getClosePrice(), trade.getOpenPrice()));
                 double fp = (trade.getNetProfit() < 0) ? this.mathService.multiply(-1.0, np) : np;
                 return Triplet.with(count + 1, this.mathService.add(val, fp), trades);

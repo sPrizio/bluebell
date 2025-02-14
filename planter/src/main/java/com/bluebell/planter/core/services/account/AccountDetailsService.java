@@ -32,7 +32,7 @@ import static com.bluebell.planter.core.validation.GenericValidator.validatePara
  * Service-layer implementation of {@link AccountDetails}
  *
  * @author Stephen Prizio
- * @version 0.0.8
+ * @version 0.0.9
  */
 @Service("accountDetailsService")
 public class AccountDetailsService {
@@ -89,7 +89,7 @@ public class AccountDetailsService {
             }
         }
 
-        equityPoints.addFirst(new AccountEquityPoint(trades.getFirst().getTradeCloseTime().minusDays(1), 0.0, 0.0, starterBalance, 0.0));
+        equityPoints.add(0, new AccountEquityPoint(trades.get(0).getTradeCloseTime().minusDays(1), 0.0, 0.0, starterBalance, 0.0));
         return equityPoints;
     }
 
@@ -112,7 +112,7 @@ public class AccountDetailsService {
         }
 
         final double initialBalance = account.getInitialBalance();
-        final double currentPL = cumulativeTrades.getLast().netProfit();
+        final double currentPL = cumulativeTrades.get(cumulativeTrades.size() - 1).netProfit();
         final double biggestLoss = cumulativeTrades.stream().mapToDouble(CumulativeTrade::singleProfit).min().orElse(0.0);
         final double largestGain = cumulativeTrades.stream().mapToDouble(CumulativeTrade::singleProfit).max().orElse(0.0);
         final double drawdown = calculateDrawdown(cumulativeTrades);
@@ -195,7 +195,7 @@ public class AccountDetailsService {
         if (CollectionUtils.isNotEmpty(indices) && indices.size() > 1) {
             for (int i = 0; i < indices.size() - 1; i++) {
                 final List<CumulativeTrade> subList = cumulativeTrades.subList(indices.get(i), indices.get(i + 1) + 1);
-                final double calc = this.mathService.subtract(subList.getFirst().netProfit(), subList.stream().mapToDouble(CumulativeTrade::netProfit).min().orElse(0.0));
+                final double calc = this.mathService.subtract(subList.get(0).netProfit(), subList.stream().mapToDouble(CumulativeTrade::netProfit).min().orElse(0.0));
 
                 if (calc > drawdown) {
                     drawdown = calc;

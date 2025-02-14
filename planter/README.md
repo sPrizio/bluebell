@@ -2,7 +2,7 @@
 Planter is a trading app designed to help track a trader's progress as they navigate the wonderfully tumultuous environment that is the market.
 This app will aim to track trades through each day, offer basic insights and helpful news as well as a place to manage trading accounts.
 
-Current Version: **0.0.8**\
+Current Version: **0.0.9**\
 Current Release: **Pre-release**
 
 ---
@@ -21,14 +21,14 @@ Current Release: **Pre-release**
 ### Todo List
 - Improve Trade import service to include withdrawals and deposits (for withdrawal example, look at live CFD account)
 - Accounts that have not been traded on for 1 calendar year should be marked as inactive (use a cronjob for this)
-- Add testing
+- (0.1.0) : Add testing
 ---
 
 ### Improvements
-- Add @Api documentation for Swagger in Controller endpoints. Make it look nice
+- (0.0.9) : Add @Api documentation for Swagger in Controller endpoints. Make it look nice
 - CronJob to auto fetch news every late Sunday evening
-- Improve code using better Lombok, look into builders
-- Change testing code to Jupiter
+- (0.0.9) : Improve code using better Lombok, look into builders
+- (0.1.0) : Change testing code to Jupiter
 ---
 
 ### Version History
@@ -40,4 +40,6 @@ Current Release: **Pre-release**
 - **0.0.6** : Charting Implementation
 - **0.0.7** : Integrating with **sepal**
 - **0.0.8** : Import FTMO Results
+- **0.0.9** : (In Progress) Major Code Improvements & Refactoring
+- **0.1.0** : (Upcoming) Major Testing Refactoring and Coverage Improvements
 
