@@ -1,5 +1,8 @@
 package com.bluebell.planterannotationprocessor.processors;
 
+import com.bluebell.system.Currency;
+import com.bluebell.system.PairEntry;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.auto.service.AutoService;
 import com.squareup.javapoet.FieldSpec;
 import com.squareup.javapoet.JavaFile;
@@ -12,6 +15,7 @@ import javax.lang.model.SourceVersion;
 import javax.lang.model.element.Modifier;
 import javax.lang.model.element.TypeElement;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.Set;
 
 /**
@@ -31,27 +35,27 @@ public class ApiExamplesProcessor extends AbstractProcessor {
     @Override
     public boolean process(Set<? extends TypeElement> annotations, RoundEnvironment roundEnv) {
 
-        FieldSpec currencyExample =
-                FieldSpec
-                        .builder(String.class, "CURRENCY_EXAMPLE")
-                        .addModifiers(Modifier.PUBLIC, Modifier.STATIC, Modifier.FINAL)
-                        .initializer("$S", "empty")
-                        .build();
-
-        TypeSpec accountApiExamples =
-                TypeSpec
-                        .classBuilder("AccountApiExamples")
-                        .addModifiers(Modifier.PUBLIC, Modifier.FINAL)
-                        .addField(currencyExample)
-                        .build();
-
-        // Generate the file
-        JavaFile javaFile =
-                JavaFile
-                        .builder("com.bluebell.planterannotationprocessor.api.examples", accountApiExamples)
-                        .build();
-
         try {
+            FieldSpec currencyExample =
+                    FieldSpec
+                            .builder(String.class, "CURRENCY_EXAMPLE")
+                            .addModifiers(Modifier.PUBLIC, Modifier.STATIC, Modifier.FINAL)
+                            .initializer("$S", new ObjectMapper().writeValueAsString(Arrays.stream(Currency.values()).map(c -> new PairEntry(c.getIsoCode(), c.getLabel(), c.getSymbol())).toList()))
+                            .build();
+
+            TypeSpec accountApiExamples =
+                    TypeSpec
+                            .classBuilder("AccountApiExamples")
+                            .addModifiers(Modifier.PUBLIC, Modifier.FINAL)
+                            .addField(currencyExample)
+                            .build();
+
+            // Generate the file
+            JavaFile javaFile =
+                    JavaFile
+                            .builder("com.bluebell.planterannotationprocessor.api.examples", accountApiExamples)
+                            .build();
+
             javaFile.writeTo(this.processingEnv.getFiler());
             LOGGER.info("Generated Api Examples.");
         } catch (IOException e) {

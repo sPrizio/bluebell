@@ -2,7 +2,7 @@
 Planter is a trading app designed to help track a trader's progress as they navigate the wonderfully tumultuous environment that is the market.
 This app will aim to track trades through each day, offer basic insights and helpful news as well as a place to manage trading accounts.
 
-Current Version: **0.0.9**\
+Current Version: **0.0.9**
 Current Release: **Pre-release**
 
 ---
