@@ -1,0 +1,23 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>com.bluebell</groupId>
+        <artifactId>greenhouse</artifactId>
+        <version>1.0-SNAPSHOT</version>
+    </parent>
+
+    <artifactId>radicle</artifactId>
+    <name>radicle</name>
+    <description>The parsing &amp; data collection module, responsible for obtaining parsed data as well as collecting trade information from external sources</description>
+    <url>https://www.bluebell.com</url>
+    <dependencies>
+        <dependency>
+            <groupId>com.bluebell</groupId>
+            <artifactId>platform</artifactId>
+            <version>1.0-SNAPSHOT</version>
+            <scope>compile</scope>
+        </dependency>
+    </dependencies>
+</project>
