@@ -5,7 +5,6 @@ module com.bluebell.platform {
     exports com.bluebell.platform.enums.account;
     exports com.bluebell.platform.enums.trade;
     exports com.bluebell.platform.enums.time;
-    exports com.bluebell.platform.enums.platform;
     exports com.bluebell.platform.enums.system;
 
     exports com.bluebell.platform.models.core.entities;
@@ -41,6 +40,14 @@ module com.bluebell.platform {
     exports com.bluebell.platform.models.core.nonentities.records.traderecord.controls;
     exports com.bluebell.platform.models.api.dto;
     exports com.bluebell.platform.enums.security;
+    exports com.bluebell.platform.constants;
+    exports com.bluebell.platform.enums.analysis;
+    exports com.bluebell.platform.enums.chart;
+    exports com.bluebell.platform.exceptions.system;
+    exports com.bluebell.platform.enums.news;
+    exports com.bluebell.platform.enums.transaction;
+    exports com.bluebell.platform.enums.strategy;
+    exports com.bluebell.platform.exceptions.calculator;
 
     requires lombok;
     requires org.apache.commons.collections4;

@@ -3,7 +3,7 @@ package com.bluebell.platform.models.core.entities.account;
 import com.bluebell.platform.enums.account.AccountType;
 import com.bluebell.platform.enums.account.Broker;
 import com.bluebell.platform.enums.account.Currency;
-import com.bluebell.platform.enums.platform.TradePlatform;
+import com.bluebell.platform.enums.trade.TradePlatform;
 import com.bluebell.platform.models.core.entities.GenericEntity;
 import com.bluebell.platform.models.core.entities.security.User;
 import com.bluebell.platform.models.core.entities.trade.Trade;

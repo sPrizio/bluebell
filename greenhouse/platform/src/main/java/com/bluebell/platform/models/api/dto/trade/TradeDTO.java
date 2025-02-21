@@ -1,6 +1,6 @@
 package com.bluebell.platform.models.api.dto.trade;
 
-import com.bluebell.platform.enums.platform.TradePlatform;
+import com.bluebell.platform.enums.trade.TradePlatform;
 import com.bluebell.platform.enums.trade.TradeType;
 import com.bluebell.platform.models.api.dto.GenericDTO;
 import com.bluebell.platform.models.api.dto.account.AccountDTO;

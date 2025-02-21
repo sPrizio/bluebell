@@ -22,7 +22,6 @@ open module com.bluebell.planter {
     requires org.apache.httpcomponents.httpcore;
     requires spring.boot;
     requires spring.boot.autoconfigure;
-    requires org.aspectj.weaver;
     requires commons.math3;
     requires javatuples;
     requires com.google.auto.service;
@@ -31,5 +30,4 @@ open module com.bluebell.planter {
     requires io.swagger.v3.oas.annotations;
     requires org.apache.commons.lang3;
     requires org.apache.commons.collections4;
-    requires org.aspectj.tools;
 }

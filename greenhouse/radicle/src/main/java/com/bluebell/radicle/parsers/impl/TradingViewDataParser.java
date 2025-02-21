@@ -3,7 +3,7 @@ package com.bluebell.radicle.parsers.impl;
 import com.bluebell.platform.enums.time.PlatformTimeInterval;
 import com.bluebell.platform.models.core.nonentities.market.AggregatedMarketPrices;
 import com.bluebell.platform.models.core.nonentities.market.MarketPrice;
-import com.bluebell.radicle.exceptions.TradingViewDataParsingException;
+import com.bluebell.radicle.exceptions.parsing.TradingViewDataParsingException;
 import com.bluebell.radicle.parsers.MarketPriceParser;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.io.FileUtils;
