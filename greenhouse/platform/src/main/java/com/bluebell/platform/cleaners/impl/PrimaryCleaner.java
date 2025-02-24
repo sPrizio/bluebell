@@ -1,6 +1,6 @@
-package com.bluebell.processing.cleaners.impl;
+package com.bluebell.platform.cleaners.impl;
 
-import com.bluebell.processing.cleaners.Cleaner;
+import com.bluebell.platform.cleaners.Cleaner;
 import lombok.extern.slf4j.Slf4j;
 
 /**

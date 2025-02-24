@@ -1,4 +1,4 @@
-package com.bluebell.processing.cleaners;
+package com.bluebell.platform.cleaners;
 
 /**
  * A cleaner is a class that is responsible for cleaning up generated sources after code compilation

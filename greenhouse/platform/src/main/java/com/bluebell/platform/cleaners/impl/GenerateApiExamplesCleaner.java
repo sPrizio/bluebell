@@ -1,11 +1,13 @@
-package com.bluebell.processing.cleaners.impl;
+package com.bluebell.platform.cleaners.impl;
 
-import com.bluebell.processing.cleaners.Cleaner;
+import com.bluebell.platform.cleaners.Cleaner;
+import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -15,7 +17,7 @@ import java.util.List;
  * @author Stephen Prizio
  * @version 0.0.9
  */
-//@Slf4j
+@Slf4j
 public class GenerateApiExamplesCleaner implements Cleaner {
 
 
@@ -28,10 +30,15 @@ public class GenerateApiExamplesCleaner implements Cleaner {
      */
     public static void main(String[] args) {
 
-        //LOGGER.info("Cleaning module-info.java before code generation...");
+        LOGGER.info("Cleaning module-info.java before code generation...");
 
         try {
-            Path moduleInfoPath = Paths.get("src/main/java/module-info.java");
+            Path moduleInfoPath = Paths.get(
+                    System.getProperty("user.dir"),
+                    "src", "main", "java",
+                    "module-info.java"
+            );
+
             if (!Files.exists(moduleInfoPath)) {
                 throw new IOException("module-info.java does not exist");
             }
@@ -46,10 +53,11 @@ public class GenerateApiExamplesCleaner implements Cleaner {
             }
 
             linesToRemove.forEach(lines::remove);
+            Files.write(moduleInfoPath, lines, StandardOpenOption.TRUNCATE_EXISTING);
 
-            //LOGGER.info("Dependencies successfully cleaned.");
+            LOGGER.info("Dependencies successfully cleaned.");
         } catch (IOException e) {
-           // LOGGER.error(e.getMessage(), e);
+            LOGGER.error(e.getMessage(), e);
         }
     }
 }

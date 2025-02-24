@@ -55,4 +55,5 @@ module com.bluebell.platform {
     requires io.swagger.v3.oas.annotations;
     requires jakarta.persistence;
     requires com.fasterxml.jackson.annotation;
+    requires org.slf4j;
 }
