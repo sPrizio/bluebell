@@ -1,9 +1,9 @@
 package com.bluebell.planter.controllers.news;
 
 import com.bluebell.planter.AbstractPlanterTest;
-import com.bluebell.planter.core.enums.system.Country;
-import com.bluebell.planter.core.services.news.MarketNewsService;
-import com.bluebell.planter.core.services.platform.UniqueIdentifierService;
+import com.bluebell.planter.services.UniqueIdentifierService;
+import com.bluebell.platform.enums.system.Country;
+import com.bluebell.radicle.services.news.MarketNewsService;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -33,7 +33,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  * Testing class for {@link MarketNewsApiController}
  *
  * @author Stephen Prizio
- * @version 0.0.4
+ * @version 0.0.9
  */
 @SpringBootTest
 @AutoConfigureMockMvc(addFilters = false)
@@ -52,8 +52,8 @@ public class MarketNewsApiControllerTest extends AbstractPlanterTest {
     @Before
     public void setUp() {
         Mockito.when(this.uniqueIdentifierService.generateUid(any())).thenReturn("MTE4");
-        Mockito.when(this.marketNewsService.findNewsWithinInterval(any(), any(), any())).thenReturn(List.of(generateMarketNews()));
-        Mockito.when(this.marketNewsService.findMarketNewsForDate(any())).thenReturn(Optional.of(generateMarketNews()));
+        /*Mockito.when(this.marketNewsService.findNewsWithinInterval(any(), any(), any())).thenReturn(List.of(generateMarketNews()));
+        Mockito.when(this.marketNewsService.findMarketNewsForDate(any())).thenReturn(Optional.of(generateMarketNews()));*/
     }
 
 

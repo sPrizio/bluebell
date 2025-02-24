@@ -34,10 +34,12 @@ public class GenerateApiExamplesDriver implements Driver {
             try {
                 processor.updateDependencies();
             } catch (IOException e) {
-                LOGGER.error("IOError occurred during dependency update.");
+                LOGGER.error("IOError occurred during dependency update. {}", e.getMessage(), e);
+                System.exit(1);
             }
         } else {
             LOGGER.error("API Examples could not be generated. Refer to the logs for additional information.");
+            System.exit(1);
         }
     }
 

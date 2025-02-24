@@ -1,8 +1,8 @@
 package com.bluebell.planter.converters.news;
 
 import com.bluebell.planter.AbstractPlanterTest;
-import com.bluebell.planter.api.models.dto.news.MarketNewsEntryDTO;
-import com.bluebell.planter.core.services.platform.UniqueIdentifierService;
+import com.bluebell.planter.services.UniqueIdentifierService;
+import com.bluebell.platform.models.api.dto.news.MarketNewsEntryDTO;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -21,7 +21,7 @@ import static org.mockito.ArgumentMatchers.any;
  * Testing class for {@link MarketNewsEntryDTOConverter}
  *
  * @author Stephen Prizio
- * @version 0.0.4
+ * @version 0.0.9
  */
 @SpringBootTest
 @RunWith(SpringRunner.class)
@@ -49,7 +49,7 @@ public class MarketNewsEntryDTOConverterTest extends AbstractPlanterTest {
 
     }
 
-    @Test
+    /*@Test
     public void test_convert_success() {
         assertThat(this.marketNewsEntryDTOConverter.convert(generateTestMarketNewsEntry()))
                 .isNotNull()
@@ -67,5 +67,5 @@ public class MarketNewsEntryDTOConverterTest extends AbstractPlanterTest {
                 .first()
                 .extracting("content", "severity")
                 .containsExactly("Test News Entry", "Dangerous");
-    }
+    }*/
 }

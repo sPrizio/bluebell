@@ -1,6 +1,7 @@
 package com.bluebell.processing.processors;
 
 import com.bluebell.platform.models.api.json.StandardJsonResponse;
+import com.bluebell.platform.util.DirectoryUtil;
 import com.bluebell.processing.enums.DependencyType;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -31,7 +32,12 @@ public abstract class AbstractBluebellProcessor implements BluebellProcessor {
      * @return path as a string
      */
     String getGeneratedSourcePath() {
-        return System.getProperty("user.dir") + "/target/generated-sources/annotations";
+        return Paths.get(
+                DirectoryUtil.getBaseProjectDirectory(),
+                "greenhouse",
+                "processing",
+                "target", "generated-sources", "annotations"
+        ).toAbsolutePath().normalize().toString();
     }
 
     /**
@@ -60,7 +66,14 @@ public abstract class AbstractBluebellProcessor implements BluebellProcessor {
      */
     void updateModuleInfo(final DependencyType dependencyType, final String packageName) throws IOException {
 
-        Path moduleInfoPath = Paths.get("src/main/java/module-info.java");
+        Path moduleInfoPath = Paths.get(
+                DirectoryUtil.getBaseProjectDirectory(),
+                "greenhouse",
+                "processing",
+                "src", "main", "java",
+                "module-info.java"
+        );
+
         if (!Files.exists(moduleInfoPath)) {
             throw new IOException("module-info.java does not exist");
         }

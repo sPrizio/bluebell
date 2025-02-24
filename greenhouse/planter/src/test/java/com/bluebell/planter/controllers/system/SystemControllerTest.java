@@ -1,6 +1,5 @@
 package com.bluebell.planter.controllers.system;
 
-import com.bluebell.planter.controllers.system.SystemController;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.bluebell.planter.constants.ApiConstants;
 import org.junit.Test;
@@ -24,7 +23,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  * Testing class for {@link SystemController}
  *
  * @author Stephen Prizio
- * @version 0.0.3
+ * @version 0.0.9
  */
 @SpringBootTest
 @AutoConfigureMockMvc(addFilters = false)

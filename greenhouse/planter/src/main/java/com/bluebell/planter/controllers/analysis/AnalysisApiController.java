@@ -250,7 +250,7 @@ public class AnalysisApiController extends AbstractApiController {
         }
 
         final Optional<Account> account = this.accountService.findAccountByAccountNumber(accountNumber);
-        return account.map(value -> new StandardJsonResponse<>(true, this.analysisService.computeWeekdayTimeBucketAnalysis(value, DayOfWeek.valueOf(weekday.toUpperCase()), RadicleTimeInterval.THIRTY_MINUTE, AnalysisFilter.getAnalysisFilter(filter.toUpperCase())), StringUtils.EMPTY)).orElseGet(() -> new StandardJsonResponse<>(true, null, CorePlatformConstants.Validation.Account.ACCOUNT_NOT_FOUND));
+        return account.map(value -> new StandardJsonResponse<>(true, this.analysisService.computeWeekdayTimeBucketAnalysis(value, DayOfWeek.valueOf(weekday.toUpperCase()), PlatformTimeInterval.THIRTY_MINUTE, AnalysisFilter.getAnalysisFilter(filter.toUpperCase())), StringUtils.EMPTY)).orElseGet(() -> new StandardJsonResponse<>(true, null, CorePlatformConstants.Validation.Account.ACCOUNT_NOT_FOUND));
     }
 
     /**

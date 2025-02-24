@@ -1,11 +1,11 @@
 package com.bluebell.planter.controllers.security;
 
+import com.bluebell.planter.services.UniqueIdentifierService;
+import com.bluebell.radicle.services.security.UserService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.bluebell.planter.AbstractPlanterTest;
 import com.bluebell.planter.constants.ApiConstants;
 import com.bluebell.planter.converters.account.AccountDTOConverter;
-import com.bluebell.planter.core.services.platform.UniqueIdentifierService;
-import com.bluebell.planter.core.services.security.UserService;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -59,8 +59,8 @@ public class UserApiControllerTest extends AbstractPlanterTest {
     public void setUp() throws Throwable {
         Mockito.when(this.uniqueIdentifierService.generateUid(any())).thenReturn("MTE4");
         Mockito.when(this.accountDTOConverter.convert(any())).thenReturn(generateTestAccountDTO());
-        Mockito.when(this.userService.createUser(anyMap())).thenReturn(generateTestUser());
-        Mockito.when(this.userService.updateUser(any(), anyMap())).thenReturn(generateTestUser());
+        /*Mockito.when(this.userService.createUser(anyMap())).thenReturn(generateTestUser());
+        Mockito.when(this.userService.updateUser(any(), anyMap())).thenReturn(generateTestUser());*/
     }
 
 

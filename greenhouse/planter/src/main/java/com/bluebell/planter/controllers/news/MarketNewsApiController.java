@@ -2,6 +2,7 @@ package com.bluebell.planter.controllers.news;
 
 import com.bluebell.processing.api.examples.AccountApiExamples;
 import com.bluebell.processing.api.examples.ApiErrorExamples;
+import com.bluebell.processing.api.examples.ApiPrimitiveExamples;
 import com.bluebell.planter.controllers.AbstractApiController;
 import com.bluebell.planter.converters.news.MarketNewsDTOConverter;
 import com.bluebell.platform.models.api.dto.news.MarketNewsDTO;
@@ -73,7 +74,7 @@ public class MarketNewsApiController extends AbstractApiController {
             content = @Content(
                     mediaType = "application/json",
                     schema = @Schema(implementation = StandardJsonResponse.class),
-                    examples = @ExampleObject(value = ApiErrorExamples.NO_NEWS_EXAMPLE)
+                    examples = @ExampleObject(value = AccountApiExamples.NO_NEWS_EXAMPLE)
             )
     )
     @ApiResponse(
@@ -126,7 +127,7 @@ public class MarketNewsApiController extends AbstractApiController {
             content = @Content(
                     mediaType = "application/json",
                     schema = @Schema(implementation = StandardJsonResponse.class),
-                    examples = @ExampleObject(value = ApiErrorExamples.NO_NEWS_EXAMPLE)
+                    examples = @ExampleObject(value = AccountApiExamples.NO_NEWS_EXAMPLE)
             )
     )
     @ApiResponse(

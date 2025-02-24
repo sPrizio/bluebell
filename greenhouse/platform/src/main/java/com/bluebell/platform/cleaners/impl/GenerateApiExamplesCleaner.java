@@ -1,8 +1,10 @@
 package com.bluebell.platform.cleaners.impl;
 
 import com.bluebell.platform.cleaners.Cleaner;
+import com.bluebell.platform.util.DirectoryUtil;
 import lombok.extern.slf4j.Slf4j;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -33,8 +35,11 @@ public class GenerateApiExamplesCleaner implements Cleaner {
         LOGGER.info("Cleaning module-info.java before code generation...");
 
         try {
+
             Path moduleInfoPath = Paths.get(
-                    System.getProperty("user.dir"),
+                    DirectoryUtil.getBaseProjectDirectory(),
+                    "greenhouse",
+                    "processing",
                     "src", "main", "java",
                     "module-info.java"
             );
@@ -58,6 +63,7 @@ public class GenerateApiExamplesCleaner implements Cleaner {
             LOGGER.info("Dependencies successfully cleaned.");
         } catch (IOException e) {
             LOGGER.error(e.getMessage(), e);
+            System.exit(1);
         }
     }
 }

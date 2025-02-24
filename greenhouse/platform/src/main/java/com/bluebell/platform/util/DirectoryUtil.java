@@ -4,6 +4,8 @@ import org.apache.commons.lang3.StringUtils;
 
 import java.io.File;
 import java.net.URL;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Objects;
 
 /**
@@ -44,5 +46,20 @@ public class DirectoryUtil {
         }
 
         return directoryResult;
+    }
+
+    /**
+     * Returns a path to the base project directory
+     *
+     * @return file path to base project directory
+     */
+    public static String getBaseProjectDirectory() {
+
+        Path currentPath = Paths.get(new File("").getAbsoluteFile().getPath());
+        while (!currentPath.endsWith("bluebell")) {
+            currentPath = currentPath.getParent();
+        }
+
+        return currentPath.toAbsolutePath().toString();
     }
 }

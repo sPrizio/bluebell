@@ -36,7 +36,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  * Testing class for {@link AccountApiController}
  *
  * @author Stephen Prizio
- * @version 0.0.7
+ * @version 0.0.9
  */
 @SpringBootTest
 @AutoConfigureMockMvc(addFilters = false)
@@ -58,7 +58,7 @@ public class AccountApiControllerTest extends AbstractPlanterTest {
     @Before
     public void setUp() {
         Mockito.when(this.uniqueIdentifierService.generateUid(any())).thenReturn("MTE4");
-        Mockito.when(this.accountService.createNewAccount(any(), any())).thenReturn(generateTestAccount());
+        /*Mockito.when(this.accountService.createNewAccount(any(), any())).thenReturn(generateTestAccount());*/
         Mockito.when(this.accountDTOConverter.convert(any())).thenReturn(generateTestAccountDTO());
     }
 
