@@ -13,7 +13,7 @@ import java.util.List;
  * @param netProfit     net profit
  * @param netPoints     net points
  * @author Stephen Prizio
- * @version 0.0.7
+ * @version 0.0.9
  */
 public record TradeRecordTotals(int count, int trades, int tradesWon, int tradesLost, int winPercentage, double netProfit, double netPoints) {
 }

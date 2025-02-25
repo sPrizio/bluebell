@@ -22,7 +22,7 @@ import static org.mockito.ArgumentMatchers.any;
  * Testing class for {@link MarketNewsDTOConverter}
  *
  * @author Stephen Prizio
- * @version 0.0.4
+ * @version 0.0.9
  */
 @SpringBootTest
 @RunWith(SpringRunner.class)

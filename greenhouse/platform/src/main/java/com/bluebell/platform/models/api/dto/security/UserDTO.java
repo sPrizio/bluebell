@@ -14,7 +14,7 @@ import java.util.List;
  * A DTO representation of a {@link User}
  *
  * @author Stephen Prizio
- * @version 0.0.2
+ * @version 0.0.9
  */
 @Setter
 @Getter

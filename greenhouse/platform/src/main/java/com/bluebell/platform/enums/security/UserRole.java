@@ -7,7 +7,7 @@ import lombok.Getter;
  * Enumeration of a various roles that a {@link User} may possess
  *
  * @author Stephen Prizio
- * @version 0.0.1
+ * @version 0.0.9
  */
 @Getter
 public enum UserRole {

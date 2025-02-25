@@ -13,7 +13,7 @@ import java.util.List;
  * Class representation of a market news entry which represents a time of day that can have 1 or more pieces of news
  *
  * @author Stephen Prizio
- * @version 0.0.4
+ * @version 0.0.9
  */
 @Getter
 @Entity

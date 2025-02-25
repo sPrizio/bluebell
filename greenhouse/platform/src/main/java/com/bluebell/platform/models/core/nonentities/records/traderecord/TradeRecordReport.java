@@ -9,7 +9,7 @@ import java.util.List;
  * @param tradeRecords {@link List} of {@link TradeRecord}s
  * @param tradeRecordTotals {@link TradeRecordTotals}
  * @author Stephen Prizio
- * @version 0.0.7
+ * @version 0.0.9
  */
 public record TradeRecordReport(List<TradeRecord> tradeRecords, TradeRecordTotals tradeRecordTotals) {
 }

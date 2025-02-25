@@ -11,7 +11,7 @@ import lombok.Setter;
  * Class representation of market news entry, a piece of news at a specific time
  *
  * @author Stephen Prizio
- * @version 0.0.4
+ * @version 0.0.9
  */
 @Getter
 @Entity

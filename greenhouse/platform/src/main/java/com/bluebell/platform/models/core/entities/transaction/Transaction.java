@@ -14,7 +14,7 @@ import java.time.LocalDateTime;
  * Class representation of an account transaction
  *
  * @author Stephen Prizio
- * @version 0.0.7
+ * @version 0.0.9
  */
 @Getter
 @Entity

@@ -12,7 +12,7 @@ import java.util.Arrays;
  * Validator class for the import package
  *
  * @author Stephen Prizio
- * @version 0.0.1
+ * @version 0.0.9
  */
 public class ImportValidator {
 

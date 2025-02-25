@@ -12,7 +12,7 @@ import java.time.LocalDateTime;
  * A DTO representation for {@link Transaction}
  *
  * @author Stephen Prizio
- * @version 0.0.7
+ * @version 0.0.9
  */
 @Getter
 @Setter

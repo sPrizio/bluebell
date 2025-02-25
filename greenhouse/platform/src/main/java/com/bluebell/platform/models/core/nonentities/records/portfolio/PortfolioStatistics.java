@@ -8,7 +8,7 @@ package com.bluebell.platform.models.core.nonentities.records.portfolio;
  * @param deltaDeposits % change in deposits
  * @param deltaWithdrawals % change in withdrawals
  * @author Stephen Prizio
- * @version 0.0.7
+ * @version 0.0.9
  */
 public record PortfolioStatistics(double deltaNetWorth, double deltaTrades, double deltaDeposits, double deltaWithdrawals) {
 }

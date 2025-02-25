@@ -4,7 +4,7 @@ package com.bluebell.radicle.exceptions.account;
  * Exception thrown when comparing account numbers
  *
  * @author Stephen Prizio
- * @version 0.0.2
+ * @version 0.0.9
  */
 public class InvalidAccountNumberException extends RuntimeException {
 

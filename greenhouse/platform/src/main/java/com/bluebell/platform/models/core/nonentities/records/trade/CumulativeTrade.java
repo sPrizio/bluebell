@@ -15,7 +15,7 @@ import java.time.LocalDateTime;
  * @param netProfit cumulative profit
  * @param netPoints cumulative points
  * @author Stephen Prizio
- * @version 0.0.7
+ * @version 0.0.9
  */
 public record CumulativeTrade(LocalDateTime tradeCloseTime, int count, double singleProfit, double singlePoints, double netProfit, double netPoints) {
 }

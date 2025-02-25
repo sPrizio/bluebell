@@ -6,7 +6,7 @@ import org.apache.commons.lang3.StringUtils;
  * Global DTO parent across the app
  *
  * @author Stephen Prizio
- * @version 0.0.1
+ * @version 0.0.9
  */
 public interface GenericDTO {
 

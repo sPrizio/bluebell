@@ -11,7 +11,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
  * @param value numerical value of the analysis
  * @param count sum of elements/computations comprising the analysis value
  * @author Stephen Prizio
- * @version 0.0.7
+ * @version 0.0.9
  */
 @Schema(description = "Represents a result of analysis for a particular piece of information. In other words, let's say we're analysis performance for each weekday, an individual AnalysisResult will represent 1 weekday")
 public record AnalysisResult(

@@ -19,7 +19,7 @@ import java.util.List;
  * Class representation of an individual that can interact with the system, hold accounts and other information
  *
  * @author Stephen Prizio
- * @version 0.0.2
+ * @version 0.0.9
  */
 @Getter
 @Entity

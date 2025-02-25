@@ -36,7 +36,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  * Testing class for {@link UserApiController}
  *
  * @author Stephen Prizio
- * @version 0.0.4
+ * @version 0.0.9
  */
 @SpringBootTest
 @AutoConfigureMockMvc(addFilters = false)

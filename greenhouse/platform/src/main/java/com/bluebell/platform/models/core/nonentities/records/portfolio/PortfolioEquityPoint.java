@@ -11,7 +11,7 @@ import java.util.List;
  * @param portfolio total balance / net worth
  * @param accounts {@link List} of {@link PortfolioAccountEquityPoint}
  * @author Stephen Prizio
- * @version 0.0.7
+ * @version 0.0.9
  */
 public record PortfolioEquityPoint(LocalDate date, double portfolio, List<PortfolioAccountEquityPoint> accounts) {
 }

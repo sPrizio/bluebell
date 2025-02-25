@@ -9,7 +9,7 @@ import com.bluebell.platform.models.core.entities.account.Account;
  * @param name {@link Account} name
  * @param value {@link Account} value (balance)
  * @author Stephen Prizio
- * @version 0.0.7
+ * @version 0.0.9
  */
 public record PortfolioAccountEquityPoint(String name, double value) {
 }

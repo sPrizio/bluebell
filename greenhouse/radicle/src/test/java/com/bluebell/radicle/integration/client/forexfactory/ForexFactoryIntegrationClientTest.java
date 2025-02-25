@@ -13,7 +13,7 @@ import static org.assertj.core.api.Assertions.assertThat;
  * Testing class for {@link ForexFactoryIntegrationClient}
  *
  * @author Stephen Prizio
- * @version 0.0.4
+ * @version 0.0.9
  */
 @SpringBootTest
 @RunWith(SpringRunner.class)

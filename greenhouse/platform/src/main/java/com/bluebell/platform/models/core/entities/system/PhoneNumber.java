@@ -11,7 +11,7 @@ import lombok.Setter;
  * Class representation of a phone number
  *
  * @author Stephen Prizio
- * @version 0.0.7
+ * @version 0.0.9
  */
 @Entity
 @Table(name = "phone_numbers")

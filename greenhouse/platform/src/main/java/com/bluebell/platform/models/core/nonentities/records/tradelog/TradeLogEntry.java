@@ -15,7 +15,7 @@ import java.util.List;
  * @param records {@link List} of {@link TradeLogEntryRecord}s
  * @param totals {@link TradeLogEntryRecordTotals}
  * @author Stephen Prizio
- * @version 0.0.7
+ * @version 0.0.9
  */
 public record TradeLogEntry(LocalDate start, LocalDate end, List<TradeLogEntryRecord> records, TradeLogEntryRecordTotals totals) {
 }

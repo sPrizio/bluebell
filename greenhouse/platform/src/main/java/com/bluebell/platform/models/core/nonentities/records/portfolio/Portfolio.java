@@ -17,7 +17,7 @@ import java.util.List;
  * @param statistics {@link PortfolioStatistics}
  * @param equity {@link List} of {@link PortfolioEquityPoint}s
  * @author Stephen Prizio
- * @version 0.0.7
+ * @version 0.0.9
  */
 public record Portfolio(boolean isNew, double netWorth, long trades, long deposits, long withdrawals, PortfolioStatistics statistics, List<PortfolioEquityPoint> equity) {
 }

@@ -22,7 +22,7 @@ import com.bluebell.platform.models.core.entities.account.Account;
  * @param lossDuration average loss trade duration in seconds
  * @param assumedDrawdown calculated drawdown plus average loss
  * @author Stephen Prizio
- * @version 0.0.7
+ * @version 0.0.9
  */
 public record AccountStatistics(
         double balance,

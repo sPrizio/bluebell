@@ -31,7 +31,7 @@ import java.util.List;
  * @param equityPoints {@link List} of {@link TradeRecordEquityPoint}s
  *
  * @author Stephen Prizio
- * @version 0.0.7
+ * @version 0.0.9
  */
 public record TradeRecord(
         LocalDate start,

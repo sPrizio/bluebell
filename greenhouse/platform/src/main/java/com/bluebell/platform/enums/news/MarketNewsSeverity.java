@@ -7,7 +7,7 @@ import lombok.Getter;
  * of moving the market in a significant direction
  *
  * @author Stephen Prizio
- * @version 0.0.4
+ * @version 0.0.9
  */
 @Getter
 public enum MarketNewsSeverity {

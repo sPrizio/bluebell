@@ -13,7 +13,7 @@ import java.util.List;
  * Class representation of market news on a specific day
  *
  * @author Stephen Prizio
- * @version 0.0.4
+ * @version 0.0.9
  */
 @Getter
 @Entity

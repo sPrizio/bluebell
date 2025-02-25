@@ -34,7 +34,7 @@ import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
  * Testing class for {@link MetaTrader4TradeImportService}
  *
  * @author Stephen Prizio
- * @version 0.0.8
+ * @version 0.0.9
  */
 @SpringBootTest
 @RunWith(SpringRunner.class)

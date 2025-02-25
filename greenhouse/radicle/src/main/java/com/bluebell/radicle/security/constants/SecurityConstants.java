@@ -8,7 +8,7 @@ import jakarta.servlet.http.HttpServletRequest;
  * Constants used with regard to system security
  *
  * @author Stephen Prizio
- * @version 0.0.2
+ * @version 0.0.9
  */
 public class SecurityConstants {
 

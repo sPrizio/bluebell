@@ -31,7 +31,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  * Testing class for {@link TradeRecordApiController}
  *
  * @author Stephen Prizio
- * @version 0.0.7
+ * @version 0.0.9
  */
 @SpringBootTest
 @AutoConfigureMockMvc(addFilters = false)

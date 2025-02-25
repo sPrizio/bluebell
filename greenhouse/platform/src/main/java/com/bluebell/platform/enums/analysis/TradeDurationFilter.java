@@ -6,7 +6,7 @@ import lombok.Getter;
  * Enumeration of types of trade durations to filter by
  *
  * @author Stephen Prizio
- * @version 0.0.7
+ * @version 0.0.9
  */
 @Getter
 public enum TradeDurationFilter {

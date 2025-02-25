@@ -33,7 +33,7 @@ import java.util.Optional;
  * Controller for {@link AnalysisService}
  *
  * @author Stephen Prizio
- * @version 0.0.7
+ * @version 0.0.9
  */
 @RestController
 @RequestMapping("${base.api.controller.endpoint}/analysis")

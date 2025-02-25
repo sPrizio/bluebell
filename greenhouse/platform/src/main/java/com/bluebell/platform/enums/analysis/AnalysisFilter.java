@@ -6,7 +6,7 @@ import lombok.Getter;
  * Enumeration of that various data filters that can be applied to the results of an analysis
  *
  * @author Stephen Prizio
- * @version 0.0.7
+ * @version 0.0.9
  */
 @Getter
 public enum AnalysisFilter {

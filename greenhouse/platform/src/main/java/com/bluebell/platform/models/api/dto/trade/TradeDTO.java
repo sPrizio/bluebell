@@ -14,7 +14,7 @@ import java.time.LocalDateTime;
  * A DTO representation of a {@link Trade}
  *
  * @author Stephen Prizio
- * @version 0.0.2
+ * @version 0.0.9
  */
 @Setter
 @Getter

@@ -9,7 +9,7 @@ import lombok.Setter;
  * A DTO representation of a {@link PhoneNumber}
  *
  * @author Stephen Prizio
- * @version 0.0.1
+ * @version 0.0.9
  */
 @Setter
 @Getter

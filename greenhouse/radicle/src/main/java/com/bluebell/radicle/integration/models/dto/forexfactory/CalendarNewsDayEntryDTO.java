@@ -13,7 +13,7 @@ import java.time.LocalTime;
  * Class representation of an entry of news in a news day
  *
  * @author Stephen Prizio
- * @version 0.0.4
+ * @version 0.0.9
  */
 @Getter
 @Setter

@@ -14,7 +14,7 @@ import java.time.LocalDateTime;
  * @param cumAmount cumulative account balance
  * @param cumPoints cumulative points
  * @author Stephen Prizio
- * @version 0.0.7
+ * @version 0.0.9
  */
 public record AccountEquityPoint(LocalDateTime date, double amount, double points, double cumAmount, double cumPoints) {
 }

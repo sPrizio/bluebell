@@ -5,7 +5,7 @@ package com.bluebell.platform.enums.chart;
  * Class representation of an intraday interval
  *
  * @author Stephen Prizio
- * @version 0.0.6
+ * @version 0.0.9
  */
 public enum IntradayInterval {
     ONE_MINUTE("One Minute", "one-minute"),

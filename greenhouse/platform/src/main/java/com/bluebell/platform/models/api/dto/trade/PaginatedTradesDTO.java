@@ -12,7 +12,7 @@ import java.util.List;
  * @param totalElements total trades count
  * @param totalPages    number of pages
  * @author Stephen Prizio
- * @version 0.0.7
+ * @version 0.0.9
  */
 public record PaginatedTradesDTO(int page, int pageSize, List<TradeDTO> trades, int totalElements, int totalPages) {
 }

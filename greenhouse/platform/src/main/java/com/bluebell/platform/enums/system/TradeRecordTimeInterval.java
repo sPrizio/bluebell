@@ -9,7 +9,7 @@ import java.time.temporal.ChronoUnit;
  * Enum representing various time intervals for {@link TradeRecord}s
  *
  * @author Stephen Prizio
- * @version 0.0.7
+ * @version 0.0.9
  */
 public enum TradeRecordTimeInterval {
     DAILY(ChronoUnit.DAYS, 1),

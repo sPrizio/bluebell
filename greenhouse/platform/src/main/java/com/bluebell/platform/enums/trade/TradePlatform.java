@@ -6,7 +6,7 @@ import lombok.Getter;
  * Enum representing different trading platforms
  *
  * @author Stephen Prizio
- * @version 0.0.7
+ * @version 0.0.9
  */
 @Getter
 public enum TradePlatform {

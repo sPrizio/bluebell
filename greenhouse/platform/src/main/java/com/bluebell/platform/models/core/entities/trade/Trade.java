@@ -14,7 +14,7 @@ import java.time.LocalDateTime;
  * Class representation of a trade in the market, a buy or sell exchange
  *
  * @author Stephen Prizio
- * @version 0.0.7
+ * @version 0.0.9
  */
 @Getter
 @Entity

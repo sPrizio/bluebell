@@ -7,7 +7,7 @@ import lombok.Getter;
  * Enumeration representing the direction of a {@link Trade}
  *
  * @author Stephen Prizio
- * @version 0.0.1
+ * @version 0.0.9
  */
 @Getter
 public enum TradeDirection {

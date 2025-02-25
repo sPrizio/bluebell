@@ -10,7 +10,7 @@ import java.util.List;
  *
  * @param entries {@link List} of {@link TradeLogEntry}
  * @author Stephen Prizio
- * @version 0.0.7
+ * @version 0.0.9
  */
 public record TradeLog(List<TradeLogEntry> entries) {
 }
