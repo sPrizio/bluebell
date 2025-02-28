@@ -7,8 +7,8 @@ import com.bluebell.radicle.exceptions.validation.IllegalParameterException;
 import com.bluebell.radicle.exceptions.validation.MissingRequiredDataException;
 import com.bluebell.radicle.repositories.security.UserRepository;
 import com.bluebell.radicle.repositories.system.PhoneNumberRepository;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,11 +28,11 @@ import static org.mockito.ArgumentMatchers.any;
  * Testing class for {@link UserService}
  *
  * @author Stephen Prizio
- * @version 0.0.9
+ * @version 0.1.0
  */
 @SpringBootTest
 @RunWith(SpringRunner.class)
-public class UserServiceTest extends AbstractGenericTest {
+class UserServiceTest extends AbstractGenericTest {
 
     @MockBean
     private UserRepository userRepository;
@@ -43,7 +43,7 @@ public class UserServiceTest extends AbstractGenericTest {
     @Autowired
     private UserService userService;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         Mockito.when(this.userRepository.findUserByEmail("test@email.com")).thenReturn(generateTestUser());
         Mockito.when(this.userRepository.findUserByUsername("test")).thenReturn(generateTestUser());
@@ -55,14 +55,14 @@ public class UserServiceTest extends AbstractGenericTest {
     //  ----------------- findUserByUsername -----------------
 
     @Test
-    public void test_findUserByUsername_missingParams() {
+    void test_findUserByUsername_missingParams() {
         assertThatExceptionOfType(IllegalParameterException.class)
                 .isThrownBy(() -> this.userService.findUserByUsername(null))
                 .withMessage("username cannot be null");
     }
 
     @Test
-    public void test_findUserByUsername_success() {
+    void test_findUserByUsername_success() {
         assertThat(this.userService.findUserByUsername("test"))
                 .isNotEmpty();
     }
@@ -71,14 +71,14 @@ public class UserServiceTest extends AbstractGenericTest {
     //  ----------------- findUserByEmail -----------------
 
     @Test
-    public void test_findUserByEmail_missingParams() {
+    void test_findUserByEmail_missingParams() {
         assertThatExceptionOfType(IllegalParameterException.class)
                 .isThrownBy(() -> this.userService.findUserByEmail(null))
                 .withMessage("email cannot be null");
     }
 
     @Test
-    public void test_findUserByEmail_success() {
+    void test_findUserByEmail_success() {
         assertThat(this.userService.findUserByEmail("test@email.com"))
                 .isNotEmpty();
     }
@@ -87,14 +87,14 @@ public class UserServiceTest extends AbstractGenericTest {
     //  ----------------- createUser -----------------
 
     @Test
-    public void test_createUser_missingData() {
+    void test_createUser_missingData() {
         assertThatExceptionOfType(MissingRequiredDataException.class)
                 .isThrownBy(() -> this.userService.createUser(null))
                 .withMessage("The required data for creating a User was null or empty");
     }
 
     @Test
-    public void test_createUser_erroneousCreation() {
+    void test_createUser_erroneousCreation() {
         Map<String, Object> map = Map.of("bad", "input");
         assertThatExceptionOfType(EntityCreationException.class)
                 .isThrownBy(() -> this.userService.createUser(map))
@@ -102,7 +102,7 @@ public class UserServiceTest extends AbstractGenericTest {
     }
 
     @Test
-    public void test_createUser_success() {
+    void test_createUser_success() {
 
         Map<String, Object> temp = new HashMap<>();
         temp.put("email", "2022-09-05");
@@ -127,14 +127,14 @@ public class UserServiceTest extends AbstractGenericTest {
     //  ----------------- updateUser -----------------
 
     @Test
-    public void test_updateUser_missingData() {
+    void test_updateUser_missingData() {
         assertThatExceptionOfType(MissingRequiredDataException.class)
                 .isThrownBy(() -> this.userService.updateUser(generateTestUser(), null))
                 .withMessage("The required data for updating a User was null or empty");
     }
 
     @Test
-    public void test_updateUser_erroneousModification() {
+    void test_updateUser_erroneousModification() {
         Map<String, Object> map = Map.of("bad", "input");
         assertThatExceptionOfType(EntityModificationException.class)
                 .isThrownBy(() -> this.userService.updateUser(generateTestUser(), map))
@@ -142,7 +142,7 @@ public class UserServiceTest extends AbstractGenericTest {
     }
 
     @Test
-    public void test_updateUser_success() {
+    void test_updateUser_success() {
 
         Map<String, Object> temp = new HashMap<>();
         temp.put("email", "2022-09-05");

@@ -3,6 +3,7 @@ package com.bluebell.platform.models.core.nonentities.records.tradelog;
 
 import com.bluebell.platform.models.core.entities.account.Account;
 import com.bluebell.platform.models.core.nonentities.records.traderecord.TradeRecord;
+import lombok.Getter;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -15,7 +16,11 @@ import java.util.List;
  * @param records {@link List} of {@link TradeLogEntryRecord}s
  * @param totals {@link TradeLogEntryRecordTotals}
  * @author Stephen Prizio
- * @version 0.0.9
+ * @version 0.1.0
  */
-public record TradeLogEntry(LocalDate start, LocalDate end, List<TradeLogEntryRecord> records, TradeLogEntryRecordTotals totals) {
-}
+public record TradeLogEntry(
+        @Getter LocalDate start,
+        @Getter LocalDate end,
+        @Getter List<TradeLogEntryRecord> records,
+        @Getter TradeLogEntryRecordTotals totals
+) { }

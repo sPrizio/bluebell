@@ -9,8 +9,8 @@ import com.bluebell.radicle.AbstractGenericTest;
 import com.bluebell.radicle.exceptions.validation.IllegalParameterException;
 import com.bluebell.radicle.repositories.trade.TradeRepository;
 import org.assertj.core.groups.Tuple;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,11 +31,11 @@ import static org.mockito.ArgumentMatchers.any;
  * Testing class for {@link TradeService}
  *
  * @author Stephen Prizio
- * @version 0.0.9
+ * @version 0.1.0
  */
 @SpringBootTest
 @RunWith(SpringRunner.class)
-public class TradeServiceTest extends AbstractGenericTest {
+class TradeServiceTest extends AbstractGenericTest {
 
     private final Account TEST_ACCOUNT = generateTestAccount();
 
@@ -53,7 +53,7 @@ public class TradeServiceTest extends AbstractGenericTest {
     @Autowired
     private TradeService tradeService;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         TEST_USER.setAccounts(List.of(TEST_ACCOUNT));
         Mockito.when(this.tradeRepository.findAllByTradeTypeAndAccountOrderByTradeOpenTimeAsc(TradeType.BUY, TEST_ACCOUNT)).thenReturn(List.of(TEST_TRADE_1));
@@ -68,14 +68,14 @@ public class TradeServiceTest extends AbstractGenericTest {
     //  ----------------- findAllByTradeType -----------------
 
     @Test
-    public void test_findAllByTradeType_missingParamTradeType() {
+    void test_findAllByTradeType_missingParamTradeType() {
         assertThatExceptionOfType(IllegalParameterException.class)
                 .isThrownBy(() -> this.tradeService.findAllByTradeType(null, generateTestAccount()))
                 .withMessage("tradeType cannot be null");
     }
 
     @Test
-    public void test_findAllByTradeType_success() {
+    void test_findAllByTradeType_success() {
         assertThat(this.tradeService.findAllByTradeType(TradeType.BUY, TEST_ACCOUNT))
                 .hasSize(1)
                 .extracting("openPrice", "closePrice", "netProfit")
@@ -86,28 +86,28 @@ public class TradeServiceTest extends AbstractGenericTest {
     //  ----------------- findAllTradesWithinTimespan -----------------
 
     @Test
-    public void test_findAllTradesWithinTimespan_missingParamStart() {
+    void test_findAllTradesWithinTimespan_missingParamStart() {
         assertThatExceptionOfType(IllegalParameterException.class)
                 .isThrownBy(() -> this.tradeService.findAllTradesWithinTimespan(null, LocalDateTime.MAX, generateTestAccount()))
                 .withMessage(CorePlatformConstants.Validation.DateTime.START_DATE_CANNOT_BE_NULL);
     }
 
     @Test
-    public void test_findAllTradesWithinTimespan_missingParamEnd() {
+    void test_findAllTradesWithinTimespan_missingParamEnd() {
         assertThatExceptionOfType(IllegalParameterException.class)
                 .isThrownBy(() -> this.tradeService.findAllTradesWithinTimespan(LocalDateTime.MAX, null, generateTestAccount()))
                 .withMessage(CorePlatformConstants.Validation.DateTime.END_DATE_CANNOT_BE_NULL);
     }
 
     @Test
-    public void test_findAllTradesWithinTimespan_invalidInterval() {
+    void test_findAllTradesWithinTimespan_invalidInterval() {
         assertThatExceptionOfType(UnsupportedOperationException.class)
                 .isThrownBy(() -> this.tradeService.findAllTradesWithinTimespan(LocalDateTime.MAX, LocalDateTime.MIN, generateTestAccount()))
                 .withMessage(CorePlatformConstants.Validation.DateTime.MUTUALLY_EXCLUSIVE_DATES);
     }
 
     @Test
-    public void test_findAllTradesWithinTimespan_success() {
+    void test_findAllTradesWithinTimespan_success() {
         assertThat(this.tradeService.findAllTradesWithinTimespan(TEST1, TEST2, TEST_ACCOUNT))
                 .hasSize(2)
                 .extracting("openPrice", "closePrice", "netProfit")
@@ -118,28 +118,28 @@ public class TradeServiceTest extends AbstractGenericTest {
     //  ----------------- findAllTradesWithinTimespan (paged) -----------------
 
     @Test
-    public void test_findAllTradesWithinTimespan_paged_missingParamStart() {
+    void test_findAllTradesWithinTimespan_paged_missingParamStart() {
         assertThatExceptionOfType(IllegalParameterException.class)
                 .isThrownBy(() -> this.tradeService.findAllTradesWithinTimespan(null, LocalDateTime.MAX, generateTestAccount(), 0, 10))
                 .withMessage(CorePlatformConstants.Validation.DateTime.START_DATE_CANNOT_BE_NULL);
     }
 
     @Test
-    public void test_findAllTradesWithinTimespan_paged_missingParamEnd() {
+    void test_findAllTradesWithinTimespan_paged_missingParamEnd() {
         assertThatExceptionOfType(IllegalParameterException.class)
                 .isThrownBy(() -> this.tradeService.findAllTradesWithinTimespan(LocalDateTime.MAX, null, generateTestAccount(), 0, 10))
                 .withMessage(CorePlatformConstants.Validation.DateTime.END_DATE_CANNOT_BE_NULL);
     }
 
     @Test
-    public void test_findAllTradesWithinTimespan_paged_invalidInterval() {
+    void test_findAllTradesWithinTimespan_paged_invalidInterval() {
         assertThatExceptionOfType(UnsupportedOperationException.class)
                 .isThrownBy(() -> this.tradeService.findAllTradesWithinTimespan(LocalDateTime.MAX, LocalDateTime.MIN, generateTestAccount(), 0, 10))
                 .withMessage(CorePlatformConstants.Validation.DateTime.MUTUALLY_EXCLUSIVE_DATES);
     }
 
     @Test
-    public void test_findAllTradesWithinTimespan_paged_success() {
+    void test_findAllTradesWithinTimespan_paged_success() {
         assertThat(this.tradeService.findAllTradesWithinTimespan(TEST1, TEST2, generateTestAccount(), 0, 10))
                 .hasSize(2)
                 .extracting("openPrice", "closePrice", "netProfit")
@@ -150,14 +150,14 @@ public class TradeServiceTest extends AbstractGenericTest {
     //  ----------------- findTradeByTradeId -----------------
 
     @Test
-    public void test_findTradeByTradeId_missingParamStart() {
+    void test_findTradeByTradeId_missingParamStart() {
         assertThatExceptionOfType(IllegalParameterException.class)
                 .isThrownBy(() -> this.tradeService.findTradeByTradeId(null, TEST_ACCOUNT))
                 .withMessage("tradeId cannot be null");
     }
 
     @Test
-    public void test_findTradeByTradeId_success() {
+    void test_findTradeByTradeId_success() {
         assertThat(this.tradeService.findTradeByTradeId("testId1", TEST_ACCOUNT))
                 .map(Trade::getTradeId)
                 .hasValue("testId1");

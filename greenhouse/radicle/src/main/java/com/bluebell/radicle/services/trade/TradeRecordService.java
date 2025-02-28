@@ -36,7 +36,7 @@ import static com.bluebell.radicle.validation.GenericValidator.validateParameter
  * Service-layer for calculating {@link TradeRecord}s
  *
  * @author Stephen Prizio
- * @version 0.0.9
+ * @version 0.1.0
  */
 @Service
 public class TradeRecordService {
@@ -98,13 +98,20 @@ public class TradeRecordService {
      */
     public TradeRecordReport getRecentTradeRecords(final Account account, final TradeRecordTimeInterval tradeRecordTimeInterval, final int count) {
 
+        validateParameterIsNotNull(account, CorePlatformConstants.Validation.Account.ACCOUNT_CANNOT_BE_NULL);
+        validateParameterIsNotNull(tradeRecordTimeInterval, CorePlatformConstants.Validation.System.TIME_INTERVAL_CANNOT_BE_NULL);
+
         if (account.getLastTraded() == null) {
             return new TradeRecordReport(Collections.emptyList(), null);
         }
 
+        if (CollectionUtils.isEmpty(account.getTrades())) {
+            throw new TradeRecordComputationException("No trades found for account " + account.getId());
+        }
+
         final LocalDateTime firstTraded = account.getTrades().get(0).getTradeCloseTime();
         if (firstTraded == null) {
-            throw new TradeRecordComputationException("This account doesn't have any closed trades. This must be revised!");
+            throw new TradeRecordComputationException(String.format("Account %s doesn't have any closed trades", account.getName()));
         }
 
         final Set<TradeRecord> tradeRecords = new HashSet<>();
@@ -137,6 +144,12 @@ public class TradeRecordService {
      * @return {@link TradeLog}
      */
     public TradeLog getTradeLog(final User user, final LocalDate start, final LocalDate end, final TradeRecordTimeInterval tradeRecordTimeInterval, final int count) {
+
+        validateParameterIsNotNull(user, CorePlatformConstants.Validation.Security.User.USER_CANNOT_BE_NULL);
+        validateParameterIsNotNull(start, CorePlatformConstants.Validation.DateTime.START_DATE_CANNOT_BE_NULL);
+        validateParameterIsNotNull(end, CorePlatformConstants.Validation.DateTime.END_DATE_CANNOT_BE_NULL);
+        validateDatesAreNotMutuallyExclusive(start.atStartOfDay(), end.atStartOfDay(), CorePlatformConstants.Validation.DateTime.MUTUALLY_EXCLUSIVE_DATES);
+        validateParameterIsNotNull(tradeRecordTimeInterval, CorePlatformConstants.Validation.System.TIME_INTERVAL_CANNOT_BE_NULL);
 
         final List<Account> accounts = user.getAccounts();
         final List<TradeLogEntry> entries = new ArrayList<>();
@@ -183,6 +196,9 @@ public class TradeRecordService {
      * @return {@link TradeRecordControls}
      */
     public TradeRecordControls getTradeRecordControls(final Account account, final TradeRecordTimeInterval tradeRecordTimeInterval) {
+
+        validateParameterIsNotNull(account, CorePlatformConstants.Validation.Account.ACCOUNT_CANNOT_BE_NULL);
+        validateParameterIsNotNull(tradeRecordTimeInterval, CorePlatformConstants.Validation.DataIntegrity.INTERVAL_CANNOT_BE_NULL);
 
         final List<Trade> trades = account.getTrades().stream().sorted(Comparator.comparing(Trade::getTradeCloseTime)).toList();
         final Map<String, Map<String, Integer>> map = new HashMap<>();

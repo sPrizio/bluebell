@@ -1,5 +1,6 @@
 package com.bluebell.platform.models.core.nonentities.records.traderecord;
 
+import lombok.Getter;
 
 import java.util.List;
 
@@ -9,7 +10,9 @@ import java.util.List;
  * @param tradeRecords {@link List} of {@link TradeRecord}s
  * @param tradeRecordTotals {@link TradeRecordTotals}
  * @author Stephen Prizio
- * @version 0.0.9
+ * @version 0.1.0
  */
-public record TradeRecordReport(List<TradeRecord> tradeRecords, TradeRecordTotals tradeRecordTotals) {
-}
+public record TradeRecordReport(
+        @Getter List<TradeRecord> tradeRecords,
+        @Getter TradeRecordTotals tradeRecordTotals
+) { }

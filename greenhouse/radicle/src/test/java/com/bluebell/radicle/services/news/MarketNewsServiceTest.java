@@ -10,8 +10,8 @@ import com.bluebell.radicle.integration.models.dto.forexfactory.CalendarNewsDayE
 import com.bluebell.radicle.integration.services.forexfactory.ForexFactoryIntegrationService;
 import com.bluebell.radicle.repositories.news.MarketNewsRepository;
 import com.bluebell.radicle.repositories.news.MarketNewsSlotRepository;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,11 +32,11 @@ import static org.mockito.ArgumentMatchers.any;
  * Testing class for {@link MarketNewsService}
  *
  * @author Stephen Prizio
- * @version 0.0.9
+ * @version 0.1.0
  */
 @SpringBootTest
 @RunWith(SpringRunner.class)
-public class MarketNewsServiceTest extends AbstractGenericTest {
+class MarketNewsServiceTest extends AbstractGenericTest {
 
     @Autowired
     private MarketNewsService marketNewsService;
@@ -50,7 +50,7 @@ public class MarketNewsServiceTest extends AbstractGenericTest {
     @MockBean
     private ForexFactoryIntegrationService forexFactoryIntegrationService;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         Mockito.when(this.marketNewsRepository.findNewsWithinInterval(any(), any())).thenReturn(List.of(generateMarketNews()));
         Mockito.when(this.marketNewsRepository.findById(1L)).thenReturn(Optional.of(generateMarketNews()));
@@ -63,7 +63,7 @@ public class MarketNewsServiceTest extends AbstractGenericTest {
     //  ----------------- findNewsWithinInterval -----------------
 
     @Test
-    public void test_findNewsWithinInterval_missingParams() {
+    void test_findNewsWithinInterval_missingParams() {
         assertThatExceptionOfType(IllegalParameterException.class)
                 .isThrownBy(() -> this.marketNewsService.findNewsWithinInterval(null, LocalDate.MAX, ""))
                 .withMessage(CorePlatformConstants.Validation.DateTime.START_DATE_CANNOT_BE_NULL);
@@ -73,14 +73,14 @@ public class MarketNewsServiceTest extends AbstractGenericTest {
     }
 
     @Test
-    public void test_findNewsWithinIntervalWithLocales_basLocales() {
+    void test_findNewsWithinIntervalWithLocales_basLocales() {
         assertThatExceptionOfType(UnsupportedOperationException.class)
                 .isThrownBy(() -> this.marketNewsService.findNewsWithinInterval(LocalDate.MIN, LocalDate.MAX, ""))
                 .withMessage(CorePlatformConstants.Validation.DataIntegrity.BAD_LOCALE_ENUM);
     }
 
     @Test
-    public void test_findNewsWithinInterval_success() {
+    void test_findNewsWithinInterval_success() {
         assertThat(this.marketNewsService.findNewsWithinInterval(LocalDate.MIN, LocalDate.MAX))
                 .isNotNull()
                 .first()
@@ -89,7 +89,7 @@ public class MarketNewsServiceTest extends AbstractGenericTest {
     }
 
     @Test
-    public void test_findNewsWithinIntervalWithLocales_success() {
+    void test_findNewsWithinIntervalWithLocales_success() {
         assertThat(this.marketNewsService.findNewsWithinInterval(LocalDate.MIN, LocalDate.MAX, "CAN", "USD"))
                 .isNotNull()
                 .first()
@@ -101,14 +101,14 @@ public class MarketNewsServiceTest extends AbstractGenericTest {
     //  ----------------- findMarketNewsForDate -----------------
 
     @Test
-    public void test_findMarketNewsForDate_missingParams() {
+    void test_findMarketNewsForDate_missingParams() {
         assertThatExceptionOfType(IllegalParameterException.class)
                 .isThrownBy(() -> this.marketNewsService.findMarketNewsForDate(null))
                 .withMessage(CorePlatformConstants.Validation.DateTime.DATE_CANNOT_BE_NULL);
     }
 
     @Test
-    public void test_findMarketNewsForDate_success() {
+    void test_findMarketNewsForDate_success() {
         assertThat(this.marketNewsService.findMarketNewsForDate(LocalDate.MIN))
                 .isNotNull()
                 .get()
@@ -120,14 +120,14 @@ public class MarketNewsServiceTest extends AbstractGenericTest {
     //  ----------------- fetchMarketNews -----------------
 
     @Test
-    public void test_fetchMarketNews_failure() {
+    void test_fetchMarketNews_failure() {
         Mockito.when(this.forexFactoryIntegrationService.getCurrentWeekNews()).thenReturn(List.of());
         assertThat(this.marketNewsService.fetchMarketNews())
                 .isFalse();
     }
 
     @Test
-    public void test_fetchMarketNews_success() {
+    void test_fetchMarketNews_success() {
 
         final CalendarNewsDayEntryDTO entryDTO = new CalendarNewsDayEntryDTO();
         entryDTO.setTitle("Test");

@@ -9,6 +9,8 @@ import com.bluebell.platform.enums.system.Country;
 import com.bluebell.platform.enums.system.PhoneType;
 import com.bluebell.platform.enums.trade.TradePlatform;
 import com.bluebell.platform.enums.trade.TradeType;
+import com.bluebell.platform.enums.transaction.TransactionStatus;
+import com.bluebell.platform.enums.transaction.TransactionType;
 import com.bluebell.platform.models.core.entities.account.Account;
 import com.bluebell.platform.models.core.entities.news.MarketNews;
 import com.bluebell.platform.models.core.entities.news.MarketNewsEntry;
@@ -16,6 +18,7 @@ import com.bluebell.platform.models.core.entities.news.MarketNewsSlot;
 import com.bluebell.platform.models.core.entities.security.User;
 import com.bluebell.platform.models.core.entities.system.PhoneNumber;
 import com.bluebell.platform.models.core.entities.trade.Trade;
+import com.bluebell.platform.models.core.entities.transaction.Transaction;
 import com.bluebell.radicle.integration.models.responses.forexfactory.CalendarNewsEntryResponse;
 
 import java.time.LocalDate;
@@ -23,12 +26,13 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 /**
  * Parent-level testing class to provide testing assistance for radicle
  *
  * @author Stephen Prizio
- * @version 0.0.9
+ * @version 0.1.0
  */
 public abstract class AbstractGenericTest {
 
@@ -99,6 +103,7 @@ public abstract class AbstractGenericTest {
         account.setCurrency(Currency.CANADIAN_DOLLAR);
         account.setBroker(Broker.CMC_MARKETS);
         account.setTradePlatform(TradePlatform.CMC_MARKETS);
+        account.setLastTraded(LocalDateTime.of(2022, 8, 24, 11, 37, 24));
 
         return account;
     }
@@ -192,5 +197,45 @@ public abstract class AbstractGenericTest {
      */
     public CalendarNewsEntryResponse generateCalendarNewsEntryResponse() {
         return new CalendarNewsEntryResponse("Currency Account", "CAD", "2023-05-30T08:30:00-04:00", "Low", "-9.9B", "-10.6B", "");
+    }
+
+    /**
+     * Generates a test deposit {@link Transaction}
+     *
+     * @param account {@link Account}
+     * @return {@link Transaction}
+     */
+    public Transaction generateTestTransactionDeposit(final Account account) {
+
+        final Transaction transaction = new Transaction();
+
+        transaction.setName("Test Transaction Deposit");
+        transaction.setTransactionDate(LocalDateTime.of(2022, 8, new Random().nextInt(28) + 1, 12, 24, 36));
+        transaction.setTransactionType(TransactionType.DEPOSIT);
+        transaction.setAmount(123.45);
+        transaction.setTransactionStatus(TransactionStatus.COMPLETED);
+        transaction.setAccount(account);
+
+        return transaction;
+    }
+
+    /**
+     * Generates a test withdrawal {@link Transaction}
+     *
+     * @param account {@link Account}
+     * @return {@link Transaction}
+     */
+    public Transaction generateTestTransactionWithdrawal(final Account account) {
+
+        final Transaction transaction = new Transaction();
+
+        transaction.setName("Test Transaction Withdrawal");
+        transaction.setTransactionDate(LocalDateTime.of(2022, 8, new Random().nextInt(28) + 1, 12, 24, 36));
+        transaction.setTransactionType(TransactionType.WITHDRAWAL);
+        transaction.setAmount(-563.36);
+        transaction.setTransactionStatus(TransactionStatus.IN_PROGRESS);
+        transaction.setAccount(account);
+
+        return transaction;
     }
 }

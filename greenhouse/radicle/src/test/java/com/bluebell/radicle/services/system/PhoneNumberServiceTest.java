@@ -11,8 +11,8 @@ import com.bluebell.radicle.exceptions.system.EntityModificationException;
 import com.bluebell.radicle.exceptions.validation.IllegalParameterException;
 import com.bluebell.radicle.exceptions.validation.MissingRequiredDataException;
 import com.bluebell.radicle.repositories.system.PhoneNumberRepository;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,11 +32,11 @@ import static org.mockito.ArgumentMatchers.*;
  * Testing class for {@link PhoneNumberService}
  *
  * @author Stephen Prizio
- * @version 0.0.9
+ * @version 0.1.0
  */
 @SpringBootTest
 @RunWith(SpringRunner.class)
-public class PhoneNumberServiceTest extends AbstractGenericTest {
+class PhoneNumberServiceTest extends AbstractGenericTest {
 
     @MockBean
     private PhoneNumberRepository phoneNumberRepository;
@@ -44,7 +44,7 @@ public class PhoneNumberServiceTest extends AbstractGenericTest {
     @Autowired
     private PhoneNumberService phoneNumberService;
 
-    @Before
+    @BeforeEach
     public void setUp() {
 
         final Account testAccount = generateTestAccount();
@@ -59,28 +59,28 @@ public class PhoneNumberServiceTest extends AbstractGenericTest {
     //  ----------------- findPhoneNumberForPhoneTypeAndCountryCodeAndTelephoneNumber -----------------
 
     @Test
-    public void test_findPhoneNumberForPhoneTypeAndCountryCodeAndTelephoneNumber_missingParamPhoneType() {
+    void test_findPhoneNumberForPhoneTypeAndCountryCodeAndTelephoneNumber_missingParamPhoneType() {
         assertThatExceptionOfType(IllegalParameterException.class)
                 .isThrownBy(() -> this.phoneNumberService.findPhoneNumberForPhoneTypeAndCountryCodeAndTelephoneNumber(null, (short) 1, 1112223333))
                 .withMessage(CorePlatformConstants.Validation.System.PhoneNumber.PHONE_TYPE_CANNOT_BE_NULL);
     }
 
     @Test
-    public void test_findPhoneNumberForPhoneTypeAndCountryCodeAndTelephoneNumber_badCountryCode() {
+    void test_findPhoneNumberForPhoneTypeAndCountryCodeAndTelephoneNumber_badCountryCode() {
         assertThatExceptionOfType(UnexpectedNegativeValueException.class)
                 .isThrownBy(() -> this.phoneNumberService.findPhoneNumberForPhoneTypeAndCountryCodeAndTelephoneNumber(PhoneType.MOBILE, (short) -1, 1112223333))
                 .withMessage(CorePlatformConstants.Validation.System.PhoneNumber.COUNTRY_CODE_CANNOT_BE_NEGATIVE);
     }
 
     @Test
-    public void test_findPhoneNumberForPhoneTypeAndCountryCodeAndTelephoneNumber_badTelephoneNumber() {
+    void test_findPhoneNumberForPhoneTypeAndCountryCodeAndTelephoneNumber_badTelephoneNumber() {
         assertThatExceptionOfType(UnexpectedNegativeValueException.class)
                 .isThrownBy(() -> this.phoneNumberService.findPhoneNumberForPhoneTypeAndCountryCodeAndTelephoneNumber(PhoneType.MOBILE, (short) 1, -1112223333))
                 .withMessage(CorePlatformConstants.Validation.System.PhoneNumber.TELEPHONE_NUMBER_CANNOT_BE_NEGATIVE);
     }
 
     @Test
-    public void test_findPhoneNumberForPhoneTypeAndCountryCodeAndTelephoneNumber_success() {
+    void test_findPhoneNumberForPhoneTypeAndCountryCodeAndTelephoneNumber_success() {
         assertThat(this.phoneNumberService.findPhoneNumberForPhoneTypeAndCountryCodeAndTelephoneNumber(PhoneType.MOBILE, (short) 1, 1112223333))
                 .isPresent()
                 .get()
@@ -92,14 +92,14 @@ public class PhoneNumberServiceTest extends AbstractGenericTest {
     //  ----------------- createPhoneNumber -----------------
 
     @Test
-    public void test_createPhoneNumber_missingData() {
+    void test_createPhoneNumber_missingData() {
         assertThatExceptionOfType(MissingRequiredDataException.class)
                 .isThrownBy(() -> this.phoneNumberService.createPhoneNumber(null, generateTestUser()))
                 .withMessage("The required data for creating a PhoneNumber was null or empty");
     }
 
     @Test
-    public void test_createPhoneNumber_erroneousCreation() {
+    void test_createPhoneNumber_erroneousCreation() {
         Map<String, Object> map = Map.of("bad", "input");
         assertThatExceptionOfType(EntityCreationException.class)
                 .isThrownBy(() -> this.phoneNumberService.createPhoneNumber(map, generateTestUser()))
@@ -107,7 +107,7 @@ public class PhoneNumberServiceTest extends AbstractGenericTest {
     }
 
     @Test
-    public void test_createPhoneNumber_success() {
+    void test_createPhoneNumber_success() {
 
         Map<String, Object> temp = new HashMap<>();
         temp.put("phoneType", "MOBILE");
@@ -126,28 +126,28 @@ public class PhoneNumberServiceTest extends AbstractGenericTest {
     //  ----------------- updatePhoneNumber -----------------
 
     @Test
-    public void test_updatePhoneNumber_missingParamPhoneType() {
+    void test_updatePhoneNumber_missingParamPhoneType() {
         assertThatExceptionOfType(IllegalParameterException.class)
                 .isThrownBy(() -> this.phoneNumberService.updatePhoneNumber(null, (short) 1, 1112223333, null, generateTestUser()))
                 .withMessage(CorePlatformConstants.Validation.System.PhoneNumber.PHONE_TYPE_CANNOT_BE_NULL);
     }
 
     @Test
-    public void test_updatePhoneNumber_badCountryCode() {
+    void test_updatePhoneNumber_badCountryCode() {
         assertThatExceptionOfType(UnexpectedNegativeValueException.class)
                 .isThrownBy(() -> this.phoneNumberService.updatePhoneNumber(PhoneType.MOBILE, (short) -1, 1112223333, null, generateTestUser()))
                 .withMessage(CorePlatformConstants.Validation.System.PhoneNumber.COUNTRY_CODE_CANNOT_BE_NEGATIVE);
     }
 
     @Test
-    public void test_updatePhoneNumber_badTelephoneNumber() {
+    void test_updatePhoneNumber_badTelephoneNumber() {
         assertThatExceptionOfType(UnexpectedNegativeValueException.class)
                 .isThrownBy(() -> this.phoneNumberService.updatePhoneNumber(PhoneType.MOBILE, (short) 1, -1112223333, null, generateTestUser()))
                 .withMessage(CorePlatformConstants.Validation.System.PhoneNumber.TELEPHONE_NUMBER_CANNOT_BE_NEGATIVE);
     }
 
     @Test
-    public void test_updatePhoneNumber_missingParamUser() {
+    void test_updatePhoneNumber_missingParamUser() {
         assertThatExceptionOfType(IllegalParameterException.class)
                 .isThrownBy(() -> this.phoneNumberService.updatePhoneNumber(PhoneType.MOBILE, (short) 1, 1112223333, null, null))
                 .withMessage(CorePlatformConstants.Validation.Security.User.USER_CANNOT_BE_NULL);
@@ -155,14 +155,14 @@ public class PhoneNumberServiceTest extends AbstractGenericTest {
 
 
     @Test
-    public void test_updatePhoneNumber_missingData() {
+    void test_updatePhoneNumber_missingData() {
         assertThatExceptionOfType(MissingRequiredDataException.class)
                 .isThrownBy(() -> this.phoneNumberService.updatePhoneNumber(PhoneType.MOBILE, (short) 1, 5149411025L, null, generateTestUser()))
                 .withMessage("The required data for updating a PhoneNumber was null or empty");
     }
 
     @Test
-    public void test_updatePhoneNumber_erroneousModification() {
+    void test_updatePhoneNumber_erroneousModification() {
         Map<String, Object> map = Map.of("bad", "input");
         assertThatExceptionOfType(EntityModificationException.class)
                 .isThrownBy(() -> this.phoneNumberService.updatePhoneNumber(PhoneType.MOBILE, (short) 1, 5149411025L, map, generateTestUser()))
@@ -170,7 +170,7 @@ public class PhoneNumberServiceTest extends AbstractGenericTest {
     }
 
     @Test
-    public void test_updatePhoneNumber_success() {
+    void test_updatePhoneNumber_success() {
 
         Map<String, Object> temp = new HashMap<>();
         temp.put("phoneType", "MOBILE");
@@ -189,14 +189,14 @@ public class PhoneNumberServiceTest extends AbstractGenericTest {
     //  ----------------- deletePhoneNumber -----------------
 
     @Test
-    public void test_deletePhoneNumber_missingParamPhoneNumber() {
+    void test_deletePhoneNumber_missingParamPhoneNumber() {
         assertThatExceptionOfType(IllegalParameterException.class)
                 .isThrownBy(() -> this.phoneNumberService.deletePhoneNumber(null))
                 .withMessage(CorePlatformConstants.Validation.System.PhoneNumber.PHONE_NUMBER_CANNOT_BE_NULL);
     }
 
     @Test
-    public void test_deletePhoneNumber_success() {
+    void test_deletePhoneNumber_success() {
         this.phoneNumberService.deletePhoneNumber(generateTestPhoneNumber());
     }
 }

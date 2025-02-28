@@ -2,7 +2,6 @@ package com.bluebell.radicle.services.news;
 
 import com.bluebell.platform.constants.CorePlatformConstants;
 import com.bluebell.platform.enums.account.Currency;
-import com.bluebell.platform.enums.news.MarketNewsSeverity;
 import com.bluebell.platform.enums.system.Country;
 import com.bluebell.platform.models.core.entities.news.MarketNews;
 import com.bluebell.platform.models.core.entities.news.MarketNewsEntry;
@@ -19,7 +18,6 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 import static com.bluebell.radicle.validation.GenericValidator.validateParameterIsNotNull;
@@ -29,7 +27,7 @@ import static com.bluebell.radicle.validation.GenericValidator.validateParameter
  * Service-layer for {@link MarketNews}
  *
  * @author Stephen Prizio
- * @version 0.0.9
+ * @version 0.1.0
  */
 @Service
 public class MarketNewsService {
@@ -157,79 +155,6 @@ public class MarketNewsService {
         });
 
         return true;
-    }
-
-
-    //  HELPERS
-
-    /**
-     * Applies changes to the given {@link MarketNews} with the given data
-     *
-     * @param marketNews {@link MarketNews}
-     * @param data       {@link Map}
-     * @return updated {@link MarketNews}
-     */
-    private MarketNews applyChanges(MarketNews marketNews, final Map<String, Object> data) {
-
-        Map<String, Object> news = (Map<String, Object>) data.get("marketNews");
-
-        marketNews.setDate(LocalDate.parse(news.get("date").toString(), DateTimeFormatter.ofPattern(CorePlatformConstants.DATE_FORMAT)));
-        if (news.containsKey("slots")) {
-            marketNews = clearSubData(marketNews);
-
-            List<MarketNewsSlot> slots = new ArrayList<>();
-            List<Map<String, Object>> slotJson = (List<Map<String, Object>>) news.get("slots");
-
-            for (Map<String, Object> json : slotJson) {
-                MarketNewsSlot slot = new MarketNewsSlot();
-                slot.setTime(LocalTime.parse(json.get("time").toString(), DateTimeFormatter.ofPattern(CorePlatformConstants.SHORT_TIME_FORMAT)));
-                slot = this.marketNewsSlotRepository.save(slot);
-
-                if (json.containsKey("entries")) {
-                    List<MarketNewsEntry> entries = new ArrayList<>();
-                    List<Map<String, Object>> entryJson = (List<Map<String, Object>>) json.get("entries");
-
-                    for (Map<String, Object> eJson : entryJson) {
-                        MarketNewsEntry marketNewsEntry = new MarketNewsEntry();
-                        marketNewsEntry.setSeverity(MarketNewsSeverity.get(Integer.parseInt(eJson.get("severity").toString())));
-                        marketNewsEntry.setContent(eJson.get("content").toString());
-
-                        marketNewsEntry = this.marketNewsEntryRepository.save(marketNewsEntry);
-                        slot.addEntry(marketNewsEntry);
-                        entries.add(marketNewsEntry);
-                    }
-                }
-
-                marketNews.addSlot(slot);
-                slots.add(slot);
-            }
-        }
-
-        return this.marketNewsRepository.save(marketNews);
-    }
-
-    /**
-     * Removes all {@link MarketNewsSlot}s & {@link MarketNewsEntry}s from the given {@link MarketNews}
-     *
-     * @param marketNews {@link MarketNews}
-     * @return emptied {@link MarketNews}
-     */
-    private MarketNews clearSubData(final MarketNews marketNews) {
-
-        List<MarketNewsSlot> slots = marketNews.getSlots() != null ? new ArrayList<>(marketNews.getSlots()) : new ArrayList<>();
-        for (MarketNewsSlot slot : slots) {
-            List<MarketNewsEntry> entries = slot.getEntries() != null ? new ArrayList<>(slot.getEntries()) : new ArrayList<>();
-            for (MarketNewsEntry entry : entries) {
-                slot.removeEntry(entry);
-                this.marketNewsEntryRepository.delete(entry);
-            }
-
-            this.marketNewsSlotRepository.save(slot);
-            marketNews.removeSlot(slot);
-            this.marketNewsSlotRepository.delete(slot);
-        }
-
-        return this.marketNewsRepository.save(marketNews);
     }
 
     /**

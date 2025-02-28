@@ -1,5 +1,6 @@
 package com.bluebell.radicle.services.portfolio;
 
+import com.bluebell.platform.constants.CorePlatformConstants;
 import com.bluebell.platform.enums.transaction.TransactionType;
 import com.bluebell.platform.models.core.entities.account.Account;
 import com.bluebell.platform.models.core.entities.security.User;
@@ -13,19 +14,20 @@ import com.bluebell.platform.services.MathService;
 import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.temporal.TemporalAdjusters;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
+import java.util.*;
+
+import static com.bluebell.radicle.validation.GenericValidator.validateParameterIsNotNull;
 
 /**
  * Service-layer for {@link Portfolio}
  *
  * @author Stephen Prizio
- * @version 0.0.9
+ * @version 0.1.0
  */
 @Service("portfolioService")
 public class PortfolioService {
@@ -43,10 +45,12 @@ public class PortfolioService {
      */
     public Portfolio getPortfolio(final User user) {
 
+        validateParameterIsNotNull(user, CorePlatformConstants.Validation.Security.User.USER_CANNOT_BE_NULL);
+
         final List<Account> accounts = user.getAccounts();
         List<PortfolioEquityPoint> equityPoints = computeEquityPoints(user);
         boolean isNew = false;
-        final LocalDate limit = LocalDate.now().with(TemporalAdjusters.firstDayOfNextMonth());
+        final LocalDate limit = user.getAccounts().stream().map(Account::getLastTraded).max(LocalDateTime::compareTo).orElse(LocalDateTime.now()).with(TemporalAdjusters.firstDayOfNextMonth()).toLocalDate();
         final double netWorth = this.mathService.getDouble(user.getAccounts().stream().mapToDouble(Account::getBalance).sum());
 
         if (CollectionUtils.isEmpty(equityPoints) || CollectionUtils.isEmpty(equityPoints.get(0).accounts())) {
@@ -58,8 +62,8 @@ public class PortfolioService {
                 isNew,
                 accounts.stream().mapToDouble(Account::getBalance).sum(),
                 accounts.stream().map(Account::getTrades).mapToLong(List::size).sum(),
-                accounts.stream().map(Account::getTransactions).flatMap(List::stream).filter(tr -> tr.getTransactionType() == TransactionType.DEPOSIT).count(),
-                accounts.stream().map(Account::getTransactions).flatMap(List::stream).filter(tr -> tr.getTransactionType() == TransactionType.WITHDRAWAL).count(),
+                accounts.stream().map(Account::getTransactions).filter(CollectionUtils::isNotEmpty).flatMap(List::stream).filter(tr -> tr.getTransactionType() == TransactionType.DEPOSIT).count(),
+                accounts.stream().map(Account::getTransactions).filter(CollectionUtils::isNotEmpty).flatMap(List::stream).filter(tr -> tr.getTransactionType() == TransactionType.WITHDRAWAL).count(),
                 computePortfolioStatistics(user),
                 equityPoints
         );
@@ -76,7 +80,7 @@ public class PortfolioService {
      */
     private PortfolioStatistics computePortfolioStatistics(final User user) {
 
-        final LocalDateTime limit = LocalDate.now().with(TemporalAdjusters.firstDayOfMonth()).minusDays(1).atStartOfDay();
+        final LocalDateTime limit = user.getAccounts().stream().map(Account::getLastTraded).max(LocalDateTime::compareTo).orElse(LocalDateTime.now()).with(TemporalAdjusters.firstDayOfNextMonth()).minusMonths(1);
 
         final List<Trade> allTrades =
                 user.getAccounts()
@@ -89,6 +93,7 @@ public class PortfolioService {
                 user.getAccounts()
                         .stream()
                         .map(Account::getTransactions)
+                        .filter(CollectionUtils::isNotEmpty)
                         .flatMap(List::stream)
                         .toList();
 
@@ -107,11 +112,16 @@ public class PortfolioService {
         final double netAccount = user.getAccounts().stream().mapToDouble(Account::getBalance).sum();
         final double netProfit = differenceTrades.stream().mapToDouble(Trade::getNetProfit).sum();
 
+        final List<Transaction> allDeposits = allTransactions.stream().filter(tr -> tr.getTransactionType().equals(TransactionType.DEPOSIT)).toList();
+        final List<Transaction> allWithdrawals = allTransactions.stream().filter(tr -> tr.getTransactionType().equals(TransactionType.WITHDRAWAL)).toList();
+        final List<Transaction> differenceDeposits = differenceTransactions.stream().filter(tr -> tr.getTransactionType().equals(TransactionType.DEPOSIT)).toList();
+        final List<Transaction> differenceWithdrawals = differenceTransactions.stream().filter(tr -> tr.getTransactionType().equals(TransactionType.WITHDRAWAL)).toList();
+
         return new PortfolioStatistics(
-                this.mathService.wholePercentage(netProfit, this.mathService.subtract(netAccount, netProfit)),
-                this.mathService.divide(differenceTrades.size(), this.mathService.subtract(allTrades.size(), differenceTrades.size())),
-                this.mathService.divide(differenceTransactions.stream().filter(tr -> tr.getTransactionType() == TransactionType.DEPOSIT).toList().size(), this.mathService.subtract(allTransactions.stream().filter(tr -> tr.getTransactionType() == TransactionType.DEPOSIT).toList().size(), differenceTransactions.stream().filter(tr -> tr.getTransactionType() == TransactionType.DEPOSIT).toList().size())),
-                this.mathService.divide(differenceTransactions.stream().filter(tr -> tr.getTransactionType() == TransactionType.WITHDRAWAL).toList().size(), this.mathService.subtract(allTransactions.stream().filter(tr -> tr.getTransactionType() == TransactionType.WITHDRAWAL).toList().size(), differenceTransactions.stream().filter(tr -> tr.getTransactionType() == TransactionType.WITHDRAWAL).toList().size()))
+                safeDivide(netProfit, BigDecimal.valueOf(netAccount).subtract(BigDecimal.valueOf(netProfit)).doubleValue()),
+                safeDivide(differenceTrades.size(), BigDecimal.valueOf(allTrades.size()).subtract(BigDecimal.valueOf(differenceTrades.size())).doubleValue()),
+                safeDivide(differenceDeposits.size(), allDeposits.size()),
+                safeDivide(differenceWithdrawals.size(), allWithdrawals.size())
         );
     }
 
@@ -124,7 +134,8 @@ public class PortfolioService {
     private List<PortfolioEquityPoint> computeEquityPoints(final User user) {
 
         final List<PortfolioEquityPoint> points = new ArrayList<>();
-        final LocalDateTime limit = LocalDate.now().with(TemporalAdjusters.firstDayOfMonth()).atStartOfDay();
+        final LocalDateTime limit = user.getAccounts().stream().map(Account::getLastTraded).max(LocalDateTime::compareTo).orElse(LocalDateTime.now()).with(TemporalAdjusters.firstDayOfNextMonth());
+
 
         //  only look at accounts that were last traded within the timespan to reduce number of trades considered
         final List<Account> relevantAccounts = user.getAccounts().stream().filter(acc -> isWithinTimespan(limit.minusMonths(6), limit, acc.getLastTraded())).toList();
@@ -165,5 +176,20 @@ public class PortfolioService {
         }
 
         return (compare.isAfter(start) || compare.isEqual(start)) && compare.isBefore(end);
+    }
+
+    /**
+     * Safely divides 2 doubles
+     *
+     * @param a dividend
+     * @param b divisor
+     * @return quotient
+     */
+    private double safeDivide(final double a, final double b) {
+        if (b == 0.0) {
+            return a * 100.0;
+        }
+
+        return this.mathService.getDouble(BigDecimal.valueOf(a).divide(BigDecimal.valueOf(b), 25, RoundingMode.HALF_EVEN).multiply(BigDecimal.valueOf(100.0)).doubleValue());
     }
 }

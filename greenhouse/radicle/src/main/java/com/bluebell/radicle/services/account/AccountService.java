@@ -28,7 +28,7 @@ import static com.bluebell.radicle.validation.GenericValidator.validateParameter
  * Service-layer for {@link Account} entities
  *
  * @author Stephen Prizio
- * @version 0.0.9
+ * @version 0.1.0
  */
 @Service
 public class AccountService {
@@ -177,6 +177,10 @@ public class AccountService {
         account.setAccountType(AccountType.valueOf(acc.get("type").toString()));
         account.setBroker(Broker.valueOf(acc.get("broker").toString()));
         account.setTradePlatform(TradePlatform.getByCode(acc.get("tradePlatform").toString()));
+
+        if (isNew || account.getLastTraded() == null) {
+            account.setLastTraded(LocalDateTime.now());
+        }
 
         if (Boolean.parseBoolean(acc.get("isDefault").toString())) {
             user.getAccounts().forEach(a -> {

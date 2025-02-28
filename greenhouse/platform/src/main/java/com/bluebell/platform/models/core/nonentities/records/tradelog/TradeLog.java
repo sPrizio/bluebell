@@ -2,6 +2,7 @@ package com.bluebell.platform.models.core.nonentities.records.tradelog;
 
 
 import com.bluebell.platform.models.core.nonentities.records.traderecord.TradeRecord;
+import lombok.Getter;
 
 import java.util.List;
 
@@ -10,7 +11,8 @@ import java.util.List;
  *
  * @param entries {@link List} of {@link TradeLogEntry}
  * @author Stephen Prizio
- * @version 0.0.9
+ * @version 0.1.0
  */
-public record TradeLog(List<TradeLogEntry> entries) {
-}
+public record TradeLog(
+        @Getter List<TradeLogEntry> entries
+) { }

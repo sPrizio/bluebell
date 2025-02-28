@@ -1,6 +1,8 @@
 package com.bluebell.platform.models.core.nonentities.records.portfolio;
 
 
+import lombok.Getter;
+
 import java.time.LocalDate;
 import java.util.List;
 
@@ -11,7 +13,10 @@ import java.util.List;
  * @param portfolio total balance / net worth
  * @param accounts {@link List} of {@link PortfolioAccountEquityPoint}
  * @author Stephen Prizio
- * @version 0.0.9
+ * @version 0.1.0
  */
-public record PortfolioEquityPoint(LocalDate date, double portfolio, List<PortfolioAccountEquityPoint> accounts) {
-}
+public record PortfolioEquityPoint(
+        @Getter LocalDate date,
+        @Getter double portfolio,
+        @Getter List<PortfolioAccountEquityPoint> accounts
+) { }

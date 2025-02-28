@@ -1,6 +1,8 @@
 package com.bluebell.platform.models.core.nonentities.records.traderecord;
 
 
+import lombok.Getter;
+
 /**
  * Class representation of a {@link TradeRecord}'s equity per count of trades, meant to be used on a chart
  *
@@ -10,7 +12,12 @@ package com.bluebell.platform.models.core.nonentities.records.traderecord;
  * @param cumAmount cumulative account balance
  * @param cumPoints cumulative points
  * @author Stephen Prizio
- * @version 0.0.9
+ * @version 0.1.0
  */
-public record TradeRecordEquityPoint(int count, double amount, double points, double cumAmount, double cumPoints) {
-}
+public record TradeRecordEquityPoint(
+        @Getter int count,
+        @Getter double amount,
+        @Getter double points,
+        @Getter double cumAmount,
+        @Getter double cumPoints
+) { }

@@ -3,6 +3,7 @@ package com.bluebell.platform.models.core.nonentities.records.traderecord;
 
 import com.bluebell.platform.enums.system.TradeRecordTimeInterval;
 import com.bluebell.platform.models.core.entities.trade.Trade;
+import lombok.Getter;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -31,28 +32,28 @@ import java.util.List;
  * @param equityPoints {@link List} of {@link TradeRecordEquityPoint}s
  *
  * @author Stephen Prizio
- * @version 0.0.9
+ * @version 0.1.0
  */
 public record TradeRecord(
-        LocalDate start,
-        LocalDate end,
-        double netProfit,
-        double lowestPoint,
-        double pointsGained,
-        double pointsLost,
-        double points,
-        double largestWin,
-        double winAverage,
-        double largestLoss,
-        double lossAverage,
-        int winPercentage,
-        int wins,
-        int losses,
-        int trades,
-        double profitability,
-        int retention,
-        TradeRecordTimeInterval interval,
-        List<TradeRecordEquityPoint> equityPoints
+        @Getter LocalDate start,
+        @Getter LocalDate end,
+        @Getter double netProfit,
+        @Getter double lowestPoint,
+        @Getter double pointsGained,
+        @Getter double pointsLost,
+        @Getter double points,
+        @Getter double largestWin,
+        @Getter double winAverage,
+        @Getter double largestLoss,
+        @Getter double lossAverage,
+        @Getter int winPercentage,
+        @Getter int wins,
+        @Getter int losses,
+        @Getter int trades,
+        @Getter double profitability,
+        @Getter int retention,
+        @Getter TradeRecordTimeInterval interval,
+        @Getter List<TradeRecordEquityPoint> equityPoints
 ) implements Comparable<TradeRecord> {
 
     @Override
