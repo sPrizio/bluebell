@@ -2,7 +2,7 @@ package com.bluebell.radicle.integration.translators.forexfactory;
 
 import com.bluebell.radicle.AbstractGenericTest;
 import com.bluebell.radicle.integration.models.dto.forexfactory.CalendarNewsDayEntryDTO;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -10,7 +10,7 @@ import static org.assertj.core.api.Assertions.assertThat;
  * Testing class for {@link CalendarNewsDayEntryTranslator}
  *
  * @author Stephen Prizio
- * @version 0.0.9
+ * @version 0.1.0
  */
 public class CalendarNewsDayEntryTranslatorTest extends AbstractGenericTest {
 

@@ -2,6 +2,7 @@ package com.bluebell.platform.models.core.nonentities.records.account;
 
 
 import com.bluebell.platform.models.core.entities.account.Account;
+import lombok.Getter;
 
 /**
  * Class representation of an {@link Account 's} insights, i.e. look at its performance
@@ -17,18 +18,20 @@ import com.bluebell.platform.models.core.entities.account.Account;
  * @param largestGainDelta largest individual gain expressed as a percentage
  * @param drawdownDelta    total account drawdown expressed as a percentage
  * @param maxProfitDelta   highest ROI reached expressed as a percentage
+ * @author Stephen Prizio
+ * @version 0.1.0
  */
 public record AccountInsights(
-        int tradingDays,
-        double currentPL,
-        double biggestLoss,
-        double largestGain,
-        double drawdown,
-        double maxProfit,
-        double currentPLDelta,
-        double biggestLossDelta,
-        double largestGainDelta,
-        double drawdownDelta,
-        double maxProfitDelta
+        @Getter int tradingDays,
+        @Getter double currentPL,
+        @Getter double biggestLoss,
+        @Getter double largestGain,
+        @Getter double drawdown,
+        @Getter double maxProfit,
+        @Getter double currentPLDelta,
+        @Getter double biggestLossDelta,
+        @Getter double largestGainDelta,
+        @Getter double drawdownDelta,
+        @Getter double maxProfitDelta
 ) {
 }

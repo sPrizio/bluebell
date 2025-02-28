@@ -40,4 +40,6 @@ open module com.bluebell.radicle {
     requires spring.web;
     requires org.apache.httpcomponents.httpcore;
     requires com.fasterxml.jackson.databind;
+    requires spring.boot.autoconfigure;
+    requires spring.boot;
 }

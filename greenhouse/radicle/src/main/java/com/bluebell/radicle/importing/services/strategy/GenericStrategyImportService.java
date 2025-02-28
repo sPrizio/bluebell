@@ -16,7 +16,7 @@ import static com.bluebell.radicle.validation.GenericValidator.validateParameter
  * Generic importing service to handle incoming strategy files, will delegate to specific import services
  *
  * @author Stephen Prizio
- * @version 0.0.9
+ * @version 0.1.0
  */
 @Service
 public class GenericStrategyImportService {
@@ -41,6 +41,7 @@ public class GenericStrategyImportService {
     public String importReport(final InputStream inputStream, final Account account) {
 
         validateParameterIsNotNull(inputStream, CorePlatformConstants.Validation.Trade.IMPORT_STREAM_CANNOT_BE_NULL);
+        validateParameterIsNotNull(account, CorePlatformConstants.Validation.Account.ACCOUNT_CANNOT_BE_NULL);
 
         try {
             if (getStrategyPlatformForTradePlatform(account.getTradePlatform()).equals(StrategyPlatform.BLUEBELL)) {

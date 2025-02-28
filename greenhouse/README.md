@@ -45,9 +45,6 @@ N/A
 - (0.1.8) : Accounts that have not been traded on for 1 calendar year should be marked as inactive (use a cronjob for this)
 ---
 
-- **0.1.1** : (Upcoming) Refactor controller endpoints to use pojo's instead of Maps for Request Objects
-    - May need to look into something like OpenApi for generating classes
-
 ### Version History
 - **0.0.1** : Basic data modeling & Trade Import feature. Allows users with multiple trading accounts to import trades into their accounts from supported brokers.
 - **0.0.2** : API Controller Authentication
@@ -59,7 +56,7 @@ N/A
 - **0.0.8** : Import FTMO Results
 - **0.0.9** : Major Code Improvements & Refactoring
 - **0.1.0** : (In Progress) Major Testing Refactoring and Coverage Improvements
-- **0.1.1** : (Upcoming) Improve Api Documentation, Improve Lombok usage, Cronjob for fetching Market News
+- **0.1.1** : (Upcoming) Improve Api Documentation, Improve Lombok usage, Cronjob for fetching Market News, Refactor controller endpoints to use pojo's instead of Maps for Request Objects (Look into OpenAPI)
 - **0.1.2** : (Upcoming) Refactoring of Portfolios and Account Details (work with sepal) including page for managing portfolios, selector for active portfolio, CRUD
 - **0.1.3** : (Upcoming) Dockerize App (including front-end)
 - **0.1.4** : (Upcoming) Store Market data from MT4 and FirstRateData into database

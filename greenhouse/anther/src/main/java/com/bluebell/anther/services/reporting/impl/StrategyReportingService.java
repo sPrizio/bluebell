@@ -23,7 +23,7 @@ import java.util.Map;
  * Service that allows reports to be generated for strategy results
  *
  * @author Stephen Prizio
- * @version 0.0.9
+ * @version 0.1.0
  */
 public class StrategyReportingService<S extends Strategy<P>, P extends BasicStrategyParameters> implements ReportingService {
 
@@ -105,13 +105,13 @@ public class StrategyReportingService<S extends Strategy<P>, P extends BasicStra
      */
     protected String getContentRoot(final String root) {
 
-        String result = DirectoryUtil.getDirectory(root);
+        String result = DirectoryUtil.getOutputDirectory(String.format("output%s%s%s", File.separator, root, File.separator), "anther", true);
         if (this.strategy.isAssignableFrom(Bloom.class)) {
-            result += "bloom/";
+            result += "bloom" + File.separator;
         } else if (this.strategy.isAssignableFrom(Sprout.class)) {
-            result += "sprout/";
+            result += "sprout" + File.separator;
         } else {
-            result += "general/";
+            result += "general" + File.separator;
         }
 
         final File directory = new File(result);

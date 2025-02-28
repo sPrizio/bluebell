@@ -2,6 +2,7 @@ package com.bluebell.platform.models.core.nonentities.records.account;
 
 
 import com.bluebell.platform.models.core.entities.account.Account;
+import lombok.Getter;
 
 /**
  * Class representation of various {@link Account}-related statistical measures regarding its performance
@@ -22,23 +23,23 @@ import com.bluebell.platform.models.core.entities.account.Account;
  * @param lossDuration average loss trade duration in seconds
  * @param assumedDrawdown calculated drawdown plus average loss
  * @author Stephen Prizio
- * @version 0.0.9
+ * @version 0.1.0
  */
 public record AccountStatistics(
-        double balance,
-        double averageProfit,
-        double averageLoss,
-        int numberOfTrades,
-        double rrr,
-        double lots,
-        double expectancy,
-        double winPercentage,
-        double profitFactor,
-        double retention,
-        double sharpeRatio,
-        long tradeDuration,
-        long winDuration,
-        long lossDuration,
-        double assumedDrawdown
+        @Getter double balance,
+        @Getter double averageProfit,
+        @Getter double averageLoss,
+        @Getter int numberOfTrades,
+        @Getter double rrr,
+        @Getter double lots,
+        @Getter double expectancy,
+        @Getter int winPercentage,
+        @Getter double profitFactor,
+        @Getter int retention,
+        @Getter double sharpeRatio,
+        @Getter long tradeDuration,
+        @Getter long winDuration,
+        @Getter long lossDuration,
+        @Getter double assumedDrawdown
 ) {
 }

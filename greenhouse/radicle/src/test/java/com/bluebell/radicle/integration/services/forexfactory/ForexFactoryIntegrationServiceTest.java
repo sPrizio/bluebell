@@ -3,8 +3,8 @@ package com.bluebell.radicle.integration.services.forexfactory;
 import com.bluebell.radicle.integration.client.forexfactory.ForexFactoryIntegrationClient;
 import com.bluebell.radicle.integration.models.dto.forexfactory.CalendarNewsDayEntryDTO;
 import com.bluebell.radicle.integration.translators.forexfactory.CalendarNewsDayEntryTranslator;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -21,11 +21,11 @@ import static org.mockito.ArgumentMatchers.any;
  * Testing class for {@link ForexFactoryIntegrationService}
  *
  * @author Stephen Prizio
- * @version 0.0.9
+ * @version 0.1.0
  */
 @SpringBootTest
 @RunWith(SpringRunner.class)
-public class ForexFactoryIntegrationServiceTest {
+class ForexFactoryIntegrationServiceTest {
 
     @Mock
     private CalendarNewsDayEntryTranslator calendarNewsDayEntryTranslator;
@@ -36,7 +36,7 @@ public class ForexFactoryIntegrationServiceTest {
     @InjectMocks
     private ForexFactoryIntegrationService forexFactoryIntegrationService;
 
-    @Before
+    @BeforeAll
     public void setUp() {
 
         ReflectionTestUtils.setField(forexFactoryIntegrationService, "calendarUrl", "https://nfs.faireconomy.media/ff_calendar_thisweek.json");
@@ -65,7 +65,7 @@ public class ForexFactoryIntegrationServiceTest {
     //  ----------------- getCurrentWeekNews -----------------
 
     @Test
-    public void test_getCurrentWeekNews_success() {
+    void test_getCurrentWeekNews_success() {
         assertThat(this.forexFactoryIntegrationService.getCurrentWeekNews())
                 .isNotNull();
     }

@@ -5,4 +5,5 @@ module com.bluebell.anther {
     requires com.bluebell.platform;
     requires org.apache.commons.collections4;
     requires static lombok;
+    requires org.apache.commons.lang3;
 }

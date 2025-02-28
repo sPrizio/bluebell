@@ -10,6 +10,13 @@ module com.bluebell.platform {
     exports com.bluebell.platform.models.core.entities;
     opens com.bluebell.platform.models.core.entities;
 
+    opens com.bluebell.platform.models.core.entities.news;
+    opens com.bluebell.platform.models.core.entities.account;
+    opens com.bluebell.platform.models.core.entities.security;
+    opens com.bluebell.platform.models.core.entities.system;
+    opens com.bluebell.platform.models.core.entities.trade;
+    opens com.bluebell.platform.models.core.entities.transaction;
+
     exports com.bluebell.platform.models.core.entities.account;
     exports com.bluebell.platform.models.core.entities.news;
     exports com.bluebell.platform.models.core.entities.security;

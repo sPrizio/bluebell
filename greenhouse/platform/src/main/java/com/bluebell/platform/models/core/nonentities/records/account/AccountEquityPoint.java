@@ -2,6 +2,7 @@ package com.bluebell.platform.models.core.nonentities.records.account;
 
 
 import com.bluebell.platform.models.core.entities.account.Account;
+import lombok.Getter;
 
 import java.time.LocalDateTime;
 
@@ -14,7 +15,12 @@ import java.time.LocalDateTime;
  * @param cumAmount cumulative account balance
  * @param cumPoints cumulative points
  * @author Stephen Prizio
- * @version 0.0.9
+ * @version 0.1.0
  */
-public record AccountEquityPoint(LocalDateTime date, double amount, double points, double cumAmount, double cumPoints) {
-}
+public record AccountEquityPoint(
+        @Getter LocalDateTime date,
+        @Getter double amount,
+        @Getter double points,
+        @Getter double cumAmount,
+        @Getter double cumPoints
+) { }

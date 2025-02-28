@@ -1,5 +1,6 @@
 package com.bluebell.radicle.services.analysis;
 
+import com.bluebell.platform.constants.CorePlatformConstants;
 import com.bluebell.platform.enums.analysis.AnalysisFilter;
 import com.bluebell.platform.enums.analysis.TradeDurationFilter;
 import com.bluebell.platform.enums.time.PlatformTimeInterval;
@@ -18,11 +19,13 @@ import java.time.format.TextStyle;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
 
+import static com.bluebell.radicle.validation.GenericValidator.validateParameterIsNotNull;
+
 /**
  * Service-layer for computing analysis of {@link Account}s
  *
  * @author Stephen Prizio
- * @version 0.0.9
+ * @version 0.1.0
  */
 @Service
 public class AnalysisService {
@@ -44,6 +47,8 @@ public class AnalysisService {
      */
     public List<AnalysisResult> computeTimeBucketAnalysis(final Account account, final PlatformTimeInterval interval, final AnalysisFilter analysisFilter, final boolean isOpened) {
 
+        validateParameterIsNotNull(account, CorePlatformConstants.Validation.Account.ACCOUNT_CANNOT_BE_NULL);
+
         final List<Trade> trades = account.getTrades().stream().sorted(Comparator.comparing(Trade::getTradeCloseTime)).toList();
         final Map<String, Triplet<Integer, Double, List<Trade>>> map = generateTimeBucketMap(trades, interval, analysisFilter, isOpened);
 
@@ -64,6 +69,9 @@ public class AnalysisService {
      * @return {@link List} of {@link AnalysisResult}
      */
     public List<AnalysisResult> computeWeekdayAnalysis(final Account account, final AnalysisFilter analysisFilter) {
+
+        validateParameterIsNotNull(account, CorePlatformConstants.Validation.Account.ACCOUNT_CANNOT_BE_NULL);
+
         final Map<DayOfWeek, Triplet<Integer, Double, List<Trade>>> map = generateWeekdayMap(account.getTrades().stream().sorted(Comparator.comparing(Trade::getTradeCloseTime)).toList(), analysisFilter);
         return
                 map
@@ -84,6 +92,8 @@ public class AnalysisService {
      * @return {@link List} of {@link AnalysisResult}
      */
     public List<AnalysisResult> computeWeekdayTimeBucketAnalysis(final Account account, final DayOfWeek day, final PlatformTimeInterval interval, final AnalysisFilter analysisFilter) {
+
+        validateParameterIsNotNull(account, CorePlatformConstants.Validation.Account.ACCOUNT_CANNOT_BE_NULL);
 
         final Map<DayOfWeek, Triplet<Integer, Double, List<Trade>>> weekdayMap = generateWeekdayMap(account.getTrades().stream().sorted(Comparator.comparing(Trade::getTradeCloseTime)).toList(), analysisFilter);
         final List<Trade> trades = weekdayMap.getOrDefault(day, Triplet.with(0, 0.0, Collections.emptyList())).getValue2();
@@ -112,6 +122,8 @@ public class AnalysisService {
      */
     public List<AnalysisResult> computeTradeDurationAnalysis(final Account account, final AnalysisFilter analysisFilter, final TradeDurationFilter tradeDurationFilter) {
 
+        validateParameterIsNotNull(account, CorePlatformConstants.Validation.Account.ACCOUNT_CANNOT_BE_NULL);
+
         final Map<Long, Triplet<Integer, Double, List<Trade>>> map = new HashMap<>();
         map.put((Long) 5L, Triplet.with(0, 0.0, Collections.emptyList()));
         map.put((Long) 30L, Triplet.with(0, 0.0, Collections.emptyList()));
@@ -123,7 +135,15 @@ public class AnalysisService {
         map.put((Long) 210L, Triplet.with(0, 0.0, Collections.emptyList()));
         map.put((Long) 99999L, Triplet.with(0, 0.0, Collections.emptyList()));
 
-        final List<Trade> trades = account.getTrades().stream().sorted(Comparator.comparing(Trade::getTradeCloseTime)).toList();
+        final List<Trade> trades;
+        if (tradeDurationFilter.equals(TradeDurationFilter.WINS)) {
+            trades = account.getTrades().stream().filter(tr -> tr.getNetProfit() >= 0).sorted(Comparator.comparing(Trade::getTradeCloseTime)).toList();
+        } else if (tradeDurationFilter.equals(TradeDurationFilter.LOSSES)) {
+            trades = account.getTrades().stream().filter(tr -> tr.getNetProfit() < 0).sorted(Comparator.comparing(Trade::getTradeCloseTime)).toList();
+        } else {
+            trades = account.getTrades().stream().sorted(Comparator.comparing(Trade::getTradeCloseTime)).toList();
+        }
+
         trades.forEach(trade -> {
             final Long key = getTradeDurationKey(trade);
             if (map.containsKey(key)) {
@@ -214,16 +234,28 @@ public class AnalysisService {
      */
     private String getTimeBucketKey(final LocalTime dateTime, final PlatformTimeInterval interval) {
 
-        if (interval == PlatformTimeInterval.THIRTY_MINUTE) {
-            int min = 0;
-            if (dateTime.getMinute() > 30) {
-                min = 30;
-            }
 
-            return dateTime.withMinute(min).format(DateTimeFormatter.ofPattern(KEY_PATTERN));
-        } else {
-            return dateTime.format(DateTimeFormatter.ofPattern(KEY_PATTERN));
-        }
+        return switch (interval) {
+            case ONE_MINUTE -> dateTime.withSecond(0).format(DateTimeFormatter.ofPattern(KEY_PATTERN));
+            case FIVE_MINUTE -> {
+                int roundedMinute = dateTime.getMinute() - (dateTime.getMinute() % 5);
+                yield dateTime.withMinute(roundedMinute).withSecond(0).withNano(0).format(DateTimeFormatter.ofPattern(KEY_PATTERN));
+            }
+            case TEN_MINUTE -> {
+                int roundedMinute = dateTime.getMinute() - (dateTime.getMinute() % 10);
+                yield dateTime.withMinute(roundedMinute).withSecond(0).withNano(0).format(DateTimeFormatter.ofPattern(KEY_PATTERN));
+            }
+            case FIFTEEN_MINUTE -> {
+                int roundedMinute = dateTime.getMinute() - (dateTime.getMinute() % 15);
+                yield dateTime.withMinute(roundedMinute).withSecond(0).withNano(0).format(DateTimeFormatter.ofPattern(KEY_PATTERN));
+            }
+            case THIRTY_MINUTE -> {
+                int roundedMinute = dateTime.getMinute() - (dateTime.getMinute() % 30);
+                yield dateTime.withMinute(roundedMinute).withSecond(0).withNano(0).format(DateTimeFormatter.ofPattern(KEY_PATTERN));
+            }
+            case ONE_HOUR -> dateTime.withMinute(0).format(DateTimeFormatter.ofPattern(KEY_PATTERN));
+            default -> "";
+        };
     }
 
     /**

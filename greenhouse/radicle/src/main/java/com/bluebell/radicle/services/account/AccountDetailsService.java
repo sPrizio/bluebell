@@ -15,16 +15,13 @@ import com.bluebell.radicle.services.trade.TradeRecordService;
 import jakarta.annotation.Resource;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.math3.stat.descriptive.moment.StandardDeviation;
-import org.javatuples.Triplet;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
+import java.util.*;
 
 import static com.bluebell.radicle.validation.GenericValidator.validateParameterIsNotNull;
 
@@ -33,7 +30,7 @@ import static com.bluebell.radicle.validation.GenericValidator.validateParameter
  * Service-layer implementation of {@link AccountDetails}
  *
  * @author Stephen Prizio
- * @version 0.0.9
+ * @version 0.1.0
  */
 @Service("accountDetailsService")
 public class AccountDetailsService {
@@ -53,6 +50,9 @@ public class AccountDetailsService {
      * @return consistency score 0 - 100
      */
     public int calculateConsistencyScore(final Account account) {
+
+        validateParameterIsNotNull(account, CorePlatformConstants.Validation.Account.ACCOUNT_CANNOT_BE_NULL);
+
         //  TODO: implement this
         return 49;
     }
@@ -72,7 +72,6 @@ public class AccountDetailsService {
         }
 
         final List<AccountEquityPoint> equityPoints = new ArrayList<>();
-
         final List<Trade> trades = account.getTrades().stream().sorted(Comparator.comparing(Trade::getTradeCloseTime).thenComparing(Trade::getTradeOpenTime)).toList();
         final double starterBalance = this.mathService.subtract(account.getBalance(), account.getTrades().stream().mapToDouble(Trade::getNetProfit).sum());
 
@@ -102,16 +101,9 @@ public class AccountDetailsService {
      */
     public AccountInsights obtainInsights(final Account account) {
 
-        final List<TradeRecord> tradeRecords = this.tradeRecordService.getTradeRecords(account.getAccountOpenTime().minusYears(1).toLocalDate(), LocalDate.now().plusYears(1), account, TradeRecordTimeInterval.DAILY, -1).tradeRecords();
-        if (CollectionUtils.isEmpty(tradeRecords)) {
-            return new AccountInsights(0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,0.0);
-        }
+        validateParameterIsNotNull(account, CorePlatformConstants.Validation.Account.ACCOUNT_CANNOT_BE_NULL);
 
         final List<CumulativeTrade> cumulativeTrades = generativeCumulativeTrades(account);
-        if (CollectionUtils.isEmpty(cumulativeTrades)) {
-            return new AccountInsights(0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,0.0);
-        }
-
         final double initialBalance = account.getInitialBalance();
         final double currentPL = cumulativeTrades.get(cumulativeTrades.size() - 1).netProfit();
         final double biggestLoss = cumulativeTrades.stream().mapToDouble(CumulativeTrade::singleProfit).min().orElse(0.0);
@@ -119,8 +111,11 @@ public class AccountDetailsService {
         final double drawdown = calculateDrawdown(cumulativeTrades);
         final double maxProfit = cumulativeTrades.stream().mapToDouble(CumulativeTrade::netProfit).max().orElse(0.0);
 
+        final Map<LocalDate, Trade> map = new HashMap<>();
+        account.getTrades().forEach(tr -> map.put(tr.getTradeOpenTime().toLocalDate(), tr));
+
         return new AccountInsights(
-                tradeRecords.size(),
+                map.size(),
                 currentPL,
                 biggestLoss,
                 largestGain,
@@ -130,7 +125,7 @@ public class AccountDetailsService {
                 BigDecimal.valueOf(biggestLoss).divide(BigDecimal.valueOf(initialBalance), 25, RoundingMode.HALF_EVEN).multiply(BigDecimal.valueOf(100.0)).setScale(2, RoundingMode.HALF_EVEN).abs().doubleValue(),
                 BigDecimal.valueOf(largestGain).divide(BigDecimal.valueOf(initialBalance), 25, RoundingMode.HALF_EVEN).multiply(BigDecimal.valueOf(100.0)).setScale(2, RoundingMode.HALF_EVEN).abs().doubleValue(),
                 BigDecimal.valueOf(drawdown).divide(BigDecimal.valueOf(initialBalance), 25, RoundingMode.HALF_EVEN).multiply(BigDecimal.valueOf(100.0)).setScale(2, RoundingMode.HALF_EVEN).abs().doubleValue(),
-                BigDecimal.valueOf(maxProfit).divide(BigDecimal.valueOf(initialBalance), RoundingMode.HALF_EVEN).multiply(BigDecimal.valueOf(100.0)).doubleValue()
+                BigDecimal.valueOf(maxProfit).divide(BigDecimal.valueOf(initialBalance), 25, RoundingMode.HALF_EVEN).multiply(BigDecimal.valueOf(100.0)).setScale(2, RoundingMode.HALF_EVEN).abs().doubleValue()
         );
     }
 
@@ -142,7 +137,9 @@ public class AccountDetailsService {
      */
     public AccountStatistics obtainStatistics(final Account account) {
 
-        final List<Trade> trades = account.getTrades().stream().sorted(Comparator.comparing(Trade::getTradeCloseTime)).toList();
+        validateParameterIsNotNull(account, CorePlatformConstants.Validation.Account.ACCOUNT_CANNOT_BE_NULL);
+
+        final List<Trade> trades = CollectionUtils.isEmpty(account.getTrades()) ? Collections.emptyList() : account.getTrades().stream().sorted(Comparator.comparing(Trade::getTradeCloseTime)).toList();
         final double positiveProfitCount = this.mathService.getDouble(trades.stream().mapToDouble(Trade::getNetProfit).filter(d -> d > 0).count());
         final double positiveProfit = this.mathService.getDouble(trades.stream().mapToDouble(Trade::getNetProfit).filter(d -> d > 0).sum());
         final double negativeProfit = this.mathService.getDouble(trades.stream().mapToDouble(Trade::getNetProfit).filter(d -> d < 0).sum());
@@ -156,7 +153,7 @@ public class AccountDetailsService {
                 trades.size(),
                 calculateRiskToRewardRatio(account),
                 trades.stream().mapToDouble(Trade::getLotSize).sum(),
-                trades.stream().mapToDouble(Trade::getNetProfit).average().orElse(0.0),
+                this.mathService.getDouble(trades.stream().mapToDouble(Trade::getNetProfit).average().orElse(0.0)),
                 this.mathService.wholePercentage(positiveProfitCount, this.mathService.getDouble(trades.size())),
                 this.mathService.divide(positiveProfit, Math.abs(negativeProfit)),
                 this.mathService.wholePercentage(positiveProfit, this.mathService.add(positiveProfit, Math.abs(negativeProfit))),
@@ -164,7 +161,7 @@ public class AccountDetailsService {
                 Math.round(trades.stream().mapToLong(tr -> Math.abs(ChronoUnit.SECONDS.between(tr.getTradeOpenTime(), tr.getTradeCloseTime()))).average().orElse(0.0)),
                 Math.round(trades.stream().filter(tr -> tr.getNetProfit() > 0).mapToLong(tr -> Math.abs(ChronoUnit.SECONDS.between(tr.getTradeOpenTime(), tr.getTradeCloseTime()))).average().orElse(0.0)),
                 Math.round(trades.stream().filter(tr -> tr.getNetProfit() < 0).mapToLong(tr -> Math.abs(ChronoUnit.SECONDS.between(tr.getTradeOpenTime(), tr.getTradeCloseTime()))).average().orElse(0.0)),
-                this.mathService.add(Math.abs(drawdown), Math.abs(averageLoss))
+                this.mathService.multiply(this.mathService.add(Math.abs(drawdown), Math.abs(averageLoss)), -1.0)
         );
     }
 
@@ -179,32 +176,34 @@ public class AccountDetailsService {
      */
     private double calculateDrawdown(final List<CumulativeTrade> cumulativeTrades) {
 
+        if (CollectionUtils.isEmpty(cumulativeTrades)) {
+            return 0.0;
+        }
+
         double drawdown = 0.0;
-        double max = 0.0;
+        double swingLow = 0.0;
+        double swingHigh = 0.0;
 
-        final List<Triplet<Integer, CumulativeTrade, Boolean>> highEntries = new ArrayList<>();
+        int swingHighIndex = 0;
+        int swingLowIndex;
+
         for (int i = 0; i < cumulativeTrades.size(); i++) {
-            boolean hitMax = cumulativeTrades.get(i).netProfit() > max;
-            highEntries.add(Triplet.with(i, cumulativeTrades.get(i), hitMax));
+            final CumulativeTrade cumulativeTrade = cumulativeTrades.get(i);
+            if (cumulativeTrade.netProfit() < swingLow) {
+                swingLow = cumulativeTrade.netProfit();
+                swingLowIndex = i;
 
-            if (hitMax) {
-                max = cumulativeTrades.get(i).netProfit();
-            }
-        }
-
-        final List<Integer> indices = highEntries.stream().filter(Triplet::getValue2).map(Triplet::getValue0).toList();
-        if (CollectionUtils.isNotEmpty(indices) && indices.size() > 1) {
-            for (int i = 0; i < indices.size() - 1; i++) {
-                final List<CumulativeTrade> subList = cumulativeTrades.subList(indices.get(i), indices.get(i + 1) + 1);
-                final double calc = this.mathService.subtract(subList.get(0).netProfit(), subList.stream().mapToDouble(CumulativeTrade::netProfit).min().orElse(0.0));
-
-                if (calc > drawdown) {
-                    drawdown = calc;
+                final double localDrawdown = Math.abs(this.mathService.subtract(cumulativeTrades.get(swingHighIndex).netProfit(), cumulativeTrades.get(swingLowIndex).netProfit()));
+                if (localDrawdown > drawdown) {
+                    drawdown = localDrawdown;
                 }
+            } else if (cumulativeTrade.netProfit() > swingHigh) {
+                swingHigh = cumulativeTrade.netProfit();
+                swingHighIndex = i;
             }
         }
 
-        return drawdown;
+        return this.mathService.multiply(drawdown, -1.0);
     }
 
     /**
@@ -215,7 +214,7 @@ public class AccountDetailsService {
      */
     private List<CumulativeTrade> generativeCumulativeTrades(final Account account) {
 
-        final List<Trade> trades = account.getTrades().stream().sorted(Comparator.comparing(Trade::getTradeCloseTime)).toList();
+        final List<Trade> trades = CollectionUtils.isEmpty(account.getTrades()) ? Collections.emptyList() : account.getTrades().stream().sorted(Comparator.comparing(Trade::getTradeCloseTime)).toList();
         final List<CumulativeTrade> cumulativeTrades = new ArrayList<>();
 
         int count = 0;
@@ -231,6 +230,7 @@ public class AccountDetailsService {
             cumulativeTrades.add(new CumulativeTrade(trade.getTradeCloseTime(), count, trade.getNetProfit(), (trade.getNetProfit() < 0) ? this.mathService.multiply(-1.0, np) : np, cumProfit, cumPoints));
         }
 
+        cumulativeTrades.add(0, new CumulativeTrade(account.getAccountOpenTime(), 0, 0.0, 0.0, 0.0, 0.0));
         return cumulativeTrades;
     }
 
@@ -242,7 +242,7 @@ public class AccountDetailsService {
      */
     private double calculateRiskToRewardRatio(final Account account) {
 
-        final List<Trade> trades =
+        final List<Trade> trades = CollectionUtils.isEmpty(account.getTrades()) ? Collections.emptyList() :
                 account.getTrades()
                         .stream()
                         .sorted(Comparator.comparing(Trade::getTradeCloseTime))
@@ -251,18 +251,22 @@ public class AccountDetailsService {
                         .toList();
 
         final double averageTP =
-                trades
-                        .stream()
-                        .mapToDouble(tr -> Math.abs(this.mathService.subtract(tr.getTakeProfit(), tr.getOpenPrice())))
-                        .average()
-                        .orElse(0.0);
+                this.mathService.getDouble(
+                        trades
+                                .stream()
+                                .mapToDouble(tr -> Math.abs(this.mathService.subtract(tr.getTakeProfit(), tr.getOpenPrice())))
+                                .average()
+                                .orElse(0.0)
+                );
 
         final double averageSL =
-                trades
-                        .stream()
-                        .mapToDouble(tr -> Math.abs(this.mathService.subtract(tr.getStopLoss(), tr.getOpenPrice())))
-                        .average()
-                        .orElse(0.0);
+                this.mathService.getDouble(
+                        trades
+                                .stream()
+                                .mapToDouble(tr -> Math.abs(this.mathService.subtract(tr.getStopLoss(), tr.getOpenPrice())))
+                                .average()
+                                .orElse(0.0)
+                );
 
         return this.mathService.divide(averageTP, averageSL);
     }

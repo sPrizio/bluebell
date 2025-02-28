@@ -7,8 +7,10 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.squareup.javapoet.FieldSpec;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 
 import javax.lang.model.element.Modifier;
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -21,7 +23,7 @@ import java.util.stream.Collectors;
  * Parent-level processor for re-usable functionality
  *
  * @author Stephen Prizio
- * @version 0.0.9
+ * @version 0.1.0
  */
 @Slf4j
 public abstract class AbstractBluebellProcessor implements BluebellProcessor {
@@ -33,7 +35,7 @@ public abstract class AbstractBluebellProcessor implements BluebellProcessor {
      */
     String getGeneratedSourcePath() {
         return Paths.get(
-                DirectoryUtil.getBaseProjectDirectory(),
+                DirectoryUtil.getBaseProjectDirectory().replace(File.separator + "greenhouse", StringUtils.EMPTY),
                 "greenhouse",
                 "processing",
                 "target", "generated-sources", "annotations"
@@ -67,7 +69,7 @@ public abstract class AbstractBluebellProcessor implements BluebellProcessor {
     void updateModuleInfo(final DependencyType dependencyType, final String packageName) throws IOException {
 
         Path moduleInfoPath = Paths.get(
-                DirectoryUtil.getBaseProjectDirectory(),
+                DirectoryUtil.getBaseProjectDirectory().replace(File.separator + "greenhouse", StringUtils.EMPTY),
                 "greenhouse",
                 "processing",
                 "src", "main", "java",

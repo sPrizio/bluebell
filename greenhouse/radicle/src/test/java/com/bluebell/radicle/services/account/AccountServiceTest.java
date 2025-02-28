@@ -5,13 +5,14 @@ import com.bluebell.platform.enums.account.AccountType;
 import com.bluebell.platform.enums.trade.TradeType;
 import com.bluebell.radicle.AbstractGenericTest;
 import com.bluebell.radicle.exceptions.system.EntityCreationException;
+import com.bluebell.radicle.exceptions.system.EntityModificationException;
 import com.bluebell.radicle.exceptions.validation.IllegalParameterException;
 import com.bluebell.radicle.exceptions.validation.MissingRequiredDataException;
 import com.bluebell.radicle.repositories.account.AccountRepository;
 import com.bluebell.radicle.services.security.UserService;
 import com.bluebell.radicle.services.trade.TradeService;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +20,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -32,11 +34,11 @@ import static org.mockito.ArgumentMatchers.anyString;
  * Testing class for {@link AccountService}
  *
  * @author Stephen Prizio
- * @version 0.0.9
+ * @version 0.1.0
  */
 @SpringBootTest
 @RunWith(SpringRunner.class)
-public class AccountServiceTest extends AbstractGenericTest {
+class AccountServiceTest extends AbstractGenericTest {
 
     @MockBean
     private AccountRepository accountRepository;
@@ -50,7 +52,7 @@ public class AccountServiceTest extends AbstractGenericTest {
     @Autowired
     private AccountService accountService;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         Mockito.when(this.tradeService.findAllByTradeType(TradeType.PROMOTIONAL_PAYMENT, generateTestAccount())).thenReturn(List.of(generateTestBuyTrade()));
         Mockito.when(this.accountRepository.findAccountByAccountNumber(1234L)).thenReturn(generateTestAccount());
@@ -60,10 +62,22 @@ public class AccountServiceTest extends AbstractGenericTest {
     }
 
 
+    //  ----------------- getAccountDetails -----------------
+
+    @Test
+    void test_getAccountDetails_success() {
+        assertThatExceptionOfType(IllegalParameterException.class)
+                .isThrownBy(() -> this.accountService.getAccountDetails(null))
+                .withMessage(CorePlatformConstants.Validation.Account.ACCOUNT_CANNOT_BE_NULL);
+
+        assertThat(this.accountService.getAccountDetails(generateTestAccount())).isNotNull();
+    }
+
+
     //  ----------------- findAccountByAccountNumber -----------------
 
     @Test
-    public void test_findAccountByAccountNumber_success() {
+    void test_findAccountByAccountNumber_success() {
         assertThat(this.accountService.findAccountByAccountNumber(1234L))
                 .isNotEmpty();
     }
@@ -72,21 +86,21 @@ public class AccountServiceTest extends AbstractGenericTest {
     //  ----------------- createNewAccount -----------------
 
     @Test
-    public void test_createNewAccount_missingUser() {
+    void test_createNewAccount_missingUser() {
         assertThatExceptionOfType(IllegalParameterException.class)
                 .isThrownBy(() -> this.accountService.createNewAccount(null, null))
                 .withMessage(CorePlatformConstants.Validation.Security.User.USER_CANNOT_BE_NULL);
     }
 
     @Test
-    public void test_createNewAccount_missingData() {
+    void test_createNewAccount_missingData() {
         assertThatExceptionOfType(MissingRequiredDataException.class)
                 .isThrownBy(() -> this.accountService.createNewAccount(null, generateTestUser()))
                 .withMessage("The required data for creating an Account entity was null or empty");
     }
 
     @Test
-    public void test_createNewAccount_erroneousCreation() {
+    void test_createNewAccount_erroneousCreation() {
         Map<String, Object> map = Map.of("bad", "input");
         assertThatExceptionOfType(EntityCreationException.class)
                 .isThrownBy(() -> this.accountService.createNewAccount(map, generateTestUser()))
@@ -94,7 +108,7 @@ public class AccountServiceTest extends AbstractGenericTest {
     }
 
     @Test
-    public void test_createNewAccount_success() {
+    void test_createNewAccount_success() {
 
         Map<String, Object> data =
                 Map.of(
@@ -117,5 +131,74 @@ public class AccountServiceTest extends AbstractGenericTest {
                 .isNotNull()
                 .extracting("balance", "accountType", "accountNumber")
                 .containsExactly(1000.0, AccountType.CFD, 1234L);
+    }
+
+
+    //  ----------------- updateAccount -----------------
+
+    @Test
+    void test_updateAccount_missingUser() {
+        assertThatExceptionOfType(IllegalParameterException.class)
+                .isThrownBy(() -> this.accountService.updateAccount(null, null, null))
+                .withMessage(CorePlatformConstants.Validation.Account.ACCOUNT_CANNOT_BE_NULL);
+    }
+
+    @Test
+    void test_updateAccount_missingAccount() {
+        assertThatExceptionOfType(IllegalParameterException.class)
+                .isThrownBy(() -> this.accountService.updateAccount(generateTestAccount(), new HashMap<>(), null))
+                .withMessage(CorePlatformConstants.Validation.Security.User.USER_CANNOT_BE_NULL);
+    }
+
+    @Test
+    void test_updateAccount_missingData() {
+        assertThatExceptionOfType(MissingRequiredDataException.class)
+                .isThrownBy(() -> this.accountService.updateAccount(generateTestAccount(), null, generateTestUser()))
+                .withMessage("The required data for updating an Account was null or empty");
+    }
+
+    @Test
+    void test_updateAccount_erroneousCreation() {
+        Map<String, Object> map = Map.of("bad", "input");
+        assertThatExceptionOfType(EntityModificationException.class)
+                .isThrownBy(() -> this.accountService.updateAccount(generateTestAccount(), map, generateTestUser()))
+                .withMessage("An error occurred while modifying the Account : Cannot invoke \"java.util.Map.get(Object)\" because \"acc\" is null");
+    }
+
+    @Test
+    void test_updateAccount_success() {
+
+        final Map<String, Object> dataMap = new HashMap<>();
+        final Map<String, Object> data = new HashMap<>();
+        dataMap.put("name", "Test");
+        dataMap.put("active", "true");
+        dataMap.put("number", "1234");
+        dataMap.put("balance", "1000.0");
+        dataMap.put("currency", "CAD");
+        dataMap.put("type", "CFD");
+        dataMap.put("broker", "CMC_MARKETS");
+        dataMap.put("dailyStop", "55");
+        dataMap.put("dailyStopType", "POINTS");
+        dataMap.put("tradePlatform", "METATRADER4");
+        dataMap.put("isDefault", "true");
+
+        data.put("account", dataMap);
+
+        assertThat(this.accountService.updateAccount(generateTestAccount(), data, generateTestUser()))
+                .isNotNull()
+                .extracting("balance", "accountType", "accountNumber")
+                .containsExactly(1000.0, AccountType.CFD, 1234L);
+    }
+
+
+    //  ----------------- deleteAccount -----------------
+
+    @Test
+    void test_deleteAccount_success() {
+        assertThatExceptionOfType(IllegalParameterException.class)
+                .isThrownBy(() -> this.accountService.deleteAccount(null))
+                .withMessage(CorePlatformConstants.Validation.Account.ACCOUNT_CANNOT_BE_NULL);
+
+        assertThat(this.accountService.deleteAccount(generateTestAccount())).isTrue();
     }
 }

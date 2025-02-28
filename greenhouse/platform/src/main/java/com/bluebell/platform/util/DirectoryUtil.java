@@ -1,18 +1,16 @@
 package com.bluebell.platform.util;
 
-import org.apache.commons.lang3.StringUtils;
+import com.bluebell.platform.exceptions.system.DirectoryNotFoundException;
 
 import java.io.File;
-import java.net.URL;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Objects;
 
 /**
  * Utility class for file and directory operations
  *
  * @author Stephen Prizio
- * @version 0.0.9
+ * @version 0.1.0
  */
 public class DirectoryUtil {
 
@@ -24,28 +22,27 @@ public class DirectoryUtil {
     //  METHODS
 
     /**
-     * Returns the root folder for reports
+     * Returns the root folder for the given folder name
      *
      * @return sample data path
      */
-    public static String getDirectory(final String root) {
+    public static String getOutputDirectory(final String root, final String module, final boolean create) {
 
-        URL result = DirectoryUtil.class.getClassLoader().getResource(root);
-        if (result == null) {
-            result = DirectoryUtil.class.getClassLoader().getResource("com");
+        final String base = getBaseProjectDirectory() + File.separator + module;
+        if (!new File(base).exists()) {
+            throw new DirectoryNotFoundException(String.format("Module %s not found in project", module));
         }
 
-        String directoryResult = Objects.requireNonNull(result).getFile().replace("/com", StringUtils.EMPTY);
-        if (!directoryResult.contains(root)) {
-            directoryResult += String.format("/%s/", root);
-        }
+        final String target = base + String.format("%s%s%s%s", File.separator, "target", File.separator, root);
+        final File directory = new File(target);
 
-        final File directory = new File(directoryResult);
-        if (!directory.exists()){
+        if (!directory.exists() && create) {
             directory.mkdirs();
+        } else if (!directory.exists()) {
+            throw new DirectoryNotFoundException(String.format("Directory %s not found in module %s", target, module));
         }
 
-        return directoryResult;
+        return directory.getAbsolutePath();
     }
 
     /**
@@ -56,7 +53,7 @@ public class DirectoryUtil {
     public static String getBaseProjectDirectory() {
 
         Path currentPath = Paths.get(new File("").getAbsoluteFile().getPath());
-        while (!currentPath.endsWith("bluebell")) {
+        while (!currentPath.endsWith("greenhouse")) {
             currentPath = currentPath.getParent();
         }
 

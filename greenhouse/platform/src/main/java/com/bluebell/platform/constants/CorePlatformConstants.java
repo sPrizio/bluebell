@@ -7,7 +7,7 @@ import java.time.Year;
  * Constants defined for the bluebell platform
  *
  * @author Stephen Prizio
- * @version 0.0.9
+ * @version 0.1.0
  */
 public class CorePlatformConstants {
 
@@ -80,6 +80,11 @@ public class CorePlatformConstants {
      * The current risk-free rate based on the 10-yr Government of Canada bonds
      */
     public static final double RISK_FREE_RATE_CANADA = 3.26;
+
+    /**
+     * The base back-end java module name
+     */
+    public static final String BASE_BACKEND_MODULE = "greenhouse";
 
     /**
      * Validation messages used throughout the system, organized according to the entity packages
