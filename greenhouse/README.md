@@ -37,7 +37,8 @@ N/A
 
 ### Improvements
 - (0.1.0) : Change testing code to Jupiter
-- (0.1.1) : Add @Api documentation for Swagger in Controller endpoints. Make it look nice
+- (0.1.0) : Mockbean has supposedly been deprecated?
+- (0.1.1) : Add @Api documentation for Swagger in Controller endpoints. Make it look nice (look into unknown controllers being rendered), document api parameters, all DTOs should have @Schema
 - (0.1.1) : CronJob to auto fetch news every late Sunday evening
 - (0.1.1) : Improve code using better Lombok, look into builders
 - (0.1.7) : Improve ApexChart service to select data, parsers etc...
