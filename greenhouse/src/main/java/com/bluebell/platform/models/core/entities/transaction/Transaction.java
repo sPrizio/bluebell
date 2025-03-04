@@ -6,6 +6,7 @@ import com.bluebell.platform.enums.transaction.TransactionStatus;
 import com.bluebell.platform.enums.transaction.TransactionType;
 import com.bluebell.platform.models.core.entities.GenericEntity;
 import com.bluebell.platform.models.core.entities.account.Account;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 

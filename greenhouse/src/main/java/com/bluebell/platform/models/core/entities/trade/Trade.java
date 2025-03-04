@@ -6,6 +6,7 @@ import com.bluebell.platform.enums.trade.TradePlatform;
 import com.bluebell.platform.enums.trade.TradeType;
 import com.bluebell.platform.models.core.entities.GenericEntity;
 import com.bluebell.platform.models.core.entities.account.Account;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 

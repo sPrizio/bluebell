@@ -3,6 +3,7 @@ package com.bluebell.platform.models.core.entities.news;
 import com.bluebell.platform.enums.news.MarketNewsSeverity;
 import com.bluebell.platform.enums.system.Country;
 import com.bluebell.platform.models.core.entities.GenericEntity;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 

@@ -20,6 +20,7 @@ import jakarta.annotation.Resource;
 import jakarta.servlet.http.HttpServletRequest;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * API controller for {@link MarketNews}

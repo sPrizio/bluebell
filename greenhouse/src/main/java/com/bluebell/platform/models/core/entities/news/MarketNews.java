@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.bluebell.platform.models.core.entities.GenericEntity;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
