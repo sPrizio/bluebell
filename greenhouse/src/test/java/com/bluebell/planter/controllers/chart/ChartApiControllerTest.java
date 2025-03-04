@@ -7,13 +7,13 @@ import static org.mockito.ArgumentMatchers.any;
 import com.bluebell.planter.AbstractPlanterTest;
 import com.bluebell.platform.models.core.nonentities.apexcharts.ApexChartCandleStick;
 import com.bluebell.radicle.services.chart.ChartService;
-import org.junit.Before;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -21,7 +21,7 @@ import org.springframework.test.web.servlet.MockMvc;
  * Testing class for {@link ChartApiController}
  *
  * @author Stephen Prizio
- * @version 0.0.9
+ * @version 0.1.0
  */
 @SpringBootTest
 @AutoConfigureMockMvc(addFilters = false)
@@ -31,10 +31,10 @@ public class ChartApiControllerTest extends AbstractPlanterTest {
     @Autowired
     private MockMvc mockMvc;
 
-    @MockBean
+    @MockitoBean
     private ChartService<ApexChartCandleStick> chartService;
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         Mockito.when(this.chartService.getChartData(any(), any(), any())).thenReturn(List.of(new ApexChartCandleStick(123L, new double[]{1.0, 2.0, 3.0})));
     }

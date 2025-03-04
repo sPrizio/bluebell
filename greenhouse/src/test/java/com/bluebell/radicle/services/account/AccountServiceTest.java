@@ -53,7 +53,7 @@ class AccountServiceTest extends AbstractGenericTest {
     private AccountService accountService;
 
     @BeforeEach
-    public void setUp() {
+    void setUp() {
         Mockito.when(this.tradeService.findAllByTradeType(TradeType.PROMOTIONAL_PAYMENT, generateTestAccount())).thenReturn(List.of(generateTestBuyTrade()));
         Mockito.when(this.accountRepository.findAccountByAccountNumber(1234L)).thenReturn(generateTestAccount());
         Mockito.when(this.accountRepository.findAccountByAccountNumber(-1L)).thenReturn(null);

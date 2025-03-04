@@ -183,7 +183,7 @@ public class BloomDecisionEngine implements DecisionEngine<Bloom, BloomStrategyP
     private List<CumulativeData> loadDataFromDirectory() {
 
         // look for files. if the directory exists and is not empty, read from it
-        final File directory = new File(DirectoryUtil.getOutputDirectory(String.format("output%scumulative%sbloom%s", File.separator, File.separator, File.separator), "anther", true));
+        final File directory = new File(DirectoryUtil.getOutputDirectory(String.format("output%scumulative%sbloom%s", File.separator, File.separator, File.separator), true));
         try (Stream<Path> paths = Files.list(directory.toPath())) {
             final List<Path> list = paths.toList();
 

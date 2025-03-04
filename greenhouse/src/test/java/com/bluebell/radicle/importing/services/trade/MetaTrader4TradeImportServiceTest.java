@@ -55,7 +55,9 @@ class MetaTrader4TradeImportServiceTest extends AbstractGenericTest {
 
     @BeforeEach
     void setUp() {
-        account = this.accountRepository.save(generateTestAccount());
+        final Account acc = generateTestAccount();
+        acc.setId(null);
+        account = this.accountRepository.save(acc);
         user = generateTestUser();
         user.setAccounts(List.of(account));
         user = this.userRepository.save(user);
@@ -63,6 +65,7 @@ class MetaTrader4TradeImportServiceTest extends AbstractGenericTest {
 
     @AfterEach
     void tearDown() {
+        this.tradeRepository.deleteAll();
         this.accountRepository.delete(account);
         account = null;
 

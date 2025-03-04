@@ -26,11 +26,11 @@ public class DirectoryUtil {
      *
      * @return sample data path
      */
-    public static String getOutputDirectory(final String root, final String module, final boolean create) {
+    public static String getOutputDirectory(final String root, final boolean create) {
 
-        final String base = getBaseProjectDirectory() + File.separator + module;
+        final String base = getBaseProjectDirectory();
         if (!new File(base).exists()) {
-            throw new DirectoryNotFoundException(String.format("Module %s not found in project", module));
+            throw new DirectoryNotFoundException(String.format("Base %s not found in project", base));
         }
 
         final String target = base + String.format("%s%s%s%s", File.separator, "target", File.separator, root);
@@ -39,7 +39,7 @@ public class DirectoryUtil {
         if (!directory.exists() && create) {
             directory.mkdirs();
         } else if (!directory.exists()) {
-            throw new DirectoryNotFoundException(String.format("Directory %s not found in module %s", target, module));
+            throw new DirectoryNotFoundException(String.format("Directory %s not found in target %s", target, base));
         }
 
         return directory.getAbsolutePath();

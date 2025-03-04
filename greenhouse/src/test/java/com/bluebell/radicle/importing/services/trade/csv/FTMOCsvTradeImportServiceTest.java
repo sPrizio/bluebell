@@ -17,12 +17,7 @@ import com.bluebell.radicle.repositories.trade.TradeRepository;
 import jakarta.annotation.Resource;
 import jakarta.transaction.Transactional;
 import org.assertj.core.groups.Tuple;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.jupiter.api.MethodOrderer;
-import org.junit.jupiter.api.Order;
-import org.junit.jupiter.api.TestMethodOrder;
+import org.junit.jupiter.api.*;
 import org.junit.runner.RunWith;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -41,7 +36,7 @@ import org.springframework.util.ResourceUtils;
 @RunWith(SpringRunner.class)
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
-public class FTMOCsvTradeImportServiceTest extends AbstractGenericTest {
+class FTMOCsvTradeImportServiceTest extends AbstractGenericTest {
 
     private User user;
 
@@ -59,16 +54,19 @@ public class FTMOCsvTradeImportServiceTest extends AbstractGenericTest {
     @Resource(name = "userRepository")
     private UserRepository userRepository;
 
-    @Before
-    public void setUp() {
-        account = this.accountRepository.save(generateTestAccount());
+    @BeforeEach
+    void setUp() {
+        final Account acc = new Account();
+        acc.setId(null);
+        account = this.accountRepository.save(acc);
         user = generateTestUser();
         user.setAccounts(List.of(account));
         user = this.userRepository.save(user);
     }
 
-    @After
-    public void tearDown() {
+    @AfterEach
+    void tearDown() {
+        this.tradeRepository.deleteAll();
         this.accountRepository.delete(account);
         account = null;
 
@@ -82,7 +80,7 @@ public class FTMOCsvTradeImportServiceTest extends AbstractGenericTest {
     @Test
     @Order(1)
     @Transactional
-    public void test_importTrades_failure() {
+    void test_importTrades_failure() {
         assertThatExceptionOfType(TradeImportFailureException.class)
                 .isThrownBy(() -> this.ftmoCsvTradeImportService.importTrades("src/main/resources/testing/NotFound.htm", ';', this.account))
                 .withMessageContaining("The import process failed with reason");
@@ -92,7 +90,7 @@ public class FTMOCsvTradeImportServiceTest extends AbstractGenericTest {
     @Order(2)
     @Transactional
     @WithMockUser(username = "test")
-    public void test_importTrades_success() {
+    void test_importTrades_success() {
 
         this.ftmoCsvTradeImportService.importTrades("classpath:testing/csv_test.csv", ';', this.account);
 
@@ -110,7 +108,7 @@ public class FTMOCsvTradeImportServiceTest extends AbstractGenericTest {
     @Order(3)
     @Transactional
     @WithMockUser(username = "test")
-    public void testImportTrades_success_unchanged() {
+    void testImportTrades_success_unchanged() {
 
         this.ftmoCsvTradeImportService.importTrades("classpath:testing/csv_test.csv", ';', this.account);
         this.ftmoCsvTradeImportService.importTrades("classpath:testing/csv_test.csv", ';', this.account);
@@ -123,7 +121,7 @@ public class FTMOCsvTradeImportServiceTest extends AbstractGenericTest {
     @Order(4)
     @Transactional
     @WithMockUser(username = "test")
-    public void test_importTrades_success_inputStream() throws Exception {
+    void test_importTrades_success_inputStream() throws Exception {
 
         this.ftmoCsvTradeImportService.importTrades(new FileInputStream(ResourceUtils.getFile("classpath:testing/csv_test.csv")), ';', this.account);
 
