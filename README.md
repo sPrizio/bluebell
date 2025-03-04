@@ -15,3 +15,8 @@ bluebell created by Stephen Prizio
 ### Front-End Modules
 - Petal **v0.0.1**: bluebell's public website.
 - Sepal **v.0.0.1**: A headless front-end UI system built to provide user's with the ability to manage their trading accounts & portfolio. Designed to integrate with Planter.
+
+Long term strategies:
+Implement Krish's strategy and test
+Look up Bagger's video on his strategy
+See if we can expand Sprout to other indices
