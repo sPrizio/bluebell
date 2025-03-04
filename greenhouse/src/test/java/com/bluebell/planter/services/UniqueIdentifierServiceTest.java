@@ -9,25 +9,25 @@ import com.bluebell.platform.models.api.dto.trade.TradeDTO;
 import com.bluebell.platform.models.core.entities.trade.Trade;
 import com.bluebell.radicle.exceptions.validation.IllegalParameterException;
 import org.apache.commons.lang3.StringUtils;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
 /**
  * Testing class for {@link UniqueIdentifierService}
  *
  * @author Stephen Prizio
- * @version 0.0.9
+ * @version 0.1.0
  */
-public class UniqueIdentifierServiceTest extends AbstractPlanterTest {
+class UniqueIdentifierServiceTest extends AbstractPlanterTest {
 
-    private static final String TEST_UID = "MTE4JWNvbS5ibHVlYmVsbC5wbGFudGVyLmNvcmUubW9kZWxzLmVudGl0aWVzLnRyYWRlLlRyYWRl";
+    private static final String TEST_UID = "MTE4JWNvbS5ibHVlYmVsbC5wbGF0Zm9ybS5tb2RlbHMuY29yZS5lbnRpdGllcy50cmFkZS5UcmFkZQ==";
     private final UniqueIdentifierService uniqueIdentifierService = new UniqueIdentifierService();
 
     private final Trade mockedTrade = Mockito.mock(Trade.class, Mockito.RETURNS_DEEP_STUBS);
 
-    @Before
-    public void setUp() {
+    @BeforeEach
+    void setUp() {
         Mockito.when(mockedTrade.getId()).thenReturn(118L);
     }
 
@@ -35,14 +35,14 @@ public class UniqueIdentifierServiceTest extends AbstractPlanterTest {
     //  ----------------- generateUid -----------------
 
     @Test
-    public void test_generateUid_missingParams() {
+    void test_generateUid_missingParams() {
         assertThatExceptionOfType(IllegalParameterException.class)
                 .isThrownBy(() -> this.uniqueIdentifierService.generateUid(null))
                 .withMessage("entity cannot be null");
     }
 
     @Test
-    public void test_generateUid_success() {
+    void test_generateUid_success() {
         assertThat(this.uniqueIdentifierService.generateUid(this.mockedTrade))
                 .isEqualTo(TEST_UID);
     }
@@ -51,7 +51,7 @@ public class UniqueIdentifierServiceTest extends AbstractPlanterTest {
     //  ----------------- retrieveId -----------------
 
     @Test
-    public void test_retrieveId_missingParams() {
+    void test_retrieveId_missingParams() {
         assertThatExceptionOfType(IllegalParameterException.class)
                 .isThrownBy(() -> this.uniqueIdentifierService.retrieveId(null))
                 .withMessage(CorePlatformConstants.Validation.DataIntegrity.UID_CANNOT_BE_NULL);
@@ -64,7 +64,7 @@ public class UniqueIdentifierServiceTest extends AbstractPlanterTest {
     }
 
     @Test
-    public void test_retrieveId_success() {
+    void test_retrieveId_success() {
         TradeDTO tradeDTO = new TradeDTO();
         tradeDTO.setUid(TEST_UID);
 
@@ -76,14 +76,14 @@ public class UniqueIdentifierServiceTest extends AbstractPlanterTest {
     //  ----------------- retrieveIdForUid -----------------
 
     @Test
-    public void test_retrieveIdForUid_missingParams() {
+    void test_retrieveIdForUid_missingParams() {
         assertThatExceptionOfType(IllegalParameterException.class)
                 .isThrownBy(() -> this.uniqueIdentifierService.retrieveIdForUid(null))
                 .withMessage(CorePlatformConstants.Validation.DataIntegrity.UID_CANNOT_BE_NULL);
     }
 
     @Test
-    public void test_retrieveIdForUid_success() {
+    void test_retrieveIdForUid_success() {
         assertThat(this.uniqueIdentifierService.retrieveIdForUid(TEST_UID))
                 .isEqualTo(118L);
     }

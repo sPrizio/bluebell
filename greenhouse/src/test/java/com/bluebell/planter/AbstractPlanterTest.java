@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import com.bluebell.AbstractGenericTest;
 import com.bluebell.platform.enums.system.TradeRecordTimeInterval;
 import com.bluebell.platform.models.api.dto.account.AccountDTO;
 import com.bluebell.platform.models.core.entities.security.User;
@@ -16,9 +17,9 @@ import org.springframework.test.web.servlet.request.RequestPostProcessor;
  * Parent-level testing class to provide testing assistance for planter
  *
  * @author Stephen Prizio
- * @version 0.0.9
+ * @version 0.1.0
  */
-public abstract class AbstractPlanterTest {
+public abstract class AbstractPlanterTest extends AbstractGenericTest {
 
     /**
      * Generates a {@link User} context for use within the testing suite

@@ -7,36 +7,38 @@ import com.bluebell.planter.AbstractPlanterTest;
 import com.bluebell.planter.converters.account.AccountDTOConverter;
 import com.bluebell.planter.services.UniqueIdentifierService;
 import com.bluebell.platform.models.api.dto.security.UserDTO;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.context.junit4.SpringRunner;
+
+import java.util.List;
 
 /**
  * Testing class for {@link UserDTOConverter}
  *
  * @author Stephen Prizio
- * @version 0.0.9
+ * @version 0.1.0
  */
 @SpringBootTest
 @RunWith(SpringRunner.class)
-public class UserDTOConverterTest extends AbstractPlanterTest {
+class UserDTOConverterTest extends AbstractPlanterTest {
 
-    @MockBean
+    @MockitoBean
     private AccountDTOConverter accountDTOConverter;
 
-    @MockBean
+    @MockitoBean
     private UniqueIdentifierService uniqueIdentifierService;
 
     @Autowired
     private UserDTOConverter userDTOConverter;
 
-    @Before
-    public void setUp() {
+    @BeforeEach
+    void setUp() {
         Mockito.when(this.accountDTOConverter.convert(any())).thenReturn(generateTestAccountDTO());
         Mockito.when(this.uniqueIdentifierService.generateUid(any())).thenReturn("MTE4");
     }
@@ -45,15 +47,15 @@ public class UserDTOConverterTest extends AbstractPlanterTest {
     //  ----------------- convert -----------------
 
     @Test
-    public void test_convert_success_emptyResult() {
+    void test_convert_success_emptyResult() {
         assertThat(this.userDTOConverter.convert(null))
                 .isNotNull()
                 .satisfies(UserDTO::isEmpty);
 
     }
 
-    /*@Test
-    public void test_convert_success() {
+    @Test
+    void test_convert_success() {
         assertThat(this.userDTOConverter.convert(generateTestUser()))
                 .isNotNull()
                 .extracting("email", "username")
@@ -65,11 +67,11 @@ public class UserDTOConverterTest extends AbstractPlanterTest {
     //  ----------------- convertAll -----------------
 
     @Test
-    public void test_convertAll_success() {
+    void test_convertAll_success() {
         assertThat(this.userDTOConverter.convertAll(List.of(generateTestUser())))
                 .isNotEmpty()
                 .first()
                 .extracting("email", "username")
                 .containsExactly("test@email.com", "s.prizio");
-    }*/
+    }
 }

@@ -9,7 +9,7 @@ import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 import com.bluebell.platform.models.core.entities.account.Account;
 import com.bluebell.platform.models.core.entities.security.User;
-import com.bluebell.radicle.AbstractGenericTest;
+import com.bluebell.AbstractGenericTest;
 import com.bluebell.radicle.importing.exceptions.TradeImportFailureException;
 import com.bluebell.radicle.repositories.account.AccountRepository;
 import com.bluebell.radicle.repositories.security.UserRepository;
@@ -35,7 +35,7 @@ import org.springframework.util.ResourceUtils;
  * Testing for {@link FTMOCsvTradeImportService}
  *
  * @author Stephen Prizio
- * @version 0.0.9
+ * @version 0.1.0
  */
 @SpringBootTest
 @RunWith(SpringRunner.class)

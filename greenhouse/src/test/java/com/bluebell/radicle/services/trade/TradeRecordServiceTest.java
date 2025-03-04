@@ -15,7 +15,7 @@ import com.bluebell.platform.models.core.entities.account.Account;
 import com.bluebell.platform.models.core.entities.security.User;
 import com.bluebell.platform.models.core.entities.trade.Trade;
 import com.bluebell.platform.models.core.nonentities.records.traderecord.controls.TradeRecordControls;
-import com.bluebell.radicle.AbstractGenericTest;
+import com.bluebell.AbstractGenericTest;
 import com.bluebell.radicle.exceptions.trade.TradeRecordComputationException;
 import com.bluebell.radicle.exceptions.validation.IllegalParameterException;
 import org.junit.jupiter.api.BeforeEach;
@@ -24,7 +24,7 @@ import org.junit.runner.RunWith;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.context.junit4.SpringRunner;
 
 /**
@@ -40,7 +40,7 @@ class TradeRecordServiceTest extends AbstractGenericTest {
     @Autowired
     private TradeRecordService tradeRecordService;
 
-    @MockBean
+    @MockitoBean
     private TradeService tradeService;
 
     @BeforeEach

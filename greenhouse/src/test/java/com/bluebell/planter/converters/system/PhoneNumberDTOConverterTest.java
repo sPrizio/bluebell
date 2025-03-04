@@ -1,38 +1,40 @@
 package com.bluebell.planter.converters.system;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.any;
-
 import com.bluebell.planter.AbstractPlanterTest;
 import com.bluebell.planter.services.UniqueIdentifierService;
 import com.bluebell.platform.models.api.dto.system.PhoneNumberDTO;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.context.junit4.SpringRunner;
+
+import java.util.List;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
 
 /**
  * Testing class for {@link PhoneNumberDTOConverter}
  *
  * @author Stephen Prizio
- * @version 0.0.9
+ * @version 0.1.0
  */
 @SpringBootTest
 @RunWith(SpringRunner.class)
-public class PhoneNumberDTOConverterTest extends AbstractPlanterTest {
+class PhoneNumberDTOConverterTest extends AbstractPlanterTest {
 
-    @MockBean
+    @MockitoBean
     private UniqueIdentifierService uniqueIdentifierService;
 
     @Autowired
     private PhoneNumberDTOConverter phoneNumberDTOConverter;
 
-    @Before
-    public void setUp() {
+    @BeforeEach
+    void setUp() {
         Mockito.when(this.uniqueIdentifierService.generateUid(any())).thenReturn("MTE4");
     }
 
@@ -40,15 +42,15 @@ public class PhoneNumberDTOConverterTest extends AbstractPlanterTest {
     //  ----------------- convert -----------------
 
     @Test
-    public void test_convert_success_emptyResult() {
+    void test_convert_success_emptyResult() {
         assertThat(this.phoneNumberDTOConverter.convert(null))
                 .isNotNull()
                 .satisfies(PhoneNumberDTO::isEmpty);
 
     }
 
-    /*@Test
-    public void test_convert_success() {
+    @Test
+    void test_convert_success() {
         assertThat(this.phoneNumberDTOConverter.convert(generateTestPhoneNumber()))
                 .isNotNull()
                 .extracting("phoneType", "countryCode")
@@ -60,11 +62,11 @@ public class PhoneNumberDTOConverterTest extends AbstractPlanterTest {
     //  ----------------- convertAll -----------------
 
     @Test
-    public void test_convertAll_success() {
+    void test_convertAll_success() {
         assertThat(this.phoneNumberDTOConverter.convertAll(List.of(generateTestPhoneNumber())))
                 .isNotEmpty()
                 .first()
                 .extracting("phoneType", "countryCode")
                 .containsExactly("MOBILE", (short) 1);
-    }*/
+    }
 }

@@ -1,4 +1,4 @@
-package com.bluebell.radicle;
+package com.bluebell;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;

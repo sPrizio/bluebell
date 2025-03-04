@@ -13,7 +13,7 @@ import com.bluebell.platform.enums.trade.TradeType;
 import com.bluebell.platform.models.core.entities.account.Account;
 import com.bluebell.platform.models.core.entities.security.User;
 import com.bluebell.platform.models.core.entities.trade.Trade;
-import com.bluebell.radicle.AbstractGenericTest;
+import com.bluebell.AbstractGenericTest;
 import com.bluebell.radicle.exceptions.validation.IllegalParameterException;
 import com.bluebell.radicle.repositories.trade.TradeRepository;
 import org.assertj.core.groups.Tuple;
@@ -23,8 +23,8 @@ import org.junit.runner.RunWith;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.domain.PageImpl;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.context.junit4.SpringRunner;
 
 /**
@@ -47,7 +47,7 @@ class TradeServiceTest extends AbstractGenericTest {
     private final Trade TEST_TRADE_1 = generateTestBuyTrade();
     private final Trade TEST_TRADE_2 = generateTestSellTrade();
 
-    @MockBean
+    @MockitoBean
     private TradeRepository tradeRepository;
 
     @Autowired
