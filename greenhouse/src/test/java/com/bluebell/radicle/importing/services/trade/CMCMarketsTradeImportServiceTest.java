@@ -9,7 +9,7 @@ import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 import com.bluebell.platform.models.core.entities.account.Account;
 import com.bluebell.platform.models.core.entities.security.User;
-import com.bluebell.radicle.AbstractGenericTest;
+import com.bluebell.AbstractGenericTest;
 import com.bluebell.radicle.importing.exceptions.TradeImportFailureException;
 import com.bluebell.radicle.repositories.account.AccountRepository;
 import com.bluebell.radicle.repositories.security.UserRepository;
@@ -17,12 +17,7 @@ import com.bluebell.radicle.repositories.trade.TradeRepository;
 import jakarta.annotation.Resource;
 import jakarta.transaction.Transactional;
 import org.assertj.core.groups.Tuple;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.jupiter.api.MethodOrderer;
-import org.junit.jupiter.api.Order;
-import org.junit.jupiter.api.TestMethodOrder;
+import org.junit.jupiter.api.*;
 import org.junit.runner.RunWith;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -35,13 +30,13 @@ import org.springframework.util.ResourceUtils;
  * Testing class for {@link CMCMarketsTradeImportService}
  *
  * @author Stephen Prizio
- * @version 0.0.9
+ * @version 0.1.0
  */
 @SpringBootTest
 @RunWith(SpringRunner.class)
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
-public class CMCMarketsTradeImportServiceTest extends AbstractGenericTest {
+class CMCMarketsTradeImportServiceTest extends AbstractGenericTest {
 
     private User user;
     private Account account;
@@ -58,16 +53,19 @@ public class CMCMarketsTradeImportServiceTest extends AbstractGenericTest {
     @Resource(name = "userRepository")
     private UserRepository userRepository;
 
-    @Before
-    public void setUp() {
-        account = this.accountRepository.save(generateTestAccount());
+    @BeforeEach
+    void setUp() {
+        final Account acc = generateTestAccount();
+        acc.setId(null);
+        account = this.accountRepository.save(acc);
         user = generateTestUser();
         user.setAccounts(List.of(account));
         user = this.userRepository.save(user);
     }
 
-    @After
-    public void tearDown() {
+    @AfterEach
+    void tearDown() {
+        this.tradeRepository.deleteAll();
         this.accountRepository.delete(account);
         account = null;
 
@@ -81,7 +79,7 @@ public class CMCMarketsTradeImportServiceTest extends AbstractGenericTest {
     @Test
     @Order(1)
     @Transactional
-    public void test_importTrades_failure() {
+    void test_importTrades_failure() {
         assertThatExceptionOfType(TradeImportFailureException.class)
                 .isThrownBy(() -> this.cmcMarketsTradeImportService.importTrades("src/main/resources/testing/NotFound.csv", ';', this.account))
                 .withMessageContaining("The import process failed with reason");
@@ -91,7 +89,7 @@ public class CMCMarketsTradeImportServiceTest extends AbstractGenericTest {
     @Order(2)
     @Transactional
     @WithMockUser(username = "test")
-    public void test_importTrades_success() {
+    void test_importTrades_success() {
 
         this.cmcMarketsTradeImportService.importTrades("classpath:testing/History.csv", ';', this.account);
 
@@ -109,7 +107,7 @@ public class CMCMarketsTradeImportServiceTest extends AbstractGenericTest {
     @Order(3)
     @Transactional
     @WithMockUser(username = "test")
-    public void testImportTrades_success_unchanged() {
+    void testImportTrades_success_unchanged() {
 
         this.cmcMarketsTradeImportService.importTrades("classpath:testing/History.csv", ';', this.account);
         this.cmcMarketsTradeImportService.importTrades("classpath:testing/History.csv", ';', this.account);
@@ -122,7 +120,7 @@ public class CMCMarketsTradeImportServiceTest extends AbstractGenericTest {
     @Order(4)
     @Transactional
     @WithMockUser(username = "test")
-    public void test_importTrades_success_inputStream() throws Exception {
+    void test_importTrades_success_inputStream() throws Exception {
 
         this.cmcMarketsTradeImportService.importTrades(new FileInputStream(ResourceUtils.getFile("classpath:testing/History.csv")), ';', this.account);
 
@@ -139,7 +137,7 @@ public class CMCMarketsTradeImportServiceTest extends AbstractGenericTest {
     @Test
     @Order(5)
     @Transactional
-    public void test_importTrades_dateFailure() {
+    void test_importTrades_dateFailure() {
         assertThatExceptionOfType(TradeImportFailureException.class)
                 .isThrownBy(() -> this.cmcMarketsTradeImportService.importTrades("classpath:testing/History_variable.csv", ';', this.account))
                 .withMessageContaining("The import process failed with reason");
@@ -148,7 +146,7 @@ public class CMCMarketsTradeImportServiceTest extends AbstractGenericTest {
     @Test
     @Order(6)
     @Transactional
-    public void test_importTrades_badData() {
+    void test_importTrades_badData() {
         assertThatExceptionOfType(TradeImportFailureException.class)
                 .isThrownBy(() -> this.cmcMarketsTradeImportService.importTrades("classpath:testing/History_bad.csv", ';', this.account))
                 .withMessageContaining("The import process failed with reason");

@@ -22,9 +22,9 @@ class DirectoryUtilTest {
     @Test
     void test_getOutputDirectory_success() {
 
-        assertThatExceptionOfType(DirectoryNotFoundException.class).isThrownBy(() -> DirectoryUtil.getOutputDirectory("test", "platform", false));
+        assertThatExceptionOfType(DirectoryNotFoundException.class).isThrownBy(() -> DirectoryUtil.getOutputDirectory("test", false));
 
-        final String directoryPath = DirectoryUtil.getOutputDirectory("output", "platform", true);
+        final String directoryPath = DirectoryUtil.getOutputDirectory("test-output", true);
         File directory = new File(directoryPath);
 
         assertThat(directory).exists();
@@ -35,7 +35,7 @@ class DirectoryUtilTest {
 
     @Test
     void test_getOutputDirectory_fallbackToCom() {
-        assertThatExceptionOfType(DirectoryNotFoundException.class).isThrownBy(() -> DirectoryUtil.getOutputDirectory("test", "non-existing-root", false));
+        assertThatExceptionOfType(DirectoryNotFoundException.class).isThrownBy(() -> DirectoryUtil.getOutputDirectory("test", false));
     }
 
 

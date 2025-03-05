@@ -1,4 +1,4 @@
-package com.bluebell.radicle;
+package com.bluebell;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -104,6 +104,7 @@ public abstract class AbstractGenericTest {
         account.setBroker(Broker.CMC_MARKETS);
         account.setTradePlatform(TradePlatform.CMC_MARKETS);
         account.setLastTraded(LocalDateTime.of(2022, 8, 24, 11, 37, 24));
+        account.setTransactions(List.of());
 
         return account;
     }

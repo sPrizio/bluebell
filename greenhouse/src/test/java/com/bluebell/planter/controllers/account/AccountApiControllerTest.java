@@ -28,8 +28,8 @@ import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -44,13 +44,13 @@ import org.springframework.test.web.servlet.MockMvc;
 @RunWith(SpringRunner.class)
 class AccountApiControllerTest extends AbstractPlanterTest {
 
-    @MockBean
+    @MockitoBean
     private AccountDTOConverter accountDTOConverter;
 
-    @MockBean
+    @MockitoBean
     private AccountService accountService;
 
-    @MockBean
+    @MockitoBean
     private UniqueIdentifierService uniqueIdentifierService;
 
     @Autowired
@@ -65,6 +65,7 @@ class AccountApiControllerTest extends AbstractPlanterTest {
         Mockito.when(this.accountService.findAccountByAccountNumber(1234)).thenReturn(Optional.of(new Account()));
         Mockito.when(this.accountService.findAccountByAccountNumber(5678)).thenReturn(Optional.empty());
         Mockito.when(this.accountService.deleteAccount(any())).thenReturn(true);
+        Mockito.when(this.accountService.getAccountDetails(any())).thenReturn(generateAccountDetails());
     }
 
 
@@ -105,6 +106,27 @@ class AccountApiControllerTest extends AbstractPlanterTest {
         this.mockMvc.perform(get("/api/v1/account/trade-platforms"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.data[0].code", is(TradePlatform.values()[0].getCode())));
+    }
+
+
+    //  ----------------- getDetails -----------------
+
+    @Test
+    void test_getDetails_missingAccount() throws Exception {
+        this.mockMvc.perform(get("/api/v1/account/get-details")
+                        .queryParam("accountNumber", "5678")
+                )
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.message", containsString("No account was found for account number")));
+    }
+
+    @Test
+    void test_getDetails_success() throws Exception {
+        this.mockMvc.perform(get("/api/v1/account/get-details")
+                        .queryParam("accountNumber", "1234")
+                )
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.data.consistency", is(91)));
     }
 
 

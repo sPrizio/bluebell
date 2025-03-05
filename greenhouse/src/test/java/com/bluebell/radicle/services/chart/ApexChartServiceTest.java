@@ -7,7 +7,7 @@ import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
 
 import com.bluebell.platform.constants.CorePlatformConstants;
 import com.bluebell.platform.enums.chart.IntradayInterval;
-import com.bluebell.radicle.AbstractGenericTest;
+import com.bluebell.AbstractGenericTest;
 import com.bluebell.radicle.exceptions.validation.IllegalParameterException;
 import com.bluebell.radicle.services.chart.impl.ApexChartService;
 import org.junit.jupiter.api.Test;

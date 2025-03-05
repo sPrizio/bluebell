@@ -9,7 +9,7 @@ import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 import com.bluebell.platform.models.core.entities.account.Account;
 import com.bluebell.platform.models.core.entities.security.User;
-import com.bluebell.radicle.AbstractGenericTest;
+import com.bluebell.AbstractGenericTest;
 import com.bluebell.radicle.importing.exceptions.TradeImportFailureException;
 import com.bluebell.radicle.repositories.account.AccountRepository;
 import com.bluebell.radicle.repositories.security.UserRepository;
@@ -54,18 +54,20 @@ class MetaTrader4StrategyImportServiceTest extends AbstractGenericTest {
     private UserRepository userRepository;
 
     @BeforeEach
-    public void setUp() {
-        account = this.accountRepository.save(generateTestAccount());
+    void setUp() {
+        final Account acc = generateTestAccount();
+        acc.setId(null);
+        account = this.accountRepository.save(acc);
         user = generateTestUser();
         user.setAccounts(List.of(account));
         user = this.userRepository.save(user);
     }
 
     @AfterEach
-    public void tearDown() {
+    void tearDown() {
+        this.tradeRepository.deleteAll();
         this.accountRepository.deleteAll();
         this.userRepository.deleteAll();
-        this.tradeRepository.deleteAll();
     }
 
 

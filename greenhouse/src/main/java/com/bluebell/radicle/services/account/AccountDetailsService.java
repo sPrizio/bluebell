@@ -112,7 +112,9 @@ public class AccountDetailsService {
         final double maxProfit = cumulativeTrades.stream().mapToDouble(CumulativeTrade::netProfit).max().orElse(0.0);
 
         final Map<LocalDate, Trade> map = new HashMap<>();
-        account.getTrades().forEach(tr -> map.put(tr.getTradeOpenTime().toLocalDate(), tr));
+        if (CollectionUtils.isNotEmpty(account.getTrades())) {
+            account.getTrades().forEach(tr -> map.put(tr.getTradeOpenTime().toLocalDate(), tr));
+        }
 
         return new AccountInsights(
                 map.size(),

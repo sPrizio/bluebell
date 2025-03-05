@@ -105,7 +105,7 @@ public class StrategyReportingService<S extends Strategy<P>, P extends BasicStra
      */
     protected String getContentRoot(final String root) {
 
-        String result = DirectoryUtil.getOutputDirectory(String.format("output%s%s%s", File.separator, root, File.separator), "anther", true);
+        String result = DirectoryUtil.getOutputDirectory(String.format("output%s%s%s", File.separator, root, File.separator), true);
         if (this.strategy.isAssignableFrom(Bloom.class)) {
             result += "bloom" + File.separator;
         } else if (this.strategy.isAssignableFrom(Sprout.class)) {

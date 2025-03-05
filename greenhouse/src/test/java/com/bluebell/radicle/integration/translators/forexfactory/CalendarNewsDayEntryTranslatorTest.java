@@ -2,7 +2,7 @@ package com.bluebell.radicle.integration.translators.forexfactory;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import com.bluebell.radicle.AbstractGenericTest;
+import com.bluebell.AbstractGenericTest;
 import com.bluebell.radicle.integration.models.dto.forexfactory.CalendarNewsDayEntryDTO;
 import org.junit.jupiter.api.Test;
 

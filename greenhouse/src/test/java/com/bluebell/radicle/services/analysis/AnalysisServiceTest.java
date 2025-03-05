@@ -11,7 +11,7 @@ import com.bluebell.platform.enums.analysis.TradeDurationFilter;
 import com.bluebell.platform.enums.time.PlatformTimeInterval;
 import com.bluebell.platform.models.core.entities.account.Account;
 import com.bluebell.platform.models.core.entities.trade.Trade;
-import com.bluebell.radicle.AbstractGenericTest;
+import com.bluebell.AbstractGenericTest;
 import com.bluebell.radicle.exceptions.validation.IllegalParameterException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

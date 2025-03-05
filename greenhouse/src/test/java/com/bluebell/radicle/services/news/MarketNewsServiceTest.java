@@ -12,7 +12,7 @@ import static org.mockito.ArgumentMatchers.any;
 import com.bluebell.platform.constants.CorePlatformConstants;
 import com.bluebell.platform.enums.news.MarketNewsSeverity;
 import com.bluebell.platform.enums.system.Country;
-import com.bluebell.radicle.AbstractGenericTest;
+import com.bluebell.AbstractGenericTest;
 import com.bluebell.radicle.exceptions.validation.IllegalParameterException;
 import com.bluebell.radicle.integration.models.dto.forexfactory.CalendarNewsDayDTO;
 import com.bluebell.radicle.integration.models.dto.forexfactory.CalendarNewsDayEntryDTO;
@@ -25,7 +25,7 @@ import org.junit.runner.RunWith;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.context.junit4.SpringRunner;
 
 /**
@@ -41,13 +41,13 @@ class MarketNewsServiceTest extends AbstractGenericTest {
     @Autowired
     private MarketNewsService marketNewsService;
 
-    @MockBean
+    @MockitoBean
     private MarketNewsRepository marketNewsRepository;
 
-    @MockBean
+    @MockitoBean
     private MarketNewsSlotRepository marketNewsSlotRepository;
 
-    @MockBean
+    @MockitoBean
     private ForexFactoryIntegrationService forexFactoryIntegrationService;
 
     @BeforeEach

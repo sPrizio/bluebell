@@ -13,7 +13,7 @@ import static org.mockito.ArgumentMatchers.anyString;
 import com.bluebell.platform.constants.CorePlatformConstants;
 import com.bluebell.platform.enums.account.AccountType;
 import com.bluebell.platform.enums.trade.TradeType;
-import com.bluebell.radicle.AbstractGenericTest;
+import com.bluebell.AbstractGenericTest;
 import com.bluebell.radicle.exceptions.system.EntityCreationException;
 import com.bluebell.radicle.exceptions.system.EntityModificationException;
 import com.bluebell.radicle.exceptions.validation.IllegalParameterException;
@@ -27,7 +27,7 @@ import org.junit.runner.RunWith;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.context.junit4.SpringRunner;
 
 /**
@@ -40,20 +40,20 @@ import org.springframework.test.context.junit4.SpringRunner;
 @RunWith(SpringRunner.class)
 class AccountServiceTest extends AbstractGenericTest {
 
-    @MockBean
+    @MockitoBean
     private AccountRepository accountRepository;
 
-    @MockBean
+    @MockitoBean
     private TradeService tradeService;
 
-    @MockBean
+    @MockitoBean
     private UserService userService;
 
     @Autowired
     private AccountService accountService;
 
     @BeforeEach
-    public void setUp() {
+    void setUp() {
         Mockito.when(this.tradeService.findAllByTradeType(TradeType.PROMOTIONAL_PAYMENT, generateTestAccount())).thenReturn(List.of(generateTestBuyTrade()));
         Mockito.when(this.accountRepository.findAccountByAccountNumber(1234L)).thenReturn(generateTestAccount());
         Mockito.when(this.accountRepository.findAccountByAccountNumber(-1L)).thenReturn(null);

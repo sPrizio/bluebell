@@ -1,36 +1,60 @@
 package com.bluebell.planter.controllers.trade;
 
+import java.util.List;
+import java.util.Optional;
+
+import static org.hamcrest.Matchers.containsString;
+import static org.hamcrest.Matchers.is;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyInt;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
 import com.bluebell.planter.AbstractPlanterTest;
+import com.bluebell.planter.constants.ApiConstants;
 import com.bluebell.planter.services.UniqueIdentifierService;
+import com.bluebell.platform.enums.trade.TradeType;
+import com.bluebell.platform.models.core.entities.account.Account;
+import com.bluebell.platform.models.core.entities.trade.Trade;
 import com.bluebell.radicle.importing.services.trade.GenericTradeImportService;
 import com.bluebell.radicle.services.trade.TradeService;
-import org.junit.Before;
+import org.apache.commons.lang3.StringUtils;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.context.WebApplicationContext;
 
 /**
  * Testing class for {@link TradeApiController}
  *
  * @author Stephen Prizio
- * @version 0.0.9
+ * @version 0.1.0
  */
 @SpringBootTest
 @AutoConfigureMockMvc(addFilters = false)
 @RunWith(SpringRunner.class)
-public class TradeApiControllerTest extends AbstractPlanterTest {
+class TradeApiControllerTest extends AbstractPlanterTest {
 
-    /*private final Account TEST_ACCOUNT = generateTestAccount();
+    private final Account TEST_ACCOUNT = generateTestAccount();
 
     private final Trade TEST_TRADE_1 = generateTestBuyTrade();
-    private final Trade TEST_TRADE_2 = generateTestSellTrade();*/
+    private final Trade TEST_TRADE_2 = generateTestSellTrade();
 
     private final MockMultipartFile TEST_FILE = new MockMultipartFile("file", "hello.csv", MediaType.TEXT_PLAIN_VALUE, "Hello, World!".getBytes());
     private final MockMultipartFile TEST_FILE2 = new MockMultipartFile("file", "hello.txt", MediaType.TEXT_PLAIN_VALUE, "Hello, World!".getBytes());
@@ -38,33 +62,33 @@ public class TradeApiControllerTest extends AbstractPlanterTest {
     @Autowired
     private MockMvc mockMvc;
 
-    @MockBean
+    @MockitoBean
     private GenericTradeImportService genericTradeImportService;
 
     @Autowired
     private WebApplicationContext webApplicationContext;
 
-    @MockBean
+    @MockitoBean
     private TradeService tradeService;
 
-    @MockBean
+    @MockitoBean
     private UniqueIdentifierService uniqueIdentifierService;
 
-    @Before
+    @BeforeEach
     public void setUp() {
-        /*Mockito.when(this.genericTradeImportService.importTrades(any(), any())).thenReturn(StringUtils.EMPTY);
+        Mockito.when(this.genericTradeImportService.importTrades(any(), any())).thenReturn(StringUtils.EMPTY);
         Mockito.when(this.tradeService.findAllByTradeType(TradeType.BUY, TEST_ACCOUNT)).thenReturn(List.of(TEST_TRADE_1));
         Mockito.when(this.tradeService.findAllTradesWithinTimespan(any(), any(), any())).thenReturn(List.of(TEST_TRADE_1, TEST_TRADE_2));
         Mockito.when(this.tradeService.findTradeByTradeId("testId1", TEST_ACCOUNT)).thenReturn(Optional.of(TEST_TRADE_1));
         Mockito.when(this.uniqueIdentifierService.generateUid(any())).thenReturn("MTE4");
-        Mockito.when(this.tradeService.findAllTradesWithinTimespan(any(), any(), any(), anyInt(), anyInt())).thenReturn(new PageImpl<>(List.of(generateTestBuyTrade(), generateTestSellTrade()), Pageable.ofSize(10), 10));*/
+        Mockito.when(this.tradeService.findAllTradesWithinTimespan(any(), any(), any(), anyInt(), anyInt())).thenReturn(new PageImpl<>(List.of(generateTestBuyTrade(), generateTestSellTrade()), Pageable.ofSize(10), 10));
     }
 
 
     //  ----------------- getTradesForTradeType -----------------
 
-    /*@Test
-    public void test_getTradesForTradeType_badRequest() throws Exception {
+    @Test
+    void test_getTradesForTradeType_badRequest() throws Exception {
 
         MultiValueMap<String, String> map = new LinkedMultiValueMap<>();
         map.put("accountNumber", List.of("1234"));
@@ -76,7 +100,7 @@ public class TradeApiControllerTest extends AbstractPlanterTest {
     }
 
     @Test
-    public void test_getTradesForTradeType_success() throws Exception {
+    void test_getTradesForTradeType_success() throws Exception {
 
         MultiValueMap<String, String> map = new LinkedMultiValueMap<>();
         map.put("accountNumber", List.of("1234"));
@@ -93,7 +117,7 @@ public class TradeApiControllerTest extends AbstractPlanterTest {
     //  ----------------- getTradesWithinInterval -----------------
 
     @Test
-    public void test_getTradesWithinInterval_missingParamStart() throws Exception {
+    void test_getTradesWithinInterval_missingParamStart() throws Exception {
 
         MultiValueMap<String, String> map = new LinkedMultiValueMap<>();
         map.put("accountNumber", List.of("1234"));
@@ -106,7 +130,7 @@ public class TradeApiControllerTest extends AbstractPlanterTest {
     }
 
     @Test
-    public void test_getTradesWithinInterval_missingParamEnd() throws Exception {
+    void test_getTradesWithinInterval_missingParamEnd() throws Exception {
 
         MultiValueMap<String, String> map = new LinkedMultiValueMap<>();
         map.put("accountNumber", List.of("1234"));
@@ -119,7 +143,7 @@ public class TradeApiControllerTest extends AbstractPlanterTest {
     }
 
     @Test
-    public void test_getTradesWithinInterval_success() throws Exception {
+    void test_getTradesWithinInterval_success() throws Exception {
 
         MultiValueMap<String, String> map = new LinkedMultiValueMap<>();
         map.put("accountNumber", List.of("1234"));
@@ -137,7 +161,7 @@ public class TradeApiControllerTest extends AbstractPlanterTest {
     //  ----------------- getTradesWithinIntervalPaged -----------------
 
     @Test
-    public void test_getTradesWithinIntervalPaged_success() throws Exception {
+    void test_getTradesWithinIntervalPaged_success() throws Exception {
 
         MultiValueMap<String, String> map = new LinkedMultiValueMap<>();
         map.put("start", List.of("2022-08-24T00:00:00"));
@@ -157,7 +181,7 @@ public class TradeApiControllerTest extends AbstractPlanterTest {
     //  ----------------- getTradeForTradeId -----------------
 
     @Test
-    public void test_getTradeForTradeId_missingParamTradeId() throws Exception {
+    void test_getTradeForTradeId_missingParamTradeId() throws Exception {
 
         MultiValueMap<String, String> map = new LinkedMultiValueMap<>();
         map.put("tradeId", List.of("asdasdad"));
@@ -169,7 +193,7 @@ public class TradeApiControllerTest extends AbstractPlanterTest {
     }
 
     @Test
-    public void test_getTradeForTradeId_success() throws Exception {
+    void test_getTradeForTradeId_success() throws Exception {
 
         MultiValueMap<String, String> map = new LinkedMultiValueMap<>();
         map.put("tradeId", List.of("testId1"));
@@ -184,7 +208,7 @@ public class TradeApiControllerTest extends AbstractPlanterTest {
     //  ----------------- postImportTrades -----------------
 
     @Test
-    public void test_postImportTrades_success() throws Exception {
+    void test_postImportTrades_success() throws Exception {
         MockMvc mockMvc1 = MockMvcBuilders.webAppContextSetup(this.webApplicationContext).build();
 
         MultiValueMap<String, String> map = new LinkedMultiValueMap<>();
@@ -194,5 +218,5 @@ public class TradeApiControllerTest extends AbstractPlanterTest {
         mockMvc1.perform(MockMvcRequestBuilders.multipart("/api/v1/trade/import-trades").file(TEST_FILE).with(testUserContext()).params(map))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.data", is(true)));
-    }*/
+    }
 }

@@ -30,7 +30,7 @@ import org.springframework.web.bind.annotation.*;
  * Controller for {@link AnalysisService}
  *
  * @author Stephen Prizio
- * @version 0.0.9
+ * @version 0.1.0
  */
 @RestController
 @RequestMapping("${base.api.controller.endpoint}/analysis")
@@ -94,7 +94,7 @@ public class AnalysisApiController extends AbstractApiController {
             )
     )
     @GetMapping("/time-buckets")
-    public StandardJsonResponse<List<AnalysisResult>> getTimBucketsAnalysis(
+    public StandardJsonResponse<List<AnalysisResult>> getTimeBucketsAnalysis(
             final @RequestParam("accountNumber") long accountNumber,
             final @RequestParam("filter") String filter,
             final @RequestParam("isOpened") boolean isOpened,
@@ -220,7 +220,7 @@ public class AnalysisApiController extends AbstractApiController {
             )
     )
     @GetMapping("/weekdays-time-buckets")
-    public StandardJsonResponse<List<AnalysisResult>> getTimBucketsAnalysis(
+    public StandardJsonResponse<List<AnalysisResult>> getWeekdayTimeBucketsAnalysis(
             final @RequestParam("accountNumber") long accountNumber,
             final @RequestParam("filter") String filter,
             final @RequestParam("weekday") String weekday,

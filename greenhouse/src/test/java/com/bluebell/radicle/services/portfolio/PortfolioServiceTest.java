@@ -7,7 +7,7 @@ import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 import com.bluebell.platform.models.core.entities.security.User;
 import com.bluebell.platform.models.core.nonentities.records.portfolio.Portfolio;
-import com.bluebell.radicle.AbstractGenericTest;
+import com.bluebell.AbstractGenericTest;
 import com.bluebell.radicle.exceptions.validation.IllegalParameterException;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;

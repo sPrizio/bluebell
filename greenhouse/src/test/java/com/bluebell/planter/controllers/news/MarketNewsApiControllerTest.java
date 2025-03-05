@@ -1,6 +1,7 @@
 package com.bluebell.planter.controllers.news;
 
 import java.util.List;
+import java.util.Optional;
 
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.is;
@@ -14,15 +15,15 @@ import com.bluebell.planter.AbstractPlanterTest;
 import com.bluebell.planter.services.UniqueIdentifierService;
 import com.bluebell.platform.enums.system.Country;
 import com.bluebell.radicle.services.news.MarketNewsService;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.util.LinkedMultiValueMap;
@@ -32,34 +33,34 @@ import org.springframework.util.MultiValueMap;
  * Testing class for {@link MarketNewsApiController}
  *
  * @author Stephen Prizio
- * @version 0.0.9
+ * @version 0.1.0
  */
 @SpringBootTest
 @AutoConfigureMockMvc(addFilters = false)
 @RunWith(SpringRunner.class)
-public class MarketNewsApiControllerTest extends AbstractPlanterTest {
+class MarketNewsApiControllerTest extends AbstractPlanterTest {
 
     @Autowired
     private MockMvc mockMvc;
 
-    @MockBean
+    @MockitoBean
     private MarketNewsService marketNewsService;
 
-    @MockBean
+    @MockitoBean
     private UniqueIdentifierService uniqueIdentifierService;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         Mockito.when(this.uniqueIdentifierService.generateUid(any())).thenReturn("MTE4");
-        /*Mockito.when(this.marketNewsService.findNewsWithinInterval(any(), any(), any())).thenReturn(List.of(generateMarketNews()));
-        Mockito.when(this.marketNewsService.findMarketNewsForDate(any())).thenReturn(Optional.of(generateMarketNews()));*/
+        Mockito.when(this.marketNewsService.findNewsWithinInterval(any(), any(), any())).thenReturn(List.of(generateMarketNews()));
+        Mockito.when(this.marketNewsService.findMarketNewsForDate(any())).thenReturn(Optional.of(generateMarketNews()));
     }
 
 
     //  ----------------- getNews -----------------
 
     @Test
-    public void test_getNews_badRequest() throws Exception {
+    void test_getNews_badRequest() throws Exception {
 
         MultiValueMap<String, String> map = new LinkedMultiValueMap<>();
         map.put("date", List.of("BAD"));
@@ -70,7 +71,7 @@ public class MarketNewsApiControllerTest extends AbstractPlanterTest {
     }
 
     @Test
-    public void test_getNews_success() throws Exception {
+    void test_getNews_success() throws Exception {
 
         MultiValueMap<String, String> map = new LinkedMultiValueMap<>();
         map.put("date", List.of("2023-01-21"));
@@ -84,7 +85,7 @@ public class MarketNewsApiControllerTest extends AbstractPlanterTest {
     //  ----------------- getNewsForInterval -----------------
 
     @Test
-    public void test_getNewsForInterval_badRequest() throws Exception {
+    void test_getNewsForInterval_badRequest() throws Exception {
 
         MultiValueMap<String, String> map = new LinkedMultiValueMap<>();
         map.put("start", List.of("BAD"));
@@ -97,7 +98,7 @@ public class MarketNewsApiControllerTest extends AbstractPlanterTest {
     }
 
     @Test
-    public void test_getNewsForInterval_success() throws Exception {
+    void test_getNewsForInterval_success() throws Exception {
 
         MultiValueMap<String, String> map = new LinkedMultiValueMap<>();
         map.put("start", List.of("2023-01-16"));
@@ -113,7 +114,7 @@ public class MarketNewsApiControllerTest extends AbstractPlanterTest {
     //  ----------------- postFetchNews -----------------
 
     @Test
-    public void test_postFetchNews_failure() throws Exception {
+    void test_postFetchNews_failure() throws Exception {
         Mockito.when(this.marketNewsService.fetchMarketNews()).thenReturn(false);
         this.mockMvc.perform(post("/api/v1/news/fetch-news").contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
@@ -121,7 +122,7 @@ public class MarketNewsApiControllerTest extends AbstractPlanterTest {
     }
 
     @Test
-    public void test_postFetchNews_success() throws Exception {
+    void test_postFetchNews_success() throws Exception {
         Mockito.when(this.marketNewsService.fetchMarketNews()).thenReturn(true);
         this.mockMvc.perform(post("/api/v1/news/fetch-news").contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
