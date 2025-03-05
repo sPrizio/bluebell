@@ -29,23 +29,6 @@ Current Release: **Pre-release**
 
 ---
 
-### Todo List
-
-N/A
-
----
-
-### Improvements
-- (0.1.0) : Change testing code to Jupiter
-- (0.1.0) : Mockbean has supposedly been deprecated?
-- (0.1.1) : Add @Api documentation for Swagger in Controller endpoints. Make it look nice (look into unknown controllers being rendered), document api parameters, all DTOs should have @Schema
-- (0.1.1) : CronJob to auto fetch news every late Sunday evening
-- (0.1.1) : Improve code using better Lombok, look into builders
-- (0.1.7) : Improve ApexChart service to select data, parsers etc...
-- (0.1.8) : Improve Trade import service to include withdrawals and deposits (for withdrawal example, look at live CFD account)
-- (0.1.8) : Accounts that have not been traded on for 1 calendar year should be marked as inactive (use a cronjob for this)
----
-
 ### Version History
 - **0.0.1** : Basic data modeling & Trade Import feature. Allows users with multiple trading accounts to import trades into their accounts from supported brokers.
 - **0.0.2** : API Controller Authentication
@@ -57,11 +40,11 @@ N/A
 - **0.0.8** : Import FTMO Results
 - **0.0.9** : Major Code Improvements & Refactoring
 - **0.1.0** : (In Progress) Major Testing Refactoring and Coverage Improvements
-- **0.1.1** : (Upcoming) Improve Api Documentation, Improve Lombok usage, Cronjob for fetching Market News, Refactor controller endpoints to use pojo's instead of Maps for Request Objects (Look into OpenAPI)
-- **0.1.2** : (Upcoming) Refactoring of Portfolios and Account Details (work with sepal) including page for managing portfolios, selector for active portfolio, CRUD
-- **0.1.3** : (Upcoming) Dockerize App (including front-end)
-- **0.1.4** : (Upcoming) Store Market data from MT4 and FirstRateData into database
-- **0.1.5** : (Upcoming) Automate fetching market data
-- **0.1.6** : (Upcoming) Automate fetching account trades from MT4 (possibly using an API)
-- **0.1.7** : (Upcoming) Improve ApexChart service to select data, parsers etc...
-- **0.1.8** : (Upcoming) Improve Trade import service to include withdrawals and deposits (for withdrawal example, look at live CFD account), Accounts that have not been traded on for 1 calendar year should be marked as inactive (use a cronjob for this)
+- **0.1.1** : (Planned) Improve Api Documentation, Improve Lombok usage, Cronjob for fetching Market News, Refactor controller endpoints to use pojo's instead of Maps for Request Objects (Look into OpenAPI)
+- **0.1.2** : (Planned) Refactoring of Portfolios and Account Details (work with sepal) including page for managing portfolios, selector for active portfolio, CRUD
+- **0.1.3** : (Planned) Dockerize App (including front-end)
+- **0.1.4** : (Planned) Store Market data from MT4 and FirstRateData into database
+- **0.1.5** : (Planned) Automate fetching market data
+- **0.1.6** : (Planned) Automate fetching account trades from MT4 (possibly using an API)
+- **0.1.7** : (Planned) Improve ApexChart service to select data, parsers etc...
+- **0.1.8** : (Planned) Improve Trade import service to include withdrawals and deposits (for withdrawal example, look at live CFD account), Accounts that have not been traded on for 1 calendar year should be marked as inactive (use a cronjob for this)
