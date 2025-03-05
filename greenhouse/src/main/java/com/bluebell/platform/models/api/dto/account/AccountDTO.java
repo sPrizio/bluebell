@@ -8,22 +8,25 @@ import com.bluebell.platform.models.api.dto.transaction.TransactionDTO;
 import com.bluebell.platform.models.core.entities.account.Account;
 import com.bluebell.platform.models.core.nonentities.data.EnumDisplay;
 import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * A DTO representation for {@link Account}
  *
  * @author Stephen Prizio
- * @version 0.0.9
+ * @version 0.1.1
  */
-@Setter
 @Getter
+@Setter
+@Builder
 @Schema(title = "AccountDTO", name = "AccountDTO", description = "A client-facing reduction of the Account entity that displays key account information in a safe to read way.")
 public class AccountDTO implements GenericDTO {
 
     @Schema(description = "Account uid")
-    private String uid;
+    private @Builder.Default String uid = StringUtils.EMPTY;
 
     @Schema(description = "Is the account the default account for the portfolio")
     private boolean defaultAccount;

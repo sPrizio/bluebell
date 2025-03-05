@@ -4,6 +4,7 @@ package com.bluebell.platform.models.api.dto.trade;
 import java.util.List;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.Builder;
 import lombok.Getter;
 
 /**
@@ -15,8 +16,9 @@ import lombok.Getter;
  * @param totalElements total trades count
  * @param totalPages    number of pages
  * @author Stephen Prizio
- * @version 0.0.9
+ * @version 0.1.1
  */
+@Builder
 @Schema(title = "PaginatedTradesDTO", name = "PaginatedTradesDTO", description = "Data representation of a collection of trades organized by page")
 public record PaginatedTradesDTO(
         @Getter @Schema(description = "Current page") int page,

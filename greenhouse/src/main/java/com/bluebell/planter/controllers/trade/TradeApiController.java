@@ -40,7 +40,7 @@ import org.springframework.web.multipart.MultipartFile;
  * Api controller for {@link Trade}
  *
  * @author Stephen Prizio
- * @version 0.0.9
+ * @version 0.1.1
  */
 @RestController
 @RequestMapping("${base.api.controller.endpoint}/trade")
@@ -251,7 +251,18 @@ public class TradeApiController extends AbstractApiController {
 
         final User user = (User) request.getAttribute(SecurityConstants.USER_REQUEST_KEY);
         Page<Trade> trades = this.tradeService.findAllTradesWithinTimespan(LocalDateTime.parse(start, DateTimeFormatter.ISO_DATE_TIME), LocalDateTime.parse(end, DateTimeFormatter.ISO_DATE_TIME), getAccountForId(user, accountNumber), page, pageSize);
-        return new StandardJsonResponse<>(true, new PaginatedTradesDTO(trades.getPageable().getPageNumber(), trades.getPageable().getPageSize(), trades.map(tr -> this.tradeDTOConverter.convert(tr)).stream().toList(), trades.getNumberOfElements(), trades.getTotalPages()), StringUtils.EMPTY);
+        return new StandardJsonResponse<>(
+                true,
+                PaginatedTradesDTO
+                        .builder()
+                        .page(trades.getPageable().getPageNumber())
+                        .pageSize(trades.getPageable().getPageSize())
+                        .trades(trades.map(tr -> this.tradeDTOConverter.convert(tr)).stream().toList())
+                        .totalElements(trades.getNumberOfElements())
+                        .totalPages(trades.getTotalPages())
+                        .build(),
+                StringUtils.EMPTY
+        );
     }
 
 
@@ -293,7 +304,7 @@ public class TradeApiController extends AbstractApiController {
         final User user = (User) request.getAttribute(SecurityConstants.USER_REQUEST_KEY);
         Optional<Trade> trade = this.tradeService.findTradeByTradeId(tradeId, getAccountForId(user, accountNumber));
         validateIfPresent(trade, "No trade was found with trade id: %s", tradeId);
-        return trade.map(value -> new StandardJsonResponse<>(true, this.tradeDTOConverter.convert(value), StringUtils.EMPTY)).orElseGet(() -> new StandardJsonResponse<>(true, new TradeDTO(), StringUtils.EMPTY));
+        return trade.map(value -> new StandardJsonResponse<>(true, this.tradeDTOConverter.convert(value), StringUtils.EMPTY)).orElseGet(() -> new StandardJsonResponse<>(true, TradeDTO.builder().build(), StringUtils.EMPTY));
     }
 
 

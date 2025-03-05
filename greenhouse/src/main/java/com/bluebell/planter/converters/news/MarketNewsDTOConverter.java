@@ -14,7 +14,7 @@ import org.springframework.stereotype.Component;
  * Converter that converts {@link MarketNews} into {@link MarketNewsDTO}s
  *
  * @author Stephen Prizio
- * @version 0.0.9
+ * @version 0.1.1
  */
 @Component("marketNewsDTOConverter")
 public class MarketNewsDTOConverter implements GenericDTOConverter<MarketNews, MarketNewsDTO> {
@@ -32,17 +32,19 @@ public class MarketNewsDTOConverter implements GenericDTOConverter<MarketNews, M
     public MarketNewsDTO convert(final MarketNews entity) {
 
         if (entity == null) {
-            return new MarketNewsDTO();
+            return MarketNewsDTO.builder().build();
         }
 
-        final MarketNewsDTO marketNewsDTO = new MarketNewsDTO();
-
-        marketNewsDTO.setUid(this.uniqueIdentifierService.generateUid(entity));
-        marketNewsDTO.setDate(entity.getDate());
-        marketNewsDTO.setPast(entity.getDate().isBefore(LocalDate.now()));
-        marketNewsDTO.setActive(entity.getDate().isEqual(LocalDate.now()));
-        marketNewsDTO.setFuture(entity.getDate().isAfter(LocalDate.now()));
-        marketNewsDTO.setSlots(this.marketNewsSlotDTOConverter.convertAll(entity.getSlots()));
+        final MarketNewsDTO marketNewsDTO =
+                MarketNewsDTO
+                        .builder()
+                        .uid(this.uniqueIdentifierService.generateUid(entity))
+                        .date(entity.getDate())
+                        .past(entity.getDate().isBefore(LocalDate.now()))
+                        .active(entity.getDate().isEqual(LocalDate.now()))
+                        .future(entity.getDate().isAfter(LocalDate.now()))
+                        .slots(this.marketNewsSlotDTOConverter.convertAll(entity.getSlots()))
+                        .build();
 
         final LocalDateTime now = LocalDateTime.now();
         if (now.toLocalDate().isEqual(entity.getDate())) {

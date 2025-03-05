@@ -35,7 +35,7 @@ import org.springframework.test.web.servlet.request.RequestPostProcessor;
  * Parent-level testing class to provide testing assistance for planter
  *
  * @author Stephen Prizio
- * @version 0.1.0
+ * @version 0.1.1
  */
 public abstract class AbstractPlanterTest extends AbstractGenericTest {
 
@@ -127,17 +127,15 @@ public abstract class AbstractPlanterTest extends AbstractGenericTest {
      * @return {@link TransactionDTO}
      */
     public TransactionDTO generateTransactionDTO() {
-
-        final TransactionDTO transactionDTO = new TransactionDTO();
-
-        transactionDTO.setUid("MTE4");
-        transactionDTO.setTransactionType(new EnumDisplay(TransactionType.DEPOSIT.getCode(), TransactionType.DEPOSIT.getLabel()));
-        transactionDTO.setTransactionDate(LocalDateTime.of(2025, 3, 4, 11, 12, 13));
-        transactionDTO.setName("Test");
-        transactionDTO.setTransactionStatus(new EnumDisplay(TransactionStatus.COMPLETED.getCode(), TransactionStatus.COMPLETED.getLabel()));
-        transactionDTO.setAmount(1563.66);
-
-        return transactionDTO;
+        return TransactionDTO
+                .builder()
+                .uid("MTE4")
+                .transactionType(new EnumDisplay(TransactionType.DEPOSIT.getCode(), TransactionType.DEPOSIT.getLabel()))
+                .transactionDate(LocalDateTime.of(2025, 3, 4, 11, 12, 13))
+                .name("Test")
+                .transactionStatus(new EnumDisplay(TransactionStatus.COMPLETED.getCode(), TransactionStatus.COMPLETED.getLabel()))
+                .amount(1563.66)
+                .build();
     }
 
     /**
@@ -190,26 +188,27 @@ public abstract class AbstractPlanterTest extends AbstractGenericTest {
      * Generates a test deposit {@link Transaction}
      *
      * @return {@link Transaction}
+     */
     public Transaction generateTestDepositTransaction() {
 
-    Transaction transaction = new Transaction();
+        Transaction transaction = new Transaction();
 
-    transaction.setTransactionDate(LocalDateTime.of(2024, 12, 6, 12, 0, 0));
-    transaction.setName("Test Deposit");
-    transaction.setTransactionType(TransactionType.DEPOSIT);
-    transaction.setTransactionStatus(TransactionStatus.COMPLETED);
-    transaction.setAmount(125.0);
-    transaction.setAccount(generateTestAccount());
+        transaction.setTransactionDate(LocalDateTime.of(2024, 12, 6, 12, 0, 0));
+        transaction.setName("Test Deposit");
+        transaction.setTransactionType(TransactionType.DEPOSIT);
+        transaction.setTransactionStatus(TransactionStatus.COMPLETED);
+        transaction.setAmount(125.0);
+        transaction.setAccount(generateTestAccount());
 
-    return transaction;
-    }*/
+        return transaction;
+    }
 
     /**
      * Generates a test withdrawal {@link Transaction}
      *
      * @return {@link Transaction}
      */
-    /*public Transaction generateTestWithdrawalTransaction() {
+    public Transaction generateTestWithdrawalTransaction() {
 
         Transaction transaction = new Transaction();
 
@@ -221,7 +220,7 @@ public abstract class AbstractPlanterTest extends AbstractGenericTest {
         transaction.setAccount(generateTestAccount());
 
         return transaction;
-    }*/
+    }
 
     /**
      * Generates a test {@link AccountDTO}
@@ -229,13 +228,11 @@ public abstract class AbstractPlanterTest extends AbstractGenericTest {
      * @return {@link AccountDTO}
      */
     public AccountDTO generateTestAccountDTO() {
-
-        AccountDTO accountDTO = new AccountDTO();
-
-        accountDTO.setAccountOpenTime(LocalDateTime.of(2022, 10, 25, 22, 48, 0));
-        accountDTO.setBalance(1000.0);
-        accountDTO.setActive(true);
-
-        return accountDTO;
+        return AccountDTO
+                .builder()
+                .accountOpenTime(LocalDateTime.of(2022, 10, 25, 22, 48, 0))
+                .balance(1000.0)
+                .active(true)
+                .build();
     }
 }

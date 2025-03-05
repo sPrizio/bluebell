@@ -36,7 +36,7 @@ import org.springframework.web.bind.annotation.*;
  * API Controller for {@link Account}
  *
  * @author Stephen Prizio
- * @version 0.0.9
+ * @version 0.1.1
  */
 @RestController
 @RequestMapping("${base.api.controller.endpoint}/account")
@@ -117,7 +117,11 @@ public class AccountApiController extends AbstractApiController {
     )
     @GetMapping("/account-types")
     public StandardJsonResponse<List<PairEntry>> getAccountTypes(final HttpServletRequest request) {
-        return new StandardJsonResponse<>(true, Arrays.stream(AccountType.values()).map(at -> new PairEntry(at.getLabel().toUpperCase(), at.getLabel(), StringUtils.EMPTY)).toList(), StringUtils.EMPTY);
+        return StandardJsonResponse
+                .<List<PairEntry>>builder()
+                .success(true)
+                .data(Arrays.stream(AccountType.values()).map(at -> new PairEntry(at.getLabel().toUpperCase(), at.getLabel(), StringUtils.EMPTY)).toList())
+                .build();
     }
 
     /**
