@@ -29,7 +29,7 @@ Current Release: **Pre-release**
 
 ---
 
-### Version History
+### Iterations
 - **0.0.1** : Basic data modeling & Trade Import feature. Allows users with multiple trading accounts to import trades into their accounts from supported brokers.
 - **0.0.2** : API Controller Authentication
 - **0.0.3** : Testing Suite implementation & integration

@@ -17,7 +17,7 @@ import org.springframework.util.LinkedMultiValueMap;
  */
 @SpringBootTest
 @RunWith(SpringRunner.class)
-public class ForexFactoryIntegrationClientTest {
+class ForexFactoryIntegrationClientTest {
 
     @Resource(name = "forexFactoryIntegrationClient")
     private ForexFactoryIntegrationClient forexFactoryIntegrationClient;
@@ -26,7 +26,7 @@ public class ForexFactoryIntegrationClientTest {
     //  ----------------- get -----------------
 
     @Test
-    public void test_get_success() {
+    void test_get_success() {
         assertThat(this.forexFactoryIntegrationClient.get("https://www.forexfactory.com/", new LinkedMultiValueMap<>()))
                 .isNotEmpty();
     }
