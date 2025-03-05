@@ -35,7 +35,7 @@ import org.springframework.web.bind.annotation.*;
  * API controller for {@link User}
  *
  * @author Stephen Prizio
- * @version 0.0.9
+ * @version 0.1.0
  */
 @RestController
 @RequestMapping("${base.api.controller.endpoint}/user")
@@ -94,7 +94,7 @@ public class UserApiController extends AbstractApiController {
             )
     )
     @GetMapping("/get")
-    public StandardJsonResponse<UserDTO> getUser(final @RequestParam String username, final HttpServletRequest request) {
+    public StandardJsonResponse<UserDTO> getUser(final @RequestParam("username") String username, final HttpServletRequest request) {
         final Optional<User> user = this.userService.findUserByUsername(username);
         return user.map(value -> new StandardJsonResponse<>(true, this.userDTOConverter.convert(value), StringUtils.EMPTY)).orElseGet(() -> new StandardJsonResponse<>(false, null, String.format("No user found for username %s", username)));
     }
@@ -272,7 +272,7 @@ public class UserApiController extends AbstractApiController {
     @GetMapping("/recent-transactions")
     public StandardJsonResponse<List<TransactionDTO>> getRecentTransactions(final HttpServletRequest request) {
         final User user = (User) request.getAttribute(SecurityConstants.USER_REQUEST_KEY);
-        return new StandardJsonResponse<>(true, this.transactionDTOConverter.convertAll(user.getAccounts().stream().map(Account::getTransactions).flatMap(List::stream).sorted(Comparator.comparing(Transaction::getTransactionDate)).limit(5).toList()), StringUtils.EMPTY);
+        return new StandardJsonResponse<>(true, this.transactionDTOConverter.convertAll(user.getAccounts().stream().map(Account::getTransactions).filter(Objects::nonNull).flatMap(List::stream).filter(Objects::nonNull).sorted(Comparator.comparing(Transaction::getTransactionDate)).limit(5).toList()), StringUtils.EMPTY);
     }
 
 

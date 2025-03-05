@@ -10,7 +10,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import com.bluebell.planter.constants.ApiConstants;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -23,12 +23,12 @@ import org.springframework.test.web.servlet.MockMvc;
  * Testing class for {@link SystemController}
  *
  * @author Stephen Prizio
- * @version 0.0.9
+ * @version 0.1.0
  */
 @SpringBootTest
 @AutoConfigureMockMvc(addFilters = false)
 @RunWith(SpringRunner.class)
-public class SystemControllerTest {
+class SystemControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
@@ -37,14 +37,14 @@ public class SystemControllerTest {
     //  ----------------- postContact -----------------
 
     @Test
-    public void test_postContact_badJsonIntegrity() throws Exception {
+    void test_postContact_badJsonIntegrity() throws Exception {
         this.mockMvc.perform(post("/api/v1/system/contact").contentType(MediaType.APPLICATION_JSON).content(new ObjectMapper().writeValueAsString(Map.of("hello", "world"))))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.message", containsString(ApiConstants.CLIENT_ERROR_DEFAULT_MESSAGE)));
     }
 
     @Test
-    public void test_postContact_success() throws Exception {
+    void test_postContact_success() throws Exception {
 
         Map<String, Object> data =
                 Map.of(
@@ -66,14 +66,14 @@ public class SystemControllerTest {
     //  ----------------- postReport -----------------
 
     @Test
-    public void test_postReport_badJsonIntegrity() throws Exception {
+    void test_postReport_badJsonIntegrity() throws Exception {
         this.mockMvc.perform(post("/api/v1/system/report").contentType(MediaType.APPLICATION_JSON).content(new ObjectMapper().writeValueAsString(Map.of("hello", "world"))))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.message", containsString(ApiConstants.CLIENT_ERROR_DEFAULT_MESSAGE)));
     }
 
     @Test
-    public void test_postReport_success() throws Exception {
+    void test_postReport_success() throws Exception {
 
         Map<String, Object> data =
                 Map.of(

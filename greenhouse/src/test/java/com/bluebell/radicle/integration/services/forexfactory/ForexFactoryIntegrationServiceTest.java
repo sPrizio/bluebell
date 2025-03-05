@@ -6,7 +6,7 @@ import static org.mockito.ArgumentMatchers.any;
 import com.bluebell.radicle.integration.client.forexfactory.ForexFactoryIntegrationClient;
 import com.bluebell.radicle.integration.models.dto.forexfactory.CalendarNewsDayEntryDTO;
 import com.bluebell.radicle.integration.translators.forexfactory.CalendarNewsDayEntryTranslator;
-import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -36,7 +36,7 @@ class ForexFactoryIntegrationServiceTest {
     @InjectMocks
     private ForexFactoryIntegrationService forexFactoryIntegrationService;
 
-    @BeforeAll
+    @BeforeEach
     public void setUp() {
 
         ReflectionTestUtils.setField(forexFactoryIntegrationService, "calendarUrl", "https://nfs.faireconomy.media/ff_calendar_thisweek.json");

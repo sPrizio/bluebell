@@ -31,7 +31,7 @@ import org.springframework.web.bind.annotation.*;
  * Api controller for {@link TradeRecord}
  *
  * @author Stephen Prizio
- * @version 0.0.9
+ * @version 0.1.0
  */
 @RestController
 @RequestMapping("${base.api.controller.endpoint}/trade-record")
@@ -208,7 +208,7 @@ public class TradeRecordApiController extends AbstractApiController {
             )
     )
     @GetMapping("/trade-record-controls")
-    public StandardJsonResponse<TradeRecordControls> getRecentTradeRecords(
+    public StandardJsonResponse<TradeRecordControls> getTradeRecordControls(
             final HttpServletRequest request,
             final @RequestParam("accountNumber") long accountNumber,
             final @RequestParam("interval") String interval
