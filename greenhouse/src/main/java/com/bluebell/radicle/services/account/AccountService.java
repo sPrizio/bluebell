@@ -28,7 +28,7 @@ import org.springframework.stereotype.Service;
  * Service-layer for {@link Account} entities
  *
  * @author Stephen Prizio
- * @version 0.1.0
+ * @version 0.1.1
  */
 @Service
 public class AccountService {
@@ -91,7 +91,7 @@ public class AccountService {
         }
 
         try {
-            return applyChanges(new Account(), data, user, true);
+            return applyChanges(Account.builder().build(), data, user, true);
         } catch (Exception e) {
             throw new EntityCreationException(String.format("An Account could not be created : %s", e.getMessage()), e);
         }

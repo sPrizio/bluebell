@@ -31,7 +31,7 @@ import org.springframework.test.web.servlet.MockMvc;
  * Testing class for {@link AnalysisApiController}
  *
  * @author Stephen Prizio
- * @version 0.1.0
+ * @version 0.1.1
  */
 @SpringBootTest
 @AutoConfigureMockMvc(addFilters = false)
@@ -49,7 +49,7 @@ class AnalysisApiControllerTest extends AbstractPlanterTest {
 
     @BeforeEach
     public void setUp() {
-        Mockito.when(this.accountService.findAccountByAccountNumber(1234)).thenReturn(Optional.of(new Account()));
+        Mockito.when(this.accountService.findAccountByAccountNumber(1234)).thenReturn(Optional.of(Account.builder().build()));
         Mockito.when(this.accountService.findAccountByAccountNumber(5678)).thenReturn(Optional.empty());
         Mockito.when(this.analysisService.computeTimeBucketAnalysis(any(), any(), any(), anyBoolean())).thenReturn(List.of(new AnalysisResult("Test", 91.0, 1)));
         Mockito.when(this.analysisService.computeWeekdayAnalysis(any(), any())).thenReturn(List.of(new AnalysisResult("Test", 91.0, 1)));

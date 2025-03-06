@@ -27,7 +27,7 @@ import org.springframework.stereotype.Service;
  * Service-layer for {@link PhoneNumber} entities
  *
  * @author Stephen Prizio
- * @version 0.0.9
+ * @version 0.1.1
  */
 @Service
 public class PhoneNumberService {
@@ -71,7 +71,7 @@ public class PhoneNumberService {
         }
 
         try {
-            return applyChanges(new PhoneNumber(), data, user);
+            return applyChanges(PhoneNumber.builder().build(), data, user);
         } catch (Exception e) {
             throw new EntityCreationException(String.format("A PhoneNumber could not be created : %s", e.getMessage()), e);
         }

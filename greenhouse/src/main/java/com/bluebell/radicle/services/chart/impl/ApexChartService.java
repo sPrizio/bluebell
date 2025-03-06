@@ -24,7 +24,7 @@ import org.springframework.stereotype.Service;
  * apexcharts implementation of {@link ChartService}
  *
  * @author Stephen Prizio
- * @version 0.0.9
+ * @version 0.1.1
  */
 @Service
 public class ApexChartService implements ChartService<ApexChartCandleStick> {
@@ -76,9 +76,9 @@ public class ApexChartService implements ChartService<ApexChartCandleStick> {
         prices.forEach((key, values) -> {
             if ((key.isEqual(startDate) || key.isAfter(startDate)) && (key.isBefore(endDate))) {
                 if (CollectionUtils.isEmpty(values.marketPrices())) {
-                    candleSticks.add(new ApexChartCandleStick(key.atStartOfDay(ZoneId.of(CorePlatformConstants.EASTERN_TIMEZONE)).toEpochSecond(), new double[0]));
+                    candleSticks.add(ApexChartCandleStick.builder().x(key.atStartOfDay(ZoneId.of(CorePlatformConstants.EASTERN_TIMEZONE)).toEpochSecond()).y(new double[0]).build());
                 } else {
-                    values.marketPrices().forEach(val -> candleSticks.add(new ApexChartCandleStick(val.date().atZone(ZoneId.of(CorePlatformConstants.EASTERN_TIMEZONE)).toInstant().toEpochMilli(), new double[]{val.open(), val.high(), val.low(), val.close()})));
+                    values.marketPrices().forEach(val -> candleSticks.add(ApexChartCandleStick.builder().x(val.date().atZone(ZoneId.of(CorePlatformConstants.EASTERN_TIMEZONE)).toInstant().toEpochMilli()).y(new double[]{val.open(), val.high(), val.low(), val.close()}).build()));
                 }
             }
         });

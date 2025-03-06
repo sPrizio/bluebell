@@ -6,6 +6,8 @@ import java.util.Objects;
 
 import com.bluebell.platform.enums.time.PlatformTimeInterval;
 import com.bluebell.platform.services.MathService;
+import lombok.Builder;
+import lombok.Getter;
 
 /**
  * Representation of a market price for an interval of time
@@ -17,23 +19,17 @@ import com.bluebell.platform.services.MathService;
  * @param low lowest price
  * @param close close price
  * @author Stephen Prizio
- * @version 0.0.9
+ * @version 0.1.1
  */
+@Builder
 public record MarketPrice(
-        LocalDateTime date,
-        PlatformTimeInterval interval,
-        double open,
-        double high,
-        double low,
-        double close
+        @Getter LocalDateTime date,
+        @Getter PlatformTimeInterval interval,
+        @Getter double open,
+        @Getter double high,
+        @Getter double low,
+        @Getter double close
 ) implements Comparable<MarketPrice> {
-
-
-    //  CONSTRUCTORS
-
-    public MarketPrice() {
-        this(LocalDateTime.MIN, PlatformTimeInterval.ONE_DAY, 0.0, 0.0, 0.0, 0.0);
-    }
 
 
     //  METHODS

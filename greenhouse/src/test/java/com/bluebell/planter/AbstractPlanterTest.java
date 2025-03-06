@@ -1,9 +1,5 @@
 package com.bluebell.planter;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.List;
-
 import com.bluebell.AbstractGenericTest;
 import com.bluebell.platform.constants.CorePlatformConstants;
 import com.bluebell.platform.enums.system.TradeRecordTimeInterval;
@@ -12,7 +8,6 @@ import com.bluebell.platform.enums.transaction.TransactionType;
 import com.bluebell.platform.models.api.dto.account.AccountDTO;
 import com.bluebell.platform.models.api.dto.transaction.TransactionDTO;
 import com.bluebell.platform.models.core.entities.security.User;
-import com.bluebell.platform.models.core.entities.transaction.Transaction;
 import com.bluebell.platform.models.core.nonentities.data.EnumDisplay;
 import com.bluebell.platform.models.core.nonentities.records.account.AccountDetails;
 import com.bluebell.platform.models.core.nonentities.records.account.AccountEquityPoint;
@@ -30,6 +25,10 @@ import com.bluebell.platform.models.core.nonentities.records.traderecord.TradeRe
 import com.bluebell.platform.models.core.nonentities.records.traderecord.TradeRecordReport;
 import com.bluebell.radicle.security.constants.SecurityConstants;
 import org.springframework.test.web.servlet.request.RequestPostProcessor;
+
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.List;
 
 /**
  * Parent-level testing class to provide testing assistance for planter
@@ -130,10 +129,10 @@ public abstract class AbstractPlanterTest extends AbstractGenericTest {
         return TransactionDTO
                 .builder()
                 .uid("MTE4")
-                .transactionType(new EnumDisplay(TransactionType.DEPOSIT.getCode(), TransactionType.DEPOSIT.getLabel()))
+                .transactionType(EnumDisplay.builder().code(TransactionType.DEPOSIT.getCode()).label(TransactionType.DEPOSIT.getLabel()).build())
                 .transactionDate(LocalDateTime.of(2025, 3, 4, 11, 12, 13))
                 .name("Test")
-                .transactionStatus(new EnumDisplay(TransactionStatus.COMPLETED.getCode(), TransactionStatus.COMPLETED.getLabel()))
+                .transactionStatus(EnumDisplay.builder().code(TransactionStatus.COMPLETED.getCode()).label(TransactionStatus.COMPLETED.getLabel()).build())
                 .amount(1563.66)
                 .build();
     }
@@ -182,44 +181,6 @@ public abstract class AbstractPlanterTest extends AbstractGenericTest {
                         new TradeRecordEquityPoint(3, 100.0, 20.0, 125.0, 25.0)
                 )
         );
-    }
-
-    /**
-     * Generates a test deposit {@link Transaction}
-     *
-     * @return {@link Transaction}
-     */
-    public Transaction generateTestDepositTransaction() {
-
-        Transaction transaction = new Transaction();
-
-        transaction.setTransactionDate(LocalDateTime.of(2024, 12, 6, 12, 0, 0));
-        transaction.setName("Test Deposit");
-        transaction.setTransactionType(TransactionType.DEPOSIT);
-        transaction.setTransactionStatus(TransactionStatus.COMPLETED);
-        transaction.setAmount(125.0);
-        transaction.setAccount(generateTestAccount());
-
-        return transaction;
-    }
-
-    /**
-     * Generates a test withdrawal {@link Transaction}
-     *
-     * @return {@link Transaction}
-     */
-    public Transaction generateTestWithdrawalTransaction() {
-
-        Transaction transaction = new Transaction();
-
-        transaction.setTransactionDate(LocalDateTime.of(2024, 12, 6, 14, 0, 0));
-        transaction.setName("Test Withdrawal");
-        transaction.setTransactionType(TransactionType.WITHDRAWAL);
-        transaction.setTransactionStatus(TransactionStatus.FAILED);
-        transaction.setAmount(-96.30);
-        transaction.setAccount(generateTestAccount());
-
-        return transaction;
     }
 
     /**

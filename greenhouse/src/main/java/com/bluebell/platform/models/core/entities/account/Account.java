@@ -1,8 +1,5 @@
 package com.bluebell.platform.models.core.entities.account;
 
-import java.time.LocalDateTime;
-import java.util.List;
-
 import com.bluebell.platform.enums.account.AccountType;
 import com.bluebell.platform.enums.account.Broker;
 import com.bluebell.platform.enums.account.Currency;
@@ -13,20 +10,27 @@ import com.bluebell.platform.models.core.entities.trade.Trade;
 import com.bluebell.platform.models.core.entities.transaction.Transaction;
 import com.bluebell.platform.services.MathService;
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 import org.apache.commons.collections4.CollectionUtils;
+
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+
 
 /**
  * Class representation of a trading account, an entity that can hold {@link Trade}s and other information
  *
  * @author Stephen Prizio
- * @version 0.0.9
+ * @version 0.1.1
  */
 @Getter
 @Setter
 @Entity
+@Builder
 @Table(name = "accounts", uniqueConstraints = @UniqueConstraint(name = "UniqueAccountNumber", columnNames = {"account_number"}))
+@NoArgsConstructor
+@AllArgsConstructor
 public class Account implements GenericEntity {
 
     @Id
@@ -73,10 +77,10 @@ public class Account implements GenericEntity {
     private LocalDateTime lastTraded;
 
     @OneToMany(mappedBy = "account", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List<Trade> trades;
+    private @Builder.Default List<Trade> trades = new ArrayList<>();
 
     @OneToMany(mappedBy = "account", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List<Transaction> transactions;
+    private @Builder.Default List<Transaction> transactions = new ArrayList<>();
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.REFRESH)
     private User user;
@@ -107,12 +111,12 @@ public class Account implements GenericEntity {
 
         Account account = (Account) o;
 
-        return accountNumber == account.accountNumber;
+        return this.accountNumber == account.accountNumber;
     }
 
     @Override
     public int hashCode() {
-        return Long.hashCode(accountNumber);
+        return Long.hashCode(this.accountNumber);
     }
 
 
@@ -140,7 +144,7 @@ public class Account implements GenericEntity {
         if (CollectionUtils.isEmpty(this.trades)) {
             return null;
         } else {
-            return this.trades.stream().map(Trade::getTradeCloseTime).max(LocalDateTime::compareTo).get();
+            return this.trades.stream().map(Trade::getTradeCloseTime).max(LocalDateTime::compareTo).orElse(null);
         }
     }
 }

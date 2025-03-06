@@ -33,10 +33,10 @@ public class TransactionDTOConverter implements GenericDTOConverter<Transaction,
         return TransactionDTO
                 .builder()
                 .uid(this.uniqueIdentifierService.generateUid(entity))
-                .transactionType(new EnumDisplay(entity.getTransactionType().getCode(), entity.getTransactionType().getLabel()))
+                .transactionType(EnumDisplay.builder().code(entity.getTransactionType().getCode()).label(entity.getTransactionType().getLabel()).build())
                 .transactionDate(entity.getTransactionDate())
                 .amount(entity.getAmount())
-                .transactionStatus(new EnumDisplay(entity.getTransactionStatus().getCode(), entity.getTransactionStatus().getLabel()))
+                .transactionStatus(EnumDisplay.builder().code(entity.getTransactionStatus().getCode()).label(entity.getTransactionStatus().getLabel()).build())
                 .name(entity.getName())
                 .accountNumber(entity.getAccount().getAccountNumber())
                 .accountName(entity.getAccount().getName())

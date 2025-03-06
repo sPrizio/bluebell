@@ -18,7 +18,7 @@ import org.junit.jupiter.api.Test;
  * Testing class for {@link FirstRateDataParser}
  *
  * @author Stephen Prizio
- * @version 0.0.9
+ * @version 0.1.1
  */
 class FirstRateDataParserTest {
 
@@ -149,7 +149,7 @@ class FirstRateDataParserTest {
     void test_parseMarketPricesByDate_success_1year() {
 
         final AggregatedMarketPrices prices =
-                this.firstRateDataParser.parseMarketPricesByDate(PlatformTimeInterval.ONE_YEAR).getOrDefault(LocalDate.of(2024, 5, 14), new AggregatedMarketPrices(new TreeSet<>(), PlatformTimeInterval.ONE_YEAR));
+                this.firstRateDataParser.parseMarketPricesByDate(PlatformTimeInterval.ONE_YEAR).getOrDefault(LocalDate.of(2024, 5, 14), AggregatedMarketPrices.builder().marketPrices(new TreeSet<>()).interval(PlatformTimeInterval.ONE_YEAR).build());
 
         assertThat(prices.marketPrices())
                 .isEmpty();

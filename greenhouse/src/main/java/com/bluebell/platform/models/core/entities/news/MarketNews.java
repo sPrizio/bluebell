@@ -6,18 +6,21 @@ import java.util.List;
 
 import com.bluebell.platform.models.core.entities.GenericEntity;
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 /**
  * Class representation of market news on a specific day
  *
  * @author Stephen Prizio
- * @version 0.0.9
+ * @version 0.1.1
  */
 @Getter
 @Entity
+@Builder
 @Table(name = "market_news")
+@EqualsAndHashCode
+@NoArgsConstructor
+@AllArgsConstructor
 public class MarketNews implements GenericEntity, Comparable<MarketNews> {
 
     @Id
@@ -31,7 +34,7 @@ public class MarketNews implements GenericEntity, Comparable<MarketNews> {
     @Setter
     @OneToMany(mappedBy = "news", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @OrderBy("time ASC")
-    private List<MarketNewsSlot> slots;
+    private @Builder.Default List<MarketNewsSlot> slots = new ArrayList<>();
 
 
     //  METHODS

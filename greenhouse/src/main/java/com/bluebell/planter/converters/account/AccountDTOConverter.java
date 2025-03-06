@@ -50,12 +50,12 @@ public class AccountDTOConverter implements GenericDTOConverter<Account, Account
                 .initialBalance(entity.getInitialBalance())
                 .balance(this.mathService.getDouble(entity.getBalance()))
                 .name(entity.getName())
-                .currency(new EnumDisplay(entity.getCurrency().getIsoCode(), entity.getCurrency().getLabel()))
+                .currency(EnumDisplay.builder().code(entity.getCurrency().getIsoCode()).label(entity.getCurrency().getLabel()).build())
                 .accountNumber(entity.getAccountNumber())
-                .accountType(new EnumDisplay(entity.getAccountType().getCode(), entity.getAccountType().getLabel()))
-                .broker(new EnumDisplay(entity.getBroker().getCode(), entity.getBroker().getName()))
+                .accountType(EnumDisplay.builder().code(entity.getAccountType().getCode()).label(entity.getAccountType().getLabel()).build())
+                .broker(EnumDisplay.builder().code(entity.getBroker().getCode()).label(entity.getBroker().getName()).build())
                 .lastTraded(entity.getLastTraded())
-                .tradePlatform(new EnumDisplay(entity.getTradePlatform().getCode(), entity.getTradePlatform().getLabel()))
+                .tradePlatform(EnumDisplay.builder().code(entity.getTradePlatform().getCode()).label(entity.getTradePlatform().getLabel()).build())
                 .transactions(CollectionUtils.isEmpty(entity.getTransactions()) ? List.of() : this.transactionDTOConverter.convertAll(entity.getTransactions()))
                 .build();
     }

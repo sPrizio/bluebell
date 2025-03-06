@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.*;
  * Controller to handle system functions
  *
  * @author Stephen Prizio
- * @version 0.0.9
+ * @version 0.1.1
  */
 @RestController
 @RequestMapping("${base.api.controller.endpoint}/system")
@@ -59,7 +59,11 @@ public class SystemController extends AbstractApiController {
     @PostMapping("/contact")
     public StandardJsonResponse<String> postContact(final @RequestBody Map<String, Object> data) {
         validateJsonIntegrity(data, List.of("contact"), "json did not contain of the required keys : %s", List.of("contact").toString());
-        return new StandardJsonResponse<>(true, "Thanks for your message! We will get back to you shortly.", StringUtils.EMPTY);
+        return StandardJsonResponse
+                .<String>builder()
+                .success(true)
+                .data("Thanks for your message! We will get back to you shortly.")
+                .build();
     }
 
 /**
@@ -88,6 +92,10 @@ public class SystemController extends AbstractApiController {
     @PostMapping("/report")
     public StandardJsonResponse<String> postReport(final @RequestBody Map<String, Object> data) {
         validateJsonIntegrity(data, List.of("report"), "json did not contain of the required keys : %s", List.of("report").toString());
-        return new StandardJsonResponse<>(true, "Thanks for your message! We will get back to you shortly.", StringUtils.EMPTY);
+        return StandardJsonResponse
+                .<String>builder()
+                .success(true)
+                .data("Thanks for your message! We will get back to you shortly.")
+                .build();
     }
 }

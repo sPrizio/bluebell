@@ -1,12 +1,5 @@
 package com.bluebell.planter.controllers.account;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-
-import static com.bluebell.radicle.validation.GenericValidator.validateJsonIntegrity;
-
 import com.bluebell.planter.controllers.AbstractApiController;
 import com.bluebell.planter.converters.account.AccountDTOConverter;
 import com.bluebell.platform.enums.account.AccountType;
@@ -29,8 +22,14 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.annotation.Resource;
 import jakarta.servlet.http.HttpServletRequest;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+
+import static com.bluebell.radicle.validation.GenericValidator.validateJsonIntegrity;
 
 /**
  * API Controller for {@link Account}
@@ -88,7 +87,11 @@ public class AccountApiController extends AbstractApiController {
     )
     @GetMapping("/currencies")
     public StandardJsonResponse<List<PairEntry>> getCurrencies(final HttpServletRequest request) {
-        return new StandardJsonResponse<>(true, Arrays.stream(Currency.values()).map(c -> new PairEntry(c.getIsoCode(), c.getLabel(), c.getSymbol())).toList(), StringUtils.EMPTY);
+        return StandardJsonResponse
+                .<List<PairEntry>>builder()
+                .success(true)
+                .data(Arrays.stream(Currency.values()).map(c -> PairEntry.builder().code(c.getIsoCode()).label(c.getLabel()).symbol(c.getSymbol()).build()).toList())
+                .build();
     }
 
     /**
@@ -120,7 +123,7 @@ public class AccountApiController extends AbstractApiController {
         return StandardJsonResponse
                 .<List<PairEntry>>builder()
                 .success(true)
-                .data(Arrays.stream(AccountType.values()).map(at -> new PairEntry(at.getLabel().toUpperCase(), at.getLabel(), StringUtils.EMPTY)).toList())
+                .data(Arrays.stream(AccountType.values()).map(at -> PairEntry.builder().code(at.getLabel().toUpperCase()).label(at.getLabel()).build()).toList())
                 .build();
     }
 
@@ -150,7 +153,11 @@ public class AccountApiController extends AbstractApiController {
     )
     @GetMapping("/brokers")
     public StandardJsonResponse<List<PairEntry>> getBrokers(final HttpServletRequest request) {
-        return new StandardJsonResponse<>(true, Arrays.stream(Broker.values()).map(b -> new PairEntry(b.getCode(), b.getName(), StringUtils.EMPTY)).toList(), StringUtils.EMPTY);
+        return StandardJsonResponse.
+                <List<PairEntry>>builder()
+                .success(true)
+                .data(Arrays.stream(Broker.values()).map(b -> PairEntry.builder().code(b.getCode()).label(b.getName()).build()).toList())
+                .build();
     }
 
     /**
@@ -160,7 +167,7 @@ public class AccountApiController extends AbstractApiController {
      * @return {@link StandardJsonResponse}
      */
     @ValidateApiToken
-    @Operation(summary = "Get all system trading platforms", description = "Fetches all trading platforms that are currently supported in bluebell. Trading platforms include examples like Metatrader 4 & cTraders.")
+    @Operation(summary = "Get all system trading platforms", description = "Fetches all trading platforms that are currently supported in bluebell. Trading platforms include examples like MetaTrader 4 & cTraders.")
     @ApiResponse(
             responseCode = "200",
             description = "Response when the api successfully retrieves all trade platforms.",
@@ -179,7 +186,11 @@ public class AccountApiController extends AbstractApiController {
     )
     @GetMapping("/trade-platforms")
     public StandardJsonResponse<List<PairEntry>> getTradePlatforms(final HttpServletRequest request) {
-        return new StandardJsonResponse<>(true, Arrays.stream(TradePlatform.values()).map(tp -> new PairEntry(tp.getCode(), tp.getLabel(), StringUtils.EMPTY)).toList(), StringUtils.EMPTY);
+        return StandardJsonResponse
+                .<List<PairEntry>>builder()
+                .success(true)
+                .data(Arrays.stream(TradePlatform.values()).map(tp -> PairEntry.builder().code(tp.getCode()).label(tp.getLabel()).build()).toList())
+                .build();
     }
 
     /**
@@ -218,7 +229,9 @@ public class AccountApiController extends AbstractApiController {
     @GetMapping("/get-details")
     public StandardJsonResponse<AccountDetails> getDetails(final @RequestParam("accountNumber") Long accountNumber, final HttpServletRequest request) {
         final Optional<Account> account = this.accountService.findAccountByAccountNumber(accountNumber);
-        return account.map(value -> new StandardJsonResponse<>(true, this.accountService.getAccountDetails(value), StringUtils.EMPTY)).orElseGet(() -> new StandardJsonResponse<>(false, null, String.format(NO_ACCOUNT_FOR_ACCOUNT_NUMBER, accountNumber)));
+        return account
+                .map(value -> StandardJsonResponse.<AccountDetails>builder().success(true).data(this.accountService.getAccountDetails(value)).build())
+                .orElseGet(() -> StandardJsonResponse.<AccountDetails>builder().success(false).message(String.format(NO_ACCOUNT_FOR_ACCOUNT_NUMBER, accountNumber)).build());
     }
 
 
@@ -253,7 +266,11 @@ public class AccountApiController extends AbstractApiController {
     public StandardJsonResponse<AccountDTO> postCreateNewAccount(final HttpServletRequest request, final @RequestBody Map<String, Object> requestBody) {
         validateJsonIntegrity(requestBody, List.of(ACCOUNT), "json did not contain of the required keys : %s", List.of(ACCOUNT));
         final User user = (User) request.getAttribute(SecurityConstants.USER_REQUEST_KEY);
-        return new StandardJsonResponse<>(true, this.accountDTOConverter.convert(this.accountService.createNewAccount(requestBody, user)), StringUtils.EMPTY);
+        return StandardJsonResponse
+                .<AccountDTO>builder()
+                .success(true)
+                .data(this.accountDTOConverter.convert(this.accountService.createNewAccount(requestBody, user)))
+                .build();
     }
 
 
@@ -298,7 +315,9 @@ public class AccountApiController extends AbstractApiController {
         validateJsonIntegrity(requestBody, List.of(ACCOUNT), "json did not contain of the required keys : %s", List.of(ACCOUNT));
         final User user = (User) request.getAttribute(SecurityConstants.USER_REQUEST_KEY);
         final Optional<Account> account = this.accountService.findAccountByAccountNumber(accountNumber);
-        return account.map(value -> new StandardJsonResponse<>(true, this.accountDTOConverter.convert(this.accountService.updateAccount(value, requestBody, user)), StringUtils.EMPTY)).orElseGet(() -> new StandardJsonResponse<>(false, null, String.format(NO_ACCOUNT_FOR_ACCOUNT_NUMBER, accountNumber)));
+        return account
+                .map(value -> StandardJsonResponse.<AccountDTO>builder().success(true).data(this.accountDTOConverter.convert(this.accountService.updateAccount(value, requestBody, user))).build())
+                .orElseGet(() -> StandardJsonResponse.<AccountDTO>builder().success(false).message(String.format(NO_ACCOUNT_FOR_ACCOUNT_NUMBER, accountNumber)).build());
     }
 
 
@@ -342,8 +361,8 @@ public class AccountApiController extends AbstractApiController {
         final Optional<Account> account = this.accountService.findAccountByAccountNumber(accountNumber);
         return account.map(value -> {
             final boolean result = this.accountService.deleteAccount(value);
-            return new StandardJsonResponse<>(result, result, StringUtils.EMPTY);
-        }).orElseGet(() -> new StandardJsonResponse<>(false, false, String.format(NO_ACCOUNT_FOR_ACCOUNT_NUMBER, accountNumber)));
+            return StandardJsonResponse.<Boolean>builder().success(result).data(result).build();
+        }).orElseGet(() -> StandardJsonResponse.<Boolean>builder().success(false).data(false).message(String.format(NO_ACCOUNT_FOR_ACCOUNT_NUMBER, accountNumber)).build());
     }
 }
 

@@ -27,7 +27,7 @@ import org.springframework.stereotype.Service;
  * Service-layer for {@link MarketNews}
  *
  * @author Stephen Prizio
- * @version 0.1.0
+ * @version 0.1.1
  */
 @Service
 public class MarketNewsService {
@@ -179,10 +179,10 @@ public class MarketNewsService {
     private MarketNewsSlot getSlot(final MarketNews news, final LocalTime time) {
 
         if (news == null || CollectionUtils.isEmpty(news.getSlots())) {
-            return new MarketNewsSlot();
+            return MarketNewsSlot.builder().build();
         }
 
-        return news.getSlots().stream().filter(slot -> slot.getTime().equals(time)).findFirst().orElse(new MarketNewsSlot());
+        return news.getSlots().stream().filter(slot -> slot.getTime().equals(time)).findFirst().orElse(MarketNewsSlot.builder().build());
     }
 
     /**
@@ -195,10 +195,10 @@ public class MarketNewsService {
     private MarketNewsEntry getEntry(final MarketNewsSlot slot, final String title) {
 
         if (slot == null || CollectionUtils.isEmpty(slot.getEntries())) {
-            return new MarketNewsEntry();
+            return MarketNewsEntry.builder().build();
         }
 
-        return slot.getEntries().stream().filter(entry -> entry.getContent().equals(title)).findFirst().orElse(new MarketNewsEntry());
+        return slot.getEntries().stream().filter(entry -> entry.getContent().equals(title)).findFirst().orElse(MarketNewsEntry.builder().build());
     }
 
     /**

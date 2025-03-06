@@ -7,18 +7,20 @@ import com.bluebell.platform.enums.transaction.TransactionType;
 import com.bluebell.platform.models.core.entities.GenericEntity;
 import com.bluebell.platform.models.core.entities.account.Account;
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 /**
  * Class representation of an account transaction
  *
  * @author Stephen Prizio
- * @version 0.0.9
+ * @version 0.1.1
  */
 @Getter
 @Entity
+@Builder
 @Table(name = "transactions")
+@NoArgsConstructor
+@AllArgsConstructor
 public class Transaction implements GenericEntity {
 
     @Id

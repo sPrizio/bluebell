@@ -32,7 +32,7 @@ import org.springframework.util.ResourceUtils;
  * Service-layer for importing trades into the system from CMC Markets
  *
  * @author Stephen Prizio
- * @version 0.0.9
+ * @version 0.1.1
  */
 @Service("cmcMarketsTradeImportService")
 public class CMCMarketsTradeImportService extends AbstractImportService implements ImportService {
@@ -183,22 +183,19 @@ public class CMCMarketsTradeImportService extends AbstractImportService implemen
      * @return {@link Trade}
      */
     private Trade createNewTrade(final CMCTradeWrapper wrapper, final TradeType tradeType, final Account account) {
-
-        Trade trade = new Trade();
-
-        trade.setTradeId(wrapper.orderNumber());
-        trade.setTradePlatform(TradePlatform.CMC_MARKETS);
-        trade.setProduct(wrapper.product());
-        trade.setTradeType(tradeType);
-        trade.setClosePrice(0.0);
-        trade.setTradeCloseTime(null);
-        trade.setTradeOpenTime(wrapper.dateTime());
-        trade.setLotSize(wrapper.units());
-        trade.setNetProfit(0.0);
-        trade.setOpenPrice(wrapper.price());
-        trade.setAccount(account);
-
-        return trade;
+        return Trade.builder()
+                .tradeId(wrapper.orderNumber())
+                .tradePlatform(TradePlatform.CMC_MARKETS)
+                .product(wrapper.product())
+                .tradeType(tradeType)
+                .closePrice(0.0)
+                .tradeCloseTime(null)
+                .tradeOpenTime(wrapper.dateTime())
+                .lotSize(wrapper.units())
+                .netProfit(0.0)
+                .openPrice(wrapper.price())
+                .account(account)
+                .build();
     }
 
     /**
@@ -208,21 +205,18 @@ public class CMCMarketsTradeImportService extends AbstractImportService implemen
      * @return {@link Trade}
      */
     private Trade createPromotionalPayment(final CMCTradeWrapper wrapper, final Account account) {
-
-        Trade trade = new Trade();
-
-        trade.setTradeId(wrapper.orderNumber());
-        trade.setTradePlatform(TradePlatform.CMC_MARKETS);
-        trade.setTradeType(TradeType.PROMOTIONAL_PAYMENT);
-        trade.setClosePrice(0.0);
-        trade.setTradeCloseTime(wrapper.dateTime());
-        trade.setTradeOpenTime(wrapper.dateTime());
-        trade.setLotSize(0.0);
-        trade.setNetProfit(wrapper.amount());
-        trade.setOpenPrice(0.0);
-        trade.setAccount(account);
-
-        return trade;
+        return Trade.builder()
+                .tradeId(wrapper.orderNumber())
+                .tradePlatform(TradePlatform.CMC_MARKETS)
+                .tradeType(TradeType.PROMOTIONAL_PAYMENT)
+                .closePrice(0.0)
+                .tradeCloseTime(wrapper.dateTime())
+                .tradeOpenTime(wrapper.dateTime())
+                .lotSize(0.0)
+                .netProfit(wrapper.amount())
+                .openPrice(0.0)
+                .account(account)
+                .build();
     }
 
     /**

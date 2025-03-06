@@ -27,7 +27,7 @@ import org.springframework.stereotype.Service;
  * Service-layer for {@link User} entities
  *
  * @author Stephen Prizio
- * @version 0.0.9
+ * @version 0.1.1
  */
 @Service
 public class UserService {
@@ -93,7 +93,7 @@ public class UserService {
                 throw new DuplicateUserUsernameException(String.format("A user with the username %s already exists. Please try another username.", username));
             }
 
-            return applyChanges(new User(), data, true);
+            return applyChanges(User.builder().build(), data, true);
         } catch (Exception e) {
             this.userRepository.deleteUserByEmail(email);
             throw new EntityCreationException(String.format("A User could not be created : %s", e.getMessage()), e);
