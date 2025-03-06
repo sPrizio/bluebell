@@ -5,6 +5,7 @@ import java.time.LocalDateTime;
 
 import com.bluebell.platform.models.core.entities.account.Account;
 import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.Builder;
 import lombok.Getter;
 
 /**
@@ -16,8 +17,9 @@ import lombok.Getter;
  * @param cumAmount cumulative account balance
  * @param cumPoints cumulative points
  * @author Stephen Prizio
- * @version 0.1.0
+ * @version 0.1.1
  */
+@Builder
 @Schema(title = "AccountEquityPoint", name = "AccountEquityPoint", description = "Account's value at a given point in time")
 public record AccountEquityPoint(
         @Getter @Schema(description = "Date") LocalDateTime date,

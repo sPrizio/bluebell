@@ -3,6 +3,7 @@ package com.bluebell.platform.models.core.nonentities.records.account;
 
 import com.bluebell.platform.models.core.entities.account.Account;
 import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.Builder;
 import lombok.Getter;
 
 /**
@@ -20,8 +21,9 @@ import lombok.Getter;
  * @param drawdownDelta    total account drawdown expressed as a percentage
  * @param maxProfitDelta   highest ROI reached expressed as a percentage
  * @author Stephen Prizio
- * @version 0.1.0
+ * @version 0.1.1
  */
+@Builder
 @Schema(title = "AccountInsights", name = "AccountInsights", description = "Basic insights into an account's performance")
 public record AccountInsights(
         @Getter @Schema(description = "Number of days traded") int tradingDays,
@@ -35,5 +37,4 @@ public record AccountInsights(
         @Getter @Schema(description = "Largest win expressed as a percentage") double largestGainDelta,
         @Getter @Schema(description = "Drawdown expressed as a percentage") double drawdownDelta,
         @Getter @Schema(description = "Highest profit attained expressed as a percentage") double maxProfitDelta
-) {
-}
+) { }

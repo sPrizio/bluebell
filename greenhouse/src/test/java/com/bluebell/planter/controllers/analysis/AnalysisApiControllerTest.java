@@ -48,13 +48,13 @@ class AnalysisApiControllerTest extends AbstractPlanterTest {
     private MockMvc mockMvc;
 
     @BeforeEach
-    public void setUp() {
+    void setUp() {
         Mockito.when(this.accountService.findAccountByAccountNumber(1234)).thenReturn(Optional.of(Account.builder().build()));
         Mockito.when(this.accountService.findAccountByAccountNumber(5678)).thenReturn(Optional.empty());
-        Mockito.when(this.analysisService.computeTimeBucketAnalysis(any(), any(), any(), anyBoolean())).thenReturn(List.of(new AnalysisResult("Test", 91.0, 1)));
-        Mockito.when(this.analysisService.computeWeekdayAnalysis(any(), any())).thenReturn(List.of(new AnalysisResult("Test", 91.0, 1)));
-        Mockito.when(this.analysisService.computeTradeDurationAnalysis(any(), any(), any())).thenReturn(List.of(new AnalysisResult("Test", 91.0, 1)));
-        Mockito.when(this.analysisService.computeWeekdayTimeBucketAnalysis(any(), any(), any(), any())).thenReturn(List.of(new AnalysisResult("Test", 91.0, 1)));
+        Mockito.when(this.analysisService.computeTimeBucketAnalysis(any(), any(), any(), anyBoolean())).thenReturn(List.of(AnalysisResult.builder().label("Test").value(91.0).count(1).build()));
+        Mockito.when(this.analysisService.computeWeekdayAnalysis(any(), any())).thenReturn(List.of(AnalysisResult.builder().label("Test").value(91.0).count(1).build()));
+        Mockito.when(this.analysisService.computeTradeDurationAnalysis(any(), any(), any())).thenReturn(List.of(AnalysisResult.builder().label("Test").value(91.0).count(1).build()));
+        Mockito.when(this.analysisService.computeWeekdayTimeBucketAnalysis(any(), any(), any(), any())).thenReturn(List.of(AnalysisResult.builder().label("Test").value(91.0).count(1).build()));
     }
 
 

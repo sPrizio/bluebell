@@ -55,14 +55,15 @@ public class AccountService {
 
         validateParameterIsNotNull(account, CorePlatformConstants.Validation.Account.ACCOUNT_CANNOT_BE_NULL);
 
-        return new AccountDetails(
-                account,
-                this.accountDetailsService.calculateConsistencyScore(account),
-                this.accountDetailsService.calculateEquityPoints(account),
-                this.accountDetailsService.obtainInsights(account),
-                this.accountDetailsService.obtainStatistics(account),
-                CorePlatformConstants.RISK_FREE_RATE_CANADA
-        );
+        return AccountDetails
+                .builder()
+                .account(account)
+                .consistency(this.accountDetailsService.calculateConsistencyScore(account))
+                .equity(this.accountDetailsService.calculateEquityPoints(account))
+                .insights(this.accountDetailsService.obtainInsights(account))
+                .statistics(this.accountDetailsService.obtainStatistics(account))
+                .riskFreeRate(CorePlatformConstants.RISK_FREE_RATE_CANADA)
+                .build();
     }
 
     /**

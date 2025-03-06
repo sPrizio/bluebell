@@ -5,6 +5,7 @@ import java.util.List;
 import com.bluebell.platform.models.core.entities.account.Account;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.Builder;
 
 /**
  * Class representation of details about an {@link Account}
@@ -16,8 +17,9 @@ import io.swagger.v3.oas.annotations.media.Schema;
  * @param statistics {@link AccountStatistics}
  * @param riskFreeRate the risk-free rate by the government of Canada (as of November 28th, 2024)
  * @author Stephen Prizio
- * @version 0.0.9
+ * @version 0.1.1
  */
+@Builder
 @Schema(title = "Account Details", name = "Account Details", description = "An entity containing account metrics and insights including statistical measures of performance, data for charting, consistency scores, etc.")
 public record AccountDetails(
         @JsonIgnore Account account,

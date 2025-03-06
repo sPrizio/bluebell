@@ -44,45 +44,52 @@ public abstract class AbstractPlanterTest extends AbstractGenericTest {
      * @return {@link AccountDetails}
      */
     public AccountDetails generateAccountDetails() {
-        return new AccountDetails(
-                generateTestAccount(),
-                91,
-                List.of(
-                        new AccountEquityPoint(LocalDateTime.of(2025, 3, 4, 11, 12, 13), 55.0, 12.5, 55.0, 12.5),
-                        new AccountEquityPoint(LocalDateTime.of(2025, 4, 4, 11, 12, 13), 88.0, 21.36, 143.0, 33.86)
-                ),
-                new AccountInsights(
-                        2,
-                        178.63,
-                        -213.36,
-                        456.32,
-                        -698.14,
-                        896.36,
-                        4.0,
-                        3.6,
-                        1.58,
-                        2.11,
-                        7.89
-                ),
-                new AccountStatistics(
-                        30000.0,
-                        25.69,
-                        -63.69,
-                        9,
-                        1.89,
-                        89.33,
-                        4.05,
-                        56,
-                        2.15,
-                        69,
-                        0.45,
-                        123L,
-                        89L,
-                        156L,
-                        -369.78
-                ),
-                CorePlatformConstants.RISK_FREE_RATE_CANADA
-        );
+        return AccountDetails
+                .builder()
+                .account(generateTestAccount())
+                .consistency(91)
+                .equity(List.of(
+                        AccountEquityPoint.builder().date(LocalDateTime.of(2025, 3, 4, 11, 12, 13)).amount(55.0).points(12.5).cumAmount(55.0).cumPoints(12.5).build(),
+                        AccountEquityPoint.builder().date(LocalDateTime.of(2025, 4, 4, 11, 12, 13)).amount(88.0).points(21.36).cumAmount(143.0).cumPoints(33.86).build()
+                ))
+                .insights(
+                        AccountInsights
+                                .builder()
+                                .tradingDays(2)
+                                .currentPL(178.63)
+                                .biggestLoss(-213.36)
+                                .largestGain(456.32)
+                                .drawdown(-698.14)
+                                .maxProfit(896.36)
+                                .currentPLDelta(4.0)
+                                .biggestLossDelta(3.6)
+                                .largestGainDelta(1.58)
+                                .drawdownDelta(2.11)
+                                .maxProfitDelta(7.89)
+                                .build()
+                )
+                .statistics(
+                        AccountStatistics
+                                .builder()
+                                .balance(30000.0)
+                                .averageProfit(25.69)
+                                .averageLoss(-63.39)
+                                .numberOfTrades(9)
+                                .rrr(1.89)
+                                .lots(89.33)
+                                .expectancy(4.05)
+                                .winPercentage(56)
+                                .profitFactor(2.15)
+                                .retention(69)
+                                .sharpeRatio(0.45)
+                                .tradeDuration(123L)
+                                .winDuration(89L)
+                                .lossDuration(156L)
+                                .assumedDrawdown(-369.78)
+                                .build()
+                )
+                .riskFreeRate(CorePlatformConstants.RISK_FREE_RATE_CANADA)
+                .build();
     }
 
     /**
