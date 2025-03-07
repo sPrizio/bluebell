@@ -1,15 +1,5 @@
 package com.bluebell.anther.engine.impl;
 
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.*;
-import java.util.stream.Stream;
-
 import com.bluebell.anther.engine.DecisionEngine;
 import com.bluebell.anther.models.engine.Decision;
 import com.bluebell.anther.models.parameter.strategy.impl.BloomStrategyParameters;
@@ -24,11 +14,21 @@ import org.apache.commons.lang3.StringUtils;
 import org.javatuples.Pair;
 import org.javatuples.Triplet;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.*;
+import java.util.stream.Stream;
+
 /**
  * Implementation of {@link DecisionEngine} specific to {@link Bloom}
  *
  * @author Stephen Prizio
- * @version 0.1.0
+ * @version 0.1.1
  */
 public class BloomDecisionEngine implements DecisionEngine<Bloom, BloomStrategyParameters> {
 
@@ -88,7 +88,7 @@ public class BloomDecisionEngine implements DecisionEngine<Bloom, BloomStrategyP
             windowCounter += 1;
         }
 
-        return decisions.stream().map(dec -> getParametersForFile(dec, simulationResult)).map(pair -> new Decision<>(pair.getValue0(), pair.getValue1())).sorted(Comparator.comparing(Decision::index)).toList();
+        return decisions.stream().map(dec -> getParametersForFile(dec, simulationResult)).map(pair -> Decision.<BloomStrategyParameters>builder().index(pair.getValue1()).strategyParameters(pair.getValue0()).build()).sorted(Comparator.comparing(Decision::index)).toList();
     }
 
     /**
@@ -155,16 +155,17 @@ public class BloomDecisionEngine implements DecisionEngine<Bloom, BloomStrategyP
                 }
 
                 entries.add(
-                        new CumulativeStrategyReportEntry(
-                                Double.parseDouble(split[0].trim()),
-                                Double.parseDouble(split[1].trim().replace("$", StringUtils.EMPTY)),
-                                Integer.parseInt(split[2].trim()),
-                                StringUtils.capitalize(split[2].trim().toLowerCase()),
-                                LocalDateTime.parse(split[3].trim(), DateTimeFormatter.ofPattern("MMM dd yyy 'at' HH:mm:ss")),
-                                LocalDateTime.parse(split[4].trim(), DateTimeFormatter.ofPattern("MMM dd yyy 'at' HH:mm:ss")),
-                                Double.parseDouble(split[5].trim()),
-                                Double.parseDouble(split[6].trim().replace("$", StringUtils.EMPTY))
-                        )
+                        CumulativeStrategyReportEntry
+                                .builder()
+                                .points(Double.parseDouble(split[0].trim()))
+                                .netProfit(Double.parseDouble(split[1].trim().replace("$", StringUtils.EMPTY)))
+                                .trades(Integer.parseInt(split[2].trim()))
+                                .tradeType(StringUtils.capitalize(split[2].trim().toLowerCase()))
+                                .opened(LocalDateTime.parse(split[3].trim(), DateTimeFormatter.ofPattern("MMM dd yyy 'at' HH:mm:ss")))
+                                .closed(LocalDateTime.parse(split[4].trim(), DateTimeFormatter.ofPattern("MMM dd yyy 'at' HH:mm:ss")))
+                                .pointsForTrade(Double.parseDouble(split[5].trim()))
+                                .profitForTrade(Double.parseDouble(split[6].trim().replace("$", StringUtils.EMPTY)))
+                                .build()
                 );
             }
         } catch (IOException e) {

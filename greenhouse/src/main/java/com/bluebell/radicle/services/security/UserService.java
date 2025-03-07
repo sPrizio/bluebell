@@ -1,10 +1,5 @@
 package com.bluebell.radicle.services.security;
 
-import java.time.LocalDateTime;
-import java.util.*;
-
-import static com.bluebell.radicle.validation.GenericValidator.validateParameterIsNotNull;
-
 import com.bluebell.platform.constants.CorePlatformConstants;
 import com.bluebell.platform.enums.security.UserRole;
 import com.bluebell.platform.models.core.entities.security.User;
@@ -22,12 +17,17 @@ import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.MapUtils;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
+import java.util.*;
+
+import static com.bluebell.radicle.validation.GenericValidator.validateParameterIsNotNull;
+
 
 /**
  * Service-layer for {@link User} entities
  *
  * @author Stephen Prizio
- * @version 0.0.9
+ * @version 0.1.1
  */
 @Service
 public class UserService {
@@ -93,7 +93,7 @@ public class UserService {
                 throw new DuplicateUserUsernameException(String.format("A user with the username %s already exists. Please try another username.", username));
             }
 
-            return applyChanges(new User(), data, true);
+            return applyChanges(User.builder().build(), data, true);
         } catch (Exception e) {
             this.userRepository.deleteUserByEmail(email);
             throw new EntityCreationException(String.format("A User could not be created : %s", e.getMessage()), e);

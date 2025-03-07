@@ -1,10 +1,5 @@
 package com.bluebell.radicle.integration.services.forexfactory;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.*;
-
 import com.bluebell.radicle.integration.client.forexfactory.ForexFactoryIntegrationClient;
 import com.bluebell.radicle.integration.exceptions.IntegrationException;
 import com.bluebell.radicle.integration.models.dto.forexfactory.CalendarNewsDayDTO;
@@ -18,11 +13,16 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.util.LinkedMultiValueMap;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.*;
+
 /**
  * Forex Factory API implementation of {@link GenericIntegrationService}
  *
  * @author Stephen Prizio
- * @version 0.0.9
+ * @version 0.1.1
  */
 @Service
 public class ForexFactoryIntegrationService implements GenericIntegrationService {
@@ -59,9 +59,11 @@ public class ForexFactoryIntegrationService implements GenericIntegrationService
             final List<CalendarNewsDayDTO> news = new ArrayList<>();
 
             map.forEach((key, value) -> {
-                final CalendarNewsDayDTO day = new CalendarNewsDayDTO();
-                day.setDate(key);
-                day.setEntries(this.calendarNewsDayEntryTranslator.translateAll(value));
+                final CalendarNewsDayDTO day = CalendarNewsDayDTO
+                        .builder()
+                        .date(key)
+                        .entries(this.calendarNewsDayEntryTranslator.translateAll(value))
+                        .build();
                 news.add(day);
             });
 

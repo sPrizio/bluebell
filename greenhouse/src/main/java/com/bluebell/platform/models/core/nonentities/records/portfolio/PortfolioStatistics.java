@@ -1,6 +1,7 @@
 package com.bluebell.platform.models.core.nonentities.records.portfolio;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.Builder;
 import lombok.Getter;
 
 /**
@@ -11,8 +12,9 @@ import lombok.Getter;
  * @param deltaDeposits % change in deposits
  * @param deltaWithdrawals % change in withdrawals
  * @author Stephen Prizio
- * @version 0.1.0
+ * @version 0.1.1
  */
+@Builder
 @Schema(title = "PortfolioStatistics", name = "PortfolioStatistics", description = "Basic statistical measures about a client's portfolio")
 public record PortfolioStatistics(
         @Getter @Schema(description = "Net worth expressed as a percentage") double deltaNetWorth,

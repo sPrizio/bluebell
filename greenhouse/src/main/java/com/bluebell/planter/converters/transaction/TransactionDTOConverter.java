@@ -12,7 +12,7 @@ import org.springframework.stereotype.Component;
  * Converts {@link Transaction}s into {@link TransactionDTO}s
  *
  * @author Stephen Prizio
- * @version 0.0.9
+ * @version 0.1.1
  */
 @Component("transactionDTOConverter")
 public class TransactionDTOConverter implements GenericDTOConverter<Transaction, TransactionDTO> {
@@ -27,20 +27,19 @@ public class TransactionDTOConverter implements GenericDTOConverter<Transaction,
     public TransactionDTO convert(final Transaction entity) {
 
         if (entity == null) {
-            return new TransactionDTO();
+            return TransactionDTO.builder().build();
         }
 
-        TransactionDTO transactionDTO = new TransactionDTO();
-
-        transactionDTO.setUid(this.uniqueIdentifierService.generateUid(entity));
-        transactionDTO.setTransactionType(new EnumDisplay(entity.getTransactionType().getCode(), entity.getTransactionType().getLabel()));
-        transactionDTO.setTransactionDate(entity.getTransactionDate());
-        transactionDTO.setAmount(entity.getAmount());
-        transactionDTO.setTransactionStatus(new EnumDisplay(entity.getTransactionStatus().getCode(), entity.getTransactionStatus().getLabel()));
-        transactionDTO.setName(entity.getName());
-        transactionDTO.setAccountNumber(entity.getAccount().getAccountNumber());
-        transactionDTO.setAccountName(entity.getAccount().getName());
-
-        return transactionDTO;
+        return TransactionDTO
+                .builder()
+                .uid(this.uniqueIdentifierService.generateUid(entity))
+                .transactionType(EnumDisplay.builder().code(entity.getTransactionType().getCode()).label(entity.getTransactionType().getLabel()).build())
+                .transactionDate(entity.getTransactionDate())
+                .amount(entity.getAmount())
+                .transactionStatus(EnumDisplay.builder().code(entity.getTransactionStatus().getCode()).label(entity.getTransactionStatus().getLabel()).build())
+                .name(entity.getName())
+                .accountNumber(entity.getAccount().getAccountNumber())
+                .accountName(entity.getAccount().getName())
+                .build();
     }
 }

@@ -1,11 +1,5 @@
 package com.bluebell.anther.services.reporting.impl;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.*;
-
 import com.bluebell.anther.models.parameter.strategy.impl.SproutStrategyParameters;
 import com.bluebell.anther.models.simulation.SimulationResult;
 import com.bluebell.anther.models.strategy.CumulativeStrategyReportEntry;
@@ -17,11 +11,17 @@ import org.apache.commons.lang3.StringUtils;
 import org.javatuples.Pair;
 import org.javatuples.Triplet;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.*;
+
 /**
  * Extends the {@link StrategyReportingService} specific for {@link Sprout}
  *
  * @author Stephen Prizio
- * @version 0.0.9
+ * @version 0.1.1
  */
 public class SproutReportingService extends StrategyReportingService<Sprout, SproutStrategyParameters> {
 
@@ -127,7 +127,19 @@ public class SproutReportingService extends StrategyReportingService<Sprout, Spr
             cumPoints = this.mathService.add(cumPoints, trade.getPoints());
             cumProfit = this.mathService.add(cumProfit, trade.calculateProfit(pricePerPoint));
 
-            entries.add(new CumulativeStrategyReportEntry(cumPoints, cumProfit, cumTrades, StringUtils.capitalize(trade.getTradeType().toString().toLowerCase()), trade.getTradeOpenTime(), trade.getTradeCloseTime(), trade.getPoints(), trade.calculateProfit(pricePerPoint)));
+            entries.add(
+                    CumulativeStrategyReportEntry
+                            .builder()
+                            .points(cumPoints)
+                            .netProfit(cumProfit)
+                            .trades(cumTrades)
+                            .tradeType(StringUtils.capitalize(trade.getTradeType().toString().toLowerCase()))
+                            .opened(trade.getTradeOpenTime())
+                            .closed(trade.getTradeCloseTime())
+                            .pointsForTrade(trade.getPoints())
+                            .profitForTrade(trade.calculateProfit(pricePerPoint))
+                            .build()
+            );
         }
 
         return entries;

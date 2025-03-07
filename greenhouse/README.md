@@ -39,8 +39,8 @@ Current Release: **Pre-release**
 - **0.0.7** : Integrating with **sepal**
 - **0.0.8** : Import FTMO Results
 - **0.0.9** : Major Code Improvements & Refactoring
-- **0.1.0** : (In Progress) Major Testing Refactoring and Coverage Improvements
-- **0.1.1** : (Planned) Improve Api Documentation, Improve Lombok usage, Cronjob for fetching Market News, Refactor controller endpoints to use pojo's instead of Maps for Request Objects (Look into OpenAPI)
+- **0.1.0** : Major Testing Refactoring and Coverage Improvements
+- **0.1.1** : (Current) Improve Api Documentation, Improve Lombok usage, Cronjob for fetching Market News, Refactor controller endpoints to use pojo's instead of Maps for Request Objects (Look into OpenAPI)
 - **0.1.2** : (Planned) Refactoring of Portfolios and Account Details (work with sepal) including page for managing portfolios, selector for active portfolio, CRUD
 - **0.1.3** : (Planned) Dockerize App (including front-end)
 - **0.1.4** : (Planned) Store Market data from MT4 and FirstRateData into database

@@ -1,16 +1,16 @@
 package com.bluebell.platform.enums.system;
 
-import java.time.temporal.ChronoUnit;
-
 import com.bluebell.platform.models.core.nonentities.records.traderecord.TradeRecord;
 import io.swagger.v3.oas.annotations.media.Schema;
 import org.apache.commons.lang3.StringUtils;
+
+import java.time.temporal.ChronoUnit;
 
 /**
  * Enum representing various time intervals for {@link TradeRecord}s
  *
  * @author Stephen Prizio
- * @version 0.0.9
+ * @version 0.1.1
  */
 @Schema(title = "TradeRecordTimeInterval", name = "TradeRecordTimeInterval", description = "The aggregate units that trade records can be separated, i.e. number of trades taken for this unit of time")
 public enum TradeRecordTimeInterval {

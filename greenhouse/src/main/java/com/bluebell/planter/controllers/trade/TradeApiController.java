@@ -1,14 +1,5 @@
 package com.bluebell.planter.controllers.trade;
 
-import java.io.IOException;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.List;
-import java.util.Optional;
-
-import static com.bluebell.radicle.importing.validation.ImportValidator.validateImportFileExtension;
-import static com.bluebell.radicle.validation.GenericValidator.*;
-
 import com.bluebell.planter.controllers.AbstractApiController;
 import com.bluebell.planter.converters.trade.TradeDTOConverter;
 import com.bluebell.platform.constants.CorePlatformConstants;
@@ -36,11 +27,20 @@ import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.List;
+import java.util.Optional;
+
+import static com.bluebell.radicle.importing.validation.ImportValidator.validateImportFileExtension;
+import static com.bluebell.radicle.validation.GenericValidator.*;
+
 /**
  * Api controller for {@link Trade}
  *
  * @author Stephen Prizio
- * @version 0.0.9
+ * @version 0.1.1
  */
 @RestController
 @RequestMapping("${base.api.controller.endpoint}/trade")
@@ -113,7 +113,11 @@ public class TradeApiController extends AbstractApiController {
     public StandardJsonResponse<List<TradeDTO>> getTradesForTradeType(final HttpServletRequest request, final @RequestParam("accountNumber") long accountNumber, final @RequestParam("tradeType") String tradeType) {
 
         if (!EnumUtils.isValidEnumIgnoreCase(TradeType.class, tradeType)) {
-            return new StandardJsonResponse<>(false, null, String.format("%s is not a valid trade type", tradeType));
+            return StandardJsonResponse
+                    .<List<TradeDTO>>builder()
+                    .success(false)
+                    .message(String.format("%s is not a valid trade type", tradeType))
+                    .build();
         }
 
         TradeType type = TradeType.valueOf(tradeType.toUpperCase());
@@ -121,7 +125,11 @@ public class TradeApiController extends AbstractApiController {
         List<Trade> trades = this.tradeService.findAllByTradeType(type, getAccountForId(user, accountNumber));
         validateIfAnyResult(trades, "No trades were found for type %s", type.name());
 
-        return new StandardJsonResponse<>(true, this.tradeDTOConverter.convertAll(trades), StringUtils.EMPTY);
+        return StandardJsonResponse
+                .<List<TradeDTO>>builder()
+                .success(true)
+                .data(this.tradeDTOConverter.convertAll(trades))
+                .build();
     }
 
     /**
@@ -184,7 +192,11 @@ public class TradeApiController extends AbstractApiController {
         List<Trade> trades = this.tradeService.findAllTradesWithinTimespan(LocalDateTime.parse(start, DateTimeFormatter.ISO_DATE_TIME), LocalDateTime.parse(end, DateTimeFormatter.ISO_DATE_TIME), getAccountForId(user, accountNumber));
         validateIfAnyResult(trades, "No trades were found within interval: [%s, %s]", start, end);
 
-        return new StandardJsonResponse<>(true, this.tradeDTOConverter.convertAll(trades), StringUtils.EMPTY);
+        return StandardJsonResponse
+                .<List<TradeDTO>>builder()
+                .success(true)
+                .data(this.tradeDTOConverter.convertAll(trades))
+                .build();
     }
 
     /**
@@ -251,7 +263,21 @@ public class TradeApiController extends AbstractApiController {
 
         final User user = (User) request.getAttribute(SecurityConstants.USER_REQUEST_KEY);
         Page<Trade> trades = this.tradeService.findAllTradesWithinTimespan(LocalDateTime.parse(start, DateTimeFormatter.ISO_DATE_TIME), LocalDateTime.parse(end, DateTimeFormatter.ISO_DATE_TIME), getAccountForId(user, accountNumber), page, pageSize);
-        return new StandardJsonResponse<>(true, new PaginatedTradesDTO(trades.getPageable().getPageNumber(), trades.getPageable().getPageSize(), trades.map(tr -> this.tradeDTOConverter.convert(tr)).stream().toList(), trades.getNumberOfElements(), trades.getTotalPages()), StringUtils.EMPTY);
+
+        return StandardJsonResponse
+                .<PaginatedTradesDTO>builder()
+                .success(true)
+                .data(
+                        PaginatedTradesDTO
+                                .builder()
+                                .page(trades.getPageable().getPageNumber())
+                                .pageSize(trades.getPageable().getPageSize())
+                                .trades(trades.map(tr -> this.tradeDTOConverter.convert(tr)).stream().toList())
+                                .totalElements(trades.getNumberOfElements())
+                                .totalPages(trades.getTotalPages())
+                                .build()
+                )
+                .build();
     }
 
 
@@ -293,7 +319,9 @@ public class TradeApiController extends AbstractApiController {
         final User user = (User) request.getAttribute(SecurityConstants.USER_REQUEST_KEY);
         Optional<Trade> trade = this.tradeService.findTradeByTradeId(tradeId, getAccountForId(user, accountNumber));
         validateIfPresent(trade, "No trade was found with trade id: %s", tradeId);
-        return trade.map(value -> new StandardJsonResponse<>(true, this.tradeDTOConverter.convert(value), StringUtils.EMPTY)).orElseGet(() -> new StandardJsonResponse<>(true, new TradeDTO(), StringUtils.EMPTY));
+        return trade
+                .map(value -> StandardJsonResponse.<TradeDTO>builder().success(true).data(this.tradeDTOConverter.convert(value)).build())
+                .orElseGet(() -> StandardJsonResponse.<TradeDTO>builder().success(false).data(TradeDTO.builder().build()).build());
     }
 
 
@@ -340,9 +368,18 @@ public class TradeApiController extends AbstractApiController {
 
         final String result = isStrategy ? this.genericStrategyImportService.importReport(file.getInputStream(), getAccountForId(user, accountNumber)) : this.genericTradeImportService.importTrades(file.getInputStream(), getAccountForId(user, accountNumber));
         if (StringUtils.isEmpty(result)) {
-            return new StandardJsonResponse<>(true, true, StringUtils.EMPTY);
+            return StandardJsonResponse
+                    .<Boolean>builder()
+                    .success(true)
+                    .data(true)
+                    .build();
         }
 
-        return new StandardJsonResponse<>(false, false, result);
+        return StandardJsonResponse
+                .<Boolean>builder()
+                .success(false)
+                .data(false)
+                .message(result)
+                .build();
     }
 }

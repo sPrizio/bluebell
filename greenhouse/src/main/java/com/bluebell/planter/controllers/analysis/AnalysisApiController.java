@@ -1,9 +1,5 @@
 package com.bluebell.planter.controllers.analysis;
 
-import java.time.DayOfWeek;
-import java.util.List;
-import java.util.Optional;
-
 import com.bluebell.planter.controllers.AbstractApiController;
 import com.bluebell.platform.constants.CorePlatformConstants;
 import com.bluebell.platform.enums.analysis.AnalysisFilter;
@@ -23,14 +19,17 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.annotation.Resource;
 import jakarta.servlet.http.HttpServletRequest;
 import org.apache.commons.lang3.EnumUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.web.bind.annotation.*;
+
+import java.time.DayOfWeek;
+import java.util.List;
+import java.util.Optional;
 
 /**
  * Controller for {@link AnalysisService}
  *
  * @author Stephen Prizio
- * @version 0.1.0
+ * @version 0.1.1
  */
 @RestController
 @RequestMapping("${base.api.controller.endpoint}/analysis")
@@ -102,11 +101,17 @@ public class AnalysisApiController extends AbstractApiController {
     ) {
 
         if (AnalysisFilter.getAnalysisFilter(filter) == null) {
-            return new StandardJsonResponse<>(false, null, String.format(CorePlatformConstants.Validation.DataIntegrity.INVALID_FILTER, filter));
+            return StandardJsonResponse
+                    .<List<AnalysisResult>>builder()
+                    .success(false)
+                    .message(String.format(CorePlatformConstants.Validation.DataIntegrity.INVALID_FILTER, filter))
+                    .build();
         }
 
         final Optional<Account> account = this.accountService.findAccountByAccountNumber(accountNumber);
-        return account.map(value -> new StandardJsonResponse<>(true, this.analysisService.computeTimeBucketAnalysis(value, PlatformTimeInterval.THIRTY_MINUTE, AnalysisFilter.getAnalysisFilter(filter.toUpperCase()), isOpened), StringUtils.EMPTY)).orElseGet(() -> new StandardJsonResponse<>(true, null, CorePlatformConstants.Validation.Account.ACCOUNT_NOT_FOUND));
+        return account
+                .map(value -> StandardJsonResponse.<List<AnalysisResult>>builder().success(true).data(this.analysisService.computeTimeBucketAnalysis(value, PlatformTimeInterval.THIRTY_MINUTE, AnalysisFilter.getAnalysisFilter(filter.toUpperCase()), isOpened)).build())
+                .orElseGet(() -> StandardJsonResponse.<List<AnalysisResult>>builder().success(false).message(CorePlatformConstants.Validation.Account.ACCOUNT_NOT_FOUND).build());
     }
 
     /**
@@ -160,11 +165,17 @@ public class AnalysisApiController extends AbstractApiController {
     ) {
 
         if (AnalysisFilter.getAnalysisFilter(filter) == null) {
-            return new StandardJsonResponse<>(false, null, String.format(CorePlatformConstants.Validation.DataIntegrity.INVALID_FILTER, filter));
+            return StandardJsonResponse
+                    .<List<AnalysisResult>>builder()
+                    .success(false)
+                    .message(String.format(CorePlatformConstants.Validation.DataIntegrity.INVALID_FILTER, filter))
+                    .build();
         }
 
         final Optional<Account> account = this.accountService.findAccountByAccountNumber(accountNumber);
-        return account.map(value -> new StandardJsonResponse<>(true, this.analysisService.computeWeekdayAnalysis(value, AnalysisFilter.getAnalysisFilter(filter.toUpperCase())), StringUtils.EMPTY)).orElseGet(() -> new StandardJsonResponse<>(true, null, CorePlatformConstants.Validation.Account.ACCOUNT_NOT_FOUND));
+        return account
+                .map(value -> StandardJsonResponse.<List<AnalysisResult>>builder().success(true).data(this.analysisService.computeWeekdayAnalysis(value, AnalysisFilter.getAnalysisFilter(filter.toUpperCase()))).build())
+                .orElseGet(() -> StandardJsonResponse.<List<AnalysisResult>>builder().success(false).message(CorePlatformConstants.Validation.Account.ACCOUNT_NOT_FOUND).build());
     }
 
     /**
@@ -228,15 +239,25 @@ public class AnalysisApiController extends AbstractApiController {
     ) {
 
         if (AnalysisFilter.getAnalysisFilter(filter) == null) {
-            return new StandardJsonResponse<>(false, null, String.format(CorePlatformConstants.Validation.DataIntegrity.INVALID_FILTER, filter));
+            return StandardJsonResponse
+                    .<List<AnalysisResult>>builder()
+                    .success(false)
+                    .message(String.format(CorePlatformConstants.Validation.DataIntegrity.INVALID_FILTER, filter))
+                    .build();
         }
 
         if (!EnumUtils.isValidEnumIgnoreCase(DayOfWeek.class, weekday)) {
-            return new StandardJsonResponse<>(false, null, String.format(CorePlatformConstants.Validation.DataIntegrity.INVALID_WEEKDAY, weekday));
+            return StandardJsonResponse
+                    .<List<AnalysisResult>>builder()
+                    .success(false)
+                    .message(String.format(CorePlatformConstants.Validation.DataIntegrity.INVALID_WEEKDAY, weekday))
+                    .build();
         }
 
         final Optional<Account> account = this.accountService.findAccountByAccountNumber(accountNumber);
-        return account.map(value -> new StandardJsonResponse<>(true, this.analysisService.computeWeekdayTimeBucketAnalysis(value, DayOfWeek.valueOf(weekday.toUpperCase()), PlatformTimeInterval.THIRTY_MINUTE, AnalysisFilter.getAnalysisFilter(filter.toUpperCase())), StringUtils.EMPTY)).orElseGet(() -> new StandardJsonResponse<>(true, null, CorePlatformConstants.Validation.Account.ACCOUNT_NOT_FOUND));
+        return account
+                .map(value -> StandardJsonResponse.<List<AnalysisResult>>builder().success(true).data(this.analysisService.computeWeekdayTimeBucketAnalysis(value, DayOfWeek.valueOf(weekday.toUpperCase()), PlatformTimeInterval.THIRTY_MINUTE, AnalysisFilter.getAnalysisFilter(filter.toUpperCase()))).build())
+                .orElseGet(() -> StandardJsonResponse.<List<AnalysisResult>>builder().success(false).message(CorePlatformConstants.Validation.Account.ACCOUNT_NOT_FOUND).build());
     }
 
     /**
@@ -292,14 +313,24 @@ public class AnalysisApiController extends AbstractApiController {
     ) {
 
         if (AnalysisFilter.getAnalysisFilter(filter) == null) {
-            return new StandardJsonResponse<>(false, null, String.format(CorePlatformConstants.Validation.DataIntegrity.INVALID_FILTER, filter));
+            return StandardJsonResponse
+                    .<List<AnalysisResult>>builder()
+                    .success(false)
+                    .message(String.format(CorePlatformConstants.Validation.DataIntegrity.INVALID_FILTER, filter))
+                    .build();
         }
 
         if (TradeDurationFilter.getTradeDurationFilter(tradeDurationFilter) == null) {
-            return new StandardJsonResponse<>(false, null, String.format(CorePlatformConstants.Validation.DataIntegrity.INVALID_FILTER, tradeDurationFilter));
+            return StandardJsonResponse
+                    .<List<AnalysisResult>>builder()
+                    .success(false)
+                    .message(String.format(CorePlatformConstants.Validation.DataIntegrity.INVALID_FILTER, tradeDurationFilter))
+                    .build();
         }
 
         final Optional<Account> account = this.accountService.findAccountByAccountNumber(accountNumber);
-        return account.map(value -> new StandardJsonResponse<>(true, this.analysisService.computeTradeDurationAnalysis(value, AnalysisFilter.getAnalysisFilter(filter.toUpperCase()), TradeDurationFilter.getTradeDurationFilter(tradeDurationFilter.toUpperCase())), StringUtils.EMPTY)).orElseGet(() -> new StandardJsonResponse<>(true, null, CorePlatformConstants.Validation.Account.ACCOUNT_NOT_FOUND));
+        return account
+                .map(value -> StandardJsonResponse.<List<AnalysisResult>>builder().success(true).data(this.analysisService.computeTradeDurationAnalysis(value, AnalysisFilter.getAnalysisFilter(filter.toUpperCase()), TradeDurationFilter.getTradeDurationFilter(tradeDurationFilter.toUpperCase()))).build())
+                .orElseGet(() -> StandardJsonResponse.<List<AnalysisResult>>builder().success(false).message(CorePlatformConstants.Validation.Account.ACCOUNT_NOT_FOUND).build());
     }
 }

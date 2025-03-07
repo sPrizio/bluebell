@@ -34,7 +34,7 @@ import org.springframework.util.MultiValueMap;
  * Testing class for {@link TradeRecordApiController}
  *
  * @author Stephen Prizio
- * @version 0.1.0
+ * @version 0.1.1
  */
 @SpringBootTest
 @AutoConfigureMockMvc(addFilters = false)
@@ -49,9 +49,9 @@ class TradeRecordApiControllerTest extends AbstractPlanterTest {
 
     @BeforeEach
     public void setUp() {
-        Mockito.when(this.tradeRecordService.getTradeRecords(any(), any(), any(), any(), anyInt())).thenReturn(new TradeRecordReport(List.of(generateTradeRecord()), null));
-        Mockito.when(this.tradeRecordService.getRecentTradeRecords(any(), any(), anyInt())).thenReturn(new TradeRecordReport(List.of(generateTradeRecord()), null));
-        Mockito.when(this.tradeRecordService.getTradeRecordControls(any(), any())).thenReturn(new TradeRecordControls(List.of(new TradeRecordControlsYearEntry("2025", List.of()))));
+        Mockito.when(this.tradeRecordService.getTradeRecords(any(), any(), any(), any(), anyInt())).thenReturn(TradeRecordReport.builder().tradeRecords(List.of(generateTradeRecord())).tradeRecordTotals(null).build());
+        Mockito.when(this.tradeRecordService.getRecentTradeRecords(any(), any(), anyInt())).thenReturn(TradeRecordReport.builder().tradeRecords(List.of(generateTradeRecord())).tradeRecordTotals(null).build());
+        Mockito.when(this.tradeRecordService.getTradeRecordControls(any(), any())).thenReturn(TradeRecordControls.builder().yearEntries(List.of(TradeRecordControlsYearEntry.builder().year("2025").monthEntries(List.of()).build())).build());
         Mockito.when(this.tradeRecordService.getTradeLog(any(), any(), any(), any(), anyInt())).thenReturn(generateTradeLog());
     }
 

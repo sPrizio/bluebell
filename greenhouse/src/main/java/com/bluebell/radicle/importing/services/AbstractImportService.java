@@ -1,17 +1,13 @@
 package com.bluebell.radicle.importing.services;
 
-import java.util.*;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
 import com.bluebell.platform.constants.CorePlatformConstants;
 import com.bluebell.platform.enums.trade.TradePlatform;
 import com.bluebell.platform.enums.trade.TradeType;
 import com.bluebell.platform.models.core.entities.account.Account;
 import com.bluebell.platform.models.core.entities.trade.Trade;
 import com.bluebell.platform.services.MathService;
-import com.bluebell.radicle.importing.records.FTMOTradeWrapper;
-import com.bluebell.radicle.importing.records.MetaTrader4TradeWrapper;
+import com.bluebell.radicle.importing.models.FTMOTradeWrapper;
+import com.bluebell.radicle.importing.models.MetaTrader4TradeWrapper;
 import com.bluebell.radicle.repositories.account.AccountRepository;
 import com.bluebell.radicle.repositories.trade.TradeRepository;
 import jakarta.annotation.Resource;
@@ -19,11 +15,15 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
+import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 /**
  * Parent-level import service for re-usable functionality
  *
  * @author Stephen Prizio
- * @version 0.0.9
+ * @version 0.1.1
  */
 @Slf4j
 @Service("abstractImportService")
@@ -203,24 +203,22 @@ public abstract class AbstractImportService {
      * @return {@link Trade}
      */
     private Trade createNewTrade(final MetaTrader4TradeWrapper wrapper, final TradeType tradeType, final Account account) {
-
-        Trade trade = new Trade();
-
-        trade.setTradeId(wrapper.ticketNumber());
-        trade.setTradePlatform(TradePlatform.METATRADER4);
-        trade.setProduct(wrapper.item());
-        trade.setTradeType(tradeType);
-        trade.setClosePrice(wrapper.closePrice());
-        trade.setTradeCloseTime(wrapper.closeTime());
-        trade.setTradeOpenTime(wrapper.openTime());
-        trade.setLotSize(wrapper.size());
-        trade.setNetProfit(wrapper.profit());
-        trade.setOpenPrice(wrapper.openPrice());
-        trade.setStopLoss(wrapper.stopLoss());
-        trade.setTakeProfit(wrapper.takeProfit());
-        trade.setAccount(account);
-
-        return trade;
+        return Trade
+                .builder()
+                .tradeId(wrapper.ticketNumber())
+                .tradePlatform(TradePlatform.METATRADER4)
+                .product(wrapper.item())
+                .tradeType(tradeType)
+                .closePrice(wrapper.closePrice())
+                .tradeCloseTime(wrapper.closeTime())
+                .tradeOpenTime(wrapper.openTime())
+                .lotSize(wrapper.size())
+                .netProfit(wrapper.profit())
+                .openPrice(wrapper.openPrice())
+                .stopLoss(wrapper.stopLoss())
+                .takeProfit(wrapper.takeProfit())
+                .account(account)
+                .build();
     }
 
     /**
@@ -231,24 +229,21 @@ public abstract class AbstractImportService {
      * @return {@link Trade}
      */
     private Trade createNewTrade(final FTMOTradeWrapper ftmoWrapper, final TradeType tradeType, final Account account) {
-
-        Trade trade = new Trade();
-
-        trade.setTradeId(ftmoWrapper.ticketNumber());
-        trade.setTradePlatform(TradePlatform.METATRADER4);
-        trade.setProduct(ftmoWrapper.item());
-        trade.setLotSize(ftmoWrapper.size());
-        trade.setNetProfit(ftmoWrapper.profit());
-        trade.setOpenPrice(ftmoWrapper.openPrice());
-        trade.setStopLoss(ftmoWrapper.stopLoss());
-        trade.setTakeProfit(ftmoWrapper.takeProfit());
-        trade.setTradeType(tradeType);
-        trade.setClosePrice(ftmoWrapper.closePrice());
-        trade.setTradeCloseTime(ftmoWrapper.closeTime());
-        trade.setTradeOpenTime(ftmoWrapper.openTime());
-        trade.setAccount(account);
-
-        return trade;
+        return Trade.builder()
+                .tradeId(ftmoWrapper.ticketNumber())
+                .tradePlatform(TradePlatform.METATRADER4)
+                .product(ftmoWrapper.item())
+                .lotSize(ftmoWrapper.size())
+                .netProfit(ftmoWrapper.profit())
+                .openPrice(ftmoWrapper.openPrice())
+                .stopLoss(ftmoWrapper.stopLoss())
+                .takeProfit(ftmoWrapper.takeProfit())
+                .tradeType(tradeType)
+                .closePrice(ftmoWrapper.closePrice())
+                .tradeCloseTime(ftmoWrapper.closeTime())
+                .tradeOpenTime(ftmoWrapper.openTime())
+                .account(account)
+                .build();
     }
 
     /**

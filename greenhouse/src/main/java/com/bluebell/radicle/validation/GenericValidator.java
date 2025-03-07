@@ -1,11 +1,5 @@
 package com.bluebell.radicle.validation;
 
-import java.time.DateTimeException;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.*;
-
 import com.bluebell.platform.constants.CorePlatformConstants;
 import com.bluebell.platform.exceptions.calculator.UnexpectedNegativeValueException;
 import com.bluebell.platform.exceptions.calculator.UnexpectedZeroValueException;
@@ -13,19 +7,23 @@ import com.bluebell.radicle.exceptions.system.NoResultFoundException;
 import com.bluebell.radicle.exceptions.system.NonUniqueItemFoundException;
 import com.bluebell.radicle.exceptions.validation.IllegalParameterException;
 import com.bluebell.radicle.exceptions.validation.JsonMissingPropertyException;
+import lombok.experimental.UtilityClass;
 import org.apache.commons.collections4.CollectionUtils;
+
+import java.time.DateTimeException;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.*;
 
 /**
  * Validator class for method integrity
  *
  * @author Stephen Prizio
- * @version 0.0.9
+ * @version 0.1.1
  */
+@UtilityClass
 public class GenericValidator {
-
-    private GenericValidator() {
-        throw new UnsupportedOperationException(String.format(CorePlatformConstants.NO_INSTANTIATION, getClass().getName()));
-    }
 
 
     //  METHODS

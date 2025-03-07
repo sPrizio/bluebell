@@ -88,7 +88,7 @@
         <option name="INCLUDE" value="false" />
       </pattern>
       <pattern>
-        <option name="PATTERN" value="com.bluebell.radicle.importing.records.*" />
+        <option name="PATTERN" value="com.bluebell.radicle.importing.models.*" />
         <option name="ENABLED" value="true" />
         <option name="INCLUDE" value="false" />
       </pattern>

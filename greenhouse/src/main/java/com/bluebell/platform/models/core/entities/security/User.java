@@ -1,29 +1,31 @@
 package com.bluebell.platform.models.core.entities.security;
 
-import java.nio.charset.StandardCharsets;
-import java.time.LocalDateTime;
-import java.util.Base64;
-import java.util.List;
-
 import com.bluebell.platform.enums.security.UserRole;
 import com.bluebell.platform.models.core.entities.GenericEntity;
 import com.bluebell.platform.models.core.entities.account.Account;
 import com.bluebell.platform.models.core.entities.system.PhoneNumber;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
+
+import java.nio.charset.StandardCharsets;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Base64;
+import java.util.List;
 
 /**
  * Class representation of an individual that can interact with the system, hold accounts and other information
  *
  * @author Stephen Prizio
- * @version 0.0.9
+ * @version 0.1.1
  */
 @Getter
 @Entity
+@Builder
 @Table(name = "users", uniqueConstraints = @UniqueConstraint(name = "UniqueEmail", columnNames = {"email"}))
+@NoArgsConstructor
+@AllArgsConstructor
 @ToString(exclude = "password")
 public class User implements GenericEntity {
 
@@ -61,15 +63,15 @@ public class User implements GenericEntity {
 
     @Setter
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List<PhoneNumber> phones;
+    private @Builder.Default List<PhoneNumber> phones = new ArrayList<>();
 
     @Setter
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List<Account> accounts;
+    private @Builder.Default List<Account> accounts = new ArrayList<>();
 
     @Setter
     @ElementCollection
-    private List<UserRole> roles;
+    private @Builder.Default List<UserRole> roles = new ArrayList<>();
 
 
     //  METHODS

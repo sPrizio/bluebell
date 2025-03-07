@@ -20,14 +20,15 @@ import com.bluebell.platform.models.core.nonentities.records.tradelog.TradeLog;
 import com.bluebell.platform.models.core.nonentities.records.traderecord.TradeRecordReport;
 import com.bluebell.platform.models.core.nonentities.records.traderecord.controls.TradeRecordControls;
 import io.swagger.v3.oas.annotations.media.Schema;
-import org.apache.commons.lang3.StringUtils;
+import lombok.Builder;
 
 /**
  * Class representation of a standard json response
  *
  * @author Stephen Prizio
- * @version 0.0.9
+ * @version 0.1.1
  */
+@Builder
 @Schema(title = "StandardJsonResponse", name = "StandardJsonResponse", description = "Standard API response entity. All api calls will return this entity which includes a success flag, data, external & internal facing messages.")
 public record StandardJsonResponse<T>(
         @Schema(description = "Indicates whether the response successfully completed") boolean success,
@@ -59,8 +60,4 @@ public record StandardJsonResponse<T>(
         ) T data,
         @Schema(description = "External, client-facing message. Successful calls will usually have an empty message") String message,
         @Schema(description = "Internal, server-facing message") String internalMessage
-) {
-    public StandardJsonResponse(final boolean success, final T data, final String message) {
-        this(success, data, message, StringUtils.EMPTY);
-    }
-}
+) { }

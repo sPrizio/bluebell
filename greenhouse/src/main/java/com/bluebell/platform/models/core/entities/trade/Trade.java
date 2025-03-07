@@ -1,24 +1,26 @@
 package com.bluebell.platform.models.core.entities.trade;
 
-import java.time.LocalDateTime;
-
 import com.bluebell.platform.enums.trade.TradePlatform;
 import com.bluebell.platform.enums.trade.TradeType;
 import com.bluebell.platform.models.core.entities.GenericEntity;
 import com.bluebell.platform.models.core.entities.account.Account;
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
+
+import java.time.LocalDateTime;
 
 /**
  * Class representation of a trade in the market, a buy or sell exchange
  *
  * @author Stephen Prizio
- * @version 0.0.9
+ * @version 0.1.1
  */
 @Getter
 @Entity
+@Builder
 @Table(name = "trades", uniqueConstraints = @UniqueConstraint(name = "UniqueTradeIdAndAccount", columnNames = {"trade_id", "account_id"}))
+@NoArgsConstructor
+@AllArgsConstructor
 public class Trade implements GenericEntity {
 
     @Id

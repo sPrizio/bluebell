@@ -1,15 +1,15 @@
 package com.bluebell.platform.enums.time;
 
-import java.time.temporal.ChronoUnit;
-
 import com.bluebell.platform.models.core.nonentities.market.MarketPrice;
 import lombok.Getter;
+
+import java.time.temporal.ChronoUnit;
 
 /**
  * Representation of an interval of time for a {@link MarketPrice}
  *
  * @author Stephen Prizio
- * @version 0.0.9
+ * @version 0.1.1
  */
 @Getter
 public enum PlatformTimeInterval {

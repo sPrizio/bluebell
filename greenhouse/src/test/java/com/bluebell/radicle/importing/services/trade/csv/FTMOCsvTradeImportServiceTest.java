@@ -30,7 +30,7 @@ import org.springframework.util.ResourceUtils;
  * Testing for {@link FTMOCsvTradeImportService}
  *
  * @author Stephen Prizio
- * @version 0.1.0
+ * @version 0.1.1
  */
 @SpringBootTest
 @RunWith(SpringRunner.class)
@@ -56,9 +56,7 @@ class FTMOCsvTradeImportServiceTest extends AbstractGenericTest {
 
     @BeforeEach
     void setUp() {
-        final Account acc = new Account();
-        acc.setId(null);
-        account = this.accountRepository.save(acc);
+        account = this.accountRepository.save(Account.builder().id(null).build());
         user = generateTestUser();
         user.setAccounts(List.of(account));
         user = this.userRepository.save(user);

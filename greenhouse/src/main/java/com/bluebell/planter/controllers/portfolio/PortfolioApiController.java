@@ -14,14 +14,13 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.annotation.Resource;
 import jakarta.servlet.http.HttpServletRequest;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
 /**
  * API Controller for {@link Portfolio}
  *
  * @author Stephen Prizio
- * @version 0.0.9
+ * @version 0.1.1
  */
 @RestController
 @RequestMapping("${base.api.controller.endpoint}/portfolio")
@@ -64,6 +63,10 @@ public class PortfolioApiController extends AbstractApiController {
     @GetMapping("/get")
     public StandardJsonResponse<Portfolio> getPortfolio(final HttpServletRequest request) {
         final User user = (User) request.getAttribute(SecurityConstants.USER_REQUEST_KEY);
-        return new StandardJsonResponse<>(true, this.portfolioService.getPortfolio(user), StringUtils.EMPTY);
+        return StandardJsonResponse
+                .<Portfolio>builder()
+                .success(true)
+                .data(this.portfolioService.getPortfolio(user))
+                .build();
     }
 }

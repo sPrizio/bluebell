@@ -1,7 +1,7 @@
 package com.bluebell.platform.models.core.nonentities.apexcharts;
 
 import io.swagger.v3.oas.annotations.media.Schema;
-import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 
 /**
@@ -9,10 +9,10 @@ import lombok.Getter;
  * Apex Charts documentation here: <a href="https://apexcharts.com/docs/installation/">apexcharts</a>
  *
  * @author Stephen Prizio
- * @version 0.0.9
+ * @version 0.1.1
  */
 @Getter
-@AllArgsConstructor
+@Builder
 @Schema(title = "ApexChartCandleStick", name = "ApexChartCandleStick", description = "An individual point on a candlestick chart, expected by ApexCharts")
 public class ApexChartCandleStick {
 

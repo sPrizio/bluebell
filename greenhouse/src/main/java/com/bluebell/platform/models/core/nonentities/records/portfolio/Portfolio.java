@@ -1,12 +1,13 @@
 package com.bluebell.platform.models.core.nonentities.records.portfolio;
 
 
-import java.util.List;
-
 import com.bluebell.platform.models.core.entities.account.Account;
 import com.bluebell.platform.models.core.entities.security.User;
 import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.Builder;
 import lombok.Getter;
+
+import java.util.List;
 
 /**
  * Class representation of an overview of a {@link User}'s {@link Account}s
@@ -19,8 +20,9 @@ import lombok.Getter;
  * @param statistics {@link PortfolioStatistics}
  * @param equity {@link List} of {@link PortfolioEquityPoint}s
  * @author Stephen Prizio
- * @version 0.1.0
+ * @version 0.1.1
  */
+@Builder
 @Schema(title = "Portfolio", name = "Portfolio", description = "DTO representation of a client's portfolio, including basic statistics")
 public record Portfolio(
         @Getter @Schema(description = "Is the portfolio new?") boolean newPortfolio,

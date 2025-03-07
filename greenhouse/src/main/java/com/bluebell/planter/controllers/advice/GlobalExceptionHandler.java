@@ -1,9 +1,5 @@
 package com.bluebell.planter.controllers.advice;
 
-import java.io.FileNotFoundException;
-import java.sql.SQLSyntaxErrorException;
-import java.time.DateTimeException;
-
 import com.bluebell.planter.constants.ApiConstants;
 import com.bluebell.planter.exceptions.InvalidEnumException;
 import com.bluebell.platform.exceptions.calculator.UnexpectedNegativeValueException;
@@ -28,12 +24,16 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import java.io.FileNotFoundException;
+import java.sql.SQLSyntaxErrorException;
+import java.time.DateTimeException;
+
 
 /**
  * Handles the exceptions thrown by the application
  *
  * @author Stephen Prizio
- * @version 0.0.9
+ * @version 0.1.1
  */
 @ControllerAdvice
 public class GlobalExceptionHandler {
@@ -103,8 +103,12 @@ public class GlobalExceptionHandler {
      * @param message         message
      * @param internalMessage internal reporting message
      */
-
     private StandardJsonResponse<String> generateResponse(final String message, final String internalMessage) {
-        return new StandardJsonResponse<>(false, null, message, internalMessage);
+        return StandardJsonResponse.
+                <String>builder()
+                .success(false)
+                .message(message)
+                .internalMessage(internalMessage)
+                .build();
     }
 }
