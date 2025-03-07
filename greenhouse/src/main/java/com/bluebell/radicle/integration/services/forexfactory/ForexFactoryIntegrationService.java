@@ -59,9 +59,11 @@ public class ForexFactoryIntegrationService implements GenericIntegrationService
             final List<CalendarNewsDayDTO> news = new ArrayList<>();
 
             map.forEach((key, value) -> {
-                final CalendarNewsDayDTO day = new CalendarNewsDayDTO();
-                day.setDate(key);
-                day.setEntries(this.calendarNewsDayEntryTranslator.translateAll(value));
+                final CalendarNewsDayDTO day = CalendarNewsDayDTO
+                        .builder()
+                        .date(key)
+                        .entries(this.calendarNewsDayEntryTranslator.translateAll(value))
+                        .build();
                 news.add(day);
             });
 

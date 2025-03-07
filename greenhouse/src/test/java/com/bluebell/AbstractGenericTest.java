@@ -27,6 +27,7 @@ import com.bluebell.platform.models.core.entities.system.PhoneNumber;
 import com.bluebell.platform.models.core.entities.trade.Trade;
 import com.bluebell.platform.models.core.entities.transaction.Transaction;
 import com.bluebell.radicle.integration.models.responses.forexfactory.CalendarNewsEntryResponse;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * Parent-level testing class to provide testing assistance for the project
@@ -180,7 +181,16 @@ public abstract class AbstractGenericTest {
      * @return {@link CalendarNewsEntryResponse}
      */
     public CalendarNewsEntryResponse generateCalendarNewsEntryResponse() {
-        return new CalendarNewsEntryResponse("Currency Account", "CAD", "2023-05-30T08:30:00-04:00", "Low", "-9.9B", "-10.6B", "");
+        return CalendarNewsEntryResponse
+                .builder()
+                .title("Currency Account")
+                .country("CAD")
+                .date("2023-05-30T08:30:00-04:00")
+                .impact("Low")
+                .forecast("-9.9B")
+                .previous("-10.6B")
+                .url(StringUtils.EMPTY)
+                .build();
     }
 
     /**

@@ -2,7 +2,7 @@ package com.bluebell.radicle.importing.services.trade.csv;
 
 import com.bluebell.platform.models.core.entities.account.Account;
 import com.bluebell.radicle.importing.exceptions.TradeImportFailureException;
-import com.bluebell.radicle.importing.records.FTMOTradeWrapper;
+import com.bluebell.radicle.importing.models.FTMOTradeWrapper;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
@@ -101,18 +101,19 @@ public class FTMOCsvTradeImportService extends AbstractCsvTradeImportService {
             return null;
         }
 
-        return new FTMOTradeWrapper(
-                data.get(0),
-                LocalDateTime.parse(data.get(1).replace("\"", StringUtils.EMPTY), DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")),
-                LocalDateTime.parse(data.get(8).replace("\"", StringUtils.EMPTY), DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")),
-                data.get(2),
-                Double.parseDouble(data.get(3)),
-                data.get(4),
-                Double.parseDouble(data.get(5)),
-                Double.parseDouble(data.get(6)),
-                Double.parseDouble(data.get(7)),
-                Double.parseDouble(data.get(9)),
-                Double.parseDouble(data.get(12).replace(" ", StringUtils.EMPTY).replace(",", StringUtils.EMPTY).trim())
-        );
+        return FTMOTradeWrapper
+                .builder()
+                .ticketNumber(data.get(0))
+                .openTime(LocalDateTime.parse(data.get(1).replace("\"", StringUtils.EMPTY), DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")))
+                .closeTime(LocalDateTime.parse(data.get(8).replace("\"", StringUtils.EMPTY), DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")))
+                .type(data.get(2))
+                .size(Double.parseDouble(data.get(3)))
+                .item(data.get(4))
+                .openPrice(Double.parseDouble(data.get(5)))
+                .stopLoss(Double.parseDouble(data.get(6)))
+                .takeProfit(Double.parseDouble(data.get(7)))
+                .closePrice(Double.parseDouble(data.get(9)))
+                .profit(Double.parseDouble(data.get(12).replace(" ", StringUtils.EMPTY).replace(",", StringUtils.EMPTY).trim()))
+                .build();
     }
 }

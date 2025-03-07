@@ -3,7 +3,7 @@ package com.bluebell.radicle.importing.services.trade;
 import com.bluebell.platform.models.core.entities.account.Account;
 import com.bluebell.radicle.importing.ImportService;
 import com.bluebell.radicle.importing.exceptions.TradeImportFailureException;
-import com.bluebell.radicle.importing.records.MetaTrader4TradeWrapper;
+import com.bluebell.radicle.importing.models.MetaTrader4TradeWrapper;
 import com.bluebell.radicle.importing.services.AbstractImportService;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -131,18 +131,19 @@ public class MetaTrader4TradeImportService extends AbstractImportService impleme
             return null;
         }
 
-        return new MetaTrader4TradeWrapper(
-                data.get(0),
-                LocalDateTime.parse(data.get(1), DateTimeFormatter.ofPattern("yyyy.MM.dd HH:mm:ss")),
-                LocalDateTime.parse(data.get(8), DateTimeFormatter.ofPattern("yyyy.MM.dd HH:mm:ss")),
-                data.get(2),
-                Double.parseDouble(data.get(3)),
-                data.get(4),
-                Double.parseDouble(data.get(5)),
-                Double.parseDouble(data.get(6)),
-                Double.parseDouble(data.get(7)),
-                Double.parseDouble(data.get(9)),
-                Double.parseDouble(data.get(13).replace(" ", StringUtils.EMPTY).replace(",", StringUtils.EMPTY).trim())
-        );
+        return MetaTrader4TradeWrapper
+                .builder()
+                .ticketNumber(data.get(0))
+                .openTime(LocalDateTime.parse(data.get(1), DateTimeFormatter.ofPattern("yyyy.MM.dd HH:mm:ss")))
+                .closeTime(LocalDateTime.parse(data.get(8), DateTimeFormatter.ofPattern("yyyy.MM.dd HH:mm:ss")))
+                .type(data.get(2))
+                .size(Double.parseDouble(data.get(3)))
+                .item(data.get(4))
+                .openPrice(Double.parseDouble(data.get(5)))
+                .stopLoss(Double.parseDouble(data.get(6)))
+                .takeProfit(Double.parseDouble(data.get(7)))
+                .closePrice(Double.parseDouble(data.get(9)))
+                .profit(Double.parseDouble(data.get(13).replace(" ", StringUtils.EMPTY).replace(",", StringUtils.EMPTY).trim()))
+                .build();
     }
 }

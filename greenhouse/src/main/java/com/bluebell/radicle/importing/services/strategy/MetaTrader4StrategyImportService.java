@@ -6,7 +6,7 @@ import com.bluebell.radicle.importing.ImportService;
 import com.bluebell.radicle.importing.enums.MetaTrader4TradeType;
 import com.bluebell.radicle.importing.exceptions.StrategyImportFailureException;
 import com.bluebell.radicle.importing.exceptions.TradeImportFailureException;
-import com.bluebell.radicle.importing.records.MetaTrader4TradeWrapper;
+import com.bluebell.radicle.importing.models.MetaTrader4TradeWrapper;
 import com.bluebell.radicle.importing.services.AbstractImportService;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -212,33 +212,35 @@ public class MetaTrader4StrategyImportService extends AbstractImportService impl
 
         final String type = data.get(2);
         if (data.size() == 9 && MetaTrader4TradeType.isEntry(type)) {
-            return new MetaTrader4TradeWrapper(
-                    data.get(3),
-                    LocalDateTime.parse(data.get(1), DateTimeFormatter.ofPattern("yyyy.MM.dd HH:mm")).minusHours(7),
-                    null,
-                    type,
-                    Double.parseDouble(data.get(4)),
-                    this.product,
-                    Double.parseDouble(data.get(5)),
-                    Double.parseDouble(data.get(6)),
-                    Double.parseDouble(data.get(7)),
-                    0.0,
-                    0.0
-            );
+            return MetaTrader4TradeWrapper
+                    .builder()
+                    .ticketNumber(data.get(3))
+                    .openTime(LocalDateTime.parse(data.get(1), DateTimeFormatter.ofPattern("yyyy.MM.dd HH:mm")).minusHours(7))
+                    .closeTime(null)
+                    .type(type)
+                    .size(Double.parseDouble(data.get(4)))
+                    .item(this.product)
+                    .openPrice(Double.parseDouble(data.get(5)))
+                    .stopLoss(Double.parseDouble(data.get(6)))
+                    .takeProfit(Double.parseDouble(data.get(7)))
+                    .closePrice(0.0)
+                    .profit(0.0)
+                    .build();
         } else if (data.size() == 10 && MetaTrader4TradeType.isExit(type)) {
-            return new MetaTrader4TradeWrapper(
-                    data.get(3),
-                    null,
-                    LocalDateTime.parse(data.get(1), DateTimeFormatter.ofPattern("yyyy.MM.dd HH:mm")).minusHours(7),
-                    type,
-                    Double.parseDouble(data.get(4)),
-                    this.product,
-                    0.0,
-                    Double.parseDouble(data.get(6)),
-                    Double.parseDouble(data.get(7)),
-                    Double.parseDouble(data.get(5)),
-                    Double.parseDouble(data.get(8))
-            );
+            return MetaTrader4TradeWrapper
+                    .builder()
+                    .ticketNumber(data.get(3))
+                    .openTime(null)
+                    .closeTime(LocalDateTime.parse(data.get(1), DateTimeFormatter.ofPattern("yyyy.MM.dd HH:mm")).minusHours(7))
+                    .type(type)
+                    .size(Double.parseDouble(data.get(4)))
+                    .item(this.product)
+                    .openPrice(0.0)
+                    .stopLoss(Double.parseDouble(data.get(6)))
+                    .takeProfit(Double.parseDouble(data.get(7)))
+                    .closePrice(Double.parseDouble(data.get(5)))
+                    .profit(Double.parseDouble(data.get(8)))
+                    .build();
         }
 
         return null;

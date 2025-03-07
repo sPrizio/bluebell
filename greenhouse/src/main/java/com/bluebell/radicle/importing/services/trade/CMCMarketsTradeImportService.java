@@ -6,7 +6,7 @@ import com.bluebell.platform.models.core.entities.account.Account;
 import com.bluebell.platform.models.core.entities.trade.Trade;
 import com.bluebell.radicle.importing.ImportService;
 import com.bluebell.radicle.importing.exceptions.TradeImportFailureException;
-import com.bluebell.radicle.importing.records.CMCTradeWrapper;
+import com.bluebell.radicle.importing.models.CMCTradeWrapper;
 import com.bluebell.radicle.importing.services.AbstractImportService;
 import com.bluebell.radicle.repositories.trade.TradeRepository;
 import jakarta.annotation.Resource;
@@ -143,7 +143,17 @@ public class CMCMarketsTradeImportService extends AbstractImportService implemen
             double price = safeParseDouble(sanitizeString(array[7]));
             double amount = safeParseDouble(sanitizeString(array[14]));
 
-            return new CMCTradeWrapper(dateTime, type, orderNumber, relatedOrderNumber, product, units, price, amount);
+            return CMCTradeWrapper
+                    .builder()
+                    .dateTime(dateTime)
+                    .type(type)
+                    .orderNumber(orderNumber)
+                    .relatedOrderNumber(relatedOrderNumber)
+                    .product(product)
+                    .units(units)
+                    .price(price)
+                    .amount(amount)
+                    .build();
         } catch (Exception e) {
             LOGGER.error("Error parsing line : {} for reason : {}", string, e.getMessage(), e);
             throw new DateTimeException(e.getMessage(), e);

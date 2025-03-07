@@ -25,17 +25,18 @@ public class CalendarNewsDayEntryTranslator implements GenericTranslator<Calenda
     @Override
     public CalendarNewsDayEntryDTO translate(final CalendarNewsEntryResponse response) {
 
-        final CalendarNewsDayEntryDTO calendarNewsDayEntryDTO = new CalendarNewsDayEntryDTO();
-
         if (response != null && !response.isEmpty()) {
-            calendarNewsDayEntryDTO.setCountry(Country.getByCurrencyCode(response.country()));
-            calendarNewsDayEntryDTO.setTime(LocalDateTime.parse(response.date(), DateTimeFormatter.ISO_DATE_TIME).toLocalTime());
-            calendarNewsDayEntryDTO.setForecast(response.forecast());
-            calendarNewsDayEntryDTO.setTitle(response.title());
-            calendarNewsDayEntryDTO.setImpact(MarketNewsSeverity.getFromDescription(response.impact()));
-            calendarNewsDayEntryDTO.setPrevious(response.previous());
+            return CalendarNewsDayEntryDTO
+                    .builder()
+                    .country(Country.getByCurrencyCode(response.country()))
+                    .time(LocalDateTime.parse(response.date(), DateTimeFormatter.ISO_DATE_TIME).toLocalTime())
+                    .forecast(response.forecast())
+                    .title(response.title())
+                    .impact(MarketNewsSeverity.getFromDescription(response.impact()))
+                    .previous(response.previous())
+                    .build();
         }
 
-        return calendarNewsDayEntryDTO;
+        return CalendarNewsDayEntryDTO.builder().build();
     }
 }
