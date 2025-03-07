@@ -1,22 +1,20 @@
 package com.bluebell.platform.util;
 
+import com.bluebell.platform.exceptions.system.DirectoryNotFoundException;
+import lombok.experimental.UtilityClass;
+
 import java.io.File;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-
-import com.bluebell.platform.exceptions.system.DirectoryNotFoundException;
 
 /**
  * Utility class for file and directory operations
  *
  * @author Stephen Prizio
- * @version 0.1.0
+ * @version 0.1.1
  */
+@UtilityClass
 public class DirectoryUtil {
-
-    private DirectoryUtil() {
-        throw new UnsupportedOperationException(String.format("%s classes should not be instantiated", getClass().getName()));
-    }
 
 
     //  METHODS

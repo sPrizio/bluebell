@@ -1,5 +1,8 @@
 package com.bluebell.anther.models.strategy;
 
+import lombok.Builder;
+import lombok.Getter;
+
 import java.time.LocalDateTime;
 
 /**
@@ -14,7 +17,16 @@ import java.time.LocalDateTime;
  * @param pointsForTrade points only for this trade, not cumulative
  * @param profitForTrade profit only for this trade, not cumulative
  * @author Stephen Prizio
- * @version 0.0.9
+ * @version 0.1.1
  */
-public record CumulativeStrategyReportEntry(double points, double netProfit, int trades, String tradeType, LocalDateTime opened, LocalDateTime closed, double pointsForTrade, double profitForTrade) {
-}
+@Builder
+public record CumulativeStrategyReportEntry(
+        @Getter double points,
+        @Getter double netProfit,
+        @Getter int trades,
+        @Getter String tradeType,
+        @Getter LocalDateTime opened,
+        @Getter LocalDateTime closed,
+        @Getter double pointsForTrade,
+        @Getter double profitForTrade
+) { }

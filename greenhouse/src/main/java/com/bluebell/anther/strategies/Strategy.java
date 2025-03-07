@@ -54,7 +54,15 @@ public interface Strategy<P extends BasicStrategyParameters> {
      * @return {@link AntherTrade}
      */
     default AntherTrade openTrade(final TradeType tradeType, final double lotSize, final LocalDateTime tradeOpenTime, final double openPrice, final double stopLoss, final double takeProfit) {
-       return new AntherTrade(tradeType, lotSize, tradeOpenTime, openPrice, stopLoss, takeProfit);
+        return AntherTrade
+                .builder()
+                .tradeType(tradeType)
+                .lotSize(lotSize)
+                .tradeOpenTime(tradeOpenTime)
+                .openPrice(openPrice)
+                .stopLoss(stopLoss)
+                .takeProfit(takeProfit)
+                .build();
     }
 
     /**

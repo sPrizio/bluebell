@@ -3,6 +3,7 @@ package com.bluebell.anther.models.trade;
 import com.bluebell.anther.strategies.Strategy;
 import com.bluebell.platform.enums.trade.TradeType;
 import com.bluebell.platform.services.MathService;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -20,11 +21,12 @@ import java.util.UUID;
  */
 @Getter
 @Setter
+@Builder
 public class AntherTrade implements Comparable<AntherTrade> {
 
     private final MathService mathService = new MathService();
 
-    private String id;
+    private @Builder.Default String id = UUID.randomUUID() + "_" + Base64.getEncoder().encodeToString(LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME).getBytes());
 
     private TradeType tradeType;
 
@@ -41,19 +43,6 @@ public class AntherTrade implements Comparable<AntherTrade> {
     private double stopLoss;
 
     private double takeProfit;
-
-
-    //  CONSTRUCTORS
-
-    public AntherTrade(final TradeType tradeType, final double lotSize, final LocalDateTime tradeOpenTime, final double openPrice, final double stopLoss, final double takeProfit) {
-        this.id = UUID.randomUUID() + "_" + Base64.getEncoder().encodeToString(LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME).getBytes());
-        this.tradeType = tradeType;
-        this.lotSize = lotSize;
-        this.tradeOpenTime = tradeOpenTime;
-        this.openPrice = openPrice;
-        this.stopLoss = stopLoss;
-        this.takeProfit = takeProfit;
-    }
 
 
     //  METHODS

@@ -7,6 +7,7 @@ import com.bluebell.radicle.exceptions.system.NoResultFoundException;
 import com.bluebell.radicle.exceptions.system.NonUniqueItemFoundException;
 import com.bluebell.radicle.exceptions.validation.IllegalParameterException;
 import com.bluebell.radicle.exceptions.validation.JsonMissingPropertyException;
+import lombok.experimental.UtilityClass;
 import org.apache.commons.collections4.CollectionUtils;
 
 import java.time.DateTimeException;
@@ -21,11 +22,8 @@ import java.util.*;
  * @author Stephen Prizio
  * @version 0.1.1
  */
+@UtilityClass
 public class GenericValidator {
-
-    private GenericValidator() {
-        throw new UnsupportedOperationException(String.format(CorePlatformConstants.NO_INSTANTIATION, getClass().getName()));
-    }
 
 
     //  METHODS

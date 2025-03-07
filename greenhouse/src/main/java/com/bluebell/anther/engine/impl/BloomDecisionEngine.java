@@ -88,7 +88,7 @@ public class BloomDecisionEngine implements DecisionEngine<Bloom, BloomStrategyP
             windowCounter += 1;
         }
 
-        return decisions.stream().map(dec -> getParametersForFile(dec, simulationResult)).map(pair -> new Decision<>(pair.getValue0(), pair.getValue1())).sorted(Comparator.comparing(Decision::index)).toList();
+        return decisions.stream().map(dec -> getParametersForFile(dec, simulationResult)).map(pair -> Decision.<BloomStrategyParameters>builder().index(pair.getValue1()).strategyParameters(pair.getValue0()).build()).sorted(Comparator.comparing(Decision::index)).toList();
     }
 
     /**
@@ -155,16 +155,17 @@ public class BloomDecisionEngine implements DecisionEngine<Bloom, BloomStrategyP
                 }
 
                 entries.add(
-                        new CumulativeStrategyReportEntry(
-                                Double.parseDouble(split[0].trim()),
-                                Double.parseDouble(split[1].trim().replace("$", StringUtils.EMPTY)),
-                                Integer.parseInt(split[2].trim()),
-                                StringUtils.capitalize(split[2].trim().toLowerCase()),
-                                LocalDateTime.parse(split[3].trim(), DateTimeFormatter.ofPattern("MMM dd yyy 'at' HH:mm:ss")),
-                                LocalDateTime.parse(split[4].trim(), DateTimeFormatter.ofPattern("MMM dd yyy 'at' HH:mm:ss")),
-                                Double.parseDouble(split[5].trim()),
-                                Double.parseDouble(split[6].trim().replace("$", StringUtils.EMPTY))
-                        )
+                        CumulativeStrategyReportEntry
+                                .builder()
+                                .points(Double.parseDouble(split[0].trim()))
+                                .netProfit(Double.parseDouble(split[1].trim().replace("$", StringUtils.EMPTY)))
+                                .trades(Integer.parseInt(split[2].trim()))
+                                .tradeType(StringUtils.capitalize(split[2].trim().toLowerCase()))
+                                .opened(LocalDateTime.parse(split[3].trim(), DateTimeFormatter.ofPattern("MMM dd yyy 'at' HH:mm:ss")))
+                                .closed(LocalDateTime.parse(split[4].trim(), DateTimeFormatter.ofPattern("MMM dd yyy 'at' HH:mm:ss")))
+                                .pointsForTrade(Double.parseDouble(split[5].trim()))
+                                .profitForTrade(Double.parseDouble(split[6].trim().replace("$", StringUtils.EMPTY)))
+                                .build()
                 );
             }
         } catch (IOException e) {

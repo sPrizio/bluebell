@@ -4,14 +4,16 @@ import com.bluebell.anther.models.parameter.strategy.StrategyParameters;
 import com.bluebell.anther.strategies.impl.Sprout;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.experimental.SuperBuilder;
 
 /**
  * {@link Sprout}-specific strategy parameters
  *
  * @author Stephen Prizio
- * @version 0.0.9
+ * @version 0.1.1
  */
 @Getter
+@SuperBuilder
 @NoArgsConstructor
 public class SproutStrategyParameters extends BasicStrategyParameters implements StrategyParameters {
 
@@ -26,24 +28,6 @@ public class SproutStrategyParameters extends BasicStrategyParameters implements
     private double minimumReward;
 
     private double variance;
-
-    public SproutStrategyParameters(final double profitMultiplier, final double allowableRisk, final double allowableReward, final double minimumRisk, final double minimumReward, final double variance, final BasicStrategyParameters basicStrategyParameters) {
-        super(
-                basicStrategyParameters.getDescription(),
-                basicStrategyParameters.getBuyLimit(),
-                basicStrategyParameters.getSellLimit(),
-                basicStrategyParameters.getLotSize(),
-                basicStrategyParameters.getPricePerPoint(),
-                basicStrategyParameters.getInitialBalance()
-        );
-
-        this.profitMultiplier = profitMultiplier;
-        this.allowableRisk = allowableRisk;
-        this.allowableReward = allowableReward;
-        this.minimumRisk = minimumRisk;
-        this.minimumReward = minimumReward;
-        this.variance = variance;
-    }
 
 
     //  METHODS

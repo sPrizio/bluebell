@@ -1,14 +1,14 @@
 package com.bluebell.radicle.importing.records;
 
-import java.time.LocalDateTime;
-
 import lombok.Getter;
+
+import java.time.LocalDateTime;
 
 /**
  * A wrapper class for FTMO trades
  *
  * @author Stephen Prizio
- * @version 0.0.9
+ * @version 0.1.1
  */
 public record FTMOTradeWrapper(
         String ticketNumber,

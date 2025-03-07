@@ -2,6 +2,7 @@ package com.bluebell.radicle.importing.validation;
 
 import com.bluebell.platform.constants.CorePlatformConstants;
 import com.bluebell.radicle.importing.exceptions.FileExtensionNotSupportedException;
+import lombok.experimental.UtilityClass;
 import org.apache.commons.io.FilenameUtils;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -14,11 +15,8 @@ import java.util.Arrays;
  * @author Stephen Prizio
  * @version 0.1.1
  */
+@UtilityClass
 public class ImportValidator {
-
-    private ImportValidator() {
-        throw new UnsupportedOperationException(String.format(CorePlatformConstants.NO_INSTANTIATION, getClass().getName()));
-    }
 
 
     //  METHODS
