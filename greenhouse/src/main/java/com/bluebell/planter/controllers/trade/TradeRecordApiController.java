@@ -13,6 +13,7 @@ import com.bluebell.radicle.security.aspects.ValidateApiToken;
 import com.bluebell.radicle.security.constants.SecurityConstants;
 import com.bluebell.radicle.services.trade.TradeRecordService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -102,12 +103,17 @@ public class TradeRecordApiController extends AbstractApiController {
     )
     @GetMapping("/for-interval")
     public StandardJsonResponse<TradeRecordReport> getTradeRecordsWithinInterval(
-            final HttpServletRequest request,
+            @Parameter(name = "Account Number", description = "The unique identifier for your trading account", example = "1234")
             final @RequestParam("accountNumber") long accountNumber,
+            @Parameter(name = "Start Date", description = "Start date of time period to analyze", example = "2025-01-01")
             final @RequestParam("start") String start,
+            @Parameter(name = "End Date", description = "End date of time period to analyze", example = "2025-01-01")
             final @RequestParam("end") String end,
+            @Parameter(name = "Aggregate Interval", description = "Time period to aggregate trades. Currently supported: DAILY, WEEKLY, YEARLY", example = "DAILY")
             final @RequestParam("interval") String interval,
-            final @RequestParam(value = "count", defaultValue = "" + CorePlatformConstants.DEFAULT_TRADE_RECORD_COLLECTION_SIZE, required = false) int count
+            @Parameter(name = "Count", description = "Number of results to return", example = "25")
+            final @RequestParam(value = "count", defaultValue = "" + CorePlatformConstants.DEFAULT_TRADE_RECORD_COLLECTION_SIZE, required = false) int count,
+            final HttpServletRequest request
     ) {
 
         validate(start, end);
@@ -165,10 +171,13 @@ public class TradeRecordApiController extends AbstractApiController {
     )
     @GetMapping("/recent")
     public StandardJsonResponse<TradeRecordReport> getRecentTradeRecords(
-            final HttpServletRequest request,
+            @Parameter(name = "Account Number", description = "The unique identifier for your trading account", example = "1234")
             final @RequestParam("accountNumber") long accountNumber,
+            @Parameter(name = "Aggregate Interval", description = "Time period to aggregate trades. Currently supported: DAILY, WEEKLY, YEARLY", example = "DAILY")
             final @RequestParam("interval") String interval,
-            final @RequestParam(value = "count", defaultValue = "" + CorePlatformConstants.DEFAULT_TRADE_RECORD_COLLECTION_SIZE, required = false) int count
+            @Parameter(name = "Count", description = "Number of results to return", example = "25")
+            final @RequestParam(value = "count", defaultValue = "" + CorePlatformConstants.DEFAULT_TRADE_RECORD_COLLECTION_SIZE, required = false) int count,
+            final HttpServletRequest request
     ) {
 
         if (!EnumUtils.isValidEnumIgnoreCase(TradeRecordTimeInterval.class, interval)) {
@@ -224,9 +233,11 @@ public class TradeRecordApiController extends AbstractApiController {
     )
     @GetMapping("/trade-record-controls")
     public StandardJsonResponse<TradeRecordControls> getTradeRecordControls(
-            final HttpServletRequest request,
+            @Parameter(name = "Account Number", description = "The unique identifier for your trading account", example = "1234")
             final @RequestParam("accountNumber") long accountNumber,
-            final @RequestParam("interval") String interval
+            @Parameter(name = "Aggregate Interval", description = "Time period to aggregate trades. Currently supported: DAILY, WEEKLY, YEARLY", example = "DAILY")
+            final @RequestParam("interval") String interval,
+            final HttpServletRequest request
     ) {
 
         if (!EnumUtils.isValidEnumIgnoreCase(TradeRecordTimeInterval.class, interval)) {
@@ -300,11 +311,16 @@ public class TradeRecordApiController extends AbstractApiController {
     )
     @GetMapping("/trade-log")
     public StandardJsonResponse<TradeLog> getTradeLog(
-            final HttpServletRequest request,
+            @Parameter(name = "Start Date", description = "Start date of time period to analyze", example = "2025-01-01")
             final @RequestParam("start") String start,
+            @Parameter(name = "End Date", description = "End date of time period to analyze", example = "2025-01-01")
             final @RequestParam("end") String end,
+            @Parameter(name = "Aggregate Interval", description = "Time period to aggregate trades. Currently supported: DAILY, WEEKLY, YEARLY", example = "DAILY")
             final @RequestParam("interval") String interval,
-            final @RequestParam(value = "count", defaultValue = "" + CorePlatformConstants.DEFAULT_TRADE_RECORD_COLLECTION_SIZE, required = false) int count) {
+            @Parameter(name = "Count", description = "Number of results to return", example = "25")
+            final @RequestParam(value = "count", defaultValue = "" + CorePlatformConstants.DEFAULT_TRADE_RECORD_COLLECTION_SIZE, required = false) int count,
+            final HttpServletRequest request
+    ) {
 
         validate(start, end);
         if (!EnumUtils.isValidEnumIgnoreCase(TradeRecordTimeInterval.class, interval)) {

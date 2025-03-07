@@ -16,6 +16,7 @@ import com.bluebell.radicle.security.aspects.ValidateApiToken;
 import com.bluebell.radicle.security.constants.SecurityConstants;
 import com.bluebell.radicle.services.account.AccountService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -227,7 +228,11 @@ public class AccountApiController extends AbstractApiController {
             )
     )
     @GetMapping("/get-details")
-    public StandardJsonResponse<AccountDetails> getDetails(final @RequestParam("accountNumber") Long accountNumber, final HttpServletRequest request) {
+    public StandardJsonResponse<AccountDetails> getDetails(
+            @Parameter(name = "Account Number", description = "The unique identifier for your trading account", example = "1234")
+            final @RequestParam("accountNumber") Long accountNumber,
+            final HttpServletRequest request
+    ) {
         final Optional<Account> account = this.accountService.findAccountByAccountNumber(accountNumber);
         return account
                 .map(value -> StandardJsonResponse.<AccountDetails>builder().success(true).data(this.accountService.getAccountDetails(value)).build())
@@ -263,7 +268,10 @@ public class AccountApiController extends AbstractApiController {
             )
     )
     @PostMapping("/create-account")
-    public StandardJsonResponse<AccountDTO> postCreateNewAccount(final HttpServletRequest request, final @RequestBody Map<String, Object> requestBody) {
+    public StandardJsonResponse<AccountDTO> postCreateNewAccount(
+            final @RequestBody Map<String, Object> requestBody,
+            final HttpServletRequest request
+    ) {
         validateJsonIntegrity(requestBody, List.of(ACCOUNT), "json did not contain of the required keys : %s", List.of(ACCOUNT));
         final User user = (User) request.getAttribute(SecurityConstants.USER_REQUEST_KEY);
         return StandardJsonResponse
@@ -311,7 +319,12 @@ public class AccountApiController extends AbstractApiController {
             )
     )
     @PutMapping("/update-account")
-    public StandardJsonResponse<AccountDTO> putUpdateAccount(final @RequestParam("accountNumber") long accountNumber, final HttpServletRequest request, final @RequestBody Map<String, Object> requestBody) {
+    public StandardJsonResponse<AccountDTO> putUpdateAccount(
+            @Parameter(name = "Account Number", description = "The unique identifier for your trading account", example = "1234")
+            final @RequestParam("accountNumber") long accountNumber,
+            final @RequestBody Map<String, Object> requestBody,
+            final HttpServletRequest request
+    ) {
         validateJsonIntegrity(requestBody, List.of(ACCOUNT), "json did not contain of the required keys : %s", List.of(ACCOUNT));
         final User user = (User) request.getAttribute(SecurityConstants.USER_REQUEST_KEY);
         final Optional<Account> account = this.accountService.findAccountByAccountNumber(accountNumber);
@@ -357,7 +370,11 @@ public class AccountApiController extends AbstractApiController {
             )
     )
     @DeleteMapping("/delete-account")
-    public StandardJsonResponse<Boolean> deleteAccount(final @RequestParam("accountNumber") long accountNumber, final HttpServletRequest request) {
+    public StandardJsonResponse<Boolean> deleteAccount(
+            @Parameter(name = "Account Number", description = "The unique identifier for your trading account", example = "1234")
+            final @RequestParam("accountNumber") long accountNumber,
+            final HttpServletRequest request
+    ) {
         final Optional<Account> account = this.accountService.findAccountByAccountNumber(accountNumber);
         return account.map(value -> {
             final boolean result = this.accountService.deleteAccount(value);
