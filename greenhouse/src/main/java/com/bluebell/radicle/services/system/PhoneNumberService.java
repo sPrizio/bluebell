@@ -1,13 +1,5 @@
 package com.bluebell.radicle.services.system;
 
-import java.util.Map;
-import java.util.Optional;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
-import static com.bluebell.radicle.validation.GenericValidator.validateNonNegativeValue;
-import static com.bluebell.radicle.validation.GenericValidator.validateParameterIsNotNull;
-
 import com.bluebell.platform.constants.CorePlatformConstants;
 import com.bluebell.platform.enums.system.PhoneType;
 import com.bluebell.platform.models.core.entities.security.User;
@@ -22,12 +14,20 @@ import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
+import java.util.Map;
+import java.util.Optional;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import static com.bluebell.radicle.validation.GenericValidator.validateNonNegativeValue;
+import static com.bluebell.radicle.validation.GenericValidator.validateParameterIsNotNull;
+
 
 /**
  * Service-layer for {@link PhoneNumber} entities
  *
  * @author Stephen Prizio
- * @version 0.0.9
+ * @version 0.1.1
  */
 @Service
 public class PhoneNumberService {
@@ -71,7 +71,7 @@ public class PhoneNumberService {
         }
 
         try {
-            return applyChanges(new PhoneNumber(), data, user);
+            return applyChanges(PhoneNumber.builder().build(), data, user);
         } catch (Exception e) {
             throw new EntityCreationException(String.format("A PhoneNumber could not be created : %s", e.getMessage()), e);
         }

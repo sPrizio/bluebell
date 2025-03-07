@@ -1,8 +1,5 @@
 package com.bluebell.planter.converters.system;
 
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
 import com.bluebell.planter.converters.GenericDTOConverter;
 import com.bluebell.planter.services.UniqueIdentifierService;
 import com.bluebell.platform.constants.CorePlatformConstants;
@@ -12,11 +9,14 @@ import jakarta.annotation.Resource;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 /**
  * Converter that converts {@link PhoneNumber}s into {@link PhoneNumberDTO}s
  *
  * @author Stephen Prizio
- * @version 0.0.9
+ * @version 0.1.1
  */
 @Component("phoneNumberDTOConverter")
 public class PhoneNumberDTOConverter implements GenericDTOConverter<PhoneNumber, PhoneNumberDTO> {
@@ -31,18 +31,17 @@ public class PhoneNumberDTOConverter implements GenericDTOConverter<PhoneNumber,
     public PhoneNumberDTO convert(final PhoneNumber entity) {
 
         if (entity == null) {
-            return new PhoneNumberDTO();
+            return PhoneNumberDTO.builder().build();
         }
 
-        final PhoneNumberDTO phoneNumberDTO = new PhoneNumberDTO();
-
-        phoneNumberDTO.setUid(this.uniqueIdentifierService.generateUid(entity));
-        phoneNumberDTO.setPhoneType(entity.getPhoneType().name());
-        phoneNumberDTO.setTelephoneNumber(entity.getTelephoneNumber());
-        phoneNumberDTO.setCountryCode(entity.getCountryCode());
-        phoneNumberDTO.setDisplay(getDisplayString(entity));
-
-        return phoneNumberDTO;
+        return PhoneNumberDTO
+                .builder()
+                .uid(this.uniqueIdentifierService.generateUid(entity))
+                .phoneType(entity.getPhoneType().name())
+                .telephoneNumber(entity.getTelephoneNumber())
+                .countryCode(entity.getCountryCode())
+                .display(getDisplayString(entity))
+                .build();
     }
 
 

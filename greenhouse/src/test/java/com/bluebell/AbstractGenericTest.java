@@ -27,12 +27,13 @@ import com.bluebell.platform.models.core.entities.system.PhoneNumber;
 import com.bluebell.platform.models.core.entities.trade.Trade;
 import com.bluebell.platform.models.core.entities.transaction.Transaction;
 import com.bluebell.radicle.integration.models.responses.forexfactory.CalendarNewsEntryResponse;
+import org.apache.commons.lang3.StringUtils;
 
 /**
- * Parent-level testing class to provide testing assistance for radicle
+ * Parent-level testing class to provide testing assistance for the project
  *
  * @author Stephen Prizio
- * @version 0.1.0
+ * @version 0.1.1
  */
 public abstract class AbstractGenericTest {
 
@@ -42,21 +43,18 @@ public abstract class AbstractGenericTest {
      * @return {@link Trade}
      */
     public Trade generateTestBuyTrade() {
-
-        Trade trade = new Trade();
-
-        trade.setTradeId("testId1");
-        trade.setTradePlatform(TradePlatform.CMC_MARKETS);
-        trade.setTradeType(TradeType.BUY);
-        trade.setClosePrice(13098.67);
-        trade.setTradeCloseTime(LocalDateTime.of(2022, 8, 24, 11, 37, 24));
-        trade.setTradeOpenTime(LocalDateTime.of(2022, 8, 24, 11, 32, 58));
-        trade.setLotSize(0.75);
-        trade.setNetProfit(14.85);
-        trade.setOpenPrice(13083.41);
-        trade.setAccount(generateTestAccount());
-
-        return trade;
+        return Trade.builder()
+                .tradeId("testId1")
+                .tradePlatform(TradePlatform.CMC_MARKETS)
+                .tradeType(TradeType.BUY)
+                .closePrice(13098.67)
+                .tradeCloseTime(LocalDateTime.of(2022, 8, 24, 11, 37, 24))
+                .tradeOpenTime(LocalDateTime.of(2022, 8, 24, 11, 32, 58))
+                .lotSize(0.75)
+                .netProfit(14.85)
+                .openPrice(13083.41)
+                .account(generateTestAccount())
+                .build();
     }
 
     /**
@@ -65,21 +63,18 @@ public abstract class AbstractGenericTest {
      * @return {@link Trade}
      */
     public Trade generateTestSellTrade() {
-
-        Trade trade = new Trade();
-
-        trade.setTradeId("testId2");
-        trade.setTradePlatform(TradePlatform.CMC_MARKETS);
-        trade.setTradeType(TradeType.SELL);
-        trade.setClosePrice(13156.12);
-        trade.setTradeCloseTime(LocalDateTime.of(2022, 8, 24, 10, 24, 36));
-        trade.setTradeOpenTime(LocalDateTime.of(2022, 8, 24, 10, 25, 12));
-        trade.setLotSize(0.75);
-        trade.setNetProfit(-4.50);
-        trade.setOpenPrice(13160.09);
-        trade.setAccount(generateTestAccount());
-
-        return trade;
+        return Trade.builder()
+                .tradeId("testId2")
+                .tradePlatform(TradePlatform.CMC_MARKETS)
+                .tradeType(TradeType.SELL)
+                .closePrice(13156.12)
+                .tradeCloseTime(LocalDateTime.of(2022, 8, 24, 10, 24, 36))
+                .tradeOpenTime(LocalDateTime.of(2022, 8, 24, 10, 25, 12))
+                .lotSize(0.75)
+                .netProfit(-4.50)
+                .openPrice(13160.09)
+                .account(generateTestAccount())
+                .build();
     }
 
     /**
@@ -89,24 +84,22 @@ public abstract class AbstractGenericTest {
      */
     public Account generateTestAccount() {
 
-        Account account = new Account();
-
-        account.setId(-1L);
-        account.setDefaultAccount(true);
-        account.setAccountOpenTime(LocalDateTime.of(2022, 10, 25, 22, 48, 0));
-        account.setBalance(1000.0);
-        account.setInitialBalance(1000.0);
-        account.setActive(true);
-        account.setAccountType(AccountType.CFD);
-        account.setAccountNumber(1234);
-        account.setName("Test Account");
-        account.setCurrency(Currency.CANADIAN_DOLLAR);
-        account.setBroker(Broker.CMC_MARKETS);
-        account.setTradePlatform(TradePlatform.CMC_MARKETS);
-        account.setLastTraded(LocalDateTime.of(2022, 8, 24, 11, 37, 24));
-        account.setTransactions(List.of());
-
-        return account;
+        return Account
+                .builder()
+                .id(-1L)
+                .defaultAccount(true)
+                .accountOpenTime(LocalDateTime.of(2022, 10, 25, 22, 48, 0))
+                .balance(1000.0)
+                .initialBalance(1000.0)
+                .active(true)
+                .accountType(AccountType.CFD)
+                .accountNumber(1234)
+                .name("Test Account")
+                .currency(Currency.CANADIAN_DOLLAR)
+                .broker(Broker.CMC_MARKETS)
+                .tradePlatform(TradePlatform.CMC_MARKETS)
+                .lastTraded(LocalDateTime.of(2022, 8, 24, 11, 37, 24))
+                .build();
     }
 
     /**
@@ -115,18 +108,17 @@ public abstract class AbstractGenericTest {
      * @return {@link User}
      */
     public User generateTestUser() {
-        User user = new User();
-
-        user.setAccounts(List.of(generateTestAccount()));
-        user.setEmail("test@email.com");
-        user.setUsername("s.prizio");
-        user.setPassword("1234");
-        user.setFirstName("Stephen");
-        user.setLastName("Test");
-        user.setPhones(List.of(generateTestPhoneNumber()));
-        user.setRoles(List.of(UserRole.ADMINISTRATOR, UserRole.TRADER));
-
-        return user;
+        return User
+                .builder()
+                .accounts(new ArrayList<>(List.of(generateTestAccount())))
+                .email("test@email.com")
+                .username("s.prizio")
+                .password("1234")
+                .firstName("Stephen")
+                .lastName("Test")
+                .phones(new ArrayList<>(List.of(generateTestPhoneNumber())))
+                .roles(new ArrayList<>(List.of(UserRole.ADMINISTRATOR, UserRole.TRADER)))
+                .build();
     }
 
     /**
@@ -135,14 +127,12 @@ public abstract class AbstractGenericTest {
      * @return {@link PhoneNumber}
      */
     public PhoneNumber generateTestPhoneNumber() {
-
-        final PhoneNumber phoneNumber = new PhoneNumber();
-
-        phoneNumber.setPhoneType(PhoneType.MOBILE);
-        phoneNumber.setTelephoneNumber(1112223333);
-        phoneNumber.setCountryCode((short) 1);
-
-        return phoneNumber;
+        return PhoneNumber
+                .builder()
+                .phoneType(PhoneType.MOBILE)
+                .telephoneNumber(1112223333)
+                .countryCode((short) 1)
+                .build();
     }
 
     /**
@@ -151,14 +141,12 @@ public abstract class AbstractGenericTest {
      * @return {@link MarketNewsEntry}
      */
     public MarketNewsEntry generateTestMarketNewsEntry() {
-
-        final MarketNewsEntry marketNewsEntry = new MarketNewsEntry();
-
-        marketNewsEntry.setContent("Test News Entry");
-        marketNewsEntry.setSeverity(MarketNewsSeverity.DANGEROUS);
-        marketNewsEntry.setCountry(Country.CANADA);
-
-        return marketNewsEntry;
+        return MarketNewsEntry
+                .builder()
+                .content("Test News Entry")
+                .severity(MarketNewsSeverity.DANGEROUS)
+                .country(Country.CANADA)
+                .build();
     }
 
     /**
@@ -167,13 +155,11 @@ public abstract class AbstractGenericTest {
      * @return {@link MarketNewsSlot}
      */
     public MarketNewsSlot generateTestMarketNewsSlot() {
-
-        final MarketNewsSlot marketNewsSlot = new MarketNewsSlot();
-
-        marketNewsSlot.setTime(LocalTime.of(13, 10));
-        marketNewsSlot.setEntries(new ArrayList<>(List.of(generateTestMarketNewsEntry())));
-
-        return marketNewsSlot;
+        return MarketNewsSlot
+                .builder()
+                .time(LocalTime.of(13, 10))
+                .entries(new ArrayList<>(List.of(generateTestMarketNewsEntry())))
+                .build();
     }
 
     /**
@@ -182,13 +168,11 @@ public abstract class AbstractGenericTest {
      * @return {@link MarketNews}
      */
     public MarketNews generateMarketNews() {
-
-        final MarketNews marketNews = new MarketNews();
-
-        marketNews.setDate(LocalDate.of(2023, 1, 19));
-        marketNews.setSlots(new ArrayList<>(List.of(generateTestMarketNewsSlot())));
-
-        return marketNews;
+        return MarketNews
+                .builder()
+                .date(LocalDate.of(2023, 1, 19))
+                .slots(new ArrayList<>(List.of(generateTestMarketNewsSlot())))
+                .build();
     }
 
     /**
@@ -197,7 +181,16 @@ public abstract class AbstractGenericTest {
      * @return {@link CalendarNewsEntryResponse}
      */
     public CalendarNewsEntryResponse generateCalendarNewsEntryResponse() {
-        return new CalendarNewsEntryResponse("Currency Account", "CAD", "2023-05-30T08:30:00-04:00", "Low", "-9.9B", "-10.6B", "");
+        return CalendarNewsEntryResponse
+                .builder()
+                .title("Currency Account")
+                .country("CAD")
+                .date("2023-05-30T08:30:00-04:00")
+                .impact("Low")
+                .forecast("-9.9B")
+                .previous("-10.6B")
+                .url(StringUtils.EMPTY)
+                .build();
     }
 
     /**
@@ -207,17 +200,14 @@ public abstract class AbstractGenericTest {
      * @return {@link Transaction}
      */
     public Transaction generateTestTransactionDeposit(final Account account) {
-
-        final Transaction transaction = new Transaction();
-
-        transaction.setName("Test Transaction Deposit");
-        transaction.setTransactionDate(LocalDateTime.of(2022, 8, new Random().nextInt(28) + 1, 12, 24, 36));
-        transaction.setTransactionType(TransactionType.DEPOSIT);
-        transaction.setAmount(123.45);
-        transaction.setTransactionStatus(TransactionStatus.COMPLETED);
-        transaction.setAccount(account);
-
-        return transaction;
+        return Transaction.builder()
+                .name("Test Transaction Deposit")
+                .transactionDate(LocalDateTime.of(2022, 8, new Random().nextInt(28) + 1, 12, 24, 36))
+                .transactionType(TransactionType.DEPOSIT)
+                .amount(123.45)
+                .transactionStatus(TransactionStatus.COMPLETED)
+                .account(account)
+                .build();
     }
 
     /**
@@ -227,16 +217,13 @@ public abstract class AbstractGenericTest {
      * @return {@link Transaction}
      */
     public Transaction generateTestTransactionWithdrawal(final Account account) {
-
-        final Transaction transaction = new Transaction();
-
-        transaction.setName("Test Transaction Withdrawal");
-        transaction.setTransactionDate(LocalDateTime.of(2022, 8, new Random().nextInt(28) + 1, 12, 24, 36));
-        transaction.setTransactionType(TransactionType.WITHDRAWAL);
-        transaction.setAmount(-563.36);
-        transaction.setTransactionStatus(TransactionStatus.IN_PROGRESS);
-        transaction.setAccount(account);
-
-        return transaction;
+        return Transaction.builder()
+                .name("Test Transaction Withdrawal")
+                .transactionDate(LocalDateTime.of(2022, 8, new Random().nextInt(28) + 1, 12, 24, 36))
+                .transactionType(TransactionType.WITHDRAWAL)
+                .amount(-563.36)
+                .transactionStatus(TransactionStatus.IN_PROGRESS)
+                .account(account)
+                .build();
     }
 }

@@ -1,11 +1,5 @@
 package com.bluebell.anther.models.metadata;
 
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-import java.time.temporal.ChronoUnit;
-import java.util.List;
-import java.util.SortedSet;
-
 import com.bluebell.platform.enums.time.PlatformTimeInterval;
 import com.bluebell.platform.models.core.nonentities.market.MarketPrice;
 import com.bluebell.platform.services.MathService;
@@ -15,11 +9,17 @@ import org.javatuples.Pair;
 import org.javatuples.Quintet;
 import org.javatuples.Triplet;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
+import java.util.List;
+import java.util.SortedSet;
+
 /**
  * Class representation of metadata about trading prices
  *
  * @author Stephen Prizio
- * @version 0.0.9
+ * @version 0.1.1
  */
 @Getter
 public class MetaData {

@@ -1,17 +1,5 @@
 package com.bluebell.radicle.services.portfolio;
 
-import java.math.BigDecimal;
-import java.math.RoundingMode;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.temporal.TemporalAdjusters;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
-
-import static com.bluebell.radicle.validation.GenericValidator.validateParameterIsNotNull;
-
 import com.bluebell.platform.constants.CorePlatformConstants;
 import com.bluebell.platform.enums.transaction.TransactionType;
 import com.bluebell.platform.models.core.entities.account.Account;
@@ -26,11 +14,23 @@ import com.bluebell.platform.services.MathService;
 import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.temporal.TemporalAdjusters;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
+
+import static com.bluebell.radicle.validation.GenericValidator.validateParameterIsNotNull;
+
 /**
  * Service-layer for {@link Portfolio}
  *
  * @author Stephen Prizio
- * @version 0.1.0
+ * @version 0.1.1
  */
 @Service("portfolioService")
 public class PortfolioService {
@@ -58,18 +58,19 @@ public class PortfolioService {
 
         if (CollectionUtils.isEmpty(equityPoints) || CollectionUtils.isEmpty(equityPoints.get(0).accounts())) {
             isNew = true;
-            equityPoints = List.of(new PortfolioEquityPoint(limit, netWorth, Collections.emptyList()), new PortfolioEquityPoint(limit, netWorth, Collections.emptyList()));
+            equityPoints = List.of(PortfolioEquityPoint.builder().date(limit).portfolio(netWorth).accounts(Collections.emptyList()).build(), PortfolioEquityPoint.builder().date(limit).portfolio(netWorth).accounts(Collections.emptyList()).build());
         }
 
-        return new Portfolio(
-                isNew,
-                accounts.stream().mapToDouble(Account::getBalance).sum(),
-                accounts.stream().map(Account::getTrades).mapToLong(List::size).sum(),
-                accounts.stream().map(Account::getTransactions).filter(CollectionUtils::isNotEmpty).flatMap(List::stream).filter(tr -> tr.getTransactionType() == TransactionType.DEPOSIT).count(),
-                accounts.stream().map(Account::getTransactions).filter(CollectionUtils::isNotEmpty).flatMap(List::stream).filter(tr -> tr.getTransactionType() == TransactionType.WITHDRAWAL).count(),
-                computePortfolioStatistics(user),
-                equityPoints
-        );
+        return Portfolio
+                .builder()
+                .newPortfolio(isNew)
+                .netWorth(this.mathService.getDouble(accounts.stream().mapToDouble(Account::getBalance).sum()))
+                .trades(accounts.stream().map(Account::getTrades).mapToLong(List::size).sum())
+                .deposits(accounts.stream().map(Account::getTransactions).filter(CollectionUtils::isNotEmpty).flatMap(List::stream).filter(tr -> tr.getTransactionType() == TransactionType.DEPOSIT).count())
+                .withdrawals(accounts.stream().map(Account::getTransactions).filter(CollectionUtils::isNotEmpty).flatMap(List::stream).filter(tr -> tr.getTransactionType() == TransactionType.WITHDRAWAL).count())
+                .statistics(computePortfolioStatistics(user))
+                .equity(equityPoints)
+                .build();
     }
 
 
@@ -120,12 +121,13 @@ public class PortfolioService {
         final List<Transaction> differenceDeposits = differenceTransactions.stream().filter(tr -> tr.getTransactionType().equals(TransactionType.DEPOSIT)).toList();
         final List<Transaction> differenceWithdrawals = differenceTransactions.stream().filter(tr -> tr.getTransactionType().equals(TransactionType.WITHDRAWAL)).toList();
 
-        return new PortfolioStatistics(
-                safeDivide(netProfit, BigDecimal.valueOf(netAccount).subtract(BigDecimal.valueOf(netProfit)).doubleValue()),
-                safeDivide(differenceTrades.size(), BigDecimal.valueOf(allTrades.size()).subtract(BigDecimal.valueOf(differenceTrades.size())).doubleValue()),
-                safeDivide(differenceDeposits.size(), allDeposits.size()),
-                safeDivide(differenceWithdrawals.size(), allWithdrawals.size())
-        );
+        return PortfolioStatistics
+                .builder()
+                .deltaNetWorth(safeDivide(netProfit, BigDecimal.valueOf(netAccount).subtract(BigDecimal.valueOf(netProfit)).doubleValue()))
+                .deltaTrades(safeDivide(differenceTrades.size(), BigDecimal.valueOf(allTrades.size()).subtract(BigDecimal.valueOf(differenceTrades.size())).doubleValue()))
+                .deltaDeposits(safeDivide(differenceDeposits.size(), allDeposits.size()))
+                .deltaWithdrawals(safeDivide(differenceWithdrawals.size(), allWithdrawals.size()))
+                .build();
     }
 
     /**
@@ -152,12 +154,11 @@ public class PortfolioService {
             final List<PortfolioAccountEquityPoint> accountEquityPoints = new ArrayList<>();
             for (final Account account : relevantAccounts) {
                 final List<Trade> relevant = account.getTrades().stream().filter(tr -> isWithinTimespan(start, end, tr.getTradeCloseTime())).toList();
-                accountEquityPoints.add(new PortfolioAccountEquityPoint(account.getName(), this.mathService.getDouble(relevant.stream().mapToDouble(Trade::getNetProfit).sum())));
+                accountEquityPoints.add(PortfolioAccountEquityPoint.builder().name(account.getName()).value(this.mathService.getDouble(relevant.stream().mapToDouble(Trade::getNetProfit).sum())).build());
             }
 
             starterBalance -= this.mathService.getDouble(accountEquityPoints.stream().mapToDouble(PortfolioAccountEquityPoint::value).sum());
-            points.add(new PortfolioEquityPoint(compare.toLocalDate(), starterBalance, accountEquityPoints));
-
+            points.add(PortfolioEquityPoint.builder().date(compare.toLocalDate()).portfolio(starterBalance).accounts(accountEquityPoints).build());
 
             compare = compare.minusMonths(1);
         }

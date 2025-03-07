@@ -1,14 +1,5 @@
 package com.bluebell.radicle.services.trade;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.Month;
-import java.time.temporal.TemporalAdjusters;
-import java.util.*;
-
-import static com.bluebell.radicle.validation.GenericValidator.validateDatesAreNotMutuallyExclusive;
-import static com.bluebell.radicle.validation.GenericValidator.validateParameterIsNotNull;
-
 import com.bluebell.platform.constants.CorePlatformConstants;
 import com.bluebell.platform.enums.system.TradeRecordTimeInterval;
 import com.bluebell.platform.enums.time.PlatformTimeInterval;
@@ -32,11 +23,20 @@ import jakarta.annotation.Resource;
 import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.Month;
+import java.time.temporal.TemporalAdjusters;
+import java.util.*;
+
+import static com.bluebell.radicle.validation.GenericValidator.validateDatesAreNotMutuallyExclusive;
+import static com.bluebell.radicle.validation.GenericValidator.validateParameterIsNotNull;
+
 /**
  * Service-layer for calculating {@link TradeRecord}s
  *
  * @author Stephen Prizio
- * @version 0.1.0
+ * @version 0.1.1
  */
 @Service
 public class TradeRecordService {
@@ -85,7 +85,11 @@ public class TradeRecordService {
             tradeRecords = records.stream().filter(tr -> tr.trades() > 0).sorted(Comparator.reverseOrder()).limit(count).toList();
         }
 
-        return new TradeRecordReport(tradeRecords, computeTotals(tradeRecords));
+        return TradeRecordReport
+                .builder()
+                .tradeRecords(tradeRecords)
+                .tradeRecordTotals(computeTotals(tradeRecords))
+                .build();
     }
 
     /**
@@ -102,7 +106,11 @@ public class TradeRecordService {
         validateParameterIsNotNull(tradeRecordTimeInterval, CorePlatformConstants.Validation.System.TIME_INTERVAL_CANNOT_BE_NULL);
 
         if (account.getLastTraded() == null) {
-            return new TradeRecordReport(Collections.emptyList(), null);
+            return TradeRecordReport
+                    .builder()
+                    .tradeRecords(Collections.emptyList())
+                    .tradeRecordTotals(null)
+                    .build();
         }
 
         if (CollectionUtils.isEmpty(account.getTrades())) {
@@ -130,7 +138,11 @@ public class TradeRecordService {
             finalList = tradeRecords.stream().sorted(Comparator.reverseOrder()).limit(count).toList();
         }
 
-        return new TradeRecordReport(finalList, computeTotals(finalList));
+        return TradeRecordReport
+                .builder()
+                .tradeRecords(finalList)
+                .tradeRecordTotals(computeTotals(finalList))
+                .build();
     }
 
     /**
@@ -156,36 +168,46 @@ public class TradeRecordService {
 
         if (CollectionUtils.isNotEmpty(accounts)) {
             final List<TradeLogEntryRecord> records = new ArrayList<>();
-            accounts.forEach(acc -> records.add(new TradeLogEntryRecord(
-                    acc,
-                    acc.getAccountNumber(),
-                    acc.getName(),
-                    getTradeRecords(start, end, acc, tradeRecordTimeInterval, count)
-            )));
+            accounts.forEach(acc -> records.add(
+                    TradeLogEntryRecord
+                            .builder()
+                            .account(acc)
+                            .accountNumber(acc.getAccountNumber())
+                            .accountName(acc.getName())
+                            .report(getTradeRecords(start, end, acc, tradeRecordTimeInterval, count))
+                            .build()
+            ));
 
             if (CollectionUtils.isNotEmpty(records)) {
                 final int trades = records.stream().mapToInt(tr -> tr.report().tradeRecordTotals().trades()).sum();
 
                 if (trades != 0) {
                     entries.add(
-                            new TradeLogEntry(
-                                    records.get(records.size() - 1).report().tradeRecords().get(records.size() - 1).end(),
-                                    records.get(0).report().tradeRecords().get(0).start(),
-                                    records,
-                                    new TradeLogEntryRecordTotals(
-                                            accounts.size(),
-                                            this.mathService.getDouble(records.stream().mapToDouble(tr -> tr.report().tradeRecordTotals().netProfit()).sum()),
-                                            this.mathService.getDouble(records.stream().mapToDouble(tr -> tr.report().tradeRecordTotals().netPoints()).sum()),
-                                            trades,
-                                            this.mathService.wholePercentage(records.stream().mapToInt(tr -> tr.report().tradeRecordTotals().tradesWon()).sum(), trades)
+                            TradeLogEntry
+                                    .builder()
+                                    .start(records.get(records.size() - 1).report().tradeRecords().get(records.size() - 1).end())
+                                    .end(records.get(0).report().tradeRecords().get(0).start())
+                                    .records(records)
+                                    .totals(
+                                            TradeLogEntryRecordTotals
+                                                    .builder()
+                                                    .accountsTraded(accounts.size())
+                                                    .netProfit(this.mathService.getDouble(records.stream().mapToDouble(tr -> tr.report().tradeRecordTotals().netProfit()).sum()))
+                                                    .netPoints(this.mathService.getDouble(records.stream().mapToDouble(tr -> tr.report().tradeRecordTotals().netPoints()).sum()))
+                                                    .trades(trades)
+                                                    .winPercentage(this.mathService.wholePercentage(records.stream().mapToInt(tr -> tr.report().tradeRecordTotals().tradesWon()).sum(), trades))
+                                                    .build()
                                     )
-                            )
+                                    .build()
                     );
                 }
             }
         }
 
-        return new TradeLog(entries);
+        return TradeLog
+                .builder()
+                .entries(entries)
+                .build();
     }
 
     /**
@@ -221,7 +243,36 @@ public class TradeRecordService {
             map.put(yearKey, monthMap);
         }
 
-        return new TradeRecordControls(map.entrySet().stream().map(entry -> new TradeRecordControlsYearEntry(entry.getKey(), entry.getValue().entrySet().stream().map(e -> new TradeRecordControlsMonthEntry(Month.valueOf(e.getKey().toUpperCase()).getValue(), e.getKey(), e.getValue())).sorted(Comparator.comparing(TradeRecordControlsMonthEntry::monthNumber)).toList())).toList());
+        return TradeRecordControls
+                .builder()
+                .yearEntries(
+                        map
+                                .entrySet()
+                                .stream()
+                                .map(
+                                        entry -> TradeRecordControlsYearEntry
+                                                .builder()
+                                                .year(entry.getKey())
+                                                .monthEntries(
+                                                        entry.getValue()
+                                                                .entrySet()
+                                                                .stream()
+                                                                .map(
+                                                                        e -> TradeRecordControlsMonthEntry
+                                                                                .builder()
+                                                                                .month(e.getKey())
+                                                                                .monthNumber(Month.valueOf(e.getKey().toUpperCase()).getValue())
+                                                                                .value(e.getValue())
+                                                                                .build()
+                                                                )
+                                                                .sorted(Comparator.comparing(TradeRecordControlsMonthEntry::monthNumber))
+                                                                .toList()
+                                                )
+                                                .build()
+                                )
+                                .toList()
+                )
+                .build();
     }
 
 
@@ -264,7 +315,28 @@ public class TradeRecordService {
     private TradeRecord generateRecord(final LocalDate start, final LocalDate end, final List<Trade> trades, final TradeRecordTimeInterval tradeRecordTimeInterval, final int count) {
 
         if (CollectionUtils.isEmpty(trades)) {
-            return new TradeRecord(start, end, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, TradeRecordTimeInterval.DAILY, Collections.emptyList());
+            TradeRecord
+                    .builder()
+                    .start(start)
+                    .end(end)
+                    .netProfit(0.0)
+                    .lowestPoint(0.0)
+                    .pointsGained(0.0)
+                    .pointsLost(0.0)
+                    .points(0.0)
+                    .largestWin(0.0)
+                    .winAverage(0.0)
+                    .largestLoss(0.0)
+                    .lossAverage(0.0)
+                    .winPercentage(0)
+                    .wins(0)
+                    .losses(0)
+                    .trades(0)
+                    .profitability(0.0)
+                    .retention(0)
+                    .interval(TradeRecordTimeInterval.DAILY)
+                    .equityPoints(Collections.emptyList())
+                    .build();
         }
 
         final List<Trade> tradesWon = trades.stream().filter(t -> t.getNetProfit() > 0.0).sorted(Comparator.comparing(Trade::getNetProfit).reversed()).toList();
@@ -280,27 +352,28 @@ public class TradeRecordService {
         final int wins = tradesWon.size();
         final int losses = tradesLost.size();
 
-        return new TradeRecord(
-                start,
-                end,
-                netProfit,
-                calculateLowestPoint(trades),
-                pointsGained,
-                pointsLost,
-                this.mathService.subtract(pointsGained, pointsLost),
-                largestWin,
-                winAverage,
-                largestLoss,
-                lossAverage,
-                this.mathService.wholePercentage(tradesWon.size(), trades.size()),
-                wins,
-                losses,
-                trades.size(),
-                this.mathService.divide(pointsGained, pointsLost),
-                this.mathService.wholePercentage(pointsGained, this.mathService.add(pointsGained, Math.abs(pointsLost))),
-                tradeRecordTimeInterval,
-                computeTradeRecordEquityPoints(trades)
-        );
+        return TradeRecord
+                .builder()
+                .start(start)
+                .end(end)
+                .netProfit(netProfit)
+                .lowestPoint(calculateLowestPoint(trades))
+                .pointsGained(pointsGained)
+                .pointsLost(pointsLost)
+                .points(this.mathService.subtract(pointsGained, pointsLost))
+                .largestWin(largestWin)
+                .winAverage(winAverage)
+                .largestLoss(largestLoss)
+                .lossAverage(lossAverage)
+                .winPercentage(this.mathService.wholePercentage(tradesWon.size(), trades.size()))
+                .wins(wins)
+                .losses(losses)
+                .trades(trades.size())
+                .profitability(this.mathService.divide(pointsGained, pointsLost))
+                .retention(this.mathService.wholePercentage(pointsGained, this.mathService.add(pointsGained, Math.abs(pointsLost))))
+                .interval(tradeRecordTimeInterval)
+                .equityPoints(computeTradeRecordEquityPoints(trades))
+                .build();
     }
 
     /**
@@ -352,7 +425,16 @@ public class TradeRecordService {
         final double netPoints = this.mathService.getDouble(tradeRecords.stream().mapToDouble(TradeRecord::points).sum());
 
 
-        return new TradeRecordTotals(tradeRecords.size(), (wins + losses), wins, losses, this.mathService.wholePercentage(wins, (wins + losses)), netProfit, netPoints);
+        return TradeRecordTotals
+                .builder()
+                .count(tradeRecords.size())
+                .trades(wins + losses)
+                .tradesWon(wins)
+                .tradesLost(losses)
+                .winPercentage(this.mathService.wholePercentage(wins, (wins + losses)))
+                .netProfit(netProfit)
+                .netPoints(netPoints)
+                .build();
     }
 
     /**
@@ -373,16 +455,16 @@ public class TradeRecordService {
             final double points = (trade.getNetProfit() < 0) ? this.mathService.multiply(-1.0, Math.abs(this.mathService.subtract(trade.getClosePrice(), trade.getOpenPrice()))) : Math.abs(this.mathService.subtract(trade.getClosePrice(), trade.getOpenPrice()));
 
             if (i == 0) {
-                equityPoints.add(new TradeRecordEquityPoint(1, trade.getNetProfit(), points, this.mathService.add(0.0, trade.getNetProfit()), points));
+                equityPoints.add(TradeRecordEquityPoint.builder().count(1).amount(trade.getNetProfit()).points(points).cumAmount(this.mathService.add(0.0, trade.getNetProfit())).cumPoints(points).build());
             } else {
                 final double cumAmount = this.mathService.add(equityPoints.get(i - 1).cumAmount(), trade.getNetProfit());
                 final double cumPoints = this.mathService.add(equityPoints.get(i - 1).cumPoints(), points);
 
-                equityPoints.add(new TradeRecordEquityPoint(i + 1, trade.getNetProfit(), points, cumAmount, cumPoints));
+                equityPoints.add(TradeRecordEquityPoint.builder().count(i + 1).amount(trade.getNetProfit()).points(points).cumAmount(cumAmount).cumPoints(cumPoints).build());
             }
         }
 
-        equityPoints.add(0, new TradeRecordEquityPoint(0, 0.0, 0.0, 0.0, 0.0));
+        equityPoints.add(0, TradeRecordEquityPoint.builder().count(0).amount(0.0).points(0.0).cumAmount(0.0).cumPoints(0.0).build());
         return equityPoints;
     }
 }

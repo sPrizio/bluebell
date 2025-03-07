@@ -1,9 +1,5 @@
 package com.bluebell.planter.controllers.trade;
 
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-import java.util.List;
-
 import com.bluebell.planter.controllers.AbstractApiController;
 import com.bluebell.platform.constants.CorePlatformConstants;
 import com.bluebell.platform.enums.system.TradeRecordTimeInterval;
@@ -25,8 +21,11 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.annotation.Resource;
 import jakarta.servlet.http.HttpServletRequest;
 import org.apache.commons.lang3.EnumUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.web.bind.annotation.*;
+
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.List;
 
 /**
  * Api controller for {@link TradeRecord}
@@ -119,12 +118,20 @@ public class TradeRecordApiController extends AbstractApiController {
 
         validate(start, end);
         if (!EnumUtils.isValidEnumIgnoreCase(TradeRecordTimeInterval.class, interval)) {
-            return new StandardJsonResponse<>(false, null, String.format(CorePlatformConstants.Validation.DataIntegrity.INVALID_INTERVAL, interval));
+            return StandardJsonResponse
+                    .<TradeRecordReport>builder()
+                    .success(false)
+                    .message(String.format(CorePlatformConstants.Validation.DataIntegrity.INVALID_INTERVAL, interval))
+                    .build();
         }
 
         final User user = (User) request.getAttribute(SecurityConstants.USER_REQUEST_KEY);
         final TradeRecordReport records = this.tradeRecordService.getTradeRecords(LocalDate.parse(start, DateTimeFormatter.ISO_DATE), LocalDate.parse(end, DateTimeFormatter.ISO_DATE), getAccountForId(user, accountNumber), TradeRecordTimeInterval.getInterval(interval), count);
-        return new StandardJsonResponse<>(true, records, StringUtils.EMPTY);
+        return StandardJsonResponse
+                .<TradeRecordReport>builder()
+                .success(true)
+                .data(records)
+                .build();
     }
 
     /**
@@ -174,12 +181,20 @@ public class TradeRecordApiController extends AbstractApiController {
     ) {
 
         if (!EnumUtils.isValidEnumIgnoreCase(TradeRecordTimeInterval.class, interval)) {
-            return new StandardJsonResponse<>(false, null, String.format(CorePlatformConstants.Validation.DataIntegrity.INVALID_INTERVAL, interval));
+            return StandardJsonResponse
+                    .<TradeRecordReport>builder()
+                    .success(false)
+                    .message(String.format(CorePlatformConstants.Validation.DataIntegrity.INVALID_INTERVAL, interval))
+                    .build();
         }
 
         final User user = (User) request.getAttribute(SecurityConstants.USER_REQUEST_KEY);
         final TradeRecordReport records = this.tradeRecordService.getRecentTradeRecords(getAccountForId(user, accountNumber), TradeRecordTimeInterval.getInterval(interval), count);
-        return new StandardJsonResponse<>(true, records, StringUtils.EMPTY);
+        return StandardJsonResponse
+                .<TradeRecordReport>builder()
+                .success(true)
+                .data(records)
+                .build();
     }
 
     /**
@@ -226,12 +241,20 @@ public class TradeRecordApiController extends AbstractApiController {
     ) {
 
         if (!EnumUtils.isValidEnumIgnoreCase(TradeRecordTimeInterval.class, interval)) {
-            return new StandardJsonResponse<>(false, null, String.format(CorePlatformConstants.Validation.DataIntegrity.INVALID_INTERVAL, interval));
+            return StandardJsonResponse
+                    .<TradeRecordControls>builder()
+                    .success(false)
+                    .message(String.format(CorePlatformConstants.Validation.DataIntegrity.INVALID_INTERVAL, interval))
+                    .build();
         }
 
         final User user = (User) request.getAttribute(SecurityConstants.USER_REQUEST_KEY);
         final TradeRecordControls controls = this.tradeRecordService.getTradeRecordControls(getAccountForId(user, accountNumber), TradeRecordTimeInterval.getInterval(interval));
-        return new StandardJsonResponse<>(true, controls, StringUtils.EMPTY);
+        return StandardJsonResponse
+                .<TradeRecordControls>builder()
+                .success(true)
+                .data(controls)
+                .build();
     }
 
     /**
@@ -301,10 +324,18 @@ public class TradeRecordApiController extends AbstractApiController {
 
         validate(start, end);
         if (!EnumUtils.isValidEnumIgnoreCase(TradeRecordTimeInterval.class, interval)) {
-            return new StandardJsonResponse<>(false, null, String.format(CorePlatformConstants.Validation.DataIntegrity.INVALID_INTERVAL, interval));
+            return StandardJsonResponse
+                    .<TradeLog>builder()
+                    .success(false)
+                    .message(String.format(CorePlatformConstants.Validation.DataIntegrity.INVALID_INTERVAL, interval))
+                    .build();
         }
 
         final User user = (User) request.getAttribute(SecurityConstants.USER_REQUEST_KEY);
-        return new StandardJsonResponse<>(true, this.tradeRecordService.getTradeLog(user, LocalDate.parse(start, DateTimeFormatter.ISO_DATE), LocalDate.parse(end, DateTimeFormatter.ISO_DATE), TradeRecordTimeInterval.getInterval(interval), count), StringUtils.EMPTY);
+        return StandardJsonResponse
+                .<TradeLog>builder()
+                .success(true)
+                .data(this.tradeRecordService.getTradeLog(user, LocalDate.parse(start, DateTimeFormatter.ISO_DATE), LocalDate.parse(end, DateTimeFormatter.ISO_DATE), TradeRecordTimeInterval.getInterval(interval), count))
+                .build();
     }
 }

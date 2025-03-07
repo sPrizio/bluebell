@@ -1,9 +1,5 @@
 package com.bluebell.planter.controllers.news;
 
-import java.time.LocalDate;
-import java.util.List;
-import java.util.Optional;
-
 import com.bluebell.planter.controllers.AbstractApiController;
 import com.bluebell.planter.converters.news.MarketNewsDTOConverter;
 import com.bluebell.platform.models.api.dto.news.MarketNewsDTO;
@@ -20,8 +16,11 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.annotation.Resource;
 import jakarta.servlet.http.HttpServletRequest;
 import org.apache.commons.collections4.CollectionUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.web.bind.annotation.*;
+
+import java.time.LocalDate;
+import java.util.List;
+import java.util.Optional;
 
 /**
  * API controller for {@link MarketNews}
@@ -96,7 +95,9 @@ public class MarketNewsApiController extends AbstractApiController {
     ) {
         validate(date);
         final Optional<MarketNews> news = this.marketNewsService.findMarketNewsForDate(LocalDate.parse(date));
-        return news.map(marketNews -> new StandardJsonResponse<>(true, this.marketNewsDTOConverter.convert(marketNews), StringUtils.EMPTY)).orElseGet(() -> new StandardJsonResponse<>(false, null, String.format("No news for the given date %s", date)));
+        return news
+                .map(marketNews -> StandardJsonResponse.<MarketNewsDTO>builder().success(true).data(this.marketNewsDTOConverter.convert(marketNews)).build())
+                .orElseGet(() -> StandardJsonResponse.<MarketNewsDTO>builder().success(false).message(String.format("No news for the given date %s", date)).build());
     }
 
     /**
@@ -154,10 +155,18 @@ public class MarketNewsApiController extends AbstractApiController {
         validate(start, end);
         final List<MarketNews> news = this.marketNewsService.findNewsWithinInterval(LocalDate.parse(start), LocalDate.parse(end), locales);
         if (CollectionUtils.isNotEmpty(news)) {
-            return new StandardJsonResponse<>(true, this.marketNewsDTOConverter.convertAll(news), StringUtils.EMPTY);
+            return StandardJsonResponse
+                    .<List<MarketNewsDTO>>builder()
+                    .success(true)
+                    .data(this.marketNewsDTOConverter.convertAll(news))
+                    .build();
         }
 
-        return new StandardJsonResponse<>(false, null, "No market news available");
+        return StandardJsonResponse
+                .<List<MarketNewsDTO>>builder()
+                .success(false)
+                .message("No market news available")
+                .build();
     }
 
 
@@ -192,9 +201,16 @@ public class MarketNewsApiController extends AbstractApiController {
 
         final boolean result = this.marketNewsService.fetchMarketNews();
         if (result) {
-            return new StandardJsonResponse<>(true, null, StringUtils.EMPTY);
+            return StandardJsonResponse
+                    .<Boolean>builder()
+                    .success(true)
+                    .build();
         }
 
-        return new StandardJsonResponse<>(false, null, "There was an error fetching the market news");
+        return StandardJsonResponse
+                .<Boolean>builder()
+                .success(false)
+                .message("There was an error fetching the market news")
+                .build();
     }
 }

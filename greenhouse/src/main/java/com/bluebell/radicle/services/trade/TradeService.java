@@ -1,12 +1,5 @@
 package com.bluebell.radicle.services.trade;
 
-import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Optional;
-
-import static com.bluebell.radicle.validation.GenericValidator.validateDatesAreNotMutuallyExclusive;
-import static com.bluebell.radicle.validation.GenericValidator.validateParameterIsNotNull;
-
 import com.bluebell.platform.constants.CorePlatformConstants;
 import com.bluebell.platform.enums.trade.TradeType;
 import com.bluebell.platform.models.core.entities.account.Account;
@@ -17,11 +10,18 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Optional;
+
+import static com.bluebell.radicle.validation.GenericValidator.validateDatesAreNotMutuallyExclusive;
+import static com.bluebell.radicle.validation.GenericValidator.validateParameterIsNotNull;
+
 /**
  * Service-layer for {@link Trade} entities
  *
  * @author Stephen Prizio
- * @version 0.0.9
+ * @version 0.1.1
  */
 @Service
 public class TradeService {

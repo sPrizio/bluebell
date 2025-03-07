@@ -1,5 +1,10 @@
 package com.bluebell.radicle.parsers;
 
+import com.bluebell.platform.enums.time.PlatformTimeInterval;
+import com.bluebell.platform.models.core.nonentities.market.AggregatedMarketPrices;
+import com.bluebell.platform.models.core.nonentities.market.MarketPrice;
+import org.apache.commons.lang3.StringUtils;
+
 import java.io.File;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -7,16 +12,11 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 
-import com.bluebell.platform.enums.time.PlatformTimeInterval;
-import com.bluebell.platform.models.core.nonentities.market.AggregatedMarketPrices;
-import com.bluebell.platform.models.core.nonentities.market.MarketPrice;
-import org.apache.commons.lang3.StringUtils;
-
 /**
  * Parses a {@link File} url into a {@link List} of {@link MarketPrice}
  *
  * @author Stephen Prizio
- * @version 0.0.9
+ * @version 0.1.1
  */
 public interface MarketPriceParser {
 

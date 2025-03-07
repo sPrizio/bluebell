@@ -1,8 +1,5 @@
 package com.bluebell.radicle.security.aspects.impl;
 
-import java.util.Arrays;
-import java.util.Optional;
-
 import com.bluebell.platform.models.core.entities.security.User;
 import com.bluebell.radicle.security.aspects.ValidateApiToken;
 import com.bluebell.radicle.security.constants.SecurityConstants;
@@ -19,12 +16,15 @@ import org.aspectj.lang.annotation.Aspect;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+import java.util.Arrays;
+import java.util.Optional;
+
 /**
  * Implementation of the {@link ValidateApiToken} aspect. Here, the presence of the api token in the {@link HttpServletRequest} headers is checked and, if valid, the associated {@link User}
  * is attached and the request is allowed to proceed. Otherwise, the request is failed immediately
  *
  * @author Stephen Prizio
- * @version 0.0.9
+ * @version 0.1.1
  */
 @Aspect
 @Component

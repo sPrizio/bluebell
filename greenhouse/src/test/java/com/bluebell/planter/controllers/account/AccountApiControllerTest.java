@@ -37,7 +37,7 @@ import org.springframework.test.web.servlet.MockMvc;
  * Testing class for {@link AccountApiController}
  *
  * @author Stephen Prizio
- * @version 0.1.0
+ * @version 0.1.1
  */
 @SpringBootTest
 @AutoConfigureMockMvc(addFilters = false)
@@ -59,10 +59,10 @@ class AccountApiControllerTest extends AbstractPlanterTest {
     @BeforeEach
     public void setUp() {
         Mockito.when(this.uniqueIdentifierService.generateUid(any())).thenReturn("MTE4");
-        Mockito.when(this.accountService.createNewAccount(any(), any())).thenReturn(new Account());
-        Mockito.when(this.accountService.updateAccount(any(), any(), any())).thenReturn(new Account());
+        Mockito.when(this.accountService.createNewAccount(any(), any())).thenReturn(Account.builder().build());
+        Mockito.when(this.accountService.updateAccount(any(), any(), any())).thenReturn(Account.builder().build());
         Mockito.when(this.accountDTOConverter.convert(any())).thenReturn(generateTestAccountDTO());
-        Mockito.when(this.accountService.findAccountByAccountNumber(1234)).thenReturn(Optional.of(new Account()));
+        Mockito.when(this.accountService.findAccountByAccountNumber(1234)).thenReturn(Optional.of(Account.builder().build()));
         Mockito.when(this.accountService.findAccountByAccountNumber(5678)).thenReturn(Optional.empty());
         Mockito.when(this.accountService.deleteAccount(any())).thenReturn(true);
         Mockito.when(this.accountService.getAccountDetails(any())).thenReturn(generateAccountDetails());

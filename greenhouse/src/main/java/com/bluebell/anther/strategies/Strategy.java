@@ -1,11 +1,5 @@
 package com.bluebell.anther.strategies;
 
-import java.math.BigDecimal;
-import java.math.RoundingMode;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.Map;
-
 import com.bluebell.anther.models.parameter.strategy.impl.BasicStrategyParameters;
 import com.bluebell.anther.models.strategy.StrategyResult;
 import com.bluebell.anther.models.trade.AntherTrade;
@@ -13,11 +7,17 @@ import com.bluebell.platform.enums.trade.TradeType;
 import com.bluebell.platform.models.core.nonentities.market.AggregatedMarketPrices;
 import com.bluebell.platform.models.core.nonentities.market.MarketPrice;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.Map;
+
 /**
  * Defines a trading strategy
  *
  * @author Stephen Prizio
- * @version 0.0.9
+ * @version 0.1.1
  */
 public interface Strategy<P extends BasicStrategyParameters> {
 
@@ -31,6 +31,12 @@ public interface Strategy<P extends BasicStrategyParameters> {
      */
     StrategyResult<P> executeStrategy(final LocalDate startDate, final LocalDate endDate, final Map<LocalDate, AggregatedMarketPrices> prices);
 
+    /**
+     * Is the market price considered an exit
+     *
+     * @param price {@link MarketPrice}
+     * @return true if the trade should be exited based on the exit criteria and the value of this price
+     */
     boolean isExitBar(final MarketPrice price);
 
 
@@ -48,7 +54,15 @@ public interface Strategy<P extends BasicStrategyParameters> {
      * @return {@link AntherTrade}
      */
     default AntherTrade openTrade(final TradeType tradeType, final double lotSize, final LocalDateTime tradeOpenTime, final double openPrice, final double stopLoss, final double takeProfit) {
-       return new AntherTrade(tradeType, lotSize, tradeOpenTime, openPrice, stopLoss, takeProfit);
+        return AntherTrade
+                .builder()
+                .tradeType(tradeType)
+                .lotSize(lotSize)
+                .tradeOpenTime(tradeOpenTime)
+                .openPrice(openPrice)
+                .stopLoss(stopLoss)
+                .takeProfit(takeProfit)
+                .build();
     }
 
     /**

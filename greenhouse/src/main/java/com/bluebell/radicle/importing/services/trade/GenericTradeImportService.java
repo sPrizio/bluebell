@@ -1,9 +1,5 @@
 package com.bluebell.radicle.importing.services.trade;
 
-import java.io.InputStream;
-
-import static com.bluebell.radicle.validation.GenericValidator.validateParameterIsNotNull;
-
 import com.bluebell.platform.constants.CorePlatformConstants;
 import com.bluebell.platform.enums.trade.TradePlatform;
 import com.bluebell.platform.models.core.entities.account.Account;
@@ -12,12 +8,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.InputStream;
+
+import static com.bluebell.radicle.validation.GenericValidator.validateParameterIsNotNull;
+
 
 /**
  * Generic importing service to handle incoming trade files, will delegate to specific import services
  *
  * @author Stephen Prizio
- * @version 0.0.9
+ * @version 0.1.1
  */
 @Service
 public class GenericTradeImportService {

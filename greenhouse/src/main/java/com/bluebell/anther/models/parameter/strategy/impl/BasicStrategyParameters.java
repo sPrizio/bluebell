@@ -5,14 +5,16 @@ import com.bluebell.anther.models.parameter.strategy.StrategyParameters;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.experimental.SuperBuilder;
 
 /**
  * Static parameters that don't change for anything
  *
  * @author Stephen Prizio
- * @version 0.0.9
+ * @version 0.1.1
  */
 @Getter
+@SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
 public class BasicStrategyParameters implements StrategyParameters {

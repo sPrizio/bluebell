@@ -4,18 +4,21 @@ import com.bluebell.platform.enums.news.MarketNewsSeverity;
 import com.bluebell.platform.enums.system.Country;
 import com.bluebell.platform.models.core.entities.GenericEntity;
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 /**
  * Class representation of market news entry, a piece of news at a specific time
  *
  * @author Stephen Prizio
- * @version 0.0.9
+ * @version 0.1.1
  */
 @Getter
 @Entity
+@Builder
 @Table(name = "market_news_entries")
+@EqualsAndHashCode
+@NoArgsConstructor
+@AllArgsConstructor
 public class MarketNewsEntry implements GenericEntity, Comparable<MarketNewsEntry> {
 
     @Id

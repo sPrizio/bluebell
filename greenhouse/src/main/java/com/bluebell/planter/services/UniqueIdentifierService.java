@@ -1,9 +1,5 @@
 package com.bluebell.planter.services;
 
-import java.nio.charset.StandardCharsets;
-
-import static com.bluebell.radicle.validation.GenericValidator.validateParameterIsNotNull;
-
 import com.bluebell.platform.constants.CorePlatformConstants;
 import com.bluebell.platform.models.api.dto.GenericDTO;
 import com.bluebell.platform.models.core.entities.GenericEntity;
@@ -11,11 +7,15 @@ import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
+import java.nio.charset.StandardCharsets;
+
+import static com.bluebell.radicle.validation.GenericValidator.validateParameterIsNotNull;
+
 /**
  * Service for handling computations regarding unique identifiers that are typical used on {@link GenericDTO}s
  *
  * @author Stephen Prizio
- * @version 0.0.9
+ * @version 0.1.1
  */
 @Service
 public class UniqueIdentifierService {

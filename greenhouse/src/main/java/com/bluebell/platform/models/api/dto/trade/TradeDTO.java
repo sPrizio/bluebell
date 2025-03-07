@@ -1,29 +1,32 @@
 package com.bluebell.platform.models.api.dto.trade;
 
-import java.time.LocalDateTime;
-
 import com.bluebell.platform.enums.trade.TradePlatform;
 import com.bluebell.platform.enums.trade.TradeType;
 import com.bluebell.platform.models.api.dto.GenericDTO;
 import com.bluebell.platform.models.api.dto.account.AccountDTO;
 import com.bluebell.platform.models.core.entities.trade.Trade;
 import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
+import org.apache.commons.lang3.StringUtils;
+
+import java.time.LocalDateTime;
 
 /**
  * A DTO representation of a {@link Trade}
  *
  * @author Stephen Prizio
- * @version 0.0.9
+ * @version 0.1.1
  */
 @Setter
 @Getter
+@Builder
 @Schema(title = "TradeDTO", name = "TradeDTO", description = "Data representation of a trade in the system")
 public class TradeDTO implements GenericDTO {
 
     @Schema(description = "Trade uid")
-    private String uid;
+    private @Builder.Default String uid = StringUtils.EMPTY;
 
     @Schema(description = "Trade id (from the trading platform)")
     private String tradeId;

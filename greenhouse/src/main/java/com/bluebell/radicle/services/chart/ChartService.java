@@ -1,16 +1,16 @@
 package com.bluebell.radicle.services.chart;
 
 
+import com.bluebell.platform.enums.chart.IntradayInterval;
+
 import java.time.LocalDate;
 import java.util.List;
-
-import com.bluebell.platform.enums.chart.IntradayInterval;
 
 /**
  * Service-layer for charting
  *
  * @author Stephen Prizio
- * @version 0.0.9
+ * @version 0.1.1
  */
 public interface ChartService<D> {
 

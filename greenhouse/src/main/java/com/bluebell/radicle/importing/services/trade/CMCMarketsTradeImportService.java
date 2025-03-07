@@ -1,5 +1,21 @@
 package com.bluebell.radicle.importing.services.trade;
 
+import com.bluebell.platform.enums.trade.TradePlatform;
+import com.bluebell.platform.enums.trade.TradeType;
+import com.bluebell.platform.models.core.entities.account.Account;
+import com.bluebell.platform.models.core.entities.trade.Trade;
+import com.bluebell.radicle.importing.ImportService;
+import com.bluebell.radicle.importing.exceptions.TradeImportFailureException;
+import com.bluebell.radicle.importing.models.CMCTradeWrapper;
+import com.bluebell.radicle.importing.services.AbstractImportService;
+import com.bluebell.radicle.repositories.trade.TradeRepository;
+import jakarta.annotation.Resource;
+import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Service;
+import org.springframework.util.ResourceUtils;
+
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.InputStream;
@@ -12,27 +28,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
-import com.bluebell.platform.enums.trade.TradePlatform;
-import com.bluebell.platform.enums.trade.TradeType;
-import com.bluebell.platform.models.core.entities.account.Account;
-import com.bluebell.platform.models.core.entities.trade.Trade;
-import com.bluebell.radicle.importing.ImportService;
-import com.bluebell.radicle.importing.exceptions.TradeImportFailureException;
-import com.bluebell.radicle.importing.records.CMCTradeWrapper;
-import com.bluebell.radicle.importing.services.AbstractImportService;
-import com.bluebell.radicle.repositories.trade.TradeRepository;
-import jakarta.annotation.Resource;
-import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Service;
-import org.springframework.util.ResourceUtils;
-
 /**
  * Service-layer for importing trades into the system from CMC Markets
  *
  * @author Stephen Prizio
- * @version 0.0.9
+ * @version 0.1.1
  */
 @Service("cmcMarketsTradeImportService")
 public class CMCMarketsTradeImportService extends AbstractImportService implements ImportService {
@@ -143,7 +143,17 @@ public class CMCMarketsTradeImportService extends AbstractImportService implemen
             double price = safeParseDouble(sanitizeString(array[7]));
             double amount = safeParseDouble(sanitizeString(array[14]));
 
-            return new CMCTradeWrapper(dateTime, type, orderNumber, relatedOrderNumber, product, units, price, amount);
+            return CMCTradeWrapper
+                    .builder()
+                    .dateTime(dateTime)
+                    .type(type)
+                    .orderNumber(orderNumber)
+                    .relatedOrderNumber(relatedOrderNumber)
+                    .product(product)
+                    .units(units)
+                    .price(price)
+                    .amount(amount)
+                    .build();
         } catch (Exception e) {
             LOGGER.error("Error parsing line : {} for reason : {}", string, e.getMessage(), e);
             throw new DateTimeException(e.getMessage(), e);
@@ -183,22 +193,19 @@ public class CMCMarketsTradeImportService extends AbstractImportService implemen
      * @return {@link Trade}
      */
     private Trade createNewTrade(final CMCTradeWrapper wrapper, final TradeType tradeType, final Account account) {
-
-        Trade trade = new Trade();
-
-        trade.setTradeId(wrapper.orderNumber());
-        trade.setTradePlatform(TradePlatform.CMC_MARKETS);
-        trade.setProduct(wrapper.product());
-        trade.setTradeType(tradeType);
-        trade.setClosePrice(0.0);
-        trade.setTradeCloseTime(null);
-        trade.setTradeOpenTime(wrapper.dateTime());
-        trade.setLotSize(wrapper.units());
-        trade.setNetProfit(0.0);
-        trade.setOpenPrice(wrapper.price());
-        trade.setAccount(account);
-
-        return trade;
+        return Trade.builder()
+                .tradeId(wrapper.orderNumber())
+                .tradePlatform(TradePlatform.CMC_MARKETS)
+                .product(wrapper.product())
+                .tradeType(tradeType)
+                .closePrice(0.0)
+                .tradeCloseTime(null)
+                .tradeOpenTime(wrapper.dateTime())
+                .lotSize(wrapper.units())
+                .netProfit(0.0)
+                .openPrice(wrapper.price())
+                .account(account)
+                .build();
     }
 
     /**
@@ -208,21 +215,18 @@ public class CMCMarketsTradeImportService extends AbstractImportService implemen
      * @return {@link Trade}
      */
     private Trade createPromotionalPayment(final CMCTradeWrapper wrapper, final Account account) {
-
-        Trade trade = new Trade();
-
-        trade.setTradeId(wrapper.orderNumber());
-        trade.setTradePlatform(TradePlatform.CMC_MARKETS);
-        trade.setTradeType(TradeType.PROMOTIONAL_PAYMENT);
-        trade.setClosePrice(0.0);
-        trade.setTradeCloseTime(wrapper.dateTime());
-        trade.setTradeOpenTime(wrapper.dateTime());
-        trade.setLotSize(0.0);
-        trade.setNetProfit(wrapper.amount());
-        trade.setOpenPrice(0.0);
-        trade.setAccount(account);
-
-        return trade;
+        return Trade.builder()
+                .tradeId(wrapper.orderNumber())
+                .tradePlatform(TradePlatform.CMC_MARKETS)
+                .tradeType(TradeType.PROMOTIONAL_PAYMENT)
+                .closePrice(0.0)
+                .tradeCloseTime(wrapper.dateTime())
+                .tradeOpenTime(wrapper.dateTime())
+                .lotSize(0.0)
+                .netProfit(wrapper.amount())
+                .openPrice(0.0)
+                .account(account)
+                .build();
     }
 
     /**

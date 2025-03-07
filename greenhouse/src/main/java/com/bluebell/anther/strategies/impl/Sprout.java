@@ -1,12 +1,5 @@
 package com.bluebell.anther.strategies.impl;
 
-import java.time.LocalDate;
-import java.time.LocalTime;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import com.bluebell.anther.enums.TradeSignal;
 import com.bluebell.anther.models.parameter.strategy.impl.SproutStrategyParameters;
 import com.bluebell.anther.models.strategy.StrategyResult;
@@ -18,12 +11,19 @@ import com.bluebell.platform.models.core.nonentities.market.MarketPrice;
 import com.bluebell.platform.services.MathService;
 import lombok.Getter;
 
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 /**
  * The Sprout strategy. Sprout looks for highs and lows that are violated in the opposite direction but the proceeding candle.
  * In cases like these, a small (or large) reversal is likely taking place
  *
  * @author Stephen Prizio
- * @version 0.0.9
+ * @version 0.1.1
  */
 @Getter
 public class Sprout implements Strategy<SproutStrategyParameters> {

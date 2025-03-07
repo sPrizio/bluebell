@@ -32,7 +32,7 @@ import org.springframework.test.context.junit4.SpringRunner;
  * Testing class for {@link MarketNewsService}
  *
  * @author Stephen Prizio
- * @version 0.1.0
+ * @version 0.1.1
  */
 @SpringBootTest
 @RunWith(SpringRunner.class)
@@ -129,17 +129,21 @@ class MarketNewsServiceTest extends AbstractGenericTest {
     @Test
     void test_fetchMarketNews_success() {
 
-        final CalendarNewsDayEntryDTO entryDTO = new CalendarNewsDayEntryDTO();
-        entryDTO.setTitle("Test");
-        entryDTO.setTime(LocalTime.MIN);
-        entryDTO.setImpact(MarketNewsSeverity.DANGEROUS);
-        entryDTO.setCountry(Country.CANADA);
-        entryDTO.setForecast("-2.5%");
-        entryDTO.setPrevious("-2.9%");
+        final CalendarNewsDayEntryDTO entryDTO = CalendarNewsDayEntryDTO
+                .builder()
+                .title("Test")
+                .time(LocalTime.MIN)
+                .impact(MarketNewsSeverity.DANGEROUS)
+                .country(Country.CANADA)
+                .forecast("-2.5%")
+                .previous("-2.9%")
+                .build();
 
-        final CalendarNewsDayDTO dto = new CalendarNewsDayDTO();
-        dto.setDate(LocalDate.MIN);
-        dto.setEntries(List.of(entryDTO));
+        final CalendarNewsDayDTO dto = CalendarNewsDayDTO
+                .builder()
+                .date(LocalDate.MIN)
+                .entries(List.of(entryDTO))
+                .build();
 
         Mockito.when(this.forexFactoryIntegrationService.getCurrentWeekNews()).thenReturn(List.of(dto));
         assertThat(this.marketNewsService.fetchMarketNews())

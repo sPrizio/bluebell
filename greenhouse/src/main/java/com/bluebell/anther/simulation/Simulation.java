@@ -1,9 +1,5 @@
 package com.bluebell.anther.simulation;
 
-import java.time.LocalDate;
-import java.time.temporal.TemporalAdjusters;
-import java.util.Map;
-
 import com.bluebell.anther.models.parameter.strategy.impl.BasicStrategyParameters;
 import com.bluebell.anther.models.parameter.strategy.impl.BloomStrategyParameters;
 import com.bluebell.anther.models.simulation.SimulationResult;
@@ -15,11 +11,15 @@ import com.bluebell.radicle.parsers.impl.FirstRateDataParser;
 import com.bluebell.radicle.parsers.impl.TradingViewDataParser;
 import org.apache.commons.collections4.MapUtils;
 
+import java.time.LocalDate;
+import java.time.temporal.TemporalAdjusters;
+import java.util.Map;
+
 /**
  * Class representation of a simulation. A simulation refers to executing a {@link Strategy} over a given period of time
  *
  * @author Stephen Prizio
- * @version 0.0.9
+ * @version 0.1.1
  */
 public interface Simulation<P extends BasicStrategyParameters> {
 

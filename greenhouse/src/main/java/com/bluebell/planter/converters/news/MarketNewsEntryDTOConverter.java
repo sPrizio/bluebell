@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component;
  * Converter that converts {@link MarketNewsEntry}s into {@link MarketNewsEntryDTO}s
  *
  * @author Stephen Prizio
- * @version 0.0.9
+ * @version 0.1.1
  */
 @Component("marketNewsEntryDTOConverter")
 public class MarketNewsEntryDTOConverter implements GenericDTOConverter<MarketNewsEntry, MarketNewsEntryDTO> {
@@ -26,19 +26,18 @@ public class MarketNewsEntryDTOConverter implements GenericDTOConverter<MarketNe
     public MarketNewsEntryDTO convert(final MarketNewsEntry entity) {
 
         if (entity == null) {
-            return new MarketNewsEntryDTO();
+            return MarketNewsEntryDTO.builder().build();
         }
 
-        final MarketNewsEntryDTO marketNewsEntryDTO = new MarketNewsEntryDTO();
-
-        marketNewsEntryDTO.setUid(this.uniqueIdentifierService.generateUid(entity));
-        marketNewsEntryDTO.setContent(entity.getContent());
-        marketNewsEntryDTO.setSeverity(entity.getSeverity().getDescription());
-        marketNewsEntryDTO.setSeverityLevel(entity.getSeverity().getLevel());
-        marketNewsEntryDTO.setCountry(entity.getCountry().getCurrency().getIsoCode());
-        marketNewsEntryDTO.setForecast(entity.getForecast());
-        marketNewsEntryDTO.setPrevious(entity.getPrevious());
-
-        return marketNewsEntryDTO;
+        return MarketNewsEntryDTO
+                .builder()
+                .uid(this.uniqueIdentifierService.generateUid(entity))
+                .content(entity.getContent())
+                .severity(entity.getSeverity().getDescription())
+                .severityLevel(entity.getSeverity().getLevel())
+                .country(entity.getCountry().getCurrency().getIsoCode())
+                .forecast(entity.getForecast())
+                .previous(entity.getPrevious())
+                .build();
     }
 }

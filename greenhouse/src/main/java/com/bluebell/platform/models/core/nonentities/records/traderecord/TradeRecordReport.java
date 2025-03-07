@@ -1,9 +1,10 @@
 package com.bluebell.platform.models.core.nonentities.records.traderecord;
 
-import java.util.List;
-
 import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.Builder;
 import lombok.Getter;
+
+import java.util.List;
 
 /**
  * Represents a collection of {@link TradeRecord}s and some basic statistics about them
@@ -11,8 +12,9 @@ import lombok.Getter;
  * @param tradeRecords {@link List} of {@link TradeRecord}s
  * @param tradeRecordTotals {@link TradeRecordTotals}
  * @author Stephen Prizio
- * @version 0.1.0
+ * @version 0.1.1
  */
+@Builder
 @Schema(title = "TradeRecordReport", name = "TradeRecordReport", description = "A data representation of a list of trade records and a summary of trading activity for all of the records (aggregation)")
 public record TradeRecordReport(
         @Getter @Schema(description = "List of trade records") List<TradeRecord> tradeRecords,

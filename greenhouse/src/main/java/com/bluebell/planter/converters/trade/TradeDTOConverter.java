@@ -13,12 +13,10 @@ import org.springframework.stereotype.Component;
  * Converter for {@link Trade}s into {@link TradeDTO}s
  *
  * @author Stephen Prizio
- * @version 0.0.9
+ * @version 0.1.1
  */
 @Component("tradeDTOConverter")
 public class TradeDTOConverter implements GenericDTOConverter<Trade, TradeDTO> {
-
-    private final MathService mathService = new MathService();
 
     @Resource(name = "accountDTOConverter")
     private AccountDTOConverter accountDTOConverter;
@@ -33,27 +31,27 @@ public class TradeDTOConverter implements GenericDTOConverter<Trade, TradeDTO> {
     public TradeDTO convert(final Trade entity) {
 
         if (entity == null) {
-            return new TradeDTO();
+            return TradeDTO.builder().build();
         }
 
-        final TradeDTO tradeDTO = new TradeDTO();
-
-        tradeDTO.setUid(this.uniqueIdentifierService.generateUid(entity));
-        tradeDTO.setTradeId(entity.getTradeId());
-        tradeDTO.setTradePlatform(entity.getTradePlatform());
-        tradeDTO.setProduct(entity.getProduct());
-        tradeDTO.setTradeType(entity.getTradeType());
-        tradeDTO.setOpenPrice(entity.getOpenPrice());
-        tradeDTO.setClosePrice(entity.getClosePrice());
-        tradeDTO.setTradeOpenTime(entity.getTradeOpenTime());
-        tradeDTO.setTradeCloseTime(entity.getTradeCloseTime());
-        tradeDTO.setLotSize(entity.getLotSize());
-        tradeDTO.setNetProfit(entity.getNetProfit());
-        tradeDTO.setPoints(Math.abs(this.mathService.subtract(entity.getOpenPrice(), entity.getClosePrice())));
-        tradeDTO.setStopLoss(entity.getStopLoss());
-        tradeDTO.setTakeProfit(entity.getTakeProfit());
-        tradeDTO.setAccount(this.accountDTOConverter.convert(entity.getAccount()));
-
-        return tradeDTO;
+        final MathService mathService = new MathService();
+        return TradeDTO
+                .builder()
+                .uid(this.uniqueIdentifierService.generateUid(entity))
+                .tradeId(entity.getTradeId())
+                .tradePlatform(entity.getTradePlatform())
+                .product(entity.getProduct())
+                .tradeType(entity.getTradeType())
+                .openPrice(entity.getOpenPrice())
+                .closePrice(entity.getClosePrice())
+                .tradeOpenTime(entity.getTradeOpenTime())
+                .tradeCloseTime(entity.getTradeCloseTime())
+                .lotSize(entity.getLotSize())
+                .netProfit(entity.getNetProfit())
+                .points(Math.abs(mathService.subtract(entity.getOpenPrice(), entity.getClosePrice())))
+                .stopLoss(entity.getStopLoss())
+                .takeProfit(entity.getTakeProfit())
+                .account(this.accountDTOConverter.convert(entity.getAccount()))
+                .build();
     }
 }

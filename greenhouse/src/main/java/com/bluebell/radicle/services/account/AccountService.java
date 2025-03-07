@@ -1,12 +1,5 @@
 package com.bluebell.radicle.services.account;
 
-import java.time.LocalDateTime;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
-
-import static com.bluebell.radicle.validation.GenericValidator.validateParameterIsNotNull;
-
 import com.bluebell.platform.constants.CorePlatformConstants;
 import com.bluebell.platform.enums.account.AccountType;
 import com.bluebell.platform.enums.account.Broker;
@@ -23,12 +16,19 @@ import jakarta.annotation.Resource;
 import org.apache.commons.collections4.MapUtils;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
+
+import static com.bluebell.radicle.validation.GenericValidator.validateParameterIsNotNull;
+
 
 /**
  * Service-layer for {@link Account} entities
  *
  * @author Stephen Prizio
- * @version 0.1.0
+ * @version 0.1.1
  */
 @Service
 public class AccountService {
@@ -55,14 +55,15 @@ public class AccountService {
 
         validateParameterIsNotNull(account, CorePlatformConstants.Validation.Account.ACCOUNT_CANNOT_BE_NULL);
 
-        return new AccountDetails(
-                account,
-                this.accountDetailsService.calculateConsistencyScore(account),
-                this.accountDetailsService.calculateEquityPoints(account),
-                this.accountDetailsService.obtainInsights(account),
-                this.accountDetailsService.obtainStatistics(account),
-                CorePlatformConstants.RISK_FREE_RATE_CANADA
-        );
+        return AccountDetails
+                .builder()
+                .account(account)
+                .consistency(this.accountDetailsService.calculateConsistencyScore(account))
+                .equity(this.accountDetailsService.calculateEquityPoints(account))
+                .insights(this.accountDetailsService.obtainInsights(account))
+                .statistics(this.accountDetailsService.obtainStatistics(account))
+                .riskFreeRate(CorePlatformConstants.RISK_FREE_RATE_CANADA)
+                .build();
     }
 
     /**
@@ -91,7 +92,7 @@ public class AccountService {
         }
 
         try {
-            return applyChanges(new Account(), data, user, true);
+            return applyChanges(Account.builder().build(), data, user, true);
         } catch (Exception e) {
             throw new EntityCreationException(String.format("An Account could not be created : %s", e.getMessage()), e);
         }

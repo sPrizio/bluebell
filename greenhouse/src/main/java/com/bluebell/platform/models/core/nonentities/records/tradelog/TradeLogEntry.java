@@ -1,13 +1,14 @@
 package com.bluebell.platform.models.core.nonentities.records.tradelog;
 
 
-import java.time.LocalDate;
-import java.util.List;
-
 import com.bluebell.platform.models.core.entities.account.Account;
 import com.bluebell.platform.models.core.nonentities.records.traderecord.TradeRecord;
 import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.Builder;
 import lombok.Getter;
+
+import java.time.LocalDate;
+import java.util.List;
 
 /**
  * Class representation of line item entry inside a {@link TradeLog}, consisting of a collection of {@link TradeRecord}s for an {@link Account} within a time span and a sum of their totals
@@ -17,8 +18,9 @@ import lombok.Getter;
  * @param records {@link List} of {@link TradeLogEntryRecord}s
  * @param totals {@link TradeLogEntryRecordTotals}
  * @author Stephen Prizio
- * @version 0.1.0
+ * @version 0.1.1
  */
+@Builder
 @Schema(title = "TradeLogEntry", name = "TradeLogEntry", description = "An entry of trade logs for a period of time")
 public record TradeLogEntry(
         @Getter @Schema(description = "Start date") LocalDate start,

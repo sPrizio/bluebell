@@ -1,10 +1,5 @@
 package com.bluebell.planter.controllers.security;
 
-import java.util.*;
-import java.util.stream.Collectors;
-
-import static com.bluebell.radicle.validation.GenericValidator.validateJsonIntegrity;
-
 import com.bluebell.planter.controllers.AbstractApiController;
 import com.bluebell.planter.converters.security.UserDTOConverter;
 import com.bluebell.planter.converters.transaction.TransactionDTOConverter;
@@ -29,8 +24,12 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.annotation.Resource;
 import jakarta.servlet.http.HttpServletRequest;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.*;
+import java.util.stream.Collectors;
+
+import static com.bluebell.radicle.validation.GenericValidator.validateJsonIntegrity;
 
 /**
  * API controller for {@link User}
@@ -101,7 +100,9 @@ public class UserApiController extends AbstractApiController {
             final HttpServletRequest request
     ) {
         final Optional<User> user = this.userService.findUserByUsername(username);
-        return user.map(value -> new StandardJsonResponse<>(true, this.userDTOConverter.convert(value), StringUtils.EMPTY)).orElseGet(() -> new StandardJsonResponse<>(false, null, String.format("No user found for username %s", username)));
+        return user
+                .map(value -> StandardJsonResponse.<UserDTO>builder().success(true).data(this.userDTOConverter.convert(value)).build())
+                .orElseGet(() -> StandardJsonResponse.<UserDTO>builder().success(false).message(String.format("No user found for username %s", username)).build());
     }
 
     /**
@@ -129,13 +130,11 @@ public class UserApiController extends AbstractApiController {
     )
     @GetMapping("/country-codes")
     public StandardJsonResponse<TreeSet<String>> getCountryCodes() {
-        return new StandardJsonResponse<>(
-                true,
-                Arrays.stream(Country.values())
-                        .map(Country::getPhoneCode)
-                        .collect(Collectors.toCollection(TreeSet::new)),
-                StringUtils.EMPTY
-        );
+        return StandardJsonResponse
+                .<TreeSet<String>>builder()
+                .success(true)
+                .data(Arrays.stream(Country.values()).map(Country::getPhoneCode).collect(Collectors.toCollection(TreeSet::new)))
+                .build();
     }
 
     /**
@@ -163,7 +162,11 @@ public class UserApiController extends AbstractApiController {
     )
     @GetMapping("/phone-types")
     public StandardJsonResponse<PhoneType[]> getPhoneTypes() {
-        return new StandardJsonResponse<>(true, PhoneType.values(), StringUtils.EMPTY);
+        return StandardJsonResponse
+                .<PhoneType[]>builder()
+                .success(true)
+                .data(PhoneType.values())
+                .build();
     }
 
     /**
@@ -191,7 +194,11 @@ public class UserApiController extends AbstractApiController {
     )
     @GetMapping("/currencies")
     public StandardJsonResponse<TreeSet<String>> getCurrencies() {
-        return new StandardJsonResponse<>(true, Arrays.stream(Currency.values()).map(Currency::getIsoCode).collect(Collectors.toCollection(TreeSet::new)), StringUtils.EMPTY);
+        return StandardJsonResponse
+                .<TreeSet<String>>builder()
+                .success(true)
+                .data(Arrays.stream(Currency.values()).map(Currency::getIsoCode).collect(Collectors.toCollection(TreeSet::new)))
+                .build();
     }
 
     /**
@@ -219,7 +226,11 @@ public class UserApiController extends AbstractApiController {
     )
     @GetMapping("/countries")
     public StandardJsonResponse<Country[]> getCountries() {
-        return new StandardJsonResponse<>(true, Country.values(), StringUtils.EMPTY);
+        return StandardJsonResponse
+                .<Country[]>builder()
+                .success(true)
+                .data(Country.values())
+                .build();
     }
 
     /**
@@ -247,7 +258,11 @@ public class UserApiController extends AbstractApiController {
     )
     @GetMapping("/languages")
     public StandardJsonResponse<Language[]> getLanguages() {
-        return new StandardJsonResponse<>(true, Language.values(), StringUtils.EMPTY);
+        return StandardJsonResponse
+                .<Language[]>builder()
+                .success(true)
+                .data(Language.values())
+                .build();
     }
 
     /**
@@ -277,7 +292,11 @@ public class UserApiController extends AbstractApiController {
     @GetMapping("/recent-transactions")
     public StandardJsonResponse<List<TransactionDTO>> getRecentTransactions(final HttpServletRequest request) {
         final User user = (User) request.getAttribute(SecurityConstants.USER_REQUEST_KEY);
-        return new StandardJsonResponse<>(true, this.transactionDTOConverter.convertAll(user.getAccounts().stream().map(Account::getTransactions).filter(Objects::nonNull).flatMap(List::stream).filter(Objects::nonNull).sorted(Comparator.comparing(Transaction::getTransactionDate)).limit(5).toList()), StringUtils.EMPTY);
+        return StandardJsonResponse
+                .<List<TransactionDTO>>builder()
+                .success(true)
+                .data(this.transactionDTOConverter.convertAll(user.getAccounts().stream().map(Account::getTransactions).filter(Objects::nonNull).flatMap(List::stream).filter(Objects::nonNull).sorted(Comparator.comparing(Transaction::getTransactionDate)).limit(5).toList()))
+                .build();
     }
 
 
@@ -301,7 +320,11 @@ public class UserApiController extends AbstractApiController {
     @PostMapping("/create")
     public StandardJsonResponse<UserDTO> postCreateUser(final @RequestBody Map<String, Object> data) {
         validateJsonIntegrity(data, REQUIRED_JSON_VALUES, "json did not contain of the required keys : %s", REQUIRED_JSON_VALUES.toString());
-        return new StandardJsonResponse<>(true, this.userDTOConverter.convert(this.userService.createUser(data)), StringUtils.EMPTY);
+        return StandardJsonResponse
+                .<UserDTO>builder()
+                .success(true)
+                .data(this.userDTOConverter.convert(this.userService.createUser(data)))
+                .build();
     }
 
 
@@ -344,6 +367,10 @@ public class UserApiController extends AbstractApiController {
     public StandardJsonResponse<UserDTO> putUpdateUser(final @RequestBody Map<String, Object> data, final HttpServletRequest request) {
         validateJsonIntegrity(data, REQUIRED_JSON_VALUES, "json did not contain of the required keys : %s", REQUIRED_JSON_VALUES.toString());
         final User user = (User) request.getAttribute(SecurityConstants.USER_REQUEST_KEY);
-        return new StandardJsonResponse<>(true, this.userDTOConverter.convert(this.userService.updateUser(user, data)), StringUtils.EMPTY);
+        return StandardJsonResponse
+                .<UserDTO>builder()
+                .success(true)
+                .data(this.userDTOConverter.convert(this.userService.updateUser(user, data)))
+                .build();
     }
 }
