@@ -12,6 +12,7 @@ import com.bluebell.platform.models.core.entities.news.MarketNews;
 import com.bluebell.radicle.security.aspects.ValidateApiToken;
 import com.bluebell.radicle.services.news.MarketNewsService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -26,7 +27,7 @@ import org.springframework.web.bind.annotation.*;
  * API controller for {@link MarketNews}
  *
  * @author Stephen Prizio
- * @version 0.0.9
+ * @version 0.1.1
  */
 @RestController
 @RequestMapping("${base.api.controller.endpoint}/news")
@@ -88,7 +89,11 @@ public class MarketNewsApiController extends AbstractApiController {
             )
     )
     @GetMapping("/get")
-    public StandardJsonResponse<MarketNewsDTO> getNews(final @RequestParam("date") String date, final HttpServletRequest request) {
+    public StandardJsonResponse<MarketNewsDTO> getNews(
+            @Parameter(name = "Date", description = "The date to obtain market news", example = "2025-01-01")
+            final @RequestParam("date") String date,
+            final HttpServletRequest request
+    ) {
         validate(date);
         final Optional<MarketNews> news = this.marketNewsService.findMarketNewsForDate(LocalDate.parse(date));
         return news.map(marketNews -> new StandardJsonResponse<>(true, this.marketNewsDTOConverter.convert(marketNews), StringUtils.EMPTY)).orElseGet(() -> new StandardJsonResponse<>(false, null, String.format("No news for the given date %s", date)));
@@ -137,7 +142,15 @@ public class MarketNewsApiController extends AbstractApiController {
             )
     )
     @GetMapping("/get-for-interval")
-    public StandardJsonResponse<List<MarketNewsDTO>> getNewsForInterval(final @RequestParam("start") String start, final @RequestParam("end") String end, final @RequestParam(required = false) String[] locales, final HttpServletRequest request) {
+    public StandardJsonResponse<List<MarketNewsDTO>> getNewsForInterval(
+            @Parameter(name = "Start Date", description = "Start date of time period to analyze", example = "2025-01-01")
+            final @RequestParam("start") String start,
+            @Parameter(name = "End Date", description = "End date of time period to analyze", example = "2025-01-01")
+            final @RequestParam("end") String end,
+            @Parameter(name = "Locales", description = "Locales on which to obtain market news", example = "CAN, USA")
+            final @RequestParam(required = false) String[] locales,
+            final HttpServletRequest request
+    ) {
         validate(start, end);
         final List<MarketNews> news = this.marketNewsService.findNewsWithinInterval(LocalDate.parse(start), LocalDate.parse(end), locales);
         if (CollectionUtils.isNotEmpty(news)) {

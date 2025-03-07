@@ -22,6 +22,7 @@ import com.bluebell.radicle.security.aspects.ValidateApiToken;
 import com.bluebell.radicle.security.constants.SecurityConstants;
 import com.bluebell.radicle.services.security.UserService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -35,7 +36,7 @@ import org.springframework.web.bind.annotation.*;
  * API controller for {@link User}
  *
  * @author Stephen Prizio
- * @version 0.1.0
+ * @version 0.1.1
  */
 @RestController
 @RequestMapping("${base.api.controller.endpoint}/user")
@@ -94,7 +95,11 @@ public class UserApiController extends AbstractApiController {
             )
     )
     @GetMapping("/get")
-    public StandardJsonResponse<UserDTO> getUser(final @RequestParam("username") String username, final HttpServletRequest request) {
+    public StandardJsonResponse<UserDTO> getUser(
+            @Parameter(name = "Username", description = "User's username", example = "test.test")
+            final @RequestParam("username") String username,
+            final HttpServletRequest request
+    ) {
         final Optional<User> user = this.userService.findUserByUsername(username);
         return user.map(value -> new StandardJsonResponse<>(true, this.userDTOConverter.convert(value), StringUtils.EMPTY)).orElseGet(() -> new StandardJsonResponse<>(false, null, String.format("No user found for username %s", username)));
     }
@@ -336,7 +341,7 @@ public class UserApiController extends AbstractApiController {
             )
     )
     @PutMapping("/update")
-    public StandardJsonResponse<UserDTO> putUpdateUser(final HttpServletRequest request, final @RequestBody Map<String, Object> data) {
+    public StandardJsonResponse<UserDTO> putUpdateUser(final @RequestBody Map<String, Object> data, final HttpServletRequest request) {
         validateJsonIntegrity(data, REQUIRED_JSON_VALUES, "json did not contain of the required keys : %s", REQUIRED_JSON_VALUES.toString());
         final User user = (User) request.getAttribute(SecurityConstants.USER_REQUEST_KEY);
         return new StandardJsonResponse<>(true, this.userDTOConverter.convert(this.userService.updateUser(user, data)), StringUtils.EMPTY);

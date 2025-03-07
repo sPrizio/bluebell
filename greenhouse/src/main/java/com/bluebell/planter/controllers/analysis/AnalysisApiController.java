@@ -16,6 +16,7 @@ import com.bluebell.radicle.security.aspects.ValidateApiToken;
 import com.bluebell.radicle.services.account.AccountService;
 import com.bluebell.radicle.services.analysis.AnalysisService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -30,7 +31,7 @@ import org.springframework.web.bind.annotation.*;
  * Controller for {@link AnalysisService}
  *
  * @author Stephen Prizio
- * @version 0.1.0
+ * @version 0.1.1
  */
 @RestController
 @RequestMapping("${base.api.controller.endpoint}/analysis")
@@ -95,8 +96,11 @@ public class AnalysisApiController extends AbstractApiController {
     )
     @GetMapping("/time-buckets")
     public StandardJsonResponse<List<AnalysisResult>> getTimeBucketsAnalysis(
+            @Parameter(name = "Account Number", description = "The unique identifier for your trading account", example = "1234")
             final @RequestParam("accountNumber") long accountNumber,
+            @Parameter(name = "Analysis Filter", description = "Refers to the attribute on which to analyze. Supported values are currently: PROFIT, PERCENTAGE or POINTS", example = "PROFIT")
             final @RequestParam("filter") String filter,
+            @Parameter(name = "Use Open Price", description = "If true, uses the trade's open time, else uses the close time (if applicable)", example = "true")
             final @RequestParam("isOpened") boolean isOpened,
             final HttpServletRequest request
     ) {
@@ -154,7 +158,9 @@ public class AnalysisApiController extends AbstractApiController {
     )
     @GetMapping("/weekdays")
     public StandardJsonResponse<List<AnalysisResult>> getWeekdaysAnalysis(
+            @Parameter(name = "Account Number", description = "The unique identifier for your trading account", example = "1234")
             final @RequestParam("accountNumber") long accountNumber,
+            @Parameter(name = "Analysis Filter", description = "Refers to the attribute on which to analyze. Supported values are currently: PROFIT, PERCENTAGE or POINTS", example = "PROFIT")
             final @RequestParam("filter") String filter,
             final HttpServletRequest request
     ) {
@@ -221,8 +227,11 @@ public class AnalysisApiController extends AbstractApiController {
     )
     @GetMapping("/weekdays-time-buckets")
     public StandardJsonResponse<List<AnalysisResult>> getWeekdayTimeBucketsAnalysis(
+            @Parameter(name = "Account Number", description = "The unique identifier for your trading account", example = "1234")
             final @RequestParam("accountNumber") long accountNumber,
+            @Parameter(name = "Analysis Filter", description = "Refers to the attribute on which to analyze. Supported values are currently: PROFIT, PERCENTAGE or POINTS", example = "PROFIT")
             final @RequestParam("filter") String filter,
+            @Parameter(name = "Weekday", description = "Day of the week on which to analyze", example = "THURSDAY")
             final @RequestParam("weekday") String weekday,
             final HttpServletRequest request
     ) {
@@ -285,8 +294,11 @@ public class AnalysisApiController extends AbstractApiController {
     )
     @GetMapping("/trade-durations")
     public StandardJsonResponse<List<AnalysisResult>> getTradeDurationsAnalysis(
+            @Parameter(name = "Account Number", description = "The unique identifier for your trading account", example = "1234")
             final @RequestParam("accountNumber") long accountNumber,
+            @Parameter(name = "Analysis Filter", description = "Refers to the attribute on which to analyze. Supported values are currently: PROFIT, PERCENTAGE or POINTS", example = "PROFIT")
             final @RequestParam("filter") String filter,
+            @Parameter(name = "Trade Type Filter", description = "Type of trade to compute durations. Examples are: ALL, WINS, LOSSES", example = "WINS")
             final @RequestParam("tradeDurationFilter") String tradeDurationFilter,
             final HttpServletRequest request
     ) {
