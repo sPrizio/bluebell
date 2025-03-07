@@ -1,8 +1,5 @@
 package com.bluebell.radicle.integration.translators.forexfactory;
 
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-
 import com.bluebell.platform.enums.news.MarketNewsSeverity;
 import com.bluebell.platform.enums.system.Country;
 import com.bluebell.radicle.integration.models.dto.forexfactory.CalendarNewsDayEntryDTO;
@@ -10,11 +7,14 @@ import com.bluebell.radicle.integration.models.responses.forexfactory.CalendarNe
 import com.bluebell.radicle.integration.translators.GenericTranslator;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+
 /**
  * Translates a {@link CalendarNewsEntryResponse}s into a {@link CalendarNewsDayEntryDTO}s
  *
  * @author Stephen Prizio
- * @version 0.0.9
+ * @version 0.1.1
  */
 @Component("calendarNewsDayEntryTranslator")
 public class CalendarNewsDayEntryTranslator implements GenericTranslator<CalendarNewsEntryResponse, CalendarNewsDayEntryDTO> {

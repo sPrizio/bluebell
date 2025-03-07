@@ -1,13 +1,13 @@
 package com.bluebell.platform.models.core.entities.trade;
 
-import java.time.LocalDateTime;
-
 import com.bluebell.platform.enums.trade.TradePlatform;
 import com.bluebell.platform.enums.trade.TradeType;
 import com.bluebell.platform.models.core.entities.GenericEntity;
 import com.bluebell.platform.models.core.entities.account.Account;
 import jakarta.persistence.*;
 import lombok.*;
+
+import java.time.LocalDateTime;
 
 /**
  * Class representation of a trade in the market, a buy or sell exchange

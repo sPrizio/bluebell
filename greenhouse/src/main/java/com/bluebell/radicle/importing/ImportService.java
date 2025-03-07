@@ -1,14 +1,14 @@
 package com.bluebell.radicle.importing;
 
-import java.io.InputStream;
-
 import com.bluebell.platform.models.core.entities.account.Account;
+
+import java.io.InputStream;
 
 /**
  * Defines the import service architecture for importing trades into the system
  *
  * @author Stephen Prizio
- * @version 0.0.9
+ * @version 0.1.1
  */
 public interface ImportService {
 

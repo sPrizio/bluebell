@@ -1,15 +1,5 @@
 package com.bluebell.anther.engine.impl;
 
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.*;
-import java.util.stream.Stream;
-
 import com.bluebell.anther.engine.DecisionEngine;
 import com.bluebell.anther.models.engine.Decision;
 import com.bluebell.anther.models.parameter.strategy.impl.BloomStrategyParameters;
@@ -24,11 +14,21 @@ import org.apache.commons.lang3.StringUtils;
 import org.javatuples.Pair;
 import org.javatuples.Triplet;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.*;
+import java.util.stream.Stream;
+
 /**
  * Implementation of {@link DecisionEngine} specific to {@link Bloom}
  *
  * @author Stephen Prizio
- * @version 0.1.0
+ * @version 0.1.1
  */
 public class BloomDecisionEngine implements DecisionEngine<Bloom, BloomStrategyParameters> {
 

@@ -1,12 +1,12 @@
 package com.bluebell.platform.models.api.dto.news;
 
-import java.time.LocalTime;
-import java.util.List;
-
 import com.bluebell.platform.models.api.dto.GenericDTO;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.*;
 import org.apache.commons.lang3.StringUtils;
+
+import java.time.LocalTime;
+import java.util.List;
 
 /**
  * A DTO representation of a {@link MarketNewsSlotDTO}

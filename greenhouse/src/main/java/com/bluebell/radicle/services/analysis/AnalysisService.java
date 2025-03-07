@@ -1,14 +1,5 @@
 package com.bluebell.radicle.services.analysis;
 
-import java.time.DayOfWeek;
-import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
-import java.time.format.TextStyle;
-import java.time.temporal.ChronoUnit;
-import java.util.*;
-
-import static com.bluebell.radicle.validation.GenericValidator.validateParameterIsNotNull;
-
 import com.bluebell.platform.constants.CorePlatformConstants;
 import com.bluebell.platform.enums.analysis.AnalysisFilter;
 import com.bluebell.platform.enums.analysis.TradeDurationFilter;
@@ -21,11 +12,20 @@ import org.apache.commons.collections4.CollectionUtils;
 import org.javatuples.Triplet;
 import org.springframework.stereotype.Service;
 
+import java.time.DayOfWeek;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.TextStyle;
+import java.time.temporal.ChronoUnit;
+import java.util.*;
+
+import static com.bluebell.radicle.validation.GenericValidator.validateParameterIsNotNull;
+
 /**
  * Service-layer for computing analysis of {@link Account}s
  *
  * @author Stephen Prizio
- * @version 0.1.0
+ * @version 0.1.1
  */
 @Service
 public class AnalysisService {

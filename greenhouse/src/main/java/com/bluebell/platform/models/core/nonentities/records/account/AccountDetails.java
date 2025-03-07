@@ -1,11 +1,11 @@
 package com.bluebell.platform.models.core.nonentities.records.account;
 
-import java.util.List;
-
 import com.bluebell.platform.models.core.entities.account.Account;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
+
+import java.util.List;
 
 /**
  * Class representation of details about an {@link Account}

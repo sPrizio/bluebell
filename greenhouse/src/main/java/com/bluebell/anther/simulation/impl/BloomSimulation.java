@@ -1,12 +1,5 @@
 package com.bluebell.anther.simulation.impl;
 
-import java.time.LocalDate;
-import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import com.bluebell.anther.models.parameter.LimitParameter;
 import com.bluebell.anther.models.parameter.strategy.impl.BasicStrategyParameters;
 import com.bluebell.anther.models.parameter.strategy.impl.BloomStrategyParameters;
@@ -20,11 +13,18 @@ import com.bluebell.platform.models.core.nonentities.market.AggregatedMarketPric
 import com.bluebell.platform.services.MathService;
 import com.bluebell.radicle.enums.DataSource;
 
+import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 /**
  * Implementation of {@link Simulation} specific for the {@link Bloom} strategy
  *
  * @author Stephen Prizio
- * @version 0.0.9
+ * @version 0.1.1
  */
 public class BloomSimulation implements Simulation<BloomStrategyParameters> {
 

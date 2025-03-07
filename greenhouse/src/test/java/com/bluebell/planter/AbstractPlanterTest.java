@@ -98,15 +98,24 @@ public abstract class AbstractPlanterTest extends AbstractGenericTest {
      * @return {@link Portfolio}
      */
     public Portfolio generatePortfolio() {
-        return new Portfolio(
-                true,
-                1000000.0,
-                145,
-                13,
-                56,
-                new PortfolioStatistics(1.0, 1.0, 1.0, 1.0),
-                List.of(new PortfolioEquityPoint(LocalDate.of(2025, 3, 4), 639.89, List.of()))
-        );
+        return Portfolio
+                .builder()
+                .newPortfolio(true)
+                .netWorth(1000000.0)
+                .trades(145)
+                .deposits(13)
+                .withdrawals(56)
+                .statistics(
+                        PortfolioStatistics
+                                .builder()
+                                .deltaNetWorth(1.0)
+                                .deltaTrades(1.0)
+                                .deltaDeposits(1.0)
+                                .deltaWithdrawals(1.0)
+                                .build()
+                )
+                .equity(List.of(PortfolioEquityPoint.builder().date(LocalDate.of(2025, 3, 4)).portfolio(639.89).accounts(List.of()).build()))
+                .build();
     }
 
     /**
@@ -115,16 +124,37 @@ public abstract class AbstractPlanterTest extends AbstractGenericTest {
      * @return {@link TradeLog}
      */
     public TradeLog generateTradeLog() {
-        return new TradeLog(
-                List.of(
-                        new TradeLogEntry(
-                                LocalDate.of(2025, 3, 4),
-                                LocalDate.of(2025, 3, 4),
-                                List.of(new TradeLogEntryRecord(generateTestAccount(), 1234L, "Test", new TradeRecordReport(List.of(), null))),
-                                new TradeLogEntryRecordTotals(1, 125.66, 89.63, 5, 52)
+        return TradeLog
+                .builder()
+                .entries(
+                        List.of(
+                                TradeLogEntry
+                                        .builder()
+                                        .start(LocalDate.of(2025, 3, 4))
+                                        .end(LocalDate.of(2025, 4, 4))
+                                        .records(List.of(
+                                                TradeLogEntryRecord
+                                                        .builder()
+                                                        .account(generateTestAccount())
+                                                        .accountNumber(1234L)
+                                                        .accountName("Test")
+                                                        .report(TradeRecordReport.builder().tradeRecords(List.of()).tradeRecordTotals(null).build())
+                                                        .build()
+                                        ))
+                                        .totals(
+                                                TradeLogEntryRecordTotals
+                                                        .builder()
+                                                        .accountsTraded(1)
+                                                        .netProfit(125.66)
+                                                        .netPoints(89.63)
+                                                        .trades(5)
+                                                        .winPercentage(52)
+                                                        .build()
+                                        )
+                                        .build()
                         )
                 )
-        );
+                .build();
     }
 
     /**
@@ -163,31 +193,34 @@ public abstract class AbstractPlanterTest extends AbstractGenericTest {
      * @return {@link TradeRecord}
      */
     public TradeRecord generateTradeRecord() {
-        return new TradeRecord(
-                LocalDate.MIN,
-                LocalDate.MAX,
-                387.56,
-                -96.85,
-                104.25,
-                -56.89,
-                47.36,
-                189.25,
-                97.55,
-                -111.44,
-                -74.32,
-                56,
-                9,
-                7,
-                16,
-                1.83,
-                65,
-                TradeRecordTimeInterval.DAILY,
-                List.of(
-                        new TradeRecordEquityPoint(1, 50.0, 10.0, 50.0, 10.0),
-                        new TradeRecordEquityPoint(2, -25.0, -5.0, 25.0, 5.0),
-                        new TradeRecordEquityPoint(3, 100.0, 20.0, 125.0, 25.0)
+        return TradeRecord
+                .builder()
+                .start(LocalDate.MIN)
+                .end(LocalDate.MAX)
+                .netProfit(387.56)
+                .lowestPoint(-96.85)
+                .pointsGained(104.25)
+                .pointsLost(-56.89)
+                .points(47.36)
+                .largestWin(189.25)
+                .winAverage(97.55)
+                .largestLoss(-111.44)
+                .lossAverage(-74.32)
+                .winPercentage(56)
+                .wins(9)
+                .losses(7)
+                .trades(16)
+                .profitability(1.83)
+                .retention(65)
+                .interval(TradeRecordTimeInterval.DAILY)
+                .equityPoints(
+                        List.of(
+                                TradeRecordEquityPoint.builder().count(1).amount(50.0).points(10.0).cumAmount(50.0).cumPoints(10.0).build(),
+                                TradeRecordEquityPoint.builder().count(2).amount(-25.0).points(-5.0).cumAmount(25.0).cumPoints(5.0).build(),
+                                TradeRecordEquityPoint.builder().count(3).amount(100.0).points(20.0).cumAmount(125.0).cumPoints(25.0).build()
+                        )
                 )
-        );
+                .build();
     }
 
     /**

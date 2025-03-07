@@ -1,22 +1,22 @@
 package com.bluebell.anther.models.trade;
 
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.time.temporal.ChronoUnit;
-import java.util.Base64;
-import java.util.UUID;
-
 import com.bluebell.anther.strategies.Strategy;
 import com.bluebell.platform.enums.trade.TradeType;
 import com.bluebell.platform.services.MathService;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
+import java.util.Base64;
+import java.util.UUID;
+
 /**
  * Class representation of a trade taken in a {@link Strategy}
  *
  * @author Stephen Prizio
- * @version 0.0.9
+ * @version 0.1.1
  */
 @Getter
 @Setter

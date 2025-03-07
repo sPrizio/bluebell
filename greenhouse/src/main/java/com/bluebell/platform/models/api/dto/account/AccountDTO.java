@@ -1,8 +1,5 @@
 package com.bluebell.platform.models.api.dto.account;
 
-import java.time.LocalDateTime;
-import java.util.List;
-
 import com.bluebell.platform.models.api.dto.GenericDTO;
 import com.bluebell.platform.models.api.dto.transaction.TransactionDTO;
 import com.bluebell.platform.models.core.entities.account.Account;
@@ -12,6 +9,9 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 import org.apache.commons.lang3.StringUtils;
+
+import java.time.LocalDateTime;
+import java.util.List;
 
 /**
  * A DTO representation for {@link Account}

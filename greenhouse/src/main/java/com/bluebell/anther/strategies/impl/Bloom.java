@@ -1,10 +1,5 @@
 package com.bluebell.anther.strategies.impl;
 
-import java.time.LocalDate;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
-
 import com.bluebell.anther.models.parameter.LimitParameter;
 import com.bluebell.anther.models.parameter.strategy.impl.BloomStrategyParameters;
 import com.bluebell.anther.models.strategy.StrategyResult;
@@ -17,13 +12,18 @@ import com.bluebell.platform.services.MathService;
 import lombok.Getter;
 import org.javatuples.Pair;
 
+import java.time.LocalDate;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Optional;
+
 /**
  * The bloom strategy is a straddle. A long and short position are both opened at the opening of the day, each with a 3:1 Risk/Reward. In general,
  * based on the opening price principle, there's a 70% chance that the open of the day will be within 20% of the high or low of the day. Bloom aims
  * to capture this trend via straddling.
  *
  * @author Stephen Prizio
- * @version 0.0.9
+ * @version 0.1.1
  */
 @Getter
 public class Bloom implements Strategy<BloomStrategyParameters> {

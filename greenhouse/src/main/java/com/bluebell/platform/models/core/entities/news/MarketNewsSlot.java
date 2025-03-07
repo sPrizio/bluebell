@@ -1,12 +1,12 @@
 package com.bluebell.platform.models.core.entities.news;
 
-import java.time.LocalTime;
-import java.util.ArrayList;
-import java.util.List;
-
 import com.bluebell.platform.models.core.entities.GenericEntity;
 import jakarta.persistence.*;
 import lombok.*;
+
+import java.time.LocalTime;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Class representation of a market news entry which represents a time of day that can have 1 or more pieces of news

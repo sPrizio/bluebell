@@ -1,13 +1,5 @@
 package com.bluebell.radicle.services.account;
 
-import java.math.BigDecimal;
-import java.math.RoundingMode;
-import java.time.LocalDate;
-import java.time.temporal.ChronoUnit;
-import java.util.*;
-
-import static com.bluebell.radicle.validation.GenericValidator.validateParameterIsNotNull;
-
 import com.bluebell.platform.constants.CorePlatformConstants;
 import com.bluebell.platform.enums.system.TradeRecordTimeInterval;
 import com.bluebell.platform.models.core.entities.account.Account;
@@ -24,6 +16,14 @@ import jakarta.annotation.Resource;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.math3.stat.descriptive.moment.StandardDeviation;
 import org.springframework.stereotype.Service;
+
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
+import java.util.*;
+
+import static com.bluebell.radicle.validation.GenericValidator.validateParameterIsNotNull;
 
 
 /**
@@ -231,10 +231,20 @@ public class AccountDetailsService {
             final double np = Math.abs(this.mathService.subtract(trade.getClosePrice(), trade.getOpenPrice()));
             cumPoints += (trade.getNetProfit() < 0) ? this.mathService.multiply(-1.0, np) : np;
 
-            cumulativeTrades.add(new CumulativeTrade(trade.getTradeCloseTime(), count, trade.getNetProfit(), (trade.getNetProfit() < 0) ? this.mathService.multiply(-1.0, np) : np, cumProfit, cumPoints));
+            cumulativeTrades.add(
+                    CumulativeTrade
+                            .builder()
+                            .tradeCloseTime(trade.getTradeCloseTime())
+                            .count(count)
+                            .singleProfit(trade.getNetProfit())
+                            .singlePoints((trade.getNetProfit() < 0) ? this.mathService.multiply(-1.0, np) : np)
+                            .netProfit(cumProfit)
+                            .netPoints(cumPoints)
+                            .build()
+            );
         }
 
-        cumulativeTrades.add(0, new CumulativeTrade(account.getAccountOpenTime(), 0, 0.0, 0.0, 0.0, 0.0));
+        cumulativeTrades.add(0, CumulativeTrade.builder().tradeCloseTime(account.getAccountOpenTime()).count(0).singleProfit(0.0).singlePoints(0.0).netProfit(0.0).netPoints(0.0).build());
         return cumulativeTrades;
     }
 

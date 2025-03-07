@@ -1,12 +1,5 @@
 package com.bluebell.radicle.services.chart.impl;
 
-import java.time.LocalDate;
-import java.time.ZoneId;
-import java.util.*;
-
-import static com.bluebell.radicle.validation.GenericValidator.validateDatesAreNotMutuallyExclusive;
-import static com.bluebell.radicle.validation.GenericValidator.validateParameterIsNotNull;
-
 import com.bluebell.platform.constants.CorePlatformConstants;
 import com.bluebell.platform.enums.chart.IntradayInterval;
 import com.bluebell.platform.enums.time.PlatformTimeInterval;
@@ -18,6 +11,13 @@ import com.bluebell.radicle.services.chart.ChartService;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.MapUtils;
 import org.springframework.stereotype.Service;
+
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.util.*;
+
+import static com.bluebell.radicle.validation.GenericValidator.validateDatesAreNotMutuallyExclusive;
+import static com.bluebell.radicle.validation.GenericValidator.validateParameterIsNotNull;
 
 
 /**

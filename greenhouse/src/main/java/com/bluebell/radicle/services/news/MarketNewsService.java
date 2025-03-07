@@ -1,11 +1,5 @@
 package com.bluebell.radicle.services.news;
 
-import java.time.LocalDate;
-import java.time.LocalTime;
-import java.util.*;
-
-import static com.bluebell.radicle.validation.GenericValidator.validateParameterIsNotNull;
-
 import com.bluebell.platform.constants.CorePlatformConstants;
 import com.bluebell.platform.enums.account.Currency;
 import com.bluebell.platform.enums.system.Country;
@@ -21,6 +15,12 @@ import com.bluebell.radicle.repositories.news.MarketNewsSlotRepository;
 import jakarta.annotation.Resource;
 import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.stereotype.Service;
+
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.util.*;
+
+import static com.bluebell.radicle.validation.GenericValidator.validateParameterIsNotNull;
 
 
 /**

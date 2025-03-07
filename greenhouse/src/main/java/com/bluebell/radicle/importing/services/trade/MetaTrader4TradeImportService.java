@@ -1,15 +1,5 @@
 package com.bluebell.radicle.importing.services.trade;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Objects;
-
 import com.bluebell.platform.models.core.entities.account.Account;
 import com.bluebell.radicle.importing.ImportService;
 import com.bluebell.radicle.importing.exceptions.TradeImportFailureException;
@@ -21,11 +11,21 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ResourceUtils;
 
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Objects;
+
 /**
  * Service-layer for importing trades into the system from the MetaTrader4 platform
  *
  * @author Stephen Prizio
- * @version 0.0.9
+ * @version 0.1.1
  */
 @Service("metaTrader4TradeImportService")
 public class MetaTrader4TradeImportService extends AbstractImportService implements ImportService {

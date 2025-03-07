@@ -1,13 +1,13 @@
 package com.bluebell.platform.models.core.nonentities.market;
 
 
-import java.time.LocalDateTime;
-import java.util.Objects;
-
 import com.bluebell.platform.enums.time.PlatformTimeInterval;
 import com.bluebell.platform.services.MathService;
 import lombok.Builder;
 import lombok.Getter;
+
+import java.time.LocalDateTime;
+import java.util.Objects;
 
 /**
  * Representation of a market price for an interval of time

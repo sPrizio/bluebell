@@ -1,11 +1,11 @@
 package com.bluebell.platform.models.api.dto.trade;
 
 
-import java.util.List;
-
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
 import lombok.Getter;
+
+import java.util.List;
 
 /**
  * Class representation of a collection of {@link TradeDTO}s with associated page information

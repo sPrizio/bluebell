@@ -1,9 +1,10 @@
 package com.bluebell.platform.models.core.nonentities.records.traderecord;
 
-import java.util.List;
-
 import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.Builder;
 import lombok.Getter;
+
+import java.util.List;
 
 /**
  * Represents a simple statistical analysis of a {@link List} of {@link TradeRecord}s
@@ -16,8 +17,9 @@ import lombok.Getter;
  * @param netProfit     net profit
  * @param netPoints     net points
  * @author Stephen Prizio
- * @version 0.1.0
+ * @version 0.1.1
  */
+@Builder
 @Schema(title = "TradeRecordTotals", name = "TradeRecordTotals", description = "Aggregated statistics about a collection of trade records")
 public record TradeRecordTotals(
         @Getter @Schema(description = "Number of trade records") int count,

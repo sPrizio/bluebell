@@ -1,7 +1,5 @@
 package com.bluebell.planter.converters.news;
 
-import java.util.Comparator;
-
 import com.bluebell.planter.converters.GenericDTOConverter;
 import com.bluebell.planter.services.UniqueIdentifierService;
 import com.bluebell.platform.models.api.dto.news.MarketNewsEntryDTO;
@@ -9,6 +7,8 @@ import com.bluebell.platform.models.api.dto.news.MarketNewsSlotDTO;
 import com.bluebell.platform.models.core.entities.news.MarketNewsSlot;
 import jakarta.annotation.Resource;
 import org.springframework.stereotype.Component;
+
+import java.util.Comparator;
 
 /**
  * Converter that converts {@link MarketNewsSlot}s into {@link MarketNewsSlotDTO}s

@@ -1,13 +1,5 @@
 package com.bluebell.radicle.services.system;
 
-import java.util.Map;
-import java.util.Optional;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
-import static com.bluebell.radicle.validation.GenericValidator.validateNonNegativeValue;
-import static com.bluebell.radicle.validation.GenericValidator.validateParameterIsNotNull;
-
 import com.bluebell.platform.constants.CorePlatformConstants;
 import com.bluebell.platform.enums.system.PhoneType;
 import com.bluebell.platform.models.core.entities.security.User;
@@ -21,6 +13,14 @@ import jakarta.annotation.Resource;
 import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
+
+import java.util.Map;
+import java.util.Optional;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import static com.bluebell.radicle.validation.GenericValidator.validateNonNegativeValue;
+import static com.bluebell.radicle.validation.GenericValidator.validateParameterIsNotNull;
 
 
 /**

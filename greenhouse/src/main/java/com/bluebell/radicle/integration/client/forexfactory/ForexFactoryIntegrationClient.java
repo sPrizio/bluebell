@@ -1,19 +1,19 @@
 package com.bluebell.radicle.integration.client.forexfactory;
 
-import static com.bluebell.radicle.validation.GenericValidator.validateParameterIsNotNull;
-
 import com.bluebell.radicle.integration.client.GetClient;
 import com.bluebell.radicle.integration.client.IntegrationClient;
 import lombok.NonNull;
 import org.springframework.stereotype.Component;
 import org.springframework.util.MultiValueMap;
 
+import static com.bluebell.radicle.validation.GenericValidator.validateParameterIsNotNull;
+
 
 /**
  * Web client that interfaces with the forex factor API
  *
  * @author Stephen Prizio
- * @version 0.0.9
+ * @version 0.1.1
  */
 @Component("forexFactoryIntegrationClient")
 public class ForexFactoryIntegrationClient implements IntegrationClient, GetClient {

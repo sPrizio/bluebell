@@ -1,8 +1,5 @@
 package com.bluebell.planter.converters.system;
 
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
 import com.bluebell.planter.converters.GenericDTOConverter;
 import com.bluebell.planter.services.UniqueIdentifierService;
 import com.bluebell.platform.constants.CorePlatformConstants;
@@ -11,6 +8,9 @@ import com.bluebell.platform.models.core.entities.system.PhoneNumber;
 import jakarta.annotation.Resource;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
+
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Converter that converts {@link PhoneNumber}s into {@link PhoneNumberDTO}s

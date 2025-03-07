@@ -1,9 +1,5 @@
 package com.bluebell.radicle.importing.services.strategy;
 
-import java.io.InputStream;
-
-import static com.bluebell.radicle.validation.GenericValidator.validateParameterIsNotNull;
-
 import com.bluebell.platform.constants.CorePlatformConstants;
 import com.bluebell.platform.enums.strategy.StrategyPlatform;
 import com.bluebell.platform.enums.trade.TradePlatform;
@@ -12,11 +8,15 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.io.InputStream;
+
+import static com.bluebell.radicle.validation.GenericValidator.validateParameterIsNotNull;
+
 /**
  * Generic importing service to handle incoming strategy files, will delegate to specific import services
  *
  * @author Stephen Prizio
- * @version 0.1.0
+ * @version 0.1.1
  */
 @Service
 public class GenericStrategyImportService {

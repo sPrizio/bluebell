@@ -1,14 +1,5 @@
 package com.bluebell.anther.services.reporting.impl;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import com.bluebell.anther.models.parameter.strategy.impl.BloomStrategyParameters;
 import com.bluebell.anther.models.simulation.SimulationResult;
 import com.bluebell.anther.models.strategy.CumulativeStrategyReportEntry;
@@ -19,11 +10,20 @@ import com.bluebell.platform.services.MathService;
 import org.apache.commons.lang3.StringUtils;
 import org.javatuples.Triplet;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 /**
  * Extends the {@link StrategyReportingService} specific for {@link Bloom}
  *
  * @author Stephen Prizio
- * @version 0.0.9
+ * @version 0.1.1
  */
 public class BloomReportingService extends StrategyReportingService<Bloom, BloomStrategyParameters> {
 

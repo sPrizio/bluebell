@@ -1,18 +1,18 @@
 package com.bluebell.radicle.importing.validation;
 
-import java.io.File;
-import java.util.Arrays;
-
 import com.bluebell.platform.constants.CorePlatformConstants;
 import com.bluebell.radicle.importing.exceptions.FileExtensionNotSupportedException;
 import org.apache.commons.io.FilenameUtils;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
+import java.util.Arrays;
+
 /**
  * Validator class for the import package
  *
  * @author Stephen Prizio
- * @version 0.0.9
+ * @version 0.1.1
  */
 public class ImportValidator {
 

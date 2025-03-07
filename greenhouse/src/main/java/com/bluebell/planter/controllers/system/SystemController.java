@@ -1,10 +1,5 @@
 package com.bluebell.planter.controllers.system;
 
-import java.util.List;
-import java.util.Map;
-
-import static com.bluebell.radicle.validation.GenericValidator.validateJsonIntegrity;
-
 import com.bluebell.planter.controllers.AbstractApiController;
 import com.bluebell.platform.models.api.json.StandardJsonResponse;
 import io.swagger.v3.oas.annotations.Operation;
@@ -12,8 +7,12 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+import java.util.Map;
+
+import static com.bluebell.radicle.validation.GenericValidator.validateJsonIntegrity;
 
 /**
  * Controller to handle system functions

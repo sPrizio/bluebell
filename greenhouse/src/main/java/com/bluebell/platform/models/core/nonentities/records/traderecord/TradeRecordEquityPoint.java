@@ -2,6 +2,7 @@ package com.bluebell.platform.models.core.nonentities.records.traderecord;
 
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.Builder;
 import lombok.Getter;
 
 /**
@@ -13,8 +14,9 @@ import lombok.Getter;
  * @param cumAmount cumulative account balance
  * @param cumPoints cumulative points
  * @author Stephen Prizio
- * @version 0.1.0
+ * @version 0.1.1
  */
+@Builder
 @Schema(title = "TradeRecordEquityPoint", name = "TradeRecordEquityPoint", description = "A data representation of a cumulative view of trading performance in a trade record for use on a graph")
 public record TradeRecordEquityPoint(
         @Getter @Schema(description = "Number in a sequence of points (x-coordinate)") int count,

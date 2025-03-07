@@ -1,7 +1,5 @@
 package com.bluebell.platform.models.api.dto.trade;
 
-import java.time.LocalDateTime;
-
 import com.bluebell.platform.enums.trade.TradePlatform;
 import com.bluebell.platform.enums.trade.TradeType;
 import com.bluebell.platform.models.api.dto.GenericDTO;
@@ -12,6 +10,8 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 import org.apache.commons.lang3.StringUtils;
+
+import java.time.LocalDateTime;
 
 /**
  * A DTO representation of a {@link Trade}

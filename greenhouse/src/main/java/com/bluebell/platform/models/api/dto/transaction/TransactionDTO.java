@@ -1,7 +1,5 @@
 package com.bluebell.platform.models.api.dto.transaction;
 
-import java.time.LocalDateTime;
-
 import com.bluebell.platform.models.api.dto.GenericDTO;
 import com.bluebell.platform.models.core.entities.transaction.Transaction;
 import com.bluebell.platform.models.core.nonentities.data.EnumDisplay;
@@ -10,6 +8,8 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 import org.apache.commons.lang3.StringUtils;
+
+import java.time.LocalDateTime;
 
 /**
  * A DTO representation for {@link Transaction}

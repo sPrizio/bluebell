@@ -1,13 +1,5 @@
 package com.bluebell.anther.services.reporting.impl;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-import java.time.temporal.ChronoUnit;
-import java.util.List;
-import java.util.Map;
-
 import com.bluebell.anther.models.parameter.strategy.impl.BasicStrategyParameters;
 import com.bluebell.anther.models.parameter.strategy.impl.BloomStrategyParameters;
 import com.bluebell.anther.models.parameter.strategy.impl.SproutStrategyParameters;
@@ -19,11 +11,19 @@ import com.bluebell.anther.strategies.impl.Bloom;
 import com.bluebell.anther.strategies.impl.Sprout;
 import com.bluebell.platform.util.DirectoryUtil;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
+import java.util.List;
+import java.util.Map;
+
 /**
  * Service that allows reports to be generated for strategy results
  *
  * @author Stephen Prizio
- * @version 0.1.0
+ * @version 0.1.1
  */
 public class StrategyReportingService<S extends Strategy<P>, P extends BasicStrategyParameters> implements ReportingService {
 

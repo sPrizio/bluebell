@@ -1,10 +1,5 @@
 package com.bluebell.planter.controllers.security;
 
-import java.util.*;
-import java.util.stream.Collectors;
-
-import static com.bluebell.radicle.validation.GenericValidator.validateJsonIntegrity;
-
 import com.bluebell.planter.controllers.AbstractApiController;
 import com.bluebell.planter.converters.security.UserDTOConverter;
 import com.bluebell.planter.converters.transaction.TransactionDTOConverter;
@@ -28,8 +23,12 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.annotation.Resource;
 import jakarta.servlet.http.HttpServletRequest;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.*;
+import java.util.stream.Collectors;
+
+import static com.bluebell.radicle.validation.GenericValidator.validateJsonIntegrity;
 
 /**
  * API controller for {@link User}

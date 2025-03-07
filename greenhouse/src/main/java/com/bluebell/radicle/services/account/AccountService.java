@@ -1,12 +1,5 @@
 package com.bluebell.radicle.services.account;
 
-import java.time.LocalDateTime;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
-
-import static com.bluebell.radicle.validation.GenericValidator.validateParameterIsNotNull;
-
 import com.bluebell.platform.constants.CorePlatformConstants;
 import com.bluebell.platform.enums.account.AccountType;
 import com.bluebell.platform.enums.account.Broker;
@@ -22,6 +15,13 @@ import com.bluebell.radicle.repositories.account.AccountRepository;
 import jakarta.annotation.Resource;
 import org.apache.commons.collections4.MapUtils;
 import org.springframework.stereotype.Service;
+
+import java.time.LocalDateTime;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
+
+import static com.bluebell.radicle.validation.GenericValidator.validateParameterIsNotNull;
 
 
 /**

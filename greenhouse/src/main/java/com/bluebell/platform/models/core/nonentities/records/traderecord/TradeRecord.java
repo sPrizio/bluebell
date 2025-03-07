@@ -1,13 +1,14 @@
 package com.bluebell.platform.models.core.nonentities.records.traderecord;
 
 
-import java.time.LocalDate;
-import java.util.List;
-
 import com.bluebell.platform.enums.system.TradeRecordTimeInterval;
 import com.bluebell.platform.models.core.entities.trade.Trade;
 import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.Builder;
 import lombok.Getter;
+
+import java.time.LocalDate;
+import java.util.List;
 
 /**
  * Class representation of a collection of {@link Trade}s and their statistics
@@ -33,8 +34,9 @@ import lombok.Getter;
  * @param equityPoints {@link List} of {@link TradeRecordEquityPoint}s
  *
  * @author Stephen Prizio
- * @version 0.1.0
+ * @version 0.1.1
  */
+@Builder
 @Schema(title = "TradeRecord", name = "TradeRecord", description = "An aggregation of trades over a time period")
 public record TradeRecord(
         @Getter @Schema(description = "Start of time period") LocalDate start,

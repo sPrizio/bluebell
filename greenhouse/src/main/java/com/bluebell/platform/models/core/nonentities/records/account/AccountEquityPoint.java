@@ -1,12 +1,12 @@
 package com.bluebell.platform.models.core.nonentities.records.account;
 
 
-import java.time.LocalDateTime;
-
 import com.bluebell.platform.models.core.entities.account.Account;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
 import lombok.Getter;
+
+import java.time.LocalDateTime;
 
 /**
  * Class representation of an {@link Account}'s equity at a particular point in time, meant to be used on a chart
