@@ -3,6 +3,7 @@ package com.bluebell.platform.models.core.entities.news;
 import com.bluebell.platform.models.core.entities.GenericEntity;
 import jakarta.persistence.*;
 import lombok.*;
+import org.apache.commons.collections4.CollectionUtils;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -46,11 +47,11 @@ public class MarketNews implements GenericEntity, Comparable<MarketNews> {
      */
     public void addSlot(MarketNewsSlot slot) {
 
-        if (getSlots() == null) {
+        if (CollectionUtils.isEmpty(this.slots)) {
             this.slots = new ArrayList<>();
         }
 
-        getSlots().add(slot);
+        this.slots.add(slot);
         slot.setNews(this);
     }
 
@@ -60,8 +61,8 @@ public class MarketNews implements GenericEntity, Comparable<MarketNews> {
      * @param slot {@link MarketNewsSlot}
      */
     public void removeSlot(MarketNewsSlot slot) {
-        if (getSlots() != null) {
-            List<MarketNewsSlot> entries = new ArrayList<>(getSlots());
+        if (CollectionUtils.isNotEmpty(this.slots)) {
+            final List<MarketNewsSlot> entries = new ArrayList<>(this.slots);
             entries.remove(slot);
             this.slots = entries;
             slot.setNews(null);
