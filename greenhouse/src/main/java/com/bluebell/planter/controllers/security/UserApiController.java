@@ -7,12 +7,14 @@ import com.bluebell.platform.enums.account.Currency;
 import com.bluebell.platform.enums.system.Country;
 import com.bluebell.platform.enums.system.Language;
 import com.bluebell.platform.enums.system.PhoneType;
+import com.bluebell.platform.models.api.dto.security.CreateUpdateUserDTO;
 import com.bluebell.platform.models.api.dto.security.UserDTO;
 import com.bluebell.platform.models.api.dto.transaction.TransactionDTO;
 import com.bluebell.platform.models.api.json.StandardJsonResponse;
 import com.bluebell.platform.models.core.entities.account.Account;
 import com.bluebell.platform.models.core.entities.security.User;
 import com.bluebell.platform.models.core.entities.transaction.Transaction;
+import com.bluebell.radicle.exceptions.validation.MissingRequiredDataException;
 import com.bluebell.radicle.security.aspects.ValidateApiToken;
 import com.bluebell.radicle.security.constants.SecurityConstants;
 import com.bluebell.radicle.services.security.UserService;
@@ -24,12 +26,11 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.annotation.Resource;
 import jakarta.servlet.http.HttpServletRequest;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
 import java.util.stream.Collectors;
-
-import static com.bluebell.radicle.validation.GenericValidator.validateJsonIntegrity;
 
 /**
  * API controller for {@link User}
@@ -42,8 +43,6 @@ import static com.bluebell.radicle.validation.GenericValidator.validateJsonInteg
 @Tag(name = "User", description = "Handles endpoints & operations related to user information.")
 @CrossOrigin(origins = "*", methods = {RequestMethod.GET, RequestMethod.DELETE, RequestMethod.POST, RequestMethod.PUT})
 public class UserApiController extends AbstractApiController {
-
-    private static final List<String> REQUIRED_JSON_VALUES = List.of("user");
 
     @Resource(name = "transactionDTOConverter")
     private TransactionDTOConverter transactionDTOConverter;
@@ -305,7 +304,7 @@ public class UserApiController extends AbstractApiController {
     /**
      * Creates a new {@link User}
      *
-     * @param data json data
+     * @param data {@link CreateUpdateUserDTO}
      * @return {@link StandardJsonResponse}
      */
     @Operation(summary = "Creates a new user", description = "Creates a new user in bluebell")
@@ -318,8 +317,14 @@ public class UserApiController extends AbstractApiController {
             )
     )
     @PostMapping("/create")
-    public StandardJsonResponse<UserDTO> postCreateUser(final @RequestBody Map<String, Object> data) {
-        validateJsonIntegrity(data, REQUIRED_JSON_VALUES, "json did not contain of the required keys : %s", REQUIRED_JSON_VALUES.toString());
+    public StandardJsonResponse<UserDTO> postCreateUser(
+            @Parameter(name = "User Payload", description = "Request body for creating and updating users")
+            final @RequestBody CreateUpdateUserDTO data
+    ) {
+        if (data == null || StringUtils.isEmpty(data.username())) {
+            throw new MissingRequiredDataException("The required data for creating a User was null or empty");
+        }
+
         return StandardJsonResponse
                 .<UserDTO>builder()
                 .success(true)
@@ -334,7 +339,7 @@ public class UserApiController extends AbstractApiController {
      * Updates an existing {@link User}
      *
      * @param request {@link HttpServletRequest}
-     * @param data    json data
+     * @param data    {@link CreateUpdateUserDTO}
      * @return {@link StandardJsonResponse}
      */
     @ValidateApiToken
@@ -364,8 +369,15 @@ public class UserApiController extends AbstractApiController {
             )
     )
     @PutMapping("/update")
-    public StandardJsonResponse<UserDTO> putUpdateUser(final @RequestBody Map<String, Object> data, final HttpServletRequest request) {
-        validateJsonIntegrity(data, REQUIRED_JSON_VALUES, "json did not contain of the required keys : %s", REQUIRED_JSON_VALUES.toString());
+    public StandardJsonResponse<UserDTO> putUpdateUser(
+            @Parameter(name = "User Payload", description = "Request body for creating and updating users")
+            final @RequestBody CreateUpdateUserDTO data,
+            final HttpServletRequest request
+    ) {
+        if (data == null || StringUtils.isEmpty(data.username())) {
+            throw new MissingRequiredDataException("The required data for creating a User was null or empty");
+        }
+
         final User user = (User) request.getAttribute(SecurityConstants.USER_REQUEST_KEY);
         return StandardJsonResponse
                 .<UserDTO>builder()

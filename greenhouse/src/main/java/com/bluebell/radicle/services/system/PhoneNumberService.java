@@ -2,6 +2,7 @@ package com.bluebell.radicle.services.system;
 
 import com.bluebell.platform.constants.CorePlatformConstants;
 import com.bluebell.platform.enums.system.PhoneType;
+import com.bluebell.platform.models.api.dto.system.CreateUpdatePhoneNumberDTO;
 import com.bluebell.platform.models.core.entities.security.User;
 import com.bluebell.platform.models.core.entities.system.PhoneNumber;
 import com.bluebell.radicle.exceptions.system.EntityCreationException;
@@ -10,7 +11,6 @@ import com.bluebell.radicle.exceptions.system.NoResultFoundException;
 import com.bluebell.radicle.exceptions.validation.MissingRequiredDataException;
 import com.bluebell.radicle.repositories.system.PhoneNumberRepository;
 import jakarta.annotation.Resource;
-import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
@@ -58,15 +58,15 @@ public class PhoneNumberService {
     /**
      * Creates a new {@link PhoneNumber} from the given {@link Map} of data
      *
-     * @param data {@link Map}
+     * @param data {@link CreateUpdatePhoneNumberDTO}
      * @param user {@link User}
      * @return newly created {@link PhoneNumber}
      */
-    public PhoneNumber createPhoneNumber(final Map<String, Object> data, final User user) {
+    public PhoneNumber createPhoneNumber(final CreateUpdatePhoneNumberDTO data, final User user) {
 
         validateParameterIsNotNull(user, CorePlatformConstants.Validation.Security.User.USER_CANNOT_BE_NULL);
 
-        if (MapUtils.isEmpty(data)) {
+        if (data == null || data.telephoneNumber() == null) {
             throw new MissingRequiredDataException("The required data for creating a PhoneNumber was null or empty");
         }
 
@@ -83,18 +83,18 @@ public class PhoneNumberService {
      * @param phoneType       {@link PhoneType}
      * @param countryCode     country code, ex: 1 for USA/Canada
      * @param telephoneNumber actual phone number
-     * @param data            {@link Map}
+     * @param data            {@link CreateUpdatePhoneNumberDTO}
      * @param user            {@link User}
      * @return modified {@link PhoneNumber}
      */
-    public PhoneNumber updatePhoneNumber(final PhoneType phoneType, final short countryCode, final long telephoneNumber, final Map<String, Object> data, final User user) {
+    public PhoneNumber updatePhoneNumber(final PhoneType phoneType, final short countryCode, final long telephoneNumber, final CreateUpdatePhoneNumberDTO data, final User user) {
 
         validateParameterIsNotNull(phoneType, CorePlatformConstants.Validation.System.PhoneNumber.PHONE_TYPE_CANNOT_BE_NULL);
         validateNonNegativeValue(countryCode, CorePlatformConstants.Validation.System.PhoneNumber.COUNTRY_CODE_CANNOT_BE_NEGATIVE);
         validateNonNegativeValue(telephoneNumber, CorePlatformConstants.Validation.System.PhoneNumber.TELEPHONE_NUMBER_CANNOT_BE_NEGATIVE);
         validateParameterIsNotNull(user, CorePlatformConstants.Validation.Security.User.USER_CANNOT_BE_NULL);
 
-        if (MapUtils.isEmpty(data)) {
+        if (data == null || data.telephoneNumber() == null) {
             throw new MissingRequiredDataException("The required data for updating a PhoneNumber was null or empty");
         }
 
@@ -126,17 +126,16 @@ public class PhoneNumberService {
      * Applies changes to the given {@link PhoneNumber} with the given data
      *
      * @param phoneNumber {@link PhoneNumber}
-     * @param data        {@link Map}
+     * @param data        {@link CreateUpdatePhoneNumberDTO}
      * @param user        {@link User}
      * @return updated {@link PhoneNumber}
      */
-    private PhoneNumber applyChanges(PhoneNumber phoneNumber, final Map<String, Object> data, final User user) {
+    private PhoneNumber applyChanges(PhoneNumber phoneNumber, final CreateUpdatePhoneNumberDTO data, final User user) {
 
-        Map<String, Object> ud = (Map<String, Object>) data.get("phoneNumber");
 
-        phoneNumber.setPhoneType(PhoneType.valueOf(ud.get("phoneType").toString()));
-        phoneNumber.setCountryCode(Short.parseShort(ud.get("countryCode").toString()));
-        phoneNumber.setTelephoneNumber(parseTelephoneNumber(ud.get("telephoneNumber").toString()));
+        phoneNumber.setPhoneType(PhoneType.valueOf(data.phoneType()));
+        phoneNumber.setCountryCode(data.countryCode());
+        phoneNumber.setTelephoneNumber(data.telephoneNumber());
         phoneNumber.setUser(user);
 
         return this.phoneNumberRepository.save(phoneNumber);

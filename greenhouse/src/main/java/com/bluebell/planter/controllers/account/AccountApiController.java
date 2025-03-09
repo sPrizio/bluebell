@@ -7,11 +7,13 @@ import com.bluebell.platform.enums.account.Broker;
 import com.bluebell.platform.enums.account.Currency;
 import com.bluebell.platform.enums.trade.TradePlatform;
 import com.bluebell.platform.models.api.dto.account.AccountDTO;
+import com.bluebell.platform.models.api.dto.account.CreateUpdateAccountDTO;
 import com.bluebell.platform.models.api.json.StandardJsonResponse;
 import com.bluebell.platform.models.core.entities.account.Account;
 import com.bluebell.platform.models.core.entities.security.User;
 import com.bluebell.platform.models.core.nonentities.data.PairEntry;
 import com.bluebell.platform.models.core.nonentities.records.account.AccountDetails;
+import com.bluebell.radicle.exceptions.validation.MissingRequiredDataException;
 import com.bluebell.radicle.security.aspects.ValidateApiToken;
 import com.bluebell.radicle.security.constants.SecurityConstants;
 import com.bluebell.radicle.services.account.AccountService;
@@ -27,10 +29,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
-
-import static com.bluebell.radicle.validation.GenericValidator.validateJsonIntegrity;
 
 /**
  * API Controller for {@link Account}
@@ -44,7 +43,6 @@ import static com.bluebell.radicle.validation.GenericValidator.validateJsonInteg
 @CrossOrigin(origins = "*", methods = {RequestMethod.GET, RequestMethod.DELETE, RequestMethod.POST, RequestMethod.PUT})
 public class AccountApiController extends AbstractApiController {
 
-    private static final String ACCOUNT = "account";
     private static final String NO_ACCOUNT_FOR_ACCOUNT_NUMBER = "No account was found for account number %d";
 
     @Resource(name = "accountDTOConverter")
@@ -246,7 +244,7 @@ public class AccountApiController extends AbstractApiController {
      * Returns a {@link Account}
      *
      * @param request     {@link HttpServletRequest}
-     * @param requestBody json request
+     * @param data {@link CreateUpdateAccountDTO}
      * @return {@link StandardJsonResponse}
      */
     @ValidateApiToken
@@ -269,15 +267,19 @@ public class AccountApiController extends AbstractApiController {
     )
     @PostMapping("/create-account")
     public StandardJsonResponse<AccountDTO> postCreateNewAccount(
-            final @RequestBody Map<String, Object> requestBody,
+            @Parameter(name = "Account Payload", description = "Payload for creating or updating accounts")
+            final @RequestBody CreateUpdateAccountDTO data,
             final HttpServletRequest request
     ) {
-        validateJsonIntegrity(requestBody, List.of(ACCOUNT), "json did not contain of the required keys : %s", List.of(ACCOUNT));
+        if (data == null || data.number() == null) {
+            throw new MissingRequiredDataException("The required data for creating an Account entity was null or empty");
+        }
+
         final User user = (User) request.getAttribute(SecurityConstants.USER_REQUEST_KEY);
         return StandardJsonResponse
                 .<AccountDTO>builder()
                 .success(true)
-                .data(this.accountDTOConverter.convert(this.accountService.createNewAccount(requestBody, user)))
+                .data(this.accountDTOConverter.convert(this.accountService.createNewAccount(data, user)))
                 .build();
     }
 
@@ -289,7 +291,7 @@ public class AccountApiController extends AbstractApiController {
      *
      * @param accountNumber account number
      * @param request {@link HttpServletRequest}
-     * @param requestBody json request
+     * @param data {@link CreateUpdateAccountDTO}
      * @return {@link StandardJsonResponse}
      */
     @ValidateApiToken
@@ -322,14 +324,18 @@ public class AccountApiController extends AbstractApiController {
     public StandardJsonResponse<AccountDTO> putUpdateAccount(
             @Parameter(name = "Account Number", description = "The unique identifier for your trading account", example = "1234")
             final @RequestParam("accountNumber") long accountNumber,
-            final @RequestBody Map<String, Object> requestBody,
+            @Parameter(name = "Account Payload", description = "Payload for creating or updating accounts")
+            final @RequestBody CreateUpdateAccountDTO data,
             final HttpServletRequest request
     ) {
-        validateJsonIntegrity(requestBody, List.of(ACCOUNT), "json did not contain of the required keys : %s", List.of(ACCOUNT));
+        if (data == null || data.number() == null) {
+            throw new MissingRequiredDataException("The required data for updating an Account entity was null or empty");
+        }
+
         final User user = (User) request.getAttribute(SecurityConstants.USER_REQUEST_KEY);
         final Optional<Account> account = this.accountService.findAccountByAccountNumber(accountNumber);
         return account
-                .map(value -> StandardJsonResponse.<AccountDTO>builder().success(true).data(this.accountDTOConverter.convert(this.accountService.updateAccount(value, requestBody, user))).build())
+                .map(value -> StandardJsonResponse.<AccountDTO>builder().success(true).data(this.accountDTOConverter.convert(this.accountService.updateAccount(value, data, user))).build())
                 .orElseGet(() -> StandardJsonResponse.<AccountDTO>builder().success(false).message(String.format(NO_ACCOUNT_FOR_ACCOUNT_NUMBER, accountNumber)).build());
     }
 
