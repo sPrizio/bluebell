@@ -1,21 +1,10 @@
 package com.bluebell.radicle.services.account;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-
-import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
-
+import com.bluebell.AbstractGenericTest;
 import com.bluebell.platform.constants.CorePlatformConstants;
 import com.bluebell.platform.enums.account.AccountType;
 import com.bluebell.platform.enums.trade.TradeType;
-import com.bluebell.AbstractGenericTest;
-import com.bluebell.radicle.exceptions.system.EntityCreationException;
-import com.bluebell.radicle.exceptions.system.EntityModificationException;
+import com.bluebell.platform.models.api.dto.account.CreateUpdateAccountDTO;
 import com.bluebell.radicle.exceptions.validation.IllegalParameterException;
 import com.bluebell.radicle.exceptions.validation.MissingRequiredDataException;
 import com.bluebell.radicle.repositories.account.AccountRepository;
@@ -30,11 +19,19 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import java.util.List;
+import java.util.Optional;
+
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
+
 /**
  * Testing class for {@link AccountService}
  *
  * @author Stephen Prizio
- * @version 0.1.0
+ * @version 0.1.1
  */
 @SpringBootTest
 @RunWith(SpringRunner.class)
@@ -100,32 +97,19 @@ class AccountServiceTest extends AbstractGenericTest {
     }
 
     @Test
-    void test_createNewAccount_erroneousCreation() {
-        Map<String, Object> map = Map.of("bad", "input");
-        assertThatExceptionOfType(EntityCreationException.class)
-                .isThrownBy(() -> this.accountService.createNewAccount(map, generateTestUser()))
-                .withMessage("An Account could not be created : Cannot invoke \"java.util.Map.get(Object)\" because \"acc\" is null");
-    }
-
-    @Test
     void test_createNewAccount_success() {
 
-        Map<String, Object> data =
-                Map.of(
-                        "account",
-                        Map.of(
-                                "name", "Test",
-                                "number", "123",
-                                "balance", "150",
-                                "currency", "CAD",
-                                "type", "CFD",
-                                "broker", "CMC_MARKETS",
-                                "dailyStop", "55",
-                                "dailyStopType", "POINTS",
-                                "tradePlatform", "METATRADER4",
-                                "isDefault", "true"
-                        )
-                );
+        final CreateUpdateAccountDTO data = CreateUpdateAccountDTO
+                .builder()
+                .name("Test")
+                .active(false)
+                .balance(150)
+                .number(1234L)
+                .currency("CAD")
+                .type("CFD")
+                .broker("CMC_MARKETS")
+                .tradePlatform("METATRADER4")
+                .build();
 
         assertThat(this.accountService.createNewAccount(data, generateTestUser()))
                 .isNotNull()
@@ -146,7 +130,7 @@ class AccountServiceTest extends AbstractGenericTest {
     @Test
     void test_updateAccount_missingAccount() {
         assertThatExceptionOfType(IllegalParameterException.class)
-                .isThrownBy(() -> this.accountService.updateAccount(generateTestAccount(), new HashMap<>(), null))
+                .isThrownBy(() -> this.accountService.updateAccount(generateTestAccount(), CreateUpdateAccountDTO.builder().build(), null))
                 .withMessage(CorePlatformConstants.Validation.Security.User.USER_CANNOT_BE_NULL);
     }
 
@@ -158,31 +142,19 @@ class AccountServiceTest extends AbstractGenericTest {
     }
 
     @Test
-    void test_updateAccount_erroneousCreation() {
-        Map<String, Object> map = Map.of("bad", "input");
-        assertThatExceptionOfType(EntityModificationException.class)
-                .isThrownBy(() -> this.accountService.updateAccount(generateTestAccount(), map, generateTestUser()))
-                .withMessage("An error occurred while modifying the Account : Cannot invoke \"java.util.Map.get(Object)\" because \"acc\" is null");
-    }
-
-    @Test
     void test_updateAccount_success() {
 
-        final Map<String, Object> dataMap = new HashMap<>();
-        final Map<String, Object> data = new HashMap<>();
-        dataMap.put("name", "Test");
-        dataMap.put("active", "true");
-        dataMap.put("number", "1234");
-        dataMap.put("balance", "1000.0");
-        dataMap.put("currency", "CAD");
-        dataMap.put("type", "CFD");
-        dataMap.put("broker", "CMC_MARKETS");
-        dataMap.put("dailyStop", "55");
-        dataMap.put("dailyStopType", "POINTS");
-        dataMap.put("tradePlatform", "METATRADER4");
-        dataMap.put("isDefault", "true");
-
-        data.put("account", dataMap);
+        final CreateUpdateAccountDTO data = CreateUpdateAccountDTO
+                .builder()
+                .name("Test")
+                .active(false)
+                .balance(150)
+                .number(1234L)
+                .currency("CAD")
+                .type("CFD")
+                .broker("CMC_MARKETS")
+                .tradePlatform("METATRADER4")
+                .build();
 
         assertThat(this.accountService.updateAccount(generateTestAccount(), data, generateTestUser()))
                 .isNotNull()
