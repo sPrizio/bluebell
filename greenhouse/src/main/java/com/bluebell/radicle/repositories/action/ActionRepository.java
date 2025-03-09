@@ -1,6 +1,6 @@
 package com.bluebell.radicle.repositories.action;
 
-import com.bluebell.platform.models.core.entities.action.Action;
+import com.bluebell.platform.models.core.entities.action.impl.Action;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.stereotype.Repository;

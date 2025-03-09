@@ -2,7 +2,7 @@ package com.bluebell.radicle.repositories.job;
 
 import com.bluebell.platform.enums.job.JobStatus;
 import com.bluebell.platform.enums.job.JobType;
-import com.bluebell.platform.models.core.entities.job.Job;
+import com.bluebell.platform.models.core.entities.job.impl.Job;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.stereotype.Repository;

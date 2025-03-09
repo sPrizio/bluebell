@@ -1,6 +1,6 @@
 package com.bluebell.platform.enums.job;
 
-import com.bluebell.platform.models.core.entities.job.Job;
+import com.bluebell.platform.models.core.entities.job.impl.Job;
 
 /**
  * Enumeration representing different types of {@link Job}s that can be performed

@@ -1,6 +1,6 @@
 package com.bluebell.platform.enums.action;
 
-import com.bluebell.platform.models.core.entities.action.Action;
+import com.bluebell.platform.models.core.entities.action.impl.Action;
 
 /**
  * Enumeration representing the result of an {@link Action}
@@ -8,7 +8,7 @@ import com.bluebell.platform.models.core.entities.action.Action;
  * @author Stephen Prizio
  * @version 0.1.1
  */
-public enum ActionResult {
+public enum ActionStatus {
     SUCCESS,
     FAILURE,
     IN_PROGRESS,
