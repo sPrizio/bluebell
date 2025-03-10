@@ -2,8 +2,8 @@ package com.bluebell.platform.models.core.entities.job.impl;
 
 import com.bluebell.platform.enums.job.JobStatus;
 import com.bluebell.platform.enums.job.JobType;
-import com.bluebell.platform.models.core.entities.action.impl.Action;
 import com.bluebell.platform.exceptions.job.JobExecutionException;
+import com.bluebell.platform.models.core.entities.action.impl.Action;
 import com.bluebell.platform.models.core.entities.job.GenericJob;
 import jakarta.persistence.*;
 import lombok.*;
@@ -34,19 +34,22 @@ public class Job implements GenericJob {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false, unique = true)
+    @Column(name = "job_id", nullable = false, unique = true)
     private String jobId = UUID.randomUUID().toString();
 
     @Setter
     @Column
     private String name;
 
+    @Setter
     @Column
     private LocalDateTime executionTime = null;
 
+    @Setter
     @Column
     private LocalDateTime completionTime = null;
 
+    @Setter
     @Column
     private JobStatus status = JobStatus.NOT_STARTED;
 
@@ -76,25 +79,6 @@ public class Job implements GenericJob {
 
 
     //  METHODS
-
-    @Override
-    public void executeJob() {
-        //  TODO: implement JobResult entity that will store references to ActionResults and will contain a retry count (unique), linked via Job ID
-
-
-        //  TODO: EXTRAPOLATE to JobService executeJob(Job)
-        if (CollectionUtils.isEmpty(this.actions)) {
-            throw new JobExecutionException(String.format("Cannot execute Job %s, job has no actions!", this.name));
-        }
-
-        LOGGER.info("Executing Job {}", this.name);
-
-        this.executionTime = LocalDateTime.now();
-        this.status = JobStatus.IN_PROGRESS;
-
-        //  TODO: execute actions
-
-    }
 
     /**
      * Calculates the job's duration in seconds. If the job is in progress, -1 will be returned

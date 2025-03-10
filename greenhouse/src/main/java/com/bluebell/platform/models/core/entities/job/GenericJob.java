@@ -10,9 +10,4 @@ import com.bluebell.platform.models.core.entities.job.impl.Job;
  * @version 0.1.1
  */
 public interface GenericJob extends GenericEntity {
-
-    /**
-     * Executes the job
-     */
-    void executeJob();
 }
