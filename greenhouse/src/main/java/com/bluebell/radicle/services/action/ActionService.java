@@ -1,5 +1,6 @@
 package com.bluebell.radicle.services.action;
 
+import com.bluebell.platform.constants.CorePlatformConstants;
 import com.bluebell.platform.enums.action.ActionStatus;
 import com.bluebell.platform.models.core.entities.action.impl.Action;
 import com.bluebell.platform.models.core.nonentities.action.ActionData;
@@ -8,6 +9,8 @@ import com.bluebell.radicle.repositories.action.ActionRepository;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+
+import static com.bluebell.radicle.validation.GenericValidator.validateParameterIsNotNull;
 
 /**
  * Service-layer for {@link Action}s
@@ -32,6 +35,8 @@ public class ActionService {
      * @return {@link ActionResult}
      */
     public ActionResult performAction(final Action action) {
+
+        validateParameterIsNotNull(action, CorePlatformConstants.Validation.Action.ACTION_CANNOT_BE_NULL);
 
         LOGGER.info("Performing action {}", action.getName());
 
