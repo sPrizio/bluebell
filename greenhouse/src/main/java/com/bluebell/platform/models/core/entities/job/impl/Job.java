@@ -79,7 +79,10 @@ public class Job implements GenericJob {
 
     @Override
     public void executeJob() {
+        //  TODO: implement JobResult entity that will store references to ActionResults and will contain a retry count (unique), linked via Job ID
 
+
+        //  TODO: EXTRAPOLATE to JobService executeJob(Job)
         if (CollectionUtils.isEmpty(this.actions)) {
             throw new JobExecutionException(String.format("Cannot execute Job %s, job has no actions!", this.name));
         }
@@ -90,6 +93,7 @@ public class Job implements GenericJob {
         this.status = JobStatus.IN_PROGRESS;
 
         //  TODO: execute actions
+
     }
 
     /**

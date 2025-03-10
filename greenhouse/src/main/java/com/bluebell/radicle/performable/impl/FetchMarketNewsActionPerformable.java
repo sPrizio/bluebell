@@ -23,8 +23,28 @@ public class FetchMarketNewsActionPerformable implements ActionPerformable {
 
     @Override
     public ActionData perform() {
-
-        //  TODO: implement this
-        return null;
+        try {
+            final boolean result = this.marketNewsService.fetchMarketNews();
+            if (result) {
+                return ActionData
+                        .builder()
+                        .success(true)
+                        .data(true)
+                        .logs("Market News fetched successfully.")
+                        .build();
+            } else {
+                return ActionData
+                        .builder()
+                        .success(false)
+                        .logs("Market News could not be fetched. Please refer to the logs for additional information")
+                        .build();
+            }
+        } catch (Exception e) {
+            return ActionData
+                    .builder()
+                    .success(false)
+                    .logs(getStackTraceAsString(e))
+                    .build();
+        }
     }
 }
