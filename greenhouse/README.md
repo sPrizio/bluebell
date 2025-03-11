@@ -1,20 +1,15 @@
-# bluebell - greenhouse
-This module represents bluebell's backend. bluebell's back-end is built using Java Spring and comprises the following modules:
+# greenhouse
 
-### Modules
-- Anther **v0.0.9**: Strategy Development & Simulation system for inventing and back-testing trading strategies.
-  - Holds custom trading bots (referred to as expert advisors)
-  - Holds custom technical indicators (referred to as indicators)
-- Planter **v0.0.9**: Back-end API system capable of tracking user trades and accounts to build a comprehensive look at multiple portfolios.
-- Platform **v0.0.9**: System entities & functionality used by all other modules
-- Processing **0.0.9**: Code generation module
-- Radicle **v0.0.9**: Data-access & Service-layer with integrated data functionality
-  - Core models and services, repositories
-  - Importing functionality for bringing trades & market data into the system
-  - Data parsing system meant to collect historical data for use with back-testing and data-visualization systems. (v0.0.1: FirstRateData, v0.0.2: Trading View)
-
-Current Version: **0.1.0**\
+Current Iteration: **0.1.1**\
 Current Release: **Pre-release**
+
+---
+
+### Avenues to Explore
+1. Implement Krish's strategy and test
+2. Look up Bagger's video on his strategy
+3. See if we can expand Sprout to other indices
+
 
 ---
 
