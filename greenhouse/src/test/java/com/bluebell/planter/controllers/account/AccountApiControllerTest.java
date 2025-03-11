@@ -18,6 +18,7 @@ import com.bluebell.platform.enums.account.AccountType;
 import com.bluebell.platform.enums.account.Broker;
 import com.bluebell.platform.enums.account.Currency;
 import com.bluebell.platform.enums.trade.TradePlatform;
+import com.bluebell.platform.models.api.dto.account.CreateUpdateAccountDTO;
 import com.bluebell.platform.models.core.entities.account.Account;
 import com.bluebell.radicle.services.account.AccountService;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -57,7 +58,7 @@ class AccountApiControllerTest extends AbstractPlanterTest {
     private MockMvc mockMvc;
 
     @BeforeEach
-    public void setUp() {
+    void setUp() {
         Mockito.when(this.uniqueIdentifierService.generateUid(any())).thenReturn("MTE4");
         Mockito.when(this.accountService.createNewAccount(any(), any())).thenReturn(Account.builder().build());
         Mockito.when(this.accountService.updateAccount(any(), any(), any())).thenReturn(Account.builder().build());
@@ -142,21 +143,17 @@ class AccountApiControllerTest extends AbstractPlanterTest {
     @Test
     void test_postCreateNewAccount_success() throws Exception {
 
-        Map<String, Object> data =
-                Map.of(
-                        "account",
-                        Map.of(
-                                "name", "Test",
-                                "number", "123",
-                                "balance", "150",
-                                "currency", "CAD",
-                                "type", "CFD",
-                                "broker", "CMC_MARKETS",
-                                "dailyStop", "55",
-                                "dailyStopType", "POINTS",
-                                "tradePlatform", "METATRADER4"
-                        )
-                );
+        final CreateUpdateAccountDTO data = CreateUpdateAccountDTO
+                .builder()
+                .name("Test")
+                .active(false)
+                .balance(150)
+                .number(123L)
+                .currency("CAD")
+                .type("CFD")
+                .broker("CMC_MARKETS")
+                .tradePlatform("METATRADER4")
+                .build();
 
         this.mockMvc.perform(post("/api/v1/account/create-account").contentType(MediaType.APPLICATION_JSON).content(new ObjectMapper().writeValueAsString(data)))
                 .andExpect(status().isOk())
@@ -176,21 +173,17 @@ class AccountApiControllerTest extends AbstractPlanterTest {
     @Test
     void test_putUpdateAccount_noAccountMatch() throws Exception {
 
-        Map<String, Object> data =
-                Map.of(
-                        "account",
-                        Map.of(
-                                "name", "Test",
-                                "number", "123",
-                                "balance", "150",
-                                "currency", "CAD",
-                                "type", "CFD",
-                                "broker", "CMC_MARKETS",
-                                "dailyStop", "55",
-                                "dailyStopType", "POINTS",
-                                "tradePlatform", "METATRADER4"
-                        )
-                );
+        final CreateUpdateAccountDTO data = CreateUpdateAccountDTO
+                .builder()
+                .name("Test")
+                .active(false)
+                .balance(150)
+                .number(123L)
+                .currency("CAD")
+                .type("CFD")
+                .broker("CMC_MARKETS")
+                .tradePlatform("METATRADER4")
+                .build();
 
         this.mockMvc.perform(put("/api/v1/account/update-account")
                         .queryParam("accountNumber", "5678")
@@ -204,21 +197,17 @@ class AccountApiControllerTest extends AbstractPlanterTest {
     @Test
     void test_putUpdateAccount_success() throws Exception {
 
-        Map<String, Object> data =
-                Map.of(
-                        "account",
-                        Map.of(
-                                "name", "Test",
-                                "number", "123",
-                                "balance", "150",
-                                "currency", "CAD",
-                                "type", "CFD",
-                                "broker", "CMC_MARKETS",
-                                "dailyStop", "55",
-                                "dailyStopType", "POINTS",
-                                "tradePlatform", "METATRADER4"
-                        )
-                );
+        final CreateUpdateAccountDTO data = CreateUpdateAccountDTO
+                .builder()
+                .name("Test")
+                .active(false)
+                .balance(150)
+                .number(123L)
+                .currency("CAD")
+                .type("CFD")
+                .broker("CMC_MARKETS")
+                .tradePlatform("METATRADER4")
+                .build();
 
         this.mockMvc.perform(put("/api/v1/account/update-account")
                         .queryParam("accountNumber", "1234")

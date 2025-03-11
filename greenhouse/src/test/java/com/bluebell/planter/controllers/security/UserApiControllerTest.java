@@ -1,22 +1,12 @@
 package com.bluebell.planter.controllers.security;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-
-import static org.hamcrest.Matchers.containsString;
-import static org.hamcrest.Matchers.is;
-import static org.mockito.ArgumentMatchers.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
 import com.bluebell.planter.AbstractPlanterTest;
 import com.bluebell.planter.constants.ApiConstants;
 import com.bluebell.planter.converters.account.AccountDTOConverter;
 import com.bluebell.planter.converters.transaction.TransactionDTOConverter;
 import com.bluebell.planter.services.UniqueIdentifierService;
+import com.bluebell.platform.models.api.dto.security.CreateUpdateUserDTO;
+import com.bluebell.platform.models.api.dto.system.CreateUpdatePhoneNumberDTO;
 import com.bluebell.radicle.services.security.UserService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
@@ -33,11 +23,22 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+
+import static org.hamcrest.Matchers.containsString;
+import static org.hamcrest.Matchers.is;
+import static org.mockito.ArgumentMatchers.any;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
 /**
  * Testing class for {@link UserApiController}
  *
  * @author Stephen Prizio
- * @version 0.1.0
+ * @version 0.1.1
  */
 @SpringBootTest
 @AutoConfigureMockMvc(addFilters = false)
@@ -60,11 +61,11 @@ class UserApiControllerTest extends AbstractPlanterTest {
     private UserService userService;
 
     @BeforeEach
-    public void setUp() throws Throwable {
+    void setUp() {
         Mockito.when(this.uniqueIdentifierService.generateUid(any())).thenReturn("MTE4");
         Mockito.when(this.accountDTOConverter.convert(any())).thenReturn(generateTestAccountDTO());
-        Mockito.when(this.userService.createUser(anyMap())).thenReturn(generateTestUser());
-        Mockito.when(this.userService.updateUser(any(), anyMap())).thenReturn(generateTestUser());
+        Mockito.when(this.userService.createUser(any())).thenReturn(generateTestUser());
+        Mockito.when(this.userService.updateUser(any(), any())).thenReturn(generateTestUser());
         Mockito.when(this.userService.findUserByUsername("bad_username")).thenReturn(Optional.empty());
         Mockito.when(this.userService.findUserByUsername("stephen")).thenReturn(Optional.of(generateTestUser()));
         Mockito.when(this.transactionDTOConverter.convert(any())).thenReturn(generateTransactionDTO());
@@ -160,17 +161,24 @@ class UserApiControllerTest extends AbstractPlanterTest {
     @Test
     void test_postCreateUser_success() throws Exception {
 
-        Map<String, Object> temp = new HashMap<>();
-        temp.put("email", "2022-09-05");
-        temp.put("password", "2022-09-11");
-        temp.put("lastName", "Prizio");
-        temp.put("firstName", "Stephen");
-        temp.put("username", "s.prizio");
-        temp.put("country", "CAN");
-        temp.put("townCity", "Montreal");
-        temp.put("timeZoneOffset", "America/Toronto");
-
-        Map<String, Object> data = new HashMap<>(Map.of("user", temp));
+        final CreateUpdateUserDTO data = CreateUpdateUserDTO
+                .builder()
+                .email("test@email.com")
+                .password("2022-09-05")
+                .lastName("Prizio")
+                .firstName("Stephen")
+                .username("s.prizio")
+                .phoneNumbers(
+                        List.of(
+                                CreateUpdatePhoneNumberDTO
+                                        .builder()
+                                        .phoneType("MOBILE")
+                                        .countryCode((short) 1)
+                                        .telephoneNumber(5149411025L)
+                                        .build()
+                        )
+                )
+                .build();
 
         this.mockMvc.perform(post("/api/v1/user/create").contentType(MediaType.APPLICATION_JSON).content(new ObjectMapper().writeValueAsString(data)))
                 .andExpect(status().isOk())
@@ -181,7 +189,7 @@ class UserApiControllerTest extends AbstractPlanterTest {
     //  ----------------- putUpdateUser -----------------
 
     @Test
-    void test_putUpdateRetrospective_badJsonIntegrity() throws Exception {
+    void test_putUpdateUser_badJsonIntegrity() throws Exception {
 
         MultiValueMap<String, String> map = new LinkedMultiValueMap<>();
         map.put("email", List.of("test@email.com"));
@@ -192,22 +200,29 @@ class UserApiControllerTest extends AbstractPlanterTest {
     }
 
     @Test
-    void test_putUpdateRetrospective_success() throws Exception {
+    void test_putUpdateUser_success() throws Exception {
 
         MultiValueMap<String, String> map = new LinkedMultiValueMap<>();
         map.put("email", List.of("test@email.com"));
 
-        Map<String, Object> temp = new HashMap<>();
-        temp.put("email", "2022-09-05");
-        temp.put("password", "2022-09-11");
-        temp.put("lastName", "Prizio");
-        temp.put("firstName", "Stephen");
-        temp.put("username", "s.prizio");
-        temp.put("country", "CAN");
-        temp.put("townCity", "Montreal");
-        temp.put("timeZoneOffset", "America/Toronto");
-
-        Map<String, Object> data = new HashMap<>(Map.of("user", temp));
+        final CreateUpdateUserDTO data = CreateUpdateUserDTO
+                .builder()
+                .email("test@email.com")
+                .password("2022-09-05")
+                .lastName("Prizio")
+                .firstName("Stephen")
+                .username("s.prizio")
+                .phoneNumbers(
+                        List.of(
+                                CreateUpdatePhoneNumberDTO
+                                        .builder()
+                                        .phoneType("MOBILE")
+                                        .countryCode((short) 1)
+                                        .telephoneNumber(5149411025L)
+                                        .build()
+                        )
+                )
+                .build();
 
         this.mockMvc.perform(put("/api/v1/user/update").params(map).contentType(MediaType.APPLICATION_JSON).content(new ObjectMapper().writeValueAsString(data)))
                 .andExpect(status().isOk())

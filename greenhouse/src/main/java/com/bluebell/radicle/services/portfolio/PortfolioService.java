@@ -50,11 +50,11 @@ public class PortfolioService {
 
         validateParameterIsNotNull(user, CorePlatformConstants.Validation.Security.User.USER_CANNOT_BE_NULL);
 
-        final List<Account> accounts = user.getAccounts();
+        final List<Account> accounts = user.getAccounts().stream().filter(Account::isActive).toList();
         List<PortfolioEquityPoint> equityPoints = computeEquityPoints(user);
         boolean isNew = false;
-        final LocalDate limit = user.getAccounts().stream().map(Account::getLastTraded).max(LocalDateTime::compareTo).orElse(LocalDateTime.now()).with(TemporalAdjusters.firstDayOfNextMonth()).toLocalDate();
-        final double netWorth = this.mathService.getDouble(user.getAccounts().stream().mapToDouble(Account::getBalance).sum());
+        final LocalDate limit = accounts.stream().map(Account::getLastTraded).max(LocalDateTime::compareTo).orElse(LocalDateTime.now()).with(TemporalAdjusters.firstDayOfNextMonth()).toLocalDate();
+        final double netWorth = this.mathService.getDouble(accounts.stream().mapToDouble(Account::getBalance).sum());
 
         if (CollectionUtils.isEmpty(equityPoints) || CollectionUtils.isEmpty(equityPoints.get(0).accounts())) {
             isNew = true;
@@ -84,17 +84,18 @@ public class PortfolioService {
      */
     private PortfolioStatistics computePortfolioStatistics(final User user) {
 
-        final LocalDateTime limit = user.getAccounts().stream().map(Account::getLastTraded).max(LocalDateTime::compareTo).orElse(LocalDateTime.now()).with(TemporalAdjusters.firstDayOfNextMonth()).minusMonths(1);
+        final List<Account> accounts = user.getAccounts().stream().filter(Account::isActive).toList();
+        final LocalDateTime limit = accounts.stream().filter(Account::isActive).map(Account::getLastTraded).max(LocalDateTime::compareTo).orElse(LocalDateTime.now()).with(TemporalAdjusters.firstDayOfNextMonth()).minusMonths(1);
 
         final List<Trade> allTrades =
-                user.getAccounts()
+                accounts
                         .stream()
                         .map(Account::getTrades)
                         .flatMap(List::stream)
                         .toList();
 
         final List<Transaction> allTransactions =
-                user.getAccounts()
+                accounts
                         .stream()
                         .map(Account::getTransactions)
                         .filter(CollectionUtils::isNotEmpty)
@@ -113,7 +114,7 @@ public class PortfolioService {
                         .filter(tr -> tr.getTransactionDate().isAfter(limit))
                         .toList();
 
-        final double netAccount = user.getAccounts().stream().mapToDouble(Account::getBalance).sum();
+        final double netAccount = accounts.stream().mapToDouble(Account::getBalance).sum();
         final double netProfit = differenceTrades.stream().mapToDouble(Trade::getNetProfit).sum();
 
         final List<Transaction> allDeposits = allTransactions.stream().filter(tr -> tr.getTransactionType().equals(TransactionType.DEPOSIT)).toList();
@@ -139,13 +140,14 @@ public class PortfolioService {
     private List<PortfolioEquityPoint> computeEquityPoints(final User user) {
 
         final List<PortfolioEquityPoint> points = new ArrayList<>();
-        final LocalDateTime limit = user.getAccounts().stream().map(Account::getLastTraded).max(LocalDateTime::compareTo).orElse(LocalDateTime.now()).with(TemporalAdjusters.firstDayOfNextMonth());
+        final List<Account> accounts = user.getAccounts().stream().filter(Account::isActive).toList();
+        final LocalDateTime limit = accounts.stream().map(Account::getLastTraded).max(LocalDateTime::compareTo).orElse(LocalDateTime.now()).with(TemporalAdjusters.firstDayOfNextMonth());
 
 
         //  only look at accounts that were last traded within the timespan to reduce number of trades considered
-        final List<Account> relevantAccounts = user.getAccounts().stream().filter(acc -> isWithinTimespan(limit.minusMonths(6), limit, acc.getLastTraded())).toList();
+        final List<Account> relevantAccounts = accounts.stream().filter(acc -> isWithinTimespan(limit.minusMonths(6), limit, acc.getLastTraded())).toList();
         LocalDateTime compare = limit;
-        double starterBalance = this.mathService.getDouble(user.getAccounts().stream().mapToDouble(Account::getBalance).sum());
+        double starterBalance = this.mathService.getDouble(accounts.stream().mapToDouble(Account::getBalance).sum());
 
         while (compare.isAfter(limit.minusMonths(6))) {
             LocalDateTime start = compare;
