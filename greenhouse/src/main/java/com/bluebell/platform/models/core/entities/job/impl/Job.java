@@ -58,22 +58,22 @@ public class Job implements GenericJob {
     private JobType type;
 
     @Setter
-    @Column
-    private int retryCount;
-
-    @Setter
     @OneToMany(mappedBy = "job", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @OrderBy("priority DESC")
     private Set<Action> actions;
+
+    @Setter
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "job_result_id", referencedColumnName = "job_id")
+    private JobResult jobResult;
 
 
     //  CONSTRUCTORS
 
     @Builder
-    private Job(final String name, final JobType type, final int retryCount, final Set<Action> actions) {
+    private Job(final String name, final JobType type, final Set<Action> actions) {
         this.name = name;
         this.type = type;
-        this.retryCount = retryCount;
         this.actions = actions;
     }
 
@@ -107,7 +107,7 @@ public class Job implements GenericJob {
      *
      * @param entry {@link Action}
      */
-    public void addAction(Action entry) {
+    public void addAction(final Action entry) {
 
         if (CollectionUtils.isEmpty(this.actions)) {
             this.actions = new TreeSet<>();
@@ -122,7 +122,7 @@ public class Job implements GenericJob {
      *
      * @param entry {@link Action}
      */
-    public void removeEntry(Action entry) {
+    public void removeEntry(final Action entry) {
         if (CollectionUtils.isNotEmpty(this.actions)) {
             Set<Action> newActions = new TreeSet<>(this.actions);
             newActions.remove(entry);

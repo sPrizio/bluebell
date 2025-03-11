@@ -108,7 +108,12 @@ public class JobService {
         LOGGER.info("Job {} has completed successfully", job.getName());
 
         this.jobRepository.save(job);
-        return this.jobResultRepository.save(JobResult.builder().entries(jobResultEntries).build());
+        final JobResult jobResult = this.jobResultRepository.save(JobResult.builder().entries(jobResultEntries).build());
+
+        job.setJobResult(jobResult);
+        this.jobRepository.save(job);
+
+        return this.jobResultRepository.save(jobResult);
     }
 
     /**

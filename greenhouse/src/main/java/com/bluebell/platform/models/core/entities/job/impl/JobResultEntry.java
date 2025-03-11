@@ -2,10 +2,7 @@ package com.bluebell.platform.models.core.entities.job.impl;
 
 import com.bluebell.platform.models.core.nonentities.action.ActionResult;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 /**
  * Represents an entry inside a {@link JobResult} which maps semantically to an {@link ActionResult}
@@ -33,7 +30,8 @@ public class JobResultEntry {
     @Column(columnDefinition = "TEXT")
     private String logs;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @Setter
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.REFRESH)
     private JobResult jobResult;
 
 

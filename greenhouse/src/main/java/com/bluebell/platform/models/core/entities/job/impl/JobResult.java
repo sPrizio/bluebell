@@ -6,7 +6,9 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.apache.commons.collections4.CollectionUtils;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -30,7 +32,7 @@ public class JobResult implements GenericEntity {
     @JoinColumn(name = "job_id", referencedColumnName = "id")
     private Job job;
 
-    @OneToMany(mappedBy = "job_result", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "jobResult", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
     private List<JobResultEntry> entries;
 
 
@@ -39,5 +41,37 @@ public class JobResult implements GenericEntity {
     @Builder
     private JobResult(final List<JobResultEntry> entries) {
         this.entries = entries;
+    }
+
+
+    //  METHODS
+
+    /**
+     * Database assistance method
+     *
+     * @param entry {@link JobResultEntry}
+     */
+    public void addJobResultEntry(final JobResultEntry entry) {
+
+        if (CollectionUtils.isEmpty(this.entries)) {
+            this.entries = new ArrayList<>();
+        }
+
+        this.entries.add(entry);
+        entry.setJobResult(this);
+    }
+
+    /**
+     * Database assistance method
+     *
+     * @param entry {@link JobResultEntry}
+     */
+    public void removeJobResultEntry(final JobResultEntry entry) {
+        if (CollectionUtils.isNotEmpty(this.entries)) {
+            List<JobResultEntry> jobResultEntries = new ArrayList<>(this.entries);
+            jobResultEntries.remove(entry);
+            this.entries = jobResultEntries;
+            entry.setJobResult(null);
+        }
     }
 }
