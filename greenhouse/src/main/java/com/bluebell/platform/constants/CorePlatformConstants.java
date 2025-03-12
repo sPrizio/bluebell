@@ -123,11 +123,11 @@ public class CorePlatformConstants {
 
             public static final String JOB_CANNOT_BE_NULL = "job cannot be null";
 
-            public static final String JOB_ID_NOT_FOUND = "job id cannot be null";
+            public static final String JOB_ID_CANNOT_BE_NULL = "job id cannot be null";
 
-            public static final String JOB_STATUS_NOT_FOUND = "job status cannot be null";
+            public static final String JOB_STATUS_CANNOT_BE_NULL = "job status cannot be null";
 
-            public static final String JOB_TYPE_NOT_FOUND = "job type cannot be null";
+            public static final String JOB_TYPE_CANNOT_BE_NULL = "job type cannot be null";
         }
 
         public static class Security {

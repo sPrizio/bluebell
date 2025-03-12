@@ -12,6 +12,7 @@ import org.apache.commons.collections4.CollectionUtils;
 
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
+import java.util.Comparator;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.UUID;
@@ -71,10 +72,9 @@ public class Job implements GenericJob {
     //  CONSTRUCTORS
 
     @Builder
-    private Job(final String name, final JobType type, final Set<Action> actions) {
+    private Job(final String name, final JobType type) {
         this.name = name;
         this.type = type;
-        this.actions = actions;
     }
 
 
@@ -110,7 +110,7 @@ public class Job implements GenericJob {
     public void addAction(final Action entry) {
 
         if (CollectionUtils.isEmpty(this.actions)) {
-            this.actions = new TreeSet<>();
+            this.actions = new TreeSet<>(Comparator.comparing(Action::getPriority));
         }
 
         this.actions.add(entry);
@@ -124,7 +124,8 @@ public class Job implements GenericJob {
      */
     public void removeEntry(final Action entry) {
         if (CollectionUtils.isNotEmpty(this.actions)) {
-            Set<Action> newActions = new TreeSet<>(this.actions);
+            final Set<Action> newActions = new TreeSet<>(Comparator.comparing(Action::getPriority));
+            newActions.addAll(this.actions);
             newActions.remove(entry);
             this.actions = newActions;
             entry.setJob(null);

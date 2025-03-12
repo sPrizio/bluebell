@@ -18,6 +18,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -81,8 +82,8 @@ public class JobService {
                         JobResultEntry
                                 .builder()
                                 .success(false)
-                                .data(new ObjectMapper().writeValueAsString(result.getData().data()))
-                                .logs(result.getData().logs())
+                                .data(safeGetData(result))
+                                .logs(safeGetLogs(result))
                                 .build()
                 );
 
@@ -95,8 +96,8 @@ public class JobService {
                         JobResultEntry
                                 .builder()
                                 .success(true)
-                                .data(new ObjectMapper().writeValueAsString(result.getData()))
-                                .logs(result.getData().logs())
+                                .data(safeGetData(result))
+                                .logs(safeGetLogs(result))
                                 .build()
                 );
             }
@@ -123,7 +124,7 @@ public class JobService {
      * @return {@link Job}
      */
     public Optional<Job> findJobByJobId(final String jobId) {
-        validateParameterIsNotNull(jobId, CorePlatformConstants.Validation.Job.JOB_ID_NOT_FOUND);
+        validateParameterIsNotNull(jobId, CorePlatformConstants.Validation.Job.JOB_ID_CANNOT_BE_NULL);
         return Optional.ofNullable(this.jobRepository.findJobByJobId(jobId));
     }
 
@@ -134,7 +135,7 @@ public class JobService {
      * @return {@link List} of {@link Job}
      */
     public List<Job> findJobsByStatus(final JobStatus status) {
-        validateParameterIsNotNull(status, CorePlatformConstants.Validation.Job.JOB_STATUS_NOT_FOUND);
+        validateParameterIsNotNull(status, CorePlatformConstants.Validation.Job.JOB_STATUS_CANNOT_BE_NULL);
         return this.jobRepository.findJobsByStatus(status);
     }
 
@@ -145,7 +146,7 @@ public class JobService {
      * @return {@link List} of {@link Job}
      */
     public List<Job> findJobsByType(final JobType jobType) {
-        validateParameterIsNotNull(jobType, CorePlatformConstants.Validation.Job.JOB_TYPE_NOT_FOUND);
+        validateParameterIsNotNull(jobType, CorePlatformConstants.Validation.Job.JOB_TYPE_CANNOT_BE_NULL);
         return this.jobRepository.findJobsByType(jobType);
     }
 
@@ -157,8 +158,42 @@ public class JobService {
      * @return {@link List} of {@link Job}
      */
     public List<Job> findJobsByStatusAndType(final JobStatus status, final JobType jobType) {
-        validateParameterIsNotNull(status, CorePlatformConstants.Validation.Job.JOB_STATUS_NOT_FOUND);
-        validateParameterIsNotNull(jobType, CorePlatformConstants.Validation.Job.JOB_TYPE_NOT_FOUND);
+        validateParameterIsNotNull(status, CorePlatformConstants.Validation.Job.JOB_STATUS_CANNOT_BE_NULL);
+        validateParameterIsNotNull(jobType, CorePlatformConstants.Validation.Job.JOB_TYPE_CANNOT_BE_NULL);
         return this.jobRepository.findJobsByStatusAndType(status, jobType);
+    }
+
+
+    //  HELPERS
+
+    /**
+     * Safely gets the data from an action result
+     *
+     * @param actionResult {@link ActionResult}
+     * @return object as a json string
+     * @throws JsonProcessingException json processing error if object cannot be parsed into json
+     */
+    private String safeGetData(final ActionResult actionResult) throws JsonProcessingException {
+
+        if (actionResult != null && actionResult.getData() != null && actionResult.getData().getData() != null) {
+            return new ObjectMapper().writeValueAsString(actionResult.getData().data());
+        }
+
+        return "No data to display.";
+    }
+
+    /**
+     * Safely gets the logs from an action result
+     *
+     * @param actionResult {@link ActionResult}
+     * @return string
+     */
+    private String safeGetLogs(final ActionResult actionResult) {
+
+        if (actionResult != null && actionResult.getData() != null && StringUtils.isNotEmpty(actionResult.getData().logs())) {
+            return actionResult.getData().logs();
+        }
+
+        return "No logs to display.";
     }
 }

@@ -5,8 +5,11 @@ import com.bluebell.platform.models.core.entities.action.GenericAction;
 import com.bluebell.platform.models.core.entities.job.impl.Job;
 import com.bluebell.radicle.performable.ActionPerformable;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
 import lombok.*;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 
 import java.util.UUID;
 
@@ -20,8 +23,7 @@ import java.util.UUID;
 @Getter
 @Entity
 @Builder
-@Table(name = "actions")
-@EqualsAndHashCode
+@Table(name = "actions", uniqueConstraints = @UniqueConstraint(columnNames = {"job_id", "priority"}))
 @NoArgsConstructor
 @AllArgsConstructor
 public class Action implements GenericAction, Comparable<Action> {
@@ -35,6 +37,8 @@ public class Action implements GenericAction, Comparable<Action> {
 
     @Setter
     @Column(nullable = false, unique = true)
+    @Min(1)
+    @Max(99)
     private int priority;
 
     @Setter
@@ -67,5 +71,21 @@ public class Action implements GenericAction, Comparable<Action> {
     @Override
     public int compareTo(final @NonNull Action o) {
         return Integer.compare(this.priority, o.priority);
+    }
+
+    @Override
+    public boolean equals(Object object) {
+        if (object == null || getClass() != object.getClass()) return false;
+
+        if (StringUtils.isEmpty(this.actionId)) return false;
+
+        Action action = (Action) object;
+        if (StringUtils.isEmpty(action.getActionId())) return false;
+        return this.actionId.equals(action.actionId);
+    }
+
+    @Override
+    public int hashCode() {
+        return this.actionId.hashCode();
     }
 }
