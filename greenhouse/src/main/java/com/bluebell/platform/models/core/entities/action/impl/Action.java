@@ -22,7 +22,6 @@ import java.util.UUID;
 @Slf4j
 @Getter
 @Entity
-@Builder
 @Table(name = "actions", uniqueConstraints = @UniqueConstraint(columnNames = {"job_id", "priority"}))
 @NoArgsConstructor
 @AllArgsConstructor
@@ -32,11 +31,12 @@ public class Action implements GenericAction, Comparable<Action> {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Setter
     @Column(nullable = false, unique = true)
     private String actionId = UUID.randomUUID().toString();
 
     @Setter
-    @Column(nullable = false, unique = true)
+    @Column(nullable = false)
     @Min(1)
     @Max(99)
     private int priority;
@@ -52,6 +52,7 @@ public class Action implements GenericAction, Comparable<Action> {
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private Job job;
 
+    @Setter
     @Transient
     private ActionPerformable performableAction;
 
@@ -59,10 +60,11 @@ public class Action implements GenericAction, Comparable<Action> {
     //  CONSTRUCTORS
 
     @Builder
-    private Action(final int priority, final String name, final Job job) {
+    private Action(final int priority, final String name, final Job job, final ActionPerformable performableAction) {
         this.priority = priority;
         this.name = name;
         this.job = job;
+        this.performableAction = performableAction;
     }
 
 

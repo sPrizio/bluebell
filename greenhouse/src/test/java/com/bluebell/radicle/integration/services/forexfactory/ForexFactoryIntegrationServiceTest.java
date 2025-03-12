@@ -37,7 +37,7 @@ class ForexFactoryIntegrationServiceTest {
     private ForexFactoryIntegrationService forexFactoryIntegrationService;
 
     @BeforeEach
-    public void setUp() {
+    void setUp() {
 
         ReflectionTestUtils.setField(forexFactoryIntegrationService, "calendarUrl", "https://nfs.faireconomy.media/ff_calendar_thisweek.json");
         Mockito.when(this.forexFactoryIntegrationClient.get("https://nfs.faireconomy.media/ff_calendar_thisweek.json", new LinkedMultiValueMap<>())).thenReturn(

@@ -13,6 +13,7 @@ import com.bluebell.radicle.repositories.news.MarketNewsEntryRepository;
 import com.bluebell.radicle.repositories.news.MarketNewsRepository;
 import com.bluebell.radicle.repositories.news.MarketNewsSlotRepository;
 import jakarta.annotation.Resource;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.stereotype.Service;
 
@@ -29,6 +30,7 @@ import static com.bluebell.radicle.validation.GenericValidator.validateParameter
  * @author Stephen Prizio
  * @version 0.1.1
  */
+@Slf4j
 @Service
 public class MarketNewsService {
 
@@ -104,55 +106,60 @@ public class MarketNewsService {
      */
     public boolean fetchMarketNews() {
 
-        final List<CalendarNewsDayDTO> news = this.forexFactoryIntegrationService.getCurrentWeekNews();
+        List<CalendarNewsDayDTO> news = this.forexFactoryIntegrationService.getCurrentWeekNews();
         if (CollectionUtils.isEmpty(news)) {
             return false;
         }
 
-        news.stream().filter(n -> CollectionUtils.isNotEmpty(n.getEntries())).forEach(day -> {
-            final MarketNews marketNews = this.marketNewsRepository.save(getNews(day.getDate()));
-            final Map<LocalTime, List<CalendarNewsDayEntryDTO>> map = new HashMap<>();
-            final List<MarketNewsSlot> marketNewsSlots = new ArrayList<>();
+        try {
+            news = news.stream().filter(n -> CollectionUtils.isNotEmpty(n.getEntries())).toList();
+            for (final CalendarNewsDayDTO day : news) {
+                final MarketNews marketNews = this.marketNewsRepository.save(getNews(day.getDate()));
+                final Map<LocalTime, List<CalendarNewsDayEntryDTO>> map = new HashMap<>();
+                final List<MarketNewsSlot> marketNewsSlots = new ArrayList<>();
 
+                for (CalendarNewsDayEntryDTO entryDTO : day.getEntries()) {
+                    final List<CalendarNewsDayEntryDTO> entryDTOS;
+                    if (map.containsKey(entryDTO.getTime())) {
+                        entryDTOS = new ArrayList<>(map.get(entryDTO.getTime()));
+                    } else {
+                        entryDTOS = new ArrayList<>();
+                    }
 
-            day.getEntries().forEach(entryDTO -> {
-                final List<CalendarNewsDayEntryDTO> entryDTOS;
-                if (map.containsKey(entryDTO.getTime())) {
-                    entryDTOS = new ArrayList<>(map.get(entryDTO.getTime()));
-                } else {
-                    entryDTOS = new ArrayList<>();
+                    entryDTOS.add(entryDTO);
+                    map.put(entryDTO.getTime(), entryDTOS);
                 }
 
-                entryDTOS.add(entryDTO);
-                map.put(entryDTO.getTime(), entryDTOS);
-            });
+                for (Map.Entry<LocalTime, List<CalendarNewsDayEntryDTO>> entry : map.entrySet()) {
+                    final MarketNewsSlot marketNewsSlot = this.marketNewsSlotRepository.save(getSlot(marketNews, entry.getKey()));
+                    marketNewsSlot.setNews(marketNews);
+                    marketNewsSlot.setTime(entry.getKey());
 
-            map.forEach((key, value) -> {
-                final MarketNewsSlot marketNewsSlot = this.marketNewsSlotRepository.save(getSlot(marketNews, key));
-                marketNewsSlot.setNews(marketNews);
-                marketNewsSlot.setTime(key);
+                    final List<MarketNewsEntry> marketNewsEntries = new ArrayList<>();
+                    for (CalendarNewsDayEntryDTO val : entry.getValue()) {
+                        final MarketNewsEntry marketNewsEntry = this.marketNewsEntryRepository.save(getEntry(marketNewsSlot, val.getTitle()));
+                        marketNewsEntry.setSlot(marketNewsSlot);
+                        marketNewsEntry.setCountry(val.getCountry());
+                        marketNewsEntry.setPrevious(val.getPrevious());
+                        marketNewsEntry.setForecast(val.getForecast());
+                        marketNewsEntry.setSeverity(val.getImpact());
+                        marketNewsEntry.setContent(val.getTitle());
+                        this.marketNewsEntryRepository.save(marketNewsEntry);
+                        marketNewsEntries.add(marketNewsEntry);
+                    }
 
-                final List<MarketNewsEntry> marketNewsEntries = new ArrayList<>();
-                value.forEach(val -> {
-                    final MarketNewsEntry marketNewsEntry = this.marketNewsEntryRepository.save(getEntry(marketNewsSlot, val.getTitle()));
-                    marketNewsEntry.setSlot(marketNewsSlot);
-                    marketNewsEntry.setCountry(val.getCountry());
-                    marketNewsEntry.setPrevious(val.getPrevious());
-                    marketNewsEntry.setForecast(val.getForecast());
-                    marketNewsEntry.setSeverity(val.getImpact());
-                    marketNewsEntry.setContent(val.getTitle());
-                    this.marketNewsEntryRepository.save(marketNewsEntry);
-                    marketNewsEntries.add(marketNewsEntry);
-                });
+                    marketNewsSlot.setEntries(marketNewsEntries);
+                    marketNewsSlots.add(this.marketNewsSlotRepository.save(marketNewsSlot));
+                }
 
-                marketNewsSlot.setEntries(marketNewsEntries);
-                marketNewsSlots.add(this.marketNewsSlotRepository.save(marketNewsSlot));
-            });
-
-            marketNews.setDate(day.getDate());
-            marketNews.setSlots(marketNewsSlots);
-            this.marketNewsRepository.save(marketNews);
-        });
+                marketNews.setDate(day.getDate());
+                marketNews.setSlots(marketNewsSlots);
+                this.marketNewsRepository.save(marketNews);
+            }
+        } catch (Exception e) {
+            LOGGER.error(e.getMessage(), e);
+            return false;
+        }
 
         return true;
     }

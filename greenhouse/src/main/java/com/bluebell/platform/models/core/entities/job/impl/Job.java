@@ -64,8 +64,8 @@ public class Job implements GenericJob {
     private Set<Action> actions;
 
     @Setter
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "job_result_id", referencedColumnName = "job_id")
+    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "job_result_id", referencedColumnName = "id")
     private JobResult jobResult;
 
 
