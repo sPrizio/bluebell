@@ -7,7 +7,13 @@ Current Release: **Pre-release**
 
 ### Avenues to Explore
 1. Implement Krish's strategy and test
-2. Look up Bagger's video on his strategy
+   1. This could be turned into a public api where a stock can be compared daily
+   2. Can even set up a watchlist where daily updates are provided for the stocks in the list
+   3. This would need to be hooked up to a data source like EOD Historical data. Could be worth looking into
+   4. This strategy appears to work on the daily time frame
+   5. Can look into providing a list of trending stocks on the "search stock page"
+   6. Need a watch list or alerting module on top of this
+2. Look up 10Bagger's video on his strategy (https://youtu.be/5uHfiZmKqjM?feature=shared) Also have it downloaded
 3. See if we can expand Sprout to other indices
 
 
