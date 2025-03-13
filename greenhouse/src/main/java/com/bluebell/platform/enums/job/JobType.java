@@ -24,6 +24,7 @@ public enum JobType {
         this.label = label;
     }
 
+
     //  METHODS
 
     /**
