@@ -43,8 +43,6 @@ public class FetchMarketNewsScheduledJob implements GenericScheduledJob<Enum<Job
     @Resource(name = "jobService")
     private JobService jobService;
 
-    private boolean jobExecuted = false;
-
 
     //  METHODS
 
@@ -53,14 +51,9 @@ public class FetchMarketNewsScheduledJob implements GenericScheduledJob<Enum<Job
     @Scheduled(cron = "0 0 23 * * 7")
     public void execute() {
 
-        if (jobExecuted) {
-            return;
-        }
-
         final List<Job> runningJobs = this.jobService.findJobsByStatusAndType(JobStatus.IN_PROGRESS, JobType.FETCH_MARKET_NEWS);
         if (CollectionUtils.isNotEmpty(runningJobs)) {
             LOGGER.info("A FetchMarketNewsJob is already running. Cancelling this job");
-            jobExecuted = true;
             return;
         }
 
@@ -100,8 +93,6 @@ public class FetchMarketNewsScheduledJob implements GenericScheduledJob<Enum<Job
             fetchMarketNewsJob.setStatus(JobStatus.FAILED);
             this.jobRepository.save(fetchMarketNewsJob);
         }
-
-        jobExecuted = true;
     }
 
     @Override
