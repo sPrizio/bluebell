@@ -50,7 +50,7 @@ public class FetchMarketNewsScheduledJob implements GenericScheduledJob<Enum<Job
 
     @Override
     @Async
-    @Scheduled(fixedDelay = Long.MAX_VALUE)
+    @Scheduled(cron = "0 0 23 * * 7")
     public void execute() {
 
         if (jobExecuted) {
