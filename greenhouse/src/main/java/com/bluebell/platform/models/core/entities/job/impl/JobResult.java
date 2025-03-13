@@ -2,10 +2,7 @@ package com.bluebell.platform.models.core.entities.job.impl;
 
 import com.bluebell.platform.models.core.entities.GenericEntity;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.apache.commons.collections4.CollectionUtils;
 
 import java.util.ArrayList;
@@ -28,10 +25,11 @@ public class JobResult implements GenericEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "job_id", referencedColumnName = "id")
+    @Setter
+    @OneToOne(mappedBy = "jobResult", cascade = CascadeType.ALL, orphanRemoval = true)
     private Job job;
 
+    @Setter
     @OneToMany(mappedBy = "jobResult", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
     private List<JobResultEntry> entries;
 
@@ -45,6 +43,15 @@ public class JobResult implements GenericEntity {
 
 
     //  METHODS
+
+    /**
+     * Checks if the all results of the job ended in success
+     *
+     * @return true if all entries were successful
+     */
+    public boolean wasSuccessful() {
+        return CollectionUtils.isNotEmpty(this.entries) && this.entries.stream().allMatch(JobResultEntry::isSuccess);
+    }
 
     /**
      * Database assistance method

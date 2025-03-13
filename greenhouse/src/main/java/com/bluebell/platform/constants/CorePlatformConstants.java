@@ -113,6 +113,7 @@ public class CorePlatformConstants {
             }
 
             public static final String ACTION_CANNOT_BE_NULL = "action cannot be null";
+            public static final String PERFORMABLE_ACTION_CANNOT_BE_NULL = "performable action cannot be null";
         }
 
         public static class Job {

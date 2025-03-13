@@ -10,21 +10,22 @@ import com.bluebell.platform.models.core.entities.job.impl.Job;
 import com.bluebell.platform.models.core.entities.job.impl.JobResult;
 import com.bluebell.platform.models.core.entities.job.impl.JobResultEntry;
 import com.bluebell.platform.models.core.nonentities.action.ActionResult;
+import com.bluebell.radicle.performable.ActionPerformable;
 import com.bluebell.radicle.repositories.job.JobRepository;
+import com.bluebell.radicle.repositories.job.JobResultEntryRepository;
 import com.bluebell.radicle.repositories.job.JobResultRepository;
 import com.bluebell.radicle.services.action.ActionService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.annotation.Resource;
+import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 import static com.bluebell.radicle.validation.GenericValidator.validateParameterIsNotNull;
 
@@ -47,6 +48,9 @@ public class JobService {
     @Resource(name = "jobResultRepository")
     private JobResultRepository jobResultRepository;
 
+    @Resource(name = "jobResultEntryRepository")
+    private JobResultEntryRepository jobResultEntryRepository;
+
 
     //  METHODS
 
@@ -58,7 +62,8 @@ public class JobService {
      * @throws JobExecutionException thrown when an issue arises due to the job exception
      * @throws JsonProcessingException thrown when the action data cannot be resolved
      */
-    public JobResult executeJob(final Job job) throws JobExecutionException, JsonProcessingException {
+    @Transactional
+    public JobResult executeJob(Job job) throws JobExecutionException, JsonProcessingException {
 
         validateParameterIsNotNull(job, CorePlatformConstants.Validation.Job.JOB_CANNOT_BE_NULL);
 
@@ -70,6 +75,19 @@ public class JobService {
 
         job.setExecutionTime(LocalDateTime.now());
         job.setStatus(JobStatus.IN_PROGRESS);
+        final Job previousVersion = job;
+        job = this.jobRepository.save(job);
+        job = cleanUpPerformable(previousVersion, job);
+
+        JobResult jobResult = JobResult.builder().build();
+        jobResult.setJob(job);
+        jobResult = this.jobResultRepository.save(jobResult);
+
+        job.setJobResult(jobResult);
+        this.jobRepository.save(job);
+
+        jobResult.setJob(job);
+        this.jobResultRepository.save(jobResult);
 
         final List<JobResultEntry> jobResultEntries = new ArrayList<>();
         for (final Action action : job.getActions()) {
@@ -78,28 +96,34 @@ public class JobService {
                 job.setStatus(JobStatus.FAILED);
                 job.setCompletionTime(LocalDateTime.now());
 
-                jobResultEntries.add(
-                        JobResultEntry
-                                .builder()
-                                .success(false)
-                                .data(safeGetData(result))
-                                .logs(safeGetLogs(result))
-                                .build()
-                );
+                JobResultEntry entry = JobResultEntry
+                        .builder()
+                        .success(false)
+                        .data(safeGetData(result))
+                        .logs(safeGetLogs(result))
+                        .build();
+
+                entry.setJobResult(jobResult);
+                jobResultEntries.add(entry);
 
                 LOGGER.error("Job {} failed at action {}", job.getName(), action.getName());
 
                 this.jobRepository.save(job);
-                return this.jobResultRepository.save(JobResult.builder().entries(jobResultEntries).build());
+                jobResult.setEntries(jobResultEntries);
+                return this.jobResultRepository.save(jobResult);
             } else if (result.getStatus() == ActionStatus.SUCCESS) {
-                jobResultEntries.add(
-                        JobResultEntry
-                                .builder()
-                                .success(true)
-                                .data(safeGetData(result))
-                                .logs(safeGetLogs(result))
-                                .build()
-                );
+
+                JobResultEntry entry = JobResultEntry
+                        .builder()
+                        .success(true)
+                        .data(safeGetData(result))
+                        .logs(safeGetLogs(result))
+                        .build();
+
+                entry.setJobResult(jobResult);
+
+                jobResultEntries.add(entry);
+                this.jobResultEntryRepository.save(entry);
             }
         }
 
@@ -109,7 +133,8 @@ public class JobService {
         LOGGER.info("Job {} has completed successfully", job.getName());
 
         this.jobRepository.save(job);
-        final JobResult jobResult = this.jobResultRepository.save(JobResult.builder().entries(jobResultEntries).build());
+        jobResult.setEntries(jobResultEntries);
+        jobResult = this.jobResultRepository.save(jobResult);
 
         job.setJobResult(jobResult);
         this.jobRepository.save(job);
@@ -195,5 +220,20 @@ public class JobService {
         }
 
         return "No logs to display.";
+    }
+
+    /**
+     * Persists the transient field action performable across saves
+     *
+     * @param previous previous version of the job
+     * @param job current version of the job
+     * @return updated {@link Job}
+     */
+    private Job cleanUpPerformable(final Job previous, final Job job) {
+        Map<String, ActionPerformable> map = new HashMap<>();
+        previous.getActions().forEach(action -> map.put(action.getActionId(), action.getPerformableAction()));
+
+        job.getActions().forEach(action -> action.setPerformableAction(map.get(action.getActionId())));
+        return job;
     }
 }

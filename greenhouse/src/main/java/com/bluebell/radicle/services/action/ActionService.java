@@ -37,6 +37,7 @@ public class ActionService {
     public ActionResult performAction(final Action action) {
 
         validateParameterIsNotNull(action, CorePlatformConstants.Validation.Action.ACTION_CANNOT_BE_NULL);
+        validateParameterIsNotNull(action.getPerformableAction(), CorePlatformConstants.Validation.Action.PERFORMABLE_ACTION_CANNOT_BE_NULL);
 
         LOGGER.info("Performing action {}", action.getName());
 
@@ -47,7 +48,6 @@ public class ActionService {
 
         final ActionData actionData = action.getPerformableAction().perform();
         if (actionData != null && actionData.isSuccess()) {
-            result.setData(actionData);
             result.setStatus(ActionStatus.SUCCESS);
             LOGGER.info("Action {} completed successfully", action.getName());
         } else {
@@ -55,6 +55,7 @@ public class ActionService {
             LOGGER.info("Action {} failed. Consult logs for further information", action.getName());
         }
 
+        result.setData(actionData);
         return result;
     }
 }

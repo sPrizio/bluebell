@@ -102,8 +102,10 @@ class JobServiceTest extends AbstractGenericTest {
     @Test
     void test_executeJob_failedJobOnArbitraryAction() {
 
-        final Action action1 = Action.builder().actionId(UUID.randomUUID().toString()).priority(1).name("Action 1").build();
-        final Action action2 = Action.builder().actionId(UUID.randomUUID().toString()).priority(2).name("Action 2").build();
+        final Action action1 = Action.builder().priority(1).name("Action 1").build();
+        action1.setActionId(UUID.randomUUID().toString());
+        final Action action2 = Action.builder().priority(2).name("Action 2").build();
+        action2.setActionId(UUID.randomUUID().toString());
         Mockito.when(this.actionService.performAction(action1)).thenReturn(ActionResult.builder().status(ActionStatus.SUCCESS).build());
         Mockito.when(this.actionService.performAction(action2)).thenReturn(ActionResult.builder().status(ActionStatus.FAILURE).build());
 
@@ -129,8 +131,10 @@ class JobServiceTest extends AbstractGenericTest {
     @Test
     void test_executeJob_success() {
 
-        final Action action1 = Action.builder().actionId(UUID.randomUUID().toString()).priority(1).name("Action 1").build();
-        final Action action2 = Action.builder().actionId(UUID.randomUUID().toString()).priority(2).name("Action 2").build();
+        final Action action1 = Action.builder().priority(1).name("Action 1").build();
+        action1.setActionId(UUID.randomUUID().toString());
+        final Action action2 = Action.builder().priority(2).name("Action 2").build();
+        action2.setActionId(UUID.randomUUID().toString());
         Mockito.when(this.actionService.performAction(any())).thenReturn(ActionResult.builder().status(ActionStatus.SUCCESS).build());
 
         final Job job = Job
