@@ -4,14 +4,16 @@ import com.bluebell.anther.models.parameter.strategy.StrategyParameters;
 import com.bluebell.anther.strategies.impl.Bloom;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.experimental.SuperBuilder;
 
 /**
  * {@link Bloom}-specific strategy parameters
  *
  * @author Stephen Prizio
- * @version 0.0.9
+ * @version 0.1.1
  */
 @Getter
+@SuperBuilder
 @NoArgsConstructor
 public class BloomStrategyParameters extends BasicStrategyParameters implements StrategyParameters {
 
@@ -26,24 +28,6 @@ public class BloomStrategyParameters extends BasicStrategyParameters implements 
     private int startHour;
 
     private int startMinute;
-
-    public BloomStrategyParameters(final double variance, final boolean normalize, final boolean breakEvenStop, final double absoluteProfitTarget, final int startHour, final int startMinute, final BasicStrategyParameters basicStrategyParameters) {
-        super(
-                basicStrategyParameters.getDescription(),
-                basicStrategyParameters.getBuyLimit(),
-                basicStrategyParameters.getSellLimit(),
-                basicStrategyParameters.getLotSize(),
-                basicStrategyParameters.getPricePerPoint(),
-                basicStrategyParameters.getInitialBalance()
-        );
-
-        this.variance = variance;
-        this.normalize = normalize;
-        this.breakEvenStop = breakEvenStop;
-        this.absoluteProfitTarget = absoluteProfitTarget;
-        this.startHour = startHour;
-        this.startMinute = startMinute;
-    }
 
 
     //  METHODS

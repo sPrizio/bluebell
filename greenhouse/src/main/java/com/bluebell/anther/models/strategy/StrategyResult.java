@@ -1,9 +1,5 @@
 package com.bluebell.anther.models.strategy;
 
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-import java.util.*;
-
 import com.bluebell.anther.models.parameter.LimitParameter;
 import com.bluebell.anther.models.parameter.strategy.impl.BasicStrategyParameters;
 import com.bluebell.anther.models.trade.AntherTrade;
@@ -14,11 +10,15 @@ import lombok.Getter;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.*;
+
 /**
  * Representation of the result of executing a {@link Strategy}
  *
  * @author Stephen Prizio
- * @version 0.0.9
+ * @version 0.1.1
  */
 @Getter
 public class StrategyResult<P extends BasicStrategyParameters> {
@@ -200,7 +200,19 @@ public class StrategyResult<P extends BasicStrategyParameters> {
             cumPoints = this.mathService.add(cumPoints, trade.getPoints());
             cumProfit = this.mathService.add(cumProfit, trade.calculateProfit(this.pricePerPoint));
 
-            entries.add(new CumulativeStrategyReportEntry(cumPoints, cumProfit, cumTrades, StringUtils.capitalize(trade.getTradeType().toString().toLowerCase()), trade.getTradeOpenTime(), trade.getTradeCloseTime(), trade.getPoints(), trade.calculateProfit(this.pricePerPoint)));
+            entries.add(
+                    CumulativeStrategyReportEntry
+                            .builder()
+                            .points(cumPoints)
+                            .netProfit(cumProfit)
+                            .trades(cumTrades)
+                            .tradeType(StringUtils.capitalize(trade.getTradeType().toString().toLowerCase()))
+                            .opened(trade.getTradeOpenTime())
+                            .closed(trade.getTradeCloseTime())
+                            .pointsForTrade(trade.getPoints())
+                            .profitForTrade(trade.calculateProfit(this.pricePerPoint))
+                            .build()
+            );
         }
 
         return entries;

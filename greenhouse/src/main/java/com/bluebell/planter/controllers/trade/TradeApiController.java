@@ -1,14 +1,5 @@
 package com.bluebell.planter.controllers.trade;
 
-import java.io.IOException;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.List;
-import java.util.Optional;
-
-import static com.bluebell.radicle.importing.validation.ImportValidator.validateImportFileExtension;
-import static com.bluebell.radicle.validation.GenericValidator.*;
-
 import com.bluebell.planter.controllers.AbstractApiController;
 import com.bluebell.planter.converters.trade.TradeDTOConverter;
 import com.bluebell.platform.constants.CorePlatformConstants;
@@ -24,6 +15,7 @@ import com.bluebell.radicle.security.aspects.ValidateApiToken;
 import com.bluebell.radicle.security.constants.SecurityConstants;
 import com.bluebell.radicle.services.trade.TradeService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -36,11 +28,20 @@ import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.List;
+import java.util.Optional;
+
+import static com.bluebell.radicle.importing.validation.ImportValidator.validateImportFileExtension;
+import static com.bluebell.radicle.validation.GenericValidator.*;
+
 /**
  * Api controller for {@link Trade}
  *
  * @author Stephen Prizio
- * @version 0.0.9
+ * @version 0.1.1
  */
 @RestController
 @RequestMapping("${base.api.controller.endpoint}/trade")
@@ -110,10 +111,20 @@ public class TradeApiController extends AbstractApiController {
             )
     )
     @GetMapping("/for-type")
-    public StandardJsonResponse<List<TradeDTO>> getTradesForTradeType(final HttpServletRequest request, final @RequestParam("accountNumber") long accountNumber, final @RequestParam("tradeType") String tradeType) {
+    public StandardJsonResponse<List<TradeDTO>> getTradesForTradeType(
+            @Parameter(name = "Account Number", description = "The unique identifier for your trading account", example = "1234")
+            final @RequestParam("accountNumber") long accountNumber,
+            @Parameter(name = "Trade Type", description = "The type of trade to get", example = "SELL")
+            final @RequestParam("tradeType") String tradeType,
+            final HttpServletRequest request
+    ) {
 
         if (!EnumUtils.isValidEnumIgnoreCase(TradeType.class, tradeType)) {
-            return new StandardJsonResponse<>(false, null, String.format("%s is not a valid trade type", tradeType));
+            return StandardJsonResponse
+                    .<List<TradeDTO>>builder()
+                    .success(false)
+                    .message(String.format("%s is not a valid trade type", tradeType))
+                    .build();
         }
 
         TradeType type = TradeType.valueOf(tradeType.toUpperCase());
@@ -121,7 +132,11 @@ public class TradeApiController extends AbstractApiController {
         List<Trade> trades = this.tradeService.findAllByTradeType(type, getAccountForId(user, accountNumber));
         validateIfAnyResult(trades, "No trades were found for type %s", type.name());
 
-        return new StandardJsonResponse<>(true, this.tradeDTOConverter.convertAll(trades), StringUtils.EMPTY);
+        return StandardJsonResponse
+                .<List<TradeDTO>>builder()
+                .success(true)
+                .data(this.tradeDTOConverter.convertAll(trades))
+                .build();
     }
 
     /**
@@ -175,7 +190,15 @@ public class TradeApiController extends AbstractApiController {
             )
     )
     @GetMapping("/for-interval")
-    public StandardJsonResponse<List<TradeDTO>> getTradesWithinInterval(final HttpServletRequest request, final @RequestParam("accountNumber") long accountNumber, final @RequestParam("start") String start, final @RequestParam("end") String end) {
+    public StandardJsonResponse<List<TradeDTO>> getTradesWithinInterval(
+            @Parameter(name = "Account Number", description = "The unique identifier for your trading account", example = "1234")
+            final @RequestParam("accountNumber") long accountNumber,
+            @Parameter(name = "Start Date", description = "Start date of time period to analyze", example = "2025-01-01")
+            final @RequestParam("start") String start,
+            @Parameter(name = "End Date", description = "End date of time period to analyze", example = "2025-01-01")
+            final @RequestParam("end") String end,
+            final HttpServletRequest request
+    ) {
 
         validateLocalDateTimeFormat(start, CorePlatformConstants.DATE_TIME_FORMAT, String.format(CorePlatformConstants.Validation.DateTime.START_DATE_INVALID_FORMAT, start, CorePlatformConstants.DATE_TIME_FORMAT));
         validateLocalDateTimeFormat(end, CorePlatformConstants.DATE_TIME_FORMAT, String.format(CorePlatformConstants.Validation.DateTime.START_DATE_INVALID_FORMAT, end, CorePlatformConstants.DATE_TIME_FORMAT));
@@ -184,7 +207,11 @@ public class TradeApiController extends AbstractApiController {
         List<Trade> trades = this.tradeService.findAllTradesWithinTimespan(LocalDateTime.parse(start, DateTimeFormatter.ISO_DATE_TIME), LocalDateTime.parse(end, DateTimeFormatter.ISO_DATE_TIME), getAccountForId(user, accountNumber));
         validateIfAnyResult(trades, "No trades were found within interval: [%s, %s]", start, end);
 
-        return new StandardJsonResponse<>(true, this.tradeDTOConverter.convertAll(trades), StringUtils.EMPTY);
+        return StandardJsonResponse
+                .<List<TradeDTO>>builder()
+                .success(true)
+                .data(this.tradeDTOConverter.convertAll(trades))
+                .build();
     }
 
     /**
@@ -239,19 +266,38 @@ public class TradeApiController extends AbstractApiController {
     )
     @GetMapping("/for-interval-paged")
     public StandardJsonResponse<PaginatedTradesDTO> getTradesWithinIntervalPaged(
-            final HttpServletRequest request,
+            @Parameter(name = "Account Number", description = "The unique identifier for your trading account", example = "1234")
             final @RequestParam("accountNumber") long accountNumber,
+            @Parameter(name = "Start Date", description = "Start date of time period to analyze", example = "2025-01-01")
             final @RequestParam("start") String start,
+            @Parameter(name = "End Date", description = "End date of time period to analyze", example = "2025-01-01")
             final @RequestParam("end") String end,
+            @Parameter(name = "Page", description = "Current Page", example = "0")
             final @RequestParam(value = "page", defaultValue = "0") int page,
-            final @RequestParam(value = "pageSize", defaultValue = "10") int pageSize
+            @Parameter(name = "Page Size", description = "Size of page", example = "25")
+            final @RequestParam(value = "pageSize", defaultValue = "10") int pageSize,
+            final HttpServletRequest request
     ) {
         validateLocalDateTimeFormat(start, CorePlatformConstants.DATE_TIME_FORMAT, String.format(CorePlatformConstants.Validation.DateTime.START_DATE_INVALID_FORMAT, start, CorePlatformConstants.DATE_TIME_FORMAT));
         validateLocalDateTimeFormat(end, CorePlatformConstants.DATE_TIME_FORMAT, String.format(CorePlatformConstants.Validation.DateTime.START_DATE_INVALID_FORMAT, end, CorePlatformConstants.DATE_TIME_FORMAT));
 
         final User user = (User) request.getAttribute(SecurityConstants.USER_REQUEST_KEY);
         Page<Trade> trades = this.tradeService.findAllTradesWithinTimespan(LocalDateTime.parse(start, DateTimeFormatter.ISO_DATE_TIME), LocalDateTime.parse(end, DateTimeFormatter.ISO_DATE_TIME), getAccountForId(user, accountNumber), page, pageSize);
-        return new StandardJsonResponse<>(true, new PaginatedTradesDTO(trades.getPageable().getPageNumber(), trades.getPageable().getPageSize(), trades.map(tr -> this.tradeDTOConverter.convert(tr)).stream().toList(), trades.getNumberOfElements(), trades.getTotalPages()), StringUtils.EMPTY);
+
+        return StandardJsonResponse
+                .<PaginatedTradesDTO>builder()
+                .success(true)
+                .data(
+                        PaginatedTradesDTO
+                                .builder()
+                                .page(trades.getPageable().getPageNumber())
+                                .pageSize(trades.getPageable().getPageSize())
+                                .trades(trades.map(tr -> this.tradeDTOConverter.convert(tr)).stream().toList())
+                                .totalElements(trades.getNumberOfElements())
+                                .totalPages(trades.getTotalPages())
+                                .build()
+                )
+                .build();
     }
 
 
@@ -289,11 +335,19 @@ public class TradeApiController extends AbstractApiController {
             )
     )
     @GetMapping("/for-trade-id")
-    public StandardJsonResponse<TradeDTO> getTradeForTradeId(final HttpServletRequest request, final @RequestParam("accountNumber") long accountNumber, final @RequestParam(TRADE_ID) String tradeId) {
+    public StandardJsonResponse<TradeDTO> getTradeForTradeId(
+            @Parameter(name = "Account Number", description = "The unique identifier for your trading account", example = "1234")
+            final @RequestParam("accountNumber") long accountNumber,
+            @Parameter(name = "Trade ID", description = "The unique identifier for the trade", example = "1234")
+            final @RequestParam(TRADE_ID) String tradeId,
+            final HttpServletRequest request
+    ) {
         final User user = (User) request.getAttribute(SecurityConstants.USER_REQUEST_KEY);
         Optional<Trade> trade = this.tradeService.findTradeByTradeId(tradeId, getAccountForId(user, accountNumber));
         validateIfPresent(trade, "No trade was found with trade id: %s", tradeId);
-        return trade.map(value -> new StandardJsonResponse<>(true, this.tradeDTOConverter.convert(value), StringUtils.EMPTY)).orElseGet(() -> new StandardJsonResponse<>(true, new TradeDTO(), StringUtils.EMPTY));
+        return trade
+                .map(value -> StandardJsonResponse.<TradeDTO>builder().success(true).data(this.tradeDTOConverter.convert(value)).build())
+                .orElseGet(() -> StandardJsonResponse.<TradeDTO>builder().success(false).data(TradeDTO.builder().build()).build());
     }
 
 
@@ -333,16 +387,33 @@ public class TradeApiController extends AbstractApiController {
             )
     )
     @PostMapping("/import-trades")
-    public StandardJsonResponse<Boolean> postImportTrades(final HttpServletRequest request, final @RequestParam("accountNumber") long accountNumber, final @RequestParam("isStrategy") boolean isStrategy, final @RequestParam("file") MultipartFile file) throws IOException {
+    public StandardJsonResponse<Boolean> postImportTrades(
+            @Parameter(name = "Account Number", description = "The unique identifier for your trading account", example = "1234")
+            final @RequestParam("accountNumber") long accountNumber,
+            @Parameter(name = "Strategy or Trading Account", description = "If true, the import will treat the trades as a simulation import", example = "true")
+            final @RequestParam("isStrategy") boolean isStrategy,
+            @Parameter(name = "Trade File", description = "The file containing your trades")
+            final @RequestParam("file") MultipartFile file,
+            final HttpServletRequest request
+            ) throws IOException {
 
         final User user = (User) request.getAttribute(SecurityConstants.USER_REQUEST_KEY);
         validateImportFileExtension(file, getAccountForId(user, accountNumber).getTradePlatform().getFormats(), "The given file %s was not of a valid format", file.getOriginalFilename());
 
         final String result = isStrategy ? this.genericStrategyImportService.importReport(file.getInputStream(), getAccountForId(user, accountNumber)) : this.genericTradeImportService.importTrades(file.getInputStream(), getAccountForId(user, accountNumber));
         if (StringUtils.isEmpty(result)) {
-            return new StandardJsonResponse<>(true, true, StringUtils.EMPTY);
+            return StandardJsonResponse
+                    .<Boolean>builder()
+                    .success(true)
+                    .data(true)
+                    .build();
         }
 
-        return new StandardJsonResponse<>(false, false, result);
+        return StandardJsonResponse
+                .<Boolean>builder()
+                .success(false)
+                .data(false)
+                .message(result)
+                .build();
     }
 }

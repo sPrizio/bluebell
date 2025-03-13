@@ -1,9 +1,5 @@
 package com.bluebell.planter;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.List;
-
 import com.bluebell.AbstractGenericTest;
 import com.bluebell.platform.constants.CorePlatformConstants;
 import com.bluebell.platform.enums.system.TradeRecordTimeInterval;
@@ -12,7 +8,6 @@ import com.bluebell.platform.enums.transaction.TransactionType;
 import com.bluebell.platform.models.api.dto.account.AccountDTO;
 import com.bluebell.platform.models.api.dto.transaction.TransactionDTO;
 import com.bluebell.platform.models.core.entities.security.User;
-import com.bluebell.platform.models.core.entities.transaction.Transaction;
 import com.bluebell.platform.models.core.nonentities.data.EnumDisplay;
 import com.bluebell.platform.models.core.nonentities.records.account.AccountDetails;
 import com.bluebell.platform.models.core.nonentities.records.account.AccountEquityPoint;
@@ -31,11 +26,15 @@ import com.bluebell.platform.models.core.nonentities.records.traderecord.TradeRe
 import com.bluebell.radicle.security.constants.SecurityConstants;
 import org.springframework.test.web.servlet.request.RequestPostProcessor;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.List;
+
 /**
  * Parent-level testing class to provide testing assistance for planter
  *
  * @author Stephen Prizio
- * @version 0.1.0
+ * @version 0.1.1
  */
 public abstract class AbstractPlanterTest extends AbstractGenericTest {
 
@@ -45,45 +44,52 @@ public abstract class AbstractPlanterTest extends AbstractGenericTest {
      * @return {@link AccountDetails}
      */
     public AccountDetails generateAccountDetails() {
-        return new AccountDetails(
-                generateTestAccount(),
-                91,
-                List.of(
-                        new AccountEquityPoint(LocalDateTime.of(2025, 3, 4, 11, 12, 13), 55.0, 12.5, 55.0, 12.5),
-                        new AccountEquityPoint(LocalDateTime.of(2025, 4, 4, 11, 12, 13), 88.0, 21.36, 143.0, 33.86)
-                ),
-                new AccountInsights(
-                        2,
-                        178.63,
-                        -213.36,
-                        456.32,
-                        -698.14,
-                        896.36,
-                        4.0,
-                        3.6,
-                        1.58,
-                        2.11,
-                        7.89
-                ),
-                new AccountStatistics(
-                        30000.0,
-                        25.69,
-                        -63.69,
-                        9,
-                        1.89,
-                        89.33,
-                        4.05,
-                        56,
-                        2.15,
-                        69,
-                        0.45,
-                        123L,
-                        89L,
-                        156L,
-                        -369.78
-                ),
-                CorePlatformConstants.RISK_FREE_RATE_CANADA
-        );
+        return AccountDetails
+                .builder()
+                .account(generateTestAccount())
+                .consistency(91)
+                .equity(List.of(
+                        AccountEquityPoint.builder().date(LocalDateTime.of(2025, 3, 4, 11, 12, 13)).amount(55.0).points(12.5).cumAmount(55.0).cumPoints(12.5).build(),
+                        AccountEquityPoint.builder().date(LocalDateTime.of(2025, 4, 4, 11, 12, 13)).amount(88.0).points(21.36).cumAmount(143.0).cumPoints(33.86).build()
+                ))
+                .insights(
+                        AccountInsights
+                                .builder()
+                                .tradingDays(2)
+                                .currentPL(178.63)
+                                .biggestLoss(-213.36)
+                                .largestGain(456.32)
+                                .drawdown(-698.14)
+                                .maxProfit(896.36)
+                                .currentPLDelta(4.0)
+                                .biggestLossDelta(3.6)
+                                .largestGainDelta(1.58)
+                                .drawdownDelta(2.11)
+                                .maxProfitDelta(7.89)
+                                .build()
+                )
+                .statistics(
+                        AccountStatistics
+                                .builder()
+                                .balance(30000.0)
+                                .averageProfit(25.69)
+                                .averageLoss(-63.39)
+                                .numberOfTrades(9)
+                                .rrr(1.89)
+                                .lots(89.33)
+                                .expectancy(4.05)
+                                .winPercentage(56)
+                                .profitFactor(2.15)
+                                .retention(69)
+                                .sharpeRatio(0.45)
+                                .tradeDuration(123L)
+                                .winDuration(89L)
+                                .lossDuration(156L)
+                                .assumedDrawdown(-369.78)
+                                .build()
+                )
+                .riskFreeRate(CorePlatformConstants.RISK_FREE_RATE_CANADA)
+                .build();
     }
 
     /**
@@ -92,15 +98,24 @@ public abstract class AbstractPlanterTest extends AbstractGenericTest {
      * @return {@link Portfolio}
      */
     public Portfolio generatePortfolio() {
-        return new Portfolio(
-                true,
-                1000000.0,
-                145,
-                13,
-                56,
-                new PortfolioStatistics(1.0, 1.0, 1.0, 1.0),
-                List.of(new PortfolioEquityPoint(LocalDate.of(2025, 3, 4), 639.89, List.of()))
-        );
+        return Portfolio
+                .builder()
+                .newPortfolio(true)
+                .netWorth(1000000.0)
+                .trades(145)
+                .deposits(13)
+                .withdrawals(56)
+                .statistics(
+                        PortfolioStatistics
+                                .builder()
+                                .deltaNetWorth(1.0)
+                                .deltaTrades(1.0)
+                                .deltaDeposits(1.0)
+                                .deltaWithdrawals(1.0)
+                                .build()
+                )
+                .equity(List.of(PortfolioEquityPoint.builder().date(LocalDate.of(2025, 3, 4)).portfolio(639.89).accounts(List.of()).build()))
+                .build();
     }
 
     /**
@@ -109,16 +124,37 @@ public abstract class AbstractPlanterTest extends AbstractGenericTest {
      * @return {@link TradeLog}
      */
     public TradeLog generateTradeLog() {
-        return new TradeLog(
-                List.of(
-                        new TradeLogEntry(
-                                LocalDate.of(2025, 3, 4),
-                                LocalDate.of(2025, 3, 4),
-                                List.of(new TradeLogEntryRecord(generateTestAccount(), 1234L, "Test", new TradeRecordReport(List.of(), null))),
-                                new TradeLogEntryRecordTotals(1, 125.66, 89.63, 5, 52)
+        return TradeLog
+                .builder()
+                .entries(
+                        List.of(
+                                TradeLogEntry
+                                        .builder()
+                                        .start(LocalDate.of(2025, 3, 4))
+                                        .end(LocalDate.of(2025, 4, 4))
+                                        .records(List.of(
+                                                TradeLogEntryRecord
+                                                        .builder()
+                                                        .account(generateTestAccount())
+                                                        .accountNumber(1234L)
+                                                        .accountName("Test")
+                                                        .report(TradeRecordReport.builder().tradeRecords(List.of()).tradeRecordTotals(null).build())
+                                                        .build()
+                                        ))
+                                        .totals(
+                                                TradeLogEntryRecordTotals
+                                                        .builder()
+                                                        .accountsTraded(1)
+                                                        .netProfit(125.66)
+                                                        .netPoints(89.63)
+                                                        .trades(5)
+                                                        .winPercentage(52)
+                                                        .build()
+                                        )
+                                        .build()
                         )
                 )
-        );
+                .build();
     }
 
     /**
@@ -127,17 +163,15 @@ public abstract class AbstractPlanterTest extends AbstractGenericTest {
      * @return {@link TransactionDTO}
      */
     public TransactionDTO generateTransactionDTO() {
-
-        final TransactionDTO transactionDTO = new TransactionDTO();
-
-        transactionDTO.setUid("MTE4");
-        transactionDTO.setTransactionType(new EnumDisplay(TransactionType.DEPOSIT.getCode(), TransactionType.DEPOSIT.getLabel()));
-        transactionDTO.setTransactionDate(LocalDateTime.of(2025, 3, 4, 11, 12, 13));
-        transactionDTO.setName("Test");
-        transactionDTO.setTransactionStatus(new EnumDisplay(TransactionStatus.COMPLETED.getCode(), TransactionStatus.COMPLETED.getLabel()));
-        transactionDTO.setAmount(1563.66);
-
-        return transactionDTO;
+        return TransactionDTO
+                .builder()
+                .uid("MTE4")
+                .transactionType(EnumDisplay.builder().code(TransactionType.DEPOSIT.getCode()).label(TransactionType.DEPOSIT.getLabel()).build())
+                .transactionDate(LocalDateTime.of(2025, 3, 4, 11, 12, 13))
+                .name("Test")
+                .transactionStatus(EnumDisplay.builder().code(TransactionStatus.COMPLETED.getCode()).label(TransactionStatus.COMPLETED.getLabel()).build())
+                .amount(1563.66)
+                .build();
     }
 
     /**
@@ -159,69 +193,35 @@ public abstract class AbstractPlanterTest extends AbstractGenericTest {
      * @return {@link TradeRecord}
      */
     public TradeRecord generateTradeRecord() {
-        return new TradeRecord(
-                LocalDate.MIN,
-                LocalDate.MAX,
-                387.56,
-                -96.85,
-                104.25,
-                -56.89,
-                47.36,
-                189.25,
-                97.55,
-                -111.44,
-                -74.32,
-                56,
-                9,
-                7,
-                16,
-                1.83,
-                65,
-                TradeRecordTimeInterval.DAILY,
-                List.of(
-                        new TradeRecordEquityPoint(1, 50.0, 10.0, 50.0, 10.0),
-                        new TradeRecordEquityPoint(2, -25.0, -5.0, 25.0, 5.0),
-                        new TradeRecordEquityPoint(3, 100.0, 20.0, 125.0, 25.0)
+        return TradeRecord
+                .builder()
+                .start(LocalDate.MIN)
+                .end(LocalDate.MAX)
+                .netProfit(387.56)
+                .lowestPoint(-96.85)
+                .pointsGained(104.25)
+                .pointsLost(-56.89)
+                .points(47.36)
+                .largestWin(189.25)
+                .winAverage(97.55)
+                .largestLoss(-111.44)
+                .lossAverage(-74.32)
+                .winPercentage(56)
+                .wins(9)
+                .losses(7)
+                .trades(16)
+                .profitability(1.83)
+                .retention(65)
+                .interval(TradeRecordTimeInterval.DAILY)
+                .equityPoints(
+                        List.of(
+                                TradeRecordEquityPoint.builder().count(1).amount(50.0).points(10.0).cumAmount(50.0).cumPoints(10.0).build(),
+                                TradeRecordEquityPoint.builder().count(2).amount(-25.0).points(-5.0).cumAmount(25.0).cumPoints(5.0).build(),
+                                TradeRecordEquityPoint.builder().count(3).amount(100.0).points(20.0).cumAmount(125.0).cumPoints(25.0).build()
+                        )
                 )
-        );
+                .build();
     }
-
-    /**
-     * Generates a test deposit {@link Transaction}
-     *
-     * @return {@link Transaction}
-    public Transaction generateTestDepositTransaction() {
-
-    Transaction transaction = new Transaction();
-
-    transaction.setTransactionDate(LocalDateTime.of(2024, 12, 6, 12, 0, 0));
-    transaction.setName("Test Deposit");
-    transaction.setTransactionType(TransactionType.DEPOSIT);
-    transaction.setTransactionStatus(TransactionStatus.COMPLETED);
-    transaction.setAmount(125.0);
-    transaction.setAccount(generateTestAccount());
-
-    return transaction;
-    }*/
-
-    /**
-     * Generates a test withdrawal {@link Transaction}
-     *
-     * @return {@link Transaction}
-     */
-    /*public Transaction generateTestWithdrawalTransaction() {
-
-        Transaction transaction = new Transaction();
-
-        transaction.setTransactionDate(LocalDateTime.of(2024, 12, 6, 14, 0, 0));
-        transaction.setName("Test Withdrawal");
-        transaction.setTransactionType(TransactionType.WITHDRAWAL);
-        transaction.setTransactionStatus(TransactionStatus.FAILED);
-        transaction.setAmount(-96.30);
-        transaction.setAccount(generateTestAccount());
-
-        return transaction;
-    }*/
 
     /**
      * Generates a test {@link AccountDTO}
@@ -229,13 +229,11 @@ public abstract class AbstractPlanterTest extends AbstractGenericTest {
      * @return {@link AccountDTO}
      */
     public AccountDTO generateTestAccountDTO() {
-
-        AccountDTO accountDTO = new AccountDTO();
-
-        accountDTO.setAccountOpenTime(LocalDateTime.of(2022, 10, 25, 22, 48, 0));
-        accountDTO.setBalance(1000.0);
-        accountDTO.setActive(true);
-
-        return accountDTO;
+        return AccountDTO
+                .builder()
+                .accountOpenTime(LocalDateTime.of(2022, 10, 25, 22, 48, 0))
+                .balance(1000.0)
+                .active(true)
+                .build();
     }
 }

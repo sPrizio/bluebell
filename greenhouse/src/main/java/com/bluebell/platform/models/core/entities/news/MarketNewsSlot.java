@@ -1,23 +1,27 @@
 package com.bluebell.platform.models.core.entities.news;
 
+import com.bluebell.platform.models.core.entities.GenericEntity;
+import jakarta.persistence.*;
+import lombok.*;
+import org.apache.commons.collections4.CollectionUtils;
+
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
-
-import com.bluebell.platform.models.core.entities.GenericEntity;
-import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
 
 /**
  * Class representation of a market news entry which represents a time of day that can have 1 or more pieces of news
  *
  * @author Stephen Prizio
- * @version 0.0.9
+ * @version 0.1.1
  */
 @Getter
 @Entity
+@Builder
 @Table(name = "market_news_slots")
+@EqualsAndHashCode
+@NoArgsConstructor
+@AllArgsConstructor
 public class MarketNewsSlot implements GenericEntity, Comparable<MarketNewsSlot> {
 
     @Id
@@ -35,7 +39,7 @@ public class MarketNewsSlot implements GenericEntity, Comparable<MarketNewsSlot>
     @Setter
     @OneToMany(mappedBy = "slot", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @OrderBy("severity DESC")
-    private List<MarketNewsEntry> entries;
+    private @Builder.Default List<MarketNewsEntry> entries = new ArrayList<>();
 
 
     //  METHODS
@@ -47,11 +51,11 @@ public class MarketNewsSlot implements GenericEntity, Comparable<MarketNewsSlot>
      */
     public void addEntry(MarketNewsEntry entry) {
 
-        if (getEntries() == null) {
+        if (CollectionUtils.isEmpty(this.entries)) {
             this.entries = new ArrayList<>();
         }
 
-        getEntries().add(entry);
+        this.entries.add(entry);
         entry.setSlot(this);
     }
 
@@ -61,8 +65,8 @@ public class MarketNewsSlot implements GenericEntity, Comparable<MarketNewsSlot>
      * @param entry {@link MarketNewsEntry}
      */
     public void removeEntry(MarketNewsEntry entry) {
-        if (getEntries() != null) {
-            List<MarketNewsEntry> e = new ArrayList<>(getEntries());
+        if (CollectionUtils.isNotEmpty(this.entries)) {
+            final List<MarketNewsEntry> e = new ArrayList<>(this.entries);
             e.remove(entry);
             this.entries = e;
             entry.setSlot(null);

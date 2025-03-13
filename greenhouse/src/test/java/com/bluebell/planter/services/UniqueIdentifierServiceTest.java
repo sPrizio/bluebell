@@ -8,7 +8,6 @@ import com.bluebell.platform.constants.CorePlatformConstants;
 import com.bluebell.platform.models.api.dto.trade.TradeDTO;
 import com.bluebell.platform.models.core.entities.trade.Trade;
 import com.bluebell.radicle.exceptions.validation.IllegalParameterException;
-import org.apache.commons.lang3.StringUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -17,7 +16,7 @@ import org.mockito.Mockito;
  * Testing class for {@link UniqueIdentifierService}
  *
  * @author Stephen Prizio
- * @version 0.1.0
+ * @version 0.1.1
  */
 class UniqueIdentifierServiceTest extends AbstractPlanterTest {
 
@@ -56,8 +55,7 @@ class UniqueIdentifierServiceTest extends AbstractPlanterTest {
                 .isThrownBy(() -> this.uniqueIdentifierService.retrieveId(null))
                 .withMessage(CorePlatformConstants.Validation.DataIntegrity.UID_CANNOT_BE_NULL);
 
-        TradeDTO tradeDTO = new TradeDTO();
-        tradeDTO.setUid(StringUtils.EMPTY);
+        TradeDTO tradeDTO = TradeDTO.builder().build();
         assertThatExceptionOfType(UnsupportedOperationException.class)
                 .isThrownBy(() -> this.uniqueIdentifierService.retrieveId(tradeDTO.getUid()))
                 .withMessage("uid is missing");
@@ -65,9 +63,7 @@ class UniqueIdentifierServiceTest extends AbstractPlanterTest {
 
     @Test
     void test_retrieveId_success() {
-        TradeDTO tradeDTO = new TradeDTO();
-        tradeDTO.setUid(TEST_UID);
-
+        TradeDTO tradeDTO = TradeDTO.builder().uid(TEST_UID).build();
         assertThat(this.uniqueIdentifierService.retrieveId(tradeDTO.getUid()))
                 .isEqualTo(118L);
     }

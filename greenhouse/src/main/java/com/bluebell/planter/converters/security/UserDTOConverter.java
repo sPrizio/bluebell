@@ -15,7 +15,7 @@ import org.springframework.stereotype.Component;
  * Converts {@link User}s into {@link UserDTO}s
  *
  * @author Stephen Prizio
- * @version 0.0.9
+ * @version 0.1.1
  */
 @Component("userDTOConverter")
 public class UserDTOConverter implements GenericDTOConverter<User, UserDTO> {
@@ -36,22 +36,21 @@ public class UserDTOConverter implements GenericDTOConverter<User, UserDTO> {
     public UserDTO convert(final User entity) {
 
         if (entity == null) {
-            return new UserDTO();
+            return UserDTO.builder().build();
         }
 
-        final UserDTO userDTO = new UserDTO();
-
-        userDTO.setUid(this.uniqueIdentifierService.generateUid(entity));
-        userDTO.setApiToken(entity.getApiToken());
-        userDTO.setEmail(entity.getEmail());
-        userDTO.setUsername(entity.getUsername());
-        userDTO.setFirstName(entity.getFirstName());
-        userDTO.setLastName(entity.getLastName());
-        userDTO.setDateRegistered(entity.getDateRegistered());
-        userDTO.setPhones(this.phoneNumberDTOConverter.convertAll(entity.getPhones()));
-        userDTO.setAccounts(this.accountDTOConverter.convertAll(entity.getAccounts()));
-        userDTO.setRoles(entity.getRoles().stream().map(UserRole::getLabel).toList());
-
-        return userDTO;
+        return UserDTO
+                .builder()
+                .uid(this.uniqueIdentifierService.generateUid(entity))
+                .apiToken(entity.getApiToken())
+                .email(entity.getEmail())
+                .username(entity.getUsername())
+                .firstName(entity.getFirstName())
+                .lastName(entity.getLastName())
+                .dateRegistered(entity.getDateRegistered())
+                .phones(this.phoneNumberDTOConverter.convertAll(entity.getPhones()))
+                .accounts(this.accountDTOConverter.convertAll(entity.getAccounts()))
+                .roles(entity.getRoles().stream().map(UserRole::getLabel).toList())
+                .build();
     }
 }

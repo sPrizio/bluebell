@@ -1,19 +1,19 @@
 package com.bluebell.anther.services.reporting.impl;
 
+import com.bluebell.anther.models.metadata.MetaData;
+import com.bluebell.anther.services.reporting.ReportingService;
+import com.bluebell.platform.util.DirectoryUtil;
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
-import com.bluebell.anther.models.metadata.MetaData;
-import com.bluebell.anther.services.reporting.ReportingService;
-import com.bluebell.platform.util.DirectoryUtil;
-
 /**
  * Service that allows reports to be generated for strategy results
  *
  * @author Stephen Prizio
- * @version 0.1.0
+ * @version 0.1.1
  */
 public class MetaDataReportingService implements ReportingService {
 

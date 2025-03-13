@@ -1,7 +1,5 @@
 package com.bluebell.planter.converters.news;
 
-import java.util.Comparator;
-
 import com.bluebell.planter.converters.GenericDTOConverter;
 import com.bluebell.planter.services.UniqueIdentifierService;
 import com.bluebell.platform.models.api.dto.news.MarketNewsEntryDTO;
@@ -10,11 +8,13 @@ import com.bluebell.platform.models.core.entities.news.MarketNewsSlot;
 import jakarta.annotation.Resource;
 import org.springframework.stereotype.Component;
 
+import java.util.Comparator;
+
 /**
  * Converter that converts {@link MarketNewsSlot}s into {@link MarketNewsSlotDTO}s
  *
  * @author Stephen Prizio
- * @version 0.0.9
+ * @version 0.1.1
  */
 @Component("marketNewsSlotDTOConverter")
 public class MarketNewsSlotDTOConverter implements GenericDTOConverter<MarketNewsSlot, MarketNewsSlotDTO> {
@@ -32,16 +32,15 @@ public class MarketNewsSlotDTOConverter implements GenericDTOConverter<MarketNew
     public MarketNewsSlotDTO convert(final MarketNewsSlot entity) {
 
         if (entity == null) {
-            return new MarketNewsSlotDTO();
+            return MarketNewsSlotDTO.builder().build();
         }
 
-        final MarketNewsSlotDTO marketNewsSlotDTO = new MarketNewsSlotDTO();
-
-        marketNewsSlotDTO.setUid(this.uniqueIdentifierService.generateUid(entity));
-        marketNewsSlotDTO.setTime(entity.getTime());
-        marketNewsSlotDTO.setEntries(this.marketNewsEntryDTOConverter.convertAll(entity.getEntries()).stream().sorted(Comparator.comparing(MarketNewsEntryDTO::getSeverityLevel)).toList());
-        marketNewsSlotDTO.setActive(false);
-
-        return marketNewsSlotDTO;
+        return MarketNewsSlotDTO
+                .builder()
+                .uid(this.uniqueIdentifierService.generateUid(entity))
+                .time(entity.getTime())
+                .entries(this.marketNewsEntryDTOConverter.convertAll(entity.getEntries()).stream().sorted(Comparator.comparing(MarketNewsEntryDTO::getSeverityLevel)).toList())
+                .active(false)
+                .build();
     }
 }

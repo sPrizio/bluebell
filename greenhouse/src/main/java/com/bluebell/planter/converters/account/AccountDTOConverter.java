@@ -11,11 +11,13 @@ import jakarta.annotation.Resource;
 import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
+
 /**
  * Converts {@link Account}s into {@link AccountDTO}s
  *
  * @author Stephen Prizio
- * @version 0.0.9
+ * @version 0.1.1
  */
 @Component("accountDTOConverter")
 public class AccountDTOConverter implements GenericDTOConverter<Account, AccountDTO> {
@@ -35,30 +37,26 @@ public class AccountDTOConverter implements GenericDTOConverter<Account, Account
     public AccountDTO convert(final Account entity) {
 
         if (entity == null) {
-            return new AccountDTO();
+            return AccountDTO.builder().build();
         }
 
-        AccountDTO accountDTO = new AccountDTO();
-
-        accountDTO.setUid(this.uniqueIdentifierService.generateUid(entity));
-        accountDTO.setDefaultAccount(entity.isDefaultAccount());
-        accountDTO.setAccountOpenTime(entity.getAccountOpenTime());
-        accountDTO.setAccountCloseTime(entity.getAccountCloseTime());
-        accountDTO.setActive(entity.isActive());
-        accountDTO.setInitialBalance(entity.getInitialBalance());
-        accountDTO.setBalance(this.mathService.getDouble(entity.getBalance()));
-        accountDTO.setName(entity.getName());
-        accountDTO.setCurrency(new EnumDisplay(entity.getCurrency().getIsoCode(), entity.getCurrency().getLabel()));
-        accountDTO.setAccountNumber(entity.getAccountNumber());
-        accountDTO.setAccountType(new EnumDisplay(entity.getAccountType().getCode(), entity.getAccountType().getLabel()));
-        accountDTO.setBroker(new EnumDisplay(entity.getBroker().getCode(), entity.getBroker().getName()));
-        accountDTO.setLastTraded(entity.getLastTraded());
-        accountDTO.setTradePlatform(new EnumDisplay(entity.getTradePlatform().getCode(), entity.getTradePlatform().getLabel()));
-
-        if (CollectionUtils.isNotEmpty( entity.getTransactions())) {
-            accountDTO.setTransactions(this.transactionDTOConverter.convertAll(entity.getTransactions()));
-        }
-
-        return accountDTO;
+        return AccountDTO
+                .builder()
+                .uid(this.uniqueIdentifierService.generateUid(entity))
+                .defaultAccount(entity.isDefaultAccount())
+                .accountOpenTime(entity.getAccountOpenTime())
+                .accountCloseTime(entity.getAccountCloseTime())
+                .active(entity.isActive())
+                .initialBalance(entity.getInitialBalance())
+                .balance(this.mathService.getDouble(entity.getBalance()))
+                .name(entity.getName())
+                .currency(EnumDisplay.builder().code(entity.getCurrency().getIsoCode()).label(entity.getCurrency().getLabel()).build())
+                .accountNumber(entity.getAccountNumber())
+                .accountType(EnumDisplay.builder().code(entity.getAccountType().getCode()).label(entity.getAccountType().getLabel()).build())
+                .broker(EnumDisplay.builder().code(entity.getBroker().getCode()).label(entity.getBroker().getName()).build())
+                .lastTraded(entity.getLastTraded())
+                .tradePlatform(EnumDisplay.builder().code(entity.getTradePlatform().getCode()).label(entity.getTradePlatform().getLabel()).build())
+                .transactions(CollectionUtils.isEmpty(entity.getTransactions()) ? List.of() : this.transactionDTOConverter.convertAll(entity.getTransactions()))
+                .build();
     }
 }

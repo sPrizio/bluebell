@@ -1,19 +1,19 @@
 package com.bluebell.radicle.parsers.impl;
 
 
+import com.bluebell.platform.enums.time.PlatformTimeInterval;
+import com.bluebell.platform.models.core.nonentities.market.AggregatedMarketPrices;
+
 import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.TreeSet;
 
-import com.bluebell.platform.enums.time.PlatformTimeInterval;
-import com.bluebell.platform.models.core.nonentities.market.AggregatedMarketPrices;
-
 /**
  * Parent-level data parser offering re-usable data
  *
  * @author Stephen Prizio
- * @version 0.02
+ * @version 0.1.1
  */
 public abstract class AbstractDataParser {
 
@@ -31,7 +31,7 @@ public abstract class AbstractDataParser {
             if (masterCollection.containsKey(marketPrice.date().toLocalDate())) {
                 mapPrices = masterCollection.get(marketPrice.date().toLocalDate());
             } else {
-                mapPrices = new AggregatedMarketPrices(new TreeSet<>(), interval);
+                mapPrices = AggregatedMarketPrices.builder().marketPrices(new TreeSet<>()).interval(interval).build();
             }
 
             mapPrices.marketPrices().add(marketPrice);

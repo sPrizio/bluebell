@@ -1,12 +1,9 @@
 package com.bluebell.radicle.services.security;
 
-import java.time.LocalDateTime;
-import java.util.*;
-
-import static com.bluebell.radicle.validation.GenericValidator.validateParameterIsNotNull;
-
 import com.bluebell.platform.constants.CorePlatformConstants;
 import com.bluebell.platform.enums.security.UserRole;
+import com.bluebell.platform.models.api.dto.security.CreateUpdateUserDTO;
+import com.bluebell.platform.models.api.dto.system.CreateUpdatePhoneNumberDTO;
 import com.bluebell.platform.models.core.entities.security.User;
 import com.bluebell.platform.models.core.entities.system.PhoneNumber;
 import com.bluebell.radicle.exceptions.security.DuplicateUserEmailException;
@@ -19,15 +16,20 @@ import com.bluebell.radicle.security.services.ApiTokenService;
 import com.bluebell.radicle.services.system.PhoneNumberService;
 import jakarta.annotation.Resource;
 import org.apache.commons.collections4.CollectionUtils;
-import org.apache.commons.collections4.MapUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
+
+import java.time.LocalDateTime;
+import java.util.*;
+
+import static com.bluebell.radicle.validation.GenericValidator.validateParameterIsNotNull;
 
 
 /**
  * Service-layer for {@link User} entities
  *
  * @author Stephen Prizio
- * @version 0.0.9
+ * @version 0.1.1
  */
 @Service
 public class UserService {
@@ -69,21 +71,21 @@ public class UserService {
     /**
      * Creates a new {@link User} from the given {@link Map} of data
      *
-     * @param data {@link Map}
+     * @param data {@link CreateUpdateUserDTO}
      * @return newly created {@link User}
      */
-    public User createUser(final Map<String, Object> data) {
-
-        if (MapUtils.isEmpty(data)) {
-            throw new MissingRequiredDataException("The required data for creating a User was null or empty");
-        }
+    public User createUser(final CreateUpdateUserDTO data) {
 
         String email = "";
         String username;
 
+        if (data == null || StringUtils.isEmpty(data.email())) {
+            throw new MissingRequiredDataException("The required data for creating a User was null or empty");
+        }
+
         try {
-            email = ((Map<String, Object>) data.get("user")).get("email").toString();
-            username = ((Map<String, Object>) data.get("user")).get("username").toString();
+            email = data.email();
+            username = data.username();
 
             if (this.userRepository.findUserByEmail(email) != null) {
                 throw new DuplicateUserEmailException(String.format("A user with the email %s already exists. Please try another email.", email));
@@ -93,7 +95,7 @@ public class UserService {
                 throw new DuplicateUserUsernameException(String.format("A user with the username %s already exists. Please try another username.", username));
             }
 
-            return applyChanges(new User(), data, true);
+            return applyChanges(User.builder().build(), data, true);
         } catch (Exception e) {
             this.userRepository.deleteUserByEmail(email);
             throw new EntityCreationException(String.format("A User could not be created : %s", e.getMessage()), e);
@@ -104,14 +106,14 @@ public class UserService {
      * Updates an existing {@link User} with the given {@link Map} of data. Update methods are designed to be idempotent.
      *
      * @param user {@link User}
-     * @param data {@link Map}
+     * @param data {@link CreateUpdateUserDTO}
      * @return modified {@link User}
      */
-    public User updateUser(final User user, final Map<String, Object> data) {
+    public User updateUser(final User user, final CreateUpdateUserDTO data) {
 
         validateParameterIsNotNull(user, CorePlatformConstants.Validation.Security.User.USER_CANNOT_BE_NULL);
 
-        if (MapUtils.isEmpty(data)) {
+        if (data == null || StringUtils.isEmpty(data.email())) {
             throw new MissingRequiredDataException("The required data for updating a User was null or empty");
         }
 
@@ -129,22 +131,21 @@ public class UserService {
      * Applies changes to the given {@link User} with the given data
      *
      * @param user {@link User}
-     * @param data {@link Map}
+     * @param data {@link CreateUpdateUserDTO}
      * @return updated {@link User}
      */
-    private User applyChanges(User user, final Map<String, Object> data, final boolean isNew) {
+    private User applyChanges(User user, final CreateUpdateUserDTO data, final boolean isNew) {
 
-        Map<String, Object> ud = (Map<String, Object>) data.get("user");
         Set<PhoneNumber> phoneNumbers = (CollectionUtils.isEmpty(user.getPhones())) ? new HashSet<>() : new HashSet<>(user.getPhones());
 
         if (isNew) {
-            user.setPassword(ud.get("password").toString());
+            user.setPassword(data.password());
         }
 
-        user.setEmail(ud.get("email").toString());
-        user.setLastName(ud.get("lastName").toString());
-        user.setFirstName(ud.get("firstName").toString());
-        user.setUsername(ud.get("username").toString());
+        user.setEmail(data.email());
+        user.setLastName(data.lastName());
+        user.setFirstName(data.firstName());
+        user.setUsername(data.username());
         user.setRoles(new ArrayList<>(List.of(UserRole.TRADER)));
         user.setAccounts(new ArrayList<>());
         user.setPhones(new ArrayList<>());
@@ -161,8 +162,7 @@ public class UserService {
             user = this.userRepository.save(user);
         }
 
-        List<Map<String, Object>> phoneData = (List<Map<String, Object>>) ud.get("phoneNumbers");
-        for (Map<String, Object> d : phoneData) {
+        for (CreateUpdatePhoneNumberDTO d : data.phoneNumbers()) {
             final PhoneNumber phoneNumber = this.phoneNumberService.createPhoneNumber(d, user);
             if (!phoneNumbers.contains(phoneNumber)) {
                 phoneNumbers.add(phoneNumber);

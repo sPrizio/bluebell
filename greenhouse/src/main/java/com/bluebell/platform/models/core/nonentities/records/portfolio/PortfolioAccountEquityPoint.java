@@ -3,6 +3,7 @@ package com.bluebell.platform.models.core.nonentities.records.portfolio;
 
 import com.bluebell.platform.models.core.entities.account.Account;
 import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.Builder;
 import lombok.Getter;
 
 /**
@@ -11,8 +12,9 @@ import lombok.Getter;
  * @param name {@link Account} name
  * @param value {@link Account} value (balance)
  * @author Stephen Prizio
- * @version 0.0.9
+ * @version 0.1.1
  */
+@Builder
 @Schema(title = "PortfolioAccountEquityPoint", name = "PortfolioAccountEquityPoint", description = "A data point of an account's value within a portfolio for a unit of time")
 public record PortfolioAccountEquityPoint(
         @Getter @Schema(description = "Account name") String name,

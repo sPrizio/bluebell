@@ -2,6 +2,8 @@ package com.bluebell.radicle.integration.models.responses.forexfactory;
 
 import com.bluebell.radicle.integration.models.responses.GenericIntegrationResponse;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import lombok.Builder;
+import lombok.Getter;
 import org.apache.commons.lang3.StringUtils;
 
 /**
@@ -15,17 +17,18 @@ import org.apache.commons.lang3.StringUtils;
  * @param previous previously reported value
  * @param url      url link
  * @author Stephen Prizio
- * @version 0.0.9
+ * @version 0.1.1
  */
+@Builder
 @JsonIgnoreProperties
 public record CalendarNewsEntryResponse(
-        String title,
-        String country,
-        String date,
-        String impact,
-        String forecast,
-        String previous,
-        String url
+        @Getter String title,
+        @Getter String country,
+        @Getter String date,
+        @Getter String impact,
+        @Getter String forecast,
+        @Getter String previous,
+        @Getter String url
 ) implements GenericIntegrationResponse, Comparable<CalendarNewsEntryResponse> {
 
 

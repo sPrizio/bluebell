@@ -29,7 +29,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  * Testing class for {@link ChartApiController}
  *
  * @author Stephen Prizio
- * @version 0.1.0
+ * @version 0.1.1
  */
 @SpringBootTest
 @AutoConfigureMockMvc(addFilters = false)
@@ -44,7 +44,7 @@ class ChartApiControllerTest extends AbstractPlanterTest {
 
     @BeforeEach
     public void setUp() throws Exception {
-        Mockito.when(this.chartService.getChartData(any(), any(), any())).thenReturn(List.of(new ApexChartCandleStick(123L, new double[]{1.0, 2.0, 3.0})));
+        Mockito.when(this.chartService.getChartData(any(), any(), any())).thenReturn(List.of(ApexChartCandleStick.builder().x(123L).y(new double[]{1.0, 2.0, 3.0}).build()));
     }
 
 

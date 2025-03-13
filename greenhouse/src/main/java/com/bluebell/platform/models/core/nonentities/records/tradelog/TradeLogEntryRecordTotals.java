@@ -1,17 +1,19 @@
 package com.bluebell.platform.models.core.nonentities.records.tradelog;
 
 
-import java.util.List;
-
 import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.Builder;
 import lombok.Getter;
+
+import java.util.List;
 
 /**
  * Class representation of a total summing of a {@link List} of {@link TradeLogEntryRecord}s
  *
  * @author Stephen Prizio
- * @version 0.0.9
+ * @version 0.1.1
  */
+@Builder
 @Schema(title = "TradeLogEntryRecordTotals", name = "TradeLogEntryRecordTotals", description = "Summary of trade log entries for a time span")
 public record TradeLogEntryRecordTotals(
         @Getter @Schema(description = "Number of accounts traded") int accountsTraded,

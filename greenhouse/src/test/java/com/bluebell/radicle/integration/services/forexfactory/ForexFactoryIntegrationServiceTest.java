@@ -21,7 +21,7 @@ import org.springframework.util.LinkedMultiValueMap;
  * Testing class for {@link ForexFactoryIntegrationService}
  *
  * @author Stephen Prizio
- * @version 0.1.0
+ * @version 0.1.1
  */
 @SpringBootTest
 @RunWith(SpringRunner.class)
@@ -37,7 +37,7 @@ class ForexFactoryIntegrationServiceTest {
     private ForexFactoryIntegrationService forexFactoryIntegrationService;
 
     @BeforeEach
-    public void setUp() {
+    void setUp() {
 
         ReflectionTestUtils.setField(forexFactoryIntegrationService, "calendarUrl", "https://nfs.faireconomy.media/ff_calendar_thisweek.json");
         Mockito.when(this.forexFactoryIntegrationClient.get("https://nfs.faireconomy.media/ff_calendar_thisweek.json", new LinkedMultiValueMap<>())).thenReturn(
@@ -55,10 +55,7 @@ class ForexFactoryIntegrationServiceTest {
                         """
         );
 
-        CalendarNewsDayEntryDTO entry = new CalendarNewsDayEntryDTO();
-        entry.setTitle("Unemployment Rate");
-
-        Mockito.when(this.calendarNewsDayEntryTranslator.translate(any())).thenReturn(entry);
+        Mockito.when(this.calendarNewsDayEntryTranslator.translate(any())).thenReturn(CalendarNewsDayEntryDTO.builder().title("Unemployment Rate").build());
     }
 
 

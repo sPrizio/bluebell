@@ -1,17 +1,17 @@
 package com.bluebell.radicle.integration.translators;
 
 
-import java.util.Collection;
-import java.util.List;
-
 import com.bluebell.radicle.integration.models.dto.GenericIntegrationDTO;
 import com.bluebell.radicle.integration.models.responses.GenericIntegrationResponse;
+
+import java.util.Collection;
+import java.util.List;
 
 /**
  * General translator that translates a {@link GenericIntegrationResponse} into a {@link GenericIntegrationDTO}
  *
  * @author Stephen Prizio
- * @version 0.0.9
+ * @version 0.1.1
  */
 public interface GenericTranslator<R extends GenericIntegrationResponse, D extends GenericIntegrationDTO> {
 

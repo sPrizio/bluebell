@@ -1,11 +1,5 @@
 package com.bluebell.planter.controllers.chart;
 
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-import java.util.List;
-
-import static com.bluebell.radicle.validation.GenericValidator.validateLocalDateFormat;
-
 import com.bluebell.planter.controllers.AbstractApiController;
 import com.bluebell.platform.constants.CorePlatformConstants;
 import com.bluebell.platform.enums.chart.IntradayInterval;
@@ -14,21 +8,27 @@ import com.bluebell.platform.models.core.nonentities.apexcharts.ApexChartCandleS
 import com.bluebell.radicle.security.aspects.ValidateApiToken;
 import com.bluebell.radicle.services.chart.ChartService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.annotation.Resource;
 import jakarta.servlet.http.HttpServletRequest;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.web.bind.annotation.*;
+
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.List;
+
+import static com.bluebell.radicle.validation.GenericValidator.validateLocalDateFormat;
 
 
 /**
  * API controller for providing charting capabilities based on historical data
  *
  * @author Stephen Prizio
- * @version 0.0.9
+ * @version 0.1.1
  */
 @RestController
 @RequestMapping("${base.api.controller.endpoint}/chart")
@@ -86,18 +86,38 @@ public class ChartApiController extends AbstractApiController {
             )
     )
     @GetMapping("/apex-data")
-    public StandardJsonResponse<List<ApexChartCandleStick>> getApexChartData(final @RequestParam("start") String start, final @RequestParam("end") String end, final @RequestParam("interval") String interval, final HttpServletRequest request) {
+    public StandardJsonResponse<List<ApexChartCandleStick>> getApexChartData(
+            @Parameter(name = "Start Date", description = "Start date of time period to analyze", example = "2025-01-01")
+            final @RequestParam("start") String start,
+            @Parameter(name = "End Date", description = "End date of time period to analyze", example = "2025-01-01")
+            final @RequestParam("end") String end,
+            @Parameter(name = "Intraday Interval", description = "Time interval to look at intra day", example = "ten-minute")
+            final @RequestParam("interval") String interval,
+            final HttpServletRequest request
+    ) {
 
         validateLocalDateFormat(start, CorePlatformConstants.DATE_FORMAT, String.format(CorePlatformConstants.Validation.DateTime.START_DATE_INVALID_FORMAT, start, CorePlatformConstants.DATE_FORMAT));
         validateLocalDateFormat(end, CorePlatformConstants.DATE_FORMAT, String.format(CorePlatformConstants.Validation.DateTime.END_DATE_INVALID_FORMAT, end, CorePlatformConstants.DATE_FORMAT));
 
         final IntradayInterval intradayInterval = IntradayInterval.getByLabel(interval);
         if (intradayInterval == IntradayInterval.ONE_DAY) {
-            return new StandardJsonResponse<>(true, this.chartService.getChartData(LocalDate.parse(start, DateTimeFormatter.ISO_DATE).minusMonths(1), LocalDate.parse(end, DateTimeFormatter.ISO_DATE), intradayInterval), StringUtils.EMPTY);
+            return StandardJsonResponse
+                    .<List<ApexChartCandleStick>>builder()
+                    .success(true)
+                    .data(this.chartService.getChartData(LocalDate.parse(start, DateTimeFormatter.ISO_DATE).minusMonths(1), LocalDate.parse(end, DateTimeFormatter.ISO_DATE), intradayInterval))
+                    .build();
         } else if (intradayInterval == IntradayInterval.ONE_HOUR) {
-            return new StandardJsonResponse<>(true, this.chartService.getChartData(LocalDate.parse(start, DateTimeFormatter.ISO_DATE).minusDays(5), LocalDate.parse(end, DateTimeFormatter.ISO_DATE), intradayInterval), StringUtils.EMPTY);
+            return StandardJsonResponse
+                    .<List<ApexChartCandleStick>>builder()
+                    .success(true)
+                    .data(this.chartService.getChartData(LocalDate.parse(start, DateTimeFormatter.ISO_DATE).minusDays(5), LocalDate.parse(end, DateTimeFormatter.ISO_DATE), intradayInterval))
+                    .build();
         }
 
-        return new StandardJsonResponse<>(true, this.chartService.getChartData(LocalDate.parse(start, DateTimeFormatter.ISO_DATE), LocalDate.parse(end, DateTimeFormatter.ISO_DATE), intradayInterval), StringUtils.EMPTY);
+        return StandardJsonResponse
+                .<List<ApexChartCandleStick>>builder()
+                .success(true)
+                .data(this.chartService.getChartData(LocalDate.parse(start, DateTimeFormatter.ISO_DATE), LocalDate.parse(end, DateTimeFormatter.ISO_DATE), intradayInterval))
+                .build();
     }
 }

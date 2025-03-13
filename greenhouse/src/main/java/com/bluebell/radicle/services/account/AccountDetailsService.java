@@ -1,13 +1,5 @@
 package com.bluebell.radicle.services.account;
 
-import java.math.BigDecimal;
-import java.math.RoundingMode;
-import java.time.LocalDate;
-import java.time.temporal.ChronoUnit;
-import java.util.*;
-
-import static com.bluebell.radicle.validation.GenericValidator.validateParameterIsNotNull;
-
 import com.bluebell.platform.constants.CorePlatformConstants;
 import com.bluebell.platform.enums.system.TradeRecordTimeInterval;
 import com.bluebell.platform.models.core.entities.account.Account;
@@ -25,12 +17,20 @@ import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.math3.stat.descriptive.moment.StandardDeviation;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
+import java.util.*;
+
+import static com.bluebell.radicle.validation.GenericValidator.validateParameterIsNotNull;
+
 
 /**
  * Service-layer implementation of {@link AccountDetails}
  *
  * @author Stephen Prizio
- * @version 0.1.0
+ * @version 0.1.1
  */
 @Service("accountDetailsService")
 public class AccountDetailsService {
@@ -68,7 +68,7 @@ public class AccountDetailsService {
         validateParameterIsNotNull(account, CorePlatformConstants.Validation.Account.ACCOUNT_CANNOT_BE_NULL);
 
         if (CollectionUtils.isEmpty(account.getTrades())) {
-            return List.of(new AccountEquityPoint(account.getAccountOpenTime(), account.getBalance(), 0.0, account.getBalance(), 0.0));
+            return List.of(AccountEquityPoint.builder().date(account.getAccountOpenTime()).amount(account.getBalance()).points(0.0).cumAmount(account.getBalance()).cumPoints(0.0).build());
         }
 
         final List<AccountEquityPoint> equityPoints = new ArrayList<>();
@@ -80,16 +80,16 @@ public class AccountDetailsService {
             final double points = (trade.getNetProfit() < 0) ? this.mathService.multiply(-1.0, Math.abs(this.mathService.subtract(trade.getClosePrice(), trade.getOpenPrice()))) : Math.abs(this.mathService.subtract(trade.getClosePrice(), trade.getOpenPrice()));
 
             if (i == 0) {
-                equityPoints.add(new AccountEquityPoint(trade.getTradeCloseTime(), trade.getNetProfit(), points, this.mathService.add(starterBalance, trade.getNetProfit()), points));
+                equityPoints.add(AccountEquityPoint.builder().date(trade.getTradeCloseTime()).amount(trade.getNetProfit()).points(points).cumAmount(this.mathService.add(starterBalance, trade.getNetProfit())).cumPoints(points).build());
             } else {
                 final double cumAmount = this.mathService.add(equityPoints.get(i - 1).cumAmount(), trade.getNetProfit());
                 final double cumPoints = this.mathService.add(equityPoints.get(i - 1).cumPoints(), points);
 
-                equityPoints.add(new AccountEquityPoint(trade.getTradeCloseTime(), trade.getNetProfit(), points, cumAmount, cumPoints));
+                equityPoints.add(AccountEquityPoint.builder().date(trade.getTradeCloseTime()).amount(trade.getNetProfit()).points(points).cumAmount(cumAmount).cumPoints(cumPoints).build());
             }
         }
 
-        equityPoints.add(0, new AccountEquityPoint(trades.get(0).getTradeCloseTime().minusDays(1), 0.0, 0.0, starterBalance, 0.0));
+        equityPoints.add(0, AccountEquityPoint.builder().date(trades.get(0).getTradeCloseTime().minusDays(1)).amount(0.0).points(0.0).cumAmount(starterBalance).cumPoints(0.0).build());
         return equityPoints;
     }
 
@@ -116,19 +116,20 @@ public class AccountDetailsService {
             account.getTrades().forEach(tr -> map.put(tr.getTradeOpenTime().toLocalDate(), tr));
         }
 
-        return new AccountInsights(
-                map.size(),
-                currentPL,
-                biggestLoss,
-                largestGain,
-                drawdown,
-                maxProfit,
-                BigDecimal.valueOf(currentPL).divide(BigDecimal.valueOf(initialBalance), 25, RoundingMode.HALF_EVEN).multiply(BigDecimal.valueOf(100.0)).setScale(2, RoundingMode.HALF_EVEN).abs().doubleValue(),
-                BigDecimal.valueOf(biggestLoss).divide(BigDecimal.valueOf(initialBalance), 25, RoundingMode.HALF_EVEN).multiply(BigDecimal.valueOf(100.0)).setScale(2, RoundingMode.HALF_EVEN).abs().doubleValue(),
-                BigDecimal.valueOf(largestGain).divide(BigDecimal.valueOf(initialBalance), 25, RoundingMode.HALF_EVEN).multiply(BigDecimal.valueOf(100.0)).setScale(2, RoundingMode.HALF_EVEN).abs().doubleValue(),
-                BigDecimal.valueOf(drawdown).divide(BigDecimal.valueOf(initialBalance), 25, RoundingMode.HALF_EVEN).multiply(BigDecimal.valueOf(100.0)).setScale(2, RoundingMode.HALF_EVEN).abs().doubleValue(),
-                BigDecimal.valueOf(maxProfit).divide(BigDecimal.valueOf(initialBalance), 25, RoundingMode.HALF_EVEN).multiply(BigDecimal.valueOf(100.0)).setScale(2, RoundingMode.HALF_EVEN).abs().doubleValue()
-        );
+        return AccountInsights
+                .builder()
+                .tradingDays(map.size())
+                .currentPL(currentPL)
+                .biggestLoss(biggestLoss)
+                .largestGain(largestGain)
+                .drawdown(drawdown)
+                .maxProfit(maxProfit)
+                .currentPLDelta(BigDecimal.valueOf(currentPL).divide(BigDecimal.valueOf(initialBalance), 25, RoundingMode.HALF_EVEN).multiply(BigDecimal.valueOf(100.0)).setScale(2, RoundingMode.HALF_EVEN).abs().doubleValue())
+                .biggestLossDelta(BigDecimal.valueOf(biggestLoss).divide(BigDecimal.valueOf(initialBalance), 25, RoundingMode.HALF_EVEN).multiply(BigDecimal.valueOf(100.0)).setScale(2, RoundingMode.HALF_EVEN).abs().doubleValue())
+                .largestGainDelta(BigDecimal.valueOf(largestGain).divide(BigDecimal.valueOf(initialBalance), 25, RoundingMode.HALF_EVEN).multiply(BigDecimal.valueOf(100.0)).setScale(2, RoundingMode.HALF_EVEN).abs().doubleValue())
+                .drawdownDelta(BigDecimal.valueOf(drawdown).divide(BigDecimal.valueOf(initialBalance), 25, RoundingMode.HALF_EVEN).multiply(BigDecimal.valueOf(100.0)).setScale(2, RoundingMode.HALF_EVEN).abs().doubleValue())
+                .maxProfitDelta(BigDecimal.valueOf(maxProfit).divide(BigDecimal.valueOf(initialBalance), 25, RoundingMode.HALF_EVEN).multiply(BigDecimal.valueOf(100.0)).setScale(2, RoundingMode.HALF_EVEN).abs().doubleValue())
+                .build();
     }
 
     /**
@@ -148,23 +149,24 @@ public class AccountDetailsService {
         final double drawdown = calculateDrawdown(generativeCumulativeTrades(account));
         final double averageLoss = trades.stream().mapToDouble(Trade::getNetProfit).filter(d -> d < 0).average().orElse(0.0);
 
-        return new AccountStatistics(
-                account.getBalance(),
-                trades.stream().mapToDouble(Trade::getNetProfit).filter(d -> d > 0).average().orElse(0.0),
-                averageLoss,
-                trades.size(),
-                calculateRiskToRewardRatio(account),
-                trades.stream().mapToDouble(Trade::getLotSize).sum(),
-                this.mathService.getDouble(trades.stream().mapToDouble(Trade::getNetProfit).average().orElse(0.0)),
-                this.mathService.wholePercentage(positiveProfitCount, this.mathService.getDouble(trades.size())),
-                this.mathService.divide(positiveProfit, Math.abs(negativeProfit)),
-                this.mathService.wholePercentage(positiveProfit, this.mathService.add(positiveProfit, Math.abs(negativeProfit))),
-                calculateSharpeRatio(account),
-                Math.round(trades.stream().mapToLong(tr -> Math.abs(ChronoUnit.SECONDS.between(tr.getTradeOpenTime(), tr.getTradeCloseTime()))).average().orElse(0.0)),
-                Math.round(trades.stream().filter(tr -> tr.getNetProfit() > 0).mapToLong(tr -> Math.abs(ChronoUnit.SECONDS.between(tr.getTradeOpenTime(), tr.getTradeCloseTime()))).average().orElse(0.0)),
-                Math.round(trades.stream().filter(tr -> tr.getNetProfit() < 0).mapToLong(tr -> Math.abs(ChronoUnit.SECONDS.between(tr.getTradeOpenTime(), tr.getTradeCloseTime()))).average().orElse(0.0)),
-                this.mathService.multiply(this.mathService.add(Math.abs(drawdown), Math.abs(averageLoss)), -1.0)
-        );
+        return AccountStatistics
+                .builder()
+                .balance(account.getBalance())
+                .averageProfit(trades.stream().mapToDouble(Trade::getNetProfit).filter(d -> d > 0).average().orElse(0.0))
+                .averageLoss(averageLoss)
+                .numberOfTrades(trades.size())
+                .rrr(calculateRiskToRewardRatio(account))
+                .lots(this.mathService.getDouble(trades.stream().mapToDouble(Trade::getLotSize).sum()))
+                .expectancy(this.mathService.getDouble(trades.stream().mapToDouble(Trade::getNetProfit).average().orElse(0.0)))
+                .winPercentage(this.mathService.wholePercentage(positiveProfitCount, this.mathService.getDouble(trades.size())))
+                .profitFactor(this.mathService.divide(positiveProfit, Math.abs(negativeProfit)))
+                .retention(this.mathService.wholePercentage(positiveProfit, this.mathService.add(positiveProfit, Math.abs(negativeProfit))))
+                .sharpeRatio(calculateSharpeRatio(account))
+                .tradeDuration(Math.round(trades.stream().mapToLong(tr -> Math.abs(ChronoUnit.SECONDS.between(tr.getTradeOpenTime(), tr.getTradeCloseTime()))).average().orElse(0.0)))
+                .winDuration(Math.round(trades.stream().filter(tr -> tr.getNetProfit() > 0).mapToLong(tr -> Math.abs(ChronoUnit.SECONDS.between(tr.getTradeOpenTime(), tr.getTradeCloseTime()))).average().orElse(0.0)))
+                .lossDuration(Math.round(trades.stream().filter(tr -> tr.getNetProfit() < 0).mapToLong(tr -> Math.abs(ChronoUnit.SECONDS.between(tr.getTradeOpenTime(), tr.getTradeCloseTime()))).average().orElse(0.0)))
+                .assumedDrawdown(this.mathService.multiply(this.mathService.add(Math.abs(drawdown), Math.abs(averageLoss)), -1.0))
+                .build();
     }
 
 
@@ -229,10 +231,20 @@ public class AccountDetailsService {
             final double np = Math.abs(this.mathService.subtract(trade.getClosePrice(), trade.getOpenPrice()));
             cumPoints += (trade.getNetProfit() < 0) ? this.mathService.multiply(-1.0, np) : np;
 
-            cumulativeTrades.add(new CumulativeTrade(trade.getTradeCloseTime(), count, trade.getNetProfit(), (trade.getNetProfit() < 0) ? this.mathService.multiply(-1.0, np) : np, cumProfit, cumPoints));
+            cumulativeTrades.add(
+                    CumulativeTrade
+                            .builder()
+                            .tradeCloseTime(trade.getTradeCloseTime())
+                            .count(count)
+                            .singleProfit(trade.getNetProfit())
+                            .singlePoints((trade.getNetProfit() < 0) ? this.mathService.multiply(-1.0, np) : np)
+                            .netProfit(cumProfit)
+                            .netPoints(cumPoints)
+                            .build()
+            );
         }
 
-        cumulativeTrades.add(0, new CumulativeTrade(account.getAccountOpenTime(), 0, 0.0, 0.0, 0.0, 0.0));
+        cumulativeTrades.add(0, CumulativeTrade.builder().tradeCloseTime(account.getAccountOpenTime()).count(0).singleProfit(0.0).singlePoints(0.0).netProfit(0.0).netPoints(0.0).build());
         return cumulativeTrades;
     }
 

@@ -1,8 +1,5 @@
 package com.bluebell.radicle.integration.client;
 
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-
 import com.bluebell.radicle.integration.exceptions.IntegrationException;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpGet;
@@ -11,11 +8,14 @@ import org.apache.http.impl.client.HttpClientBuilder;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+
 /**
  * A generic HTTP client that performs GET requests
  *
  * @author Stephen Prizio
- * @version 0.0.9
+ * @version 0.1.1
  */
 public interface GetClient {
 

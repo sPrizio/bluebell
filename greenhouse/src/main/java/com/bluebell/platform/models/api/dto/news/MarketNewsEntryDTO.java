@@ -3,22 +3,24 @@ package com.bluebell.platform.models.api.dto.news;
 import com.bluebell.platform.models.api.dto.GenericDTO;
 import com.bluebell.platform.models.core.entities.news.MarketNewsEntry;
 import io.swagger.v3.oas.annotations.media.Schema;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * A DTO representation of  {@link MarketNewsEntry}
  *
  * @author Stephen Prizio
- * @version 0.0.9
+ * @version 0.1.1
  */
 @Getter
 @Setter
+@Builder
+@EqualsAndHashCode
 @Schema(title = "MarketNewsEntryDTO", name = "MarketNewsEntryDTO", description = "A piece of news on a given day at a given time")
 public class MarketNewsEntryDTO implements GenericDTO, Comparable<MarketNewsEntryDTO> {
 
     @Schema(description = "Entry uid")
-    private String uid;
+    private @Builder.Default String uid = StringUtils.EMPTY;
 
     @Schema(description = "News content")
     private String content;
@@ -42,7 +44,7 @@ public class MarketNewsEntryDTO implements GenericDTO, Comparable<MarketNewsEntr
     //  METHODS
 
     @Override
-    public int compareTo(MarketNewsEntryDTO o) {
+    public int compareTo(final @NonNull MarketNewsEntryDTO o) {
         return this.content.compareTo(o.content);
     }
 }

@@ -1,16 +1,8 @@
 package com.bluebell.radicle.services.security;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-import static org.mockito.ArgumentMatchers.any;
-
 import com.bluebell.AbstractGenericTest;
-import com.bluebell.radicle.exceptions.system.EntityCreationException;
-import com.bluebell.radicle.exceptions.system.EntityModificationException;
+import com.bluebell.platform.models.api.dto.security.CreateUpdateUserDTO;
+import com.bluebell.platform.models.api.dto.system.CreateUpdatePhoneNumberDTO;
 import com.bluebell.radicle.exceptions.validation.IllegalParameterException;
 import com.bluebell.radicle.exceptions.validation.MissingRequiredDataException;
 import com.bluebell.radicle.repositories.security.UserRepository;
@@ -24,11 +16,17 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import java.util.List;
+
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.mockito.ArgumentMatchers.any;
+
 /**
  * Testing class for {@link UserService}
  *
  * @author Stephen Prizio
- * @version 0.1.0
+ * @version 0.1.1
  */
 @SpringBootTest
 @RunWith(SpringRunner.class)
@@ -44,7 +42,7 @@ class UserServiceTest extends AbstractGenericTest {
     private UserService userService;
 
     @BeforeEach
-    public void setUp() {
+    void setUp() {
         Mockito.when(this.userRepository.findUserByEmail("test@email.com")).thenReturn(generateTestUser());
         Mockito.when(this.userRepository.findUserByUsername("test")).thenReturn(generateTestUser());
         Mockito.when(this.userRepository.save(any())).thenReturn(generateTestUser());
@@ -94,28 +92,26 @@ class UserServiceTest extends AbstractGenericTest {
     }
 
     @Test
-    void test_createUser_erroneousCreation() {
-        Map<String, Object> map = Map.of("bad", "input");
-        assertThatExceptionOfType(EntityCreationException.class)
-                .isThrownBy(() -> this.userService.createUser(map))
-                .withMessage("A User could not be created : Cannot invoke \"java.util.Map.get(Object)\" because the return value of \"java.util.Map.get(Object)\" is null");
-    }
-
-    @Test
     void test_createUser_success() {
 
-        Map<String, Object> temp = new HashMap<>();
-        temp.put("email", "2022-09-05");
-        temp.put("password", "2022-09-11");
-        temp.put("lastName", "Prizio");
-        temp.put("firstName", "Stephen");
-        temp.put("username", "s.prizio");
-        temp.put("country", "CAN");
-        temp.put("townCity", "Montreal");
-        temp.put("timeZoneOffset", "America/Toronto");
-        temp.put("phoneNumbers", List.of(Map.of("phoneNumber", Map.of("phoneType", "MOBILE", "countryCode", "1", "telephoneNumber", "5149411025"))));
-
-        Map<String, Object> data = new HashMap<>(Map.of("user", temp));
+        final CreateUpdateUserDTO data = CreateUpdateUserDTO
+                .builder()
+                .email("test@123email.com")
+                .password("2022-09-05")
+                .lastName("Prizio")
+                .firstName("Stephen")
+                .username("s.prizio")
+                .phoneNumbers(
+                        List.of(
+                                CreateUpdatePhoneNumberDTO
+                                        .builder()
+                                        .phoneType("MOBILE")
+                                        .countryCode((short) 1)
+                                        .telephoneNumber(5149411025L)
+                                        .build()
+                        )
+                )
+                .build();
 
         assertThat(this.userService.createUser(data))
                 .isNotNull()
@@ -134,28 +130,26 @@ class UserServiceTest extends AbstractGenericTest {
     }
 
     @Test
-    void test_updateUser_erroneousModification() {
-        Map<String, Object> map = Map.of("bad", "input");
-        assertThatExceptionOfType(EntityModificationException.class)
-                .isThrownBy(() -> this.userService.updateUser(generateTestUser(), map))
-                .withMessage("An error occurred while modifying the User : Cannot invoke \"java.util.Map.get(Object)\" because \"ud\" is null");
-    }
-
-    @Test
     void test_updateUser_success() {
 
-        Map<String, Object> temp = new HashMap<>();
-        temp.put("email", "2022-09-05");
-        temp.put("password", "2022-09-11");
-        temp.put("lastName", "Prizio");
-        temp.put("firstName", "Stephen");
-        temp.put("username", "s.prizio");
-        temp.put("country", "CAN");
-        temp.put("townCity", "Montreal");
-        temp.put("timeZoneOffset", "America/Toronto");
-        temp.put("phoneNumbers", List.of(Map.of("phoneNumber", Map.of("phoneType", "MOBILE", "countryCode", "1", "telephoneNumber", "5149411025"))));
-
-        Map<String, Object> data = new HashMap<>(Map.of("user", temp));
+        final CreateUpdateUserDTO data = CreateUpdateUserDTO
+                .builder()
+                .email("test@email.com")
+                .password("2022-09-05")
+                .lastName("Prizio")
+                .firstName("Stephen")
+                .username("s.prizio")
+                .phoneNumbers(
+                        List.of(
+                                CreateUpdatePhoneNumberDTO
+                                        .builder()
+                                        .phoneType("MOBILE")
+                                        .countryCode((short) 1)
+                                        .telephoneNumber(5149411025L)
+                                        .build()
+                        )
+                )
+                .build();
 
         assertThat(this.userService.updateUser(generateTestUser(), data))
                 .isNotNull()

@@ -1,29 +1,32 @@
 package com.bluebell.platform.models.api.dto.security;
 
-import java.time.LocalDateTime;
-import java.util.List;
-
 import com.bluebell.platform.models.api.dto.GenericDTO;
 import com.bluebell.platform.models.api.dto.account.AccountDTO;
 import com.bluebell.platform.models.api.dto.system.PhoneNumberDTO;
 import com.bluebell.platform.models.core.entities.security.User;
 import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
+import org.apache.commons.lang3.StringUtils;
+
+import java.time.LocalDateTime;
+import java.util.List;
 
 /**
  * A DTO representation of a {@link User}
  *
  * @author Stephen Prizio
- * @version 0.0.9
+ * @version 0.1.1
  */
 @Setter
 @Getter
+@Builder
 @Schema(title = "UserDTO", name = "UserDTO", description = "Data representation of a user")
 public class UserDTO implements GenericDTO {
 
     @Schema(description = "User uid")
-    private String uid;
+    private @Builder.Default String uid = StringUtils.EMPTY;
 
     @Schema(description = "User's api token")
     private String apiToken;

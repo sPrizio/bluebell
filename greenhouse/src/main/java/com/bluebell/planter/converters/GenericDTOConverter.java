@@ -1,17 +1,17 @@
 package com.bluebell.planter.converters;
 
 
+import com.bluebell.platform.models.api.dto.GenericDTO;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-
-import com.bluebell.platform.models.api.dto.GenericDTO;
 
 /**
  * Generic converter for entities into {@link GenericDTO}s
  *
  * @author Stephen Prizio
- * @version 0.0.9
+ * @version 0.1.1
  */
 public interface GenericDTOConverter<E, D extends GenericDTO> {
 

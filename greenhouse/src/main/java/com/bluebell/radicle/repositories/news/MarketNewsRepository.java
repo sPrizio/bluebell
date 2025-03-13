@@ -1,19 +1,19 @@
 package com.bluebell.radicle.repositories.news;
 
-import java.time.LocalDate;
-import java.util.List;
-
 import com.bluebell.platform.models.core.entities.news.MarketNews;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDate;
+import java.util.List;
+
 /**
  * Data-access layer for {@link MarketNews}
  *
  * @author Stephen Prizio
- * @version 0.0.9
+ * @version 0.1.1
  */
 @Repository
 public interface MarketNewsRepository extends PagingAndSortingRepository<MarketNews, Long>, CrudRepository<MarketNews, Long> {

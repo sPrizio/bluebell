@@ -7,7 +7,7 @@ import java.time.Year;
  * Constants defined for the bluebell platform
  *
  * @author Stephen Prizio
- * @version 0.1.0
+ * @version 0.1.1
  */
 public class CorePlatformConstants {
 
@@ -104,6 +104,31 @@ public class CorePlatformConstants {
             public static final String ACCOUNT_CANNOT_BE_NULL = "account cannot be null";
 
             public static final String ACCOUNT_NOT_FOUND = "Account not found";
+        }
+
+        public static class Action {
+
+            private Action() {
+                throw new UnsupportedOperationException(String.format(NO_INSTANTIATION, getClass().getName()));
+            }
+
+            public static final String ACTION_CANNOT_BE_NULL = "action cannot be null";
+            public static final String PERFORMABLE_ACTION_CANNOT_BE_NULL = "performable action cannot be null";
+        }
+
+        public static class Job {
+
+            private Job() {
+                throw new UnsupportedOperationException(String.format(NO_INSTANTIATION, getClass().getName()));
+            }
+
+            public static final String JOB_CANNOT_BE_NULL = "job cannot be null";
+
+            public static final String JOB_ID_CANNOT_BE_NULL = "job id cannot be null";
+
+            public static final String JOB_STATUS_CANNOT_BE_NULL = "job status cannot be null";
+
+            public static final String JOB_TYPE_CANNOT_BE_NULL = "job type cannot be null";
         }
 
         public static class Security {

@@ -1,13 +1,6 @@
 package com.bluebell.anther.simulation.impl;
 
-import java.time.LocalDate;
-import java.time.temporal.ChronoUnit;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import com.bluebell.anther.models.parameter.LimitParameter;
-import com.bluebell.anther.models.parameter.strategy.impl.BasicStrategyParameters;
 import com.bluebell.anther.models.parameter.strategy.impl.SproutStrategyParameters;
 import com.bluebell.anther.models.simulation.SimulationResult;
 import com.bluebell.anther.models.strategy.StrategyResult;
@@ -17,11 +10,17 @@ import com.bluebell.platform.enums.time.PlatformTimeInterval;
 import com.bluebell.platform.models.core.nonentities.market.AggregatedMarketPrices;
 import com.bluebell.radicle.enums.DataSource;
 
+import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 /**
  * Implementation of {@link Simulation} specific for the {@link Sprout} strategy
  *
  * @author Stephen Prizio
- * @version 0.0.9
+ * @version 0.1.1
  */
 public class SproutSimulation implements Simulation<SproutStrategyParameters> {
 
@@ -62,7 +61,10 @@ public class SproutSimulation implements Simulation<SproutStrategyParameters> {
             compare = compare.plus(1, unit);
         }
 
-        return new SimulationResult<>(map);
+        return SimulationResult
+                .<SproutStrategyParameters>builder()
+                .result(map)
+                .build();
     }
 
 
@@ -86,18 +88,24 @@ public class SproutSimulation implements Simulation<SproutStrategyParameters> {
 
         final Map<LocalDate, SproutStrategyParameters> map = new HashMap<>();
 
-        //map.put(LocalDate.of(2013, 1, 1), new SproutStrategyParameters(profitMultiplier, allowableRisk, minimumRisk, minimumReward, new BasicStrategyParameters(DESCRIPTION, new LimitParameter(), new LimitParameter(), startHour, startMinute, lotSize, pricePerPoint, scaleProfits, initialBalance)));
-        //map.put(LocalDate.of(2014, 1, 1), new SproutStrategyParameters(profitMultiplier, allowableRisk, minimumRisk, minimumReward, new BasicStrategyParameters(DESCRIPTION, new LimitParameter(), new LimitParameter(), startHour, startMinute, lotSize, pricePerPoint, scaleProfits, initialBalance)));
-        //map.put(LocalDate.of(2015, 1, 1), new SproutStrategyParameters(profitMultiplier, allowableRisk, minimumRisk, minimumReward, new BasicStrategyParameters(DESCRIPTION, new LimitParameter(), new LimitParameter(), startHour, startMinute, lotSize, pricePerPoint, scaleProfits, initialBalance)));
-        //map.put(LocalDate.of(2016, 1, 1), new SproutStrategyParameters(profitMultiplier, allowableRisk, minimumRisk, minimumReward, new BasicStrategyParameters(DESCRIPTION, new LimitParameter(), new LimitParameter(), startHour, startMinute, lotSize, pricePerPoint, scaleProfits, initialBalance)));
-        //map.put(LocalDate.of(2017, 1, 1), new SproutStrategyParameters(profitMultiplier, allowableRisk, minimumRisk, minimumReward, new BasicStrategyParameters(DESCRIPTION, new LimitParameter(), new LimitParameter(), startHour, startMinute, lotSize, pricePerPoint, scaleProfits, initialBalance)));
-        //map.put(LocalDate.of(2018, 1, 1), new SproutStrategyParameters(profitMultiplier, allowableRisk, minimumRisk, minimumReward, new BasicStrategyParameters(DESCRIPTION, new LimitParameter(), new LimitParameter(), startHour, startMinute, lotSize, pricePerPoint, scaleProfits, initialBalance)));
-        //map.put(LocalDate.of(2019, 1, 1), new SproutStrategyParameters(profitMultiplier, allowableRisk, minimumRisk, minimumReward, new BasicStrategyParameters(DESCRIPTION, new LimitParameter(), new LimitParameter(), startHour, startMinute, lotSize, pricePerPoint, scaleProfits, initialBalance)));
-        //map.put(LocalDate.of(2020, 1, 1), new SproutStrategyParameters(profitMultiplier, allowableRisk, minimumRisk, minimumReward, new BasicStrategyParameters(DESCRIPTION, new LimitParameter(), new LimitParameter(), startHour, startMinute, lotSize, pricePerPoint, scaleProfits, initialBalance)));
-        //map.put(LocalDate.of(2021, 1, 1), new SproutStrategyParameters(profitMultiplier, allowableRisk, minimumRisk, minimumReward, new BasicStrategyParameters(DESCRIPTION, new LimitParameter(), new LimitParameter(), startHour, startMinute, lotSize, pricePerPoint, scaleProfits, initialBalance)));
-        //map.put(LocalDate.of(2022, 1, 1), new SproutStrategyParameters(profitMultiplier, allowableRisk, minimumRisk, minimumReward, new BasicStrategyParameters(DESCRIPTION, new LimitParameter(), new LimitParameter(), startHour, startMinute, lotSize, pricePerPoint, scaleProfits, initialBalance)));
-        //map.put(LocalDate.of(2023, 1, 1), new SproutStrategyParameters(profitMultiplier, allowableRisk, minimumRisk, minimumReward, new BasicStrategyParameters(DESCRIPTION, new LimitParameter(), new LimitParameter(), startHour, startMinute, lotSize, pricePerPoint, scaleProfits, initialBalance)));
-        map.put(LocalDate.of(2024, 1, 1), new SproutStrategyParameters(profitMultiplier, allowableRisk, allowableReward, minimumRisk, minimumReward, 0.05, new BasicStrategyParameters(DESCRIPTION, new LimitParameter(), new LimitParameter(), lotSize, pricePerPoint, initialBalance)));
+        map.put(
+                LocalDate.of(2024, 1, 1),
+                SproutStrategyParameters
+                        .builder()
+                        .profitMultiplier(profitMultiplier)
+                        .allowableRisk(allowableRisk)
+                        .allowableReward(allowableReward)
+                        .minimumRisk(minimumRisk)
+                        .minimumReward(minimumReward)
+                        .variance(0.05)
+                        .description(DESCRIPTION)
+                        .buyLimit(LimitParameter.builder().build())
+                        .sellLimit(LimitParameter.builder().build())
+                        .lotSize(lotSize)
+                        .pricePerPoint(pricePerPoint)
+                        .initialBalance(initialBalance)
+                        .build()
+        );
 
         return map;
     }
