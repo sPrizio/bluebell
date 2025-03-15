@@ -100,6 +100,11 @@
       <pattern>
         <option name="PATTERN" value="com.bluebell.radicle.runners.*" />
         <option name="ENABLED" value="true" />
+        <option name="INCLUDE" value="false" />
+      </pattern>
+      <pattern>
+        <option name="PATTERN" value="com.bluebell.radicle.runners.*" />
+        <option name="ENABLED" value="true" />
       </pattern>
     </extension>
     <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="true" />

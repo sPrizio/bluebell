@@ -26,7 +26,7 @@ import java.util.Random;
 @Component
 @Order(3)
 @Profile("dev")
-public class TradeRunner implements CommandLineRunner {
+public class TradeRunner extends AbstractRunner implements CommandLineRunner {
 
     private final MathService mathService = new MathService();
     private final Random random = new Random();
@@ -44,6 +44,8 @@ public class TradeRunner implements CommandLineRunner {
     @Transactional
     public void run(String... args) {
 
+        logStart();
+
         Account account1 = this.accountRepository.findAccountByAccountNumber(1234);
         Account account2 = this.accountRepository.findAccountByAccountNumber(5678);
         Account account3 = this.accountRepository.findAccountByAccountNumber(9638953);
@@ -59,6 +61,8 @@ public class TradeRunner implements CommandLineRunner {
         this.accountRepository.save(account1.refreshAccount());
         this.accountRepository.save(account2.refreshAccount());
         this.accountRepository.save(account3.refreshAccount());
+
+        logEnd();
     }
 
 

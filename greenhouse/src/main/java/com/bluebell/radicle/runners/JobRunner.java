@@ -36,7 +36,7 @@ import java.util.Random;
 @Component
 @Order(6)
 @Profile("dev")
-public class JobRunner implements CommandLineRunner {
+public class JobRunner extends AbstractRunner implements CommandLineRunner {
 
     private static final List<String> WORDS = new ArrayList<>(CorePlatformConstants.RANDOM_WORDS);
     private final Random random = new Random();
@@ -62,6 +62,8 @@ public class JobRunner implements CommandLineRunner {
     @Override
     @Transactional
     public void run(String... args) {
+
+        logStart();
 
         final int jobCount = this.random.nextInt(15) + 1;
         for (int i = 0; i < jobCount; i++) {
@@ -124,6 +126,8 @@ public class JobRunner implements CommandLineRunner {
             job.setJobResult(jobResult);
             this.jobRepository.save(job);
         }
+
+        logEnd();
     }
 
 

@@ -26,7 +26,7 @@ import java.time.LocalDateTime;
 @Component
 @Order(2)
 @Profile("dev")
-public class AccountRunner implements CommandLineRunner {
+public class AccountRunner extends AbstractRunner implements CommandLineRunner {
 
     @Resource(name = "accountRepository")
     private AccountRepository accountRepository;
@@ -39,7 +39,9 @@ public class AccountRunner implements CommandLineRunner {
 
     @Override
     @Transactional
-    public void run(String... args) throws Exception {
+    public void run(String... args) {
+
+        logStart();
 
         final User user = this.userRepository.findUserByUsername("s.test");
 
@@ -100,5 +102,7 @@ public class AccountRunner implements CommandLineRunner {
                 .build();
 
         this.accountRepository.save(account3);
+
+        logEnd();
     }
 }

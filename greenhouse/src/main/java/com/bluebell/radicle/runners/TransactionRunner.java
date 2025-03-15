@@ -31,7 +31,7 @@ import java.util.Random;
 @Component
 @Order(4)
 @Profile("dev")
-public class TransactionRunner implements CommandLineRunner {
+public class TransactionRunner extends AbstractRunner implements CommandLineRunner {
 
     private static final List<String> WORDS = new ArrayList<>(CorePlatformConstants.RANDOM_WORDS);
     private final MathService mathService = new MathService();
@@ -48,7 +48,9 @@ public class TransactionRunner implements CommandLineRunner {
 
     @Override
     @Transactional
-    public void run(String... args) throws Exception {
+    public void run(String... args) {
+
+        logStart();
 
         Account account1 = this.accountRepository.findAccountByAccountNumber(1234);
         Account account2 = this.accountRepository.findAccountByAccountNumber(5678);
@@ -57,6 +59,8 @@ public class TransactionRunner implements CommandLineRunner {
         generateTransactions(account1);
         generateTransactions(account2);
         generateTransactions(account3);
+
+        logEnd();
     }
 
 

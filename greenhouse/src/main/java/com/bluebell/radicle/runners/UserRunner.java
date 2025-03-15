@@ -25,7 +25,7 @@ import java.util.List;
 @Component
 @Order(1)
 @Profile("dev")
-public class UserRunner implements CommandLineRunner {
+public class UserRunner extends AbstractRunner implements CommandLineRunner {
 
     @Resource(name = "phoneNumberRepository")
     private PhoneNumberRepository phoneNumberRepository;
@@ -38,7 +38,9 @@ public class UserRunner implements CommandLineRunner {
 
     @Override
     @Transactional
-    public void run(String... args) throws Exception {
+    public void run(String... args) {
+
+        logStart();
 
         User user = User
                 .builder()
@@ -74,5 +76,7 @@ public class UserRunner implements CommandLineRunner {
                 .build();
 
         this.phoneNumberRepository.save(pn2);
+
+        logEnd();
     }
 }

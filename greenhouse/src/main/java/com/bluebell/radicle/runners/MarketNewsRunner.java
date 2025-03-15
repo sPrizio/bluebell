@@ -35,7 +35,7 @@ import java.util.*;
 @Component
 @Order(5)
 @Profile("dev")
-public class MarketNewsRunner implements CommandLineRunner {
+public class MarketNewsRunner extends AbstractRunner implements CommandLineRunner {
 
     final ObjectMapper objectMapper = new ObjectMapper();
 
@@ -57,11 +57,16 @@ public class MarketNewsRunner implements CommandLineRunner {
     @Override
     @Transactional
     public void run(String... args) {
+
+        logStart();
+
         try {
             generate();
         } catch (Exception e) {
             //  DO NOTHING
         }
+
+        logEnd();
     }
 
 
