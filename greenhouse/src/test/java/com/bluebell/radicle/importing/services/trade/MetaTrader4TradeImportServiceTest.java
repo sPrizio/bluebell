@@ -15,7 +15,6 @@ import com.bluebell.radicle.repositories.account.AccountRepository;
 import com.bluebell.radicle.repositories.security.UserRepository;
 import com.bluebell.radicle.repositories.trade.TradeRepository;
 import jakarta.annotation.Resource;
-import jakarta.transaction.Transactional;
 import org.assertj.core.groups.Tuple;
 import org.junit.jupiter.api.*;
 import org.junit.runner.RunWith;
@@ -23,13 +22,14 @@ import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabas
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.ResourceUtils;
 
 /**
  * Testing class for {@link MetaTrader4TradeImportService}
  *
  * @author Stephen Prizio
- * @version 0.1.0
+ * @version 0.1.2
  */
 @SpringBootTest
 @RunWith(SpringRunner.class)

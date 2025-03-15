@@ -17,7 +17,7 @@ import java.util.UUID;
  * Represents something that a job does or performs
  *
  * @author Stephen Prizio
- * @version 0.1.1
+ * @version 0.1.2
  */
 @Slf4j
 @Getter
@@ -45,6 +45,7 @@ public class Action implements GenericAction, Comparable<Action> {
     @Column
     private String name;
 
+    @Setter
     @Column
     private ActionStatus status = ActionStatus.NOT_STARTED;
 
