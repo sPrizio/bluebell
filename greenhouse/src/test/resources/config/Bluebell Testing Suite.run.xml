@@ -1,7 +1,12 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="Bluebell Testing Suite" type="JUnit" factoryName="JUnit" printAsyncStackTraceForExceptions="false">
+  <configuration default="false" name="Bluebell Testing Suite" type="JUnit" factoryName="JUnit">
     <module name="greenhouse" />
     <extension name="coverage">
+      <pattern>
+        <option name="PATTERN" value="com.bluebell.Bluebell" />
+        <option name="ENABLED" value="true" />
+        <option name="INCLUDE" value="false" />
+      </pattern>
       <pattern>
         <option name="PATTERN" value="com.bluebell.anther.*" />
         <option name="ENABLED" value="true" />
@@ -19,6 +24,11 @@
       </pattern>
       <pattern>
         <option name="PATTERN" value="com.bluebell.platform.cleaners.*" />
+        <option name="ENABLED" value="true" />
+        <option name="INCLUDE" value="false" />
+      </pattern>
+      <pattern>
+        <option name="PATTERN" value="com.bluebell.platform.configuration.*" />
         <option name="ENABLED" value="true" />
         <option name="INCLUDE" value="false" />
       </pattern>
@@ -53,27 +63,27 @@
         <option name="INCLUDE" value="false" />
       </pattern>
       <pattern>
+        <option name="PATTERN" value="com.bluebell.radicle.performable.*" />
+        <option name="ENABLED" value="true" />
+        <option name="INCLUDE" value="false" />
+      </pattern>
+      <pattern>
         <option name="PATTERN" value="com.bluebell.radicle.repositories.*" />
         <option name="ENABLED" value="true" />
         <option name="INCLUDE" value="false" />
       </pattern>
       <pattern>
-        <option name="PATTERN" value="com.bluebell.Bluebell" />
+        <option name="PATTERN" value="com.bluebell.radicle.runners.*" />
+        <option name="ENABLED" value="true" />
+        <option name="INCLUDE" value="false" />
+      </pattern>
+      <pattern>
+        <option name="PATTERN" value="com.bluebell.radicle.scheduled.*" />
         <option name="ENABLED" value="true" />
         <option name="INCLUDE" value="false" />
       </pattern>
       <pattern>
         <option name="PATTERN" value="com.bluebell.radicle.security.*" />
-        <option name="ENABLED" value="true" />
-        <option name="INCLUDE" value="false" />
-      </pattern>
-      <pattern>
-        <option name="PATTERN" value="com.bluebell.radicle.integration.exceptions.*" />
-        <option name="ENABLED" value="true" />
-        <option name="INCLUDE" value="false" />
-      </pattern>
-      <pattern>
-        <option name="PATTERN" value="com.bluebell.radicle.integration.models.*" />
         <option name="ENABLED" value="true" />
         <option name="INCLUDE" value="false" />
       </pattern>
@@ -93,12 +103,12 @@
         <option name="INCLUDE" value="false" />
       </pattern>
       <pattern>
-        <option name="PATTERN" value="com.bluebell.radicle.scheduled.*" />
+        <option name="PATTERN" value="com.bluebell.radicle.integration.exceptions.*" />
         <option name="ENABLED" value="true" />
         <option name="INCLUDE" value="false" />
       </pattern>
       <pattern>
-        <option name="PATTERN" value="com.bluebell.radicle.performable.*" />
+        <option name="PATTERN" value="com.bluebell.radicle.integration.models.*" />
         <option name="ENABLED" value="true" />
         <option name="INCLUDE" value="false" />
       </pattern>
@@ -110,7 +120,6 @@
     <option name="METHOD_NAME" value="" />
     <option name="TEST_OBJECT" value="package" />
     <option name="WORKING_DIRECTORY" value="$MODULE_DIR$" />
-    <dir value="$PROJECT_DIR$/greenhouse/src/test" />
     <method v="2">
       <option name="Make" enabled="true" />
     </method>

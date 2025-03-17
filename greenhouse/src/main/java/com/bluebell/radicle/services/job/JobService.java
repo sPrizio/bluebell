@@ -18,12 +18,12 @@ import com.bluebell.radicle.services.action.ActionService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.annotation.Resource;
-import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.*;
@@ -34,7 +34,7 @@ import static com.bluebell.radicle.validation.GenericValidator.validateParameter
  * Service-layer for {@link Job}
  *
  * @author Stephen Prizio
- * @version 0.1.1
+ * @version 0.1.2
  */
 @Slf4j
 @Service

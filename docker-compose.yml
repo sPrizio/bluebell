@@ -42,3 +42,34 @@ services:
     restart: always
 volumes:
   mariadb-data:
+
+
+    ## FOR REFERENCE
+
+#server:
+#  port: 8080
+
+#spring:
+#  profiles:
+#    active: dev # Default profile
+
+#---
+#spring:
+#  profiles: dev
+#server:
+#  port: 8081
+#logging.level.root: DEBUG
+
+#---
+#spring:
+#  profiles: staging
+#server:
+#  port: 9090
+#logging.level.root: INFO
+
+#---
+#spring:
+#  profiles: prod
+#server:
+#  port: 80
+#logging.level.root: WARN
