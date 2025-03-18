@@ -22,7 +22,7 @@ import org.springframework.test.context.junit4.SpringRunner;
  * Testing class for {@link AccountDetailsService}
  *
  * @author Stephen Prizio
- * @version 0.1.0
+ * @version 0.1.2
  */
 @SpringBootTest
 @RunWith(SpringRunner.class)
@@ -34,7 +34,7 @@ class AccountDetailsServiceTest extends AbstractGenericTest {
     private AccountDetailsService accountDetailsService;
 
     @BeforeEach
-    public void setUp() {
+    void setUp() {
         this.account = generateTestAccount();
         final List<Trade> trades = List.of(generateTestBuyTrade(), generateTestSellTrade());
         this.account.setTrades(trades);
