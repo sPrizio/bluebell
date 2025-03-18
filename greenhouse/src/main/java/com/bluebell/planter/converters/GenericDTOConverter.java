@@ -2,16 +2,18 @@ package com.bluebell.planter.converters;
 
 
 import com.bluebell.platform.models.api.dto.GenericDTO;
+import org.apache.commons.collections4.CollectionUtils;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 /**
  * Generic converter for entities into {@link GenericDTO}s
  *
  * @author Stephen Prizio
- * @version 0.1.1
+ * @version 0.1.2
  */
 public interface GenericDTOConverter<E, D extends GenericDTO> {
 
@@ -30,6 +32,11 @@ public interface GenericDTOConverter<E, D extends GenericDTO> {
      * @return {@link List} of {@link D}
      */
     default List<D> convertAll(final Collection<E> entities) {
+
+        if (CollectionUtils.isEmpty(entities)) {
+            return Collections.emptyList();
+        }
+
         return new ArrayList<>(entities.stream().map(this::convert).toList());
     }
 }

@@ -2,6 +2,7 @@ package com.bluebell.planter.converters.security;
 
 import com.bluebell.planter.converters.GenericDTOConverter;
 import com.bluebell.planter.converters.account.AccountDTOConverter;
+import com.bluebell.planter.converters.portfolio.PortfolioDTOConverter;
 import com.bluebell.planter.converters.system.PhoneNumberDTOConverter;
 import com.bluebell.planter.services.UniqueIdentifierService;
 import com.bluebell.platform.enums.security.UserRole;
@@ -15,16 +16,16 @@ import org.springframework.stereotype.Component;
  * Converts {@link User}s into {@link UserDTO}s
  *
  * @author Stephen Prizio
- * @version 0.1.1
+ * @version 0.1.2
  */
 @Component("userDTOConverter")
 public class UserDTOConverter implements GenericDTOConverter<User, UserDTO> {
 
-    @Resource(name = "accountDTOConverter")
-    private AccountDTOConverter accountDTOConverter;
-
     @Resource(name = "phoneNumberDTOConverter")
     private PhoneNumberDTOConverter phoneNumberDTOConverter;
+
+    @Resource(name = "portfolioDTOConverter")
+    private PortfolioDTOConverter portfolioDTOConverter;
 
     @Resource(name = "uniqueIdentifierService")
     private UniqueIdentifierService uniqueIdentifierService;
@@ -49,7 +50,7 @@ public class UserDTOConverter implements GenericDTOConverter<User, UserDTO> {
                 .lastName(entity.getLastName())
                 .dateRegistered(entity.getDateRegistered())
                 .phones(this.phoneNumberDTOConverter.convertAll(entity.getPhones()))
-                .accounts(this.accountDTOConverter.convertAll(entity.getAccounts()))
+                .portfolios(this.portfolioDTOConverter.convertAll(entity.getPortfolios()))
                 .roles(entity.getRoles().stream().map(UserRole::getLabel).toList())
                 .build();
     }

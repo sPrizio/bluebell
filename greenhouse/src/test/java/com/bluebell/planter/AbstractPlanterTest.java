@@ -13,7 +13,7 @@ import com.bluebell.platform.models.core.nonentities.records.account.AccountDeta
 import com.bluebell.platform.models.core.nonentities.records.account.AccountEquityPoint;
 import com.bluebell.platform.models.core.nonentities.records.account.AccountInsights;
 import com.bluebell.platform.models.core.nonentities.records.account.AccountStatistics;
-import com.bluebell.platform.models.core.nonentities.records.portfolio.Portfolio;
+import com.bluebell.platform.models.core.nonentities.records.portfolio.PortfolioRecord;
 import com.bluebell.platform.models.core.nonentities.records.portfolio.PortfolioEquityPoint;
 import com.bluebell.platform.models.core.nonentities.records.portfolio.PortfolioStatistics;
 import com.bluebell.platform.models.core.nonentities.records.tradelog.TradeLog;
@@ -28,13 +28,14 @@ import org.springframework.test.web.servlet.request.RequestPostProcessor;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Collections;
 import java.util.List;
 
 /**
  * Parent-level testing class to provide testing assistance for planter
  *
  * @author Stephen Prizio
- * @version 0.1.1
+ * @version 0.1.2
  */
 public abstract class AbstractPlanterTest extends AbstractGenericTest {
 
@@ -93,12 +94,12 @@ public abstract class AbstractPlanterTest extends AbstractGenericTest {
     }
 
     /**
-     * Generates a test {@link Portfolio}
+     * Generates a test {@link PortfolioRecord}
      *
-     * @return {@link Portfolio}
+     * @return {@link PortfolioRecord}
      */
-    public Portfolio generatePortfolio() {
-        return Portfolio
+    public PortfolioRecord generatePortfolioRecord() {
+        return PortfolioRecord
                 .builder()
                 .newPortfolio(true)
                 .netWorth(1000000.0)
@@ -114,7 +115,7 @@ public abstract class AbstractPlanterTest extends AbstractGenericTest {
                                 .deltaWithdrawals(1.0)
                                 .build()
                 )
-                .equity(List.of(PortfolioEquityPoint.builder().date(LocalDate.of(2025, 3, 4)).portfolio(639.89).accounts(List.of()).build()))
+                .equity(List.of(PortfolioEquityPoint.builder().date(LocalDate.of(2025, 3, 4)).portfolio(639.89).accounts(Collections.emptyList()).build()))
                 .build();
     }
 
@@ -138,7 +139,7 @@ public abstract class AbstractPlanterTest extends AbstractGenericTest {
                                                         .account(generateTestAccount())
                                                         .accountNumber(1234L)
                                                         .accountName("Test")
-                                                        .report(TradeRecordReport.builder().tradeRecords(List.of()).tradeRecordTotals(null).build())
+                                                        .report(TradeRecordReport.builder().tradeRecords(Collections.emptyList()).tradeRecordTotals(null).build())
                                                         .build()
                                         ))
                                         .totals(

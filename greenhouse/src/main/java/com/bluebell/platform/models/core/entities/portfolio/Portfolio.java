@@ -37,7 +37,7 @@ public class Portfolio implements GenericEntity {
     private boolean active;
 
     @Column
-    private LocalDateTime created = LocalDateTime.now();
+    private @Builder.Default LocalDateTime created = LocalDateTime.now();
 
     @Column
     private boolean defaultPortfolio;

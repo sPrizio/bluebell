@@ -5,6 +5,7 @@ import com.bluebell.platform.enums.account.Broker;
 import com.bluebell.platform.enums.account.Currency;
 import com.bluebell.platform.enums.trade.TradePlatform;
 import com.bluebell.platform.models.core.entities.account.Account;
+import com.bluebell.platform.models.core.entities.portfolio.Portfolio;
 import com.bluebell.platform.models.core.entities.security.User;
 import com.bluebell.radicle.repositories.account.AccountRepository;
 import com.bluebell.radicle.repositories.security.UserRepository;
@@ -44,6 +45,7 @@ public class AccountRunner extends AbstractRunner implements CommandLineRunner {
         logStart();
 
         final User user = this.userRepository.findUserByUsername("s.test");
+        final Portfolio portfolio = user.getActivePortfolios().get(0);
 
         Account account1 = Account
                 .builder()
@@ -59,7 +61,7 @@ public class AccountRunner extends AbstractRunner implements CommandLineRunner {
                 .accountType(AccountType.CFD)
                 .tradePlatform(TradePlatform.METATRADER4)
                 .lastTraded(LocalDateTime.now())
-                .user(user)
+                .portfolio(portfolio)
                 .build();
 
         this.accountRepository.save(account1);
@@ -78,7 +80,7 @@ public class AccountRunner extends AbstractRunner implements CommandLineRunner {
                 .accountType(AccountType.CFD)
                 .tradePlatform(TradePlatform.METATRADER4)
                 .lastTraded(LocalDateTime.of(2025, 2, 26, 16, 11, 3))
-                .user(user)
+                .portfolio(portfolio)
                 .build();
 
         this.accountRepository.save(account2);
@@ -98,7 +100,7 @@ public class AccountRunner extends AbstractRunner implements CommandLineRunner {
                 .accountType(AccountType.CFD)
                 .tradePlatform(TradePlatform.BLUEBELL)
                 .lastTraded(LocalDateTime.now().minusMonths(2))
-                .user(user)
+                .portfolio(portfolio)
                 .build();
 
         this.accountRepository.save(account3);

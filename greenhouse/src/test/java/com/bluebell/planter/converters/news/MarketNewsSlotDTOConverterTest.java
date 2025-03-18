@@ -1,6 +1,7 @@
 package com.bluebell.planter.converters.news;
 
 import java.time.LocalTime;
+import java.util.Collections;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -22,7 +23,7 @@ import org.springframework.test.context.junit4.SpringRunner;
  * Testing class for {@link MarketNewsSlotDTOConverter}
  *
  * @author Stephen Prizio
- * @version 0.1.0
+ * @version 0.1.2
  */
 @SpringBootTest
 @RunWith(SpringRunner.class)
@@ -40,7 +41,7 @@ class MarketNewsSlotDTOConverterTest extends AbstractPlanterTest {
     @BeforeEach
     void setUp() {
         Mockito.when(this.uniqueIdentifierService.generateUid(any())).thenReturn("MTE4");
-        Mockito.when(this.marketNewsEntryDTOConverter.convertAll(any())).thenReturn(List.of());
+        Mockito.when(this.marketNewsEntryDTOConverter.convertAll(any())).thenReturn(Collections.emptyList());
     }
 
 

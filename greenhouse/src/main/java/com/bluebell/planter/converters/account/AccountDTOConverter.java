@@ -11,13 +11,13 @@ import jakarta.annotation.Resource;
 import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.stereotype.Component;
 
-import java.util.List;
+import java.util.Collections;
 
 /**
  * Converts {@link Account}s into {@link AccountDTO}s
  *
  * @author Stephen Prizio
- * @version 0.1.1
+ * @version 0.1.2
  */
 @Component("accountDTOConverter")
 public class AccountDTOConverter implements GenericDTOConverter<Account, AccountDTO> {
@@ -56,7 +56,7 @@ public class AccountDTOConverter implements GenericDTOConverter<Account, Account
                 .broker(EnumDisplay.builder().code(entity.getBroker().getCode()).label(entity.getBroker().getName()).build())
                 .lastTraded(entity.getLastTraded())
                 .tradePlatform(EnumDisplay.builder().code(entity.getTradePlatform().getCode()).label(entity.getTradePlatform().getLabel()).build())
-                .transactions(CollectionUtils.isEmpty(entity.getTransactions()) ? List.of() : this.transactionDTOConverter.convertAll(entity.getTransactions()))
+                .transactions(CollectionUtils.isEmpty(entity.getTransactions()) ? Collections.emptyList() : this.transactionDTOConverter.convertAll(entity.getTransactions()))
                 .build();
     }
 }

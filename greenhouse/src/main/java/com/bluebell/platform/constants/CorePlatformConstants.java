@@ -149,6 +149,15 @@ public class CorePlatformConstants {
             public static final String JOB_TYPE_CANNOT_BE_NULL = "job type cannot be null";
         }
 
+        public static class Portfolio {
+
+            private Portfolio() {
+                throw new UnsupportedOperationException(String.format(NO_INSTANTIATION, getClass().getName()));
+            }
+
+            public static final String PORTFOLIO_CANNOT_BE_NULL = "portfolio cannot be null";
+        }
+
         public static class Security {
 
             private Security() {

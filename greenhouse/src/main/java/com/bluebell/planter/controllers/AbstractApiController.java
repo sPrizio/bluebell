@@ -2,8 +2,11 @@ package com.bluebell.planter.controllers;
 
 import com.bluebell.platform.constants.CorePlatformConstants;
 import com.bluebell.platform.models.core.entities.account.Account;
+import com.bluebell.platform.models.core.entities.portfolio.Portfolio;
 import com.bluebell.platform.models.core.entities.security.User;
 import com.bluebell.radicle.exceptions.account.InvalidAccountNumberException;
+
+import java.util.List;
 
 import static com.bluebell.radicle.validation.GenericValidator.validateLocalDateFormat;
 import static com.bluebell.radicle.validation.GenericValidator.validateParameterIsNotNull;
@@ -13,7 +16,7 @@ import static com.bluebell.radicle.validation.GenericValidator.validateParameter
  * Parent-level controller providing common functionality
  *
  * @author Stephen Prizio
- * @version 0.1.1
+ * @version 0.1.2
  */
 public abstract class AbstractApiController {
 
@@ -46,6 +49,6 @@ public abstract class AbstractApiController {
      */
     public Account getAccountForId(final User user, final long accountNumber) {
         validateParameterIsNotNull(user, CorePlatformConstants.Validation.Security.User.USER_CANNOT_BE_NULL);
-        return user.getAccounts().stream().filter(acc -> acc.getAccountNumber() == accountNumber).findFirst().orElseThrow(() -> new InvalidAccountNumberException("The given account number did not match and user accounts"));
+        return user.getActivePortfolios().stream().map(Portfolio::getActiveAccounts).flatMap(List::stream).filter(acc -> acc.getAccountNumber() == accountNumber).findFirst().orElseThrow(() -> new InvalidAccountNumberException("The given account number did not match and user accounts"));
     }
 }

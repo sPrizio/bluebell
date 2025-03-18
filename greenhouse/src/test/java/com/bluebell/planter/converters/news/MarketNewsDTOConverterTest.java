@@ -13,6 +13,7 @@ import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.time.LocalDate;
+import java.util.Collections;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -22,7 +23,7 @@ import static org.mockito.ArgumentMatchers.any;
  * Testing class for {@link MarketNewsDTOConverter}
  *
  * @author Stephen Prizio
- * @version 0.1.0
+ * @version 0.1.2
  */
 @SpringBootTest
 @RunWith(SpringRunner.class)
@@ -40,7 +41,7 @@ class MarketNewsDTOConverterTest extends AbstractPlanterTest {
     @BeforeEach
     void setUp() {
         Mockito.when(this.uniqueIdentifierService.generateUid(any())).thenReturn("MTE4");
-        Mockito.when(this.marketNewsSlotDTOConverter.convertAll(any())).thenReturn(List.of());
+        Mockito.when(this.marketNewsSlotDTOConverter.convertAll(any())).thenReturn(Collections.emptyList());
     }
 
 

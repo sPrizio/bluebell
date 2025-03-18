@@ -4,6 +4,7 @@ import com.bluebell.platform.constants.CorePlatformConstants;
 import com.bluebell.platform.enums.system.TradeRecordTimeInterval;
 import com.bluebell.platform.enums.time.PlatformTimeInterval;
 import com.bluebell.platform.models.core.entities.account.Account;
+import com.bluebell.platform.models.core.entities.portfolio.Portfolio;
 import com.bluebell.platform.models.core.entities.security.User;
 import com.bluebell.platform.models.core.entities.trade.Trade;
 import com.bluebell.platform.models.core.nonentities.records.tradelog.TradeLog;
@@ -36,7 +37,7 @@ import static com.bluebell.radicle.validation.GenericValidator.validateParameter
  * Service-layer for calculating {@link TradeRecord}s
  *
  * @author Stephen Prizio
- * @version 0.1.1
+ * @version 0.1.2
  */
 @Service
 public class TradeRecordService {
@@ -163,7 +164,7 @@ public class TradeRecordService {
         validateDatesAreNotMutuallyExclusive(start.atStartOfDay(), end.atStartOfDay(), CorePlatformConstants.Validation.DateTime.MUTUALLY_EXCLUSIVE_DATES);
         validateParameterIsNotNull(tradeRecordTimeInterval, CorePlatformConstants.Validation.System.TIME_INTERVAL_CANNOT_BE_NULL);
 
-        final List<Account> accounts = user.getAccounts();
+        final List<Account> accounts = user.getActivePortfolios().stream().map(Portfolio::getActiveAccounts).flatMap(List::stream).toList();
         final List<TradeLogEntry> entries = new ArrayList<>();
 
         if (CollectionUtils.isNotEmpty(accounts)) {
