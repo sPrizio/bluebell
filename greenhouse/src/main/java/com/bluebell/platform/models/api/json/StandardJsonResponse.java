@@ -15,7 +15,7 @@ import com.bluebell.platform.models.api.dto.trade.TradeDTO;
 import com.bluebell.platform.models.core.nonentities.apexcharts.ApexChartCandleStick;
 import com.bluebell.platform.models.core.nonentities.data.PairEntry;
 import com.bluebell.platform.models.core.nonentities.records.account.AccountDetails;
-import com.bluebell.platform.models.core.nonentities.records.portfolio.Portfolio;
+import com.bluebell.platform.models.core.nonentities.records.portfolio.PortfolioRecord;
 import com.bluebell.platform.models.core.nonentities.records.tradelog.TradeLog;
 import com.bluebell.platform.models.core.nonentities.records.traderecord.TradeRecordReport;
 import com.bluebell.platform.models.core.nonentities.records.traderecord.controls.TradeRecordControls;
@@ -46,7 +46,7 @@ public record StandardJsonResponse<T>(
                         Boolean.class,
                         ApexChartCandleStick.class,
                         MarketNewsDTO.class,
-                        Portfolio.class,
+                        PortfolioRecord.class,
                         UserDTO.class,
                         Country.class,
                         PhoneType.class,

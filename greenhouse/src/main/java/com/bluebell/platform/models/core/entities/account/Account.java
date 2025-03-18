@@ -5,7 +5,7 @@ import com.bluebell.platform.enums.account.Broker;
 import com.bluebell.platform.enums.account.Currency;
 import com.bluebell.platform.enums.trade.TradePlatform;
 import com.bluebell.platform.models.core.entities.GenericEntity;
-import com.bluebell.platform.models.core.entities.security.User;
+import com.bluebell.platform.models.core.entities.portfolio.Portfolio;
 import com.bluebell.platform.models.core.entities.trade.Trade;
 import com.bluebell.platform.models.core.entities.transaction.Transaction;
 import com.bluebell.platform.services.MathService;
@@ -22,7 +22,7 @@ import java.util.List;
  * Class representation of a trading account, an entity that can hold {@link Trade}s and other information
  *
  * @author Stephen Prizio
- * @version 0.1.1
+ * @version 0.1.2
  */
 @Getter
 @Setter
@@ -83,7 +83,7 @@ public class Account implements GenericEntity {
     private @Builder.Default List<Transaction> transactions = new ArrayList<>();
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.REFRESH)
-    private User user;
+    private Portfolio portfolio;
 
 
     //  METHODS

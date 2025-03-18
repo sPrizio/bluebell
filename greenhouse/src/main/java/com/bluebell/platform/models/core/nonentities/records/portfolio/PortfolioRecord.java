@@ -20,11 +20,11 @@ import java.util.List;
  * @param statistics {@link PortfolioStatistics}
  * @param equity {@link List} of {@link PortfolioEquityPoint}s
  * @author Stephen Prizio
- * @version 0.1.1
+ * @version 0.1.2
  */
 @Builder
 @Schema(title = "Portfolio", name = "Portfolio", description = "DTO representation of a client's portfolio, including basic statistics")
-public record Portfolio(
+public record PortfolioRecord(
         @Getter @Schema(description = "Is the portfolio new?") boolean newPortfolio,
         @Getter @Schema(description = "Net worth of the portfolio") double netWorth,
         @Getter @Schema(description = "Number of trades taken in the portfolio") long trades,
