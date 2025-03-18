@@ -110,6 +110,7 @@ public abstract class AbstractGenericTest {
     public Portfolio generateTestPortfolio() {
         return Portfolio
                 .builder()
+                .id(1L)
                 .name("Test Portfolio")
                 .active(true)
                 .defaultPortfolio(true)

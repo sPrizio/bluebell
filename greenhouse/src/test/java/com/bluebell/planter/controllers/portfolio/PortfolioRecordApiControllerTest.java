@@ -28,7 +28,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 @AutoConfigureMockMvc(addFilters = false)
 @RunWith(SpringRunner.class)
-public class PortfolioRecordApiControllerTest extends AbstractPlanterTest {
+class PortfolioRecordApiControllerTest extends AbstractPlanterTest {
 
     @MockitoBean
     private PortfolioRecordService portfolioRecordService;
@@ -37,7 +37,7 @@ public class PortfolioRecordApiControllerTest extends AbstractPlanterTest {
     private MockMvc mockMvc;
 
     @BeforeEach
-    public void setUp() {
+    void setUp() {
         Mockito.when(this.portfolioRecordService.getPortfolioRecord(any())).thenReturn(generatePortfolioRecord());
     }
 
@@ -46,7 +46,7 @@ public class PortfolioRecordApiControllerTest extends AbstractPlanterTest {
 
     @Test
     void test_getPortfolio_success() throws Exception {
-        this.mockMvc.perform(get("/api/v1/portfolio/get"))
+        this.mockMvc.perform(get("/api/v1/portfolio-record/get"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.data.netWorth", is(1000000.0)));
     }

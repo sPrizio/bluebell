@@ -27,6 +27,7 @@ import java.util.List;
 public class Portfolio implements GenericEntity {
 
     @Id
+    @Setter
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     public Long id;
 
@@ -43,7 +44,7 @@ public class Portfolio implements GenericEntity {
     private boolean defaultPortfolio;
 
     @Setter
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "portfolio", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private @Builder.Default List<Account> accounts = new ArrayList<>();
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.REFRESH)
@@ -63,5 +64,18 @@ public class Portfolio implements GenericEntity {
         }
 
         return this.accounts.stream().filter(Account::isActive).toList();
+    }
+
+    @Override
+    public boolean equals(Object object) {
+        if (object == null || getClass() != object.getClass()) return false;
+
+        Portfolio portfolio = (Portfolio) object;
+        return this.id.equals(portfolio.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return this.id.hashCode();
     }
 }

@@ -1,15 +1,5 @@
 package com.bluebell.planter.controllers.account;
 
-import java.util.Map;
-import java.util.Optional;
-
-import static org.hamcrest.Matchers.containsString;
-import static org.hamcrest.Matchers.is;
-import static org.mockito.ArgumentMatchers.any;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
 import com.bluebell.planter.AbstractPlanterTest;
 import com.bluebell.planter.constants.ApiConstants;
 import com.bluebell.planter.converters.account.AccountDTOConverter;
@@ -20,7 +10,9 @@ import com.bluebell.platform.enums.account.Currency;
 import com.bluebell.platform.enums.trade.TradePlatform;
 import com.bluebell.platform.models.api.dto.account.CreateUpdateAccountDTO;
 import com.bluebell.platform.models.core.entities.account.Account;
+import com.bluebell.radicle.security.constants.SecurityConstants;
 import com.bluebell.radicle.services.account.AccountService;
+import com.bluebell.radicle.services.portfolio.PortfolioService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -34,22 +26,37 @@ import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
+import java.util.Map;
+import java.util.Optional;
+
+import static org.hamcrest.Matchers.containsString;
+import static org.hamcrest.Matchers.is;
+import static org.mockito.ArgumentMatchers.any;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
 /**
  * Testing class for {@link AccountApiController}
  *
  * @author Stephen Prizio
- * @version 0.1.1
+ * @version 0.1.2
  */
 @SpringBootTest
 @AutoConfigureMockMvc(addFilters = false)
 @RunWith(SpringRunner.class)
 class AccountApiControllerTest extends AbstractPlanterTest {
 
+    private static final String PORTFOLIO_UID = "portfolioUid";
+
     @MockitoBean
     private AccountDTOConverter accountDTOConverter;
 
     @MockitoBean
     private AccountService accountService;
+
+    @MockitoBean
+    private PortfolioService portfolioService;
 
     @MockitoBean
     private UniqueIdentifierService uniqueIdentifierService;
@@ -66,6 +73,8 @@ class AccountApiControllerTest extends AbstractPlanterTest {
         Mockito.when(this.accountService.findAccountByAccountNumber(1234)).thenReturn(Optional.of(Account.builder().build()));
         Mockito.when(this.accountService.findAccountByAccountNumber(5678)).thenReturn(Optional.empty());
         Mockito.when(this.accountService.deleteAccount(any())).thenReturn(true);
+        Mockito.when(this.portfolioService.findPortfolioByUid("1234")).thenReturn(Optional.of(generateTestPortfolio()));
+        Mockito.when(this.portfolioService.findPortfolioByUid("5678")).thenReturn(Optional.empty());
         Mockito.when(this.accountService.getAccountDetails(any())).thenReturn(generateAccountDetails());
     }
 
@@ -135,9 +144,29 @@ class AccountApiControllerTest extends AbstractPlanterTest {
 
     @Test
     void test_postCreateNewAccount_badJsonIntegrity() throws Exception {
-        this.mockMvc.perform(post("/api/v1/account/create-account").contentType(MediaType.APPLICATION_JSON).content(new ObjectMapper().writeValueAsString(Map.of("hello", "world"))))
+        this.mockMvc.perform(post("/api/v1/account/create-account").queryParam(PORTFOLIO_UID, "1234").contentType(MediaType.APPLICATION_JSON).content(new ObjectMapper().writeValueAsString(Map.of("hello", "world"))))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.message", containsString(ApiConstants.CLIENT_ERROR_DEFAULT_MESSAGE)));
+    }
+
+    @Test
+    void test_postCreateNewAccount_missingPortfolio() throws Exception {
+
+        final CreateUpdateAccountDTO data = CreateUpdateAccountDTO
+                .builder()
+                .name("Test")
+                .active(false)
+                .balance(150)
+                .number(123L)
+                .currency("CAD")
+                .type("CFD")
+                .broker("CMC_MARKETS")
+                .tradePlatform("METATRADER4")
+                .build();
+
+        this.mockMvc.perform(post("/api/v1/account/create-account").queryParam(PORTFOLIO_UID, "5678").contentType(MediaType.APPLICATION_JSON).content(new ObjectMapper().writeValueAsString(data)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.message", containsString("Portfolio not found")));
     }
 
     @Test
@@ -155,7 +184,11 @@ class AccountApiControllerTest extends AbstractPlanterTest {
                 .tradePlatform("METATRADER4")
                 .build();
 
-        this.mockMvc.perform(post("/api/v1/account/create-account").contentType(MediaType.APPLICATION_JSON).content(new ObjectMapper().writeValueAsString(data)))
+        this.mockMvc.perform(post("/api/v1/account/create-account")
+                        .requestAttr(SecurityConstants.USER_REQUEST_KEY, generateTestUser())
+                        .queryParam(PORTFOLIO_UID, "1234")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(new ObjectMapper().writeValueAsString(data)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.data.balance", is(1000.0)));
     }
@@ -165,9 +198,35 @@ class AccountApiControllerTest extends AbstractPlanterTest {
 
     @Test
     void test_putUpdateAccount_badJsonIntegrity() throws Exception {
-        this.mockMvc.perform(put("/api/v1/account/update-account").queryParam("accountNumber", "5678").contentType(MediaType.APPLICATION_JSON).content(new ObjectMapper().writeValueAsString(Map.of("hello", "world"))))
+        this.mockMvc.perform(put("/api/v1/account/update-account").queryParam("accountNumber", "5678").queryParam(PORTFOLIO_UID, "1234").contentType(MediaType.APPLICATION_JSON).content(new ObjectMapper().writeValueAsString(Map.of("hello", "world"))))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.message", containsString(ApiConstants.CLIENT_ERROR_DEFAULT_MESSAGE)));
+    }
+
+    @Test
+    void test_putUpdateAccount_missingPortfolio() throws Exception {
+
+        final CreateUpdateAccountDTO data = CreateUpdateAccountDTO
+                .builder()
+                .name("Test")
+                .active(false)
+                .balance(150)
+                .number(123L)
+                .currency("CAD")
+                .type("CFD")
+                .broker("CMC_MARKETS")
+                .tradePlatform("METATRADER4")
+                .build();
+
+        this.mockMvc.perform(put("/api/v1/account/update-account")
+                        .requestAttr(SecurityConstants.USER_REQUEST_KEY, generateTestUser())
+                        .queryParam("accountNumber", "5678")
+                        .queryParam(PORTFOLIO_UID, "5678")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(new ObjectMapper().writeValueAsString(data))
+                )
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.message", containsString("Portfolio not found")));
     }
 
     @Test
@@ -186,7 +245,9 @@ class AccountApiControllerTest extends AbstractPlanterTest {
                 .build();
 
         this.mockMvc.perform(put("/api/v1/account/update-account")
+                        .requestAttr(SecurityConstants.USER_REQUEST_KEY, generateTestUser())
                         .queryParam("accountNumber", "5678")
+                        .queryParam(PORTFOLIO_UID, "1234")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(new ObjectMapper().writeValueAsString(data))
                 )
@@ -210,7 +271,9 @@ class AccountApiControllerTest extends AbstractPlanterTest {
                 .build();
 
         this.mockMvc.perform(put("/api/v1/account/update-account")
+                        .requestAttr(SecurityConstants.USER_REQUEST_KEY, generateTestUser())
                         .queryParam("accountNumber", "1234")
+                        .queryParam(PORTFOLIO_UID, "1234")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(new ObjectMapper().writeValueAsString(data))
                 )

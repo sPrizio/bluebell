@@ -8,10 +8,12 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 import com.bluebell.platform.models.core.entities.account.Account;
+import com.bluebell.platform.models.core.entities.portfolio.Portfolio;
 import com.bluebell.platform.models.core.entities.security.User;
 import com.bluebell.AbstractGenericTest;
 import com.bluebell.radicle.importing.exceptions.TradeImportFailureException;
 import com.bluebell.radicle.repositories.account.AccountRepository;
+import com.bluebell.radicle.repositories.portfolio.PortfolioRepository;
 import com.bluebell.radicle.repositories.security.UserRepository;
 import com.bluebell.radicle.repositories.trade.TradeRepository;
 import jakarta.annotation.Resource;
@@ -39,6 +41,9 @@ import org.springframework.util.ResourceUtils;
 class CMCMarketsTradeImportServiceTest extends AbstractGenericTest {
 
     private User user;
+
+    private Portfolio portfolio;
+
     private Account account;
 
     @Resource(name = "accountRepository")
@@ -46,6 +51,9 @@ class CMCMarketsTradeImportServiceTest extends AbstractGenericTest {
 
     @Resource(name = "cmcMarketsTradeImportService")
     private CMCMarketsTradeImportService cmcMarketsTradeImportService;
+
+    @Resource(name = "portfolioRepository")
+    private PortfolioRepository portfolioRepository;
 
     @Resource(name = "tradeRepository")
     private TradeRepository tradeRepository;
@@ -58,8 +66,14 @@ class CMCMarketsTradeImportServiceTest extends AbstractGenericTest {
         final Account acc = generateTestAccount();
         acc.setId(null);
         account = this.accountRepository.save(acc);
+
+        portfolio = generateTestPortfolio();
+        portfolio.setId(null);
+        portfolio.setAccounts(List.of(account));
+        portfolio = this.portfolioRepository.save(portfolio);
+
         user = generateTestUser();
-        user.setAccounts(List.of(account));
+        user.setPortfolios(List.of(portfolio));
         user = this.userRepository.save(user);
     }
 
@@ -68,6 +82,9 @@ class CMCMarketsTradeImportServiceTest extends AbstractGenericTest {
         this.tradeRepository.deleteAll();
         this.accountRepository.delete(account);
         account = null;
+
+        this.portfolioRepository.delete(portfolio);
+        portfolio = null;
 
         this.userRepository.delete(user);
         user = null;

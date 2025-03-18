@@ -11,7 +11,7 @@ import org.springframework.test.context.junit4.SpringRunner;
  * @author Stephen Prizio
  * @version 0.1.2
  */
-@SpringBootTest
-@RunWith(SpringRunner.class)
+/*@SpringBootTest
+@RunWith(SpringRunner.class)*/
 public class PortfolioServiceTest extends AbstractGenericTest {
 }

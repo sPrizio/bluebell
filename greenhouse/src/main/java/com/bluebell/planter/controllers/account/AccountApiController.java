@@ -283,7 +283,7 @@ public class AccountApiController extends AbstractApiController {
             @Parameter(name = "Account Payload", description = "Payload for creating or updating accounts")
             final @RequestBody CreateUpdateAccountDTO data,
             @Parameter(name = "Portfolio UID", description = "Portfolio UID to add the account to")
-            final String portfolioUid,
+            final @RequestParam("portfolioUid") String portfolioUid,
             final HttpServletRequest request
     ) {
         if (data == null || data.number() == null) {
@@ -359,7 +359,7 @@ public class AccountApiController extends AbstractApiController {
             @Parameter(name = "Account Payload", description = "Payload for creating or updating accounts")
             final @RequestBody CreateUpdateAccountDTO data,
             @Parameter(name = "Portfolio UID", description = "Portfolio UID to add the account to")
-            final String portfolioUid,
+            final @RequestParam("portfolioUid") String portfolioUid,
             final HttpServletRequest request
     ) {
         if (data == null || data.number() == null) {

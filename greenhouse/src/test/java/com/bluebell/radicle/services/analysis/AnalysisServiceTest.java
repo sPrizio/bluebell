@@ -3,8 +3,8 @@ package com.bluebell.radicle.services.analysis;
 import java.time.DayOfWeek;
 import java.util.List;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 import com.bluebell.platform.enums.analysis.AnalysisFilter;
 import com.bluebell.platform.enums.analysis.TradeDurationFilter;
@@ -13,6 +13,7 @@ import com.bluebell.platform.models.core.entities.account.Account;
 import com.bluebell.platform.models.core.entities.trade.Trade;
 import com.bluebell.AbstractGenericTest;
 import com.bluebell.radicle.exceptions.validation.IllegalParameterException;
+import org.assertj.core.api.InstanceOfAssertFactories;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
@@ -24,7 +25,7 @@ import org.springframework.test.context.junit4.SpringRunner;
  * Testing class for {@link AnalysisService}
  *
  * @author Stephen Prizio
- * @version 0.1.0
+ * @version 0.1.2
  */
 @SpringBootTest
 @RunWith(SpringRunner.class)
@@ -36,7 +37,7 @@ class AnalysisServiceTest extends AbstractGenericTest {
     private AnalysisService analysisService;
 
     @BeforeEach
-    public void setUp() {
+    void setUp() {
         this.account = generateTestAccount();
         final List<Trade> trades = List.of(generateTestBuyTrade(), generateTestSellTrade());
         this.account.setTrades(trades);
@@ -53,7 +54,7 @@ class AnalysisServiceTest extends AbstractGenericTest {
                 .isThrownBy(() -> this.analysisService.computeTimeBucketAnalysis(null, PlatformTimeInterval.FIVE_MINUTE, AnalysisFilter.PROFIT, true));
 
         assertThat(this.analysisService.computeTimeBucketAnalysis(this.account, PlatformTimeInterval.FIVE_MINUTE, AnalysisFilter.PROFIT, true))
-                .asList()
+                .asInstanceOf(InstanceOfAssertFactories.LIST)
                 .element(24)
                 .extracting("label", "value", "count")
                 .containsExactly("11:30", 14.85, 1);
@@ -69,7 +70,7 @@ class AnalysisServiceTest extends AbstractGenericTest {
                 .isThrownBy(() -> this.analysisService.computeWeekdayAnalysis(null, AnalysisFilter.PROFIT));
 
         assertThat(this.analysisService.computeWeekdayAnalysis(this.account, AnalysisFilter.PROFIT))
-                .asList()
+                .asInstanceOf(InstanceOfAssertFactories.LIST)
                 .element(2)
                 .extracting("label", "value", "count")
                 .containsExactly("Wednesday", 10.35, 2);
@@ -85,13 +86,13 @@ class AnalysisServiceTest extends AbstractGenericTest {
                 .isThrownBy(() -> this.analysisService.computeWeekdayTimeBucketAnalysis(null, DayOfWeek.WEDNESDAY, PlatformTimeInterval.FIFTEEN_MINUTE, AnalysisFilter.PROFIT));
 
         assertThat(this.analysisService.computeWeekdayTimeBucketAnalysis(this.account, DayOfWeek.WEDNESDAY, PlatformTimeInterval.FIFTEEN_MINUTE, AnalysisFilter.POINTS))
-                .asList()
+                .asInstanceOf(InstanceOfAssertFactories.LIST)
                 .element(3)
                 .extracting("label", "value", "count")
                 .containsExactly("10:15", -3.97, 1);
 
         assertThat(this.analysisService.computeWeekdayTimeBucketAnalysis(this.account, DayOfWeek.MONDAY, PlatformTimeInterval.FIFTEEN_MINUTE, AnalysisFilter.POINTS))
-                .asList()
+                .asInstanceOf(InstanceOfAssertFactories.LIST)
                 .isEmpty();
     }
 
@@ -105,19 +106,19 @@ class AnalysisServiceTest extends AbstractGenericTest {
                 .isThrownBy(() -> this.analysisService.computeTradeDurationAnalysis(null, AnalysisFilter.PROFIT, TradeDurationFilter.ALL));
 
         assertThat(this.analysisService.computeTradeDurationAnalysis(this.account, AnalysisFilter.PROFIT, TradeDurationFilter.ALL))
-                .asList()
+                .asInstanceOf(InstanceOfAssertFactories.LIST)
                 .element(0)
                 .extracting("label", "value", "count")
                 .containsExactly("5", 10.35, 2);
 
         assertThat(this.analysisService.computeTradeDurationAnalysis(this.account, AnalysisFilter.PROFIT, TradeDurationFilter.WINS))
-                .asList()
+                .asInstanceOf(InstanceOfAssertFactories.LIST)
                 .element(0)
                 .extracting("label", "value", "count")
                 .containsExactly("5", 14.85, 1);
 
         assertThat(this.analysisService.computeTradeDurationAnalysis(this.account, AnalysisFilter.PROFIT, TradeDurationFilter.LOSSES))
-                .asList()
+                .asInstanceOf(InstanceOfAssertFactories.LIST)
                 .element(0)
                 .extracting("label", "value", "count")
                 .containsExactly("5", -4.5, 1);
