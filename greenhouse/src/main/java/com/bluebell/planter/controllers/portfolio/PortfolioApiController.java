@@ -31,4 +31,7 @@ public class PortfolioApiController extends AbstractApiController {
 
     //  ----------------- GET REQUESTS -----------------
 
+    //  TODO: CRUD METHODS
+    //  TODO: TESTS
+    //  TODO: PORTFOLIO RUNNER
 }

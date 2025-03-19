@@ -42,10 +42,10 @@ class PortfolioRecordApiControllerTest extends AbstractPlanterTest {
     }
 
 
-    //  ----------------- getPortfolio -----------------
+    //  ----------------- getPortfolioRecord -----------------
 
     @Test
-    void test_getPortfolio_success() throws Exception {
+    void test_getPortfolioRecord_success() throws Exception {
         this.mockMvc.perform(get("/api/v1/portfolio-record/get"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.data.netWorth", is(1000000.0)));

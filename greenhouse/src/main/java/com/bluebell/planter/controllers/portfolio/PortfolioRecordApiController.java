@@ -61,7 +61,7 @@ public class PortfolioRecordApiController extends AbstractApiController {
             )
     )
     @GetMapping("/get")
-    public StandardJsonResponse<PortfolioRecord> getPortfolio(final HttpServletRequest request) {
+    public StandardJsonResponse<PortfolioRecord> getPortfolioRecord(final HttpServletRequest request) {
         final User user = (User) request.getAttribute(SecurityConstants.USER_REQUEST_KEY);
         return StandardJsonResponse
                 .<PortfolioRecord>builder()

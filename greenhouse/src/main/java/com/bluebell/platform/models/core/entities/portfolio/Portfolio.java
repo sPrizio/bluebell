@@ -31,15 +31,18 @@ public class Portfolio implements GenericEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     public Long id;
 
+    @Setter
     @Column
     private String name;
 
+    @Setter
     @Column
     private boolean active;
 
     @Column
     private @Builder.Default LocalDateTime created = LocalDateTime.now();
 
+    @Setter
     @Column
     private boolean defaultPortfolio;
 
@@ -47,6 +50,7 @@ public class Portfolio implements GenericEntity {
     @OneToMany(mappedBy = "portfolio", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private @Builder.Default List<Account> accounts = new ArrayList<>();
 
+    @Setter
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.REFRESH)
     private User user;
 
