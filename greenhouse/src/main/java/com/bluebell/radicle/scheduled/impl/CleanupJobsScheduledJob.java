@@ -44,7 +44,7 @@ public class CleanupJobsScheduledJob extends AbstractScheduledJob implements Gen
 
     @Override
     @Async
-    @Scheduled(fixedRate = 5000)
+    @Scheduled(cron = "0 0 23 * * ?")
     public void execute() {
 
         checkForConcurrentJob(JobType.CLEANUP_STALE_JOBS);
