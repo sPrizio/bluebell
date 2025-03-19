@@ -7,12 +7,12 @@ import lombok.Builder;
 import lombok.Getter;
 
 /**
- * Class representation of an {@link Account}'s value in a {@link Portfolio}
+ * Class representation of an {@link Account}'s value in a {@link PortfolioRecord}
  *
  * @param name {@link Account} name
  * @param value {@link Account} value (balance)
  * @author Stephen Prizio
- * @version 0.1.1
+ * @version 0.1.2
  */
 @Builder
 @Schema(title = "PortfolioAccountEquityPoint", name = "PortfolioAccountEquityPoint", description = "A data point of an account's value within a portfolio for a unit of time")

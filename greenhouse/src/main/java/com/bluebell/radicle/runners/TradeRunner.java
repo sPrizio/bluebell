@@ -24,7 +24,7 @@ import java.util.Random;
  * @version 0.1.2
  */
 @Component
-@Order(3)
+@Order(4)
 @Profile("dev")
 public class TradeRunner extends AbstractRunner implements CommandLineRunner {
 

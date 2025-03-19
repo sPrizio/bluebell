@@ -4,13 +4,14 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
-import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 
 import com.bluebell.platform.constants.CorePlatformConstants;
 import com.bluebell.platform.enums.trade.TradeType;
 import com.bluebell.platform.models.core.entities.account.Account;
+import com.bluebell.platform.models.core.entities.portfolio.Portfolio;
 import com.bluebell.platform.models.core.entities.security.User;
 import com.bluebell.platform.models.core.entities.trade.Trade;
 import com.bluebell.AbstractGenericTest;
@@ -31,13 +32,15 @@ import org.springframework.test.context.junit4.SpringRunner;
  * Testing class for {@link TradeService}
  *
  * @author Stephen Prizio
- * @version 0.1.0
+ * @version 0.1.2
  */
 @SpringBootTest
 @RunWith(SpringRunner.class)
 class TradeServiceTest extends AbstractGenericTest {
 
     private final Account TEST_ACCOUNT = generateTestAccount();
+
+    private final Portfolio TEST_PORTFOLIO = generateTestPortfolio();
 
     private final User TEST_USER = generateTestUser();
 
@@ -54,8 +57,9 @@ class TradeServiceTest extends AbstractGenericTest {
     private TradeService tradeService;
 
     @BeforeEach
-    public void setUp() {
-        TEST_USER.setAccounts(List.of(TEST_ACCOUNT));
+    void setUp() {
+        TEST_PORTFOLIO.setAccounts(List.of(TEST_ACCOUNT));
+        TEST_USER.setPortfolios(List.of(TEST_PORTFOLIO));
         Mockito.when(this.tradeRepository.findAllByTradeTypeAndAccountOrderByTradeOpenTimeAsc(TradeType.BUY, TEST_ACCOUNT)).thenReturn(List.of(TEST_TRADE_1));
         Mockito.when(this.tradeRepository.findAllTradesWithinDate(TEST1, TEST1.plusYears(1).toLocalDate().atStartOfDay(), TEST_ACCOUNT)).thenReturn(List.of(TEST_TRADE_1, TEST_TRADE_2));
         Mockito.when(this.tradeRepository.findAllTradesWithinDate(TEST1, TEST2, TEST_ACCOUNT)).thenReturn(List.of(TEST_TRADE_1, TEST_TRADE_2));

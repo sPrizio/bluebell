@@ -5,7 +5,6 @@ import com.bluebell.platform.constants.CorePlatformConstants;
 import com.bluebell.platform.enums.system.PhoneType;
 import com.bluebell.platform.exceptions.calculator.UnexpectedNegativeValueException;
 import com.bluebell.platform.models.api.dto.system.CreateUpdatePhoneNumberDTO;
-import com.bluebell.platform.models.core.entities.account.Account;
 import com.bluebell.platform.models.core.entities.security.User;
 import com.bluebell.radicle.exceptions.validation.IllegalParameterException;
 import com.bluebell.radicle.exceptions.validation.MissingRequiredDataException;
@@ -21,15 +20,15 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.List;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.mockito.ArgumentMatchers.*;
 
 /**
  * Testing class for {@link PhoneNumberService}
  *
  * @author Stephen Prizio
- * @version 0.1.1
+ * @version 0.1.2
  */
 @SpringBootTest
 @RunWith(SpringRunner.class)
@@ -43,10 +42,8 @@ class PhoneNumberServiceTest extends AbstractGenericTest {
 
     @BeforeEach
     void setUp() {
-
-        final Account testAccount = generateTestAccount();
         final User testUser = generateTestUser();
-        testUser.setAccounts(List.of(testAccount));
+        testUser.setPortfolios(List.of(generateTestPortfolio()));
 
         Mockito.when(this.phoneNumberRepository.findPhoneNumberByPhoneTypeAndCountryCodeAndTelephoneNumber(any(), anyShort(), anyLong())).thenReturn(generateTestPhoneNumber());
         Mockito.when(this.phoneNumberRepository.save(any())).thenReturn(generateTestPhoneNumber());

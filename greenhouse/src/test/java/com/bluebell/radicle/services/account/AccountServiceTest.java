@@ -22,8 +22,8 @@ import org.springframework.test.context.junit4.SpringRunner;
 import java.util.List;
 import java.util.Optional;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 
@@ -31,7 +31,7 @@ import static org.mockito.ArgumentMatchers.anyString;
  * Testing class for {@link AccountService}
  *
  * @author Stephen Prizio
- * @version 0.1.1
+ * @version 0.1.2
  */
 @SpringBootTest
 @RunWith(SpringRunner.class)
@@ -83,16 +83,16 @@ class AccountServiceTest extends AbstractGenericTest {
     //  ----------------- createNewAccount -----------------
 
     @Test
-    void test_createNewAccount_missingUser() {
+    void test_createNewAccount_missingPortfolio() {
         assertThatExceptionOfType(IllegalParameterException.class)
                 .isThrownBy(() -> this.accountService.createNewAccount(null, null))
-                .withMessage(CorePlatformConstants.Validation.Security.User.USER_CANNOT_BE_NULL);
+                .withMessage(CorePlatformConstants.Validation.Portfolio.PORTFOLIO_CANNOT_BE_NULL);
     }
 
     @Test
     void test_createNewAccount_missingData() {
         assertThatExceptionOfType(MissingRequiredDataException.class)
-                .isThrownBy(() -> this.accountService.createNewAccount(null, generateTestUser()))
+                .isThrownBy(() -> this.accountService.createNewAccount(null, generateTestPortfolio()))
                 .withMessage("The required data for creating an Account entity was null or empty");
     }
 
@@ -111,7 +111,7 @@ class AccountServiceTest extends AbstractGenericTest {
                 .tradePlatform("METATRADER4")
                 .build();
 
-        assertThat(this.accountService.createNewAccount(data, generateTestUser()))
+        assertThat(this.accountService.createNewAccount(data, generateTestPortfolio()))
                 .isNotNull()
                 .extracting("balance", "accountType", "accountNumber")
                 .containsExactly(1000.0, AccountType.CFD, 1234L);
@@ -128,16 +128,16 @@ class AccountServiceTest extends AbstractGenericTest {
     }
 
     @Test
-    void test_updateAccount_missingAccount() {
+    void test_updateAccount_missingPortfolio() {
         assertThatExceptionOfType(IllegalParameterException.class)
                 .isThrownBy(() -> this.accountService.updateAccount(generateTestAccount(), CreateUpdateAccountDTO.builder().build(), null))
-                .withMessage(CorePlatformConstants.Validation.Security.User.USER_CANNOT_BE_NULL);
+                .withMessage(CorePlatformConstants.Validation.Portfolio.PORTFOLIO_CANNOT_BE_NULL);
     }
 
     @Test
     void test_updateAccount_missingData() {
         assertThatExceptionOfType(MissingRequiredDataException.class)
-                .isThrownBy(() -> this.accountService.updateAccount(generateTestAccount(), null, generateTestUser()))
+                .isThrownBy(() -> this.accountService.updateAccount(generateTestAccount(), null, generateTestPortfolio()))
                 .withMessage("The required data for updating an Account was null or empty");
     }
 
@@ -156,7 +156,7 @@ class AccountServiceTest extends AbstractGenericTest {
                 .tradePlatform("METATRADER4")
                 .build();
 
-        assertThat(this.accountService.updateAccount(generateTestAccount(), data, generateTestUser()))
+        assertThat(this.accountService.updateAccount(generateTestAccount(), data, generateTestPortfolio()))
                 .isNotNull()
                 .extracting("balance", "accountType", "accountNumber")
                 .containsExactly(1000.0, AccountType.CFD, 1234L);

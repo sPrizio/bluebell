@@ -1,7 +1,7 @@
 package com.bluebell.planter.services;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 import com.bluebell.planter.AbstractPlanterTest;
 import com.bluebell.platform.constants.CorePlatformConstants;
@@ -16,7 +16,7 @@ import org.mockito.Mockito;
  * Testing class for {@link UniqueIdentifierService}
  *
  * @author Stephen Prizio
- * @version 0.1.1
+ * @version 0.1.2
  */
 class UniqueIdentifierServiceTest extends AbstractPlanterTest {
 

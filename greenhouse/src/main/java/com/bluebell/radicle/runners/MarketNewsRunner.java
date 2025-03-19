@@ -33,7 +33,7 @@ import java.util.*;
  * @version 0.1.2
  */
 @Component
-@Order(5)
+@Order(6)
 @Profile("dev")
 public class MarketNewsRunner extends AbstractRunner implements CommandLineRunner {
 

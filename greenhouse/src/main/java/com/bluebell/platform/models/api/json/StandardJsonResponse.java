@@ -9,13 +9,14 @@ import com.bluebell.platform.enums.system.PhoneType;
 import com.bluebell.platform.enums.trade.TradePlatform;
 import com.bluebell.platform.models.api.dto.account.AccountDTO;
 import com.bluebell.platform.models.api.dto.news.MarketNewsDTO;
+import com.bluebell.platform.models.api.dto.portfolio.PortfolioDTO;
 import com.bluebell.platform.models.api.dto.security.UserDTO;
 import com.bluebell.platform.models.api.dto.trade.PaginatedTradesDTO;
 import com.bluebell.platform.models.api.dto.trade.TradeDTO;
 import com.bluebell.platform.models.core.nonentities.apexcharts.ApexChartCandleStick;
 import com.bluebell.platform.models.core.nonentities.data.PairEntry;
 import com.bluebell.platform.models.core.nonentities.records.account.AccountDetails;
-import com.bluebell.platform.models.core.nonentities.records.portfolio.Portfolio;
+import com.bluebell.platform.models.core.nonentities.records.portfolio.PortfolioRecord;
 import com.bluebell.platform.models.core.nonentities.records.tradelog.TradeLog;
 import com.bluebell.platform.models.core.nonentities.records.traderecord.TradeRecordReport;
 import com.bluebell.platform.models.core.nonentities.records.traderecord.controls.TradeRecordControls;
@@ -26,7 +27,7 @@ import lombok.Builder;
  * Class representation of a standard json response
  *
  * @author Stephen Prizio
- * @version 0.1.1
+ * @version 0.1.2
  */
 @Builder
 @Schema(title = "StandardJsonResponse", name = "StandardJsonResponse", description = "Standard API response entity. All api calls will return this entity which includes a success flag, data, external & internal facing messages.")
@@ -46,7 +47,7 @@ public record StandardJsonResponse<T>(
                         Boolean.class,
                         ApexChartCandleStick.class,
                         MarketNewsDTO.class,
-                        Portfolio.class,
+                        PortfolioRecord.class,
                         UserDTO.class,
                         Country.class,
                         PhoneType.class,
@@ -55,7 +56,8 @@ public record StandardJsonResponse<T>(
                         TradeRecordControls.class,
                         TradeLog.class,
                         TradeDTO.class,
-                        PaginatedTradesDTO.class
+                        PaginatedTradesDTO.class,
+                        PortfolioDTO.class
                 }
         ) T data,
         @Schema(description = "External, client-facing message. Successful calls will usually have an empty message") String message,

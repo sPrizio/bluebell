@@ -12,6 +12,7 @@ import com.bluebell.platform.models.api.dto.security.UserDTO;
 import com.bluebell.platform.models.api.dto.transaction.TransactionDTO;
 import com.bluebell.platform.models.api.json.StandardJsonResponse;
 import com.bluebell.platform.models.core.entities.account.Account;
+import com.bluebell.platform.models.core.entities.portfolio.Portfolio;
 import com.bluebell.platform.models.core.entities.security.User;
 import com.bluebell.platform.models.core.entities.transaction.Transaction;
 import com.bluebell.radicle.exceptions.validation.MissingRequiredDataException;
@@ -36,7 +37,7 @@ import java.util.stream.Collectors;
  * API controller for {@link User}
  *
  * @author Stephen Prizio
- * @version 0.1.1
+ * @version 0.1.2
  */
 @RestController
 @RequestMapping("${base.api.controller.endpoint}/user")
@@ -294,7 +295,7 @@ public class UserApiController extends AbstractApiController {
         return StandardJsonResponse
                 .<List<TransactionDTO>>builder()
                 .success(true)
-                .data(this.transactionDTOConverter.convertAll(user.getAccounts().stream().map(Account::getTransactions).filter(Objects::nonNull).flatMap(List::stream).filter(Objects::nonNull).sorted(Comparator.comparing(Transaction::getTransactionDate)).limit(5).toList()))
+                .data(this.transactionDTOConverter.convertAll(user.getActivePortfolios().stream().map(Portfolio::getActiveAccounts).flatMap(List::stream).map(Account::getTransactions).filter(Objects::nonNull).flatMap(List::stream).filter(Objects::nonNull).sorted(Comparator.comparing(Transaction::getTransactionDate)).limit(5).toList()))
                 .build();
     }
 

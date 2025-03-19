@@ -7,7 +7,7 @@ import com.bluebell.platform.enums.account.Currency;
 import com.bluebell.platform.enums.trade.TradePlatform;
 import com.bluebell.platform.models.api.dto.account.CreateUpdateAccountDTO;
 import com.bluebell.platform.models.core.entities.account.Account;
-import com.bluebell.platform.models.core.entities.security.User;
+import com.bluebell.platform.models.core.entities.portfolio.Portfolio;
 import com.bluebell.platform.models.core.nonentities.records.account.AccountDetails;
 import com.bluebell.radicle.exceptions.system.EntityCreationException;
 import com.bluebell.radicle.exceptions.system.EntityModificationException;
@@ -17,7 +17,6 @@ import jakarta.annotation.Resource;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -28,7 +27,7 @@ import static com.bluebell.radicle.validation.GenericValidator.validateParameter
  * Service-layer for {@link Account} entities
  *
  * @author Stephen Prizio
- * @version 0.1.1
+ * @version 0.1.2
  */
 @Service
 public class AccountService {
@@ -76,20 +75,20 @@ public class AccountService {
     /**
      * Creates a new {@link Account} with the given data
      *
-     * @param data {@link CreateUpdateAccountDTO}
-     * @param user {@link User}
+     * @param data      {@link CreateUpdateAccountDTO}
+     * @param portfolio {@link Portfolio}
      * @return new {@link Account}
      */
-    public Account createNewAccount(final CreateUpdateAccountDTO data, final User user) {
+    public Account createNewAccount(final CreateUpdateAccountDTO data, final Portfolio portfolio) {
 
-        validateParameterIsNotNull(user, CorePlatformConstants.Validation.Security.User.USER_CANNOT_BE_NULL);
+        validateParameterIsNotNull(portfolio, CorePlatformConstants.Validation.Portfolio.PORTFOLIO_CANNOT_BE_NULL);
 
         if (data == null || data.number() == null) {
             throw new MissingRequiredDataException("The required data for creating an Account entity was null or empty");
         }
 
         try {
-            return applyChanges(Account.builder().build(), data, user, true);
+            return applyChanges(Account.builder().build(), data, portfolio, true);
         } catch (Exception e) {
             throw new EntityCreationException(String.format("An Account could not be created : %s", e.getMessage()), e);
         }
@@ -98,22 +97,22 @@ public class AccountService {
     /**
      * Updates an existing {@link Account}
      *
-     * @param account {@link Account} to update
-     * @param data {@link CreateUpdateAccountDTO}
-     * @param user {@link User}
+     * @param account   {@link Account} to update
+     * @param data      {@link CreateUpdateAccountDTO}
+     * @param portfolio {@link Portfolio}
      * @return updated {@link Account}
      */
-    public Account updateAccount(final Account account, final CreateUpdateAccountDTO data, final User user) {
+    public Account updateAccount(final Account account, final CreateUpdateAccountDTO data, final Portfolio portfolio) {
 
         validateParameterIsNotNull(account, CorePlatformConstants.Validation.Account.ACCOUNT_CANNOT_BE_NULL);
-        validateParameterIsNotNull(user, CorePlatformConstants.Validation.Security.User.USER_CANNOT_BE_NULL);
+        validateParameterIsNotNull(portfolio, CorePlatformConstants.Validation.Portfolio.PORTFOLIO_CANNOT_BE_NULL);
 
         if (data == null || data.number() == null) {
             throw new MissingRequiredDataException("The required data for updating an Account was null or empty");
         }
 
         try {
-            return applyChanges(account, data, user, false);
+            return applyChanges(account, data, portfolio, false);
         } catch (Exception e) {
             throw new EntityModificationException(String.format("An error occurred while modifying the Account : %s", e.getMessage()), e);
         }
@@ -141,14 +140,14 @@ public class AccountService {
     //  HELPERS
 
     /**
-     * Applies the changes contained within the {@link Map} to the given {@link Account}
+     * Applies the changes to the given {@link Account}
      *
-     * @param account {@link Account}
-     * @param data    {@link CreateUpdateAccountDTO}
-     * @param user    {@link User}
+     * @param account   {@link Account}
+     * @param data      {@link CreateUpdateAccountDTO}
+     * @param portfolio {@link Portfolio}
      * @return updated {@link Account}
      */
-    private Account applyChanges(Account account, final CreateUpdateAccountDTO data, final User user, final boolean isNew) {
+    private Account applyChanges(Account account, final CreateUpdateAccountDTO data, final Portfolio portfolio, final boolean isNew) {
 
         if (isNew) {
             account.setAccountOpenTime(LocalDateTime.now());
@@ -159,14 +158,14 @@ public class AccountService {
                 account.setActive(true);
             }
 
-            account.setUser(user);
+            account.setPortfolio(portfolio);
             account.setBalance(data.balance());
             account.setInitialBalance(data.balance());
         } else {
             account.setActive(data.active());
             account.setBalance(data.balance());
         }
-        
+
         account.setName(data.name());
         account.setAccountNumber(data.number());
         account.setCurrency(Currency.get(data.currency()));
@@ -179,7 +178,7 @@ public class AccountService {
         }
 
         if (!Objects.isNull(data.isDefault())) {
-            user.getAccounts().forEach(a -> {
+            portfolio.getAccounts().forEach(a -> {
                 a.setDefaultAccount(false);
                 this.accountRepository.save(a);
             });
