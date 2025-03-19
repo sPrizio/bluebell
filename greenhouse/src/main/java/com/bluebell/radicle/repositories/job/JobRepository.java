@@ -7,13 +7,15 @@ import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDateTime;
+import java.util.Collection;
 import java.util.List;
 
 /**
  * Data-access layer for {@link Job}
  *
  * @author Stephen Prizio
- * @version 0.1.1
+ * @version 0.1.2
  */
 @Repository
 public interface JobRepository extends PagingAndSortingRepository<Job, Long>, CrudRepository<Job, Long> {
@@ -50,4 +52,13 @@ public interface JobRepository extends PagingAndSortingRepository<Job, Long>, Cr
      * @return {@link List} of {@link Job}
      */
     List<Job> findJobsByStatusAndType(final JobStatus status, final JobType jobType);
+
+    /**
+     * Returns a {@link List} of {@link Job}s that are matching the given statuses and whose completion time comes before the given date time
+     *
+     * @param statuses {@link Collection} of {@link JobStatus}
+     * @param completionTimeBefore lookback period {@link LocalDateTime}
+     * @return {@link List} of {@link Job}
+     */
+    List<Job> findJobsByStatusInAndCompletionTimeBefore(final Collection<JobStatus> statuses, final LocalDateTime completionTimeBefore);
 }
