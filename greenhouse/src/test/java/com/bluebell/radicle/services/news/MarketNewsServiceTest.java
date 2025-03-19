@@ -2,6 +2,7 @@ package com.bluebell.radicle.services.news;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -32,7 +33,7 @@ import org.springframework.test.context.junit4.SpringRunner;
  * Testing class for {@link MarketNewsService}
  *
  * @author Stephen Prizio
- * @version 0.1.1
+ * @version 0.1.2
  */
 @SpringBootTest
 @RunWith(SpringRunner.class)
@@ -121,7 +122,7 @@ class MarketNewsServiceTest extends AbstractGenericTest {
 
     @Test
     void test_fetchMarketNews_failure() {
-        Mockito.when(this.forexFactoryIntegrationService.getCurrentWeekNews()).thenReturn(List.of());
+        Mockito.when(this.forexFactoryIntegrationService.getCurrentWeekNews()).thenReturn(Collections.emptyList());
         assertThat(this.marketNewsService.fetchMarketNews())
                 .isFalse();
     }

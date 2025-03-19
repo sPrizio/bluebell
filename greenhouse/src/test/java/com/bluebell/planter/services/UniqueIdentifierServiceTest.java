@@ -1,7 +1,7 @@
 package com.bluebell.planter.services;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 import com.bluebell.planter.AbstractPlanterTest;
 import com.bluebell.platform.constants.CorePlatformConstants;
@@ -16,7 +16,7 @@ import org.mockito.Mockito;
  * Testing class for {@link UniqueIdentifierService}
  *
  * @author Stephen Prizio
- * @version 0.1.1
+ * @version 0.1.2
  */
 class UniqueIdentifierServiceTest extends AbstractPlanterTest {
 
@@ -65,22 +65,6 @@ class UniqueIdentifierServiceTest extends AbstractPlanterTest {
     void test_retrieveId_success() {
         TradeDTO tradeDTO = TradeDTO.builder().uid(TEST_UID).build();
         assertThat(this.uniqueIdentifierService.retrieveId(tradeDTO.getUid()))
-                .isEqualTo(118L);
-    }
-
-
-    //  ----------------- retrieveIdForUid -----------------
-
-    @Test
-    void test_retrieveIdForUid_missingParams() {
-        assertThatExceptionOfType(IllegalParameterException.class)
-                .isThrownBy(() -> this.uniqueIdentifierService.retrieveIdForUid(null))
-                .withMessage(CorePlatformConstants.Validation.DataIntegrity.UID_CANNOT_BE_NULL);
-    }
-
-    @Test
-    void test_retrieveIdForUid_success() {
-        assertThat(this.uniqueIdentifierService.retrieveIdForUid(TEST_UID))
                 .isEqualTo(118L);
     }
 }

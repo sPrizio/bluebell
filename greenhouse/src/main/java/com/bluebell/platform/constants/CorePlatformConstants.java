@@ -2,12 +2,14 @@ package com.bluebell.platform.constants;
 
 import java.time.LocalDate;
 import java.time.Year;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * Constants defined for the bluebell platform
  *
  * @author Stephen Prizio
- * @version 0.1.1
+ * @version 0.1.2
  */
 public class CorePlatformConstants {
 
@@ -81,10 +83,26 @@ public class CorePlatformConstants {
      */
     public static final double RISK_FREE_RATE_CANADA = 3.26;
 
+
     /**
-     * The base back-end java module name
+     * A collection of random english words
      */
-    public static final String BASE_BACKEND_MODULE = "greenhouse";
+    public static final List<String> RANDOM_WORDS = Arrays.asList(
+            "apple", "banana", "cherry", "dog", "elephant", "forest", "galaxy", "horizon", "island", "jungle", "keyboard", "lemon", "mountain", "notebook", "ocean", "pencil", "quasar", "rainbow", "sunflower", "tiger",
+            "umbrella", "volcano", "whale", "xylophone", "yellow", "zebra", "adventure", "butterfly", "candle", "diamond", "engine", "fountain", "giraffe", "happiness", "igloo", "jigsaw", "kangaroo", "lighthouse", "mystery",
+            "necklace", "orchestra", "penguin", "quicksand", "rocket", "snowflake", "treasure", "universe", "voyage", "waterfall", "xenon", "yogurt", "zeppelin", "ancient", "bridge", "crystal", "dragon", "emerald", "firework",
+            "gondola", "harvest", "illusion", "square", "koala", "labyrinth", "meadow", "nectar", "octopus", "puzzle", "quiver", "riddle", "starlight", "twilight", "utopia", "vortex", "wanderlust", "x-ray", "yawn", "zenith",
+            "asteroid", "blizzard", "comet", "dew", "echo", "fjord", "glacier", "monkey", "inferno", "journey", "kaleidoscope", "lagoon", "miracle", "nebula", "obsidian", "paradox", "quagmire", "resonance", "symphony",
+            "tornado", "umbra", "vivid", "whisper", "xenophile", "yearn", "zephyr", "arcade", "breeze", "cavern", "dungeon", "enigma", "fantasy", "goblin", "hologram", "incantation", "jubilant", "kingdom", "lantern",
+            "mystic", "nebular", "oracle", "potion", "quest", "realm", "sorcery", "trance", "unravel", "vista", "wizard", "xanadu", "yonder", "zodiac", "alchemy", "bonfire", "catacomb", "dagger", "eclipse", "firefly",
+            "gargoyle", "honeycomb", "illusionist", "jade", "knight", "labyrinthine", "memento", "nightshade", "omen", "phantom", "quill", "runes", "scepter", "tapestry", "undertow", "vanguard", "warlock", "xylophonist",
+            "yew", "zither", "adorn", "banquet", "cascade", "dahlia", "ember", "fable", "glisten", "harlequin", "iridescent", "jewel", "kismet", "lullaby", "murmur", "nostalgia", "opulent", "periwinkle", "quaint",
+            "reverie", "serendipity", "talisman", "unison", "velvet", "whimsy", "xylotomy", "yearning", "zeal", "amber", "basilisk", "charm", "destiny", "epiphany", "flourish", "grace", "halo", "intrigue", "journeyman",
+            "kindred", "luminous", "mirage", "nymph", "flower", "paragon", "quiescent", "rhapsody", "sapphire", "tranquil", "uplift", "valor", "wanderer", "xenial", "yesteryear", "zealot", "apex", "bravado", "cosmic",
+            "daring", "elixir", "fervor", "genesis", "bottle", "inspire", "jubilee", "karma", "lotus", "momentum", "novella", "oblivion", "phenomenon", "quintessence", "renaissance", "solstice", "threshold", "utmost",
+            "verity", "wistful", "xenogenesis", "yarn", "zen", "aurora", "bliss", "cipher", "delight", "essence", "felicity", "gossamer", "harmony", "infinity", "joyous", "kaleidoscopic", "lore", "melody", "nexus",
+            "orison", "pulse", "tree", "radiance", "serene", "plane", "uplifting", "vividly", "wisp", "x-factor", "yoga", "zen-like"
+    );
 
     /**
      * Validation messages used throughout the system, organized according to the entity packages
@@ -129,6 +147,15 @@ public class CorePlatformConstants {
             public static final String JOB_STATUS_CANNOT_BE_NULL = "job status cannot be null";
 
             public static final String JOB_TYPE_CANNOT_BE_NULL = "job type cannot be null";
+        }
+
+        public static class Portfolio {
+
+            private Portfolio() {
+                throw new UnsupportedOperationException(String.format(NO_INSTANTIATION, getClass().getName()));
+            }
+
+            public static final String PORTFOLIO_CANNOT_BE_NULL = "portfolio cannot be null";
         }
 
         public static class Security {

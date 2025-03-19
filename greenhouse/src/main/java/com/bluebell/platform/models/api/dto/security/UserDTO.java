@@ -2,22 +2,26 @@ package com.bluebell.platform.models.api.dto.security;
 
 import com.bluebell.platform.models.api.dto.GenericDTO;
 import com.bluebell.platform.models.api.dto.account.AccountDTO;
+import com.bluebell.platform.models.api.dto.portfolio.PortfolioDTO;
 import com.bluebell.platform.models.api.dto.system.PhoneNumberDTO;
+import com.bluebell.platform.models.core.entities.portfolio.Portfolio;
 import com.bluebell.platform.models.core.entities.security.User;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import java.time.LocalDateTime;
+import java.util.Collections;
 import java.util.List;
 
 /**
  * A DTO representation of a {@link User}
  *
  * @author Stephen Prizio
- * @version 0.1.1
+ * @version 0.1.2
  */
 @Setter
 @Getter
@@ -49,9 +53,25 @@ public class UserDTO implements GenericDTO {
     @Schema(description = "User's phone numbers")
     private List<PhoneNumberDTO> phones;
 
-    @Schema(description = "User's accounts")
-    private List<AccountDTO> accounts;
+    @Schema(description = "User's portfolios")
+    private List<PortfolioDTO> portfolios;
 
     @Schema(description = "User's privileges")
     private List<String> roles;
+
+
+    //  METHODS
+
+    /**
+     * Returns a list of portfolios that are marked as active
+     *
+     * @return {@link List} of {@link PortfolioDTO}
+     */
+    public List<PortfolioDTO> getActivePortfolios() {
+        if (CollectionUtils.isEmpty(this.portfolios)) {
+            return Collections.emptyList();
+        }
+
+        return this.portfolios.stream().filter(PortfolioDTO::isActive).toList();
+    }
 }

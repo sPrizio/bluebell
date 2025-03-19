@@ -30,7 +30,7 @@ import java.util.Optional;
  * Controller for {@link AnalysisService}
  *
  * @author Stephen Prizio
- * @version 0.1.1
+ * @version 0.1.2
  */
 @RestController
 @RequestMapping("${base.api.controller.endpoint}/analysis")
@@ -104,12 +104,8 @@ public class AnalysisApiController extends AbstractApiController {
             final HttpServletRequest request
     ) {
 
-        if (AnalysisFilter.getAnalysisFilter(filter) == null) {
-            return StandardJsonResponse
-                    .<List<AnalysisResult>>builder()
-                    .success(false)
-                    .message(String.format(CorePlatformConstants.Validation.DataIntegrity.INVALID_FILTER, filter))
-                    .build();
+        if (validateFilter(filter) != null) {
+            return validateFilter(filter);
         }
 
         final Optional<Account> account = this.accountService.findAccountByAccountNumber(accountNumber);
@@ -170,12 +166,8 @@ public class AnalysisApiController extends AbstractApiController {
             final HttpServletRequest request
     ) {
 
-        if (AnalysisFilter.getAnalysisFilter(filter) == null) {
-            return StandardJsonResponse
-                    .<List<AnalysisResult>>builder()
-                    .success(false)
-                    .message(String.format(CorePlatformConstants.Validation.DataIntegrity.INVALID_FILTER, filter))
-                    .build();
+        if (validateFilter(filter) != null) {
+            return validateFilter(filter);
         }
 
         final Optional<Account> account = this.accountService.findAccountByAccountNumber(accountNumber);

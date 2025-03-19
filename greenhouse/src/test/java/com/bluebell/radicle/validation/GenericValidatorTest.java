@@ -4,6 +4,7 @@ package com.bluebell.radicle.validation;
 import java.time.DateTimeException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -23,7 +24,7 @@ import org.junit.jupiter.api.Test;
  * Testing class for {@link GenericValidator}
  *
  * @author Stephen Prizio
- * @version 0.1.0
+ * @version 0.1.2
  */
 class GenericValidatorTest {
 
@@ -53,7 +54,7 @@ class GenericValidatorTest {
 
     @Test
     void test_validateIfAnyResult_success() {
-        List<Object> list = List.of();
+        List<Object> list = Collections.emptyList();
         assertThatExceptionOfType(NoResultFoundException.class)
                 .isThrownBy(() -> GenericValidator.validateIfAnyResult(list, "This is an empty collection test"))
                 .withMessage("This is an empty collection test");

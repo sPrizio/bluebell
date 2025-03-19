@@ -2,23 +2,26 @@ package com.bluebell.platform.models.core.entities.security;
 
 import com.bluebell.platform.enums.security.UserRole;
 import com.bluebell.platform.models.core.entities.GenericEntity;
-import com.bluebell.platform.models.core.entities.account.Account;
+import com.bluebell.platform.models.core.entities.portfolio.Portfolio;
 import com.bluebell.platform.models.core.entities.system.PhoneNumber;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
+import org.apache.commons.collections4.CollectionUtils;
 
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Base64;
+import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Class representation of an individual that can interact with the system, hold accounts and other information
  *
  * @author Stephen Prizio
- * @version 0.1.1
+ * @version 0.1.2
  */
 @Getter
 @Entity
@@ -67,7 +70,7 @@ public class User implements GenericEntity {
 
     @Setter
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private @Builder.Default List<Account> accounts = new ArrayList<>();
+    private @Builder.Default List<Portfolio> portfolios = new ArrayList<>();
 
     @Setter
     @ElementCollection
@@ -83,5 +86,18 @@ public class User implements GenericEntity {
      */
     public void setPassword(String password) {
         this.password = new String(Base64.getEncoder().encode(password.getBytes(StandardCharsets.UTF_8)));
+    }
+
+    /**
+     * Returns a list of portfolios that are marked as active
+     *
+     * @return {@link List} of {@link Portfolio}
+     */
+    public List<Portfolio> getActivePortfolios() {
+        if (CollectionUtils.isEmpty(this.portfolios)) {
+            return Collections.emptyList();
+        }
+
+        return this.portfolios.stream().filter(Portfolio::isActive).toList();
     }
 }

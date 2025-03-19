@@ -5,14 +5,14 @@ import lombok.Builder;
 import lombok.Getter;
 
 /**
- * Class representation of a {@link Portfolio}'s statistics
+ * Class representation of a {@link PortfolioRecord}'s statistics
  *
  * @param deltaNetWorth % change in net worth
  * @param deltaTrades % change in trades
  * @param deltaDeposits % change in deposits
  * @param deltaWithdrawals % change in withdrawals
  * @author Stephen Prizio
- * @version 0.1.1
+ * @version 0.1.2
  */
 @Builder
 @Schema(title = "PortfolioStatistics", name = "PortfolioStatistics", description = "Basic statistical measures about a client's portfolio")

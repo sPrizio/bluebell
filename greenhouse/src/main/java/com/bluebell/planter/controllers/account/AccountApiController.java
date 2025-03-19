@@ -10,6 +10,7 @@ import com.bluebell.platform.models.api.dto.account.AccountDTO;
 import com.bluebell.platform.models.api.dto.account.CreateUpdateAccountDTO;
 import com.bluebell.platform.models.api.json.StandardJsonResponse;
 import com.bluebell.platform.models.core.entities.account.Account;
+import com.bluebell.platform.models.core.entities.portfolio.Portfolio;
 import com.bluebell.platform.models.core.entities.security.User;
 import com.bluebell.platform.models.core.nonentities.data.PairEntry;
 import com.bluebell.platform.models.core.nonentities.records.account.AccountDetails;
@@ -17,6 +18,7 @@ import com.bluebell.radicle.exceptions.validation.MissingRequiredDataException;
 import com.bluebell.radicle.security.aspects.ValidateApiToken;
 import com.bluebell.radicle.security.constants.SecurityConstants;
 import com.bluebell.radicle.services.account.AccountService;
+import com.bluebell.radicle.services.portfolio.PortfolioService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -35,7 +37,7 @@ import java.util.Optional;
  * API Controller for {@link Account}
  *
  * @author Stephen Prizio
- * @version 0.1.1
+ * @version 0.1.2
  */
 @RestController
 @RequestMapping("${base.api.controller.endpoint}/account")
@@ -50,6 +52,9 @@ public class AccountApiController extends AbstractApiController {
 
     @Resource(name = "accountService")
     private AccountService accountService;
+
+    @Resource(name = "portfolioService")
+    private PortfolioService portfolioService;
 
 
     //  METHODS
@@ -258,6 +263,14 @@ public class AccountApiController extends AbstractApiController {
             )
     )
     @ApiResponse(
+            responseCode = "200",
+            description = "Response when the api cannot not find the requested portfolio",
+            content = @Content(
+                    mediaType = "application/json",
+                    schema = @Schema(implementation = StandardJsonResponse.class, example = "Portfolio not found.")
+            )
+    )
+    @ApiResponse(
             responseCode = "401",
             description = "Response when the api call made was unauthorized.",
             content = @Content(
@@ -269,6 +282,8 @@ public class AccountApiController extends AbstractApiController {
     public StandardJsonResponse<AccountDTO> postCreateNewAccount(
             @Parameter(name = "Account Payload", description = "Payload for creating or updating accounts")
             final @RequestBody CreateUpdateAccountDTO data,
+            @Parameter(name = "Portfolio UID", description = "Portfolio UID to add the account to", example = "1234")
+            final @RequestParam("portfolioUid") String portfolioUid,
             final HttpServletRequest request
     ) {
         if (data == null || data.number() == null) {
@@ -276,10 +291,19 @@ public class AccountApiController extends AbstractApiController {
         }
 
         final User user = (User) request.getAttribute(SecurityConstants.USER_REQUEST_KEY);
+        final Optional<Portfolio> portfolio = this.portfolioService.findPortfolioByUid(portfolioUid);
+        if (portfolio.isPresent() && user.getActivePortfolios().contains(portfolio.get())) {
+            return StandardJsonResponse
+                    .<AccountDTO>builder()
+                    .success(true)
+                    .data(this.accountDTOConverter.convert(this.accountService.createNewAccount(data, portfolio.get())))
+                    .build();
+        }
+
         return StandardJsonResponse
                 .<AccountDTO>builder()
-                .success(true)
-                .data(this.accountDTOConverter.convert(this.accountService.createNewAccount(data, user)))
+                .success(false)
+                .message(String.format("Portfolio not found for uid: %s", portfolioUid))
                 .build();
     }
 
@@ -306,6 +330,14 @@ public class AccountApiController extends AbstractApiController {
     )
     @ApiResponse(
             responseCode = "200",
+            description = "Response when the api cannot not find the requested portfolio",
+            content = @Content(
+                    mediaType = "application/json",
+                    schema = @Schema(implementation = StandardJsonResponse.class, example = "Portfolio not found.")
+            )
+    )
+    @ApiResponse(
+            responseCode = "200",
             description = "Response when the api cannot find the account for the given account number.",
             content = @Content(
                     mediaType = "application/json",
@@ -326,6 +358,8 @@ public class AccountApiController extends AbstractApiController {
             final @RequestParam("accountNumber") long accountNumber,
             @Parameter(name = "Account Payload", description = "Payload for creating or updating accounts")
             final @RequestBody CreateUpdateAccountDTO data,
+            @Parameter(name = "Portfolio UID", description = "Portfolio UID to add the account to", example = "1234")
+            final @RequestParam("portfolioUid") String portfolioUid,
             final HttpServletRequest request
     ) {
         if (data == null || data.number() == null) {
@@ -334,9 +368,19 @@ public class AccountApiController extends AbstractApiController {
 
         final User user = (User) request.getAttribute(SecurityConstants.USER_REQUEST_KEY);
         final Optional<Account> account = this.accountService.findAccountByAccountNumber(accountNumber);
-        return account
-                .map(value -> StandardJsonResponse.<AccountDTO>builder().success(true).data(this.accountDTOConverter.convert(this.accountService.updateAccount(value, data, user))).build())
-                .orElseGet(() -> StandardJsonResponse.<AccountDTO>builder().success(false).message(String.format(NO_ACCOUNT_FOR_ACCOUNT_NUMBER, accountNumber)).build());
+        final Optional<Portfolio> portfolio = this.portfolioService.findPortfolioByUid(portfolioUid);
+
+        if (portfolio.isPresent() && user.getActivePortfolios().contains(portfolio.get())) {
+            return account
+                    .map(value -> StandardJsonResponse.<AccountDTO>builder().success(true).data(this.accountDTOConverter.convert(this.accountService.updateAccount(value, data, portfolio.get()))).build())
+                    .orElseGet(() -> StandardJsonResponse.<AccountDTO>builder().success(false).message(String.format(NO_ACCOUNT_FOR_ACCOUNT_NUMBER, accountNumber)).build());
+        } else {
+            return StandardJsonResponse
+                    .<AccountDTO>builder()
+                    .success(false)
+                    .message(String.format("Portfolio not found for uid: %s", portfolioUid))
+                    .build();
+        }
     }
 
 

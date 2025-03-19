@@ -1,21 +1,15 @@
 package com.bluebell.radicle.importing.services.strategy;
 
-import java.io.FileInputStream;
-import java.time.LocalDateTime;
-import java.util.List;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
-
-import com.bluebell.platform.models.core.entities.account.Account;
-import com.bluebell.platform.models.core.entities.security.User;
 import com.bluebell.AbstractGenericTest;
+import com.bluebell.platform.models.core.entities.account.Account;
+import com.bluebell.platform.models.core.entities.portfolio.Portfolio;
+import com.bluebell.platform.models.core.entities.security.User;
 import com.bluebell.radicle.importing.exceptions.TradeImportFailureException;
 import com.bluebell.radicle.repositories.account.AccountRepository;
+import com.bluebell.radicle.repositories.portfolio.PortfolioRepository;
 import com.bluebell.radicle.repositories.security.UserRepository;
 import com.bluebell.radicle.repositories.trade.TradeRepository;
 import jakarta.annotation.Resource;
-import jakarta.transaction.Transactional;
 import org.assertj.core.groups.Tuple;
 import org.junit.jupiter.api.*;
 import org.junit.runner.RunWith;
@@ -23,13 +17,21 @@ import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabas
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.ResourceUtils;
+
+import java.io.FileInputStream;
+import java.time.LocalDateTime;
+import java.util.List;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 /**
  * Testing class {@link MetaTrader4StrategyImportService}
  *
  * @author Stephen Prizio
- * @version 0.1.0
+ * @version 0.1.2
  */
 @SpringBootTest
 @RunWith(SpringRunner.class)
@@ -39,6 +41,8 @@ class MetaTrader4StrategyImportServiceTest extends AbstractGenericTest {
 
     private User user;
 
+    private Portfolio portfolio;
+
     private Account account;
 
     @Resource(name = "accountRepository")
@@ -46,6 +50,9 @@ class MetaTrader4StrategyImportServiceTest extends AbstractGenericTest {
 
     @Resource(name = "metaTrader4StrategyImportService")
     private MetaTrader4StrategyImportService metaTrader4StrategyImportService;
+
+    @Resource(name = "portfolioRepository")
+    private PortfolioRepository portfolioRepository;
 
     @Resource(name = "tradeRepository")
     private TradeRepository tradeRepository;
@@ -58,8 +65,14 @@ class MetaTrader4StrategyImportServiceTest extends AbstractGenericTest {
         final Account acc = generateTestAccount();
         acc.setId(null);
         account = this.accountRepository.save(acc);
+
+        portfolio = generateTestPortfolio();
+        portfolio.setId(null);
+        portfolio.setAccounts(List.of(account));
+        portfolio = this.portfolioRepository.save(portfolio);
+
         user = generateTestUser();
-        user.setAccounts(List.of(account));
+        user.setPortfolios(List.of(portfolio));
         user = this.userRepository.save(user);
     }
 
@@ -67,6 +80,7 @@ class MetaTrader4StrategyImportServiceTest extends AbstractGenericTest {
     void tearDown() {
         this.tradeRepository.deleteAll();
         this.accountRepository.deleteAll();
+        this.portfolioRepository.deleteAll();
         this.userRepository.deleteAll();
     }
 

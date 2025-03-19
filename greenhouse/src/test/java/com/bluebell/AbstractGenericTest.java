@@ -22,6 +22,7 @@ import com.bluebell.platform.models.core.entities.account.Account;
 import com.bluebell.platform.models.core.entities.news.MarketNews;
 import com.bluebell.platform.models.core.entities.news.MarketNewsEntry;
 import com.bluebell.platform.models.core.entities.news.MarketNewsSlot;
+import com.bluebell.platform.models.core.entities.portfolio.Portfolio;
 import com.bluebell.platform.models.core.entities.security.User;
 import com.bluebell.platform.models.core.entities.system.PhoneNumber;
 import com.bluebell.platform.models.core.entities.trade.Trade;
@@ -33,7 +34,7 @@ import org.apache.commons.lang3.StringUtils;
  * Parent-level testing class to provide testing assistance for the project
  *
  * @author Stephen Prizio
- * @version 0.1.1
+ * @version 0.1.2
  */
 public abstract class AbstractGenericTest {
 
@@ -83,7 +84,6 @@ public abstract class AbstractGenericTest {
      * @return {@link Account}
      */
     public Account generateTestAccount() {
-
         return Account
                 .builder()
                 .id(-1L)
@@ -103,6 +103,22 @@ public abstract class AbstractGenericTest {
     }
 
     /**
+     * Generates a test {@link Portfolio}
+     *
+     * @return {@link Portfolio}
+     */
+    public Portfolio generateTestPortfolio() {
+        return Portfolio
+                .builder()
+                .id(1L)
+                .name("Test Portfolio")
+                .active(true)
+                .defaultPortfolio(true)
+                .accounts(new ArrayList<>(List.of(generateTestAccount())))
+                .build();
+    }
+
+    /**
      * Generates a test {@link User}
      *
      * @return {@link User}
@@ -110,7 +126,7 @@ public abstract class AbstractGenericTest {
     public User generateTestUser() {
         return User
                 .builder()
-                .accounts(new ArrayList<>(List.of(generateTestAccount())))
+                .portfolios(new ArrayList<>(List.of(generateTestPortfolio())))
                 .email("test@email.com")
                 .username("s.prizio")
                 .password("1234")

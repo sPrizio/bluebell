@@ -29,7 +29,7 @@ import static com.bluebell.radicle.validation.GenericValidator.validateParameter
  * Service-layer for {@link User} entities
  *
  * @author Stephen Prizio
- * @version 0.1.1
+ * @version 0.1.2
  */
 @Service
 public class UserService {
@@ -147,7 +147,7 @@ public class UserService {
         user.setFirstName(data.firstName());
         user.setUsername(data.username());
         user.setRoles(new ArrayList<>(List.of(UserRole.TRADER)));
-        user.setAccounts(new ArrayList<>());
+        user.setPortfolios(new ArrayList<>());
         user.setPhones(new ArrayList<>());
 
         user = this.userRepository.save(user);

@@ -28,7 +28,7 @@ import java.util.stream.Stream;
  * Implementation of {@link DecisionEngine} specific to {@link Bloom}
  *
  * @author Stephen Prizio
- * @version 0.1.1
+ * @version 0.1.2
  */
 public class BloomDecisionEngine implements DecisionEngine<Bloom, BloomStrategyParameters> {
 
@@ -205,7 +205,7 @@ public class BloomDecisionEngine implements DecisionEngine<Bloom, BloomStrategyP
             e.printStackTrace();
         }
 
-        return List.of();
+        return Collections.emptyList();
     }
 
     /**
