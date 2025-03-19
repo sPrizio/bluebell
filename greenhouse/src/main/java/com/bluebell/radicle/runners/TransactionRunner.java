@@ -29,7 +29,7 @@ import java.util.Random;
  * @version 0.1.2
  */
 @Component
-@Order(4)
+@Order(5)
 @Profile("dev")
 public class TransactionRunner extends AbstractRunner implements CommandLineRunner {
 

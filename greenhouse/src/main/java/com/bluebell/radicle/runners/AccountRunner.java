@@ -25,7 +25,7 @@ import java.time.LocalDateTime;
  * @version 0.1.2
  */
 @Component
-@Order(2)
+@Order(3)
 @Profile("dev")
 public class AccountRunner extends AbstractRunner implements CommandLineRunner {
 

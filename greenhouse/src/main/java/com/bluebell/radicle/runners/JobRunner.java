@@ -34,7 +34,7 @@ import java.util.Random;
  * @version 0.1.2
  */
 @Component
-@Order(6)
+@Order(7)
 @Profile("dev")
 public class JobRunner extends AbstractRunner implements CommandLineRunner {
 
