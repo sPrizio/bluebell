@@ -282,7 +282,7 @@ public class AccountApiController extends AbstractApiController {
     public StandardJsonResponse<AccountDTO> postCreateNewAccount(
             @Parameter(name = "Account Payload", description = "Payload for creating or updating accounts")
             final @RequestBody CreateUpdateAccountDTO data,
-            @Parameter(name = "Portfolio UID", description = "Portfolio UID to add the account to")
+            @Parameter(name = "Portfolio UID", description = "Portfolio UID to add the account to", example = "1234")
             final @RequestParam("portfolioUid") String portfolioUid,
             final HttpServletRequest request
     ) {
@@ -358,7 +358,7 @@ public class AccountApiController extends AbstractApiController {
             final @RequestParam("accountNumber") long accountNumber,
             @Parameter(name = "Account Payload", description = "Payload for creating or updating accounts")
             final @RequestBody CreateUpdateAccountDTO data,
-            @Parameter(name = "Portfolio UID", description = "Portfolio UID to add the account to")
+            @Parameter(name = "Portfolio UID", description = "Portfolio UID to add the account to", example = "1234")
             final @RequestParam("portfolioUid") String portfolioUid,
             final HttpServletRequest request
     ) {
