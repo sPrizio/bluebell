@@ -268,4 +268,76 @@ class PortfolioServiceTest extends AbstractGenericTest {
     //  ----------------- deletePortfolio -----------------
 
     @Test
+    void test_deletePortfolio_missingData() {
+        assertThatExceptionOfType(IllegalParameterException.class)
+                .isThrownBy(() -> this.portfolioService.deletePortfolio(null))
+                .withMessageContaining(CorePlatformConstants.Validation.Portfolio.PORTFOLIO_CANNOT_BE_NULL);
+
+        final Portfolio yetAnotherPortfolio = generateTestPortfolio();
+        yetAnotherPortfolio.setUser(null);
+        assertThatExceptionOfType(IllegalParameterException.class)
+                .isThrownBy(() -> this.portfolioService.deletePortfolio(yetAnotherPortfolio))
+                .withMessageContaining(CorePlatformConstants.Validation.Security.User.USER_CANNOT_BE_NULL);
+    }
+
+    @Test
+    void test_deletePortfolio_onlyActive_failure() {
+        assertThatExceptionOfType(UnsupportedOperationException.class)
+                .isThrownBy(() -> this.portfolioService.deletePortfolio(this.portfolio))
+                .withMessageContaining("Cannot delete only active portfolio");
+    }
+
+    @Test
+    void test_deletePortfolio_onlyActive_success() {
+
+        Portfolio yetAnotherPortfolio = generateTestPortfolio();
+        yetAnotherPortfolio.setActive(true);
+        yetAnotherPortfolio.setId(null);
+        yetAnotherPortfolio.setAccounts(Collections.emptyList());
+        yetAnotherPortfolio = this.portfolioRepository.save(yetAnotherPortfolio);
+        yetAnotherPortfolio.setUser(this.anotherUser);
+        yetAnotherPortfolio = this.portfolioRepository.save(yetAnotherPortfolio);
+
+        final List<Portfolio> temp = this.anotherUser.getPortfolios();
+        temp.add(yetAnotherPortfolio);
+        this.anotherUser.setPortfolios(temp);
+        this.anotherUser = this.userRepository.save(this.anotherUser);
+
+        yetAnotherPortfolio.setUser(this.anotherUser);
+
+        assertThat(this.portfolioService.deletePortfolio(yetAnotherPortfolio)).isTrue();
+        assertThat(this.portfolioRepository.findById(yetAnotherPortfolio.getId())).isEmpty();
+    }
+
+    @Test
+    void test_deletePortfolio_inactive_success() {
+
+        Portfolio yetAnotherPortfolio = generateTestPortfolio();
+        yetAnotherPortfolio.setActive(false);
+        yetAnotherPortfolio.setId(null);
+        yetAnotherPortfolio.setAccounts(Collections.emptyList());
+        yetAnotherPortfolio = this.portfolioRepository.save(yetAnotherPortfolio);
+        yetAnotherPortfolio.setUser(this.anotherUser);
+        yetAnotherPortfolio = this.portfolioRepository.save(yetAnotherPortfolio);
+
+        final List<Portfolio> temp = this.anotherUser.getPortfolios();
+        temp.add(yetAnotherPortfolio);
+        this.anotherUser.setPortfolios(temp);
+        this.anotherUser = this.userRepository.save(this.anotherUser);
+
+        yetAnotherPortfolio.setUser(this.anotherUser);
+
+        assertThat(this.portfolioService.deletePortfolio(yetAnotherPortfolio)).isTrue();
+        assertThat(this.portfolioRepository.findById(yetAnotherPortfolio.getId())).isEmpty();
+    }
+
+    @Test
+    void test_deletePortfolio_random_success() {
+
+        final Portfolio p = generateTestPortfolio();
+        p.setUser(generateTestUser());
+        p.getUser().setPortfolios(Collections.emptyList());
+
+        assertThat(this.portfolioService.deletePortfolio(p)).isFalse();
+    }
 }
