@@ -157,6 +157,79 @@ class JobServiceTest extends AbstractGenericTest {
     }
 
 
+    //  ----------------- deleteStaleInProgressJobs -----------------
+
+    @Test
+    void test_deleteStaleInProgressJobs_success() {
+        Job job1 = Job.builder().build();
+        job1.setExecutionTime(LocalDateTime.now().minusMinutes(10));
+        job1.setCompletionTime(LocalDateTime.now().minusMinutes(8));
+        job1.setStatus(JobStatus.FAILED);
+        this.jobRepository.save(job1);
+
+        Job job2 = Job.builder().build();
+        job2.setExecutionTime(LocalDateTime.now().minusMinutes(60));
+        job2.setStatus(JobStatus.IN_PROGRESS);
+        this.jobRepository.save(job2);
+
+        Job job3 = Job.builder().build();
+        job3.setExecutionTime(LocalDateTime.now().minusMinutes(30));
+        job3.setCompletionTime(LocalDateTime.now().minusMinutes(1));
+        job3.setStatus(JobStatus.COMPLETED);
+        this.jobRepository.save(job3);
+
+        Job job4 = Job.builder().build();
+        job4.setExecutionTime(LocalDateTime.now().minusDays(13));
+        job4.setStatus(JobStatus.IN_PROGRESS);
+        this.jobRepository.save(job4);
+
+        Job job5 = Job.builder().build();
+        job5.setExecutionTime(LocalDateTime.now().minusYears(4));
+        job5.setStatus(JobStatus.IN_PROGRESS);
+        this.jobRepository.save(job5);
+
+        assertThat(this.jobService.deleteStaleInProgressJobs())
+                .isEqualTo(2);
+    }
+
+
+    //  ----------------- deleteOldJobs -----------------
+
+    @Test
+    void test_deleteOldJobs_success() {
+        Job job1 = Job.builder().build();
+        job1.setExecutionTime(LocalDateTime.now().minusYears(2));
+        job1.setCompletionTime(LocalDateTime.now().minusYears(2));
+        job1.setStatus(JobStatus.FAILED);
+        this.jobRepository.save(job1);
+
+        Job job2 = Job.builder().build();
+        job2.setExecutionTime(LocalDateTime.now().minusMinutes(60));
+        job2.setStatus(JobStatus.IN_PROGRESS);
+        this.jobRepository.save(job2);
+
+        Job job3 = Job.builder().build();
+        job3.setExecutionTime(LocalDateTime.now().minusYears(30));
+        job3.setCompletionTime(LocalDateTime.now().minusYears(30));
+        job3.setStatus(JobStatus.COMPLETED);
+        this.jobRepository.save(job3);
+
+        Job job4 = Job.builder().build();
+        job4.setExecutionTime(LocalDateTime.now().minusDays(13));
+        job4.setCompletionTime(LocalDateTime.now().plusMinutes(5));
+        job4.setStatus(JobStatus.COMPLETED);
+        this.jobRepository.save(job4);
+
+        Job job5 = Job.builder().build();
+        job5.setExecutionTime(LocalDateTime.now().minusYears(4));
+        job5.setStatus(JobStatus.IN_PROGRESS);
+        this.jobRepository.save(job5);
+
+        assertThat(this.jobService.deleteOldJobs())
+                .isEqualTo(2);
+    }
+
+
     //  ----------------- findJobByJobId -----------------
 
     @Test

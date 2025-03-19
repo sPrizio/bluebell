@@ -21,6 +21,7 @@ import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -51,6 +52,9 @@ public class JobService {
     @Resource(name = "jobResultEntryRepository")
     private JobResultEntryRepository jobResultEntryRepository;
 
+    @Value("${stale.job.lookback}")
+    private long lookbackPeriod;
+
 
     //  METHODS
 
@@ -59,7 +63,7 @@ public class JobService {
      *
      * @param job {@link Job}
      * @return {@link JobResult}
-     * @throws JobExecutionException thrown when an issue arises due to the job exception
+     * @throws JobExecutionException   thrown when an issue arises due to the job exception
      * @throws JsonProcessingException thrown when the action data cannot be resolved
      */
     @Transactional
@@ -143,6 +147,52 @@ public class JobService {
     }
 
     /**
+     * Deletes jobs that are in progress and have been for over 1 week
+     *
+     * @return count of deleted jobs
+     */
+    @Transactional
+    public int deleteStaleInProgressJobs() {
+        int count = 0;
+        final List<Job> jobs = this.jobRepository.findJobsByStatus(JobStatus.IN_PROGRESS);
+        if (CollectionUtils.isNotEmpty(jobs)) {
+            final List<Job> staleInProgress = jobs
+                    .stream()
+                    .filter(job -> job.getExecutionTime() != null)
+                    .filter(job -> job.getExecutionTime().isBefore(LocalDateTime.now().minusWeeks(1)))
+                    .toList();
+
+            if (CollectionUtils.isNotEmpty(staleInProgress)) {
+                for (final Job job : staleInProgress) {
+                    this.jobRepository.delete(job);
+                    count++;
+                }
+            }
+        }
+
+        return count;
+    }
+
+    /**
+     * Deletes jobs that are both completed or failed and have been so for the configured lookback period (default is 1 year)
+     *
+     * @return count of deleted jobs
+     */
+    @Transactional
+    public int deleteOldJobs() {
+        int count = 0;
+        final List<Job> oldJobs = this.jobRepository.findJobsByStatusInAndCompletionTimeBefore(List.of(JobStatus.COMPLETED, JobStatus.FAILED), LocalDateTime.now().minusSeconds(this.lookbackPeriod));
+        if (CollectionUtils.isNotEmpty(oldJobs)) {
+            for (final Job job : oldJobs) {
+                this.jobRepository.delete(job);
+                count++;
+            }
+        }
+
+        return count;
+    }
+
+    /**
      * Finds a {@link Job} by its job is
      *
      * @param jobId job id
@@ -178,7 +228,7 @@ public class JobService {
     /**
      * Returns a {@link List} of {@link Job}s by their status and type
      *
-     * @param status {@link JobStatus}
+     * @param status  {@link JobStatus}
      * @param jobType {@link JobType}
      * @return {@link List} of {@link Job}
      */
@@ -226,7 +276,7 @@ public class JobService {
      * Persists the transient field action performable across saves
      *
      * @param previous previous version of the job
-     * @param job current version of the job
+     * @param job      current version of the job
      * @return updated {@link Job}
      */
     private Job cleanUpPerformable(final Job previous, final Job job) {
