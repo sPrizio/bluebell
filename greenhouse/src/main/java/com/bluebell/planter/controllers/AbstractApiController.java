@@ -1,9 +1,12 @@
 package com.bluebell.planter.controllers;
 
 import com.bluebell.platform.constants.CorePlatformConstants;
+import com.bluebell.platform.enums.analysis.AnalysisFilter;
+import com.bluebell.platform.models.api.json.StandardJsonResponse;
 import com.bluebell.platform.models.core.entities.account.Account;
 import com.bluebell.platform.models.core.entities.portfolio.Portfolio;
 import com.bluebell.platform.models.core.entities.security.User;
+import com.bluebell.platform.models.core.nonentities.records.analysis.AnalysisResult;
 import com.bluebell.radicle.exceptions.account.InvalidAccountNumberException;
 
 import java.util.List;
@@ -50,5 +53,23 @@ public abstract class AbstractApiController {
     public Account getAccountForId(final User user, final long accountNumber) {
         validateParameterIsNotNull(user, CorePlatformConstants.Validation.Security.User.USER_CANNOT_BE_NULL);
         return user.getActivePortfolios().stream().map(Portfolio::getActiveAccounts).flatMap(List::stream).filter(acc -> acc.getAccountNumber() == accountNumber).findFirst().orElseThrow(() -> new InvalidAccountNumberException("The given account number did not match and user accounts"));
+    }
+
+    /**
+     * Validates an analysis filter
+     *
+     * @param filter filter enum
+     * @return {@link StandardJsonResponse}
+     */
+    public StandardJsonResponse<List<AnalysisResult>> validateFilter(final String filter) {
+        if (AnalysisFilter.getAnalysisFilter(filter) == null) {
+            return StandardJsonResponse
+                    .<List<AnalysisResult>>builder()
+                    .success(false)
+                    .message(String.format(CorePlatformConstants.Validation.DataIntegrity.INVALID_FILTER, filter))
+                    .build();
+        }
+
+        return null;
     }
 }

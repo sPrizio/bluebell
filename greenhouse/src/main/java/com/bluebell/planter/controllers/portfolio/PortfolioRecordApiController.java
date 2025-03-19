@@ -8,6 +8,7 @@ import com.bluebell.radicle.security.aspects.ValidateApiToken;
 import com.bluebell.radicle.security.constants.SecurityConstants;
 import com.bluebell.radicle.services.portfolio.PortfolioRecordService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -43,10 +44,10 @@ public class PortfolioRecordApiController extends AbstractApiController {
      * @return {@link StandardJsonResponse}
      */
     @ValidateApiToken
-    @Operation(summary = "Obtains the user's portfolio", description = "Returns a portfolio which is essentially a list of aggregated accounts.")
+    @Operation(summary = "Obtains statistics about a user's portfolio", description = "Returns a single portfolio record, aggregated by accounts.")
     @ApiResponse(
             responseCode = "200",
-            description = "Response when the api successfully obtains time-bucket analysis.",
+            description = "Response when the api successfully obtains portfolio information.",
             content = @Content(
                     mediaType = "application/json",
                     schema = @Schema(implementation = StandardJsonResponse.class)
@@ -61,12 +62,49 @@ public class PortfolioRecordApiController extends AbstractApiController {
             )
     )
     @GetMapping("/get")
-    public StandardJsonResponse<PortfolioRecord> getPortfolioRecord(final HttpServletRequest request) {
+    public StandardJsonResponse<PortfolioRecord> getPortfolioRecord(
+            @Parameter(name = "Portfolio UID", description = "Portfolio UID to add the account to", example = "1234")
+            final @RequestParam("portfolioUid") String portfolioUid,
+            final HttpServletRequest request
+    ) {
         final User user = (User) request.getAttribute(SecurityConstants.USER_REQUEST_KEY);
         return StandardJsonResponse
                 .<PortfolioRecord>builder()
                 .success(true)
-                .data(this.portfolioRecordService.getPortfolioRecord(user))
+                .data(this.portfolioRecordService.getSinglePortfolioRecord(portfolioUid, user))
+                .build();
+    }
+
+    /**
+     * Returns a {@link StandardJsonResponse} containing a {@link PortfolioRecord}
+     *
+     * @return {@link StandardJsonResponse}
+     */
+    @ValidateApiToken
+    @Operation(summary = "Obtains statistics about all user portfolios", description = "Returns all portfolio records, aggregated by accounts.")
+    @ApiResponse(
+            responseCode = "200",
+            description = "Response when the api successfully obtains portfolio information.",
+            content = @Content(
+                    mediaType = "application/json",
+                    schema = @Schema(implementation = StandardJsonResponse.class)
+            )
+    )
+    @ApiResponse(
+            responseCode = "401",
+            description = "Response when the api call made was unauthorized.",
+            content = @Content(
+                    mediaType = "application/json",
+                    schema = @Schema(implementation = StandardJsonResponse.class, example = "The API token was invalid.")
+            )
+    )
+    @GetMapping("/get-comprehensive")
+    public StandardJsonResponse<PortfolioRecord> getComprehensivePortfolioRecords(final HttpServletRequest request) {
+        final User user = (User) request.getAttribute(SecurityConstants.USER_REQUEST_KEY);
+        return StandardJsonResponse
+                .<PortfolioRecord>builder()
+                .success(true)
+                .data(this.portfolioRecordService.getComprehensivePortfolioRecord(user))
                 .build();
     }
 }

@@ -1,5 +1,6 @@
 package com.bluebell.radicle.services.portfolio;
 
+import com.bluebell.planter.services.UniqueIdentifierService;
 import com.bluebell.platform.constants.CorePlatformConstants;
 import com.bluebell.platform.enums.transaction.TransactionType;
 import com.bluebell.platform.models.core.entities.account.Account;
@@ -12,7 +13,10 @@ import com.bluebell.platform.models.core.nonentities.records.portfolio.Portfolio
 import com.bluebell.platform.models.core.nonentities.records.portfolio.PortfolioRecord;
 import com.bluebell.platform.models.core.nonentities.records.portfolio.PortfolioStatistics;
 import com.bluebell.platform.services.MathService;
+import com.bluebell.radicle.exceptions.validation.IllegalParameterException;
+import jakarta.annotation.Resource;
 import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -38,21 +42,60 @@ public class PortfolioRecordService {
 
     private final MathService mathService = new MathService();
 
+    @Resource(name = "uniqueIdentifierService")
+    private UniqueIdentifierService uniqueIdentifierService;
+
 
     //  METHODS
 
     /**
-     * Obtains the {@link User}'s {@link PortfolioRecord}
+     * Obtains the {@link User}'s {@link PortfolioRecord} for the matching portfolio
+     *
+     * @param portfolioUid portfolio uid
+     * @param user {@link User}
+     * @return {@link PortfolioRecord}
+     */
+    public PortfolioRecord getSinglePortfolioRecord(final String portfolioUid, final User user) {
+
+        if (StringUtils.isEmpty(portfolioUid)) {
+            throw new IllegalParameterException("Portfolio uid cannot be empty");
+        }
+
+        validateParameterIsNotNull(user, CorePlatformConstants.Validation.Security.User.USER_CANNOT_BE_NULL);
+        final long id = this.uniqueIdentifierService.retrieveId(portfolioUid);
+        final List<Account> accounts = user.getActivePortfolios().stream().filter(p -> p.getId().equals(id)).map(Portfolio::getActiveAccounts).flatMap(List::stream).toList();
+
+        if (CollectionUtils.isEmpty(accounts)) {
+            throw new UnsupportedOperationException(String.format("No accounts for portfolio with uid %s", portfolioUid));
+        }
+
+        return generateRecord(accounts);
+    }
+
+    /**
+     * Obtains the {@link User}'s {@link PortfolioRecord} for all portfolios
      *
      * @param user {@link User}
      * @return {@link PortfolioRecord}
      */
-    public PortfolioRecord getPortfolioRecord(final User user) {
-
+    public PortfolioRecord getComprehensivePortfolioRecord(final User user) {
         validateParameterIsNotNull(user, CorePlatformConstants.Validation.Security.User.USER_CANNOT_BE_NULL);
-
         final List<Account> accounts = user.getActivePortfolios().stream().map(Portfolio::getActiveAccounts).flatMap(List::stream).toList();
-        List<PortfolioEquityPoint> equityPoints = computeEquityPoints(user);
+        return generateRecord(accounts);
+    }
+
+
+    //  HELPERS
+
+    /**
+     * Generates a {@link PortfolioRecord} for the given accounts
+     *
+     * @param accounts {@link List} of {@link Account}s
+     * @return {@link PortfolioRecord}
+     */
+    private PortfolioRecord generateRecord(final List<Account> accounts) {
+
+        List<PortfolioEquityPoint> equityPoints = computeEquityPoints(accounts);
         boolean isNew = false;
         final LocalDate limit = accounts.stream().map(Account::getLastTraded).max(LocalDateTime::compareTo).orElse(LocalDateTime.now()).with(TemporalAdjusters.firstDayOfNextMonth()).toLocalDate();
         final double netWorth = this.mathService.getDouble(accounts.stream().mapToDouble(Account::getBalance).sum());
@@ -69,25 +112,20 @@ public class PortfolioRecordService {
                 .trades(accounts.stream().map(Account::getTrades).mapToLong(List::size).sum())
                 .deposits(accounts.stream().map(Account::getTransactions).filter(CollectionUtils::isNotEmpty).flatMap(List::stream).filter(tr -> tr.getTransactionType() == TransactionType.DEPOSIT).count())
                 .withdrawals(accounts.stream().map(Account::getTransactions).filter(CollectionUtils::isNotEmpty).flatMap(List::stream).filter(tr -> tr.getTransactionType() == TransactionType.WITHDRAWAL).count())
-                .statistics(computePortfolioStatistics(user))
+                .statistics(computePortfolioStatistics(accounts))
                 .equity(equityPoints)
                 .build();
     }
 
-
-    //  HELPERS
-
     /**
      * Computes the {@link PortfolioStatistics}
      *
-     * @param user {@link User}
+     * @param accounts {@link List} of {@link Account}s
      * @return {@link PortfolioStatistics}
      */
-    private PortfolioStatistics computePortfolioStatistics(final User user) {
+    private PortfolioStatistics computePortfolioStatistics(final List<Account> accounts) {
 
-        final List<Account> accounts = user.getActivePortfolios().stream().map(Portfolio::getActiveAccounts).flatMap(List::stream).toList();
         final LocalDateTime limit = accounts.stream().filter(Account::isActive).map(Account::getLastTraded).max(LocalDateTime::compareTo).orElse(LocalDateTime.now()).with(TemporalAdjusters.firstDayOfNextMonth()).minusMonths(1);
-
         final List<Trade> allTrades =
                 accounts
                         .stream()
@@ -135,15 +173,13 @@ public class PortfolioRecordService {
     /**
      * Computes a {@link List} of {@link PortfolioEquityPoint}s
      *
-     * @param user {@link User}
+     * @param accounts {@link List} of {@link Account}s
      * @return {@link List} of {@link PortfolioEquityPoint}s
      */
-    private List<PortfolioEquityPoint> computeEquityPoints(final User user) {
+    private List<PortfolioEquityPoint> computeEquityPoints(final List<Account> accounts) {
 
         final List<PortfolioEquityPoint> points = new ArrayList<>();
-        final List<Account> accounts = user.getActivePortfolios().stream().map(Portfolio::getActiveAccounts).flatMap(List::stream).toList();
         final LocalDateTime limit = accounts.stream().map(Account::getLastTraded).max(LocalDateTime::compareTo).orElse(LocalDateTime.now()).with(TemporalAdjusters.firstDayOfNextMonth());
-
 
         //  only look at accounts that were last traded within the timespan to reduce number of trades considered
         final List<Account> relevantAccounts = accounts.stream().filter(acc -> isWithinTimespan(limit.minusMonths(6), limit, acc.getLastTraded())).toList();

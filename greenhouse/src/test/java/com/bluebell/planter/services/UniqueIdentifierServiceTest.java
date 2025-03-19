@@ -67,20 +67,4 @@ class UniqueIdentifierServiceTest extends AbstractPlanterTest {
         assertThat(this.uniqueIdentifierService.retrieveId(tradeDTO.getUid()))
                 .isEqualTo(118L);
     }
-
-
-    //  ----------------- retrieveIdForUid -----------------
-
-    @Test
-    void test_retrieveIdForUid_missingParams() {
-        assertThatExceptionOfType(IllegalParameterException.class)
-                .isThrownBy(() -> this.uniqueIdentifierService.retrieveIdForUid(null))
-                .withMessage(CorePlatformConstants.Validation.DataIntegrity.UID_CANNOT_BE_NULL);
-    }
-
-    @Test
-    void test_retrieveIdForUid_success() {
-        assertThat(this.uniqueIdentifierService.retrieveIdForUid(TEST_UID))
-                .isEqualTo(118L);
-    }
 }

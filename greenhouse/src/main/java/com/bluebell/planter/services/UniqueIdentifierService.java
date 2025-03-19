@@ -15,7 +15,7 @@ import static com.bluebell.radicle.validation.GenericValidator.validateParameter
  * Service for handling computations regarding unique identifiers that are typical used on {@link GenericDTO}s
  *
  * @author Stephen Prizio
- * @version 0.1.1
+ * @version 0.1.2
  */
 @Service
 public class UniqueIdentifierService {
@@ -50,17 +50,6 @@ public class UniqueIdentifierService {
             throw new UnsupportedOperationException("uid is missing");
         }
 
-        return Long.parseLong(new String(Base64.decodeBase64(uid), StandardCharsets.UTF_8).split(DELIMITER)[0]);
-    }
-
-    /**
-     * Retrieves the id for an entity from the given uid
-     *
-     * @param uid uid
-     * @return id
-     */
-    public long retrieveIdForUid(final String uid) {
-        validateParameterIsNotNull(uid, CorePlatformConstants.Validation.DataIntegrity.UID_CANNOT_BE_NULL);
         return Long.parseLong(new String(Base64.decodeBase64(uid), StandardCharsets.UTF_8).split(DELIMITER)[0]);
     }
 }

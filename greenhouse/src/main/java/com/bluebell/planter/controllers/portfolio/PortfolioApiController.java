@@ -265,7 +265,4 @@ public class PortfolioApiController extends AbstractApiController {
             return StandardJsonResponse.<Boolean>builder().success(result).data(result).build();
         }).orElseGet(() -> StandardJsonResponse.<Boolean>builder().success(false).data(false).message(String.format("Portfolio not found for uid %s", portfolioUid)).build());
     }
-
-    //  TODO: TESTS
-    //  TODO: PORTFOLIO RUNNER
 }

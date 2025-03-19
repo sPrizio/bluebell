@@ -15,6 +15,7 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import static org.hamcrest.Matchers.is;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -38,7 +39,8 @@ class PortfolioRecordApiControllerTest extends AbstractPlanterTest {
 
     @BeforeEach
     void setUp() {
-        Mockito.when(this.portfolioRecordService.getPortfolioRecord(any())).thenReturn(generatePortfolioRecord());
+        Mockito.when(this.portfolioRecordService.getSinglePortfolioRecord(anyString(), any())).thenReturn(generatePortfolioRecord());
+        Mockito.when(this.portfolioRecordService.getComprehensivePortfolioRecord(any())).thenReturn(generatePortfolioRecord());
     }
 
 
@@ -46,7 +48,17 @@ class PortfolioRecordApiControllerTest extends AbstractPlanterTest {
 
     @Test
     void test_getPortfolioRecord_success() throws Exception {
-        this.mockMvc.perform(get("/api/v1/portfolio-record/get"))
+        this.mockMvc.perform(get("/api/v1/portfolio-record/get").queryParam("portfolioUid", "1234"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.data.netWorth", is(1000000.0)));
+    }
+
+
+    //  ----------------- getComprehensivePortfolioRecords -----------------
+
+    @Test
+    void test_getComprehensivePortfolioRecords_success() throws Exception {
+        this.mockMvc.perform(get("/api/v1/portfolio-record/get-comprehensive"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.data.netWorth", is(1000000.0)));
     }
