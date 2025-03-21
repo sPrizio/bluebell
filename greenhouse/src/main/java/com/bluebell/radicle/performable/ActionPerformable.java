@@ -9,7 +9,7 @@ import java.io.StringWriter;
  * Describes the process of performing an action, i.e. doing something
  *
  * @author Stephen Prizio
- * @version 0.1.1
+ * @version 0.1.3
  */
 public interface ActionPerformable {
 
@@ -31,5 +31,14 @@ public interface ActionPerformable {
         PrintWriter pw = new PrintWriter(sw);
         e.printStackTrace(pw);
         return sw.toString();
+    }
+
+    /**
+     * Returns the name of the action performable
+     *
+     * @return string
+     */
+    default String getActionPerformableName() {
+        return this.getClass().getSimpleName();
     }
 }

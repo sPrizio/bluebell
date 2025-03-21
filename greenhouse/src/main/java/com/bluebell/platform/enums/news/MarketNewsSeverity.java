@@ -1,5 +1,6 @@
 package com.bluebell.platform.enums.news;
 
+import com.bluebell.platform.enums.GenericEnum;
 import lombok.Getter;
 
 /**
@@ -7,23 +8,26 @@ import lombok.Getter;
  * of moving the market in a significant direction
  *
  * @author Stephen Prizio
- * @version 0.0.9
+ * @version 0.1.3
  */
 @Getter
-public enum MarketNewsSeverity {
+public enum MarketNewsSeverity implements GenericEnum<MarketNewsSeverity> {
 
-    NONE("None", 0),
-    DANGEROUS("Dangerous", 1),
-    MODERATE("Moderate", 2),
-    LOW("Low", 3),
-    HOLIDAY("Holiday", -1);
+    NONE("NONE", "None", 0),
+    DANGEROUS("DANGEROUS", "Dangerous", 1),
+    MODERATE("MODERATE", "Moderate", 2),
+    LOW("LOW", "Low", 3),
+    HOLIDAY("HOLIDAY", "Holiday", -1);
 
-    private final String description;
+    private final String code;
+
+    private final String label;
 
     private final int level;
 
-    MarketNewsSeverity(final String description, final int level) {
-        this.description = description;
+    MarketNewsSeverity(final String code, final String label, final int level) {
+        this.code = code;
+        this.label = label;
         this.level = level;
     }
 
@@ -33,7 +37,7 @@ public enum MarketNewsSeverity {
      * @param level level
      * @return {@link MarketNewsSeverity}
      */
-    public static MarketNewsSeverity get(final int level) {
+    public static MarketNewsSeverity getByLevel(final int level) {
         return switch (level) {
             case 1 -> DANGEROUS;
             case 2 -> MODERATE;
@@ -45,11 +49,11 @@ public enum MarketNewsSeverity {
     /**
      * Converts a description into a {@link MarketNewsSeverity}
      *
-     * @param description description
+     * @param label label
      * @return {@link MarketNewsSeverity}
      */
-    public static MarketNewsSeverity getFromDescription(final String description) {
-        return switch (description) {
+    public static MarketNewsSeverity getFromLabel(final String label) {
+        return switch (label) {
             case "Low" -> LOW;
             case "Medium" -> MODERATE;
             case "High" -> DANGEROUS;
