@@ -1,15 +1,15 @@
 package com.bluebell.radicle.importing.models;
 
-import java.time.LocalDateTime;
-
 import lombok.Builder;
 import lombok.Getter;
+
+import java.time.LocalDateTime;
 
 /**
  * A wrapper class for MetaTrader4 trades
  *
  * @author Stephen Prizio
- * @version 0.1.1
+ * @version 0.1.3
  */
 @Builder
 public record MetaTrader4TradeWrapper(

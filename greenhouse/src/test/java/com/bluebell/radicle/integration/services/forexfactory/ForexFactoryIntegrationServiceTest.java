@@ -1,8 +1,5 @@
 package com.bluebell.radicle.integration.services.forexfactory;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.any;
-
 import com.bluebell.radicle.integration.client.forexfactory.ForexFactoryIntegrationClient;
 import com.bluebell.radicle.integration.models.dto.forexfactory.CalendarNewsDayEntryDTO;
 import com.bluebell.radicle.integration.translators.forexfactory.CalendarNewsDayEntryTranslator;
@@ -17,11 +14,14 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.util.LinkedMultiValueMap;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
+
 /**
  * Testing class for {@link ForexFactoryIntegrationService}
  *
  * @author Stephen Prizio
- * @version 0.1.2
+ * @version 0.1.3
  */
 @SpringBootTest
 @RunWith(SpringRunner.class)

@@ -1,16 +1,7 @@
 package com.bluebell.planter.controllers.analysis;
 
-import java.util.List;
-import java.util.Optional;
-
-import static org.hamcrest.Matchers.*;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyBoolean;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
 import com.bluebell.planter.AbstractPlanterTest;
+import com.bluebell.planter.constants.ApiConstants;
 import com.bluebell.platform.constants.CorePlatformConstants;
 import com.bluebell.platform.models.core.entities.account.Account;
 import com.bluebell.platform.models.core.nonentities.records.analysis.AnalysisResult;
@@ -27,11 +18,22 @@ import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
+import java.util.List;
+import java.util.Optional;
+
+import static org.hamcrest.Matchers.containsString;
+import static org.hamcrest.Matchers.is;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyBoolean;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
 /**
  * Testing class for {@link AnalysisApiController}
  *
  * @author Stephen Prizio
- * @version 0.1.1
+ * @version 0.1.3
  */
 @SpringBootTest
 @AutoConfigureMockMvc(addFilters = false)
@@ -68,7 +70,7 @@ class AnalysisApiControllerTest extends AbstractPlanterTest {
                         .queryParam("isOpened", "true")
                 )
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.message", containsString(String.format(CorePlatformConstants.Validation.DataIntegrity.INVALID_FILTER, "bad_filter"))));
+                .andExpect(jsonPath("$.message", containsString(ApiConstants.CLIENT_ERROR_DEFAULT_MESSAGE)));
     }
 
     @Test
@@ -103,7 +105,7 @@ class AnalysisApiControllerTest extends AbstractPlanterTest {
                         .queryParam("filter", "bad_filter")
                 )
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.message", containsString(String.format(CorePlatformConstants.Validation.DataIntegrity.INVALID_FILTER, "bad_filter"))));
+                .andExpect(jsonPath("$.message", containsString(ApiConstants.CLIENT_ERROR_DEFAULT_MESSAGE)));
     }
 
     @Test
@@ -137,7 +139,7 @@ class AnalysisApiControllerTest extends AbstractPlanterTest {
                         .queryParam("weekday", "MONDAY")
                 )
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.message", containsString(String.format(CorePlatformConstants.Validation.DataIntegrity.INVALID_FILTER, "bad_filter"))));
+                .andExpect(jsonPath("$.message", containsString(ApiConstants.CLIENT_ERROR_DEFAULT_MESSAGE)));
     }
 
     @Test
@@ -184,7 +186,7 @@ class AnalysisApiControllerTest extends AbstractPlanterTest {
                         .queryParam("tradeDurationFilter", "MONDAY")
                 )
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.message", containsString(String.format(CorePlatformConstants.Validation.DataIntegrity.INVALID_FILTER, "bad_filter"))));
+                .andExpect(jsonPath("$.message", containsString(ApiConstants.CLIENT_ERROR_DEFAULT_MESSAGE)));
     }
 
     @Test
