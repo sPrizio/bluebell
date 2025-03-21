@@ -28,7 +28,7 @@ public class JobResultDTOConverter implements GenericDTOConverter<JobResult, Job
     @Override
     public JobResultDTO convert(final JobResult entity) {
 
-        if (entity == null || entity.getId() == null) {
+        if (entity == null || entity.getJob() == null) {
             return JobResultDTO.builder().build();
         }
 

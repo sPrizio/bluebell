@@ -54,7 +54,7 @@ class ActionDTOConverterTest extends AbstractPlanterTest {
         assertThat(this.actionDTOConverter.convert(generateTestAction()))
                 .isNotNull()
                 .extracting("priority", "name", "performableAction")
-                .containsExactly(1, "Test Action", "fetchMarketNewsActionPerformable");
+                .containsExactly(1, "Test Action", "FetchMarketNewsActionPerformable");
 
     }
 
@@ -67,6 +67,6 @@ class ActionDTOConverterTest extends AbstractPlanterTest {
                 .isNotEmpty()
                 .first()
                 .extracting("priority", "name", "performableAction")
-                .containsExactly(1, "Test Action", "fetchMarketNewsActionPerformable");
+                .containsExactly(1, "Test Action", "FetchMarketNewsActionPerformable");
     }
 }

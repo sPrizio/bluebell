@@ -58,7 +58,7 @@ class JobResultDTOConverterTest extends AbstractPlanterTest {
                 .asInstanceOf(InstanceOfAssertFactories.LIST)
                 .element(0)
                 .extracting("success", "data", "logs")
-                .containsExactly(1, "Test Data", "This is a log message");
+                .containsExactly(true, "Test Data", "This is a log message");
 
     }
 
@@ -74,6 +74,6 @@ class JobResultDTOConverterTest extends AbstractPlanterTest {
                 .asInstanceOf(InstanceOfAssertFactories.LIST)
                 .element(0)
                 .extracting("success", "data", "logs")
-                .containsExactly(1, "Test Data", "This is a log message");
+                .containsExactly(true, "Test Data", "This is a log message");
     }
 }

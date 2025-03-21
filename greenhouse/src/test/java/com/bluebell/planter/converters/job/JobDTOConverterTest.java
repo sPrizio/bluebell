@@ -4,6 +4,7 @@ import com.bluebell.planter.AbstractPlanterTest;
 import com.bluebell.planter.services.UniqueIdentifierService;
 import com.bluebell.platform.enums.job.JobType;
 import com.bluebell.platform.models.api.dto.job.JobDTO;
+import com.bluebell.platform.models.core.nonentities.data.EnumDisplay;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
@@ -55,7 +56,7 @@ class JobDTOConverterTest extends AbstractPlanterTest {
         assertThat(this.jobDTOConverter.convert(generateTestJob()))
                 .isNotNull()
                 .extracting("name", "type")
-                .containsExactly("Test Job", JobType.FETCH_MARKET_NEWS);
+                .containsExactly("Test Job", EnumDisplay.builder().label(JobType.FETCH_MARKET_NEWS.getLabel()).code(JobType.FETCH_MARKET_NEWS.getCode()).build());
 
     }
 
@@ -68,6 +69,6 @@ class JobDTOConverterTest extends AbstractPlanterTest {
                 .isNotEmpty()
                 .first()
                 .extracting("name", "type")
-                .containsExactly("Test Job", JobType.FETCH_MARKET_NEWS);
+                .containsExactly("Test Job", EnumDisplay.builder().label(JobType.FETCH_MARKET_NEWS.getLabel()).code(JobType.FETCH_MARKET_NEWS.getCode()).build());
     }
 }

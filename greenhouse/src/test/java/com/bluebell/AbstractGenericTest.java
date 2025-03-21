@@ -283,10 +283,14 @@ public abstract class AbstractGenericTest {
      * @return {@link JobResult}
      */
     public JobResult generateTestJobResult() {
-        return JobResult
+
+        final JobResult res = JobResult
                 .builder()
                 .entries(List.of(generateTestJobResultEntry()))
                 .build();
+
+        res.setJob(generateTestJob());
+        return res;
     }
 
     /**

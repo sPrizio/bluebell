@@ -54,7 +54,7 @@ class JobResultEntryDTOConverterTest extends AbstractPlanterTest {
         assertThat(this.jobResultEntryDTOConverter.convert(generateTestJobResultEntry()))
                 .isNotNull()
                 .extracting("success", "data", "logs")
-                .containsExactly(1, "Test Data", "This is a log message");
+                .containsExactly(true, "Test Data", "This is a log message");
 
     }
 
@@ -67,6 +67,6 @@ class JobResultEntryDTOConverterTest extends AbstractPlanterTest {
                 .isNotEmpty()
                 .first()
                 .extracting("success", "data", "logs")
-                .containsExactly(1, "Test Data", "This is a log message");
+                .containsExactly(true, "Test Data", "This is a log message");
     }
 }
