@@ -14,6 +14,7 @@ import com.bluebell.radicle.exceptions.validation.IllegalParameterException;
 import com.bluebell.radicle.repositories.action.ActionRepository;
 import com.bluebell.radicle.repositories.job.JobRepository;
 import com.bluebell.radicle.services.action.ActionService;
+import org.assertj.core.api.InstanceOfAssertFactories;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -21,6 +22,7 @@ import org.junit.runner.RunWith;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.Page;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.context.junit4.SpringRunner;
 
@@ -35,7 +37,7 @@ import static org.mockito.ArgumentMatchers.any;
  * Testing class for {@link JobService}
  *
  * @author Stephen Prizio
- * @version 0.1.1
+ * @version 0.1.3
  */
 @SpringBootTest
 @RunWith(SpringRunner.class)
@@ -290,5 +292,213 @@ class JobServiceTest extends AbstractGenericTest {
         assertThat(job).isNotNull();
         assertThat(this.jobService.findJobsByStatusAndType(JobStatus.NOT_STARTED, JobType.FETCH_MARKET_NEWS)).isNotNull();
         assertThat(this.jobService.findJobsByStatusAndType(JobStatus.NOT_STARTED, JobType.FETCH_MARKET_NEWS).get(0).getJobId()).isEqualTo(job.getJobId());
+    }
+
+
+    //  ----------------- findJobsByStatusPaged -----------------
+
+    @Test
+    void test_findJobsByStatusPaged_success() {
+        assertThatExceptionOfType(IllegalParameterException.class)
+                .isThrownBy(() -> this.jobService.findJobsByStatusPaged(null, LocalDateTime.MAX, JobStatus.IN_PROGRESS, 1, 1))
+                .withMessageContaining(CorePlatformConstants.Validation.DateTime.START_DATE_CANNOT_BE_NULL);
+        assertThatExceptionOfType(IllegalParameterException.class)
+                .isThrownBy(() -> this.jobService.findJobsByStatusPaged(LocalDateTime.MIN, null, JobStatus.IN_PROGRESS, 1, 1))
+                .withMessageContaining(CorePlatformConstants.Validation.DateTime.END_DATE_CANNOT_BE_NULL);
+        assertThatExceptionOfType(UnsupportedOperationException.class)
+                .isThrownBy(() -> this.jobService.findJobsByStatusPaged(LocalDateTime.MAX, LocalDateTime.MIN, JobStatus.IN_PROGRESS, 1, 1))
+                .withMessageContaining(CorePlatformConstants.Validation.DateTime.MUTUALLY_EXCLUSIVE_DATES);
+        assertThatExceptionOfType(IllegalParameterException.class)
+                .isThrownBy(() -> this.jobService.findJobsByStatusPaged(LocalDateTime.MIN, LocalDateTime.MAX, null, 1, 1))
+                .withMessageContaining(CorePlatformConstants.Validation.Job.JOB_STATUS_CANNOT_BE_NULL);
+
+        Job job1 = this.jobRepository.save(Job.builder().build());
+        job1.setStatus(JobStatus.COMPLETED);
+        job1.setExecutionTime(LocalDateTime.now().minusYears(2));
+        job1 = this.jobRepository.save(job1);
+
+        Job job2 = this.jobRepository.save(Job.builder().build());
+        job2.setStatus(JobStatus.FAILED);
+        job2 = this.jobRepository.save(job2);
+
+        Job job3 = this.jobRepository.save(Job.builder().build());
+        job3.setStatus(JobStatus.COMPLETED);
+        job3.setExecutionTime(LocalDateTime.now().minusYears(1));
+        job3 = this.jobRepository.save(job3);
+
+        Job job4 = this.jobRepository.save(Job.builder().build());
+        job4.setStatus(JobStatus.COMPLETED);
+        job4.setExecutionTime(LocalDateTime.now().minusDays(2));
+        job4 = this.jobRepository.save(job4);
+
+        assertThat(job1).isNotNull();
+        assertThat(job2).isNotNull();
+        assertThat(job3).isNotNull();
+        assertThat(job4).isNotNull();
+
+        final Page<Job> test1 = this.jobService.findJobsByStatusPaged(LocalDateTime.now().minusYears(3), LocalDateTime.now().minusMonths(6), JobStatus.COMPLETED, 0, 1);
+        final Page<Job> test2 = this.jobService.findJobsByStatusPaged(LocalDateTime.now().minusYears(3), LocalDateTime.now().minusMonths(6), JobStatus.COMPLETED, 0, 2);
+        final Page<Job> test3 = this.jobService.findJobsByStatusPaged(LocalDateTime.now().minusMonths(2), LocalDateTime.now().minusMonths(1), JobStatus.COMPLETED, 0, 2);
+
+        assertThat(test1.get().toList())
+                .asInstanceOf(InstanceOfAssertFactories.LIST)
+                .isNotEmpty()
+                .hasSize(1)
+                .element(0)
+                .extracting("id")
+                .isEqualTo(job3.getId());
+
+        assertThat(test2.get().toList())
+                .asInstanceOf(InstanceOfAssertFactories.LIST)
+                .isNotEmpty()
+                .hasSize(2)
+                .element(0)
+                .extracting("id")
+                .isEqualTo(job3.getId());
+
+        assertThat(test3.get().toList())
+                .asInstanceOf(InstanceOfAssertFactories.LIST)
+                .isEmpty();
+    }
+
+
+    //  ----------------- findJobsByTypePaged -----------------
+
+    @Test
+    void test_findJobsByTypePaged_success() {
+        assertThatExceptionOfType(IllegalParameterException.class)
+                .isThrownBy(() -> this.jobService.findJobsByTypePaged(null, LocalDateTime.MAX, JobType.FETCH_MARKET_NEWS, 1, 1))
+                .withMessageContaining(CorePlatformConstants.Validation.DateTime.START_DATE_CANNOT_BE_NULL);
+        assertThatExceptionOfType(IllegalParameterException.class)
+                .isThrownBy(() -> this.jobService.findJobsByTypePaged(LocalDateTime.MIN, null, JobType.FETCH_MARKET_NEWS, 1, 1))
+                .withMessageContaining(CorePlatformConstants.Validation.DateTime.END_DATE_CANNOT_BE_NULL);
+        assertThatExceptionOfType(UnsupportedOperationException.class)
+                .isThrownBy(() -> this.jobService.findJobsByTypePaged(LocalDateTime.MAX, LocalDateTime.MIN, JobType.FETCH_MARKET_NEWS, 1, 1))
+                .withMessageContaining(CorePlatformConstants.Validation.DateTime.MUTUALLY_EXCLUSIVE_DATES);
+        assertThatExceptionOfType(IllegalParameterException.class)
+                .isThrownBy(() -> this.jobService.findJobsByTypePaged(LocalDateTime.MIN, LocalDateTime.MAX, null, 1, 1))
+                .withMessageContaining(CorePlatformConstants.Validation.Job.JOB_TYPE_CANNOT_BE_NULL);
+
+        Job job1 = this.jobRepository.save(Job.builder().build());
+        job1.setType(JobType.FETCH_MARKET_NEWS);
+        job1.setExecutionTime(LocalDateTime.now().minusYears(2));
+        job1 = this.jobRepository.save(job1);
+
+        Job job2 = this.jobRepository.save(Job.builder().build());
+        job2.setType(JobType.CLEANUP_STALE_JOBS);
+        job2 = this.jobRepository.save(job2);
+
+        Job job3 = this.jobRepository.save(Job.builder().build());
+        job3.setType(JobType.FETCH_MARKET_NEWS);
+        job3.setExecutionTime(LocalDateTime.now().minusYears(1));
+        job3 = this.jobRepository.save(job3);
+
+        Job job4 = this.jobRepository.save(Job.builder().build());
+        job4.setType(JobType.FETCH_MARKET_NEWS);
+        job4.setExecutionTime(LocalDateTime.now().minusDays(2));
+        job4 = this.jobRepository.save(job4);
+
+        assertThat(job1).isNotNull();
+        assertThat(job2).isNotNull();
+        assertThat(job3).isNotNull();
+        assertThat(job4).isNotNull();
+
+        final Page<Job> test1 = this.jobService.findJobsByTypePaged(LocalDateTime.now().minusYears(3), LocalDateTime.now().minusMonths(6), JobType.FETCH_MARKET_NEWS, 0, 1);
+        final Page<Job> test2 = this.jobService.findJobsByTypePaged(LocalDateTime.now().minusYears(3), LocalDateTime.now().minusMonths(6), JobType.FETCH_MARKET_NEWS, 0, 2);
+        final Page<Job> test3 = this.jobService.findJobsByTypePaged(LocalDateTime.now().minusMonths(2), LocalDateTime.now().minusMonths(1), JobType.FETCH_MARKET_NEWS, 0, 2);
+
+        assertThat(test1.get().toList())
+                .asInstanceOf(InstanceOfAssertFactories.LIST)
+                .isNotEmpty()
+                .hasSize(1)
+                .element(0)
+                .extracting("id")
+                .isEqualTo(job3.getId());
+
+        assertThat(test2.get().toList())
+                .asInstanceOf(InstanceOfAssertFactories.LIST)
+                .isNotEmpty()
+                .hasSize(2)
+                .element(0)
+                .extracting("id")
+                .isEqualTo(job3.getId());
+
+        assertThat(test3.get().toList())
+                .asInstanceOf(InstanceOfAssertFactories.LIST)
+                .isEmpty();
+    }
+
+
+    //  ----------------- findJobsByStatusAndTypePaged -----------------
+
+    @Test
+    void test_findJobsByStatusAndTypePaged_success() {
+        assertThatExceptionOfType(IllegalParameterException.class)
+                .isThrownBy(() -> this.jobService.findJobsByStatusAndTypePaged(null, LocalDateTime.MAX, JobStatus.COMPLETED, JobType.FETCH_MARKET_NEWS, 1, 1))
+                .withMessageContaining(CorePlatformConstants.Validation.DateTime.START_DATE_CANNOT_BE_NULL);
+        assertThatExceptionOfType(IllegalParameterException.class)
+                .isThrownBy(() -> this.jobService.findJobsByStatusAndTypePaged(LocalDateTime.MIN, null, JobStatus.COMPLETED, JobType.FETCH_MARKET_NEWS, 1, 1))
+                .withMessageContaining(CorePlatformConstants.Validation.DateTime.END_DATE_CANNOT_BE_NULL);
+        assertThatExceptionOfType(UnsupportedOperationException.class)
+                .isThrownBy(() -> this.jobService.findJobsByStatusAndTypePaged(LocalDateTime.MAX, LocalDateTime.MIN, JobStatus.COMPLETED, JobType.FETCH_MARKET_NEWS, 1, 1))
+                .withMessageContaining(CorePlatformConstants.Validation.DateTime.MUTUALLY_EXCLUSIVE_DATES);
+        assertThatExceptionOfType(IllegalParameterException.class)
+                .isThrownBy(() -> this.jobService.findJobsByStatusAndTypePaged(LocalDateTime.MIN, LocalDateTime.MAX, null, JobType.FETCH_MARKET_NEWS, 1, 1))
+                .withMessageContaining(CorePlatformConstants.Validation.Job.JOB_STATUS_CANNOT_BE_NULL);
+        assertThatExceptionOfType(IllegalParameterException.class)
+                .isThrownBy(() -> this.jobService.findJobsByStatusAndTypePaged(LocalDateTime.MIN, LocalDateTime.MAX, JobStatus.COMPLETED, null, 1, 1))
+                .withMessageContaining(CorePlatformConstants.Validation.Job.JOB_TYPE_CANNOT_BE_NULL);
+
+        Job job1 = this.jobRepository.save(Job.builder().build());
+        job1.setType(JobType.FETCH_MARKET_NEWS);
+        job1.setStatus(JobStatus.COMPLETED);
+        job1.setExecutionTime(LocalDateTime.now().minusYears(2));
+        job1 = this.jobRepository.save(job1);
+
+        Job job2 = this.jobRepository.save(Job.builder().build());
+        job2.setType(JobType.CLEANUP_STALE_JOBS);
+        job2.setStatus(JobStatus.COMPLETED);
+        job2 = this.jobRepository.save(job2);
+
+        Job job3 = this.jobRepository.save(Job.builder().build());
+        job3.setType(JobType.FETCH_MARKET_NEWS);
+        job3.setStatus(JobStatus.COMPLETED);
+        job3.setExecutionTime(LocalDateTime.now().minusYears(1));
+        job3 = this.jobRepository.save(job3);
+
+        Job job4 = this.jobRepository.save(Job.builder().build());
+        job4.setType(JobType.FETCH_MARKET_NEWS);
+        job4.setStatus(JobStatus.COMPLETED);
+        job4.setExecutionTime(LocalDateTime.now().minusDays(2));
+        job4 = this.jobRepository.save(job4);
+
+        assertThat(job1).isNotNull();
+        assertThat(job2).isNotNull();
+        assertThat(job3).isNotNull();
+        assertThat(job4).isNotNull();
+
+        final Page<Job> test1 = this.jobService.findJobsByStatusAndTypePaged(LocalDateTime.now().minusYears(3), LocalDateTime.now().minusMonths(6), JobStatus.COMPLETED, JobType.FETCH_MARKET_NEWS, 0, 1);
+        final Page<Job> test2 = this.jobService.findJobsByStatusAndTypePaged(LocalDateTime.now().minusYears(3), LocalDateTime.now().minusMonths(6), JobStatus.COMPLETED, JobType.FETCH_MARKET_NEWS, 0, 2);
+        final Page<Job> test3 = this.jobService.findJobsByStatusAndTypePaged(LocalDateTime.now().minusMonths(2), LocalDateTime.now().minusMonths(1), JobStatus.COMPLETED, JobType.FETCH_MARKET_NEWS, 0, 2);
+
+        assertThat(test1.get().toList())
+                .asInstanceOf(InstanceOfAssertFactories.LIST)
+                .isNotEmpty()
+                .hasSize(1)
+                .element(0)
+                .extracting("id")
+                .isEqualTo(job3.getId());
+
+        assertThat(test2.get().toList())
+                .asInstanceOf(InstanceOfAssertFactories.LIST)
+                .isNotEmpty()
+                .hasSize(2)
+                .element(0)
+                .extracting("id")
+                .isEqualTo(job3.getId());
+
+        assertThat(test3.get().toList())
+                .asInstanceOf(InstanceOfAssertFactories.LIST)
+                .isEmpty();
     }
 }
