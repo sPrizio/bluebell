@@ -14,10 +14,10 @@ import lombok.Getter;
 @Getter
 @Schema(title = "JobStatus", name = "JobStatus", description = "The various states that a Job can be in.")
 public enum JobStatus implements GenericEnum<JobStatus> {
-    NOT_STARTED("not_started", "Not Started"),
-    IN_PROGRESS("in_progress", "In Progress"),
-    COMPLETED("completed", "Completed"),
-    FAILED("failed", "Failed");
+    NOT_STARTED("NOT_STARTED", "Not Started"),
+    IN_PROGRESS("IN_PROGRESS", "In Progress"),
+    COMPLETED("COMPLETED", "Completed"),
+    FAILED("FAILED", "Failed");
 
     private final String code;
 

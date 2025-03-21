@@ -75,7 +75,7 @@ class TradeApiControllerTest extends AbstractPlanterTest {
     private UniqueIdentifierService uniqueIdentifierService;
 
     @BeforeEach
-    public void setUp() {
+    void setUp() {
         Mockito.when(this.genericTradeImportService.importTrades(any(), any())).thenReturn(StringUtils.EMPTY);
         Mockito.when(this.tradeService.findAllByTradeType(TradeType.BUY, TEST_ACCOUNT)).thenReturn(List.of(TEST_TRADE_1));
         Mockito.when(this.tradeService.findAllTradesWithinTimespan(any(), any(), any())).thenReturn(List.of(TEST_TRADE_1, TEST_TRADE_2));

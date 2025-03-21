@@ -8,6 +8,8 @@ import com.bluebell.platform.enums.system.Language;
 import com.bluebell.platform.enums.system.PhoneType;
 import com.bluebell.platform.enums.trade.TradePlatform;
 import com.bluebell.platform.models.api.dto.account.AccountDTO;
+import com.bluebell.platform.models.api.dto.job.JobDTO;
+import com.bluebell.platform.models.api.dto.job.PaginatedJobsDTO;
 import com.bluebell.platform.models.api.dto.news.MarketNewsDTO;
 import com.bluebell.platform.models.api.dto.portfolio.PortfolioDTO;
 import com.bluebell.platform.models.api.dto.security.UserDTO;
@@ -27,7 +29,7 @@ import lombok.Builder;
  * Class representation of a standard json response
  *
  * @author Stephen Prizio
- * @version 0.1.2
+ * @version 0.1.3
  */
 @Builder
 @Schema(title = "StandardJsonResponse", name = "StandardJsonResponse", description = "Standard API response entity. All api calls will return this entity which includes a success flag, data, external & internal facing messages.")
@@ -57,7 +59,9 @@ public record StandardJsonResponse<T>(
                         TradeLog.class,
                         TradeDTO.class,
                         PaginatedTradesDTO.class,
-                        PortfolioDTO.class
+                        PortfolioDTO.class,
+                        JobDTO.class,
+                        PaginatedJobsDTO.class
                 }
         ) T data,
         @Schema(description = "External, client-facing message. Successful calls will usually have an empty message") String message,
