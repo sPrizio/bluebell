@@ -1,16 +1,15 @@
 package com.bluebell.platform.enums.strategy;
 
-import com.bluebell.platform.enums.GenericEnum;
 import lombok.Getter;
 
 /**
  * Enum representing different strategy reporting software
  *
  * @author Stephen Prizio
- * @version 0.1.3
+ * @version 0.0.9
  */
 @Getter
-public enum StrategyPlatform implements GenericEnum<StrategyPlatform> {
+public enum StrategyPlatform {
     BLUEBELL("BLUEBELL_ANTHER", "Bluebell - anther", ".csv"),
     METATRADER4("METATRADER4", "MetaTrader 4", ".html", ".htm"),
     UNDEFINED("N/A", "N/A");

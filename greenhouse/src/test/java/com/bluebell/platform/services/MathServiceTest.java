@@ -1,15 +1,15 @@
 package com.bluebell.platform.services;
 
 
-import org.junit.jupiter.api.Test;
-
 import static org.assertj.core.api.Assertions.assertThat;
+
+import org.junit.jupiter.api.Test;
 
 /**
  * Testing class for {@link MathService}
  *
  * @author Stephen Prizio
- * @version 0.1.3
+ * @version 0.0.9
  */
 class MathServiceTest {
 

@@ -1,16 +1,15 @@
 package com.bluebell.platform.enums.transaction;
 
-import com.bluebell.platform.enums.GenericEnum;
 import lombok.Getter;
 
 /**
  * Enum representation types of transactions
  *
  * @author Stephen Prizio
- * @version 0.1.3
+ * @version 0.0.9
  */
 @Getter
-public enum TransactionType implements GenericEnum<TransactionType> {
+public enum TransactionType {
     DEPOSIT("DEPOSIT", "Deposit"),
     WITHDRAWAL("WITHDRAWAL", "Withdrawal"),;
 

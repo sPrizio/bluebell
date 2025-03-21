@@ -1,18 +1,18 @@
 package com.bluebell.platform.util;
 
-import com.bluebell.platform.exceptions.system.DirectoryNotFoundException;
-import org.junit.jupiter.api.Test;
-
 import java.io.File;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
+import com.bluebell.platform.exceptions.system.DirectoryNotFoundException;
+import org.junit.jupiter.api.Test;
+
 /**
  * Testing class for {@link DirectoryUtil}
  *
  * @author Stephen Prizio
- * @version 0.1.3
+ * @version 0.1.2
  */
 class DirectoryUtilTest {
 
