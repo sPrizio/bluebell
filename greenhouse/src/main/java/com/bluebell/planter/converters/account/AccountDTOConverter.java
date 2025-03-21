@@ -17,7 +17,7 @@ import java.util.Collections;
  * Converts {@link Account}s into {@link AccountDTO}s
  *
  * @author Stephen Prizio
- * @version 0.1.2
+ * @version 0.1.3
  */
 @Component("accountDTOConverter")
 public class AccountDTOConverter implements GenericDTOConverter<Account, AccountDTO> {
@@ -53,7 +53,7 @@ public class AccountDTOConverter implements GenericDTOConverter<Account, Account
                 .currency(EnumDisplay.builder().code(entity.getCurrency().getIsoCode()).label(entity.getCurrency().getLabel()).build())
                 .accountNumber(entity.getAccountNumber())
                 .accountType(EnumDisplay.builder().code(entity.getAccountType().getCode()).label(entity.getAccountType().getLabel()).build())
-                .broker(EnumDisplay.builder().code(entity.getBroker().getCode()).label(entity.getBroker().getName()).build())
+                .broker(EnumDisplay.builder().code(entity.getBroker().getCode()).label(entity.getBroker().getLabel()).build())
                 .lastTraded(entity.getLastTraded())
                 .tradePlatform(EnumDisplay.builder().code(entity.getTradePlatform().getCode()).label(entity.getTradePlatform().getLabel()).build())
                 .transactions(CollectionUtils.isEmpty(entity.getTransactions()) ? Collections.emptyList() : this.transactionDTOConverter.convertAll(entity.getTransactions()))

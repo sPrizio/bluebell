@@ -1,15 +1,16 @@
 package com.bluebell.platform.enums.transaction;
 
+import com.bluebell.platform.enums.GenericEnum;
 import lombok.Getter;
 
 /**
  * Enum representing the status that a transaction can be in
  *
  * @author Stephen Prizio
- * @version 0.0.9
+ * @version 0.1.3
  */
 @Getter
-public enum TransactionStatus {
+public enum TransactionStatus implements GenericEnum<TransactionStatus> {
     FAILED("FAILED", "Failed"),
     IN_PROGRESS("IN_PROGRESS", "In Progress"),
     PENDING("PENDING", "Pending"),

@@ -13,8 +13,8 @@ import com.bluebell.platform.models.core.nonentities.records.account.AccountDeta
 import com.bluebell.platform.models.core.nonentities.records.account.AccountEquityPoint;
 import com.bluebell.platform.models.core.nonentities.records.account.AccountInsights;
 import com.bluebell.platform.models.core.nonentities.records.account.AccountStatistics;
-import com.bluebell.platform.models.core.nonentities.records.portfolio.PortfolioRecord;
 import com.bluebell.platform.models.core.nonentities.records.portfolio.PortfolioEquityPoint;
+import com.bluebell.platform.models.core.nonentities.records.portfolio.PortfolioRecord;
 import com.bluebell.platform.models.core.nonentities.records.portfolio.PortfolioStatistics;
 import com.bluebell.platform.models.core.nonentities.records.tradelog.TradeLog;
 import com.bluebell.platform.models.core.nonentities.records.tradelog.TradeLogEntry;
@@ -35,7 +35,7 @@ import java.util.List;
  * Parent-level testing class to provide testing assistance for planter
  *
  * @author Stephen Prizio
- * @version 0.1.2
+ * @version 0.1.3
  */
 public abstract class AbstractPlanterTest extends AbstractGenericTest {
 

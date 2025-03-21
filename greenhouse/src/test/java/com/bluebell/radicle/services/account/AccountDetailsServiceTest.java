@@ -1,15 +1,10 @@
 package com.bluebell.radicle.services.account;
 
-import java.util.List;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
-
+import com.bluebell.AbstractGenericTest;
 import com.bluebell.platform.constants.CorePlatformConstants;
 import com.bluebell.platform.models.core.entities.account.Account;
 import com.bluebell.platform.models.core.entities.trade.Trade;
 import com.bluebell.platform.models.core.nonentities.records.account.AccountEquityPoint;
-import com.bluebell.AbstractGenericTest;
 import com.bluebell.radicle.exceptions.validation.IllegalParameterException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -18,11 +13,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import java.util.List;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+
 /**
  * Testing class for {@link AccountDetailsService}
  *
  * @author Stephen Prizio
- * @version 0.1.2
+ * @version 0.1.3
  */
 @SpringBootTest
 @RunWith(SpringRunner.class)

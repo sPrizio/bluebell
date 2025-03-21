@@ -1,17 +1,11 @@
 package com.bluebell.radicle.services.analysis;
 
-import java.time.DayOfWeek;
-import java.util.List;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
-
+import com.bluebell.AbstractGenericTest;
 import com.bluebell.platform.enums.analysis.AnalysisFilter;
 import com.bluebell.platform.enums.analysis.TradeDurationFilter;
 import com.bluebell.platform.enums.time.PlatformTimeInterval;
 import com.bluebell.platform.models.core.entities.account.Account;
 import com.bluebell.platform.models.core.entities.trade.Trade;
-import com.bluebell.AbstractGenericTest;
 import com.bluebell.radicle.exceptions.validation.IllegalParameterException;
 import org.assertj.core.api.InstanceOfAssertFactories;
 import org.junit.jupiter.api.BeforeEach;
@@ -21,11 +15,17 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import java.time.DayOfWeek;
+import java.util.List;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+
 /**
  * Testing class for {@link AnalysisService}
  *
  * @author Stephen Prizio
- * @version 0.1.2
+ * @version 0.1.3
  */
 @SpringBootTest
 @RunWith(SpringRunner.class)

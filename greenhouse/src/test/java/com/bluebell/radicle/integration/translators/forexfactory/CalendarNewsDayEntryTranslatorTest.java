@@ -1,16 +1,16 @@
 package com.bluebell.radicle.integration.translators.forexfactory;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
 import com.bluebell.AbstractGenericTest;
 import com.bluebell.radicle.integration.models.dto.forexfactory.CalendarNewsDayEntryDTO;
 import org.junit.jupiter.api.Test;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * Testing class for {@link CalendarNewsDayEntryTranslator}
  *
  * @author Stephen Prizio
- * @version 0.1.0
+ * @version 0.1.3
  */
 public class CalendarNewsDayEntryTranslatorTest extends AbstractGenericTest {
 

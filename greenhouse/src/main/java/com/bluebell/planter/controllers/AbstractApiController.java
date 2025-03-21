@@ -1,6 +1,7 @@
 package com.bluebell.planter.controllers;
 
 import com.bluebell.platform.constants.CorePlatformConstants;
+import com.bluebell.platform.enums.GenericEnum;
 import com.bluebell.platform.enums.analysis.AnalysisFilter;
 import com.bluebell.platform.models.api.json.StandardJsonResponse;
 import com.bluebell.platform.models.core.entities.account.Account;
@@ -19,7 +20,7 @@ import static com.bluebell.radicle.validation.GenericValidator.validateParameter
  * Parent-level controller providing common functionality
  *
  * @author Stephen Prizio
- * @version 0.1.2
+ * @version 0.1.3
  */
 public abstract class AbstractApiController {
 
@@ -62,7 +63,7 @@ public abstract class AbstractApiController {
      * @return {@link StandardJsonResponse}
      */
     public StandardJsonResponse<List<AnalysisResult>> validateFilter(final String filter) {
-        if (AnalysisFilter.getAnalysisFilter(filter) == null) {
+        if (GenericEnum.getByCode(AnalysisFilter.class, filter) == null) {
             return StandardJsonResponse
                     .<List<AnalysisResult>>builder()
                     .success(false)
