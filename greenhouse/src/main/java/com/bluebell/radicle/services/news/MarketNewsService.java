@@ -28,7 +28,7 @@ import static com.bluebell.radicle.validation.GenericValidator.validateParameter
  * Service-layer for {@link MarketNews}
  *
  * @author Stephen Prizio
- * @version 0.1.3
+ * @version 0.1.1
  */
 @Slf4j
 @Service
@@ -220,7 +220,7 @@ public class MarketNewsService {
             return true;
         }
 
-        return Arrays.stream(testLocales).allMatch(l -> Currency.getByIsoCode(l) != Currency.NOT_APPLICABLE || Country.getByIsoCode(l) != Country.NOT_APPLICABLE);
+        return Arrays.stream(testLocales).allMatch(l -> Currency.get(l) != Currency.NOT_APPLICABLE || Country.getByIsoCode(l) != Country.NOT_APPLICABLE);
     }
 
     /**
@@ -238,7 +238,7 @@ public class MarketNewsService {
 
         for (final String test : testLocales) {
             Country testCountry = Country.getByIsoCode(test);
-            Currency testCurrency = Currency.getByIsoCode(test);
+            Currency testCurrency = Currency.get(test);
 
             if (entry.getCountry().equals(testCountry) || entry.getCountry().getCurrency().equals(testCurrency)) {
                 return true;

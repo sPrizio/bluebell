@@ -1,6 +1,5 @@
 package com.bluebell.platform.models.core.entities.job.impl;
 
-import com.bluebell.platform.models.core.entities.GenericEntity;
 import com.bluebell.platform.models.core.nonentities.action.ActionResult;
 import jakarta.persistence.*;
 import lombok.*;
@@ -9,14 +8,14 @@ import lombok.*;
  * Represents an entry inside a {@link JobResult} which maps semantically to an {@link ActionResult}
  *
  * @author Stephen Prizio
- * @version 0.1.3
+ * @version 0.1.1
  */
 @Getter
 @Entity
 @Table(name = "job_result_entries")
 @NoArgsConstructor
 @AllArgsConstructor
-public class JobResultEntry implements GenericEntity {
+public class JobResultEntry {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

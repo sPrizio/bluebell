@@ -1,5 +1,7 @@
 package com.bluebell.radicle.integration.models.dto.forexfactory;
 
+import java.time.LocalTime;
+
 import com.bluebell.platform.enums.news.MarketNewsSeverity;
 import com.bluebell.platform.enums.system.Country;
 import com.bluebell.radicle.integration.models.dto.GenericIntegrationDTO;
@@ -8,13 +10,11 @@ import lombok.Getter;
 import lombok.Setter;
 import org.apache.commons.lang3.StringUtils;
 
-import java.time.LocalTime;
-
 /**
  * Class representation of an entry of news in a news day
  *
  * @author Stephen Prizio
- * @version 0.1.3
+ * @version 0.1.1
  */
 @Getter
 @Setter

@@ -2,7 +2,6 @@ package com.bluebell.planter.controllers.trade;
 
 import com.bluebell.planter.controllers.AbstractApiController;
 import com.bluebell.platform.constants.CorePlatformConstants;
-import com.bluebell.platform.enums.GenericEnum;
 import com.bluebell.platform.enums.system.TradeRecordTimeInterval;
 import com.bluebell.platform.models.api.json.StandardJsonResponse;
 import com.bluebell.platform.models.core.entities.security.User;
@@ -32,7 +31,7 @@ import java.util.List;
  * Api controller for {@link TradeRecord}
  *
  * @author Stephen Prizio
- * @version 0.1.3
+ * @version 0.1.1
  */
 @RestController
 @RequestMapping("${base.api.controller.endpoint}/trade-record")
@@ -127,7 +126,7 @@ public class TradeRecordApiController extends AbstractApiController {
         }
 
         final User user = (User) request.getAttribute(SecurityConstants.USER_REQUEST_KEY);
-        final TradeRecordReport records = this.tradeRecordService.getTradeRecords(LocalDate.parse(start, DateTimeFormatter.ISO_DATE), LocalDate.parse(end, DateTimeFormatter.ISO_DATE), getAccountForId(user, accountNumber), GenericEnum.getByCode(TradeRecordTimeInterval.class, interval), count);
+        final TradeRecordReport records = this.tradeRecordService.getTradeRecords(LocalDate.parse(start, DateTimeFormatter.ISO_DATE), LocalDate.parse(end, DateTimeFormatter.ISO_DATE), getAccountForId(user, accountNumber), TradeRecordTimeInterval.getInterval(interval), count);
         return StandardJsonResponse
                 .<TradeRecordReport>builder()
                 .success(true)
@@ -190,7 +189,7 @@ public class TradeRecordApiController extends AbstractApiController {
         }
 
         final User user = (User) request.getAttribute(SecurityConstants.USER_REQUEST_KEY);
-        final TradeRecordReport records = this.tradeRecordService.getRecentTradeRecords(getAccountForId(user, accountNumber), GenericEnum.getByCode(TradeRecordTimeInterval.class, interval), count);
+        final TradeRecordReport records = this.tradeRecordService.getRecentTradeRecords(getAccountForId(user, accountNumber), TradeRecordTimeInterval.getInterval(interval), count);
         return StandardJsonResponse
                 .<TradeRecordReport>builder()
                 .success(true)
@@ -250,7 +249,7 @@ public class TradeRecordApiController extends AbstractApiController {
         }
 
         final User user = (User) request.getAttribute(SecurityConstants.USER_REQUEST_KEY);
-        final TradeRecordControls controls = this.tradeRecordService.getTradeRecordControls(getAccountForId(user, accountNumber), GenericEnum.getByCode(TradeRecordTimeInterval.class, interval));
+        final TradeRecordControls controls = this.tradeRecordService.getTradeRecordControls(getAccountForId(user, accountNumber), TradeRecordTimeInterval.getInterval(interval));
         return StandardJsonResponse
                 .<TradeRecordControls>builder()
                 .success(true)
@@ -336,7 +335,7 @@ public class TradeRecordApiController extends AbstractApiController {
         return StandardJsonResponse
                 .<TradeLog>builder()
                 .success(true)
-                .data(this.tradeRecordService.getTradeLog(user, LocalDate.parse(start, DateTimeFormatter.ISO_DATE), LocalDate.parse(end, DateTimeFormatter.ISO_DATE), GenericEnum.getByCode(TradeRecordTimeInterval.class, interval), count))
+                .data(this.tradeRecordService.getTradeLog(user, LocalDate.parse(start, DateTimeFormatter.ISO_DATE), LocalDate.parse(end, DateTimeFormatter.ISO_DATE), TradeRecordTimeInterval.getInterval(interval), count))
                 .build();
     }
 }

@@ -1,5 +1,6 @@
 package com.bluebell.radicle.importing.validation;
 
+import com.bluebell.platform.constants.CorePlatformConstants;
 import com.bluebell.radicle.importing.exceptions.FileExtensionNotSupportedException;
 import lombok.experimental.UtilityClass;
 import org.apache.commons.io.FilenameUtils;
@@ -12,7 +13,7 @@ import java.util.Arrays;
  * Validator class for the import package
  *
  * @author Stephen Prizio
- * @version 0.1.3
+ * @version 0.1.1
  */
 @UtilityClass
 public class ImportValidator {

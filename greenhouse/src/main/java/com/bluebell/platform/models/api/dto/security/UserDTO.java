@@ -1,8 +1,10 @@
 package com.bluebell.platform.models.api.dto.security;
 
 import com.bluebell.platform.models.api.dto.GenericDTO;
+import com.bluebell.platform.models.api.dto.account.AccountDTO;
 import com.bluebell.platform.models.api.dto.portfolio.PortfolioDTO;
 import com.bluebell.platform.models.api.dto.system.PhoneNumberDTO;
+import com.bluebell.platform.models.core.entities.portfolio.Portfolio;
 import com.bluebell.platform.models.core.entities.security.User;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
@@ -19,7 +21,7 @@ import java.util.List;
  * A DTO representation of a {@link User}
  *
  * @author Stephen Prizio
- * @version 0.1.3
+ * @version 0.1.2
  */
 @Setter
 @Getter

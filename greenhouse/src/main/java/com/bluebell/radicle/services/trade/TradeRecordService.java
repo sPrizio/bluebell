@@ -37,7 +37,7 @@ import static com.bluebell.radicle.validation.GenericValidator.validateParameter
  * Service-layer for calculating {@link TradeRecord}s
  *
  * @author Stephen Prizio
- * @version 0.1.3
+ * @version 0.1.2
  */
 @Service
 public class TradeRecordService {
@@ -69,14 +69,14 @@ public class TradeRecordService {
         validateParameterIsNotNull(tradeRecordTimeInterval, CorePlatformConstants.Validation.System.TIME_INTERVAL_CANNOT_BE_NULL);
 
         LocalDate tempStart = tradeRecordTimeInterval == TradeRecordTimeInterval.MONTHLY ? start.with(TemporalAdjusters.firstDayOfMonth()) : start;
-        LocalDate tempEnd = tempStart.plus(tradeRecordTimeInterval.getAmount(), tradeRecordTimeInterval.getUnit());
+        LocalDate tempEnd = tempStart.plus(tradeRecordTimeInterval.amount, tradeRecordTimeInterval.unit);
 
         final List<TradeRecord> records = new ArrayList<>();
         while (tempStart.isBefore(end) || tempStart.isEqual(end)) {
             records.add(generateRecord(tempStart, tempEnd, this.tradeService.findAllTradesWithinTimespan(tempStart.atStartOfDay(), tempEnd.atStartOfDay(), account), tradeRecordTimeInterval, count));
 
-            tempStart = tempStart.plus(tradeRecordTimeInterval.getAmount(), tradeRecordTimeInterval.getUnit());
-            tempEnd = tempEnd.plus(tradeRecordTimeInterval.getAmount(), tradeRecordTimeInterval.getUnit());
+            tempStart = tempStart.plus(tradeRecordTimeInterval.amount, tradeRecordTimeInterval.unit);
+            tempEnd = tempEnd.plus(tradeRecordTimeInterval.amount, tradeRecordTimeInterval.unit);
         }
 
         final List<TradeRecord> tradeRecords;
@@ -128,8 +128,8 @@ public class TradeRecordService {
         LocalDateTime compare = tradeRecordTimeInterval == TradeRecordTimeInterval.DAILY ? account.getLastTraded().with(TemporalAdjusters.firstDayOfNextMonth()) : account.getLastTraded().with(TemporalAdjusters.firstDayOfNextYear());
 
         while ((compare.isAfter(start) || compare.isEqual(start))) {
-            tradeRecords.addAll(getTradeRecords(compare.minus(tradeRecordTimeInterval.getAmount(), tradeRecordTimeInterval.getUnit()).toLocalDate(), compare.toLocalDate(), account, tradeRecordTimeInterval, -1).tradeRecords());
-            compare = compare.minus(tradeRecordTimeInterval.getAmount(), tradeRecordTimeInterval.getUnit());
+            tradeRecords.addAll(getTradeRecords(compare.minus(tradeRecordTimeInterval.amount, tradeRecordTimeInterval.unit).toLocalDate(), compare.toLocalDate(), account, tradeRecordTimeInterval, -1).tradeRecords());
+            compare = compare.minus(tradeRecordTimeInterval.amount, tradeRecordTimeInterval.unit);
         }
 
         final List<TradeRecord> finalList;
