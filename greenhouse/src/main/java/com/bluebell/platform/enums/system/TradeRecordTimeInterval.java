@@ -4,7 +4,6 @@ import com.bluebell.platform.enums.GenericEnum;
 import com.bluebell.platform.models.core.nonentities.records.traderecord.TradeRecord;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
-import org.apache.commons.lang3.StringUtils;
 
 import java.time.temporal.ChronoUnit;
 

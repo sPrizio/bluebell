@@ -1,15 +1,9 @@
 package com.bluebell;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
-
 import com.bluebell.platform.enums.account.AccountType;
 import com.bluebell.platform.enums.account.Broker;
 import com.bluebell.platform.enums.account.Currency;
+import com.bluebell.platform.enums.job.JobType;
 import com.bluebell.platform.enums.news.MarketNewsSeverity;
 import com.bluebell.platform.enums.security.UserRole;
 import com.bluebell.platform.enums.system.Country;
@@ -19,6 +13,10 @@ import com.bluebell.platform.enums.trade.TradeType;
 import com.bluebell.platform.enums.transaction.TransactionStatus;
 import com.bluebell.platform.enums.transaction.TransactionType;
 import com.bluebell.platform.models.core.entities.account.Account;
+import com.bluebell.platform.models.core.entities.action.impl.Action;
+import com.bluebell.platform.models.core.entities.job.impl.Job;
+import com.bluebell.platform.models.core.entities.job.impl.JobResult;
+import com.bluebell.platform.models.core.entities.job.impl.JobResultEntry;
 import com.bluebell.platform.models.core.entities.news.MarketNews;
 import com.bluebell.platform.models.core.entities.news.MarketNewsEntry;
 import com.bluebell.platform.models.core.entities.news.MarketNewsSlot;
@@ -28,13 +26,21 @@ import com.bluebell.platform.models.core.entities.system.PhoneNumber;
 import com.bluebell.platform.models.core.entities.trade.Trade;
 import com.bluebell.platform.models.core.entities.transaction.Transaction;
 import com.bluebell.radicle.integration.models.responses.forexfactory.CalendarNewsEntryResponse;
+import com.bluebell.radicle.performable.impl.FetchMarketNewsActionPerformable;
 import org.apache.commons.lang3.StringUtils;
+
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
 
 /**
  * Parent-level testing class to provide testing assistance for the project
  *
  * @author Stephen Prizio
- * @version 0.1.2
+ * @version 0.1.3
  */
 public abstract class AbstractGenericTest {
 
@@ -240,6 +246,59 @@ public abstract class AbstractGenericTest {
                 .amount(-563.36)
                 .transactionStatus(TransactionStatus.IN_PROGRESS)
                 .account(account)
+                .build();
+    }
+
+    /**
+     * Generates a test {@link Action}
+     *
+     * @return {@link Action}
+     */
+    public Action generateTestAction() {
+        return Action
+                .builder()
+                .performableAction(new FetchMarketNewsActionPerformable())
+                .priority(1)
+                .name("Test Action")
+                .build();
+    }
+
+    /**
+     * Generates a test {@link JobResultEntry}
+     *
+     * @return {@link JobResultEntry}
+     */
+    public JobResultEntry generateTestJobResultEntry() {
+        return JobResultEntry
+                .builder()
+                .logs("This is a log message")
+                .data("Test Data")
+                .success(true)
+                .build();
+    }
+
+    /**
+     * Generates a test {@link JobResult}
+     *
+     * @return {@link JobResult}
+     */
+    public JobResult generateTestJobResult() {
+        return JobResult
+                .builder()
+                .entries(List.of(generateTestJobResultEntry()))
+                .build();
+    }
+
+    /**
+     * Generates a test {@link Job}
+     *
+     * @return {@link Job}
+     */
+    public Job generateTestJob() {
+        return Job
+                .builder()
+                .type(JobType.FETCH_MARKET_NEWS)
+                .name("Test Job")
                 .build();
     }
 }

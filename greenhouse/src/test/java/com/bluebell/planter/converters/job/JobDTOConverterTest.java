@@ -1,8 +1,9 @@
-package com.bluebell.planter.converters.news;
+package com.bluebell.planter.converters.job;
 
 import com.bluebell.planter.AbstractPlanterTest;
 import com.bluebell.planter.services.UniqueIdentifierService;
-import com.bluebell.platform.models.api.dto.news.MarketNewsSlotDTO;
+import com.bluebell.platform.enums.job.JobType;
+import com.bluebell.platform.models.api.dto.job.JobDTO;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
@@ -12,36 +13,30 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import java.time.LocalTime;
-import java.util.Collections;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 
 /**
- * Testing class for {@link MarketNewsSlotDTOConverter}
+ * Testing class for {@link JobDTOConverter}
  *
  * @author Stephen Prizio
  * @version 0.1.3
  */
 @SpringBootTest
 @RunWith(SpringRunner.class)
-class MarketNewsSlotDTOConverterTest extends AbstractPlanterTest {
+class JobDTOConverterTest extends AbstractPlanterTest {
 
     @Autowired
-    private MarketNewsSlotDTOConverter marketNewsSlotDTOConverter;
+    private JobDTOConverter jobDTOConverter;
 
     @MockitoBean
     private UniqueIdentifierService uniqueIdentifierService;
 
-    @MockitoBean
-    private MarketNewsEntryDTOConverter marketNewsEntryDTOConverter;
-
     @BeforeEach
     void setUp() {
         Mockito.when(this.uniqueIdentifierService.generateUid(any())).thenReturn("MTE4");
-        Mockito.when(this.marketNewsEntryDTOConverter.convertAll(any())).thenReturn(Collections.emptyList());
     }
 
 
@@ -49,18 +44,19 @@ class MarketNewsSlotDTOConverterTest extends AbstractPlanterTest {
 
     @Test
     void test_convert_success_emptyResult() {
-        assertThat(this.marketNewsSlotDTOConverter.convert(null))
+        assertThat(this.jobDTOConverter.convert(null))
                 .isNotNull()
-                .satisfies(MarketNewsSlotDTO::isEmpty);
+                .satisfies(JobDTO::isEmpty);
 
     }
 
     @Test
     void test_convert_success() {
-        assertThat(this.marketNewsSlotDTOConverter.convert(generateTestMarketNewsSlot()))
+        assertThat(this.jobDTOConverter.convert(generateTestJob()))
                 .isNotNull()
-                .extracting("time")
-                .isEqualTo(LocalTime.of(13, 10));
+                .extracting("name", "type")
+                .containsExactly("Test Job", JobType.FETCH_MARKET_NEWS);
+
     }
 
 
@@ -68,10 +64,10 @@ class MarketNewsSlotDTOConverterTest extends AbstractPlanterTest {
 
     @Test
     void test_convertAll_success() {
-        assertThat(this.marketNewsSlotDTOConverter.convertAll(List.of(generateTestMarketNewsSlot())))
+        assertThat(this.jobDTOConverter.convertAll(List.of(generateTestJob())))
                 .isNotEmpty()
                 .first()
-                .extracting("time")
-                .isEqualTo(LocalTime.of(13, 10));
+                .extracting("name", "type")
+                .containsExactly("Test Job", JobType.FETCH_MARKET_NEWS);
     }
 }
