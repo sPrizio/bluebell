@@ -29,10 +29,10 @@ import java.util.Optional;
  * API Controller for {@link PortfolioRecord}
  *
  * @author Stephen Prizio
- * @version 0.1.2
+ * @version 0.1.3
  */
 @RestController
-@RequestMapping("${base.api.controller.endpoint}/portfolio")
+@RequestMapping("${bluebell.base.api.controller.endpoint}/portfolio")
 @Tag(name = "Portfolio", description = "Handles endpoints & operations related to obtaining portfolio information.")
 @CrossOrigin(origins = "*", methods = {RequestMethod.GET, RequestMethod.DELETE, RequestMethod.POST, RequestMethod.PUT})
 public class PortfolioApiController extends AbstractApiController {

@@ -12,10 +12,10 @@ import org.apache.commons.lang3.StringUtils;
  * A DTO representation of a {@link PhoneNumber}
  *
  * @author Stephen Prizio
- * @version 0.1.1
+ * @version 0.1.3
  */
-@Setter
 @Getter
+@Setter
 @Builder
 @Schema(title = "PhoneNumberDTO", name = "PhoneNumberDTO", description = "Data representation of a user's phone number")
 public class PhoneNumberDTO implements GenericDTO {

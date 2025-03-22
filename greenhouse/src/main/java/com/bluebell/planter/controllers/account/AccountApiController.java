@@ -40,7 +40,7 @@ import java.util.Optional;
  * @version 0.1.3
  */
 @RestController
-@RequestMapping("${base.api.controller.endpoint}/account")
+@RequestMapping("${bluebell.base.api.controller.endpoint}/account")
 @Tag(name = "Account", description = "Handles endpoints & operations related to a user's account")
 @CrossOrigin(origins = "*", methods = {RequestMethod.GET, RequestMethod.DELETE, RequestMethod.POST, RequestMethod.PUT})
 public class AccountApiController extends AbstractApiController {

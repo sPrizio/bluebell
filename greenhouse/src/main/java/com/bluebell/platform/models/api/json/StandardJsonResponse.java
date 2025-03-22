@@ -13,6 +13,7 @@ import com.bluebell.platform.models.api.dto.job.PaginatedJobsDTO;
 import com.bluebell.platform.models.api.dto.news.MarketNewsDTO;
 import com.bluebell.platform.models.api.dto.portfolio.PortfolioDTO;
 import com.bluebell.platform.models.api.dto.security.UserDTO;
+import com.bluebell.platform.models.api.dto.system.HealthCheckDTO;
 import com.bluebell.platform.models.api.dto.trade.PaginatedTradesDTO;
 import com.bluebell.platform.models.api.dto.trade.TradeDTO;
 import com.bluebell.platform.models.core.nonentities.apexcharts.ApexChartCandleStick;
@@ -61,7 +62,8 @@ public record StandardJsonResponse<T>(
                         PaginatedTradesDTO.class,
                         PortfolioDTO.class,
                         JobDTO.class,
-                        PaginatedJobsDTO.class
+                        PaginatedJobsDTO.class,
+                        HealthCheckDTO.class
                 }
         ) T data,
         @Schema(description = "External, client-facing message. Successful calls will usually have an empty message") String message,

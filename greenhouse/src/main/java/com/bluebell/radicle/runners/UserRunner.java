@@ -20,7 +20,7 @@ import java.util.List;
  * First data runner in the order, creates {@link User}s & {@link PhoneNumber}s
  *
  * @author Stephen Prizio
- * @version 0.1.2
+ * @version 0.1.3
  */
 @Component
 @Order(1)
@@ -46,7 +46,7 @@ public class UserRunner extends AbstractRunner implements CommandLineRunner {
                 .builder()
                 .apiToken("Zmxvd2VycG90X2FwaV90b2tlbiZzLnByaXppb0Bob3RtYWlsLmNvbSYyMDI0LTExLTIwVDEzOjU2OjE1")
                 .dateRegistered(LocalDateTime.of(2024, 11, 20, 13, 56, 15))
-                .email("stephen@email.com")
+                .email("s.prizio@hotmail.com")
                 .firstName("Stephen")
                 .lastName("Test")
                 .username("s.test")

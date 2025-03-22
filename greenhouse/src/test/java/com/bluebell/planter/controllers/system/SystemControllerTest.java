@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
@@ -32,6 +33,31 @@ class SystemControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
+
+    @Value("${bluebell.base.api.controller.endpoint}")
+    private String baseApiDomain;
+
+    @Value("${bluebell.domain}")
+    private String domain;
+
+    @Value("${bluebell.version}")
+    private String version;
+
+    @Value("${bluebell.api.version}")
+    private String apiVersion;
+
+
+    //  ----------------- getHealthCheck -----------------
+
+    @Test
+    void test_getHealthCheck_success() throws Exception {
+        this.mockMvc.perform(post("/api/v1/system/healthcheck").contentType(MediaType.APPLICATION_JSON).content(new ObjectMapper().writeValueAsString(Map.of("hello", "world"))))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.data.domain", is(this.domain)))
+                .andExpect(jsonPath("$.data.baseApiDomain", is(this.baseApiDomain)))
+                .andExpect(jsonPath("$.data.version", is(this.version)))
+                .andExpect(jsonPath("$.data.apiVersion", is(this.apiVersion)));
+    }
 
 
     //  ----------------- postContact -----------------

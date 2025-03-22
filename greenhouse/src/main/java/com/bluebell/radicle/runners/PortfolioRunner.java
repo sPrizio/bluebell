@@ -15,7 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
  * Test
  *
  * @author Stephen Prizio
- * @version 0.1.2
+ * @version 0.1.3
  */
 @Component
 @Order(2)
@@ -35,6 +35,8 @@ public class PortfolioRunner extends AbstractRunner implements CommandLineRunner
     @Transactional
     public void run(String... args) {
 
+        logStart();
+
         final User user = this.userRepository.findUserByUsername("s.test");
         this.portfolioRepository.save(Portfolio
                 .builder()
@@ -44,5 +46,7 @@ public class PortfolioRunner extends AbstractRunner implements CommandLineRunner
                 .user(user)
                 .build()
         );
+
+        logEnd();
     }
 }
