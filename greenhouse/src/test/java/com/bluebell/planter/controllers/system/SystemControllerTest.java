@@ -16,6 +16,7 @@ import java.util.Map;
 
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.is;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -51,7 +52,7 @@ class SystemControllerTest {
 
     @Test
     void test_getHealthCheck_success() throws Exception {
-        this.mockMvc.perform(post("/api/v1/system/healthcheck").contentType(MediaType.APPLICATION_JSON).content(new ObjectMapper().writeValueAsString(Map.of("hello", "world"))))
+        this.mockMvc.perform(get("/api/v1/system/healthcheck"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.data.domain", is(this.domain)))
                 .andExpect(jsonPath("$.data.baseApiDomain", is(this.baseApiDomain)))
