@@ -2,16 +2,14 @@ FROM maven:3.9-eclipse-temurin-21 AS builder
 
 WORKDIR /app
 
-COPY . ./
+COPY ./greenhouse ./
 
-# Ensure the entire project is built first
-RUN mvn clean install -DskipTests
+RUN mvn clean install -DskipTests=true
 
-# Extract only the Planter JAR for the runtime image
 FROM eclipse-temurin:21-jdk
 
 WORKDIR /app
-COPY --from=builder /app/planter/target/*.jar /app/planter.jar
+COPY --from=builder /app/target/*.jar /app/greenhouse.jar
 
 EXPOSE 8080
 CMD ["java", "-jar", "/app/greenhouse.jar"]

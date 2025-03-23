@@ -7,6 +7,7 @@ Dependencies & Integrations
 - **React.js**: Core front-end functionality
 - **Java Spring** : Core back-end functionality
 - **Forex Factory**: External Market News provider for trading events 
+- **Docker**: Containerization Library
 
 ---
 
@@ -63,6 +64,18 @@ as spring beans here. All business logic, integrations & automations live inside
 - Core models and services, repositories
 - Importing functionality for bringing trades & market data into the system
 - Data parsing system meant to collect historical data for use with back-testing and data-visualization systems. (v0.0.1: FirstRateData, v0.0.2: Trading View)
+
+---
+
+### Configuration Notes
+This project can be executed locally using Docker. Ensure that docker is installed locally before running the following command:
+`docker compose --env-file .env.dev up --build`
+
+You can also run the project in a detached mode (which is preferable for local development) with the following command:
+`docker compose --env-file .env.dev up --build -d`
+
+This will initiate the project in Docker using the `.env.dev` file and variables. Please ensure that the `.env.dev` file is created in your project directory. You can use `.env.example`
+as a guide. Also to note, staging and production configuration can likewise be implemented in their respective files: `.env.staging` & `.env.prod`.
 
 ---
 

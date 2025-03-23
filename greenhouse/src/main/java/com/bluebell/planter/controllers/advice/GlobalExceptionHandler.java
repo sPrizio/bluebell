@@ -24,6 +24,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.resource.NoResourceFoundException;
 
 import java.io.FileNotFoundException;
 import java.sql.SQLSyntaxErrorException;
@@ -88,6 +89,7 @@ public class GlobalExceptionHandler {
             GenericSystemException.class,
             IllegalArgumentException.class,
             IntegrationException.class,
+            NoResourceFoundException.class,
             SQLSyntaxErrorException.class,
             TradeImportFailureException.class
     })

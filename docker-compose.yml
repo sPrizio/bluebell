@@ -1,5 +1,3 @@
-version: "3.8"
-
 services:
   db:
     image: mariadb:11.7-rc
@@ -11,10 +9,11 @@ services:
     ports:
       - "3307:3306" # changing 3306 on host machine to 3307
     healthcheck:
-      test: ["CMD", "mariadb-admin" ,"ping", "-h", "localhost", "--password=admin"]
+      test: ["CMD", "mariadb-admin" ,"ping", "-h", "db", "--password=admin"]
       interval: 10s
       timeout: 5s
       retries: 5
+      start_period: 10s
     restart: always
 
   greenhouse:
@@ -31,6 +30,12 @@ services:
     depends_on:
       db:
         condition: service_healthy
+    healthcheck:
+      test: [ "CMD", "curl -f $GREENHOUSE_HEALTHCHECK_URL" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
     #health check
 
   #sepal:

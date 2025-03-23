@@ -1,6 +1,7 @@
 ### bluebell ###
-.env
-.env.example
+.env.dev
+.env.staging
+.env.prod
 
 target/
 !.mvn/wrapper/maven-wrapper.jar
