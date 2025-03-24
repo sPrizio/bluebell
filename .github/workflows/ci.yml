@@ -27,6 +27,7 @@ jobs:
         with:
           node-version: '22.x'
           cache: 'npm'
+          cache-dependency-path: './flower/sepal/package-lock.json'
 
       - name: "[greenhouse] - Build & Test"
         run: mvn clean package
@@ -60,6 +61,7 @@ jobs:
         with:
           node-version: '22.x'
           cache: 'npm'
+          cache-dependency-path: './flower/sepal/package-lock.json'
 
       - name: "[bluebell] - Deploy"
         run: echo "Deploying bluebell"
