@@ -37,7 +37,7 @@ export function getAuthHeader(): any {
  * @returns {string} url
  */
 export function baseUrl(): string {
-  return process.env.BASE_API_DOMAIN ?? ''
+  return process.env.NEXT_PUBLIC_BASE_API_DOMAIN ?? ''
 }
 
 /**
@@ -46,7 +46,7 @@ export function baseUrl(): string {
  * @returns {string} url
  */
 export function getDomain(appendVal: string): string {
-  return baseUrl() + '/api/v1' + appendVal
+  return baseUrl() + process.env.NEXT_PUBLIC_BASE_API_VERSION + appendVal
 }
 
 /**

@@ -35,6 +35,8 @@ services:
     build:
       context: .
       dockerfile: flower/sepal/Dockerfile
+      args:
+        - FLOWER_PROFILE=${FLOWER_PROFILE:-staging}
     ports:
       - "3000:3000"
     environment:
