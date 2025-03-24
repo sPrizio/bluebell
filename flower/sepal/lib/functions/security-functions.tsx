@@ -37,7 +37,7 @@ export function getAuthHeader(): any {
  * @returns {string} url
  */
 export function baseUrl(): string {
-  return 'http://localhost:8080'
+  return process.env.BASE_API_DOMAIN ?? ''
 }
 
 /**

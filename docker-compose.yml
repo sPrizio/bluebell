@@ -37,6 +37,8 @@ services:
       dockerfile: flower/sepal/Dockerfile
     ports:
       - "3000:3000"
+    environment:
+      - FLOWER_PROFILE=${FLOWER_PROFILE:-staging}
     depends_on:
       greenhouse:
         condition: service_started
