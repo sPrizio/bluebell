@@ -1,20 +1,20 @@
 package com.bluebell.radicle.integration.models.dto.forexfactory;
 
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
-
 import com.bluebell.radicle.integration.models.dto.GenericIntegrationDTO;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 import org.apache.commons.collections4.CollectionUtils;
 
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Class representation of a day that contains news
  *
  * @author Stephen Prizio
- * @version 0.1.1
+ * @version 0.1.3
  */
 @Getter
 @Setter

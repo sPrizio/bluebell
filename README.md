@@ -1,11 +1,11 @@
-# bluebell Capital
-bluebell Capital specializes in software systems that trade equities algorithmically and provides specialized tracking for trading accounts and their performance. Additionally, ***bluebell*** provides evaluating trading strategies capabilties in order to evolve and adapt strategies
-to maintain their effectiveness. ***bluebell*** comprises both a front-end project (flower) and back-end project (greenhouse), each comprising numerous modules, each with different functionalities. ***bluebell*** is built on a MariaDB ORM and is integrated with NextJs, Java Spring Boot & Docker.
+# bluebell Capital 
+***bluebell Capital*** specializes in software systems that trade equities algorithmically and provides specialized tracking for trading accounts and their performance. Additionally, bluebell provides evaluating trading strategies capabilties in order to evolve and adapt strategies to maintain their effectiveness. bluebell comprises both a front-end project (flower) and back-end project (greenhouse), each comprising numerous modules, each with different functionalities. bluebell is built on a MariaDB ORM and is integrated with NextJs, Java Spring Boot & Docker.
 
 Dependencies & Integrations
-- **Next.js**: Core front-end functionality built on React.js
+- **NextJs**: Core front-end functionality built on React.js
 - **Java Spring** : Core back-end functionality
 - **Forex Factory**: External Market News provider for trading events 
+- **Docker**: Containerization Library
 
 ---
 
@@ -31,7 +31,7 @@ It advertises bluebell and opens the product up to external consumption and purc
 the automation systems for importing, obtaining and manipulating external data. Additionally, strategy visualizers and
 data parsing systems are contained within ***greenhouse***. ***greenhouse*** is currently composed of the following modules:
 
-- Current Iteration: **0.1.2**
+- Current Iteration: **0.1.3**
 - Current Release: **Pre-Release**
 
 #### anther ####
@@ -62,6 +62,22 @@ as spring beans here. All business logic, integrations & automations live inside
 - Core models and services, repositories
 - Importing functionality for bringing trades & market data into the system
 - Data parsing system meant to collect historical data for use with back-testing and data-visualization systems. (v0.0.1: FirstRateData, v0.0.2: Trading View)
+
+---
+
+### Configuration Notes
+
+#### Windows
+This project can be run using Docker. For convenience, startup scripts have been included. These are located in `/scripts`. If running on windows, you can use `./run-bluebell.bat`
+which takes 1 required argument for the environment: `dev, staging or prod` and an optional argument `true` or `false` for rebuilding the Docker images. An example execution
+would be `./run-bluebell.bat dev`. This will run the project with an existing Docker build. Add the true flag to build a new image.
+
+
+#### Linux/Mac
+The exact same instructions as above, however the script is an .sh script. Here's an example: `./run-bluebell.sh dev`
+
+Either of the above options  will initiate the project in Docker using the `.env.dev` file and variables. Please ensure that the `.env.dev` file is created in your project directory. You can use `.env.example`
+as a guide. Also to note, staging and production configuration can likewise be implemented in their respective files: `.env.staging` & `.env.prod`.
 
 ---
 

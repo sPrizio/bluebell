@@ -24,7 +24,7 @@ import java.util.Optional;
  * is attached and the request is allowed to proceed. Otherwise, the request is failed immediately
  *
  * @author Stephen Prizio
- * @version 0.1.1
+ * @version 0.1.3
  */
 @Aspect
 @Component
@@ -33,7 +33,7 @@ public class ValidateApiTokenAspect {
     @Value("${toggle.security}")
     private boolean toggleSecurity;
 
-    @Value("${base.api.controller.endpoint}")
+    @Value("${bluebell.base.api.controller.endpoint}")
     private String baseApiUrl;
 
     @Resource(name = "apiTokenService")
@@ -78,6 +78,8 @@ public class ValidateApiTokenAspect {
                         args[getIndexOfServletRequest(args)] = request;
 
                         return proceedingJoinPoint.proceed(args);
+                    } else {
+                        throw new InvalidApiTokenException(String.format("User not found for token : %s", token));
                     }
                 } else {
                     throw new InvalidApiTokenException("The API token was not valid");
@@ -88,8 +90,6 @@ public class ValidateApiTokenAspect {
         } else {
             throw new InvalidApiTokenException("Invalid or malformed request");
         }
-
-        throw new InvalidApiTokenException("Invalid or malformed request");
     }
 
 

@@ -1,11 +1,8 @@
 package com.bluebell.radicle.importing.services.trade;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
-
+import com.bluebell.AbstractGenericTest;
 import com.bluebell.platform.enums.trade.TradePlatform;
 import com.bluebell.platform.models.core.entities.account.Account;
-import com.bluebell.AbstractGenericTest;
 import com.bluebell.radicle.exceptions.validation.IllegalParameterException;
 import com.bluebell.radicle.importing.exceptions.TradeImportFailureException;
 import org.junit.jupiter.api.BeforeEach;
@@ -18,11 +15,14 @@ import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+
 /**
  * Testing class for {@link GenericTradeImportService}
  *
  * @author Stephen Prizio
- * @version 0.1.0
+ * @version 0.1.3
  */
 @SpringBootTest
 @RunWith(SpringRunner.class)

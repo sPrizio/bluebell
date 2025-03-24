@@ -1,7 +1,6 @@
 package com.bluebell.planter.converters.security;
 
 import com.bluebell.planter.converters.GenericDTOConverter;
-import com.bluebell.planter.converters.account.AccountDTOConverter;
 import com.bluebell.planter.converters.portfolio.PortfolioDTOConverter;
 import com.bluebell.planter.converters.system.PhoneNumberDTOConverter;
 import com.bluebell.planter.services.UniqueIdentifierService;
@@ -16,7 +15,7 @@ import org.springframework.stereotype.Component;
  * Converts {@link User}s into {@link UserDTO}s
  *
  * @author Stephen Prizio
- * @version 0.1.2
+ * @version 0.1.3
  */
 @Component("userDTOConverter")
 public class UserDTOConverter implements GenericDTOConverter<User, UserDTO> {

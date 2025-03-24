@@ -1,75 +1,58 @@
-version: "3.8"
-
 services:
-  planter:
-    build:
-      context: .
-      dockerfile: planter/Dockerfile
-    ports:
-      - "8080:8080"
-    environment:
-      - SPRING_DATASOURCE_URL=jdbc:mariadb://db:3306/bluebell
-      - SPRING_DATASOURCE_USERNAME=admin
-      - SPRING_DATASOURCE_PASSWORD=nimda
-      - SPRING_PROFILES_ACTIVE=prod
-    depends_on:
-      db:
-        condition: service_healthy
-      sepal:
-        condition: service_started
-
-  sepal:
-    build:
-      context: .
-      dockerfile: sepal/Dockerfile
-    ports:
-      - "3000:3000"
-
   db:
     image: mariadb:11.7-rc
     environment:
       - MYSQL_ROOT_PASSWORD=admin
     volumes:
       - mariadb-data:/var/lib/mysql
-      - ./planter/src/main/resources/db/init.sql:/docker-entrypoint-initdb.d/init.sql
+      - ./greenhouse/db/init.sql:/docker-entrypoint-initdb.d/init.sql
     ports:
       - "3307:3306" # changing 3306 on host machine to 3307
     healthcheck:
-      test: ["CMD", "mariadb-admin" ,"ping", "-h", "localhost", "--password=admin"]
+      test: ["CMD", "mariadb-admin" ,"ping", "-h", "db", "--password=admin"]
       interval: 10s
       timeout: 5s
       retries: 5
+      start_period: 10s
     restart: always
+
+  greenhouse:
+    build:
+      context: .
+      dockerfile: greenhouse/Dockerfile
+    ports:
+      - "8080:8080"
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:mariadb://db:3306/bluebell
+      - SPRING_DATASOURCE_USERNAME=admin
+      - SPRING_DATASOURCE_PASSWORD=nimda
+      - SPRING_PROFILES_ACTIVE=${SPRING_PROFILE:-staging}
+    depends_on:
+      db:
+        condition: service_healthy
+
+  sepal:
+    build:
+      context: .
+      dockerfile: flower/sepal/Dockerfile
+      args:
+        - FLOWER_PROFILE=${FLOWER_PROFILE:-staging}
+    ports:
+      - "3000:3000"
+    environment:
+      - FLOWER_PROFILE=${FLOWER_PROFILE:-staging}
+    depends_on:
+      greenhouse:
+        condition: service_started
+
+  petal:
+    build:
+      context: .
+      dockerfile: flower/petal/Dockerfile
+    ports:
+      - "4000:4000"
+    depends_on:
+      greenhouse:
+        condition: service_started
 volumes:
   mariadb-data:
-
-
-    ## FOR REFERENCE
-
-#server:
-#  port: 8080
-
-#spring:
-#  profiles:
-#    active: dev # Default profile
-
-#---
-#spring:
-#  profiles: dev
-#server:
-#  port: 8081
-#logging.level.root: DEBUG
-
-#---
-#spring:
-#  profiles: staging
-#server:
-#  port: 9090
-#logging.level.root: INFO
-
-#---
-#spring:
-#  profiles: prod
-#server:
-#  port: 80
-#logging.level.root: WARN

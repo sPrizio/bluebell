@@ -37,10 +37,10 @@ import java.util.Optional;
  * API Controller for {@link Account}
  *
  * @author Stephen Prizio
- * @version 0.1.2
+ * @version 0.1.3
  */
 @RestController
-@RequestMapping("${base.api.controller.endpoint}/account")
+@RequestMapping("${bluebell.base.api.controller.endpoint}/account")
 @Tag(name = "Account", description = "Handles endpoints & operations related to a user's account")
 @CrossOrigin(origins = "*", methods = {RequestMethod.GET, RequestMethod.DELETE, RequestMethod.POST, RequestMethod.PUT})
 public class AccountApiController extends AbstractApiController {
@@ -160,7 +160,7 @@ public class AccountApiController extends AbstractApiController {
         return StandardJsonResponse.
                 <List<PairEntry>>builder()
                 .success(true)
-                .data(Arrays.stream(Broker.values()).map(b -> PairEntry.builder().code(b.getCode()).label(b.getName()).build()).toList())
+                .data(Arrays.stream(Broker.values()).map(b -> PairEntry.builder().code(b.getCode()).label(b.getLabel()).build()).toList())
                 .build();
     }
 

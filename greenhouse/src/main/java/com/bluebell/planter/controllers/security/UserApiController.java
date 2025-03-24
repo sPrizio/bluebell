@@ -37,10 +37,10 @@ import java.util.stream.Collectors;
  * API controller for {@link User}
  *
  * @author Stephen Prizio
- * @version 0.1.2
+ * @version 0.1.3
  */
 @RestController
-@RequestMapping("${base.api.controller.endpoint}/user")
+@RequestMapping("${bluebell.base.api.controller.endpoint}/user")
 @Tag(name = "User", description = "Handles endpoints & operations related to user information.")
 @CrossOrigin(origins = "*", methods = {RequestMethod.GET, RequestMethod.DELETE, RequestMethod.POST, RequestMethod.PUT})
 public class UserApiController extends AbstractApiController {

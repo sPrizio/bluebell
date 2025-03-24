@@ -21,7 +21,7 @@ import static com.bluebell.radicle.validation.GenericValidator.validateParameter
  * Service-layer for {@link Trade} entities
  *
  * @author Stephen Prizio
- * @version 0.1.1
+ * @version 0.1.3
  */
 @Service
 public class TradeService {
@@ -72,7 +72,7 @@ public class TradeService {
      * @param account  {@link Account}
      * @param page     page number
      * @param pageSize page size
-     * @return {@link List} of {@link Trade}s
+     * @return {@link Page} of {@link Trade}s
      */
     public Page<Trade> findAllTradesWithinTimespan(final LocalDateTime start, final LocalDateTime end, final Account account, final int page, final int pageSize) {
 

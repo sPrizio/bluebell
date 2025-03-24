@@ -4,6 +4,7 @@ import com.bluebell.planter.constants.ApiConstants;
 import com.bluebell.planter.exceptions.InvalidEnumException;
 import com.bluebell.platform.exceptions.calculator.UnexpectedNegativeValueException;
 import com.bluebell.platform.exceptions.calculator.UnexpectedZeroValueException;
+import com.bluebell.platform.exceptions.enums.EnumValueNotFoundException;
 import com.bluebell.platform.exceptions.system.GenericSystemException;
 import com.bluebell.platform.models.api.json.StandardJsonResponse;
 import com.bluebell.radicle.exceptions.system.EntityCreationException;
@@ -23,6 +24,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.resource.NoResourceFoundException;
 
 import java.io.FileNotFoundException;
 import java.sql.SQLSyntaxErrorException;
@@ -33,7 +35,7 @@ import java.time.DateTimeException;
  * Handles the exceptions thrown by the application
  *
  * @author Stephen Prizio
- * @version 0.1.1
+ * @version 0.1.3
  */
 @ControllerAdvice
 public class GlobalExceptionHandler {
@@ -52,6 +54,7 @@ public class GlobalExceptionHandler {
     @ResponseBody
     @ExceptionHandler(value = {
             DateTimeException.class,
+            EnumValueNotFoundException.class,
             FileExtensionNotSupportedException.class,
             IllegalParameterException.class,
             InvalidEnumException.class,
@@ -86,6 +89,7 @@ public class GlobalExceptionHandler {
             GenericSystemException.class,
             IllegalArgumentException.class,
             IntegrationException.class,
+            NoResourceFoundException.class,
             SQLSyntaxErrorException.class,
             TradeImportFailureException.class
     })

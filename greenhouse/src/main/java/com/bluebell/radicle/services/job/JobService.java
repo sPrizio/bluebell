@@ -22,19 +22,22 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.*;
 
+import static com.bluebell.radicle.validation.GenericValidator.validateDatesAreNotMutuallyExclusive;
 import static com.bluebell.radicle.validation.GenericValidator.validateParameterIsNotNull;
 
 /**
  * Service-layer for {@link Job}
  *
  * @author Stephen Prizio
- * @version 0.1.2
+ * @version 0.1.3
  */
 @Slf4j
 @Service
@@ -52,7 +55,7 @@ public class JobService {
     @Resource(name = "jobResultEntryRepository")
     private JobResultEntryRepository jobResultEntryRepository;
 
-    @Value("${stale.job.lookback}")
+    @Value("${bluebell.stale.job.lookback}")
     private long lookbackPeriod;
 
 
@@ -236,6 +239,68 @@ public class JobService {
         validateParameterIsNotNull(status, CorePlatformConstants.Validation.Job.JOB_STATUS_CANNOT_BE_NULL);
         validateParameterIsNotNull(jobType, CorePlatformConstants.Validation.Job.JOB_TYPE_CANNOT_BE_NULL);
         return this.jobRepository.findJobsByStatusAndType(status, jobType);
+    }
+
+    /**
+     * Returns a {@link List} of {@link Job}s by their status
+     *
+     * @param start    {@link LocalDateTime} start of interval (inclusive)
+     * @param end      {@link LocalDateTime} end of interval (exclusive)
+     * @param status   {@link JobStatus}
+     * @param page     page number
+     * @param pageSize page size
+     * @return {@link Page} of {@link Job}
+     */
+    public Page<Job> findJobsByStatusPaged(final LocalDateTime start, final LocalDateTime end, final JobStatus status, final int page, final int pageSize) {
+
+        validateParameterIsNotNull(start, CorePlatformConstants.Validation.DateTime.START_DATE_CANNOT_BE_NULL);
+        validateParameterIsNotNull(end, CorePlatformConstants.Validation.DateTime.END_DATE_CANNOT_BE_NULL);
+        validateDatesAreNotMutuallyExclusive(start, end, CorePlatformConstants.Validation.DateTime.MUTUALLY_EXCLUSIVE_DATES);
+        validateParameterIsNotNull(status, CorePlatformConstants.Validation.Job.JOB_STATUS_CANNOT_BE_NULL);
+
+        return this.jobRepository.findAllJobsWithinDateByStatusPaged(start, end, status, PageRequest.of(page, pageSize));
+    }
+
+    /**
+     * Returns a {@link List} of {@link Job}s by their type
+     *
+     * @param start    {@link LocalDateTime} start of interval (inclusive)
+     * @param end      {@link LocalDateTime} end of interval (exclusive)
+     * @param jobType  {@link JobType}
+     * @param page     page number
+     * @param pageSize page size
+     * @return {@link Page} of {@link Job}
+     */
+    public Page<Job> findJobsByTypePaged(final LocalDateTime start, final LocalDateTime end, final JobType jobType, final int page, final int pageSize) {
+
+        validateParameterIsNotNull(start, CorePlatformConstants.Validation.DateTime.START_DATE_CANNOT_BE_NULL);
+        validateParameterIsNotNull(end, CorePlatformConstants.Validation.DateTime.END_DATE_CANNOT_BE_NULL);
+        validateDatesAreNotMutuallyExclusive(start, end, CorePlatformConstants.Validation.DateTime.MUTUALLY_EXCLUSIVE_DATES);
+        validateParameterIsNotNull(jobType, CorePlatformConstants.Validation.Job.JOB_TYPE_CANNOT_BE_NULL);
+
+        return this.jobRepository.findAllJobsWithinDateByTypePaged(start, end, jobType, PageRequest.of(page, pageSize));
+    }
+
+    /**
+     * Returns a {@link List} of {@link Job}s by their status and type
+     *
+     * @param start    {@link LocalDateTime} start of interval (inclusive)
+     * @param end      {@link LocalDateTime} end of interval (exclusive)
+     * @param status   {@link JobStatus}
+     * @param jobType  {@link JobType}
+     * @param page     page number
+     * @param pageSize page size
+     * @return {@link Page} of {@link Job}
+     */
+    public Page<Job> findJobsByStatusAndTypePaged(final LocalDateTime start, final LocalDateTime end, final JobStatus status, final JobType jobType, final int page, final int pageSize) {
+
+        validateParameterIsNotNull(start, CorePlatformConstants.Validation.DateTime.START_DATE_CANNOT_BE_NULL);
+        validateParameterIsNotNull(end, CorePlatformConstants.Validation.DateTime.END_DATE_CANNOT_BE_NULL);
+        validateDatesAreNotMutuallyExclusive(start, end, CorePlatformConstants.Validation.DateTime.MUTUALLY_EXCLUSIVE_DATES);
+        validateParameterIsNotNull(status, CorePlatformConstants.Validation.Job.JOB_STATUS_CANNOT_BE_NULL);
+        validateParameterIsNotNull(jobType, CorePlatformConstants.Validation.Job.JOB_TYPE_CANNOT_BE_NULL);
+
+        return this.jobRepository.findAllJobsWithinDateByStatusAndTypePaged(start, end, status, jobType, PageRequest.of(page, pageSize));
     }
 
 

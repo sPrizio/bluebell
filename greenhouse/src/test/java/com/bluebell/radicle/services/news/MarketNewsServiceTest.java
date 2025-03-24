@@ -1,19 +1,9 @@
 package com.bluebell.radicle.services.news;
 
-import java.time.LocalDate;
-import java.time.LocalTime;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
-import static org.mockito.ArgumentMatchers.any;
-
+import com.bluebell.AbstractGenericTest;
 import com.bluebell.platform.constants.CorePlatformConstants;
 import com.bluebell.platform.enums.news.MarketNewsSeverity;
 import com.bluebell.platform.enums.system.Country;
-import com.bluebell.AbstractGenericTest;
 import com.bluebell.radicle.exceptions.validation.IllegalParameterException;
 import com.bluebell.radicle.integration.models.dto.forexfactory.CalendarNewsDayDTO;
 import com.bluebell.radicle.integration.models.dto.forexfactory.CalendarNewsDayEntryDTO;
@@ -29,11 +19,21 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+import static org.mockito.ArgumentMatchers.any;
+
 /**
  * Testing class for {@link MarketNewsService}
  *
  * @author Stephen Prizio
- * @version 0.1.2
+ * @version 0.1.3
  */
 @SpringBootTest
 @RunWith(SpringRunner.class)

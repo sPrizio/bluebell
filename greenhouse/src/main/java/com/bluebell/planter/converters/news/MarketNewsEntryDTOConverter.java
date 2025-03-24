@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component;
  * Converter that converts {@link MarketNewsEntry}s into {@link MarketNewsEntryDTO}s
  *
  * @author Stephen Prizio
- * @version 0.1.1
+ * @version 0.1.3
  */
 @Component("marketNewsEntryDTOConverter")
 public class MarketNewsEntryDTOConverter implements GenericDTOConverter<MarketNewsEntry, MarketNewsEntryDTO> {
@@ -33,7 +33,7 @@ public class MarketNewsEntryDTOConverter implements GenericDTOConverter<MarketNe
                 .builder()
                 .uid(this.uniqueIdentifierService.generateUid(entity))
                 .content(entity.getContent())
-                .severity(entity.getSeverity().getDescription())
+                .severity(entity.getSeverity().getLabel())
                 .severityLevel(entity.getSeverity().getLevel())
                 .country(entity.getCountry().getCurrency().getIsoCode())
                 .forecast(entity.getForecast())
