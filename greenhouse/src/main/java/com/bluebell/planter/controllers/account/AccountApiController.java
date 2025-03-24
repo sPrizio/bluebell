@@ -37,7 +37,7 @@ import java.util.Optional;
  * API Controller for {@link Account}
  *
  * @author Stephen Prizio
- * @version 0.1.3
+ * @version 0.1.2
  */
 @RestController
 @RequestMapping("${bluebell.base.api.controller.endpoint}/account")
@@ -160,7 +160,7 @@ public class AccountApiController extends AbstractApiController {
         return StandardJsonResponse.
                 <List<PairEntry>>builder()
                 .success(true)
-                .data(Arrays.stream(Broker.values()).map(b -> PairEntry.builder().code(b.getCode()).label(b.getLabel()).build()).toList())
+                .data(Arrays.stream(Broker.values()).map(b -> PairEntry.builder().code(b.getCode()).label(b.getName()).build()).toList())
                 .build();
     }
 

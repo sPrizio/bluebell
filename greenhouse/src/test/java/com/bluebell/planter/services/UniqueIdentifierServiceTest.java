@@ -1,5 +1,8 @@
 package com.bluebell.planter.services;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+
 import com.bluebell.planter.AbstractPlanterTest;
 import com.bluebell.platform.constants.CorePlatformConstants;
 import com.bluebell.platform.models.api.dto.trade.TradeDTO;
@@ -9,14 +12,11 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
-
 /**
  * Testing class for {@link UniqueIdentifierService}
  *
  * @author Stephen Prizio
- * @version 0.1.3
+ * @version 0.1.2
  */
 class UniqueIdentifierServiceTest extends AbstractPlanterTest {
 

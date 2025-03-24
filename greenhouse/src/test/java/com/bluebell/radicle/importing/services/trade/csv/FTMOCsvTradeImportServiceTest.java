@@ -1,9 +1,16 @@
 package com.bluebell.radicle.importing.services.trade.csv;
 
-import com.bluebell.AbstractGenericTest;
+import java.io.FileInputStream;
+import java.time.LocalDateTime;
+import java.util.List;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+
 import com.bluebell.platform.models.core.entities.account.Account;
 import com.bluebell.platform.models.core.entities.portfolio.Portfolio;
 import com.bluebell.platform.models.core.entities.security.User;
+import com.bluebell.AbstractGenericTest;
 import com.bluebell.radicle.importing.exceptions.TradeImportFailureException;
 import com.bluebell.radicle.repositories.account.AccountRepository;
 import com.bluebell.radicle.repositories.portfolio.PortfolioRepository;
@@ -20,19 +27,12 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.ResourceUtils;
 
-import java.io.FileInputStream;
-import java.time.LocalDateTime;
-import java.util.List;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
-
 
 /**
  * Testing for {@link FTMOCsvTradeImportService}
  *
  * @author Stephen Prizio
- * @version 0.1.3
+ * @version 0.1.2
  */
 @SpringBootTest
 @RunWith(SpringRunner.class)

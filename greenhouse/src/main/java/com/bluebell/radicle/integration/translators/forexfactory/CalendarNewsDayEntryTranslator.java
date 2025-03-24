@@ -14,7 +14,7 @@ import java.time.format.DateTimeFormatter;
  * Translates a {@link CalendarNewsEntryResponse}s into a {@link CalendarNewsDayEntryDTO}s
  *
  * @author Stephen Prizio
- * @version 0.1.3
+ * @version 0.1.1
  */
 @Component("calendarNewsDayEntryTranslator")
 public class CalendarNewsDayEntryTranslator implements GenericTranslator<CalendarNewsEntryResponse, CalendarNewsDayEntryDTO> {
@@ -32,7 +32,7 @@ public class CalendarNewsDayEntryTranslator implements GenericTranslator<Calenda
                     .time(LocalDateTime.parse(response.date(), DateTimeFormatter.ISO_DATE_TIME).toLocalTime())
                     .forecast(response.forecast())
                     .title(response.title())
-                    .impact(MarketNewsSeverity.getFromLabel(response.impact()))
+                    .impact(MarketNewsSeverity.getFromDescription(response.impact()))
                     .previous(response.previous())
                     .build();
         }

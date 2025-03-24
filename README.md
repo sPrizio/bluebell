@@ -1,10 +1,9 @@
-# bluebell 
-bluebell Wealth Management is a software system designed to track trading accounts and their performance, as well as evaluate trading strategies in order to evolve and adapt strategies
-to maintain their effectiveness. bluebell comprises both a front-end project (flower) and back-end project (greenhouse), each comprising numerous modules, each with different functionalities. bluebell is
-built on a MariaDB ORM and is integrated with React.js and Java Spring Boot.
+# bluebell Capital
+bluebell Capital specializes in software systems that trade equities algorithmically and provides specialized tracking for trading accounts and their performance. Additionally, ***bluebell*** provides evaluating trading strategies capabilties in order to evolve and adapt strategies
+to maintain their effectiveness. ***bluebell*** comprises both a front-end project (flower) and back-end project (greenhouse), each comprising numerous modules, each with different functionalities. ***bluebell*** is built on a MariaDB ORM and is integrated with NextJs, Java Spring Boot & Docker.
 
 Dependencies & Integrations
-- **React.js**: Core front-end functionality
+- **Next.js**: Core front-end functionality built on React.js
 - **Java Spring** : Core back-end functionality
 - **Forex Factory**: External Market News provider for trading events 
 - **Docker**: Containerization Library

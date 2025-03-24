@@ -1,6 +1,5 @@
 package com.bluebell.platform.enums.news;
 
-import com.bluebell.platform.enums.GenericEnum;
 import lombok.Getter;
 
 /**
@@ -8,26 +7,23 @@ import lombok.Getter;
  * of moving the market in a significant direction
  *
  * @author Stephen Prizio
- * @version 0.1.3
+ * @version 0.0.9
  */
 @Getter
-public enum MarketNewsSeverity implements GenericEnum<MarketNewsSeverity> {
+public enum MarketNewsSeverity {
 
-    NONE("NONE", "None", 0),
-    DANGEROUS("DANGEROUS", "Dangerous", 1),
-    MODERATE("MODERATE", "Moderate", 2),
-    LOW("LOW", "Low", 3),
-    HOLIDAY("HOLIDAY", "Holiday", -1);
+    NONE("None", 0),
+    DANGEROUS("Dangerous", 1),
+    MODERATE("Moderate", 2),
+    LOW("Low", 3),
+    HOLIDAY("Holiday", -1);
 
-    private final String code;
-
-    private final String label;
+    private final String description;
 
     private final int level;
 
-    MarketNewsSeverity(final String code, final String label, final int level) {
-        this.code = code;
-        this.label = label;
+    MarketNewsSeverity(final String description, final int level) {
+        this.description = description;
         this.level = level;
     }
 
@@ -37,7 +33,7 @@ public enum MarketNewsSeverity implements GenericEnum<MarketNewsSeverity> {
      * @param level level
      * @return {@link MarketNewsSeverity}
      */
-    public static MarketNewsSeverity getByLevel(final int level) {
+    public static MarketNewsSeverity get(final int level) {
         return switch (level) {
             case 1 -> DANGEROUS;
             case 2 -> MODERATE;
@@ -49,11 +45,11 @@ public enum MarketNewsSeverity implements GenericEnum<MarketNewsSeverity> {
     /**
      * Converts a description into a {@link MarketNewsSeverity}
      *
-     * @param label label
+     * @param description description
      * @return {@link MarketNewsSeverity}
      */
-    public static MarketNewsSeverity getFromLabel(final String label) {
-        return switch (label) {
+    public static MarketNewsSeverity getFromDescription(final String description) {
+        return switch (description) {
             case "Low" -> LOW;
             case "Medium" -> MODERATE;
             case "High" -> DANGEROUS;

@@ -1,26 +1,40 @@
 package com.bluebell.platform.enums.analysis;
 
-import com.bluebell.platform.enums.GenericEnum;
 import lombok.Getter;
 
 /**
  * Enumeration of that various data filters that can be applied to the results of an analysis
  *
  * @author Stephen Prizio
- * @version 0.1.3
+ * @version 0.0.9
  */
 @Getter
-public enum AnalysisFilter implements GenericEnum<AnalysisFilter> {
+public enum AnalysisFilter {
     POINTS("POINTS", "Points"),
     PROFIT("PROFIT", "Profit"),
     WIN_PERCENTAGE("PERCENTAGE", "Win %");
 
     private final String code;
 
-    private final String label;
+    private final String name;
 
-    AnalysisFilter(final String code, final String label) {
+    AnalysisFilter(final String code, final String name) {
         this.code = code;
-        this.label = label;
+        this.name = name;
+    }
+
+    /**
+     * Gets the {@link AnalysisFilter} for the given code
+     *
+     * @param code code
+     * @return {@link AnalysisFilter}
+     */
+    public static AnalysisFilter getAnalysisFilter(final String code) {
+        return switch (code) {
+            case "POINTS" -> POINTS;
+            case "PROFIT" -> PROFIT;
+            case "PERCENTAGE" -> WIN_PERCENTAGE;
+            default -> null;
+        };
     }
 }
