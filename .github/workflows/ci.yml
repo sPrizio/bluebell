@@ -10,7 +10,6 @@ on:
 jobs:
   build:
     runs-on: ubuntu-22.04
-    if: github.event_name == 'pull_request'
     steps:
       - name: Checkout greenhouse
         uses: actions/checkout@v4
@@ -28,7 +27,7 @@ jobs:
 
   deploy:
     runs-on: ubuntu-22.04
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    if: github.ref == 'refs/heads/main'
     needs: build
     steps:
       - name: Checkout greenhouse
