@@ -1,0 +1,49 @@
+name: bluebell CI / CD
+on:
+  pull_request:
+    branches:
+      - '*'
+
+jobs:
+  build:
+    runs-on: ubuntu-22.04
+    on:
+      pull_request:
+        branches:
+          - '*'
+    steps:
+      - name: Checkout greenhouse
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+          cache: maven
+
+      - name: Build & Test
+        run: mvn clean package
+        working-directory: './greenhouse'
+
+  deploy:
+    runs-on: ubuntu-22.04
+    on:
+      push:
+        branches:
+          - main
+    needs: build
+    steps:
+      - name: Checkout greenhouse
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+          cache: maven
+
+      - name: Deploy
+        run: echo "Deploying bluebell"
+        # Add actual deployment commands here
