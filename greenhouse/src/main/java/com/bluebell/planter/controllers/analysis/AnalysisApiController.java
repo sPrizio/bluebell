@@ -34,7 +34,7 @@ import java.util.Optional;
  * @version 0.1.3
  */
 @RestController
-@RequestMapping("${base.api.controller.endpoint}/analysis")
+@RequestMapping("${bluebell.base.api.controller.endpoint}/analysis")
 @Tag(name = "Analysis", description = "Handles endpoints & operations related to obtaining analysis about trading accounts.")
 @CrossOrigin(origins = "*", methods = {RequestMethod.GET, RequestMethod.DELETE, RequestMethod.POST, RequestMethod.PUT})
 public class AnalysisApiController extends AbstractApiController {

@@ -35,7 +35,7 @@ import java.util.List;
  * @version 0.1.3
  */
 @RestController
-@RequestMapping("${base.api.controller.endpoint}/trade-record")
+@RequestMapping("${bluebell.base.api.controller.endpoint}/trade-record")
 @Tag(name = "Trade Record", description = "Handles endpoints & operations related to trade records.")
 @CrossOrigin(origins = "*", methods = {RequestMethod.GET, RequestMethod.DELETE, RequestMethod.POST, RequestMethod.PUT})
 public class TradeRecordApiController extends AbstractApiController {

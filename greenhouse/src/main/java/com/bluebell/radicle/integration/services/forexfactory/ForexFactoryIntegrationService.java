@@ -22,14 +22,14 @@ import java.util.*;
  * Forex Factory API implementation of {@link GenericIntegrationService}
  *
  * @author Stephen Prizio
- * @version 0.1.1
+ * @version 0.1.3
  */
 @Service
 public class ForexFactoryIntegrationService implements GenericIntegrationService {
 
     private final ObjectMapper objectMapper = new ObjectMapper();
 
-    @Value("${forex.factory.calendar.url}")
+    @Value("${bluebell.forex.factory.calendar.url}")
     private String calendarUrl;
 
     @Resource(name = "calendarNewsDayEntryTranslator")

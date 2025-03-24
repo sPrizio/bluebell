@@ -55,7 +55,7 @@ public class JobService {
     @Resource(name = "jobResultEntryRepository")
     private JobResultEntryRepository jobResultEntryRepository;
 
-    @Value("${stale.job.lookback}")
+    @Value("${bluebell.stale.job.lookback}")
     private long lookbackPeriod;
 
 

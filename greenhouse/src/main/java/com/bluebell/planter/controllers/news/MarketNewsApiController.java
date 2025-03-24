@@ -26,10 +26,10 @@ import java.util.Optional;
  * API controller for {@link MarketNews}
  *
  * @author Stephen Prizio
- * @version 0.1.1
+ * @version 0.1.3
  */
 @RestController
-@RequestMapping("${base.api.controller.endpoint}/news")
+@RequestMapping("${bluebell.base.api.controller.endpoint}/news")
 @Tag(name = "Market News", description = "Handles endpoints & operations related to obtaining and fetching market news.")
 @CrossOrigin(origins = "*", methods = {RequestMethod.GET, RequestMethod.DELETE, RequestMethod.POST, RequestMethod.PUT})
 public class MarketNewsApiController extends AbstractApiController {

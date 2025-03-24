@@ -35,7 +35,7 @@ import static com.bluebell.radicle.validation.GenericValidator.validateLocalDate
  * @version 0.1.3
  */
 @RestController
-@RequestMapping("${base.api.controller.endpoint}/job")
+@RequestMapping("${bluebell.base.api.controller.endpoint}/job")
 @Tag(name = "Job", description = "Handles endpoints & operations related to jobs.")
 @CrossOrigin(origins = "*", methods = {RequestMethod.GET, RequestMethod.DELETE, RequestMethod.POST, RequestMethod.PUT})
 public class JobApiController {

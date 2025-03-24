@@ -21,10 +21,10 @@ import org.springframework.web.bind.annotation.*;
  * API controller for {@link PortfolioRecord}
  *
  * @author Stephen Prizio
- * @version 0.1.2
+ * @version 0.1.3
  */
 @RestController
-@RequestMapping("${base.api.controller.endpoint}/portfolio-record")
+@RequestMapping("${bluebell.base.api.controller.endpoint}/portfolio-record")
 @Tag(name = "Portfolio", description = "Handles endpoints & operations related to obtaining portfolio information.")
 @CrossOrigin(origins = "*", methods = {RequestMethod.GET, RequestMethod.DELETE, RequestMethod.POST, RequestMethod.PUT})
 public class PortfolioRecordApiController extends AbstractApiController {

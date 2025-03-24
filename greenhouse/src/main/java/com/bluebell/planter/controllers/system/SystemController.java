@@ -1,12 +1,14 @@
 package com.bluebell.planter.controllers.system;
 
 import com.bluebell.planter.controllers.AbstractApiController;
+import com.bluebell.platform.models.api.dto.system.HealthCheckDTO;
 import com.bluebell.platform.models.api.json.StandardJsonResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -18,21 +20,67 @@ import static com.bluebell.radicle.validation.GenericValidator.validateJsonInteg
  * Controller to handle system functions
  *
  * @author Stephen Prizio
- * @version 0.1.1
+ * @version 0.1.3
  */
 @RestController
-@RequestMapping("${base.api.controller.endpoint}/system")
+@RequestMapping("${bluebell.base.api.controller.endpoint}/system")
 @Tag(name = "System", description = "Handles endpoints & operations related to the bluebell system.")
 @CrossOrigin(origins = "*", methods = {RequestMethod.GET, RequestMethod.DELETE, RequestMethod.POST, RequestMethod.PUT})
 public class SystemController extends AbstractApiController {
+
+    @Value("${bluebell.base.api.controller.endpoint}")
+    private String baseApiDomain;
+
+    @Value("${bluebell.domain}")
+    private String domain;
+
+    @Value("${bluebell.version}")
+    private String version;
+
+    @Value("${bluebell.api.version}")
+    private String apiVersion;
 
 
     //  METHODS
 
 
+    //  ----------------- GET REQUESTS -----------------
+
+    /**
+     * Returns the applications information and diagnostics
+     *
+     * @return {@link StandardJsonResponse}
+     */
+    @Operation(summary = "Fetches the system's information", description = "Returns system & api information about the currently running bluebell application")
+    @ApiResponse(
+            responseCode = "200",
+            description = "Response when the api successfully returns system information.",
+            content = @Content(
+                    mediaType = "application/json",
+                    schema = @Schema(implementation = StandardJsonResponse.class)
+            )
+    )
+    @GetMapping("/healthcheck")
+    public StandardJsonResponse<HealthCheckDTO> getHealthCheck() {
+        return StandardJsonResponse
+                .<HealthCheckDTO>builder()
+                .success(true)
+                .data(
+                        HealthCheckDTO
+                                .builder()
+                                .domain(this.domain)
+                                .baseApiDomain(this.baseApiDomain)
+                                .version(this.version)
+                                .apiVersion(this.apiVersion)
+                                .build()
+                )
+                .build();
+    }
+
+
     //  ----------------- POST REQUESTS -----------------
 
-/**
+    /**
      * Handles the contact us form submission
      *
      * @param data input data
@@ -65,7 +113,7 @@ public class SystemController extends AbstractApiController {
                 .build();
     }
 
-/**
+    /**
      * Handles the report issue form submission
      *
      * @param data input data
