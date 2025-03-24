@@ -16,6 +16,6 @@ COPY --from=builder /app/flower/petal /app/flower/petal
 
 ENV NODE_ENV=production
 
-EXPOSE 3001
+EXPOSE 4000
 
 CMD ["npm", "run", "start", "--prefix", "/app/flower/petal"]

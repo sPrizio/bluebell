@@ -46,11 +46,9 @@ services:
       context: .
       dockerfile: flower/petal/Dockerfile
     ports:
-      - "3001:3001"
+      - "4000:4000"
     depends_on:
       greenhouse:
         condition: service_started
 volumes:
   mariadb-data:
-
-    # TODO: fix port for petal
