@@ -1,11 +1,11 @@
 name: bluebell CI / CD
 on:
-  pull_request:
-    branches:
-      - '*'
+  #pull_request:
+  #  branches:
+  #    - '*'
   push:
     branches:
-      - main
+      - '*'
 
 jobs:
   build:
