@@ -2,6 +2,7 @@ package com.bluebell.planter.controllers.analysis;
 
 import com.bluebell.planter.controllers.AbstractApiController;
 import com.bluebell.platform.constants.CorePlatformConstants;
+import com.bluebell.platform.enums.GenericEnum;
 import com.bluebell.platform.enums.analysis.AnalysisFilter;
 import com.bluebell.platform.enums.analysis.TradeDurationFilter;
 import com.bluebell.platform.enums.time.PlatformTimeInterval;
@@ -30,7 +31,7 @@ import java.util.Optional;
  * Controller for {@link AnalysisService}
  *
  * @author Stephen Prizio
- * @version 0.1.2
+ * @version 0.1.3
  */
 @RestController
 @RequestMapping("${bluebell.base.api.controller.endpoint}/analysis")
@@ -110,7 +111,7 @@ public class AnalysisApiController extends AbstractApiController {
 
         final Optional<Account> account = this.accountService.findAccountByAccountNumber(accountNumber);
         return account
-                .map(value -> StandardJsonResponse.<List<AnalysisResult>>builder().success(true).data(this.analysisService.computeTimeBucketAnalysis(value, PlatformTimeInterval.THIRTY_MINUTE, AnalysisFilter.getAnalysisFilter(filter.toUpperCase()), isOpened)).build())
+                .map(value -> StandardJsonResponse.<List<AnalysisResult>>builder().success(true).data(this.analysisService.computeTimeBucketAnalysis(value, PlatformTimeInterval.THIRTY_MINUTE, GenericEnum.getByCode(AnalysisFilter.class, filter.toUpperCase()), isOpened)).build())
                 .orElseGet(() -> StandardJsonResponse.<List<AnalysisResult>>builder().success(false).message(CorePlatformConstants.Validation.Account.ACCOUNT_NOT_FOUND).build());
     }
 
@@ -172,7 +173,7 @@ public class AnalysisApiController extends AbstractApiController {
 
         final Optional<Account> account = this.accountService.findAccountByAccountNumber(accountNumber);
         return account
-                .map(value -> StandardJsonResponse.<List<AnalysisResult>>builder().success(true).data(this.analysisService.computeWeekdayAnalysis(value, AnalysisFilter.getAnalysisFilter(filter.toUpperCase()))).build())
+                .map(value -> StandardJsonResponse.<List<AnalysisResult>>builder().success(true).data(this.analysisService.computeWeekdayAnalysis(value, GenericEnum.getByCode(AnalysisFilter.class, filter.toUpperCase()))).build())
                 .orElseGet(() -> StandardJsonResponse.<List<AnalysisResult>>builder().success(false).message(CorePlatformConstants.Validation.Account.ACCOUNT_NOT_FOUND).build());
     }
 
@@ -239,7 +240,7 @@ public class AnalysisApiController extends AbstractApiController {
             final HttpServletRequest request
     ) {
 
-        if (AnalysisFilter.getAnalysisFilter(filter) == null) {
+        if (GenericEnum.getByCode(AnalysisFilter.class, filter) == null) {
             return StandardJsonResponse
                     .<List<AnalysisResult>>builder()
                     .success(false)
@@ -257,7 +258,7 @@ public class AnalysisApiController extends AbstractApiController {
 
         final Optional<Account> account = this.accountService.findAccountByAccountNumber(accountNumber);
         return account
-                .map(value -> StandardJsonResponse.<List<AnalysisResult>>builder().success(true).data(this.analysisService.computeWeekdayTimeBucketAnalysis(value, DayOfWeek.valueOf(weekday.toUpperCase()), PlatformTimeInterval.THIRTY_MINUTE, AnalysisFilter.getAnalysisFilter(filter.toUpperCase()))).build())
+                .map(value -> StandardJsonResponse.<List<AnalysisResult>>builder().success(true).data(this.analysisService.computeWeekdayTimeBucketAnalysis(value, DayOfWeek.valueOf(weekday.toUpperCase()), PlatformTimeInterval.THIRTY_MINUTE, GenericEnum.getByCode(AnalysisFilter.class, filter.toUpperCase()))).build())
                 .orElseGet(() -> StandardJsonResponse.<List<AnalysisResult>>builder().success(false).message(CorePlatformConstants.Validation.Account.ACCOUNT_NOT_FOUND).build());
     }
 
@@ -316,7 +317,7 @@ public class AnalysisApiController extends AbstractApiController {
             final HttpServletRequest request
     ) {
 
-        if (AnalysisFilter.getAnalysisFilter(filter) == null) {
+        if (GenericEnum.getByCode(AnalysisFilter.class, filter) == null) {
             return StandardJsonResponse
                     .<List<AnalysisResult>>builder()
                     .success(false)
@@ -324,7 +325,7 @@ public class AnalysisApiController extends AbstractApiController {
                     .build();
         }
 
-        if (TradeDurationFilter.getTradeDurationFilter(tradeDurationFilter) == null) {
+        if (GenericEnum.getByCode(TradeDurationFilter.class, tradeDurationFilter) == null) {
             return StandardJsonResponse
                     .<List<AnalysisResult>>builder()
                     .success(false)
@@ -334,7 +335,7 @@ public class AnalysisApiController extends AbstractApiController {
 
         final Optional<Account> account = this.accountService.findAccountByAccountNumber(accountNumber);
         return account
-                .map(value -> StandardJsonResponse.<List<AnalysisResult>>builder().success(true).data(this.analysisService.computeTradeDurationAnalysis(value, AnalysisFilter.getAnalysisFilter(filter.toUpperCase()), TradeDurationFilter.getTradeDurationFilter(tradeDurationFilter.toUpperCase()))).build())
+                .map(value -> StandardJsonResponse.<List<AnalysisResult>>builder().success(true).data(this.analysisService.computeTradeDurationAnalysis(value, GenericEnum.getByCode(AnalysisFilter.class, filter.toUpperCase()), GenericEnum.getByCode(TradeDurationFilter.class, tradeDurationFilter.toUpperCase()))).build())
                 .orElseGet(() -> StandardJsonResponse.<List<AnalysisResult>>builder().success(false).message(CorePlatformConstants.Validation.Account.ACCOUNT_NOT_FOUND).build());
     }
 }

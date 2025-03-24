@@ -1,10 +1,5 @@
 package com.bluebell.radicle.impl;
 
-import java.time.LocalDate;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
-
 import com.bluebell.platform.enums.time.PlatformTimeInterval;
 import com.bluebell.platform.models.core.nonentities.market.AggregatedMarketPrices;
 import com.bluebell.platform.models.core.nonentities.market.MarketPrice;
@@ -13,11 +8,16 @@ import com.bluebell.radicle.parsers.impl.TradingViewDataParser;
 import org.apache.commons.lang3.StringUtils;
 import org.junit.jupiter.api.Test;
 
+import java.time.LocalDate;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+
 /**
  * Testing class for {@link TradingViewDataParser}
  *
  * @author Stephen Prizio
- * @version 0.1.2
+ * @version 0.1.3
  */
 class TradingViewDataParserTest {
 

@@ -41,7 +41,7 @@ import static com.bluebell.radicle.validation.GenericValidator.*;
  * Api controller for {@link Trade}
  *
  * @author Stephen Prizio
- * @version 0.1.1
+ * @version 0.1.3
  */
 @RestController
 @RequestMapping("${bluebell.base.api.controller.endpoint}/trade")
@@ -220,6 +220,8 @@ public class TradeApiController extends AbstractApiController {
      * @param request {@link HttpServletRequest}
      * @param start   start date & time
      * @param end     end date & time
+     * @param page page
+     * @param pageSize pageSize
      * @return {@link StandardJsonResponse}
      */
     @ValidateApiToken

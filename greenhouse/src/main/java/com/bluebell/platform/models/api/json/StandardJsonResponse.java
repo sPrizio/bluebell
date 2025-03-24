@@ -30,7 +30,7 @@ import lombok.Builder;
  * Class representation of a standard json response
  *
  * @author Stephen Prizio
- * @version 0.1.2
+ * @version 0.1.3
  */
 @Builder
 @Schema(title = "StandardJsonResponse", name = "StandardJsonResponse", description = "Standard API response entity. All api calls will return this entity which includes a success flag, data, external & internal facing messages.")

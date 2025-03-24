@@ -1,9 +1,5 @@
 package com.bluebell.planter.converters.trade;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyDouble;
-
 import com.bluebell.planter.AbstractPlanterTest;
 import com.bluebell.planter.services.UniqueIdentifierService;
 import com.bluebell.platform.enums.trade.TradePlatform;
@@ -22,11 +18,15 @@ import org.springframework.test.context.junit4.SpringRunner;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyDouble;
+
 /**
  * Testing class for {@link TradeDTOConverter}
  *
  * @author Stephen Prizio
- * @version 0.1.0
+ * @version 0.1.3
  */
 @SpringBootTest
 @RunWith(SpringRunner.class)

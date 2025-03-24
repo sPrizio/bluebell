@@ -1,6 +1,14 @@
 package com.bluebell.radicle.validation;
 
 
+import com.bluebell.platform.exceptions.calculator.UnexpectedNegativeValueException;
+import com.bluebell.platform.exceptions.calculator.UnexpectedZeroValueException;
+import com.bluebell.radicle.exceptions.system.NoResultFoundException;
+import com.bluebell.radicle.exceptions.system.NonUniqueItemFoundException;
+import com.bluebell.radicle.exceptions.validation.IllegalParameterException;
+import com.bluebell.radicle.exceptions.validation.JsonMissingPropertyException;
+import org.junit.jupiter.api.Test;
+
 import java.time.DateTimeException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -12,19 +20,11 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
-import com.bluebell.platform.exceptions.calculator.UnexpectedNegativeValueException;
-import com.bluebell.platform.exceptions.calculator.UnexpectedZeroValueException;
-import com.bluebell.radicle.exceptions.system.NoResultFoundException;
-import com.bluebell.radicle.exceptions.system.NonUniqueItemFoundException;
-import com.bluebell.radicle.exceptions.validation.IllegalParameterException;
-import com.bluebell.radicle.exceptions.validation.JsonMissingPropertyException;
-import org.junit.jupiter.api.Test;
-
 /**
  * Testing class for {@link GenericValidator}
  *
  * @author Stephen Prizio
- * @version 0.1.2
+ * @version 0.1.3
  */
 class GenericValidatorTest {
 

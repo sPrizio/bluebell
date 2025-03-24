@@ -1,8 +1,5 @@
 package com.bluebell.planter.converters.news;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.any;
-
 import com.bluebell.planter.AbstractPlanterTest;
 import com.bluebell.planter.services.UniqueIdentifierService;
 import com.bluebell.platform.models.api.dto.news.MarketNewsEntryDTO;
@@ -17,11 +14,14 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.List;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
+
 /**
  * Testing class for {@link MarketNewsEntryDTOConverter}
  *
  * @author Stephen Prizio
- * @version 0.1.0
+ * @version 0.1.3
  */
 @SpringBootTest
 @RunWith(SpringRunner.class)
