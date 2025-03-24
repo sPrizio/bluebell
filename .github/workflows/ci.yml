@@ -1,12 +1,16 @@
 name: bluebell CI / CD
+on:
+  pull_request:
+    branches:
+      - '*'
+  push:
+    branches:
+      - main
 
 jobs:
   build:
     runs-on: ubuntu-22.04
-    on:
-      pull_request:
-        branches:
-          - '*'
+    if: github.event_name == 'pull_request'
     steps:
       - name: Checkout greenhouse
         uses: actions/checkout@v4
@@ -24,10 +28,7 @@ jobs:
 
   deploy:
     runs-on: ubuntu-22.04
-    on:
-      push:
-        branches:
-          - main
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     needs: build
     steps:
       - name: Checkout greenhouse
