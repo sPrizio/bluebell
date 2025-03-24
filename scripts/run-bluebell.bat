@@ -27,8 +27,8 @@ echo Using %ENV_FILE%
 :: Run Docker Compose with or without --build based on FORCE_BUILD
 if "%FORCE_BUILD%"=="true" (
     echo Rebuilding Docker images...
-    rem docker compose --env-file %ENV_FILE% up --build -d
+    docker compose --env-file %ENV_FILE% up --build
 ) else (
     echo Running Docker based on previous build...
-    rem docker compose --env-file %ENV_FILE% up -d
+    docker compose --env-file %ENV_FILE% up
 )

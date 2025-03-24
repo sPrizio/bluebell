@@ -68,13 +68,17 @@ as spring beans here. All business logic, integrations & automations live inside
 ---
 
 ### Configuration Notes
-This project can be executed locally using Docker. Ensure that docker is installed locally before running the following command:
-`docker compose --env-file .env.dev up --build`
 
-You can also run the project in a detached mode (which is preferable for local development) with the following command:
-`docker compose --env-file .env.dev up --build -d`
+#### Windows
+This project can be run using Docker. For convenience, startup scripts have been included. These are located in `/scripts`. If running on windows, you can use `./run-bluebell.bat`
+which takes 1 required argument for the environment: `dev, staging or prod` and an optional argument `true` or `false` for rebuilding the Docker images. An example execution
+would be `./run-bluebell.bat dev`. This will run the project with an existing Docker build. Add the true flag to build a new image.
 
-This will initiate the project in Docker using the `.env.dev` file and variables. Please ensure that the `.env.dev` file is created in your project directory. You can use `.env.example`
+
+#### Linux/Mac
+The exact same instructions as above, however the script is an .sh script. Here's an example: `./run-bluebell.sh dev`
+
+Either of the above options  will initiate the project in Docker using the `.env.dev` file and variables. Please ensure that the `.env.dev` file is created in your project directory. You can use `.env.example`
 as a guide. Also to note, staging and production configuration can likewise be implemented in their respective files: `.env.staging` & `.env.prod`.
 
 ---

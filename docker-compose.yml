@@ -30,53 +30,27 @@ services:
     depends_on:
       db:
         condition: service_healthy
-    healthcheck:
-      test: [ "CMD", "curl -f $GREENHOUSE_HEALTHCHECK_URL" ]
-      interval: 10s
-      timeout: 5s
-      retries: 5
-      start_period: 10s
-    #health check
 
-  #sepal:
-  #  build:
-  #    context: .
-  #    dockerfile: sepal/Dockerfile
-  #  ports:
-  #    - "3000:3000"
-  #  depends_on:
-  #    greenhouse:
-  #      condition: service_started # change this to a health check command of some sort
+  sepal:
+    build:
+      context: .
+      dockerfile: flower/sepal/Dockerfile
+    ports:
+      - "3000:3000"
+    depends_on:
+      greenhouse:
+        condition: service_started
+
+  petal:
+    build:
+      context: .
+      dockerfile: flower/petal/Dockerfile
+    ports:
+      - "3001:3001"
+    depends_on:
+      greenhouse:
+        condition: service_started
 volumes:
   mariadb-data:
 
-
-    ## FOR REFERENCE
-
-#server:
-#  port: 8080
-
-#spring:
-#  profiles:
-#    active: dev # Default profile
-
-#---
-#spring:
-#  profiles: dev
-#server:
-#  port: 8081
-#logging.level.root: DEBUG
-
-#---
-#spring:
-#  profiles: staging
-#server:
-#  port: 9090
-#logging.level.root: INFO
-
-#---
-#spring:
-#  profiles: prod
-#server:
-#  port: 80
-#logging.level.root: WARN
+    # TODO: fix port for petal

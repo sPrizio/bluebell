@@ -25,8 +25,8 @@ FORCE_BUILD="${2:-false}"
 echo "Using $ENV_FILE"
 if [ "$FORCE_BUILD" == "true" ]; then
     echo "Rebuilding Docker images..."
-    docker compose --env-file "$ENV_FILE" up --build -d
+    docker compose --env-file "$ENV_FILE" up --build
 else
     echo "Running Docker based on previous build..."
-    docker compose --env-file "$ENV_FILE" up -d
+    docker compose --env-file "$ENV_FILE" up
 fi
