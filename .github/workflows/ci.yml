@@ -2,10 +2,11 @@ name: bluebell CI / CD
 on:
   pull_request:
     branches:
-      - '*'
+      - '**'
+    types: [opened, synchronize, reopened]
   push:
     branches:
-      - '*'
+      - 'main'
   workflow_dispatch:
 
 jobs:
@@ -27,6 +28,7 @@ jobs:
         with:
           node-version: '22.x'
           cache: 'npm'
+          cache-dependency-path: './flower/sepal/package-lock.json'
 
       - name: "[greenhouse] - Build & Test"
         run: mvn clean package
@@ -39,6 +41,14 @@ jobs:
       - name: "[sepal] - Build"
         run: npm run build --if-present
         working-directory: './flower/sepal'
+
+      - name: "[petal] - Install Dependencies"
+        run: npm ci
+        working-directory: './flower/petal'
+
+      - name: "[petal] - Build"
+        run: npm run build --if-present
+        working-directory: './flower/petal'
 
   deploy:
     runs-on: ubuntu-22.04
@@ -60,6 +70,7 @@ jobs:
         with:
           node-version: '22.x'
           cache: 'npm'
+          cache-dependency-path: './flower/sepal/package-lock.json'
 
       - name: "[bluebell] - Deploy"
         run: echo "Deploying bluebell"
