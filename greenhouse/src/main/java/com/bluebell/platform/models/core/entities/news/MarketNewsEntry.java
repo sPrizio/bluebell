@@ -10,12 +10,13 @@ import lombok.*;
  * Class representation of market news entry, a piece of news at a specific time
  *
  * @author Stephen Prizio
- * @version 0.1.1
+ * @version 0.1.4
  */
 @Getter
 @Entity
 @Builder
 @Table(name = "market_news_entries")
+@ToString
 @EqualsAndHashCode
 @NoArgsConstructor
 @AllArgsConstructor
@@ -27,27 +28,27 @@ public class MarketNewsEntry implements GenericEntity, Comparable<MarketNewsEntr
 
     @Setter
     @Column
-    private String content;
+    private @EqualsAndHashCode.Exclude String content;
 
     @Setter
     @Column
-    private MarketNewsSeverity severity;
+    private @EqualsAndHashCode.Exclude MarketNewsSeverity severity;
 
     @Setter
     @Column
-    private Country country;
+    private @EqualsAndHashCode.Exclude Country country;
 
     @Setter
     @Column
-    private String forecast;
+    private @EqualsAndHashCode.Exclude String forecast;
 
     @Setter
     @Column
-    private String previous;
+    private @EqualsAndHashCode.Exclude String previous;
 
     @Setter
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    private MarketNewsSlot slot;
+    private @EqualsAndHashCode.Exclude @ToString.Exclude MarketNewsSlot slot;
 
 
     //  METHODS

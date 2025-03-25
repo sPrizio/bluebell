@@ -12,11 +12,12 @@ import java.util.List;
  * A DTO representation of a {@link MarketNewsSlotDTO}
  *
  * @author Stephen Prizio
- * @version 0.1.1
+ * @version 0.1.4
  */
 @Getter
 @Setter
 @Builder
+@ToString
 @EqualsAndHashCode
 @Schema(title = "MarketNewsSlotDTO", name = "MarketNewsSlotDTO", description = "Represents a slot in a day and time that can contain different news pieces")
 public class MarketNewsSlotDTO implements GenericDTO, Comparable<MarketNewsSlotDTO> {
@@ -25,13 +26,13 @@ public class MarketNewsSlotDTO implements GenericDTO, Comparable<MarketNewsSlotD
     private @Builder.Default String uid = StringUtils.EMPTY;
 
     @Schema(description = "Time of news")
-    private LocalTime time;
+    private @EqualsAndHashCode.Exclude LocalTime time;
 
     @Schema(description = "List of news pieces")
-    private List<MarketNewsEntryDTO> entries;
+    private @EqualsAndHashCode.Exclude List<MarketNewsEntryDTO> entries;
 
     @Schema(description = "Active or not, i.e. relevant for today")
-    private boolean active;
+    private @EqualsAndHashCode.Exclude boolean active;
 
 
     //  METHODS
