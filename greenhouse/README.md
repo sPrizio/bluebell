@@ -1,6 +1,6 @@
 # greenhouse
 
-Current Iteration: **0.1.2**\
+Current Iteration: **0.1.4**\
 Current Release: **Pre-release**
 
 ---
@@ -28,9 +28,9 @@ Current Release: **Pre-release**
 - **0.0.9** : Major Code Improvements & Refactoring
 - **0.1.0** : Major Testing Refactoring and Coverage Improvements
 - **0.1.1** : Improve Api Documentation, Improve Lombok usage, Cronjob for fetching Market News, Refactor controller endpoints to use pojo's instead of Maps for Request Objects (Look into OpenAPI)
-- **0.1.2** : (Current) Refactoring of Portfolios and Account Details (work with sepal) including page for managing portfolios, selector for active portfolio, CRUD
-- **0.1.3** : (Planned) Dockerize App (including front-end)
-- **0.1.4** : (Planned) Store Market data from MT4 and FirstRateData into database
+- **0.1.2** : Refactoring of Portfolios and Account Details (work with sepal) including page for managing portfolios, selector for active portfolio, CRUD
+- **0.1.3** : Dockerize App (including front-end)
+- **0.1.4** : (Current) Store Market data from MT4 and FirstRateData into database
 - **0.1.5** : (Planned) Automate fetching market data
 - **0.1.6** : (Planned) Automate fetching account trades from MT4 (possibly using an API)
 - **0.1.7** : (Planned) Improve ApexChart service to select data, parsers etc...

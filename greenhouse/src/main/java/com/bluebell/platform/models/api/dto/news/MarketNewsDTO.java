@@ -13,11 +13,12 @@ import java.util.List;
  * A DTO representation of a {@link MarketNews}
  *
  * @author Stephen Prizio
- * @version 0.1.1
+ * @version 0.1.4
  */
 @Getter
 @Setter
 @Builder
+@ToString
 @EqualsAndHashCode
 @Schema(title = "MarketNewsDTO", name = "MarketNewsDTO", description = "Standard DTO for sharing market news")
 public class MarketNewsDTO implements GenericDTO, Comparable<MarketNewsDTO> {
@@ -26,19 +27,19 @@ public class MarketNewsDTO implements GenericDTO, Comparable<MarketNewsDTO> {
     private @Builder.Default String uid = StringUtils.EMPTY;
 
     @Schema(description = "Date of news")
-    private LocalDate date;
+    private @EqualsAndHashCode.Exclude LocalDate date;
 
     @Schema(description = "List of time slots")
-    private List<MarketNewsSlotDTO> slots;
+    private @EqualsAndHashCode.Exclude List<MarketNewsSlotDTO> slots;
 
     @Schema(description = "Is this news relevant for the present")
-    private boolean active;
+    private @EqualsAndHashCode.Exclude boolean active;
 
     @Schema(description = "Has this news passed?")
-    private boolean past;
+    private @EqualsAndHashCode.Exclude boolean past;
 
     @Schema(description = "Is this news referring to a future event")
-    private boolean future;
+    private @EqualsAndHashCode.Exclude boolean future;
 
 
     //  METHODS

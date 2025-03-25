@@ -13,12 +13,13 @@ import java.util.List;
  * Class representation of a market news entry which represents a time of day that can have 1 or more pieces of news
  *
  * @author Stephen Prizio
- * @version 0.1.1
+ * @version 0.1.4
  */
 @Getter
 @Entity
 @Builder
 @Table(name = "market_news_slots")
+@ToString
 @EqualsAndHashCode
 @NoArgsConstructor
 @AllArgsConstructor
@@ -30,16 +31,16 @@ public class MarketNewsSlot implements GenericEntity, Comparable<MarketNewsSlot>
 
     @Setter
     @Column
-    private LocalTime time;
+    private @EqualsAndHashCode.Exclude LocalTime time;
 
     @Setter
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    private MarketNews news;
+    private @EqualsAndHashCode.Exclude @ToString.Exclude MarketNews news;
 
     @Setter
     @OneToMany(mappedBy = "slot", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @OrderBy("severity DESC")
-    private @Builder.Default List<MarketNewsEntry> entries = new ArrayList<>();
+    private @Builder.Default @EqualsAndHashCode.Exclude List<MarketNewsEntry> entries = new ArrayList<>();
 
 
     //  METHODS

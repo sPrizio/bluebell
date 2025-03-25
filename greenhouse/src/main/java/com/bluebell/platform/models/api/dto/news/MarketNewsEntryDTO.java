@@ -10,11 +10,12 @@ import org.apache.commons.lang3.StringUtils;
  * A DTO representation of  {@link MarketNewsEntry}
  *
  * @author Stephen Prizio
- * @version 0.1.1
+ * @version 0.1.4
  */
 @Getter
 @Setter
 @Builder
+@ToString
 @EqualsAndHashCode
 @Schema(title = "MarketNewsEntryDTO", name = "MarketNewsEntryDTO", description = "A piece of news on a given day at a given time")
 public class MarketNewsEntryDTO implements GenericDTO, Comparable<MarketNewsEntryDTO> {
@@ -23,22 +24,22 @@ public class MarketNewsEntryDTO implements GenericDTO, Comparable<MarketNewsEntr
     private @Builder.Default String uid = StringUtils.EMPTY;
 
     @Schema(description = "News content")
-    private String content;
+    private @EqualsAndHashCode.Exclude String content;
 
     @Schema(description = "Severity of the news")
-    private String severity;
+    private @EqualsAndHashCode.Exclude String severity;
 
     @Schema(description = "Severity expressed as an integer")
-    private int severityLevel;
+    private @EqualsAndHashCode.Exclude int severityLevel;
 
     @Schema(description = "Relevant country")
-    private String country;
+    private @EqualsAndHashCode.Exclude String country;
 
     @Schema(description = "Forecasted amount")
-    private String forecast;
+    private @EqualsAndHashCode.Exclude String forecast;
 
     @Schema(description = "Previous amount")
-    private String previous;
+    private @EqualsAndHashCode.Exclude String previous;
 
 
     //  METHODS

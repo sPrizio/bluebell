@@ -31,7 +31,7 @@ It advertises bluebell and opens the product up to external consumption and purc
 the automation systems for importing, obtaining and manipulating external data. Additionally, strategy visualizers and
 data parsing systems are contained within ***greenhouse***. ***greenhouse*** is currently composed of the following modules:
 
-- Current Iteration: **0.1.3**
+- Current Iteration: **0.1.4**
 - Current Release: **Pre-Release**
 
 #### anther ####
