@@ -2,7 +2,7 @@ package com.bluebell.radicle.parsers.impl;
 
 import com.bluebell.platform.enums.time.MarketPriceTimeInterval;
 import com.bluebell.platform.models.core.nonentities.market.AggregatedMarketPrices;
-import com.bluebell.platform.models.core.nonentities.market.MarketPrice;
+import com.bluebell.platform.models.core.entities.market.MarketPrice;
 import com.bluebell.radicle.exceptions.parsing.FirstRateDataParsingException;
 import com.bluebell.radicle.parsers.MarketPriceParser;
 import lombok.extern.slf4j.Slf4j;
@@ -142,10 +142,10 @@ public class FirstRateDataParser extends AbstractDataParser implements MarketPri
         }
 
         final Map<LocalDateTime, MarketPrice> collection = new HashMap<>();
-        smallerPrices.marketPrices().forEach(sp -> collection.put(sp.date(), sp));
+        smallerPrices.marketPrices().forEach(sp -> collection.put(sp.getDate(), sp));
 
-        final LocalDateTime start = smallerPrices.marketPrices().first().date();
-        final LocalDateTime end = smallerPrices.marketPrices().last().date();
+        final LocalDateTime start = smallerPrices.marketPrices().first().getDate();
+        final LocalDateTime end = smallerPrices.marketPrices().last().getDate();
         LocalDateTime compare = start;
 
         final SortedSet<MarketPrice> computed = new TreeSet<>();
@@ -168,10 +168,10 @@ public class FirstRateDataParser extends AbstractDataParser implements MarketPri
                                 .builder()
                                 .date(compare)
                                 .interval(interval)
-                                .open(CollectionUtils.isNotEmpty(localPrices) ? localPrices.get(0).open() : 0.0)
-                                .high(new ArrayList<>(localPrices).stream().filter(Objects::nonNull).mapToDouble(MarketPrice::high).max().orElse(0.0))
-                                .low(new ArrayList<>(localPrices).stream().filter(Objects::nonNull).mapToDouble(MarketPrice::low).min().orElse(0.0))
-                                .close(CollectionUtils.isNotEmpty(localPrices) ? localPrices.get(localPrices.size() - 1).close() : 0.0)
+                                .open(CollectionUtils.isNotEmpty(localPrices) ? localPrices.get(0).getOpen() : 0.0)
+                                .high(new ArrayList<>(localPrices).stream().filter(Objects::nonNull).mapToDouble(MarketPrice::getHigh).max().orElse(0.0))
+                                .low(new ArrayList<>(localPrices).stream().filter(Objects::nonNull).mapToDouble(MarketPrice::getLow).min().orElse(0.0))
+                                .close(CollectionUtils.isNotEmpty(localPrices) ? localPrices.get(localPrices.size() - 1).getClose() : 0.0)
                                 .build()
                 );
             }

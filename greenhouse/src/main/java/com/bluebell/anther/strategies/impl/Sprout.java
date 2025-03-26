@@ -7,7 +7,7 @@ import com.bluebell.anther.models.trade.AntherTrade;
 import com.bluebell.anther.strategies.Strategy;
 import com.bluebell.platform.enums.trade.TradeType;
 import com.bluebell.platform.models.core.nonentities.market.AggregatedMarketPrices;
-import com.bluebell.platform.models.core.nonentities.market.MarketPrice;
+import com.bluebell.platform.models.core.entities.market.MarketPrice;
 import com.bluebell.platform.services.MathService;
 import lombok.Getter;
 
@@ -23,7 +23,7 @@ import java.util.Map;
  * In cases like these, a small (or large) reversal is likely taking place
  *
  * @author Stephen Prizio
- * @version 0.1.1
+ * @version 0.1.4
  */
 @Getter
 public class Sprout implements Strategy<SproutStrategyParameters> {
@@ -63,7 +63,7 @@ public class Sprout implements Strategy<SproutStrategyParameters> {
 
             for (int i = 0; i < marketPrices.size(); i++) {
 
-                if (!isWithinWindow(marketPrices.get(i).date().toLocalTime()) || count == 3) {
+                if (!isWithinWindow(marketPrices.get(i).getDate().toLocalTime()) || count == 3) {
                     continue;
                 }
 
@@ -73,12 +73,12 @@ public class Sprout implements Strategy<SproutStrategyParameters> {
 
                 final TradeSignal tradeSignal = getTradeSignal(referencePrice, signalPrice, currentPrice);
                 if (tradeSignal != TradeSignal.NO_SIGNAL && this.openTrades.isEmpty()/* && hasConfirmation(tradeSignal, referencePrice, signalPrice, currentPrice)*/) {
-                    final double price = tradeSignal == TradeSignal.BUY_SIGNAL ? signalPrice.high() : signalPrice.low();
+                    final double price = tradeSignal == TradeSignal.BUY_SIGNAL ? signalPrice.getHigh() : signalPrice.getLow();
 
                     final AntherTrade trade = openTrade(
                             tradeSignal.getTradeType(),
                             this.strategyParameters.getLotSize(),
-                            currentPrice.date(),
+                            currentPrice.getDate(),
                             price,
                             calculateDynamicVariance(signalPrice, tradeSignal.getTradeType()),
                             tradeSignal == TradeSignal.BUY_SIGNAL ? calculateActualLimit(signalPrice.getFullSize(true), price, true, true) : calculateActualLimit(signalPrice.getFullSize(true), price, false, true)
@@ -113,7 +113,7 @@ public class Sprout implements Strategy<SproutStrategyParameters> {
      * @return true if hour and minute are equal
      */
     public boolean isExitBar(final MarketPrice price) {
-        return price.date().getHour() == 16 && price.date().getMinute() == 0;
+        return price.getDate().getHour() == 16 && price.getDate().getMinute() == 0;
     }
 
 
@@ -129,12 +129,12 @@ public class Sprout implements Strategy<SproutStrategyParameters> {
     private double calculateDynamicVariance(final MarketPrice price, final TradeType tradeType) {
 
         double point;
-        final double diff = this.mathService.multiply(Math.abs(this.mathService.subtract(price.high(), price.low())), this.strategyParameters.getVariance());
+        final double diff = this.mathService.multiply(Math.abs(this.mathService.subtract(price.getHigh(), price.getLow())), this.strategyParameters.getVariance());
 
         if (tradeType == TradeType.BUY) {
-            point = price.low();
+            point = price.getLow();
         } else {
-            point = price.high();
+            point = price.getHigh();
         }
 
         return tradeType == TradeType.BUY ? (point + diff) : (point - diff);
@@ -151,24 +151,24 @@ public class Sprout implements Strategy<SproutStrategyParameters> {
     private TradeSignal getTradeSignal(final MarketPrice ref, final MarketPrice signal, final MarketPrice current) {
 
         // don't trade at EOD
-        if (current.date().toLocalTime().getHour() == 16) {
+        if (current.getDate().toLocalTime().getHour() == 16) {
             return TradeSignal.NO_SIGNAL;
         }
 
-        final double refHigh = ref.high();
-        final double refLow = ref.low();
+        final double refHigh = ref.getHigh();
+        final double refLow = ref.getLow();
 
-        final double sigHigh = signal.high();
-        final double sigLow = signal.low();
+        final double sigHigh = signal.getHigh();
+        final double sigLow = signal.getLow();
 
         //  look for mutually exclusive prices
         if (current.isMutuallyExclusive(signal) || signal.isMutuallyExclusive(ref)) {
             return TradeSignal.NO_SIGNAL;
         }
 
-        if (sigLow < refLow && current.high() > sigHigh && hasConfirmation(TradeSignal.BUY_SIGNAL, ref, signal, current)) {
+        if (sigLow < refLow && current.getHigh() > sigHigh && hasConfirmation(TradeSignal.BUY_SIGNAL, ref, signal, current)) {
             return TradeSignal.BUY_SIGNAL;
-        } else if (sigHigh > refHigh && current.low() < sigLow && hasConfirmation(TradeSignal.SELL_SIGNAL, ref, signal, current)) {
+        } else if (sigHigh > refHigh && current.getLow() < sigLow && hasConfirmation(TradeSignal.SELL_SIGNAL, ref, signal, current)) {
             return TradeSignal.SELL_SIGNAL;
         } else {
             return TradeSignal.NO_SIGNAL;
@@ -216,9 +216,9 @@ public class Sprout implements Strategy<SproutStrategyParameters> {
     private boolean hasConfirmation(final TradeSignal tradeSignal, final MarketPrice ref, final MarketPrice signal, final MarketPrice current) {
 
         if (tradeSignal == TradeSignal.BUY_SIGNAL) {
-            return current.low() > signal.low() && signal.hasBullishIndication();
+            return current.getLow() > signal.getLow() && signal.hasBullishIndication();
         } else if (tradeSignal == TradeSignal.SELL_SIGNAL) {
-            return current.high() < signal.high() && signal.hasBearishIndication();
+            return current.getHigh() < signal.getHigh() && signal.hasBearishIndication();
         }
 
         return false;

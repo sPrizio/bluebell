@@ -2,7 +2,7 @@ package com.bluebell.radicle.impl;
 
 import com.bluebell.platform.enums.time.MarketPriceTimeInterval;
 import com.bluebell.platform.models.core.nonentities.market.AggregatedMarketPrices;
-import com.bluebell.platform.models.core.nonentities.market.MarketPrice;
+import com.bluebell.platform.models.core.entities.market.MarketPrice;
 import com.bluebell.radicle.exceptions.parsing.FirstRateDataParsingException;
 import com.bluebell.radicle.parsers.impl.FirstRateDataParser;
 import org.apache.commons.lang3.StringUtils;

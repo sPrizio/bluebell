@@ -3,7 +3,7 @@ package com.bluebell.anther.services.metadata;
 import com.bluebell.anther.models.metadata.MetaData;
 import com.bluebell.platform.enums.time.MarketPriceTimeInterval;
 import com.bluebell.platform.models.core.nonentities.market.AggregatedMarketPrices;
-import com.bluebell.platform.models.core.nonentities.market.MarketPrice;
+import com.bluebell.platform.models.core.entities.market.MarketPrice;
 
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;

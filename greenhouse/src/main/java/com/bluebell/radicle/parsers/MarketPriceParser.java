@@ -2,7 +2,7 @@ package com.bluebell.radicle.parsers;
 
 import com.bluebell.platform.enums.time.MarketPriceTimeInterval;
 import com.bluebell.platform.models.core.nonentities.market.AggregatedMarketPrices;
-import com.bluebell.platform.models.core.nonentities.market.MarketPrice;
+import com.bluebell.platform.models.core.entities.market.MarketPrice;
 import org.apache.commons.lang3.StringUtils;
 
 import java.io.File;

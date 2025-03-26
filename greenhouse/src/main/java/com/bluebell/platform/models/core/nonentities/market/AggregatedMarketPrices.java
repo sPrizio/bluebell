@@ -2,6 +2,7 @@ package com.bluebell.platform.models.core.nonentities.market;
 
 
 import com.bluebell.platform.enums.time.MarketPriceTimeInterval;
+import com.bluebell.platform.models.core.entities.market.MarketPrice;
 import lombok.Builder;
 
 import java.util.SortedSet;

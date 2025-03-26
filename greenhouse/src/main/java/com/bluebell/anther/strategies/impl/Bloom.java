@@ -7,7 +7,7 @@ import com.bluebell.anther.models.trade.AntherTrade;
 import com.bluebell.anther.strategies.Strategy;
 import com.bluebell.platform.enums.trade.TradeType;
 import com.bluebell.platform.models.core.nonentities.market.AggregatedMarketPrices;
-import com.bluebell.platform.models.core.nonentities.market.MarketPrice;
+import com.bluebell.platform.models.core.entities.market.MarketPrice;
 import com.bluebell.platform.services.MathService;
 import lombok.Getter;
 import org.javatuples.Pair;
@@ -23,7 +23,7 @@ import java.util.Optional;
  * to capture this trend via straddling.
  *
  * @author Stephen Prizio
- * @version 0.1.1
+ * @version 0.1.4
  */
 @Getter
 public class Bloom implements Strategy<BloomStrategyParameters> {
@@ -65,19 +65,19 @@ public class Bloom implements Strategy<BloomStrategyParameters> {
                     final AntherTrade tradeBuy = openTrade(
                             TradeType.BUY,
                             this.strategyParameters.getLotSize(),
-                            marketPrice.date(),
-                            marketPrice.open(),
-                            calculateLimit(marketPrice.open(), normalize(TradeType.BUY).getValue1(), false),
-                            calculateLimit(marketPrice.open(), normalize(TradeType.BUY).getValue0(), true)
+                            marketPrice.getDate(),
+                            marketPrice.getOpen(),
+                            calculateLimit(marketPrice.getOpen(), normalize(TradeType.BUY).getValue1(), false),
+                            calculateLimit(marketPrice.getOpen(), normalize(TradeType.BUY).getValue0(), true)
                     );
 
                     final AntherTrade tradeSell = openTrade(
                             TradeType.SELL,
                             this.strategyParameters.getLotSize(),
-                            marketPrice.date(),
-                            marketPrice.open(),
-                            calculateLimit(marketPrice.open(), normalize(TradeType.SELL).getValue1(), true),
-                            calculateLimit(marketPrice.open(), normalize(TradeType.SELL).getValue0(), false)
+                            marketPrice.getDate(),
+                            marketPrice.getOpen(),
+                            calculateLimit(marketPrice.getOpen(), normalize(TradeType.SELL).getValue1(), true),
+                            calculateLimit(marketPrice.getOpen(), normalize(TradeType.SELL).getValue0(), false)
                     );
 
                     this.openTrades.put(tradeBuy.getId(), tradeBuy);
@@ -111,7 +111,7 @@ public class Bloom implements Strategy<BloomStrategyParameters> {
      * @return true if hour and minute are equal
      */
     public boolean isExitBar(final MarketPrice price) {
-        return price.date().getHour() == 16 && price.date().getMinute() == 0;
+        return price.getDate().getHour() == 16 && price.getDate().getMinute() == 0;
     }
 
 
@@ -142,14 +142,14 @@ public class Bloom implements Strategy<BloomStrategyParameters> {
         } else {
             openTrades.forEach((key, value) -> {
                 if (value.getTradeType() == TradeType.BUY) {
-                    if (marketPrice.high() >= value.getTakeProfit()) {
+                    if (marketPrice.getHigh() >= value.getTakeProfit()) {
                         // hit take profit
-                        closeTrade(value, marketPrice.date(), value.getTakeProfit());
+                        closeTrade(value, marketPrice.getDate(), value.getTakeProfit());
                         closedTrades.put(value.getId(), value);
                         this.relatedTrades.remove(value.getId());
-                    } else if (marketPrice.low() <= value.getStopLoss()) {
+                    } else if (marketPrice.getLow() <= value.getStopLoss()) {
                         // hit stop loss
-                        closeTrade(value, marketPrice.date(), value.getStopLoss());
+                        closeTrade(value, marketPrice.getDate(), value.getStopLoss());
                         closedTrades.put(value.getId(), value);
 
                         final Optional<AntherTrade> relatedTrade = getRelatedTrade(value);
@@ -157,14 +157,14 @@ public class Bloom implements Strategy<BloomStrategyParameters> {
                         this.relatedTrades.remove(value.getId());
                     }
                 } else {
-                    if (marketPrice.low() <= value.getTakeProfit()) {
+                    if (marketPrice.getLow() <= value.getTakeProfit()) {
                         // hit take profit
-                        closeTrade(value, marketPrice.date(), value.getTakeProfit());
+                        closeTrade(value, marketPrice.getDate(), value.getTakeProfit());
                         closedTrades.put(value.getId(), value);
                         this.relatedTrades.remove(value.getId());
-                    } else if (marketPrice.high() >= value.getStopLoss()) {
+                    } else if (marketPrice.getHigh() >= value.getStopLoss()) {
                         // hit stop loss
-                        closeTrade(value, marketPrice.date(), value.getStopLoss());
+                        closeTrade(value, marketPrice.getDate(), value.getStopLoss());
                         closedTrades.put(value.getId(), value);
 
                         final Optional<AntherTrade> relatedTrade = getRelatedTrade(value);
@@ -185,7 +185,7 @@ public class Bloom implements Strategy<BloomStrategyParameters> {
      * @return true if hour and minute are equal
      */
     private boolean isSignalBar(final MarketPrice price) {
-        return price.date().getHour() == this.strategyParameters.getStartHour() && price.date().getMinute() == this.strategyParameters.getStartMinute();
+        return price.getDate().getHour() == this.strategyParameters.getStartHour() && price.getDate().getMinute() == this.strategyParameters.getStartMinute();
     }
 
     /**

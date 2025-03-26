@@ -1,7 +1,7 @@
 package com.bluebell.anther.models.metadata;
 
 import com.bluebell.platform.enums.time.MarketPriceTimeInterval;
-import com.bluebell.platform.models.core.nonentities.market.MarketPrice;
+import com.bluebell.platform.models.core.entities.market.MarketPrice;
 import com.bluebell.platform.services.MathService;
 import lombok.Getter;
 import org.apache.commons.collections4.CollectionUtils;
@@ -111,15 +111,15 @@ public class MetaData {
 
         double absoluteTop = 0.0;
         double absoluteBottom = Integer.MAX_VALUE;
-        final double average = this.mathService.getDouble(prices.stream().mapToDouble(pr -> Math.abs(this.mathService.subtract(pr.high(), pr.low()))).average().orElse(0.0));
+        final double average = this.mathService.getDouble(prices.stream().mapToDouble(pr -> Math.abs(this.mathService.subtract(pr.getHigh(), pr.getLow()))).average().orElse(0.0));
 
         for (MarketPrice price : prices) {
-            if (price.high() > absoluteTop) {
-                absoluteTop = price.high();
+            if (price.getHigh() > absoluteTop) {
+                absoluteTop = price.getHigh();
             }
 
-            if (price.low() < absoluteBottom) {
-                absoluteBottom = price.low();
+            if (price.getLow() < absoluteBottom) {
+                absoluteBottom = price.getLow();
             }
         }
 
@@ -141,8 +141,8 @@ public class MetaData {
         final List<MarketPrice> bullPrices = prices.stream().filter(MarketPrice::isBullish).filter(MarketPrice::hasFullBody).toList();
         final List<MarketPrice> bearPrices = prices.stream().filter(MarketPrice::isBearish).filter(MarketPrice::hasFullBody).toList();
 
-        final double bullWick = bullPrices.isEmpty() ? 0.0 : this.mathService.getDouble(bullPrices.stream().mapToDouble(pr -> this.mathService.subtract(pr.open(), pr.low())).average().orElse(0.0));
-        final double bearWick = bearPrices.isEmpty() ? 0.0 : this.mathService.getDouble(bearPrices.stream().mapToDouble(pr -> this.mathService.subtract(pr.high(), pr.open())).average().orElse(0.0));
+        final double bullWick = bullPrices.isEmpty() ? 0.0 : this.mathService.getDouble(bullPrices.stream().mapToDouble(pr -> this.mathService.subtract(pr.getOpen(), pr.getLow())).average().orElse(0.0));
+        final double bearWick = bearPrices.isEmpty() ? 0.0 : this.mathService.getDouble(bearPrices.stream().mapToDouble(pr -> this.mathService.subtract(pr.getHigh(), pr.getOpen())).average().orElse(0.0));
 
         return Pair.with(bullWick, bearWick);
     }
@@ -163,8 +163,8 @@ public class MetaData {
         final List<MarketPrice> bearPrices = prices.stream().filter(MarketPrice::isBearish).filter(MarketPrice::hasFullBody).toList();
         final List<MarketPrice> dojiPrices = prices.stream().filter(MarketPrice::isDoji).toList();
 
-        final double bullGain = bullPrices.isEmpty() ? 0.0 : this.mathService.getDouble(bullPrices.stream().mapToDouble(pr -> this.mathService.subtract(pr.close(), pr.open())).average().orElse(0.0));
-        final double bearGain = bearPrices.isEmpty() ? 0.0 : this.mathService.getDouble(bearPrices.stream().mapToDouble(pr -> this.mathService.subtract(pr.open(), pr.close())).average().orElse(0.0));
+        final double bullGain = bullPrices.isEmpty() ? 0.0 : this.mathService.getDouble(bullPrices.stream().mapToDouble(pr -> this.mathService.subtract(pr.getClose(), pr.getOpen())).average().orElse(0.0));
+        final double bearGain = bearPrices.isEmpty() ? 0.0 : this.mathService.getDouble(bearPrices.stream().mapToDouble(pr -> this.mathService.subtract(pr.getOpen(), pr.getClose())).average().orElse(0.0));
 
         return Quintet.with(bullPrices.size(), bullGain, bearPrices.size(), bearGain, dojiPrices.size());
     }

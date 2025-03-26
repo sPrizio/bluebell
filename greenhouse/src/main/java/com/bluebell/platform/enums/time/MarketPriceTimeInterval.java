@@ -1,7 +1,7 @@
 package com.bluebell.platform.enums.time;
 
 import com.bluebell.platform.enums.GenericEnum;
-import com.bluebell.platform.models.core.nonentities.market.MarketPrice;
+import com.bluebell.platform.models.core.entities.market.MarketPrice;
 import lombok.Getter;
 
 import java.time.temporal.ChronoUnit;

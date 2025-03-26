@@ -28,14 +28,14 @@ public abstract class AbstractDataParser {
         final Map<LocalDate, AggregatedMarketPrices> masterCollection = new HashMap<>();
         marketPrices.marketPrices().forEach(marketPrice -> {
             final AggregatedMarketPrices mapPrices;
-            if (masterCollection.containsKey(marketPrice.date().toLocalDate())) {
-                mapPrices = masterCollection.get(marketPrice.date().toLocalDate());
+            if (masterCollection.containsKey(marketPrice.getDate().toLocalDate())) {
+                mapPrices = masterCollection.get(marketPrice.getDate().toLocalDate());
             } else {
                 mapPrices = AggregatedMarketPrices.builder().marketPrices(new TreeSet<>()).interval(interval).build();
             }
 
             mapPrices.marketPrices().add(marketPrice);
-            masterCollection.put(marketPrice.date().toLocalDate(), mapPrices);
+            masterCollection.put(marketPrice.getDate().toLocalDate(), mapPrices);
         });
 
         return masterCollection;

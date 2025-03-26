@@ -4,7 +4,7 @@ import com.bluebell.platform.constants.CorePlatformConstants;
 import com.bluebell.platform.enums.time.MarketPriceTimeInterval;
 import com.bluebell.platform.models.core.nonentities.apexcharts.ApexChartCandleStick;
 import com.bluebell.platform.models.core.nonentities.market.AggregatedMarketPrices;
-import com.bluebell.platform.models.core.nonentities.market.MarketPrice;
+import com.bluebell.platform.models.core.entities.market.MarketPrice;
 import com.bluebell.radicle.parsers.impl.FirstRateDataParser;
 import com.bluebell.radicle.services.chart.ChartService;
 import org.apache.commons.collections4.CollectionUtils;
@@ -77,7 +77,7 @@ public class ApexChartService implements ChartService<ApexChartCandleStick> {
                 if (CollectionUtils.isEmpty(values.marketPrices())) {
                     candleSticks.add(ApexChartCandleStick.builder().x(key.atStartOfDay(ZoneId.of(CorePlatformConstants.EASTERN_TIMEZONE)).toEpochSecond()).y(new double[0]).build());
                 } else {
-                    values.marketPrices().forEach(val -> candleSticks.add(ApexChartCandleStick.builder().x(val.date().atZone(ZoneId.of(CorePlatformConstants.EASTERN_TIMEZONE)).toInstant().toEpochMilli()).y(new double[]{val.open(), val.high(), val.low(), val.close()}).build()));
+                    values.marketPrices().forEach(val -> candleSticks.add(ApexChartCandleStick.builder().x(val.getDate().atZone(ZoneId.of(CorePlatformConstants.EASTERN_TIMEZONE)).toInstant().toEpochMilli()).y(new double[]{val.getOpen(), val.getHigh(), val.getLow(), val.getClose()}).build()));
                 }
             }
         });
