@@ -1,6 +1,6 @@
 package com.bluebell.anther.models.metadata;
 
-import com.bluebell.platform.enums.time.PlatformTimeInterval;
+import com.bluebell.platform.enums.time.MarketPriceTimeInterval;
 import com.bluebell.platform.models.core.nonentities.market.MarketPrice;
 import com.bluebell.platform.services.MathService;
 import lombok.Getter;
@@ -19,7 +19,7 @@ import java.util.SortedSet;
  * Class representation of metadata about trading prices
  *
  * @author Stephen Prizio
- * @version 0.1.1
+ * @version 0.1.4
  */
 @Getter
 public class MetaData {
@@ -32,7 +32,7 @@ public class MetaData {
 
     private final ChronoUnit unit;
 
-    private final PlatformTimeInterval timeInterval;
+    private final MarketPriceTimeInterval timeInterval;
 
     private final int count;
 
@@ -65,7 +65,7 @@ public class MetaData {
 
     //  CONSTRUCTORS
 
-    public MetaData(final LocalDate start, final LocalDate end, final ChronoUnit unit, final PlatformTimeInterval timeInterval, final SortedSet<MarketPrice> prices) {
+    public MetaData(final LocalDate start, final LocalDate end, final ChronoUnit unit, final MarketPriceTimeInterval timeInterval, final SortedSet<MarketPrice> prices) {
 
         this.start = start;
         this.end = end;

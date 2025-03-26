@@ -1,7 +1,7 @@
 package com.bluebell.anther.services.metadata;
 
 import com.bluebell.anther.models.metadata.MetaData;
-import com.bluebell.platform.enums.time.PlatformTimeInterval;
+import com.bluebell.platform.enums.time.MarketPriceTimeInterval;
 import com.bluebell.platform.models.core.nonentities.market.AggregatedMarketPrices;
 import com.bluebell.platform.models.core.nonentities.market.MarketPrice;
 
@@ -13,7 +13,7 @@ import java.util.*;
  * Computes metadata about a collection of market prices
  *
  * @author Stephen Prizio
- * @version 0.1.1
+ * @version 0.1.4
  */
 public class MetaDataService {
 
@@ -23,11 +23,11 @@ public class MetaDataService {
      * @param start {@link LocalDate}
      * @param end {@link LocalDate}
      * @param unit {@link ChronoUnit}
-     * @param timeInterval {@link PlatformTimeInterval}
+     * @param timeInterval {@link MarketPriceTimeInterval}
      * @param prices {@link Map} of {@link MarketPrice} indexed by their date
      * @return {@link MetaData}
      */
-    public List<MetaData> getMetaData(final LocalDate start, final LocalDate end, final ChronoUnit unit, final PlatformTimeInterval timeInterval, final Map<LocalDate, AggregatedMarketPrices> prices) {
+    public List<MetaData> getMetaData(final LocalDate start, final LocalDate end, final ChronoUnit unit, final MarketPriceTimeInterval timeInterval, final Map<LocalDate, AggregatedMarketPrices> prices) {
 
         final List<MetaData> metaData = new ArrayList<>();
         LocalDate compare = start;

@@ -1,6 +1,6 @@
 package com.bluebell.radicle.parsers.impl;
 
-import com.bluebell.platform.enums.time.PlatformTimeInterval;
+import com.bluebell.platform.enums.time.MarketPriceTimeInterval;
 import com.bluebell.platform.models.core.nonentities.market.AggregatedMarketPrices;
 import com.bluebell.platform.models.core.nonentities.market.MarketPrice;
 import com.bluebell.radicle.exceptions.parsing.FirstRateDataParsingException;
@@ -20,7 +20,7 @@ import java.util.*;
  * Parses data from FirstData from data files
  *
  * @author Stephen Prizio
- * @version 0.1.1
+ * @version 0.1.4
  */
 @Slf4j
 public class FirstRateDataParser extends AbstractDataParser implements MarketPriceParser {
@@ -39,7 +39,7 @@ public class FirstRateDataParser extends AbstractDataParser implements MarketPri
     //  METHODS
 
     @Override
-    public AggregatedMarketPrices parseMarketPrices(final String file, final PlatformTimeInterval interval) {
+    public AggregatedMarketPrices parseMarketPrices(final String file, final MarketPriceTimeInterval interval) {
 
         final String sampleFile = getDataRoot() + "/" + file;
         if (!validateFile(sampleFile)) {
@@ -48,7 +48,7 @@ public class FirstRateDataParser extends AbstractDataParser implements MarketPri
         }
 
         final DateTimeFormatter dateTimeFormatter;
-        if (interval == PlatformTimeInterval.ONE_DAY) {
+        if (interval == MarketPriceTimeInterval.ONE_DAY) {
             dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         } else {
             dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
@@ -67,7 +67,7 @@ public class FirstRateDataParser extends AbstractDataParser implements MarketPri
                         MarketPrice
                                 .builder()
                                 .date(interval ==
-                                        PlatformTimeInterval.ONE_DAY ? LocalDate.parse(lineComponents[0], dateTimeFormatter).atStartOfDay()
+                                        MarketPriceTimeInterval.ONE_DAY ? LocalDate.parse(lineComponents[0], dateTimeFormatter).atStartOfDay()
                                         : LocalDateTime.parse(lineComponents[0], dateTimeFormatter))
                                 .interval(interval)
                                 .open(parseDoubleFromString(lineComponents[1]))
@@ -85,17 +85,17 @@ public class FirstRateDataParser extends AbstractDataParser implements MarketPri
     }
 
     @Override
-    public Map<LocalDate, AggregatedMarketPrices> parseMarketPricesByDate(final PlatformTimeInterval interval) {
+    public Map<LocalDate, AggregatedMarketPrices> parseMarketPricesByDate(final MarketPriceTimeInterval interval) {
 
         final AggregatedMarketPrices marketPrices;
         switch (interval) {
-            case ONE_MINUTE -> marketPrices = parseMarketPrices(computeFileName(PlatformTimeInterval.ONE_MINUTE), PlatformTimeInterval.ONE_MINUTE);
-            case FIVE_MINUTE -> marketPrices = parseMarketPrices(computeFileName(PlatformTimeInterval.FIVE_MINUTE), PlatformTimeInterval.FIVE_MINUTE);
-            case TEN_MINUTE -> marketPrices = parseDynamicMarketPrices(PlatformTimeInterval.TEN_MINUTE);
-            case FIFTEEN_MINUTE -> marketPrices = parseDynamicMarketPrices(PlatformTimeInterval.FIFTEEN_MINUTE);
-            case THIRTY_MINUTE -> marketPrices = parseMarketPrices(computeFileName(PlatformTimeInterval.THIRTY_MINUTE), PlatformTimeInterval.THIRTY_MINUTE);
-            case ONE_HOUR -> marketPrices = parseMarketPrices(computeFileName(PlatformTimeInterval.ONE_HOUR), PlatformTimeInterval.ONE_HOUR);
-            case ONE_DAY -> marketPrices = parseMarketPrices(computeFileName(PlatformTimeInterval.ONE_DAY), PlatformTimeInterval.ONE_DAY);
+            case ONE_MINUTE -> marketPrices = parseMarketPrices(computeFileName(MarketPriceTimeInterval.ONE_MINUTE), MarketPriceTimeInterval.ONE_MINUTE);
+            case FIVE_MINUTE -> marketPrices = parseMarketPrices(computeFileName(MarketPriceTimeInterval.FIVE_MINUTE), MarketPriceTimeInterval.FIVE_MINUTE);
+            case TEN_MINUTE -> marketPrices = parseDynamicMarketPrices(MarketPriceTimeInterval.TEN_MINUTE);
+            case FIFTEEN_MINUTE -> marketPrices = parseDynamicMarketPrices(MarketPriceTimeInterval.FIFTEEN_MINUTE);
+            case THIRTY_MINUTE -> marketPrices = parseMarketPrices(computeFileName(MarketPriceTimeInterval.THIRTY_MINUTE), MarketPriceTimeInterval.THIRTY_MINUTE);
+            case ONE_HOUR -> marketPrices = parseMarketPrices(computeFileName(MarketPriceTimeInterval.ONE_HOUR), MarketPriceTimeInterval.ONE_HOUR);
+            case ONE_DAY -> marketPrices = parseMarketPrices(computeFileName(MarketPriceTimeInterval.ONE_DAY), MarketPriceTimeInterval.ONE_DAY);
             default -> marketPrices = AggregatedMarketPrices.builder().marketPrices(new TreeSet<>()).interval(interval).build();
         }
 
@@ -108,10 +108,10 @@ public class FirstRateDataParser extends AbstractDataParser implements MarketPri
     /**
      * Computes the filename depending on whether this parser was instantiated as a testing instance
      *
-     * @param interval {@link PlatformTimeInterval}
+     * @param interval {@link MarketPriceTimeInterval}
      * @return filename
      */
-    private String computeFileName(final PlatformTimeInterval interval) {
+    private String computeFileName(final MarketPriceTimeInterval interval) {
 
         String prefix;
         final String format = this.isTest ? "NDX_%s_sample.csv" : "NDX_full_%s.txt";
@@ -131,12 +131,12 @@ public class FirstRateDataParser extends AbstractDataParser implements MarketPri
     /**
      * Computes the market prices for an interval that doesn't directly map to a file
      *
-     * @param interval {@link PlatformTimeInterval}
+     * @param interval {@link MarketPriceTimeInterval}
      * @return {@link AggregatedMarketPrices}
      */
-    private AggregatedMarketPrices parseDynamicMarketPrices(final PlatformTimeInterval interval) {
+    private AggregatedMarketPrices parseDynamicMarketPrices(final MarketPriceTimeInterval interval) {
 
-        final AggregatedMarketPrices smallerPrices = parseMarketPrices(computeFileName(PlatformTimeInterval.ONE_MINUTE), PlatformTimeInterval.ONE_MINUTE);
+        final AggregatedMarketPrices smallerPrices = parseMarketPrices(computeFileName(MarketPriceTimeInterval.ONE_MINUTE), MarketPriceTimeInterval.ONE_MINUTE);
         if (CollectionUtils.isEmpty(smallerPrices.marketPrices())) {
             return AggregatedMarketPrices.builder().marketPrices(Collections.emptySortedSet()).interval(interval).build();
         }

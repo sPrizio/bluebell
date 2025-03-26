@@ -1,6 +1,6 @@
 package com.bluebell.radicle.parsers.impl;
 
-import com.bluebell.platform.enums.time.PlatformTimeInterval;
+import com.bluebell.platform.enums.time.MarketPriceTimeInterval;
 import com.bluebell.platform.models.core.nonentities.market.AggregatedMarketPrices;
 import com.bluebell.platform.models.core.nonentities.market.MarketPrice;
 import com.bluebell.radicle.exceptions.parsing.TradingViewDataParsingException;
@@ -23,7 +23,7 @@ import java.util.TreeSet;
  * Parses data from TradingView data files
  *
  * @author Stephen Prizio
- * @version 0.1.1
+ * @version 0.1.4
  */
 @Slf4j
 public class TradingViewDataParser extends AbstractDataParser implements MarketPriceParser {
@@ -40,7 +40,7 @@ public class TradingViewDataParser extends AbstractDataParser implements MarketP
     //  METHODS
 
     @Override
-    public AggregatedMarketPrices parseMarketPrices(final String file, final PlatformTimeInterval interval) {
+    public AggregatedMarketPrices parseMarketPrices(final String file, final MarketPriceTimeInterval interval) {
 
         final String sampleFile = getDataRoot(interval) + "/" + file;
         if (!validateFile(sampleFile)) {
@@ -77,7 +77,7 @@ public class TradingViewDataParser extends AbstractDataParser implements MarketP
     }
 
     @Override
-    public Map<LocalDate, AggregatedMarketPrices> parseMarketPricesByDate(final PlatformTimeInterval interval) {
+    public Map<LocalDate, AggregatedMarketPrices> parseMarketPricesByDate(final MarketPriceTimeInterval interval) {
 
         final File directory = new File(getDataRoot(interval));
         final File[] files = directory.listFiles();
@@ -91,7 +91,7 @@ public class TradingViewDataParser extends AbstractDataParser implements MarketP
             final AggregatedMarketPrices marketPrices;
             try {
                 switch (interval) {
-                    case THIRTY_MINUTE -> marketPrices = parseMarketPrices(file.getName(), PlatformTimeInterval.THIRTY_MINUTE);
+                    case THIRTY_MINUTE -> marketPrices = parseMarketPrices(file.getName(), MarketPriceTimeInterval.THIRTY_MINUTE);
                     default -> marketPrices = AggregatedMarketPrices.builder().marketPrices(new TreeSet<>()).interval(interval).build();
                 }
 
@@ -114,7 +114,7 @@ public class TradingViewDataParser extends AbstractDataParser implements MarketP
      *
      * @return sample data path
      */
-    private String getDataRoot(final PlatformTimeInterval interval) {
+    private String getDataRoot(final MarketPriceTimeInterval interval) {
 
         try {
             final String root = Objects.requireNonNull(getClass().getClassLoader().getResource(String.format("tradingview.%s/%s", this.symbol, interval.toString()))).getFile();

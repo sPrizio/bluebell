@@ -10,10 +10,10 @@ import java.time.temporal.ChronoUnit;
  * Representation of an interval of time for a {@link MarketPrice}
  *
  * @author Stephen Prizio
- * @version 0.1.3
+ * @version 0.1.4
  */
 @Getter
-public enum PlatformTimeInterval implements GenericEnum<PlatformTimeInterval> {
+public enum MarketPriceTimeInterval implements GenericEnum<MarketPriceTimeInterval> {
     ONE_MINUTE("ONE_MINUTE", "1-minute", ChronoUnit.MINUTES, 1),
     FIVE_MINUTE("FIVE_MINUTE", "5-minute", ChronoUnit.MINUTES, 5),
     TEN_MINUTE("TEN_MINUTE", "10-minute", ChronoUnit.MINUTES, 10),
@@ -33,7 +33,7 @@ public enum PlatformTimeInterval implements GenericEnum<PlatformTimeInterval> {
 
     private final int amount;
 
-    PlatformTimeInterval(final String code, final String label, final ChronoUnit unit, final int amount) {
+    MarketPriceTimeInterval(final String code, final String label, final ChronoUnit unit, final int amount) {
         this.code = code;
         this.label = label;
         this.unit = unit;

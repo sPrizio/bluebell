@@ -1,6 +1,6 @@
 package com.bluebell.radicle.parsers;
 
-import com.bluebell.platform.enums.time.PlatformTimeInterval;
+import com.bluebell.platform.enums.time.MarketPriceTimeInterval;
 import com.bluebell.platform.models.core.nonentities.market.AggregatedMarketPrices;
 import com.bluebell.platform.models.core.nonentities.market.MarketPrice;
 import org.apache.commons.lang3.StringUtils;
@@ -16,7 +16,7 @@ import java.util.Map;
  * Parses a {@link File} url into a {@link List} of {@link MarketPrice}
  *
  * @author Stephen Prizio
- * @version 0.1.1
+ * @version 0.1.4
  */
 public interface MarketPriceParser {
 
@@ -27,18 +27,18 @@ public interface MarketPriceParser {
      * Parses a file of market prices into {@link AggregatedMarketPrices}
      *
      * @param file file path
-     * @param interval {@link PlatformTimeInterval}
+     * @param interval {@link MarketPriceTimeInterval}
      * @return {@link AggregatedMarketPrices}
      */
-    AggregatedMarketPrices parseMarketPrices(final String file, final PlatformTimeInterval interval);
+    AggregatedMarketPrices parseMarketPrices(final String file, final MarketPriceTimeInterval interval);
 
     /**
      * Parses a file of market prices into a {@link Map} of {@link MarketPrice} organized by their date (truncates the time)
      *
-     * @param interval {@link PlatformTimeInterval}
+     * @param interval {@link MarketPriceTimeInterval}
      * @return {@link List} of {@link MarketPrice}
      */
-    Map<LocalDate, AggregatedMarketPrices> parseMarketPricesByDate(final PlatformTimeInterval interval);
+    Map<LocalDate, AggregatedMarketPrices> parseMarketPricesByDate(final MarketPriceTimeInterval interval);
 
 
     //  HELPERS

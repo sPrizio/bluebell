@@ -1,7 +1,7 @@
 package com.bluebell.platform.models.core.nonentities.market;
 
 
-import com.bluebell.platform.enums.time.PlatformTimeInterval;
+import com.bluebell.platform.enums.time.MarketPriceTimeInterval;
 import com.bluebell.platform.services.MathService;
 import lombok.Builder;
 import lombok.Getter;
@@ -13,18 +13,18 @@ import java.util.Objects;
  * Representation of a market price for an interval of time
  *
  * @param date start date
- * @param interval {@link PlatformTimeInterval}
+ * @param interval {@link MarketPriceTimeInterval}
  * @param open open price
  * @param high highest price
  * @param low lowest price
  * @param close close price
  * @author Stephen Prizio
- * @version 0.1.1
+ * @version 0.1.4
  */
 @Builder
 public record MarketPrice(
         @Getter LocalDateTime date,
-        @Getter PlatformTimeInterval interval,
+        @Getter MarketPriceTimeInterval interval,
         @Getter double open,
         @Getter double high,
         @Getter double low,
