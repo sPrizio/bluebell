@@ -1,7 +1,6 @@
 package com.bluebell.radicle.services.chart.impl;
 
 import com.bluebell.platform.constants.CorePlatformConstants;
-import com.bluebell.platform.enums.chart.IntradayInterval;
 import com.bluebell.platform.enums.time.MarketPriceTimeInterval;
 import com.bluebell.platform.models.core.nonentities.apexcharts.ApexChartCandleStick;
 import com.bluebell.platform.models.core.nonentities.market.AggregatedMarketPrices;
@@ -35,7 +34,7 @@ public class ApexChartService implements ChartService<ApexChartCandleStick> {
     //  METHODS
 
     @Override
-    public List<ApexChartCandleStick> getChartData(final LocalDate startDate, final LocalDate endDate, final IntradayInterval timeInterval) {
+    public List<ApexChartCandleStick> getChartData(final LocalDate startDate, final LocalDate endDate, final MarketPriceTimeInterval timeInterval) {
 
         validateParameterIsNotNull(startDate, CorePlatformConstants.Validation.DateTime.START_DATE_CANNOT_BE_NULL);
         validateParameterIsNotNull(endDate, CorePlatformConstants.Validation.DateTime.END_DATE_CANNOT_BE_NULL);
@@ -45,10 +44,10 @@ public class ApexChartService implements ChartService<ApexChartCandleStick> {
         final Map<LocalDate, AggregatedMarketPrices> collection;
         switch (timeInterval) {
             case ONE_MINUTE -> collection = new HashMap<>(this.firstRateDataParser.parseMarketPricesByDate(MarketPriceTimeInterval.ONE_MINUTE));
-            case FIVE_MINUTES -> collection = new HashMap<>(this.firstRateDataParser.parseMarketPricesByDate(MarketPriceTimeInterval.FIVE_MINUTE));
-            case TEN_MINUTES -> collection = new HashMap<>(this.firstRateDataParser.parseMarketPricesByDate(MarketPriceTimeInterval.TEN_MINUTE));
-            case FIFTEEN_MINUTES -> collection = new HashMap<>(this.firstRateDataParser.parseMarketPricesByDate(MarketPriceTimeInterval.FIFTEEN_MINUTE));
-            case THIRTY_MINUTES -> collection = new HashMap<>(this.firstRateDataParser.parseMarketPricesByDate(MarketPriceTimeInterval.THIRTY_MINUTE));
+            case FIVE_MINUTE -> collection = new HashMap<>(this.firstRateDataParser.parseMarketPricesByDate(MarketPriceTimeInterval.FIVE_MINUTE));
+            case TEN_MINUTE -> collection = new HashMap<>(this.firstRateDataParser.parseMarketPricesByDate(MarketPriceTimeInterval.TEN_MINUTE));
+            case FIFTEEN_MINUTE -> collection = new HashMap<>(this.firstRateDataParser.parseMarketPricesByDate(MarketPriceTimeInterval.FIFTEEN_MINUTE));
+            case THIRTY_MINUTE -> collection = new HashMap<>(this.firstRateDataParser.parseMarketPricesByDate(MarketPriceTimeInterval.THIRTY_MINUTE));
             case ONE_HOUR -> collection = new HashMap<>(this.firstRateDataParser.parseMarketPricesByDate(MarketPriceTimeInterval.ONE_HOUR));
             case ONE_DAY -> collection = new HashMap<>(this.firstRateDataParser.parseMarketPricesByDate(MarketPriceTimeInterval.ONE_DAY));
             default -> collection = new HashMap<>();

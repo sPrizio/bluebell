@@ -30,7 +30,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  * Testing class for {@link ChartApiController}
  *
  * @author Stephen Prizio
- * @version 0.1.3
+ * @version 0.1.4
  */
 @SpringBootTest
 @AutoConfigureMockMvc(addFilters = false)
@@ -44,7 +44,7 @@ class ChartApiControllerTest extends AbstractPlanterTest {
     private ChartService<ApexChartCandleStick> chartService;
 
     @BeforeEach
-    public void setUp() throws Exception {
+    void setUp() {
         Mockito.when(this.chartService.getChartData(any(), any(), any())).thenReturn(List.of(ApexChartCandleStick.builder().x(123L).y(new double[]{1.0, 2.0, 3.0}).build()));
     }
 
@@ -57,7 +57,7 @@ class ChartApiControllerTest extends AbstractPlanterTest {
         MultiValueMap<String, String> map = new LinkedMultiValueMap<>();
         map.put("start", List.of("dasdfasdfaf"));
         map.put("end", List.of("2022-08-25"));
-        map.put("interval", List.of("five-minute"));
+        map.put("interval", List.of("FIVE_MINUTE"));
 
         this.mockMvc.perform(get("/api/v1/chart/apex-data").with(testUserContext()).params(map))
                 .andExpect(status().isOk())
@@ -70,7 +70,7 @@ class ChartApiControllerTest extends AbstractPlanterTest {
         MultiValueMap<String, String> map = new LinkedMultiValueMap<>();
         map.put("start", List.of("2022-08-25"));
         map.put("end", List.of("asdadasdasd"));
-        map.put("interval", List.of("five-minute"));
+        map.put("interval", List.of("FIVE_MINUTE"));
 
         this.mockMvc.perform(get("/api/v1/chart/apex-data").with(testUserContext()).params(map))
                 .andExpect(status().isOk())
@@ -83,7 +83,7 @@ class ChartApiControllerTest extends AbstractPlanterTest {
         MultiValueMap<String, String> map = new LinkedMultiValueMap<>();
         map.put("start", List.of("2022-08-24"));
         map.put("end", List.of("2022-08-25"));
-        map.put("interval", List.of("five-minute"));
+        map.put("interval", List.of("FIVE_MINUTE"));
 
         this.mockMvc.perform(get("/api/v1/chart/apex-data").with(testUserContext()).params(map))
                 .andExpect(status().isOk())
