@@ -9,7 +9,7 @@ import java.util.List;
  * Constants defined for the bluebell platform
  *
  * @author Stephen Prizio
- * @version 0.1.2
+ * @version 0.1.4
  */
 public class CorePlatformConstants {
 
@@ -62,6 +62,21 @@ public class CorePlatformConstants {
      * The default date & time format
      */
     public static final String DATE_TIME_FORMAT = "yyyy-MM-dd'T'HH:mm:ss";
+
+    /**
+     * MT4 date format
+     */
+    public static final String MT4_DATE_FORMAT = "yyyy.MM.dd";
+
+    /**
+     * MT4 date & time format
+     */
+    public static final String MT4_DATE_TIME_FORMAT = "yyyy.MM.dd HH:mm:ss";
+
+    /**
+     * MT4 short date & time format
+     */
+    public static final String MT4_DATE_SHORT_TIME_FORMAT = "yyyy.MM.dd H:mm";
 
     /**
      * The default Eastern Timezone
@@ -258,6 +273,19 @@ public class CorePlatformConstants {
             public static final String END_DATE_INVALID_FORMAT = "The end date %s was not of the expected format %s";
 
             public static final String MUTUALLY_EXCLUSIVE_DATES = "start date was after end date or vice versa";
+        }
+
+        public static class MarketPrice {
+
+            private MarketPrice() {
+                throw new UnsupportedOperationException(String.format(NO_INSTANTIATION, getClass().getName()));
+            }
+
+            public static final String AGGREGATED_PRICES_CANNOT_BE_NULL = "aggregated prices cannot be null";
+
+            public static final String DATA_SOURCE_CANNOT_BE_NULL = "data source cannot be null";
+
+            public static final String MARKET_PRICE_TIME_INTERVAL_CANNOT_BE_NULL = "market price time interval cannot be null";
         }
     }
 

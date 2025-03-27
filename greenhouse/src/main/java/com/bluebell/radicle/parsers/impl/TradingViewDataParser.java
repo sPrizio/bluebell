@@ -1,14 +1,17 @@
 package com.bluebell.radicle.parsers.impl;
 
-import com.bluebell.platform.enums.time.PlatformTimeInterval;
+import com.bluebell.platform.enums.time.MarketPriceTimeInterval;
 import com.bluebell.platform.models.core.nonentities.market.AggregatedMarketPrices;
-import com.bluebell.platform.models.core.nonentities.market.MarketPrice;
+import com.bluebell.platform.models.core.entities.market.MarketPrice;
+import com.bluebell.platform.util.DirectoryUtil;
+import com.bluebell.radicle.enums.DataSource;
 import com.bluebell.radicle.exceptions.parsing.TradingViewDataParsingException;
 import com.bluebell.radicle.parsers.MarketPriceParser;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.LineIterator;
+import org.apache.commons.lang3.StringUtils;
 
 import java.io.File;
 import java.time.LocalDate;
@@ -23,29 +26,37 @@ import java.util.TreeSet;
  * Parses data from TradingView data files
  *
  * @author Stephen Prizio
- * @version 0.1.1
+ * @version 0.1.4
  */
 @Slf4j
 public class TradingViewDataParser extends AbstractDataParser implements MarketPriceParser {
 
     private final boolean isTest;
     private final String symbol;
+    private final String dataRoot;
 
     public TradingViewDataParser(final boolean isTest, final String symbol) {
         this.isTest = isTest;
         this.symbol = symbol;
+        this.dataRoot = StringUtils.EMPTY;
+    }
+
+    public TradingViewDataParser(final boolean isTest, final String symbol, final String dataRoot) {
+        this.isTest = isTest;
+        this.symbol = symbol;
+        this.dataRoot = dataRoot;
     }
 
 
     //  METHODS
 
     @Override
-    public AggregatedMarketPrices parseMarketPrices(final String file, final PlatformTimeInterval interval) {
+    public AggregatedMarketPrices parseMarketPrices(final String file, final MarketPriceTimeInterval interval) {
 
         final String sampleFile = getDataRoot(interval) + "/" + file;
         if (!validateFile(sampleFile)) {
             LOGGER.error("File {} was not found!\n", file);
-            return AggregatedMarketPrices.builder().marketPrices(new TreeSet<>()).interval(interval).build();
+            return AggregatedMarketPrices.builder().marketPrices(new TreeSet<>()).interval(interval).dataSource(DataSource.TRADING_VIEW).build();
         }
 
         final TreeSet<MarketPrice> marketPrices = new TreeSet<>();
@@ -73,11 +84,11 @@ public class TradingViewDataParser extends AbstractDataParser implements MarketP
             throw new TradingViewDataParsingException(String.format("An error occurred while parsing the file. Error: %s", e.getMessage()), e);
         }
 
-        return AggregatedMarketPrices.builder().marketPrices(marketPrices).interval(interval).build();
+        return AggregatedMarketPrices.builder().marketPrices(marketPrices).interval(interval).dataSource(DataSource.TRADING_VIEW).build();
     }
 
     @Override
-    public Map<LocalDate, AggregatedMarketPrices> parseMarketPricesByDate(final PlatformTimeInterval interval) {
+    public Map<LocalDate, AggregatedMarketPrices> parseMarketPricesByDate(final MarketPriceTimeInterval interval) {
 
         final File directory = new File(getDataRoot(interval));
         final File[] files = directory.listFiles();
@@ -91,12 +102,12 @@ public class TradingViewDataParser extends AbstractDataParser implements MarketP
             final AggregatedMarketPrices marketPrices;
             try {
                 switch (interval) {
-                    case THIRTY_MINUTE -> marketPrices = parseMarketPrices(file.getName(), PlatformTimeInterval.THIRTY_MINUTE);
-                    default -> marketPrices = AggregatedMarketPrices.builder().marketPrices(new TreeSet<>()).interval(interval).build();
+                    case THIRTY_MINUTE -> marketPrices = parseMarketPrices(file.getName(), MarketPriceTimeInterval.THIRTY_MINUTE);
+                    default -> marketPrices = AggregatedMarketPrices.builder().marketPrices(new TreeSet<>()).interval(interval).dataSource(DataSource.TRADING_VIEW).build();
                 }
 
                 if (CollectionUtils.isNotEmpty(marketPrices.marketPrices())) {
-                    masterCollection.putAll(generateMasterCollection(marketPrices, interval));
+                    masterCollection.putAll(generateMasterCollection(marketPrices, interval, DataSource.TRADING_VIEW));
                 }
             } catch (Exception e) {
                 LOGGER.error("An error occurred while parsing the file {}. Error: {}", file.getName(), e.getMessage(), e);
@@ -114,10 +125,16 @@ public class TradingViewDataParser extends AbstractDataParser implements MarketP
      *
      * @return sample data path
      */
-    private String getDataRoot(final PlatformTimeInterval interval) {
+    private String getDataRoot(final MarketPriceTimeInterval interval) {
 
         try {
-            final String root = Objects.requireNonNull(getClass().getClassLoader().getResource(String.format("tradingview.%s/%s", this.symbol, interval.toString()))).getFile();
+            final String root;
+            if (StringUtils.isNotEmpty(this.dataRoot)) {
+                root = DirectoryUtil.getBaseProjectDirectory() + File.separator + this.dataRoot + File.separator + String.format("tradingview%s%s%s%s", File.separator, this.symbol, File.separator, interval.toString());
+            } else {
+                root = Objects.requireNonNull(getClass().getClassLoader().getResource(String.format("tradingview%s%s%s%s", File.separator, this.symbol, File.separator, interval.toString()))).getFile();
+            }
+
             if (this.isTest && !root.contains("test-classes")) {
                 return root.replace("classes", "test-classes");
             }

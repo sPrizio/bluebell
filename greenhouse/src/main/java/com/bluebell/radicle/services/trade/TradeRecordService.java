@@ -2,7 +2,6 @@ package com.bluebell.radicle.services.trade;
 
 import com.bluebell.platform.constants.CorePlatformConstants;
 import com.bluebell.platform.enums.system.TradeRecordTimeInterval;
-import com.bluebell.platform.enums.time.PlatformTimeInterval;
 import com.bluebell.platform.models.core.entities.account.Account;
 import com.bluebell.platform.models.core.entities.portfolio.Portfolio;
 import com.bluebell.platform.models.core.entities.security.User;
@@ -37,7 +36,7 @@ import static com.bluebell.radicle.validation.GenericValidator.validateParameter
  * Service-layer for calculating {@link TradeRecord}s
  *
  * @author Stephen Prizio
- * @version 0.1.3
+ * @version 0.1.4
  */
 @Service
 public class TradeRecordService {
@@ -97,7 +96,7 @@ public class TradeRecordService {
      * Obtains a {@link List} of the most recent {@link TradeRecord}s for the given {@link Account}
      *
      * @param account               {@link Account}
-     * @param tradeRecordTimeInterval {@link PlatformTimeInterval}
+     * @param tradeRecordTimeInterval {@link TradeRecordTimeInterval}
      * @param count                 limit
      * @return {@link List} of {@link TradeRecord}
      */

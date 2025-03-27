@@ -4,6 +4,7 @@
 Dependencies & Integrations
 - **NextJs**: Core front-end functionality built on React.js
 - **Java Spring** : Core back-end functionality
+- **MariaDB** : ORM Database
 - **Forex Factory**: External Market News provider for trading events 
 - **Docker**: Containerization Library
 

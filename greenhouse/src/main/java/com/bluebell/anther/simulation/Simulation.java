@@ -4,7 +4,7 @@ import com.bluebell.anther.models.parameter.strategy.impl.BasicStrategyParameter
 import com.bluebell.anther.models.parameter.strategy.impl.BloomStrategyParameters;
 import com.bluebell.anther.models.simulation.SimulationResult;
 import com.bluebell.anther.strategies.Strategy;
-import com.bluebell.platform.enums.time.PlatformTimeInterval;
+import com.bluebell.platform.enums.time.MarketPriceTimeInterval;
 import com.bluebell.platform.models.core.nonentities.market.AggregatedMarketPrices;
 import com.bluebell.radicle.enums.DataSource;
 import com.bluebell.radicle.parsers.impl.FirstRateDataParser;
@@ -19,7 +19,7 @@ import java.util.Map;
  * Class representation of a simulation. A simulation refers to executing a {@link Strategy} over a given period of time
  *
  * @author Stephen Prizio
- * @version 0.1.1
+ * @version 0.1.4
  */
 public interface Simulation<P extends BasicStrategyParameters> {
 
@@ -68,7 +68,7 @@ public interface Simulation<P extends BasicStrategyParameters> {
      *
      * @return {@link Map} of {@link AggregatedMarketPrices}
      */
-    default Map<LocalDate, AggregatedMarketPrices> getMarketData(final PlatformTimeInterval timeInterval, final DataSource dataSource, final String symbol) {
+    default Map<LocalDate, AggregatedMarketPrices> getMarketData(final MarketPriceTimeInterval timeInterval, final DataSource dataSource, final String symbol) {
 
         if (dataSource == DataSource.FIRST_RATE_DATA) {
             return new FirstRateDataParser().parseMarketPricesByDate(timeInterval);

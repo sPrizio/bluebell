@@ -1,5 +1,6 @@
 package com.bluebell.radicle.importing.services.trade;
 
+import com.bluebell.platform.constants.CorePlatformConstants;
 import com.bluebell.platform.models.core.entities.account.Account;
 import com.bluebell.radicle.importing.ImportService;
 import com.bluebell.radicle.importing.exceptions.TradeImportFailureException;
@@ -25,7 +26,7 @@ import java.util.Objects;
  * Service-layer for importing trades into the system from the MetaTrader4 platform
  *
  * @author Stephen Prizio
- * @version 0.1.1
+ * @version 0.1.4
  */
 @Service("metaTrader4TradeImportService")
 public class MetaTrader4TradeImportService extends AbstractImportService implements ImportService {
@@ -134,8 +135,8 @@ public class MetaTrader4TradeImportService extends AbstractImportService impleme
         return MetaTrader4TradeWrapper
                 .builder()
                 .ticketNumber(data.get(0))
-                .openTime(LocalDateTime.parse(data.get(1), DateTimeFormatter.ofPattern("yyyy.MM.dd HH:mm:ss")))
-                .closeTime(LocalDateTime.parse(data.get(8), DateTimeFormatter.ofPattern("yyyy.MM.dd HH:mm:ss")))
+                .openTime(LocalDateTime.parse(data.get(1), DateTimeFormatter.ofPattern(CorePlatformConstants.MT4_DATE_TIME_FORMAT)))
+                .closeTime(LocalDateTime.parse(data.get(8), DateTimeFormatter.ofPattern(CorePlatformConstants.MT4_DATE_TIME_FORMAT)))
                 .type(data.get(2))
                 .size(Double.parseDouble(data.get(3)))
                 .item(data.get(4))
