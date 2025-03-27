@@ -45,7 +45,7 @@ public class MarketPriceDTO implements GenericDTO {
     private double close;
 
     @Schema(description = "Volume for period")
-    private double volume;
+    private long volume;
 
     @Schema(description = "Source of the market price")
     private EnumDisplay dataSource;

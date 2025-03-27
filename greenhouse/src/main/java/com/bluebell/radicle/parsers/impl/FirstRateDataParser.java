@@ -18,7 +18,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 /**
- * Parses data from FirstData from data files
+ * Parses data from FirstData data files
  *
  * @author Stephen Prizio
  * @version 0.1.4
@@ -100,7 +100,7 @@ public class FirstRateDataParser extends AbstractDataParser implements MarketPri
             default -> marketPrices = AggregatedMarketPrices.builder().marketPrices(new TreeSet<>()).interval(interval).dataSource(DataSource.FIRST_RATE_DATA).build();
         }
 
-        return generateMasterCollection(marketPrices, interval);
+        return generateMasterCollection(marketPrices, interval, DataSource.FIRST_RATE_DATA);
     }
 
 

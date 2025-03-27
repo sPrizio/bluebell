@@ -29,7 +29,7 @@ import java.util.regex.Pattern;
  * Service-layer for importing trades into the system from the MetaTrader4 platform
  *
  * @author Stephen Prizio
- * @version 0.1.1
+ * @version 0.1.4
  */
 @Service("metaTrader4StrategyImportService")
 public class MetaTrader4StrategyImportService extends AbstractImportService implements ImportService {
@@ -215,7 +215,7 @@ public class MetaTrader4StrategyImportService extends AbstractImportService impl
             return MetaTrader4TradeWrapper
                     .builder()
                     .ticketNumber(data.get(3))
-                    .openTime(LocalDateTime.parse(data.get(1), DateTimeFormatter.ofPattern("yyyy.MM.dd HH:mm")).minusHours(7))
+                    .openTime(LocalDateTime.parse(data.get(1), DateTimeFormatter.ofPattern(CorePlatformConstants.MT4_DATE_SHORT_TIME_FORMAT)).minusHours(7))
                     .closeTime(null)
                     .type(type)
                     .size(Double.parseDouble(data.get(4)))
@@ -231,7 +231,7 @@ public class MetaTrader4StrategyImportService extends AbstractImportService impl
                     .builder()
                     .ticketNumber(data.get(3))
                     .openTime(null)
-                    .closeTime(LocalDateTime.parse(data.get(1), DateTimeFormatter.ofPattern("yyyy.MM.dd HH:mm")).minusHours(7))
+                    .closeTime(LocalDateTime.parse(data.get(1), DateTimeFormatter.ofPattern(CorePlatformConstants.MT4_DATE_SHORT_TIME_FORMAT)).minusHours(7))
                     .type(type)
                     .size(Double.parseDouble(data.get(4)))
                     .item(this.product)

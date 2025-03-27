@@ -20,6 +20,7 @@ public enum MarketPriceTimeInterval implements GenericEnum<MarketPriceTimeInterv
     FIFTEEN_MINUTE("FIFTEEN_MINUTE", "15-minute", ChronoUnit.MINUTES, 15),
     THIRTY_MINUTE("THIRTY_MINUTE", "30-minute", ChronoUnit.MINUTES, 30),
     ONE_HOUR("ONE_HOUR", "1-hour", ChronoUnit.HOURS, 1),
+    FOUR_HOUR("FOUR_HOUR", "4-hour", ChronoUnit.HOURS, 4),
     ONE_DAY("ONE_DAY", "1-day", ChronoUnit.DAYS, 1),
     ONE_WEEK("ONE_WEEK", "1-week", ChronoUnit.WEEKS, 1),
     ONE_MONTH("ONE_MONTH", "1-month", ChronoUnit.MONTHS, 1),
