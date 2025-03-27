@@ -118,7 +118,7 @@ public class TradingViewDataParser extends AbstractDataParser implements MarketP
     private String getDataRoot(final MarketPriceTimeInterval interval) {
 
         try {
-            final String root = Objects.requireNonNull(getClass().getClassLoader().getResource(String.format("tradingview.%s/%s", this.symbol, interval.toString()))).getFile();
+            final String root = Objects.requireNonNull(getClass().getClassLoader().getResource(String.format("tradingview/%s/%s", this.symbol, interval.toString()))).getFile();
             if (this.isTest && !root.contains("test-classes")) {
                 return root.replace("classes", "test-classes");
             }

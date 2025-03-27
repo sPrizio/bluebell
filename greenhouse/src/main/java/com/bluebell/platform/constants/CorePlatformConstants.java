@@ -76,7 +76,7 @@ public class CorePlatformConstants {
     /**
      * MT4 short date & time format
      */
-    public static final String MT4_DATE_SHORT_TIME_FORMAT = "yyyy.MM.dd HH:mm";
+    public static final String MT4_DATE_SHORT_TIME_FORMAT = "yyyy.MM.dd H:mm";
 
     /**
      * The default Eastern Timezone

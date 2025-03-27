@@ -46,8 +46,6 @@ public class MetaTrader4DataParser extends AbstractDataParser implements MarketP
     }
 
 
-    // TODO: WRITE TESTS
-
     //  METHODS
 
     @Override
@@ -67,7 +65,7 @@ public class MetaTrader4DataParser extends AbstractDataParser implements MarketP
                 marketPrices.add(
                         MarketPrice
                                 .builder()
-                                .date(LocalDateTime.parse(lineComponents[0] + " " + lineComponents[1], DateTimeFormatter.ofPattern(CorePlatformConstants.MT4_DATE_TIME_FORMAT)))
+                                .date(LocalDateTime.parse(lineComponents[0] + " " + lineComponents[1], DateTimeFormatter.ofPattern(CorePlatformConstants.MT4_DATE_SHORT_TIME_FORMAT)))
                                 .interval(interval)
                                 .open(parseDoubleFromString(lineComponents[2]))
                                 .high(parseDoubleFromString(lineComponents[3]))
@@ -132,7 +130,7 @@ public class MetaTrader4DataParser extends AbstractDataParser implements MarketP
      */
     private String getDataRoot(final MarketPriceTimeInterval interval) {
         try {
-            final String root = Objects.requireNonNull(getClass().getClassLoader().getResource(String.format("mt4.%s/%s", this.symbol, interval.toString()))).getFile();
+            final String root = Objects.requireNonNull(getClass().getClassLoader().getResource(String.format("mt4/%s/%s", this.symbol, interval.toString()))).getFile();
             if (this.isTest && !root.contains("test-classes")) {
                 return root.replace("classes", "test-classes");
             }

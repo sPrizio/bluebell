@@ -1,4 +1,4 @@
-package com.bluebell.radicle.impl;
+package com.bluebell.radicle.parsers.impl;
 
 import com.bluebell.platform.enums.time.MarketPriceTimeInterval;
 import com.bluebell.platform.models.core.nonentities.market.AggregatedMarketPrices;
