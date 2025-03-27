@@ -31,7 +31,7 @@ jobs:
           cache-dependency-path: './flower/sepal/package-lock.json'
 
       - name: "[greenhouse] - Build & Test"
-        run: mvn clean package
+        run: mvn clean package -DskipTests=true
         working-directory: './greenhouse'
 
       - name: "[sepal] - Install Dependencies"
@@ -49,6 +49,23 @@ jobs:
       - name: "[petal] - Build"
         run: npm run build --if-present
         working-directory: './flower/petal'
+
+  test:
+    runs-on: ubuntu-22.04
+    steps:
+      - name: "[bluebell] - Checkout Repo"
+        uses: actions/checkout@v4
+
+      - name: "[greenhouse] - Set up JDK 17"
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+          cache: maven
+
+      - name: "[greenhouse] - Test"
+        run: mvn test
+        working-directory: './greenhouse'
 
   deploy:
     runs-on: ubuntu-22.04
