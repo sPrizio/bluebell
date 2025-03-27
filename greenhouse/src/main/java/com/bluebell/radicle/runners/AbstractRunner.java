@@ -36,10 +36,10 @@ public abstract class AbstractRunner {
         if (this.startTime != null) {
             if (ChronoUnit.SECONDS.between(this.startTime, endTime) < 1) {
                 LOGGER.info("{} generated all test data in {} milliseconds", this.getClass().getSimpleName(), ChronoUnit.MILLIS.between(this.startTime, endTime));
-            } else if (ChronoUnit.MINUTES.between(this.startTime, endTime) < 1) {
+            } else if (ChronoUnit.MINUTES.between(this.startTime, endTime) < 2) {
                 LOGGER.info("{} generated all test data in {} seconds", this.getClass().getSimpleName(), ChronoUnit.SECONDS.between(this.startTime, endTime));
             } else {
-                LOGGER.info("{} generated all test data in {} minutes", this.getClass().getSimpleName(), ChronoUnit.MINUTES.between(this.startTime, endTime));
+                LOGGER.info("{} generated all test data in {} minutes and {} seconds", this.getClass().getSimpleName(), ChronoUnit.MINUTES.between(this.startTime, endTime), ChronoUnit.SECONDS.between(this.startTime, endTime));
             }
             this.startTime = null;
         } else {

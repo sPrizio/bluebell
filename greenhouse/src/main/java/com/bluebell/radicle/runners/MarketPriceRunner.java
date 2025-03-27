@@ -44,7 +44,7 @@ public class MarketPriceRunner extends AbstractRunner implements CommandLineRunn
         final MetaTrader4DataParser metaTrader4DataParser = new MetaTrader4DataParser(false, "NDAQ100", this.dataRoot);
         final TradingViewDataParser tradingViewDataParser = new TradingViewDataParser(false, "US100", this.dataRoot);
 
-        this.marketPriceService.saveAll(firstRateDataParser.parseMarketPrices("NDX_full_5min.txt", MarketPriceTimeInterval.FIVE_MINUTE));
+        this.marketPriceService.saveAll(firstRateDataParser.parseMarketPrices("NDX_5min_sample.csv", MarketPriceTimeInterval.FIVE_MINUTE));
         this.marketPriceService.saveAll(metaTrader4DataParser.parseMarketPrices("NDAQ10030.csv", MarketPriceTimeInterval.THIRTY_MINUTE));
         this.marketPriceService.saveAll(tradingViewDataParser.parseMarketPrices("CFI_US100-30_8a062.csv", MarketPriceTimeInterval.THIRTY_MINUTE));
 
