@@ -71,7 +71,7 @@ jobs:
   deploy:
     runs-on: ubuntu-22.04
     if: github.ref == 'refs/heads/main'
-    needs: build
+    needs: test
     steps:
       - name: "[bluebell] - Checkout Repo"
         uses: actions/checkout@v4
