@@ -1,8 +1,8 @@
-package com.bluebell.radicle.impl;
+package com.bluebell.radicle.parsers.impl;
 
-import com.bluebell.platform.enums.time.PlatformTimeInterval;
+import com.bluebell.platform.enums.time.MarketPriceTimeInterval;
 import com.bluebell.platform.models.core.nonentities.market.AggregatedMarketPrices;
-import com.bluebell.platform.models.core.nonentities.market.MarketPrice;
+import com.bluebell.platform.models.core.entities.market.MarketPrice;
 import com.bluebell.radicle.exceptions.parsing.TradingViewDataParsingException;
 import com.bluebell.radicle.parsers.impl.TradingViewDataParser;
 import org.apache.commons.lang3.StringUtils;
@@ -17,7 +17,7 @@ import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
  * Testing class for {@link TradingViewDataParser}
  *
  * @author Stephen Prizio
- * @version 0.1.3
+ * @version 0.1.4
  */
 class TradingViewDataParserTest {
 
@@ -28,20 +28,20 @@ class TradingViewDataParserTest {
 
     @Test
     void test_parseMarketPrices_badPath() {
-        assertThat(this.tradingViewDataParser.parseMarketPrices(StringUtils.EMPTY, PlatformTimeInterval.THIRTY_MINUTE).marketPrices())
+        assertThat(this.tradingViewDataParser.parseMarketPrices(StringUtils.EMPTY, MarketPriceTimeInterval.THIRTY_MINUTE).marketPrices())
                 .isEmpty();
     }
 
     @Test
     void test_parseMarketPrices_failed_badFile() {
         assertThatExceptionOfType(TradingViewDataParsingException.class)
-                .isThrownBy(() -> this.tradingViewDataParser.parseMarketPrices("CFI_US100-30_8a062_with_errors.csv", PlatformTimeInterval.THIRTY_MINUTE))
+                .isThrownBy(() -> this.tradingViewDataParser.parseMarketPrices("CFI_US100-30_8a062_with_errors.csv", MarketPriceTimeInterval.THIRTY_MINUTE))
                 .withMessageContaining("An error occurred while parsing the file. Error:");
     }
 
     @Test
     void test_parseMarketPrices_success_30min() {
-        assertThat(this.tradingViewDataParser.parseMarketPrices("CFI_US100-30_8a062.csv", PlatformTimeInterval.THIRTY_MINUTE).marketPrices())
+        assertThat(this.tradingViewDataParser.parseMarketPrices("CFI_US100-30_8a062.csv", MarketPriceTimeInterval.THIRTY_MINUTE).marketPrices())
                 .isNotEmpty()
                 .element(2)
                 .extracting("close")
@@ -54,7 +54,7 @@ class TradingViewDataParserTest {
     @Test
     void test_parseMarketPricesByDate_failed_emptyDirectory() {
         assertThatExceptionOfType(TradingViewDataParsingException.class)
-                .isThrownBy(() -> this.tradingViewDataParser.parseMarketPricesByDate(PlatformTimeInterval.FIVE_MINUTE))
+                .isThrownBy(() -> this.tradingViewDataParser.parseMarketPricesByDate(MarketPriceTimeInterval.FIVE_MINUTE))
                 .withMessageContaining("An error occurred while retrieving the data root. Likely no data exists for the requested interval of time.");
     }
 
@@ -62,7 +62,7 @@ class TradingViewDataParserTest {
     void test_parseMarketPricesByDate_success_30min() {
 
         final AggregatedMarketPrices prices =
-                this.tradingViewDataParser.parseMarketPricesByDate(PlatformTimeInterval.THIRTY_MINUTE).get(LocalDate.of(2024, 7, 22));
+                this.tradingViewDataParser.parseMarketPricesByDate(MarketPriceTimeInterval.THIRTY_MINUTE).get(LocalDate.of(2024, 7, 22));
 
         final MarketPrice marketPrice = prices.marketPrices().first();
         assertThat(marketPrice)
@@ -75,7 +75,7 @@ class TradingViewDataParserTest {
 
 
         assertThatExceptionOfType(TradingViewDataParsingException.class)
-                .isThrownBy(() -> this.tradingViewDataParser.parseMarketPricesByDate(PlatformTimeInterval.ONE_YEAR))
+                .isThrownBy(() -> this.tradingViewDataParser.parseMarketPricesByDate(MarketPriceTimeInterval.ONE_YEAR))
                 .withMessageContaining("An error occurred while retrieving the data root. Likely no data exists for the requested interval of time.");
     }
 }

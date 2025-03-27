@@ -1,10 +1,10 @@
 package com.bluebell.radicle.exceptions.parsing;
 
 /**
- * Exception thrown during parsing TradingView data
+ * Exception thrown during parsing TradingView market data
  *
  * @author Stephen Prizio
- * @version 0.0.9
+ * @version 0.1.4
  */
 public class TradingViewDataParsingException extends RuntimeException {
 

@@ -3,7 +3,7 @@ package com.bluebell.planter.controllers.chart;
 import com.bluebell.planter.controllers.AbstractApiController;
 import com.bluebell.platform.constants.CorePlatformConstants;
 import com.bluebell.platform.enums.GenericEnum;
-import com.bluebell.platform.enums.chart.IntradayInterval;
+import com.bluebell.platform.enums.time.MarketPriceTimeInterval;
 import com.bluebell.platform.models.api.json.StandardJsonResponse;
 import com.bluebell.platform.models.core.nonentities.apexcharts.ApexChartCandleStick;
 import com.bluebell.radicle.security.aspects.ValidateApiToken;
@@ -29,7 +29,7 @@ import static com.bluebell.radicle.validation.GenericValidator.validateLocalDate
  * API controller for providing charting capabilities based on historical data
  *
  * @author Stephen Prizio
- * @version 0.1.3
+ * @version 0.1.4
  */
 @RestController
 @RequestMapping("${bluebell.base.api.controller.endpoint}/chart")
@@ -100,25 +100,25 @@ public class ChartApiController extends AbstractApiController {
         validateLocalDateFormat(start, CorePlatformConstants.DATE_FORMAT, String.format(CorePlatformConstants.Validation.DateTime.START_DATE_INVALID_FORMAT, start, CorePlatformConstants.DATE_FORMAT));
         validateLocalDateFormat(end, CorePlatformConstants.DATE_FORMAT, String.format(CorePlatformConstants.Validation.DateTime.END_DATE_INVALID_FORMAT, end, CorePlatformConstants.DATE_FORMAT));
 
-        final IntradayInterval intradayInterval = GenericEnum.getByCode(IntradayInterval.class, interval);
-        if (intradayInterval == IntradayInterval.ONE_DAY) {
+        final MarketPriceTimeInterval marketPriceTimeInterval = GenericEnum.getByCode(MarketPriceTimeInterval.class, interval);
+        if (marketPriceTimeInterval == MarketPriceTimeInterval.ONE_DAY) {
             return StandardJsonResponse
                     .<List<ApexChartCandleStick>>builder()
                     .success(true)
-                    .data(this.chartService.getChartData(LocalDate.parse(start, DateTimeFormatter.ISO_DATE).minusMonths(1), LocalDate.parse(end, DateTimeFormatter.ISO_DATE), intradayInterval))
+                    .data(this.chartService.getChartData(LocalDate.parse(start, DateTimeFormatter.ISO_DATE).minusMonths(1), LocalDate.parse(end, DateTimeFormatter.ISO_DATE), marketPriceTimeInterval))
                     .build();
-        } else if (intradayInterval == IntradayInterval.ONE_HOUR) {
+        } else if (marketPriceTimeInterval == MarketPriceTimeInterval.ONE_HOUR) {
             return StandardJsonResponse
                     .<List<ApexChartCandleStick>>builder()
                     .success(true)
-                    .data(this.chartService.getChartData(LocalDate.parse(start, DateTimeFormatter.ISO_DATE).minusDays(5), LocalDate.parse(end, DateTimeFormatter.ISO_DATE), intradayInterval))
+                    .data(this.chartService.getChartData(LocalDate.parse(start, DateTimeFormatter.ISO_DATE).minusDays(5), LocalDate.parse(end, DateTimeFormatter.ISO_DATE), marketPriceTimeInterval))
                     .build();
         }
 
         return StandardJsonResponse
                 .<List<ApexChartCandleStick>>builder()
                 .success(true)
-                .data(this.chartService.getChartData(LocalDate.parse(start, DateTimeFormatter.ISO_DATE), LocalDate.parse(end, DateTimeFormatter.ISO_DATE), intradayInterval))
+                .data(this.chartService.getChartData(LocalDate.parse(start, DateTimeFormatter.ISO_DATE), LocalDate.parse(end, DateTimeFormatter.ISO_DATE), marketPriceTimeInterval))
                 .build();
     }
 }

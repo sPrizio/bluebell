@@ -13,12 +13,13 @@ import java.util.List;
  * Class representation of market news on a specific day
  *
  * @author Stephen Prizio
- * @version 0.1.1
+ * @version 0.1.4
  */
 @Getter
 @Entity
 @Builder
 @Table(name = "market_news")
+@ToString
 @EqualsAndHashCode
 @NoArgsConstructor
 @AllArgsConstructor
@@ -30,12 +31,12 @@ public class MarketNews implements GenericEntity, Comparable<MarketNews> {
 
     @Setter
     @Column(unique = true)
-    private LocalDate date;
+    private @EqualsAndHashCode.Exclude LocalDate date;
 
     @Setter
     @OneToMany(mappedBy = "news", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @OrderBy("time ASC")
-    private @Builder.Default List<MarketNewsSlot> slots = new ArrayList<>();
+    private @Builder.Default @EqualsAndHashCode.Exclude List<MarketNewsSlot> slots = new ArrayList<>();
 
 
     //  METHODS

@@ -1,0 +1,56 @@
+name: Wiki suggestion
+description: All issues related to the wiki documentation, mainly corrections and ideas
+labels: ["documentation", "bluebell", "assistance"]
+body:
+  - type: input
+    id: wiki-page
+    attributes:
+      label: Wiki page
+      description: |
+        If this is a suggestion regarding an existing wiki page, please link it for reference.
+        If the wiki page doesn't exist, suggest its title.
+      placeholder: https://github.com/JustArchiNET/ArchiSteamFarm/wiki/???
+    validations:
+      required: true
+  - type: textarea
+    id: issue
+    attributes:
+      label: The issue
+      description: |
+        Please specify your issue in regards to our wiki documentation.
+        If you're reporting a mistake/correction, state what is wrong.
+        If you're suggesting an idea, explain the details.
+      placeholder: |
+        As of today the wiki doesn't explain how to trade perfectly and make millions of dollars.
+    validations:
+      required: true
+  - type: textarea
+    id: wrong-text
+    attributes:
+      label: Wrong text
+      description: |
+        The existing text on the wiki which you classify as wrong.
+        If you're suggesting a new page, paragraph or other addition to the wiki, then this section is not mandatory.
+      placeholder: |
+        Lack of perfect trading strategies!
+      render: markdown
+  - type: textarea
+    id: suggested-improvement
+    attributes:
+      label: Suggested improvement
+      description: |
+        The new or corrected text that would satisfy your issue stated above.
+        You may use **[markdown](https://guides.github.com/features/mastering-markdown)** for formatting.
+      render: markdown
+    validations:
+      required: true
+  - type: textarea
+    id: additional-info
+    attributes:
+      label: Additional info
+      description: Everything else you consider worthy that we didn't ask for.
+  - type: markdown
+    attributes:
+      value: |
+        ---
+        #### Thank you for taking the time to fill out this wiki suggestion.

@@ -3,7 +3,7 @@ package com.bluebell.radicle.services.analysis;
 import com.bluebell.platform.constants.CorePlatformConstants;
 import com.bluebell.platform.enums.analysis.AnalysisFilter;
 import com.bluebell.platform.enums.analysis.TradeDurationFilter;
-import com.bluebell.platform.enums.time.PlatformTimeInterval;
+import com.bluebell.platform.enums.time.MarketPriceTimeInterval;
 import com.bluebell.platform.models.core.entities.account.Account;
 import com.bluebell.platform.models.core.entities.trade.Trade;
 import com.bluebell.platform.models.core.nonentities.records.analysis.AnalysisResult;
@@ -25,7 +25,7 @@ import static com.bluebell.radicle.validation.GenericValidator.validateParameter
  * Service-layer for computing analysis of {@link Account}s
  *
  * @author Stephen Prizio
- * @version 0.1.1
+ * @version 0.1.4
  */
 @Service
 public class AnalysisService {
@@ -40,12 +40,12 @@ public class AnalysisService {
      * Computes the time bucket analysis
      *
      * @param account        {@link Account}
-     * @param interval       {@link PlatformTimeInterval}
+     * @param interval       {@link MarketPriceTimeInterval}
      * @param analysisFilter {@link AnalysisFilter}
      * @param isOpened       opened or closed times
      * @return {@link List} of {@link AnalysisResult}
      */
-    public List<AnalysisResult> computeTimeBucketAnalysis(final Account account, final PlatformTimeInterval interval, final AnalysisFilter analysisFilter, final boolean isOpened) {
+    public List<AnalysisResult> computeTimeBucketAnalysis(final Account account, final MarketPriceTimeInterval interval, final AnalysisFilter analysisFilter, final boolean isOpened) {
 
         validateParameterIsNotNull(account, CorePlatformConstants.Validation.Account.ACCOUNT_CANNOT_BE_NULL);
 
@@ -87,11 +87,11 @@ public class AnalysisService {
      *
      * @param account        {@link Account}
      * @param day            {@link DayOfWeek}
-     * @param interval       {@link PlatformTimeInterval}
+     * @param interval       {@link MarketPriceTimeInterval}
      * @param analysisFilter {@link AnalysisFilter}
      * @return {@link List} of {@link AnalysisResult}
      */
-    public List<AnalysisResult> computeWeekdayTimeBucketAnalysis(final Account account, final DayOfWeek day, final PlatformTimeInterval interval, final AnalysisFilter analysisFilter) {
+    public List<AnalysisResult> computeWeekdayTimeBucketAnalysis(final Account account, final DayOfWeek day, final MarketPriceTimeInterval interval, final AnalysisFilter analysisFilter) {
 
         validateParameterIsNotNull(account, CorePlatformConstants.Validation.Account.ACCOUNT_CANNOT_BE_NULL);
 
@@ -199,12 +199,12 @@ public class AnalysisService {
      * Generates a map of time-bucket trade buckets
      *
      * @param trades         {@link List} of {@link Trade}s
-     * @param interval       {@link PlatformTimeInterval}
+     * @param interval       {@link MarketPriceTimeInterval}
      * @param analysisFilter {@link AnalysisFilter}
      * @param isOpened       closed or opened trade times
      * @return {@link Map} of buckets
      */
-    private Map<String, Triplet<Integer, Double, List<Trade>>> generateTimeBucketMap(final List<Trade> trades, final PlatformTimeInterval interval, final AnalysisFilter analysisFilter, boolean isOpened) {
+    private Map<String, Triplet<Integer, Double, List<Trade>>> generateTimeBucketMap(final List<Trade> trades, final MarketPriceTimeInterval interval, final AnalysisFilter analysisFilter, boolean isOpened) {
 
         final Map<String, Triplet<Integer, Double, List<Trade>>> map = new HashMap<>();
         LocalTime compare = LocalTime.of(9, 30);
@@ -229,10 +229,10 @@ public class AnalysisService {
      * Computes a time bucket key
      *
      * @param dateTime {@link LocalTime}
-     * @param interval {@link PlatformTimeInterval}
+     * @param interval {@link MarketPriceTimeInterval}
      * @return key string
      */
-    private String getTimeBucketKey(final LocalTime dateTime, final PlatformTimeInterval interval) {
+    private String getTimeBucketKey(final LocalTime dateTime, final MarketPriceTimeInterval interval) {
 
 
         return switch (interval) {

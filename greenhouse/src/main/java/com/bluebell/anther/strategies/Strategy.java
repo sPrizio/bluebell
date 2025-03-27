@@ -5,7 +5,7 @@ import com.bluebell.anther.models.strategy.StrategyResult;
 import com.bluebell.anther.models.trade.AntherTrade;
 import com.bluebell.platform.enums.trade.TradeType;
 import com.bluebell.platform.models.core.nonentities.market.AggregatedMarketPrices;
-import com.bluebell.platform.models.core.nonentities.market.MarketPrice;
+import com.bluebell.platform.models.core.entities.market.MarketPrice;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -17,7 +17,7 @@ import java.util.Map;
  * Defines a trading strategy
  *
  * @author Stephen Prizio
- * @version 0.1.1
+ * @version 0.1.4
  */
 public interface Strategy<P extends BasicStrategyParameters> {
 
@@ -108,23 +108,23 @@ public interface Strategy<P extends BasicStrategyParameters> {
     default void checkTrades(final Map<String, AntherTrade> openTrades, final Map<String, AntherTrade> closedTrades, final MarketPrice marketPrice) {
         openTrades.forEach((key, value) -> {
             if (value.getTradeType() == TradeType.BUY) {
-                if (marketPrice.high() >= value.getTakeProfit()) {
+                if (marketPrice.getHigh() >= value.getTakeProfit()) {
                     // hit take profit
-                    closeTrade(value, marketPrice.date(), value.getTakeProfit());
+                    closeTrade(value, marketPrice.getDate(), value.getTakeProfit());
                     closedTrades.put(value.getId(), value);
-                } else if (marketPrice.low() <= value.getStopLoss()) {
+                } else if (marketPrice.getLow() <= value.getStopLoss()) {
                     // hit stop loss
-                    closeTrade(value, marketPrice.date(), value.getStopLoss());
+                    closeTrade(value, marketPrice.getDate(), value.getStopLoss());
                     closedTrades.put(value.getId(), value);
                 }
             } else {
-                if (marketPrice.low() <= value.getTakeProfit()) {
+                if (marketPrice.getLow() <= value.getTakeProfit()) {
                     // hit take profit
-                    closeTrade(value, marketPrice.date(), value.getTakeProfit());
+                    closeTrade(value, marketPrice.getDate(), value.getTakeProfit());
                     closedTrades.put(value.getId(), value);
-                } else if (marketPrice.high() >= value.getStopLoss()) {
+                } else if (marketPrice.getHigh() >= value.getStopLoss()) {
                     // hit stop loss
-                    closeTrade(value, marketPrice.date(), value.getStopLoss());
+                    closeTrade(value, marketPrice.getDate(), value.getStopLoss());
                     closedTrades.put(value.getId(), value);
                 }
             }
@@ -143,7 +143,7 @@ public interface Strategy<P extends BasicStrategyParameters> {
     default void closeDay(final MarketPrice currentPrice, final Map<String, AntherTrade> openTrades, final Map<String, AntherTrade> closedTrades) {
         if (isExitBar(currentPrice) && !openTrades.isEmpty()) {
             openTrades.forEach((key, trade) -> {
-                closeTrade(trade, currentPrice.date(), currentPrice.open());
+                closeTrade(trade, currentPrice.getDate(), currentPrice.getOpen());
                 closedTrades.put(trade.getId(), trade);
             });
 

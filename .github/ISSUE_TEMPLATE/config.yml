@@ -1,0 +1,8 @@
+blank_issues_enabled: true
+contact_links:
+  - name: Project Documentation
+    url: https://github.com/sPrizio/bluebell/wiki
+    about: Please check our documentation before submitting an issue.
+  - name: Support question or technical issue
+    url: https://github.com/sPrizio/bluebell/discussions
+    about: Please use GitHub discussions for questions, comments and concerns.

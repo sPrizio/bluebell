@@ -5,7 +5,7 @@ import com.bluebell.platform.constants.CorePlatformConstants;
 import com.bluebell.platform.enums.GenericEnum;
 import com.bluebell.platform.enums.analysis.AnalysisFilter;
 import com.bluebell.platform.enums.analysis.TradeDurationFilter;
-import com.bluebell.platform.enums.time.PlatformTimeInterval;
+import com.bluebell.platform.enums.time.MarketPriceTimeInterval;
 import com.bluebell.platform.models.api.json.StandardJsonResponse;
 import com.bluebell.platform.models.core.entities.account.Account;
 import com.bluebell.platform.models.core.nonentities.records.analysis.AnalysisResult;
@@ -31,7 +31,7 @@ import java.util.Optional;
  * Controller for {@link AnalysisService}
  *
  * @author Stephen Prizio
- * @version 0.1.3
+ * @version 0.1.4
  */
 @RestController
 @RequestMapping("${bluebell.base.api.controller.endpoint}/analysis")
@@ -111,7 +111,7 @@ public class AnalysisApiController extends AbstractApiController {
 
         final Optional<Account> account = this.accountService.findAccountByAccountNumber(accountNumber);
         return account
-                .map(value -> StandardJsonResponse.<List<AnalysisResult>>builder().success(true).data(this.analysisService.computeTimeBucketAnalysis(value, PlatformTimeInterval.THIRTY_MINUTE, GenericEnum.getByCode(AnalysisFilter.class, filter.toUpperCase()), isOpened)).build())
+                .map(value -> StandardJsonResponse.<List<AnalysisResult>>builder().success(true).data(this.analysisService.computeTimeBucketAnalysis(value, MarketPriceTimeInterval.THIRTY_MINUTE, GenericEnum.getByCode(AnalysisFilter.class, filter.toUpperCase()), isOpened)).build())
                 .orElseGet(() -> StandardJsonResponse.<List<AnalysisResult>>builder().success(false).message(CorePlatformConstants.Validation.Account.ACCOUNT_NOT_FOUND).build());
     }
 
@@ -258,7 +258,7 @@ public class AnalysisApiController extends AbstractApiController {
 
         final Optional<Account> account = this.accountService.findAccountByAccountNumber(accountNumber);
         return account
-                .map(value -> StandardJsonResponse.<List<AnalysisResult>>builder().success(true).data(this.analysisService.computeWeekdayTimeBucketAnalysis(value, DayOfWeek.valueOf(weekday.toUpperCase()), PlatformTimeInterval.THIRTY_MINUTE, GenericEnum.getByCode(AnalysisFilter.class, filter.toUpperCase()))).build())
+                .map(value -> StandardJsonResponse.<List<AnalysisResult>>builder().success(true).data(this.analysisService.computeWeekdayTimeBucketAnalysis(value, DayOfWeek.valueOf(weekday.toUpperCase()), MarketPriceTimeInterval.THIRTY_MINUTE, GenericEnum.getByCode(AnalysisFilter.class, filter.toUpperCase()))).build())
                 .orElseGet(() -> StandardJsonResponse.<List<AnalysisResult>>builder().success(false).message(CorePlatformConstants.Validation.Account.ACCOUNT_NOT_FOUND).build());
     }
 

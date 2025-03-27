@@ -6,7 +6,7 @@ import com.bluebell.anther.models.simulation.SimulationResult;
 import com.bluebell.anther.models.strategy.StrategyResult;
 import com.bluebell.anther.simulation.Simulation;
 import com.bluebell.anther.strategies.impl.Sprout;
-import com.bluebell.platform.enums.time.PlatformTimeInterval;
+import com.bluebell.platform.enums.time.MarketPriceTimeInterval;
 import com.bluebell.platform.models.core.nonentities.market.AggregatedMarketPrices;
 import com.bluebell.radicle.enums.DataSource;
 
@@ -20,7 +20,7 @@ import java.util.Map;
  * Implementation of {@link Simulation} specific for the {@link Sprout} strategy
  *
  * @author Stephen Prizio
- * @version 0.1.1
+ * @version 0.1.4
  */
 public class SproutSimulation implements Simulation<SproutStrategyParameters> {
 
@@ -32,11 +32,11 @@ public class SproutSimulation implements Simulation<SproutStrategyParameters> {
 
     private final LocalDate end;
 
-    private final PlatformTimeInterval timeInterval;
+    private final MarketPriceTimeInterval timeInterval;
 
     private final ChronoUnit unit;
 
-    public SproutSimulation(final String symbol, final LocalDate start, final LocalDate end, final PlatformTimeInterval timeInterval, final ChronoUnit unit) {
+    public SproutSimulation(final String symbol, final LocalDate start, final LocalDate end, final MarketPriceTimeInterval timeInterval, final ChronoUnit unit) {
         this.symbol = symbol;
         this.start = start;
         this.end = end;

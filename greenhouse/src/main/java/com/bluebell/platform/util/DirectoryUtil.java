@@ -11,7 +11,7 @@ import java.nio.file.Paths;
  * Utility class for file and directory operations
  *
  * @author Stephen Prizio
- * @version 0.1.1
+ * @version 0.1.4
  */
 @UtilityClass
 public class DirectoryUtil {
@@ -51,6 +51,10 @@ public class DirectoryUtil {
     public static String getBaseProjectDirectory() {
 
         Path currentPath = Paths.get(new File("").getAbsoluteFile().getPath());
+        if (currentPath.endsWith("bluebell")) {
+            return currentPath + File.separator + "greenhouse";
+        }
+
         while (!currentPath.endsWith("greenhouse")) {
             currentPath = currentPath.getParent();
         }

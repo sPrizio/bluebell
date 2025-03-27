@@ -5,7 +5,7 @@ import com.bluebell.anther.models.simulation.SimulationResult;
 import com.bluebell.anther.models.strategy.StrategyResult;
 import com.bluebell.anther.simulation.Simulation;
 import com.bluebell.anther.strategies.impl.Bloom;
-import com.bluebell.platform.enums.time.PlatformTimeInterval;
+import com.bluebell.platform.enums.time.MarketPriceTimeInterval;
 import com.bluebell.platform.models.core.nonentities.market.AggregatedMarketPrices;
 import com.bluebell.platform.services.MathService;
 import com.bluebell.radicle.enums.DataSource;
@@ -21,7 +21,7 @@ import java.util.Map;
  * Implementation of {@link Simulation} specific for the {@link Bloom} strategy
  *
  * @author Stephen Prizio
- * @version 0.1.1
+ * @version 0.1.4
  */
 public class BloomSimulation implements Simulation<BloomStrategyParameters> {
 
@@ -35,11 +35,11 @@ public class BloomSimulation implements Simulation<BloomStrategyParameters> {
 
     private final LocalDate end;
 
-    private final PlatformTimeInterval timeInterval;
+    private final MarketPriceTimeInterval timeInterval;
 
     private final ChronoUnit unit;
 
-    public BloomSimulation(final String symbol, final LocalDate start, final LocalDate end, final PlatformTimeInterval timeInterval, final ChronoUnit unit) {
+    public BloomSimulation(final String symbol, final LocalDate start, final LocalDate end, final MarketPriceTimeInterval timeInterval, final ChronoUnit unit) {
         this.symbol = symbol;
         this.start = start;
         this.end = end;

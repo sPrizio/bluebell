@@ -1,11 +1,10 @@
 package com.bluebell.radicle.services.chart.impl;
 
 import com.bluebell.platform.constants.CorePlatformConstants;
-import com.bluebell.platform.enums.chart.IntradayInterval;
-import com.bluebell.platform.enums.time.PlatformTimeInterval;
+import com.bluebell.platform.enums.time.MarketPriceTimeInterval;
 import com.bluebell.platform.models.core.nonentities.apexcharts.ApexChartCandleStick;
 import com.bluebell.platform.models.core.nonentities.market.AggregatedMarketPrices;
-import com.bluebell.platform.models.core.nonentities.market.MarketPrice;
+import com.bluebell.platform.models.core.entities.market.MarketPrice;
 import com.bluebell.radicle.parsers.impl.FirstRateDataParser;
 import com.bluebell.radicle.services.chart.ChartService;
 import org.apache.commons.collections4.CollectionUtils;
@@ -24,7 +23,7 @@ import static com.bluebell.radicle.validation.GenericValidator.validateParameter
  * apexcharts implementation of {@link ChartService}
  *
  * @author Stephen Prizio
- * @version 0.1.1
+ * @version 0.1.4
  */
 @Service
 public class ApexChartService implements ChartService<ApexChartCandleStick> {
@@ -35,7 +34,7 @@ public class ApexChartService implements ChartService<ApexChartCandleStick> {
     //  METHODS
 
     @Override
-    public List<ApexChartCandleStick> getChartData(final LocalDate startDate, final LocalDate endDate, final IntradayInterval timeInterval) {
+    public List<ApexChartCandleStick> getChartData(final LocalDate startDate, final LocalDate endDate, final MarketPriceTimeInterval timeInterval) {
 
         validateParameterIsNotNull(startDate, CorePlatformConstants.Validation.DateTime.START_DATE_CANNOT_BE_NULL);
         validateParameterIsNotNull(endDate, CorePlatformConstants.Validation.DateTime.END_DATE_CANNOT_BE_NULL);
@@ -44,13 +43,13 @@ public class ApexChartService implements ChartService<ApexChartCandleStick> {
 
         final Map<LocalDate, AggregatedMarketPrices> collection;
         switch (timeInterval) {
-            case ONE_MINUTE -> collection = new HashMap<>(this.firstRateDataParser.parseMarketPricesByDate(PlatformTimeInterval.ONE_MINUTE));
-            case FIVE_MINUTES -> collection = new HashMap<>(this.firstRateDataParser.parseMarketPricesByDate(PlatformTimeInterval.FIVE_MINUTE));
-            case TEN_MINUTES -> collection = new HashMap<>(this.firstRateDataParser.parseMarketPricesByDate(PlatformTimeInterval.TEN_MINUTE));
-            case FIFTEEN_MINUTES -> collection = new HashMap<>(this.firstRateDataParser.parseMarketPricesByDate(PlatformTimeInterval.FIFTEEN_MINUTE));
-            case THIRTY_MINUTES -> collection = new HashMap<>(this.firstRateDataParser.parseMarketPricesByDate(PlatformTimeInterval.THIRTY_MINUTE));
-            case ONE_HOUR -> collection = new HashMap<>(this.firstRateDataParser.parseMarketPricesByDate(PlatformTimeInterval.ONE_HOUR));
-            case ONE_DAY -> collection = new HashMap<>(this.firstRateDataParser.parseMarketPricesByDate(PlatformTimeInterval.ONE_DAY));
+            case ONE_MINUTE -> collection = new HashMap<>(this.firstRateDataParser.parseMarketPricesByDate(MarketPriceTimeInterval.ONE_MINUTE));
+            case FIVE_MINUTE -> collection = new HashMap<>(this.firstRateDataParser.parseMarketPricesByDate(MarketPriceTimeInterval.FIVE_MINUTE));
+            case TEN_MINUTE -> collection = new HashMap<>(this.firstRateDataParser.parseMarketPricesByDate(MarketPriceTimeInterval.TEN_MINUTE));
+            case FIFTEEN_MINUTE -> collection = new HashMap<>(this.firstRateDataParser.parseMarketPricesByDate(MarketPriceTimeInterval.FIFTEEN_MINUTE));
+            case THIRTY_MINUTE -> collection = new HashMap<>(this.firstRateDataParser.parseMarketPricesByDate(MarketPriceTimeInterval.THIRTY_MINUTE));
+            case ONE_HOUR -> collection = new HashMap<>(this.firstRateDataParser.parseMarketPricesByDate(MarketPriceTimeInterval.ONE_HOUR));
+            case ONE_DAY -> collection = new HashMap<>(this.firstRateDataParser.parseMarketPricesByDate(MarketPriceTimeInterval.ONE_DAY));
             default -> collection = new HashMap<>();
         }
 
@@ -78,7 +77,7 @@ public class ApexChartService implements ChartService<ApexChartCandleStick> {
                 if (CollectionUtils.isEmpty(values.marketPrices())) {
                     candleSticks.add(ApexChartCandleStick.builder().x(key.atStartOfDay(ZoneId.of(CorePlatformConstants.EASTERN_TIMEZONE)).toEpochSecond()).y(new double[0]).build());
                 } else {
-                    values.marketPrices().forEach(val -> candleSticks.add(ApexChartCandleStick.builder().x(val.date().atZone(ZoneId.of(CorePlatformConstants.EASTERN_TIMEZONE)).toInstant().toEpochMilli()).y(new double[]{val.open(), val.high(), val.low(), val.close()}).build()));
+                    values.marketPrices().forEach(val -> candleSticks.add(ApexChartCandleStick.builder().x(val.getDate().atZone(ZoneId.of(CorePlatformConstants.EASTERN_TIMEZONE)).toInstant().toEpochMilli()).y(new double[]{val.getOpen(), val.getHigh(), val.getLow(), val.getClose()}).build()));
                 }
             }
         });
