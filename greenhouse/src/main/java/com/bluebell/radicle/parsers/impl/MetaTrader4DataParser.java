@@ -4,6 +4,7 @@ import com.bluebell.platform.constants.CorePlatformConstants;
 import com.bluebell.platform.enums.time.MarketPriceTimeInterval;
 import com.bluebell.platform.models.core.entities.market.MarketPrice;
 import com.bluebell.platform.models.core.nonentities.market.AggregatedMarketPrices;
+import com.bluebell.platform.util.DirectoryUtil;
 import com.bluebell.radicle.enums.DataSource;
 import com.bluebell.radicle.exceptions.parsing.MetaTrader4ParsingException;
 import com.bluebell.radicle.parsers.MarketPriceParser;
@@ -33,16 +34,18 @@ public class MetaTrader4DataParser extends AbstractDataParser implements MarketP
 
     private final boolean isTest;
     private final String symbol;
-
-
-    public MetaTrader4DataParser() {
-        this.isTest = false;
-        this.symbol = StringUtils.EMPTY;
-    }
+    private final String dataRoot;
 
     public MetaTrader4DataParser(final boolean isTest, final String symbol) {
         this.isTest = isTest;
         this.symbol = symbol;
+        this.dataRoot = StringUtils.EMPTY;
+    }
+
+    public MetaTrader4DataParser(final boolean isTest, final String symbol, final String dataRoot) {
+        this.isTest = isTest;
+        this.symbol = symbol;
+        this.dataRoot = dataRoot;
     }
 
 
@@ -130,7 +133,13 @@ public class MetaTrader4DataParser extends AbstractDataParser implements MarketP
      */
     private String getDataRoot(final MarketPriceTimeInterval interval) {
         try {
-            final String root = Objects.requireNonNull(getClass().getClassLoader().getResource(String.format("mt4/%s/%s", this.symbol, interval.toString()))).getFile();
+            final String root;
+            if (StringUtils.isNotEmpty(this.dataRoot)) {
+                root = DirectoryUtil.getBaseProjectDirectory() + File.separator + this.dataRoot + File.separator + String.format("mt4%s%s%s%s", File.separator, this.symbol, File.separator, interval.toString());
+            } else {
+                root = Objects.requireNonNull(getClass().getClassLoader().getResource(String.format("mt4%s%s%s%s", File.separator, this.symbol, File.separator, interval.toString()))).getFile();
+            }
+
             if (this.isTest && !root.contains("test-classes")) {
                 return root.replace("classes", "test-classes");
             }

@@ -3,6 +3,7 @@ package com.bluebell.radicle.parsers.impl;
 import com.bluebell.platform.enums.time.MarketPriceTimeInterval;
 import com.bluebell.platform.models.core.nonentities.market.AggregatedMarketPrices;
 import com.bluebell.platform.models.core.entities.market.MarketPrice;
+import com.bluebell.platform.util.DirectoryUtil;
 import com.bluebell.radicle.enums.DataSource;
 import com.bluebell.radicle.exceptions.parsing.FirstRateDataParsingException;
 import com.bluebell.radicle.parsers.MarketPriceParser;
@@ -10,6 +11,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.LineIterator;
+import org.apache.commons.lang3.StringUtils;
 
 import java.io.File;
 import java.time.LocalDate;
@@ -27,13 +29,21 @@ import java.util.*;
 public class FirstRateDataParser extends AbstractDataParser implements MarketPriceParser {
 
     private final boolean isTest;
+    private final String dataRoot;
 
     public FirstRateDataParser() {
         this.isTest = false;
+        this.dataRoot = StringUtils.EMPTY;
     }
 
     public FirstRateDataParser(final boolean isTest) {
         this.isTest = isTest;
+        this.dataRoot = StringUtils.EMPTY;
+    }
+
+    public FirstRateDataParser(final boolean isTest, final String dataRoot) {
+        this.isTest = isTest;
+        this.dataRoot = dataRoot;
     }
 
 
@@ -190,7 +200,13 @@ public class FirstRateDataParser extends AbstractDataParser implements MarketPri
      */
     private String getDataRoot() {
 
-        final String root = Objects.requireNonNull(getClass().getClassLoader().getResource("firstratedata")).getFile();
+        final String root;
+        if (StringUtils.isNotEmpty(this.dataRoot)) {
+            root = DirectoryUtil.getBaseProjectDirectory() + File.separator + this.dataRoot + File.separator + "firstratedata";
+        } else {
+            root = Objects.requireNonNull(getClass().getClassLoader().getResource("firstratedata")).getFile();
+        }
+
         if (this.isTest && !root.contains("test-classes")) {
             return root.replace("classes", "test-classes");
         }

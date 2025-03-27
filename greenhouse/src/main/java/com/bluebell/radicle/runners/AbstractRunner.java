@@ -9,7 +9,7 @@ import java.time.temporal.ChronoUnit;
  * Parent-level CommandLineRunner
  *
  * @author Stephen Prizio
- * @version 0.1.2
+ * @version 0.1.4
  */
 @Slf4j
 public abstract class AbstractRunner {
@@ -36,8 +36,10 @@ public abstract class AbstractRunner {
         if (this.startTime != null) {
             if (ChronoUnit.SECONDS.between(this.startTime, endTime) < 1) {
                 LOGGER.info("{} generated all test data in {} milliseconds", this.getClass().getSimpleName(), ChronoUnit.MILLIS.between(this.startTime, endTime));
-            } else {
+            } else if (ChronoUnit.MINUTES.between(this.startTime, endTime) < 1) {
                 LOGGER.info("{} generated all test data in {} seconds", this.getClass().getSimpleName(), ChronoUnit.SECONDS.between(this.startTime, endTime));
+            } else {
+                LOGGER.info("{} generated all test data in {} minutes", this.getClass().getSimpleName(), ChronoUnit.MINUTES.between(this.startTime, endTime));
             }
             this.startTime = null;
         } else {
