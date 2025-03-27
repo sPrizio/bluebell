@@ -3,6 +3,7 @@ package com.bluebell.radicle.parsers.impl;
 import com.bluebell.platform.enums.time.MarketPriceTimeInterval;
 import com.bluebell.platform.models.core.nonentities.market.AggregatedMarketPrices;
 import com.bluebell.platform.models.core.entities.market.MarketPrice;
+import com.bluebell.radicle.enums.DataSource;
 import com.bluebell.radicle.exceptions.parsing.FirstRateDataParsingException;
 import com.bluebell.radicle.parsers.MarketPriceParser;
 import lombok.extern.slf4j.Slf4j;
@@ -44,7 +45,7 @@ public class FirstRateDataParser extends AbstractDataParser implements MarketPri
         final String sampleFile = getDataRoot() + "/" + file;
         if (!validateFile(sampleFile)) {
             LOGGER.error("File {} was not found!\n", file);
-            return AggregatedMarketPrices.builder().marketPrices(new TreeSet<>()).interval(interval).build();
+            return AggregatedMarketPrices.builder().marketPrices(new TreeSet<>()).interval(interval).dataSource(DataSource.FIRST_RATE_DATA).build();
         }
 
         final DateTimeFormatter dateTimeFormatter;
@@ -81,7 +82,7 @@ public class FirstRateDataParser extends AbstractDataParser implements MarketPri
             throw new FirstRateDataParsingException(String.format("An error occurred while parsing the file. Error: %s", e.getMessage()), e);
         }
 
-        return AggregatedMarketPrices.builder().marketPrices(marketPrices).interval(interval).build();
+        return AggregatedMarketPrices.builder().marketPrices(marketPrices).interval(interval).dataSource(DataSource.FIRST_RATE_DATA).build();
     }
 
     @Override
@@ -96,7 +97,7 @@ public class FirstRateDataParser extends AbstractDataParser implements MarketPri
             case THIRTY_MINUTE -> marketPrices = parseMarketPrices(computeFileName(MarketPriceTimeInterval.THIRTY_MINUTE), MarketPriceTimeInterval.THIRTY_MINUTE);
             case ONE_HOUR -> marketPrices = parseMarketPrices(computeFileName(MarketPriceTimeInterval.ONE_HOUR), MarketPriceTimeInterval.ONE_HOUR);
             case ONE_DAY -> marketPrices = parseMarketPrices(computeFileName(MarketPriceTimeInterval.ONE_DAY), MarketPriceTimeInterval.ONE_DAY);
-            default -> marketPrices = AggregatedMarketPrices.builder().marketPrices(new TreeSet<>()).interval(interval).build();
+            default -> marketPrices = AggregatedMarketPrices.builder().marketPrices(new TreeSet<>()).interval(interval).dataSource(DataSource.FIRST_RATE_DATA).build();
         }
 
         return generateMasterCollection(marketPrices, interval);
@@ -138,7 +139,7 @@ public class FirstRateDataParser extends AbstractDataParser implements MarketPri
 
         final AggregatedMarketPrices smallerPrices = parseMarketPrices(computeFileName(MarketPriceTimeInterval.ONE_MINUTE), MarketPriceTimeInterval.ONE_MINUTE);
         if (CollectionUtils.isEmpty(smallerPrices.marketPrices())) {
-            return AggregatedMarketPrices.builder().marketPrices(Collections.emptySortedSet()).interval(interval).build();
+            return AggregatedMarketPrices.builder().marketPrices(Collections.emptySortedSet()).interval(interval).dataSource(DataSource.FIRST_RATE_DATA).build();
         }
 
         final Map<LocalDateTime, MarketPrice> collection = new HashMap<>();
@@ -179,7 +180,7 @@ public class FirstRateDataParser extends AbstractDataParser implements MarketPri
             compare = localCompareEnd;
         }
 
-        return AggregatedMarketPrices.builder().marketPrices(new TreeSet<>(computed.stream().filter(MarketPrice::isNotEmpty).toList())).interval(interval).build();
+        return AggregatedMarketPrices.builder().marketPrices(new TreeSet<>(computed.stream().filter(MarketPrice::isNotEmpty).toList())).interval(interval).dataSource(DataSource.FIRST_RATE_DATA).build();
     }
 
     /**

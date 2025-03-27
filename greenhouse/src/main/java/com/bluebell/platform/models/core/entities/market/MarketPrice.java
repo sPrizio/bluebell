@@ -1,40 +1,68 @@
-package com.bluebell.platform.models.core.nonentities.market;
+package com.bluebell.platform.models.core.entities.market;
 
 
 import com.bluebell.platform.enums.time.MarketPriceTimeInterval;
+import com.bluebell.platform.models.core.entities.GenericEntity;
 import com.bluebell.platform.services.MathService;
-import lombok.Builder;
-import lombok.Getter;
+import com.bluebell.radicle.enums.DataSource;
+import jakarta.persistence.*;
+import lombok.*;
 
 import java.time.LocalDateTime;
 import java.util.Objects;
 
 /**
- * Representation of a market price for an interval of time
+ * Class representation of a market price for an interval of time
  *
- * @param date start date
- * @param interval {@link MarketPriceTimeInterval}
- * @param open open price
- * @param high highest price
- * @param low lowest price
- * @param close close price
  * @author Stephen Prizio
  * @version 0.1.4
  */
+@Getter
+@Entity
 @Builder
-public record MarketPrice(
-        @Getter LocalDateTime date,
-        @Getter MarketPriceTimeInterval interval,
-        @Getter double open,
-        @Getter double high,
-        @Getter double low,
-        @Getter double close
-) implements Comparable<MarketPrice> {
+@Table(name = "market_prices", uniqueConstraints = @UniqueConstraint(name = "UniqueDateAndTimeIntervalAndDataSource", columnNames = {"price_date", "market_price_time_interval", "data_source"}))
+@NoArgsConstructor
+@AllArgsConstructor
+public class MarketPrice implements GenericEntity, Comparable<MarketPrice> {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @Setter
+    @Column(name = "price_date")
+    private LocalDateTime date;
+
+    @Setter
+    @Column(name = "market_price_time_interval")
+    private MarketPriceTimeInterval interval;
+
+    @Setter
+    @Column
+    private double open;
+
+    @Setter
+    @Column
+    private double high;
+
+    @Setter
+    @Column
+    private double low;
+
+    @Setter
+    @Column
+    private double close;
+
+    @Setter
+    @Column
+    private long volume;
+
+    @Setter
+    @Column(name = "data_source")
+    private DataSource dataSource;
 
 
     //  METHODS
-
-    //  TODO: need to find a way to override this and make it dynamic to sprout or to the data source to include a standard error margin
 
     /**
      * Returns true if this is a bullish price movement
@@ -61,7 +89,7 @@ public record MarketPrice(
      */
     public boolean isHammer() {
         final MathService mathService = new MathService();
-        final double topArea = mathService.subtract(this.high(), mathService.divide(this.getFullSize(true), 2.0));
+        final double topArea = mathService.subtract(this.high, mathService.divide(this.getFullSize(true), 2.0));
         return this.open >= topArea && this.close >= topArea;
     }
 
@@ -72,7 +100,7 @@ public record MarketPrice(
      */
     public boolean isTombstone() {
         final MathService mathService = new MathService();
-        final double bottomArea = mathService.add(this.low(), mathService.divide(this.getFullSize(true), 2.0));
+        final double bottomArea = mathService.add(this.low, mathService.divide(this.getFullSize(true), 2.0));
         return this.open <= bottomArea && this.close <= bottomArea;
     }
 
@@ -148,7 +176,7 @@ public record MarketPrice(
      * @return true if candle engulfs given candle
      */
     public boolean isMutuallyExclusive(final MarketPrice anotherPrice) {
-        return this.high > anotherPrice.high() && this.low < anotherPrice.low();
+        return this.high > anotherPrice.high && this.low < anotherPrice.low;
     }
 
     /**
@@ -180,11 +208,11 @@ public record MarketPrice(
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         MarketPrice that = (MarketPrice) o;
-        return Objects.equals(this.date, that.date) && this.interval == that.interval;
+        return Objects.equals(this.date, that.date) && (this.interval == that.interval) && (this.dataSource == that.dataSource);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(this.date, this.interval);
+        return Objects.hash(this.date, this.interval, this.dataSource);
     }
 }

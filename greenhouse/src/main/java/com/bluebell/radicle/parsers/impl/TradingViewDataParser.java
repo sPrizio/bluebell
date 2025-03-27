@@ -3,6 +3,7 @@ package com.bluebell.radicle.parsers.impl;
 import com.bluebell.platform.enums.time.MarketPriceTimeInterval;
 import com.bluebell.platform.models.core.nonentities.market.AggregatedMarketPrices;
 import com.bluebell.platform.models.core.entities.market.MarketPrice;
+import com.bluebell.radicle.enums.DataSource;
 import com.bluebell.radicle.exceptions.parsing.TradingViewDataParsingException;
 import com.bluebell.radicle.parsers.MarketPriceParser;
 import lombok.extern.slf4j.Slf4j;
@@ -45,7 +46,7 @@ public class TradingViewDataParser extends AbstractDataParser implements MarketP
         final String sampleFile = getDataRoot(interval) + "/" + file;
         if (!validateFile(sampleFile)) {
             LOGGER.error("File {} was not found!\n", file);
-            return AggregatedMarketPrices.builder().marketPrices(new TreeSet<>()).interval(interval).build();
+            return AggregatedMarketPrices.builder().marketPrices(new TreeSet<>()).interval(interval).dataSource(DataSource.TRADING_VIEW).build();
         }
 
         final TreeSet<MarketPrice> marketPrices = new TreeSet<>();

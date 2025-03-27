@@ -8,6 +8,7 @@ import com.bluebell.platform.enums.news.MarketNewsSeverity;
 import com.bluebell.platform.enums.security.UserRole;
 import com.bluebell.platform.enums.system.Country;
 import com.bluebell.platform.enums.system.PhoneType;
+import com.bluebell.platform.enums.time.MarketPriceTimeInterval;
 import com.bluebell.platform.enums.trade.TradePlatform;
 import com.bluebell.platform.enums.trade.TradeType;
 import com.bluebell.platform.enums.transaction.TransactionStatus;
@@ -17,6 +18,7 @@ import com.bluebell.platform.models.core.entities.action.impl.Action;
 import com.bluebell.platform.models.core.entities.job.impl.Job;
 import com.bluebell.platform.models.core.entities.job.impl.JobResult;
 import com.bluebell.platform.models.core.entities.job.impl.JobResultEntry;
+import com.bluebell.platform.models.core.entities.market.MarketPrice;
 import com.bluebell.platform.models.core.entities.news.MarketNews;
 import com.bluebell.platform.models.core.entities.news.MarketNewsEntry;
 import com.bluebell.platform.models.core.entities.news.MarketNewsSlot;
@@ -25,6 +27,7 @@ import com.bluebell.platform.models.core.entities.security.User;
 import com.bluebell.platform.models.core.entities.system.PhoneNumber;
 import com.bluebell.platform.models.core.entities.trade.Trade;
 import com.bluebell.platform.models.core.entities.transaction.Transaction;
+import com.bluebell.radicle.enums.DataSource;
 import com.bluebell.radicle.integration.models.responses.forexfactory.CalendarNewsEntryResponse;
 import com.bluebell.radicle.performable.impl.FetchMarketNewsActionPerformable;
 import org.apache.commons.lang3.StringUtils;
@@ -40,7 +43,7 @@ import java.util.Random;
  * Parent-level testing class to provide testing assistance for the project
  *
  * @author Stephen Prizio
- * @version 0.1.3
+ * @version 0.1.4
  */
 public abstract class AbstractGenericTest {
 
@@ -303,6 +306,24 @@ public abstract class AbstractGenericTest {
                 .builder()
                 .type(JobType.FETCH_MARKET_NEWS)
                 .name("Test Job")
+                .build();
+    }
+
+    /**
+     * Generates a test {@link MarketPrice}
+     *
+     * @return {@link MarketPrice}
+     */
+    public MarketPrice generateTestMarketPrice() {
+        return MarketPrice
+                .builder()
+                .dataSource(DataSource.FIRST_RATE_DATA)
+                .interval(MarketPriceTimeInterval.THIRTY_MINUTE)
+                .open(11234.05)
+                .high(12365.89)
+                .low(10258.30)
+                .close(11856.34)
+                .volume(5689L)
                 .build();
     }
 }
