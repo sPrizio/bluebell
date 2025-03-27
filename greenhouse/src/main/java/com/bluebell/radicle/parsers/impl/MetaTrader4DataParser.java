@@ -137,7 +137,7 @@ public class MetaTrader4DataParser extends AbstractDataParser implements MarketP
             if (StringUtils.isNotEmpty(this.dataRoot)) {
                 root = DirectoryUtil.getBaseProjectDirectory() + File.separator + this.dataRoot + File.separator + String.format("mt4%s%s%s%s", File.separator, this.symbol, File.separator, interval.toString());
             } else {
-                root = Objects.requireNonNull(getClass().getClassLoader().getResource(String.format("mt4%s%s%s%s", File.separator, this.symbol, File.separator, interval.toString()))).getFile();
+                root = Objects.requireNonNull(getClass().getClassLoader().getResource(String.format("mt4/%s/%s", this.symbol, interval.toString()))).getFile();
             }
 
             if (this.isTest && !root.contains("test-classes")) {
