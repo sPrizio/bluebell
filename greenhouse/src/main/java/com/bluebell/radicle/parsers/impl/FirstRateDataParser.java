@@ -195,9 +195,9 @@ public class FirstRateDataParser extends AbstractDataParser implements MarketPri
 
         final String root;
         if (this.isTest) {
-            root = DirectoryUtil.getTestingResourcesDirectory() + File.separator + this.dataRoot + File.separator + String.format("firstratedata/%s/%s", this.symbol, interval.toString());
+            root = DirectoryUtil.getTestingResourcesDirectory() + File.separator + this.dataRoot + File.separator + String.format("%s/%s/%s", DataSource.FIRST_RATE_DATA.getDataRoot(), this.symbol, interval.toString());
         } else {
-            root = DirectoryUtil.getBaseProjectDirectory() + File.separator + this.dataRoot + File.separator + String.format("firstratedata/%s/%s", this.symbol, interval.toString());
+            root = DirectoryUtil.getBaseProjectDirectory() + File.separator + this.dataRoot + File.separator + String.format("%s/%s/%s", DataSource.FIRST_RATE_DATA.getDataRoot(), this.symbol, interval.toString());
         }
 
         return root;

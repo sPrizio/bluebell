@@ -124,9 +124,9 @@ public class TradingViewDataParser extends AbstractDataParser implements MarketP
         try {
             final String root;
             if (this.isTest) {
-                root = DirectoryUtil.getTestingResourcesDirectory() + File.separator + this.dataRoot + File.separator + String.format("tradingview%s%s%s%s", File.separator, this.symbol, File.separator, interval.toString());
+                root = DirectoryUtil.getTestingResourcesDirectory() + File.separator + this.dataRoot + File.separator + String.format("%s%s%s%s%s", DataSource.TRADING_VIEW.getDataRoot(), File.separator, this.symbol, File.separator, interval.toString());
             } else {
-                root = DirectoryUtil.getBaseProjectDirectory() + File.separator + this.dataRoot + File.separator + String.format("tradingview%s%s%s%s", File.separator, this.symbol, File.separator, interval.toString());
+                root = DirectoryUtil.getBaseProjectDirectory() + File.separator + this.dataRoot + File.separator + String.format("%s%s%s%s%s", DataSource.TRADING_VIEW.getDataRoot(), File.separator, this.symbol, File.separator, interval.toString());
             }
 
             return root;
