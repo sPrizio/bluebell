@@ -21,7 +21,7 @@ import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
  */
 class FirstRateDataParserTest {
 
-    private final FirstRateDataParser firstRateDataParser = new FirstRateDataParser(true, "NDX");
+    private final FirstRateDataParser firstRateDataParser = new FirstRateDataParser(true, "NDX", "/test-data");
 
 
     //  ----------------- parseMarketPrices -----------------

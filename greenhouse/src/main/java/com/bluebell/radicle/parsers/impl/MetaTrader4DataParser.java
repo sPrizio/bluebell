@@ -12,7 +12,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.LineIterator;
-import org.apache.commons.lang3.StringUtils;
 
 import java.io.File;
 import java.time.LocalDate;
@@ -20,7 +19,6 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
 import java.util.TreeSet;
 
 /**
@@ -35,12 +33,6 @@ public class MetaTrader4DataParser extends AbstractDataParser implements MarketP
     private final boolean isTest;
     private final String symbol;
     private final String dataRoot;
-
-    public MetaTrader4DataParser(final boolean isTest, final String symbol) {
-        this.isTest = isTest;
-        this.symbol = symbol;
-        this.dataRoot = StringUtils.EMPTY;
-    }
 
     public MetaTrader4DataParser(final boolean isTest, final String symbol, final String dataRoot) {
         this.isTest = isTest;
@@ -94,7 +86,7 @@ public class MetaTrader4DataParser extends AbstractDataParser implements MarketP
         final File[] files = directory.listFiles();
 
         if (files == null || files.length == 0) {
-            throw new MetaTrader4ParsingException(String.format("Directory %s was empty!", directory.getName()));
+            throw new MetaTrader4ParsingException(String.format("Directory %s is empty or does not exist!", directory.getName()));
         }
 
         final Map<LocalDate, AggregatedMarketPrices> masterCollection = new HashMap<>();
@@ -136,14 +128,10 @@ public class MetaTrader4DataParser extends AbstractDataParser implements MarketP
     private String getDataRoot(final MarketPriceTimeInterval interval) {
         try {
             final String root;
-            if (StringUtils.isNotEmpty(this.dataRoot)) {
-                root = DirectoryUtil.getBaseProjectDirectory() + File.separator + this.dataRoot + File.separator + String.format("mt4%s%s%s%s", File.separator, this.symbol, File.separator, interval.toString());
+            if (this.isTest) {
+                root = DirectoryUtil.getTestingResourcesDirectory() + File.separator + this.dataRoot + File.separator + String.format("mt4%s%s%s%s", File.separator, this.symbol, File.separator, interval.toString());
             } else {
-                root = Objects.requireNonNull(getClass().getClassLoader().getResource(String.format("mt4/%s/%s", this.symbol, interval.toString()))).getFile();
-            }
-
-            if (this.isTest && !root.contains("test-classes")) {
-                return root.replace("classes", "test-classes");
+                root = DirectoryUtil.getBaseProjectDirectory() + File.separator + this.dataRoot + File.separator + String.format("mt4%s%s%s%s", File.separator, this.symbol, File.separator, interval.toString());
             }
 
             return root;

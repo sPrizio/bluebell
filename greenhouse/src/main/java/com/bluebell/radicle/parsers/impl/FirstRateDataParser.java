@@ -1,8 +1,8 @@
 package com.bluebell.radicle.parsers.impl;
 
 import com.bluebell.platform.enums.time.MarketPriceTimeInterval;
-import com.bluebell.platform.models.core.nonentities.market.AggregatedMarketPrices;
 import com.bluebell.platform.models.core.entities.market.MarketPrice;
+import com.bluebell.platform.models.core.nonentities.market.AggregatedMarketPrices;
 import com.bluebell.platform.util.DirectoryUtil;
 import com.bluebell.radicle.enums.DataSource;
 import com.bluebell.radicle.exceptions.parsing.FirstRateDataParsingException;
@@ -11,7 +11,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.LineIterator;
-import org.apache.commons.lang3.StringUtils;
 
 import java.io.File;
 import java.time.LocalDate;
@@ -31,12 +30,6 @@ public class FirstRateDataParser extends AbstractDataParser implements MarketPri
     private final boolean isTest;
     private final String symbol;
     private final String dataRoot;
-
-    public FirstRateDataParser(final boolean isTest, final String symbol) {
-        this.isTest = isTest;
-        this.symbol = symbol;
-        this.dataRoot = StringUtils.EMPTY;
-    }
 
     public FirstRateDataParser(final boolean isTest, final String symbol, final String dataRoot) {
         this.isTest = isTest;
@@ -201,14 +194,10 @@ public class FirstRateDataParser extends AbstractDataParser implements MarketPri
     private String getDataRoot(final MarketPriceTimeInterval interval) {
 
         final String root;
-        if (StringUtils.isNotEmpty(this.dataRoot)) {
-            root = DirectoryUtil.getBaseProjectDirectory() + File.separator + this.dataRoot + File.separator + String.format("firstratedata/%s/%s", File.separator, this.symbol, File.separator, interval.toString());
+        if (this.isTest) {
+            root = DirectoryUtil.getTestingResourcesDirectory() + File.separator + this.dataRoot + File.separator + String.format("firstratedata/%s/%s", this.symbol, interval.toString());
         } else {
-            root = Objects.requireNonNull(getClass().getClassLoader().getResource(String.format("firstratedata/%s/%s", this.symbol, interval.toString()))).getFile();
-        }
-
-        if (this.isTest && !root.contains("test-classes")) {
-            return root.replace("classes", "test-classes");
+            root = DirectoryUtil.getBaseProjectDirectory() + File.separator + this.dataRoot + File.separator + String.format("firstratedata/%s/%s", this.symbol, interval.toString());
         }
 
         return root;

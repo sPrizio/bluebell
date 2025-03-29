@@ -12,7 +12,7 @@ import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
  * Testing class for {@link DirectoryUtil}
  *
  * @author Stephen Prizio
- * @version 0.1.3
+ * @version 0.1.5
  */
 class DirectoryUtilTest {
 
@@ -45,5 +45,15 @@ class DirectoryUtilTest {
     void test_getBaseProjectDirectory_success() {
         String basePath = DirectoryUtil.getBaseProjectDirectory();
         assertThat(basePath).contains("bluebell"); // Ensures the expected project root is found
+    }
+
+
+    //  ----------------- getTestingResourcesDirectory -----------------
+
+    @Test
+    void test_getTestingResourcesDirectory_success() {
+        String path = DirectoryUtil.getTestingResourcesDirectory();
+        assertThat(path).contains("test");
+        assertThat(path).contains("resources");
     }
 }

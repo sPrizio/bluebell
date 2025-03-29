@@ -9,6 +9,7 @@ import com.bluebell.radicle.parsers.impl.FirstRateDataParser;
 import com.bluebell.radicle.services.chart.ChartService;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.MapUtils;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -28,8 +29,11 @@ import static com.bluebell.radicle.validation.GenericValidator.validateParameter
 @Service
 public class ApexChartService implements ChartService<ApexChartCandleStick> {
 
+    @Value("${bluebell.data.root}")
+    private String dataRoot;
+
     //  TODO: make this dynamic
-    private FirstRateDataParser firstRateDataParser = new FirstRateDataParser(false, "NDX");
+    private FirstRateDataParser firstRateDataParser = new FirstRateDataParser(false, "NDX", this.dataRoot);
 
 
     //  METHODS
@@ -90,6 +94,6 @@ public class ApexChartService implements ChartService<ApexChartCandleStick> {
     //  MUTATORS
 
     public void setTest(final boolean test) {
-        this.firstRateDataParser = new FirstRateDataParser(test, "NDX");
+        this.firstRateDataParser = new FirstRateDataParser(test, "NDX", this.dataRoot);
     }
 }

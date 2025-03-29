@@ -30,7 +30,7 @@ import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 @RunWith(SpringRunner.class)
 class MarketPriceServiceTest extends AbstractGenericTest {
 
-    private final FirstRateDataParser firstRateDataParser = new FirstRateDataParser(true, "NDX");
+    private final FirstRateDataParser firstRateDataParser = new FirstRateDataParser(true, "NDX", "/test-data");
 
     @Autowired
     private MarketPriceService marketPriceService;

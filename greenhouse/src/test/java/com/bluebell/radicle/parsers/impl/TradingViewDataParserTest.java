@@ -4,7 +4,6 @@ import com.bluebell.platform.enums.time.MarketPriceTimeInterval;
 import com.bluebell.platform.models.core.nonentities.market.AggregatedMarketPrices;
 import com.bluebell.platform.models.core.entities.market.MarketPrice;
 import com.bluebell.radicle.exceptions.parsing.TradingViewDataParsingException;
-import com.bluebell.radicle.parsers.impl.TradingViewDataParser;
 import org.apache.commons.lang3.StringUtils;
 import org.junit.jupiter.api.Test;
 
@@ -17,11 +16,11 @@ import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
  * Testing class for {@link TradingViewDataParser}
  *
  * @author Stephen Prizio
- * @version 0.1.4
+ * @version 0.1.5
  */
 class TradingViewDataParserTest {
 
-    private final TradingViewDataParser tradingViewDataParser = new TradingViewDataParser(true, "US100");
+    private final TradingViewDataParser tradingViewDataParser = new TradingViewDataParser(true, "US100", "/test-data");
 
 
     //  ----------------- parseMarketPrices -----------------
@@ -55,7 +54,7 @@ class TradingViewDataParserTest {
     void test_parseMarketPricesByDate_failed_emptyDirectory() {
         assertThatExceptionOfType(TradingViewDataParsingException.class)
                 .isThrownBy(() -> this.tradingViewDataParser.parseMarketPricesByDate(MarketPriceTimeInterval.FIVE_MINUTE))
-                .withMessageContaining("An error occurred while retrieving the data root. Likely no data exists for the requested interval of time.");
+                .withMessageContaining("Directory FIVE_MINUTE is empty or does not exist!");
     }
 
     @Test
@@ -72,10 +71,8 @@ class TradingViewDataParserTest {
 
     @Test
     void test_parseMarketPricesByDate_success_1year() {
-
-
         assertThatExceptionOfType(TradingViewDataParsingException.class)
                 .isThrownBy(() -> this.tradingViewDataParser.parseMarketPricesByDate(MarketPriceTimeInterval.ONE_YEAR))
-                .withMessageContaining("An error occurred while retrieving the data root. Likely no data exists for the requested interval of time.");
+                .withMessageContaining("Directory ONE_YEAR is empty or does not exist!");
     }
 }

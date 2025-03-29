@@ -11,7 +11,7 @@ import java.nio.file.Paths;
  * Utility class for file and directory operations
  *
  * @author Stephen Prizio
- * @version 0.1.4
+ * @version 0.1.5
  */
 @UtilityClass
 public class DirectoryUtil {
@@ -60,5 +60,14 @@ public class DirectoryUtil {
         }
 
         return currentPath.toAbsolutePath().toString();
+    }
+
+    /**
+     * Returns the path to the base project's testing resources
+     *
+     * @return file path to the base project's testing resources
+     */
+    public static String getTestingResourcesDirectory() {
+        return getBaseProjectDirectory() + String.format("%ssrc%stest%sresources", File.separator, File.separator, File.separator);
     }
 }

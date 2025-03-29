@@ -20,7 +20,7 @@ import static com.bluebell.radicle.validation.GenericValidator.validateParameter
  * Service-layer for {@link MarketPrice}
  *
  * @author Stephen Prizio
- * @version 0.1.4
+ * @version 0.1.5
  */
 @Slf4j
 @Service
@@ -52,6 +52,24 @@ public class MarketPriceService {
 
         final Set<MarketPrice> savedPrices = new TreeSet<>();
         aggregatedMarketPrices.marketPrices().forEach(marketPrice -> savedPrices.add(this.marketPriceRepository.save(marketPrice)));
+        return savedPrices;
+    }
+
+    /**
+     * Saves all {@link MarketPrice}s within the given set to the database
+     *
+     * @param marketPrices {@link AggregatedMarketPrices}
+     * @return sorted {@link Set} of {@link MarketPrice}s
+     */
+    @Transactional
+    public Set<MarketPrice> saveAllSet(final Set<MarketPrice> marketPrices) {
+
+        if (CollectionUtils.isEmpty(marketPrices)) {
+            return Collections.emptySet();
+        }
+
+        final Set<MarketPrice> savedPrices = new TreeSet<>();
+        marketPrices.forEach(marketPrice -> savedPrices.add(this.marketPriceRepository.save(marketPrice)));
         return savedPrices;
     }
 }
