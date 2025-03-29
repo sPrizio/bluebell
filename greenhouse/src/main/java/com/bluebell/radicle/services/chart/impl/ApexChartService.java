@@ -23,12 +23,13 @@ import static com.bluebell.radicle.validation.GenericValidator.validateParameter
  * apexcharts implementation of {@link ChartService}
  *
  * @author Stephen Prizio
- * @version 0.1.4
+ * @version 0.1.5
  */
 @Service
 public class ApexChartService implements ChartService<ApexChartCandleStick> {
 
-    private FirstRateDataParser firstRateDataParser = new FirstRateDataParser(false);
+    //  TODO: make this dynamic
+    private FirstRateDataParser firstRateDataParser = new FirstRateDataParser(false, "NDX");
 
 
     //  METHODS
@@ -89,6 +90,6 @@ public class ApexChartService implements ChartService<ApexChartCandleStick> {
     //  MUTATORS
 
     public void setTest(final boolean test) {
-        this.firstRateDataParser = new FirstRateDataParser(test);
+        this.firstRateDataParser = new FirstRateDataParser(test, "NDX");
     }
 }

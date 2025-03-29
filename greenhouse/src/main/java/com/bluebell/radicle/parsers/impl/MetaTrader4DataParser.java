@@ -27,7 +27,7 @@ import java.util.TreeSet;
  * Parses data from MT4 data files
  *
  * @author Stephen Prizio
- * @version 0.1.4
+ * @version 0.1.5
  */
 @Slf4j
 public class MetaTrader4DataParser extends AbstractDataParser implements MarketPriceParser {
@@ -75,6 +75,8 @@ public class MetaTrader4DataParser extends AbstractDataParser implements MarketP
                                 .low(parseDoubleFromString(lineComponents[4]))
                                 .close(parseDoubleFromString(lineComponents[5]))
                                 .volume((long) parseDoubleFromString(lineComponents[6]))
+                                .symbol(this.symbol)
+                                .dataSource(DataSource.METATRADER4)
                                 .build()
                 );
             }

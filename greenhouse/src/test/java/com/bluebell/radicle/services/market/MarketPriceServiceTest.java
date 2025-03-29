@@ -24,13 +24,13 @@ import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
  * Testing class for {@link MarketPriceService}
  *
  * @author Stephen Prizio
- * @version 0.1.4
+ * @version 0.1.5
  */
 @SpringBootTest
 @RunWith(SpringRunner.class)
 class MarketPriceServiceTest extends AbstractGenericTest {
 
-    private final FirstRateDataParser firstRateDataParser = new FirstRateDataParser(true);
+    private final FirstRateDataParser firstRateDataParser = new FirstRateDataParser(true, "NDX");
 
     @Autowired
     private MarketPriceService marketPriceService;

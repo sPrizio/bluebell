@@ -23,26 +23,24 @@ import java.util.*;
  * Parses data from FirstData data files
  *
  * @author Stephen Prizio
- * @version 0.1.4
+ * @version 0.1.5
  */
 @Slf4j
 public class FirstRateDataParser extends AbstractDataParser implements MarketPriceParser {
 
     private final boolean isTest;
+    private final String symbol;
     private final String dataRoot;
 
-    public FirstRateDataParser() {
-        this.isTest = false;
+    public FirstRateDataParser(final boolean isTest, final String symbol) {
+        this.isTest = isTest;
+        this.symbol = symbol;
         this.dataRoot = StringUtils.EMPTY;
     }
 
-    public FirstRateDataParser(final boolean isTest) {
+    public FirstRateDataParser(final boolean isTest, final String symbol, final String dataRoot) {
         this.isTest = isTest;
-        this.dataRoot = StringUtils.EMPTY;
-    }
-
-    public FirstRateDataParser(final boolean isTest, final String dataRoot) {
-        this.isTest = isTest;
+        this.symbol = symbol;
         this.dataRoot = dataRoot;
     }
 
@@ -52,7 +50,7 @@ public class FirstRateDataParser extends AbstractDataParser implements MarketPri
     @Override
     public AggregatedMarketPrices parseMarketPrices(final String file, final MarketPriceTimeInterval interval) {
 
-        final String sampleFile = getDataRoot() + "/" + file;
+        final String sampleFile = getDataRoot(interval) + "/" + file;
         if (!validateFile(sampleFile)) {
             LOGGER.error("File {} was not found!\n", file);
             return AggregatedMarketPrices.builder().marketPrices(new TreeSet<>()).interval(interval).dataSource(DataSource.FIRST_RATE_DATA).build();
@@ -85,6 +83,8 @@ public class FirstRateDataParser extends AbstractDataParser implements MarketPri
                                 .high(parseDoubleFromString(lineComponents[2]))
                                 .low(parseDoubleFromString(lineComponents[3]))
                                 .close(parseDoubleFromString(lineComponents[4]))
+                                .symbol(this.symbol)
+                                .dataSource(DataSource.FIRST_RATE_DATA)
                                 .build()
                 );
             }
@@ -198,13 +198,13 @@ public class FirstRateDataParser extends AbstractDataParser implements MarketPri
      *
      * @return sample data path
      */
-    private String getDataRoot() {
+    private String getDataRoot(final MarketPriceTimeInterval interval) {
 
         final String root;
         if (StringUtils.isNotEmpty(this.dataRoot)) {
-            root = DirectoryUtil.getBaseProjectDirectory() + File.separator + this.dataRoot + File.separator + "firstratedata";
+            root = DirectoryUtil.getBaseProjectDirectory() + File.separator + this.dataRoot + File.separator + String.format("firstratedata/%s/%s", File.separator, this.symbol, File.separator, interval.toString());
         } else {
-            root = Objects.requireNonNull(getClass().getClassLoader().getResource("firstratedata")).getFile();
+            root = Objects.requireNonNull(getClass().getClassLoader().getResource(String.format("firstratedata/%s/%s", this.symbol, interval.toString()))).getFile();
         }
 
         if (this.isTest && !root.contains("test-classes")) {

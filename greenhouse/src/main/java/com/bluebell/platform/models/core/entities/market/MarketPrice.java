@@ -15,12 +15,12 @@ import java.util.Objects;
  * Class representation of a market price for an interval of time
  *
  * @author Stephen Prizio
- * @version 0.1.4
+ * @version 0.1.5
  */
 @Getter
 @Entity
 @Builder
-@Table(name = "market_prices", uniqueConstraints = @UniqueConstraint(name = "UniqueDateAndTimeIntervalAndDataSource", columnNames = {"price_date", "market_price_time_interval", "data_source"}))
+@Table(name = "market_prices", uniqueConstraints = @UniqueConstraint(name = "UniqueDateAndTimeIntervalAndDataSourceAndSymbol", columnNames = {"price_date", "market_price_time_interval", "data_source", "symbol"}))
 @NoArgsConstructor
 @AllArgsConstructor
 public class MarketPrice implements GenericEntity, Comparable<MarketPrice> {
@@ -30,12 +30,16 @@ public class MarketPrice implements GenericEntity, Comparable<MarketPrice> {
     private Long id;
 
     @Setter
-    @Column(name = "price_date")
+    @Column(name = "price_date", nullable = false)
     private LocalDateTime date;
 
     @Setter
-    @Column(name = "market_price_time_interval")
+    @Column(name = "market_price_time_interval", nullable = false)
     private MarketPriceTimeInterval interval;
+
+    @Setter
+    @Column(name = "symbol", nullable = false)
+    private String symbol;
 
     @Setter
     @Column
@@ -58,7 +62,7 @@ public class MarketPrice implements GenericEntity, Comparable<MarketPrice> {
     private long volume;
 
     @Setter
-    @Column(name = "data_source")
+    @Column(name = "data_source", nullable = false)
     private DataSource dataSource;
 
 

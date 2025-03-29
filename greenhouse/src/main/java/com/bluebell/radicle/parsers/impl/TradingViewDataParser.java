@@ -26,7 +26,7 @@ import java.util.TreeSet;
  * Parses data from TradingView data files
  *
  * @author Stephen Prizio
- * @version 0.1.4
+ * @version 0.1.5
  */
 @Slf4j
 public class TradingViewDataParser extends AbstractDataParser implements MarketPriceParser {
@@ -77,6 +77,8 @@ public class TradingViewDataParser extends AbstractDataParser implements MarketP
                                 .high(parseDoubleFromString(lineComponents[2]))
                                 .low(parseDoubleFromString(lineComponents[3]))
                                 .close(parseDoubleFromString(lineComponents[4]))
+                                .symbol(this.symbol)
+                                .dataSource(DataSource.TRADING_VIEW)
                                 .build()
                 );
             }
