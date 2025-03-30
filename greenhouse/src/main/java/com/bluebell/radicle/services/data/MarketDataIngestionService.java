@@ -6,6 +6,7 @@ import com.bluebell.platform.models.core.entities.market.MarketPrice;
 import com.bluebell.platform.models.core.nonentities.market.AggregatedMarketPrices;
 import com.bluebell.platform.util.DirectoryUtil;
 import com.bluebell.radicle.enums.DataSource;
+import com.bluebell.radicle.enums.IngestionStatus;
 import com.bluebell.radicle.parsers.MarketPriceParser;
 import com.bluebell.radicle.parsers.impl.FirstRateDataParser;
 import com.bluebell.radicle.parsers.impl.MetaTrader4DataParser;
@@ -20,6 +21,7 @@ import org.springframework.stereotype.Component;
 import java.io.File;
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Set;
 import java.util.TreeSet;
@@ -45,18 +47,18 @@ public class MarketDataIngestionService {
      * @param dataRoot directory with data
      * @return {@link Triplet} with success flag, message and result set
      */
-    public Triplet<Boolean, String, Set<MarketPrice>> ingest(final DataSource dataSource, final String symbol, final String dataRoot) {
+    public Triplet<IngestionStatus, String, Set<MarketPrice>> ingest(final DataSource dataSource, final String symbol, final String dataRoot) {
 
         if (dataSource == null) {
-            return Triplet.with(false, "No datasource specified!", Collections.emptySet());
+            return Triplet.with(IngestionStatus.FAILED, "No datasource specified!", Collections.emptySet());
         }
 
         if (StringUtils.isEmpty(symbol)) {
-            return Triplet.with(false, "No symbol specified!", Collections.emptySet());
+            return Triplet.with(IngestionStatus.FAILED, "No symbol specified!", Collections.emptySet());
         }
 
         if (StringUtils.isEmpty(dataRoot)) {
-            return Triplet.with(false, "No data root specified!", Collections.emptySet());
+            return Triplet.with(IngestionStatus.FAILED, "No data root specified!", Collections.emptySet());
         }
 
         try {
@@ -66,14 +68,15 @@ public class MarketDataIngestionService {
             final File directory = new File(String.format("%s%s%s%s%s%s%s", basePath, File.separator, dataRoot, File.separator, dataSource.getDataRoot(), File.separator, symbol));
 
             if (!directory.exists() || !directory.isDirectory()) {
-                return Triplet.with(false, String.format("Symbol %s does not exist", symbol), Collections.emptySet());
+                return Triplet.with(IngestionStatus.SKIPPED, String.format("Symbol %s does not exist", symbol), Collections.emptySet());
             }
 
-            final File[] intervals = directory.listFiles();
+            File[] intervals = directory.listFiles();
             if (isEmptyArray(intervals)) {
-                return Triplet.with(false, String.format("Symbol %s does not have any data", symbol), Collections.emptySet());
+                return Triplet.with(IngestionStatus.SKIPPED, String.format("Symbol %s does not have any data", symbol), Collections.emptySet());
             }
 
+            intervals = Arrays.stream(intervals).filter(File::isDirectory).toList().toArray(File[]::new);
             for (final File interval : intervals) {
                 final File[] dataFiles = interval.listFiles();
                 final MarketPriceTimeInterval marketPriceTimeInterval = GenericEnum.getByCode(MarketPriceTimeInterval.class, interval.getName().toUpperCase());
@@ -88,20 +91,26 @@ public class MarketDataIngestionService {
                 }
             }
 
-            final File processedDirectory = new File(String.format("%s%s%s%s%s%s%s", DirectoryUtil.getTestingResourcesDirectory(), File.separator, dataRoot, File.separator, "/processed", File.separator, dataSource.getDataRoot()));
+            final File processedDirectory;
+            if (!this.isTest) {
+                processedDirectory = new File(String.format("%s%s%s%s%s", DirectoryUtil.getIngressDataRoot(dataRoot), File.separator, "/processed", File.separator, dataSource.getDataRoot()));
+            } else {
+                processedDirectory = new File(String.format("%s%s%s%s%s%s%s", DirectoryUtil.getTestingResourcesDirectory(), File.separator, dataRoot, File.separator, "/processed", File.separator, dataSource.getDataRoot()));
+            }
+
             if (!processedDirectory.exists()) {
                 processedDirectory.mkdirs();
             }
 
             FileUtils.copyDirectory(directory.getParentFile(), processedDirectory);
             FileUtils.deleteDirectory(directory.getParentFile());
-            return Triplet.with(true, "MarketPrices fetched successfully", marketPrices);
+            return Triplet.with(IngestionStatus.SUCCESS, "MarketPrices fetched successfully", marketPrices);
         } catch (Exception e) {
             StringWriter sw = new StringWriter();
             PrintWriter pw = new PrintWriter(sw);
             e.printStackTrace(pw);
 
-            return Triplet.with(false, sw.toString(), Collections.emptySet());
+            return Triplet.with(IngestionStatus.FAILED, sw.toString(), Collections.emptySet());
         }
     }
 

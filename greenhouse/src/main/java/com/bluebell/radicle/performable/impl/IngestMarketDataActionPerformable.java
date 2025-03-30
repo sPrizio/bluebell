@@ -3,6 +3,7 @@ package com.bluebell.radicle.performable.impl;
 import com.bluebell.platform.models.core.entities.market.MarketPrice;
 import com.bluebell.platform.models.core.nonentities.action.ActionData;
 import com.bluebell.radicle.enums.DataSource;
+import com.bluebell.radicle.enums.IngestionStatus;
 import com.bluebell.radicle.performable.ActionPerformable;
 import com.bluebell.radicle.services.data.MarketDataIngestionService;
 import com.bluebell.radicle.services.market.MarketPriceService;
@@ -48,13 +49,22 @@ public class IngestMarketDataActionPerformable implements ActionPerformable {
     @Override
     public ActionData perform() {
 
-        final Triplet<Boolean, String, Set<MarketPrice>> ingested =
+        final Triplet<IngestionStatus, String, Set<MarketPrice>> ingested =
                 this.marketDataIngestionService.ingest(this.dataSource, this.symbol, this.dataRoot);
 
-        if (Boolean.FALSE.equals(ingested.getValue0())) {
+        if (ingested.getValue0().equals(IngestionStatus.FAILED)) {
             return ActionData
                     .builder()
                     .success(false)
+                    .logs(ingested.getValue1())
+                    .build();
+        }
+
+        if (ingested.getValue0().equals(IngestionStatus.SKIPPED)) {
+            return ActionData
+                    .builder()
+                    .success(true)
+                    .data(IngestionStatus.SKIPPED)
                     .logs(ingested.getValue1())
                     .build();
         }

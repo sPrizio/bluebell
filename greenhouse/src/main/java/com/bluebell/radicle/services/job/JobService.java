@@ -17,6 +17,7 @@ import com.bluebell.radicle.repositories.job.JobResultRepository;
 import com.bluebell.radicle.services.action.ActionService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
@@ -37,7 +38,7 @@ import static com.bluebell.radicle.validation.GenericValidator.validateParameter
  * Service-layer for {@link Job}
  *
  * @author Stephen Prizio
- * @version 0.1.3
+ * @version 0.1.5
  */
 @Slf4j
 @Service
@@ -123,7 +124,7 @@ public class JobService {
                 JobResultEntry entry = JobResultEntry
                         .builder()
                         .success(true)
-                        .data(safeGetData(result))
+                        //.data(safeGetData(result))
                         .logs(safeGetLogs(result))
                         .build();
 
@@ -316,7 +317,9 @@ public class JobService {
     private String safeGetData(final ActionResult actionResult) throws JsonProcessingException {
 
         if (actionResult != null && actionResult.getData() != null && actionResult.getData().getData() != null) {
-            return new ObjectMapper().writeValueAsString(actionResult.getData().data());
+            final ObjectMapper objectMapper = new ObjectMapper();
+            objectMapper.registerModule(new JavaTimeModule());
+            return objectMapper.writeValueAsString(actionResult.getData().getData());
         }
 
         return "No data to display.";

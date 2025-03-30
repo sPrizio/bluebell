@@ -4,6 +4,7 @@ import com.bluebell.AbstractGenericTest;
 import com.bluebell.platform.models.core.entities.market.MarketPrice;
 import com.bluebell.platform.util.DirectoryUtil;
 import com.bluebell.radicle.enums.DataSource;
+import com.bluebell.radicle.enums.IngestionStatus;
 import org.apache.commons.io.FileUtils;
 import org.javatuples.Triplet;
 import org.junit.jupiter.api.AfterEach;
@@ -56,41 +57,41 @@ class MarketDataIngestionServiceTest extends AbstractGenericTest {
 
     @Test
     void test_ingest_badData() {
-        assertThat(this.marketDataIngestionService.ingest(null, null, null).getValue0()).isFalse();
-        assertThat(this.marketDataIngestionService.ingest(DataSource.FIRST_RATE_DATA, null, null).getValue0()).isFalse();
-        assertThat(this.marketDataIngestionService.ingest(DataSource.FIRST_RATE_DATA, "TEST", null).getValue0()).isFalse();
-        assertThat(this.marketDataIngestionService.ingest(DataSource.FIRST_RATE_DATA, "TEST", "/test-not-ingress").getValue0()).isFalse();
-        assertThat(this.marketDataIngestionService.ingest(DataSource.FIRST_RATE_DATA, "TEST", "/empty-ingress").getValue0()).isFalse();
+        assertThat(this.marketDataIngestionService.ingest(null, null, null).getValue0()).isEqualTo(IngestionStatus.FAILED);
+        assertThat(this.marketDataIngestionService.ingest(DataSource.FIRST_RATE_DATA, null, null).getValue0()).isEqualTo(IngestionStatus.FAILED);
+        assertThat(this.marketDataIngestionService.ingest(DataSource.FIRST_RATE_DATA, "TEST", null).getValue0()).isEqualTo(IngestionStatus.FAILED);
+        assertThat(this.marketDataIngestionService.ingest(DataSource.FIRST_RATE_DATA, "TEST", "/test-not-ingress").getValue0()).isEqualTo(IngestionStatus.SKIPPED);
+        assertThat(this.marketDataIngestionService.ingest(DataSource.FIRST_RATE_DATA, "TEST", "/empty-ingress").getValue0()).isEqualTo(IngestionStatus.SKIPPED);
     }
 
     @Test
     void test_ingest_noSymbol() {
-        final Triplet<Boolean, String, Set<MarketPrice>> result = this.marketDataIngestionService.ingest(DataSource.FIRST_RATE_DATA, "Bad Symbol", this.dataRoot);
-        assertThat(result.getValue0()).isFalse();
+        final Triplet<IngestionStatus, String, Set<MarketPrice>> result = this.marketDataIngestionService.ingest(DataSource.FIRST_RATE_DATA, "Bad Symbol", this.dataRoot);
+        assertThat(result.getValue0()).isEqualTo(IngestionStatus.SKIPPED);
         assertThat(result.getValue1()).contains("does not exist");
         assertThat(result.getValue2()).isEmpty();
     }
 
     @Test
     void test_ingest_emptySymbol() {
-        final Triplet<Boolean, String, Set<MarketPrice>> result = this.marketDataIngestionService.ingest(DataSource.METATRADER4, "EMPTY", this.dataRoot);
-        assertThat(result.getValue0()).isFalse();
+        final Triplet<IngestionStatus, String, Set<MarketPrice>> result = this.marketDataIngestionService.ingest(DataSource.METATRADER4, "EMPTY", this.dataRoot);
+        assertThat(result.getValue0()).isEqualTo(IngestionStatus.SKIPPED);
         assertThat(result.getValue1()).contains("does not have any data");
         assertThat(result.getValue2()).isEmpty();
     }
 
     @Test
     void test_ingest_success() {
-        final Triplet<Boolean, String, Set<MarketPrice>> result = this.marketDataIngestionService.ingest(DataSource.TRADING_VIEW, "US100", this.dataRoot);
-        assertThat(result.getValue0()).isTrue();
+        final Triplet<IngestionStatus, String, Set<MarketPrice>> result = this.marketDataIngestionService.ingest(DataSource.TRADING_VIEW, "US100", this.dataRoot);
+        assertThat(result.getValue0()).isEqualTo(IngestionStatus.SUCCESS);
         assertThat(result.getValue2()).isNotEmpty();
         assertThat(new File(String.format("%s%s%s%s%s", DirectoryUtil.getTestingResourcesDirectory(), File.separator, this.dataRoot, File.separator, DataSource.TRADING_VIEW.getDataRoot()))).doesNotExist();
     }
 
     @Test
     void test_ingest_parsingError() {
-        final Triplet<Boolean, String, Set<MarketPrice>> result = this.marketDataIngestionService.ingest(DataSource.FIRST_RATE_DATA, "NDX", this.dataRoot);
-        assertThat(result.getValue0()).isFalse();
+        final Triplet<IngestionStatus, String, Set<MarketPrice>> result = this.marketDataIngestionService.ingest(DataSource.FIRST_RATE_DATA, "NDX", this.dataRoot);
+        assertThat(result.getValue0()).isEqualTo(IngestionStatus.FAILED);
         assertThat(result.getValue2()).isEmpty();
     }
 }
