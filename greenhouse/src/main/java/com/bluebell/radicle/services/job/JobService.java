@@ -124,7 +124,7 @@ public class JobService {
                 JobResultEntry entry = JobResultEntry
                         .builder()
                         .success(true)
-                        //.data(safeGetData(result))
+                        .data(safeGetData(result))
                         .logs(safeGetLogs(result))
                         .build();
 

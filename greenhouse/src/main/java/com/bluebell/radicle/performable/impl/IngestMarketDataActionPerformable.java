@@ -13,10 +13,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 import org.javatuples.Triplet;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
 import java.util.Set;
-import java.util.TreeSet;
 
 /**
  * Implementation of {@link ActionPerformable} that ingests market data files
@@ -26,6 +26,7 @@ import java.util.TreeSet;
  */
 @Slf4j
 @Component("ingestMarketDataActionPerformable")
+@Scope("prototype")
 public class IngestMarketDataActionPerformable implements ActionPerformable {
 
     @Setter
@@ -69,16 +70,16 @@ public class IngestMarketDataActionPerformable implements ActionPerformable {
                     .build();
         }
 
-        Set<MarketPrice> saved = new TreeSet<>();
+        int count = 0;
         if (CollectionUtils.isNotEmpty(ingested.getValue2())) {
-            saved = this.marketPriceService.saveAllSet(ingested.getValue2());
+            count = this.marketPriceService.saveAllSet(ingested.getValue2());
         }
 
         return ActionData
                 .builder()
                 .success(true)
                 .logs(ingested.getValue1())
-                .data(saved)
+                .data(count)
                 .build();
     }
 }

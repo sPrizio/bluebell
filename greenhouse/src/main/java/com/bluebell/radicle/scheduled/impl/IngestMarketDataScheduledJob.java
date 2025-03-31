@@ -1,5 +1,6 @@
 package com.bluebell.radicle.scheduled.impl;
 
+import com.bluebell.platform.enums.job.JobStatus;
 import com.bluebell.platform.enums.job.JobType;
 import com.bluebell.platform.models.core.entities.action.impl.Action;
 import com.bluebell.platform.models.core.entities.job.impl.Job;
@@ -13,7 +14,9 @@ import com.bluebell.radicle.scheduled.AbstractScheduledJob;
 import com.bluebell.radicle.scheduled.GenericScheduledJob;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.ApplicationContext;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
@@ -33,14 +36,14 @@ import java.util.TreeSet;
 @Component
 public class IngestMarketDataScheduledJob extends AbstractScheduledJob implements GenericScheduledJob<Enum<JobType>> {
 
+    @Autowired
+    private ApplicationContext applicationContext;
+
     @Value("${bluebell.ingress.root}")
     private String dataRoot;
 
     @Resource(name = "actionRepository")
     private ActionRepository actionRepository;
-
-    @Resource(name = "ingestMarketDataActionPerformable")
-    private IngestMarketDataActionPerformable ingestMarketDataActionPerformable;
 
     @Resource(name = "jobRepository")
     private JobRepository jobRepository;
@@ -55,7 +58,7 @@ public class IngestMarketDataScheduledJob extends AbstractScheduledJob implement
 
         checkForConcurrentJob(JobType.INGEST_MARKET_DATA);
 
-        int count = 0;
+        int count = 1;
         final Set<Action> actions = new TreeSet<>();
         for (final DataSource dataSource : DataSource.values()) {
             final File dataSourceDirectory = new File(DirectoryUtil.getIngressDataRootForDataSource(this.dataRoot, dataSource));
@@ -63,22 +66,25 @@ public class IngestMarketDataScheduledJob extends AbstractScheduledJob implement
                 final File[] symbols = dataSourceDirectory.listFiles();
                 if (symbols != null) {
                     for (final File symbol : symbols) {
-                        this.ingestMarketDataActionPerformable.setDataSource(dataSource);
-                        this.ingestMarketDataActionPerformable.setSymbol(symbol.getName());
+                        final IngestMarketDataActionPerformable actionPerformable = this.applicationContext.getBean(IngestMarketDataActionPerformable.class);
+                        actionPerformable.setDataSource(dataSource);
+                        actionPerformable.setSymbol(symbol.getName());
 
                         actions.add(
                                 this.actionRepository.save(
                                         Action
                                                 .builder()
-                                                .priority(count++)
+                                                .priority(count)
                                                 .name(String.format("IngestMarketDataAction_%s_%s_%s", dataSource.getDataRoot(), symbol.getName(), LocalDateTime.now()))
-                                                .performableAction(this.ingestMarketDataActionPerformable)
+                                                .performableAction(actionPerformable)
                                                 .build()
                                 )
                         );
                     }
                 }
             }
+
+            count += 1;
         }
 
         if (actions.isEmpty()) {
@@ -99,6 +105,8 @@ public class IngestMarketDataScheduledJob extends AbstractScheduledJob implement
             ingestMarketDataJob.addAction(action);
         }
 
+        ingestMarketDataJob.setExecutionTime(LocalDateTime.now());
+        ingestMarketDataJob.setStatus(JobStatus.IN_PROGRESS);
         this.jobRepository.save(ingestMarketDataJob);
         this.actionRepository.saveAll(actions);
 

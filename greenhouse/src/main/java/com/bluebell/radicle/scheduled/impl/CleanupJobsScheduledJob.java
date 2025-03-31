@@ -21,7 +21,7 @@ import java.time.LocalDateTime;
  * Job that runs once per day to clean up any stale jobs
  *
  * @author Stephen Prizio
- * @version 0.1.2
+ * @version 0.1.5
  */
 @Slf4j
 @Component
@@ -44,7 +44,7 @@ public class CleanupJobsScheduledJob extends AbstractScheduledJob implements Gen
 
     @Override
     @Async
-    @Scheduled(cron = "0 0 23 * * ?")
+    @Scheduled(cron = "0 0 2 * * ?")
     public void execute() {
 
         checkForConcurrentJob(JobType.CLEANUP_STALE_JOBS);
