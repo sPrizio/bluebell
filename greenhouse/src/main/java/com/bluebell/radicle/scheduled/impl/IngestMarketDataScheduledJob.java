@@ -53,7 +53,7 @@ public class IngestMarketDataScheduledJob extends AbstractScheduledJob implement
 
     @Override
     @Async
-    @Scheduled(cron = "0 0 2 * * *")
+    @Scheduled(cron = "0 0 7 * * *")
     public void execute() {
 
         checkForConcurrentJob(JobType.INGEST_MARKET_DATA);

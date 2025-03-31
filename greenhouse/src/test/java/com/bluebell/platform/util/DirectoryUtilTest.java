@@ -28,8 +28,9 @@ class DirectoryUtilTest {
         final String directoryPath = DirectoryUtil.getOutputDirectory("test-output", true);
         File directory = new File(directoryPath);
 
-        assertThat(directory).exists();
-        assertThat(directory).isDirectory();
+        assertThat(directory)
+                .exists()
+                .isDirectory();
 
         directory.delete();
     }
@@ -54,8 +55,9 @@ class DirectoryUtilTest {
     @Test
     void test_getTestingResourcesDirectory_success() {
         String path = DirectoryUtil.getTestingResourcesDirectory();
-        assertThat(path).contains("test");
-        assertThat(path).contains("resources");
+        assertThat(path)
+                .contains("test")
+                .contains("resources");
     }
 
 
