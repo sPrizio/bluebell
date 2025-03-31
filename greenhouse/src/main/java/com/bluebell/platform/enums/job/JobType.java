@@ -17,6 +17,7 @@ public enum JobType implements GenericEnum<JobType> {
     FETCH_MARKET_NEWS("FETCH_MARKET_NEWS", "Fetch Market News Job"),
     CLEANUP_STALE_JOBS("CLEANUP_STALE_JOBS", "Cleanup Stale Jobs"),
     INGEST_MARKET_DATA("INGEST_MARKET_DATA", "Ingest Market Data Job"),
+    CLEANUP_INGESTED_DATA("CLEANUP_INGESTED_DATA", "Cleanup Ingested Data Job"),
     FETCH_MARKET_DATA_FROM_FIRST_DATA("FETCH_MARKET_DATA_FROM_FIRST_DATA", "Fetch Market Data from FirstData Job"),
     FETCH_MARKET_DATA_FROM_MT4("FETCH_MARKET_DATA_FROM_MT4", "Fetch Market Data From MT4 Job");
 
