@@ -60,4 +60,40 @@ public class FileUtil {
 
         return destinationDirPath.toFile();
     }
+
+    /**
+     * Validates the given {@link File} is valid csv with a variable delimiter
+     *
+     * @param file {@link File}
+     * @param delimiter delimiter
+     * @return true if valid
+     */
+    public static boolean isValidCsvFile(final File file, final char delimiter) {
+
+        if (file == null || !file.exists() || !file.isFile() || !file.getName().toLowerCase().endsWith(".csv")) {
+            return false;
+        }
+
+        try (BufferedReader reader = Files.newBufferedReader(Paths.get(file.getAbsolutePath()))) {
+            String headerLine = reader.readLine();
+            if (headerLine == null || headerLine.trim().isEmpty()) {
+                return false;
+            }
+
+            String[] headers = headerLine.split(String.valueOf(delimiter));
+            int columnCount = headers.length;
+
+            String line;
+            while ((line = reader.readLine()) != null) {
+                String[] values = line.split(String.valueOf(delimiter));
+                if (values.length != columnCount) {
+                    return false;
+                }
+            }
+        } catch (IOException e) {
+            return false;
+        }
+
+        return true;
+    }
 }
