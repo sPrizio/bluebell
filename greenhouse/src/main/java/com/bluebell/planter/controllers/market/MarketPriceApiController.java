@@ -12,6 +12,9 @@ import com.bluebell.radicle.enums.DataSource;
 import com.bluebell.radicle.security.aspects.ValidateApiToken;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
@@ -51,8 +54,58 @@ public class MarketPriceApiController extends AbstractApiController {
 
     //  METHODS
 
+    /**
+     * Ingests a market price data file from MT4 and saves it to the file system
+     *
+     * @param symbol symbol for the price
+     * @param priceInterval time interval
+     * @param file multipart file
+     * @param request {@link HttpServletRequest}
+     * @return {@link StandardJsonResponse}
+     * @throws IOException io exception during file processing
+     */
     @ValidateApiToken
     @Operation(summary = "Ingests a market price data file from MT4", description = "Takes in a file of MT4 market price data and saves it to the file system")
+    @ApiResponse(
+            responseCode = "200",
+            description = "Response when the api was given a bad file format.",
+            content = @Content(
+                    mediaType = "application/json",
+                    schema = @Schema(implementation = StandardJsonResponse.class, example = "Format .sdada is not a supported file format")
+            )
+    )
+    @ApiResponse(
+            responseCode = "200",
+            description = "Response when the api was given a bad symbol.",
+            content = @Content(
+                    mediaType = "application/json",
+                    schema = @Schema(implementation = StandardJsonResponse.class, example = "Symbol <bad_symbol> is not a valid symbol name")
+            )
+    )
+    @ApiResponse(
+            responseCode = "200",
+            description = "Response when the api was given a bad time interval.",
+            content = @Content(
+                    mediaType = "application/json",
+                    schema = @Schema(implementation = StandardJsonResponse.class, example = "Time interval <bad_interval> is not a valid time interval")
+            )
+    )
+    @ApiResponse(
+            responseCode = "200",
+            description = "Response when the api successfully saves the file to the system.",
+            content = @Content(
+                    mediaType = "application/json",
+                    schema = @Schema(implementation = StandardJsonResponse.class)
+            )
+    )
+    @ApiResponse(
+            responseCode = "401",
+            description = "Response when the api call made was unauthorized.",
+            content = @Content(
+                    mediaType = "application/json",
+                    schema = @Schema(implementation = StandardJsonResponse.class, example = "The API token was invalid.")
+            )
+    )
     @PostMapping("/ingest")
     public StandardJsonResponse<Boolean> postIngestMarketPriceDataFromMT4(
             @Parameter(name = "Market Price Sy,bol", description = "The symbol for the price data")
