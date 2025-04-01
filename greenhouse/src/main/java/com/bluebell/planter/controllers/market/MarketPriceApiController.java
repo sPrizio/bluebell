@@ -7,13 +7,14 @@ import com.bluebell.platform.enums.time.MarketPriceTimeInterval;
 import com.bluebell.platform.models.api.json.StandardJsonResponse;
 import com.bluebell.platform.models.core.entities.market.MarketPrice;
 import com.bluebell.platform.util.DirectoryUtil;
-import com.bluebell.platform.util.FileUtil;
+import com.bluebell.platform.util.MetaTrader4FileUtil;
 import com.bluebell.radicle.enums.DataSource;
 import com.bluebell.radicle.security.aspects.ValidateApiToken;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.EnumUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -24,6 +25,9 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.regex.Pattern;
 
 import static com.bluebell.radicle.importing.validation.ImportValidator.validateImportFileExtension;
@@ -34,6 +38,7 @@ import static com.bluebell.radicle.importing.validation.ImportValidator.validate
  * @author Stephen Prizio
  * @version 0.1.5
  */
+@Slf4j
 @RestController
 @RequestMapping("${bluebell.base.api.controller.endpoint}/market-price")
 @Tag(name = "MarketPrice", description = "Handles endpoints & operations related to market prices.")
@@ -79,27 +84,34 @@ public class MarketPriceApiController extends AbstractApiController {
                         .build();
             }
 
+
             final MarketPriceTimeInterval marketPriceTimeInterval = GenericEnum.getByCode(MarketPriceTimeInterval.class, priceInterval);
-            final File targetDir = new File(String.format("%s%s%s%s%s%s", DirectoryUtil.getBaseProjectDirectory(), File.separator, this.ingressRoot, DataSource.METATRADER4.getDataRoot(), File.separator, marketPriceTimeInterval.getCode()));
-            final File fileToSave = new File(targetDir, file.getOriginalFilename());
-            try (FileOutputStream fos = new FileOutputStream(fileToSave)) {
+            final Path targetDirPath = Paths.get(String.format("%s%s%s%s%s%s%s", getIngressPath(), File.separator, DataSource.METATRADER4.getDataRoot(), File.separator, symbol, File.separator, marketPriceTimeInterval.getCode()));
+            final Path targetFilePath = Paths.get(targetDirPath.toString(), file.getOriginalFilename());
+            Files.createDirectories(targetDirPath);
+
+            if (Files.notExists(targetFilePath)) {
+                Files.createFile(targetFilePath);
+            } else {
+                LOGGER.info("{} already exists", targetFilePath);
+            }
+
+            try (FileOutputStream fos = new FileOutputStream(targetFilePath.toString())) {
                 fos.write(file.getBytes());
             }
 
-            //  TODO: test this
-            //  TODO: add validation for MT4 Price data file
-            if (FileUtil.isValidCsvFile(fileToSave, ';')) {
+            if (MetaTrader4FileUtil.isValidCsvFile(new File(targetFilePath.toString()), ';')) {
                 return StandardJsonResponse
                         .<Boolean>builder()
                         .success(true)
                         .message(String.format("File %s was successfully saved to the ingress", file.getOriginalFilename()))
                         .build();
             } else {
-                FileUtils.delete(fileToSave);
+                FileUtils.delete(new File(targetFilePath.toString()));
                 return StandardJsonResponse
                         .<Boolean>builder()
                         .success(false)
-                        .message("File did not contain valid .csv")
+                        .message("File did not contain valid mt4 .csv")
                         .build();
             }
         }
@@ -127,5 +139,19 @@ public class MarketPriceApiController extends AbstractApiController {
         }
 
         return Pattern.compile(CorePlatformConstants.Regex.MARKET_PRICE_VALID_SYMBOL_REGEX).matcher(symbol).matches();
+    }
+
+    /**
+     * Returns the ingress path depending on the runtime environment
+     *
+     * @return ingress path
+     */
+    private String getIngressPath() {
+
+        if (this.ingressRoot.contains("test")) {
+            return String.format("%s%s%s", DirectoryUtil.getTestingResourcesDirectory(), File.separator, this.ingressRoot);
+        } else {
+            return String.format("%s", DirectoryUtil.getIngressDataRoot(this.ingressRoot));
+        }
     }
 }

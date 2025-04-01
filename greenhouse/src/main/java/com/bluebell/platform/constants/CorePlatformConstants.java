@@ -69,6 +69,11 @@ public class CorePlatformConstants {
     public static final String MT4_DATE_FORMAT = "yyyy.MM.dd";
 
     /**
+     * MT4 time format
+     */
+    public static final String MT4_TIME_FORMAT = "H:mm";
+
+    /**
      * MT4 date & time format
      */
     public static final String MT4_DATE_TIME_FORMAT = "yyyy.MM.dd HH:mm:ss";
