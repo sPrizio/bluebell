@@ -8,8 +8,8 @@ import requests
 from watchdog.events import FileSystemEventHandler
 from watchdog.observers import Observer
 
-BASE_INSTALLATION_DIRECTORY = r"C:\Program Files\bluebell"
-LOGGING_DIRECTORY = r"C:\Temp\bluebell\mt4_data_watcher.log"
+BASE_INSTALLATION_DIRECTORY = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
+LOGGING_DIRECTORY = r"{}\mt4_data_watcher.log".format(BASE_INSTALLATION_DIRECTORY)
 
 log_dir = os.path.dirname(LOGGING_DIRECTORY)
 os.makedirs(log_dir, exist_ok=True)

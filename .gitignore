@@ -3,6 +3,7 @@
 .env.staging
 .env.prod
 greenhouse/middleware/**/venv
+greenhouse/middleware/**/**.log
 
 target/
 !.mvn/wrapper/maven-wrapper.jar
