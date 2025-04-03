@@ -3,6 +3,7 @@ package com.bluebell.planter.controllers.market;
 import com.bluebell.planter.controllers.AbstractApiController;
 import com.bluebell.platform.constants.CorePlatformConstants;
 import com.bluebell.platform.enums.GenericEnum;
+import com.bluebell.platform.enums.security.UserRole;
 import com.bluebell.platform.enums.time.MarketPriceTimeInterval;
 import com.bluebell.platform.models.api.json.StandardJsonResponse;
 import com.bluebell.platform.models.core.entities.market.MarketPrice;
@@ -64,7 +65,7 @@ public class MarketPriceApiController extends AbstractApiController {
      * @return {@link StandardJsonResponse}
      * @throws IOException io exception during file processing
      */
-    @ValidateApiToken
+    @ValidateApiToken(role = UserRole.ADMINISTRATOR)
     @Operation(summary = "Ingests a market price data file from MT4", description = "Takes in a file of MT4 market price data and saves it to the file system")
     @ApiResponse(
             responseCode = "200",
@@ -108,7 +109,7 @@ public class MarketPriceApiController extends AbstractApiController {
     )
     @PostMapping("/ingest")
     public StandardJsonResponse<Boolean> postIngestMarketPriceDataFromMT4(
-            @Parameter(name = "Market Price Sy,bol", description = "The symbol for the price data")
+            @Parameter(name = "Market Price Symbol", description = "The symbol for the price data")
             final @RequestParam("symbol") String symbol,
             @Parameter(name = "Market Price Time Interval", description = "The time interval for the price data")
             final @RequestParam("priceInterval") String priceInterval,
@@ -136,7 +137,6 @@ public class MarketPriceApiController extends AbstractApiController {
                         .message(String.format("%s is not a valid time interval", priceInterval))
                         .build();
             }
-
 
             final MarketPriceTimeInterval marketPriceTimeInterval = GenericEnum.getByCode(MarketPriceTimeInterval.class, priceInterval);
             final Path targetDirPath = Paths.get(String.format("%s%s%s%s%s%s%s", getIngressPath(), File.separator, DataSource.METATRADER4.getDataRoot(), File.separator, symbol, File.separator, marketPriceTimeInterval.getCode()));
