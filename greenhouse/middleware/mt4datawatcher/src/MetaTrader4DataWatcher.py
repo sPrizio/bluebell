@@ -30,9 +30,6 @@ API_KEY = config.get("api", "api_token")
 HEADERS = {"fp-api_token": API_KEY}
 
 
-# TODO: handle errors, maybe move them to an archived or retry folder?
-# TODO: this can be tested with turning the api on and off
-
 class MetaTrader4DataWatcher(FileSystemEventHandler):
     """Handles new .csv files detected in the directory."""
     def on_created(self, event):
@@ -61,10 +58,17 @@ def process_file(file_path):
             os.rename(file_path, os.path.join(processed_dir, os.path.basename(file_path)))
 
             logging.info(f"Moved {os.path.basename(file_path)} to {processed_dir}")
+
+            cleanup_files("processed")
         else:
             logging.error(f"Failed to upload file {os.path.basename(file_path)}")
 
-        cleanup_processed_files()
+            # Move file to "failed" folder
+            failed_dir = os.path.join(WATCH_DIRECTORY, "failed")
+            os.makedirs(failed_dir, exist_ok=True)
+            os.rename(file_path, os.path.join(failed_dir, os.path.basename(file_path)))
+
+            cleanup_files("failed")
 
     except Exception as e:
         logging.error(f"Error processing {file_path}: {e}")
@@ -119,12 +123,12 @@ def upload_file(file_path):
             files = {"file": (os.path.basename(file_path), file, "text/csv")}
             response = requests.post(API_ENDPOINT, headers=HEADERS, params=params, files=files, timeout=30)
 
-        if response.status_code == 200:
-            logging.info(f"Successfully uploaded: {file_path}")
-            return True
-        else:
-            logging.error(f"Failed to upload {file_path}. Status: {response.status_code}, Response: {response.text}")
-            return False
+            if response.status_code == 200:
+                logging.info(f"Successfully uploaded: {file_path}")
+                return True
+            else:
+                logging.error(f"Failed to upload {file_path}. Status: {response.status_code}, Response: {response.text}")
+                return False
 
     except requests.exceptions.RequestException as e:
         logging.error(f"Error uploading {file_path}: {e}")
@@ -133,17 +137,17 @@ def upload_file(file_path):
     finally:
         time.sleep(2)
 
-def cleanup_processed_files():
-    """Cleanup the processed files after x amount of time."""
+def cleanup_files(directory):
+    """Cleanup the files after x amount of time in the given directory."""
     now = time.time()
-    processed_dir = os.path.join(WATCH_DIRECTORY, "processed")
-    for file in os.listdir(processed_dir):
-        file_path = os.path.join(processed_dir, file)
+    working_dir = os.path.join(WATCH_DIRECTORY, directory)
+    for file in os.listdir(working_dir):
+        file_path = os.path.join(working_dir, file)
         if os.path.isfile(file_path):
             file_age = now - os.path.getmtime(file_path)
             if file_age > CLEANUP_THRESHOLD:
                 os.remove(file_path)
-                logging.info(f"Cleaned up old processed file: {os.path.basename(file_path)}")
+                logging.info(f"Cleaned up old file: {os.path.basename(file_path)}")
 
 if __name__ == "__main__":
     start_watcher()

@@ -2,6 +2,7 @@
 .env.dev
 .env.staging
 .env.prod
+greenhouse/middleware/**/venv
 
 target/
 !.mvn/wrapper/maven-wrapper.jar
