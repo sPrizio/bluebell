@@ -10,7 +10,7 @@ import java.time.temporal.ChronoUnit;
  * Representation of an interval of time for a {@link MarketPrice}
  *
  * @author Stephen Prizio
- * @version 0.1.4
+ * @version 0.1.5
  */
 @Getter
 public enum MarketPriceTimeInterval implements GenericEnum<MarketPriceTimeInterval> {
@@ -39,5 +39,26 @@ public enum MarketPriceTimeInterval implements GenericEnum<MarketPriceTimeInterv
         this.label = label;
         this.unit = unit;
         this.amount = amount;
+    }
+
+
+    //  METHODS
+
+
+    /**
+     * Calculates the {@link MarketPriceTimeInterval} for a specific label from firstratedata
+     *
+     * @param label label
+     * @return {@link MarketPriceTimeInterval}
+     */
+    public static MarketPriceTimeInterval getForFirstRateDataLabel(final String label) {
+        return switch (label) {
+            case "1day" -> ONE_DAY;
+            case "1hour" -> ONE_HOUR;
+            case "1min" -> ONE_MINUTE;
+            case "5min" -> FIVE_MINUTE;
+            case "30min" -> THIRTY_MINUTE;
+            default -> throw new IllegalArgumentException("Unknown label: " + label);
+        };
     }
 }

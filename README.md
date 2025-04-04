@@ -5,8 +5,8 @@
 </div>
 
 [![Build status (GitHub)](https://img.shields.io/github/actions/workflow/status/sPrizio/bluebell/ci.yml?branch=main&label=Build&logo=github&cacheSeconds=600)](https://github.com/sPrizio/bluebell/actions?query=workflow%3AASF-ci+branch%3Amain)
-[![Github last commit date](https://img.shields.io/github/last-commit/JustArchiNET/ArchiSteamFarm.svg?label=Updated&logo=github&cacheSeconds=600)](https://github.com/JustArchiNET/ArchiSteamFarm/commits)
-[![License](https://img.shields.io/github/license/sPrizio/bluebell.svg?label=License&logo=apache&cacheSeconds=2592000)](https://github.com/JustArchiNET/ArchiSteamFarm/blob/main/LICENSE.txt)
+[![Github last commit date](https://img.shields.io/github/last-commit/sPrizio/bluebell.svg?label=Updated&logo=github&cacheSeconds=600)](https://github.com/sPrizio/bluebell/commits)
+[![License](https://img.shields.io/github/license/sPrizio/bluebell.svg?label=License&logo=apache&cacheSeconds=2592000)](https://github.com/sPrizio/bluebell/blob/main/LICENSE.txt)
 [![Wiki](https://img.shields.io/badge/Read-wiki-cc5490.svg?logo=github)](https://github.com/sPrizio/bluebell/wiki)
 
 [![GitHub stable release version](https://img.shields.io/github/v/release/sPrizio/bluebell.svg?label=Stable&logo=github&cacheSeconds=600)](https://github.com/sPrizio/bluebell/releases/latest)

@@ -9,7 +9,7 @@ body:
       description: |
         If this is a suggestion regarding an existing wiki page, please link it for reference.
         If the wiki page doesn't exist, suggest its title.
-      placeholder: https://github.com/JustArchiNET/ArchiSteamFarm/wiki/???
+      placeholder: https://github.com/sPrizio/bluebell/wiki/???
     validations:
       required: true
   - type: textarea

@@ -1,10 +1,9 @@
 package com.bluebell.radicle.parsers.impl;
 
 import com.bluebell.platform.enums.time.MarketPriceTimeInterval;
-import com.bluebell.platform.models.core.nonentities.market.AggregatedMarketPrices;
 import com.bluebell.platform.models.core.entities.market.MarketPrice;
+import com.bluebell.platform.models.core.nonentities.market.AggregatedMarketPrices;
 import com.bluebell.radicle.exceptions.parsing.FirstRateDataParsingException;
-import com.bluebell.radicle.parsers.impl.FirstRateDataParser;
 import org.apache.commons.lang3.StringUtils;
 import org.junit.jupiter.api.Test;
 
@@ -18,11 +17,11 @@ import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
  * Testing class for {@link FirstRateDataParser}
  *
  * @author Stephen Prizio
- * @version 0.1.4
+ * @version 0.1.5
  */
 class FirstRateDataParserTest {
 
-    private final FirstRateDataParser firstRateDataParser = new FirstRateDataParser(true);
+    private final FirstRateDataParser firstRateDataParser = new FirstRateDataParser(true, "NDX", "/test-data");
 
 
     //  ----------------- parseMarketPrices -----------------

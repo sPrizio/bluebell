@@ -1,8 +1,8 @@
 package com.bluebell.radicle.parsers.impl;
 
 import com.bluebell.platform.enums.time.MarketPriceTimeInterval;
-import com.bluebell.platform.models.core.nonentities.market.AggregatedMarketPrices;
 import com.bluebell.platform.models.core.entities.market.MarketPrice;
+import com.bluebell.platform.models.core.nonentities.market.AggregatedMarketPrices;
 import com.bluebell.platform.util.DirectoryUtil;
 import com.bluebell.radicle.enums.DataSource;
 import com.bluebell.radicle.exceptions.parsing.FirstRateDataParsingException;
@@ -11,7 +11,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.LineIterator;
-import org.apache.commons.lang3.StringUtils;
 
 import java.io.File;
 import java.time.LocalDate;
@@ -23,26 +22,18 @@ import java.util.*;
  * Parses data from FirstData data files
  *
  * @author Stephen Prizio
- * @version 0.1.4
+ * @version 0.1.5
  */
 @Slf4j
 public class FirstRateDataParser extends AbstractDataParser implements MarketPriceParser {
 
     private final boolean isTest;
+    private final String symbol;
     private final String dataRoot;
 
-    public FirstRateDataParser() {
-        this.isTest = false;
-        this.dataRoot = StringUtils.EMPTY;
-    }
-
-    public FirstRateDataParser(final boolean isTest) {
+    public FirstRateDataParser(final boolean isTest, final String symbol, final String dataRoot) {
         this.isTest = isTest;
-        this.dataRoot = StringUtils.EMPTY;
-    }
-
-    public FirstRateDataParser(final boolean isTest, final String dataRoot) {
-        this.isTest = isTest;
+        this.symbol = symbol;
         this.dataRoot = dataRoot;
     }
 
@@ -52,7 +43,7 @@ public class FirstRateDataParser extends AbstractDataParser implements MarketPri
     @Override
     public AggregatedMarketPrices parseMarketPrices(final String file, final MarketPriceTimeInterval interval) {
 
-        final String sampleFile = getDataRoot() + "/" + file;
+        final String sampleFile = getDataRoot(interval) + "/" + file;
         if (!validateFile(sampleFile)) {
             LOGGER.error("File {} was not found!\n", file);
             return AggregatedMarketPrices.builder().marketPrices(new TreeSet<>()).interval(interval).dataSource(DataSource.FIRST_RATE_DATA).build();
@@ -85,6 +76,8 @@ public class FirstRateDataParser extends AbstractDataParser implements MarketPri
                                 .high(parseDoubleFromString(lineComponents[2]))
                                 .low(parseDoubleFromString(lineComponents[3]))
                                 .close(parseDoubleFromString(lineComponents[4]))
+                                .symbol(this.symbol)
+                                .dataSource(DataSource.FIRST_RATE_DATA)
                                 .build()
                 );
             }
@@ -198,17 +191,13 @@ public class FirstRateDataParser extends AbstractDataParser implements MarketPri
      *
      * @return sample data path
      */
-    private String getDataRoot() {
+    private String getDataRoot(final MarketPriceTimeInterval interval) {
 
         final String root;
-        if (StringUtils.isNotEmpty(this.dataRoot)) {
-            root = DirectoryUtil.getBaseProjectDirectory() + File.separator + this.dataRoot + File.separator + "firstratedata";
+        if (this.isTest) {
+            root = DirectoryUtil.getTestingResourcesDirectory() + File.separator + this.dataRoot + File.separator + String.format("%s/%s/%s", DataSource.FIRST_RATE_DATA.getDataRoot(), this.symbol, interval.toString());
         } else {
-            root = Objects.requireNonNull(getClass().getClassLoader().getResource("firstratedata")).getFile();
-        }
-
-        if (this.isTest && !root.contains("test-classes")) {
-            return root.replace("classes", "test-classes");
+            root = DirectoryUtil.getBaseProjectDirectory() + File.separator + this.dataRoot + File.separator + String.format("%s/%s/%s", DataSource.FIRST_RATE_DATA.getDataRoot(), this.symbol, interval.toString());
         }
 
         return root;

@@ -1,6 +1,7 @@
 package com.bluebell.platform.util;
 
 import com.bluebell.platform.exceptions.system.DirectoryNotFoundException;
+import com.bluebell.radicle.enums.DataSource;
 import lombok.experimental.UtilityClass;
 
 import java.io.File;
@@ -11,7 +12,7 @@ import java.nio.file.Paths;
  * Utility class for file and directory operations
  *
  * @author Stephen Prizio
- * @version 0.1.4
+ * @version 0.1.5
  */
 @UtilityClass
 public class DirectoryUtil {
@@ -60,5 +61,35 @@ public class DirectoryUtil {
         }
 
         return currentPath.toAbsolutePath().toString();
+    }
+
+    /**
+     * Returns the path to the base project's testing resources
+     *
+     * @return file path to the base project's testing resources
+     */
+    public static String getTestingResourcesDirectory() {
+        return getBaseProjectDirectory() + String.format("%ssrc%stest%sresources", File.separator, File.separator, File.separator);
+    }
+
+    /**
+     * Returns the path to the ingress root
+     *
+     * @param dataRoot ingress root
+     * @return path
+     */
+    public static String getIngressDataRoot(final String dataRoot) {
+        return getBaseProjectDirectory() + String.format("%s%s", File.separator, dataRoot);
+    }
+
+    /**
+     * Returns the path to a particular {@link DataSource}'s data root
+     *
+     * @param dataRoot ingress root
+     * @param dataSource {@link DataSource}
+     * @return path
+     */
+    public static String getIngressDataRootForDataSource(final String dataRoot, final DataSource dataSource) {
+        return getBaseProjectDirectory() + String.format("%s%s%s%s", File.separator, dataRoot, File.separator, dataSource.getDataRoot());
     }
 }

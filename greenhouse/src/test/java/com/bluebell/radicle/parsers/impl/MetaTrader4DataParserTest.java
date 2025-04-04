@@ -16,11 +16,11 @@ import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
  * Testing class for {@link MetaTrader4DataParser}
  *
  * @author Stephen Prizio
- * @version 0.1.4
+ * @version 0.1.5
  */
 class MetaTrader4DataParserTest {
 
-    private final MetaTrader4DataParser metaTrader4DataParser = new MetaTrader4DataParser(true, "NDAQ100");
+    private final MetaTrader4DataParser metaTrader4DataParser = new MetaTrader4DataParser(true, "NDAQ100", "/test-data");
 
 
     //  ----------------- parseMarketPrices -----------------
@@ -54,7 +54,7 @@ class MetaTrader4DataParserTest {
     void test_parseMarketPricesByDate_failed_emptyDirectory() {
         assertThatExceptionOfType(MetaTrader4ParsingException.class)
                 .isThrownBy(() -> this.metaTrader4DataParser.parseMarketPricesByDate(MarketPriceTimeInterval.FIVE_MINUTE))
-                .withMessageContaining("An error occurred while retrieving the data root. Likely no data exists for the requested interval of time.");
+                .withMessageContaining("Directory FIVE_MINUTE is empty or does not exist!");
     }
 
     @Test
@@ -71,10 +71,8 @@ class MetaTrader4DataParserTest {
 
     @Test
     void test_parseMarketPricesByDate_success_1year() {
-
-
         assertThatExceptionOfType(MetaTrader4ParsingException.class)
                 .isThrownBy(() -> this.metaTrader4DataParser.parseMarketPricesByDate(MarketPriceTimeInterval.ONE_YEAR))
-                .withMessageContaining("An error occurred while retrieving the data root. Likely no data exists for the requested interval of time.");
+                .withMessageContaining("Directory ONE_YEAR is empty or does not exist!");
     }
 }

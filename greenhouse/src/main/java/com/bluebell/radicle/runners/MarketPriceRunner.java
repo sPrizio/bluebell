@@ -18,7 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
  * Generates testing {@link MarketPrice}s
  *
  * @author Stephen Prizio
- * @version 0.1.4
+ * @version 0.1.5
  */
 @Component
 @Order(8)
@@ -40,7 +40,7 @@ public class MarketPriceRunner extends AbstractRunner implements CommandLineRunn
 
         logStart();
 
-        final FirstRateDataParser firstRateDataParser = new FirstRateDataParser(false, this.dataRoot);
+        final FirstRateDataParser firstRateDataParser = new FirstRateDataParser(false, "NDX", this.dataRoot);
         final MetaTrader4DataParser metaTrader4DataParser = new MetaTrader4DataParser(false, "NDAQ100", this.dataRoot);
         final TradingViewDataParser tradingViewDataParser = new TradingViewDataParser(false, "US100", this.dataRoot);
 
