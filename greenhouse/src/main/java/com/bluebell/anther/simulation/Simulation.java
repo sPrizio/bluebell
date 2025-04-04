@@ -19,7 +19,7 @@ import java.util.Map;
  * Class representation of a simulation. A simulation refers to executing a {@link Strategy} over a given period of time
  *
  * @author Stephen Prizio
- * @version 0.1.4
+ * @version 0.1.5
  */
 public interface Simulation<P extends BasicStrategyParameters> {
 
@@ -71,9 +71,9 @@ public interface Simulation<P extends BasicStrategyParameters> {
     default Map<LocalDate, AggregatedMarketPrices> getMarketData(final MarketPriceTimeInterval timeInterval, final DataSource dataSource, final String symbol) {
 
         if (dataSource == DataSource.FIRST_RATE_DATA) {
-            return new FirstRateDataParser().parseMarketPricesByDate(timeInterval);
+            return new FirstRateDataParser(false, "NDX", "/data").parseMarketPricesByDate(timeInterval);
         } else {
-            return new TradingViewDataParser(false, symbol).parseMarketPricesByDate(timeInterval);
+            return new TradingViewDataParser(false, symbol, "/data").parseMarketPricesByDate(timeInterval);
         }
     }
 }

@@ -1,10 +1,27 @@
-# bluebell Capital 
+<div align="center">
+
+<img src="https://github.com/user-attachments/assets/6645db98-27f6-448e-9768-b0c0ec7c81a9" width="35%" height="35%" />
+
+</div>
+
+[![Build status (GitHub)](https://img.shields.io/github/actions/workflow/status/sPrizio/bluebell/ci.yml?branch=main&label=Build&logo=github&cacheSeconds=600)](https://github.com/sPrizio/bluebell/actions?query=workflow%3AASF-ci+branch%3Amain)
+[![Github last commit date](https://img.shields.io/github/last-commit/sPrizio/bluebell.svg?label=Updated&logo=github&cacheSeconds=600)](https://github.com/sPrizio/bluebell/commits)
+[![License](https://img.shields.io/github/license/sPrizio/bluebell.svg?label=License&logo=apache&cacheSeconds=2592000)](https://github.com/sPrizio/bluebell/blob/main/LICENSE.txt)
+[![Wiki](https://img.shields.io/badge/Read-wiki-cc5490.svg?logo=github)](https://github.com/sPrizio/bluebell/wiki)
+
+[![GitHub stable release version](https://img.shields.io/github/v/release/sPrizio/bluebell.svg?label=Stable&logo=github&cacheSeconds=600)](https://github.com/sPrizio/bluebell/releases/latest)
+[![GitHub stable release date](https://img.shields.io/github/release-date/sPrizio/bluebell.svg?label=Released&logo=github&cacheSeconds=600)](https://github.com/sPrizio/bluebell/releases/latest)
+
+[![GitHub sponsor](https://img.shields.io/badge/GitHub-sponsor-ea4aaa.svg?logo=github-sponsors)](https://github.com/sponsors/sPrizio)
+[![PayPal.me donate](https://img.shields.io/badge/PayPal.me-donate-00457c.svg?logo=paypal)](https://paypal.me/bluebellStephen)
+
+---
+
 ***bluebell Capital*** specializes in software systems that trade equities algorithmically and provides specialized tracking for trading accounts and their performance. Additionally, bluebell provides evaluating trading strategies capabilties in order to evolve and adapt strategies to maintain their effectiveness. bluebell comprises both a front-end project (flower) and back-end project (greenhouse), each comprising numerous modules, each with different functionalities. bluebell is built on a MariaDB ORM and is integrated with NextJs, Java Spring Boot & Docker.
 
 Dependencies & Integrations
 - **NextJs**: Core front-end functionality built on React.js
 - **Java Spring** : Core back-end functionality
-- **MariaDB** : ORM Database
 - **Forex Factory**: External Market News provider for trading events 
 - **Docker**: Containerization Library
 
@@ -32,7 +49,7 @@ It advertises bluebell and opens the product up to external consumption and purc
 the automation systems for importing, obtaining and manipulating external data. Additionally, strategy visualizers and
 data parsing systems are contained within ***greenhouse***. ***greenhouse*** is currently composed of the following modules:
 
-- Current Iteration: **0.1.4**
+- Current Iteration: **0.1.5**
 - Current Release: **Pre-Release**
 
 #### anther ####

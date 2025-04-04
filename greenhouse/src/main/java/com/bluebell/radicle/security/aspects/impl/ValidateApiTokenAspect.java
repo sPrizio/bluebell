@@ -1,5 +1,6 @@
 package com.bluebell.radicle.security.aspects.impl;
 
+import com.bluebell.platform.enums.security.UserRole;
 import com.bluebell.platform.models.core.entities.security.User;
 import com.bluebell.radicle.security.aspects.ValidateApiToken;
 import com.bluebell.radicle.security.constants.SecurityConstants;
@@ -13,9 +14,11 @@ import org.apache.commons.lang3.StringUtils;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
+import org.aspectj.lang.reflect.MethodSignature;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.Optional;
 
@@ -24,7 +27,7 @@ import java.util.Optional;
  * is attached and the request is allowed to proceed. Otherwise, the request is failed immediately
  *
  * @author Stephen Prizio
- * @version 0.1.3
+ * @version 0.1.5
  */
 @Aspect
 @Component
@@ -61,6 +64,8 @@ public class ValidateApiTokenAspect {
             return proceedingJoinPoint.proceed();
         }
 
+        final MethodSignature signature = (MethodSignature) proceedingJoinPoint.getSignature();
+        final Method method = signature.getMethod();
         final Object[] args = proceedingJoinPoint.getArgs();
         final ServletRequest request = getRequest(args);
 
@@ -74,10 +79,16 @@ public class ValidateApiTokenAspect {
                 if (StringUtils.isNotEmpty(email)) {
                     final Optional<User> user = this.userService.findUserByEmail(email);
                     if (user.isPresent()) {
-                        request.setAttribute(SecurityConstants.USER_REQUEST_KEY, user.get());
-                        args[getIndexOfServletRequest(args)] = request;
+                        ValidateApiToken annotation = method.getAnnotation(ValidateApiToken.class);
+                        UserRole userRole = annotation.role();
+                        if (user.get().getRoles().contains(userRole)) {
+                            request.setAttribute(SecurityConstants.USER_REQUEST_KEY, user.get());
+                            args[getIndexOfServletRequest(args)] = request;
 
-                        return proceedingJoinPoint.proceed(args);
+                            return proceedingJoinPoint.proceed(args);
+                        } else {
+                            throw new InvalidApiTokenException(String.format("User %s is not authorized to perform this action", email));
+                        }
                     } else {
                         throw new InvalidApiTokenException(String.format("User not found for token : %s", token));
                     }

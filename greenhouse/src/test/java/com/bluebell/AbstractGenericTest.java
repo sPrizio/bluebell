@@ -43,7 +43,7 @@ import java.util.Random;
  * Parent-level testing class to provide testing assistance for the project
  *
  * @author Stephen Prizio
- * @version 0.1.4
+ * @version 0.1.5
  */
 public abstract class AbstractGenericTest {
 
@@ -319,6 +319,7 @@ public abstract class AbstractGenericTest {
                 .builder()
                 .dataSource(DataSource.FIRST_RATE_DATA)
                 .interval(MarketPriceTimeInterval.THIRTY_MINUTE)
+                .symbol("Testing")
                 .open(11234.05)
                 .high(12365.89)
                 .low(10258.30)

@@ -21,7 +21,7 @@ import java.time.LocalDateTime;
  * Fetches {@link MarketNews} periodically every Sunday night at 11pm Eastern
  *
  * @author Stephen Prizio
- * @version 0.1.2
+ * @version 0.1.5
  */
 @Slf4j
 @Component
@@ -41,7 +41,7 @@ public class FetchMarketNewsScheduledJob extends AbstractScheduledJob implements
 
     @Override
     @Async
-    @Scheduled(cron = "0 0 23 * * 7")
+    @Scheduled(cron = "0 0 1 * * 1")
     public void execute() {
 
         checkForConcurrentJob(JobType.FETCH_MARKET_NEWS);

@@ -9,7 +9,7 @@ import java.util.List;
  * Constants defined for the bluebell platform
  *
  * @author Stephen Prizio
- * @version 0.1.4
+ * @version 0.1.5
  */
 public class CorePlatformConstants {
 
@@ -67,6 +67,11 @@ public class CorePlatformConstants {
      * MT4 date format
      */
     public static final String MT4_DATE_FORMAT = "yyyy.MM.dd";
+
+    /**
+     * MT4 time format
+     */
+    public static final String MT4_TIME_FORMAT = "H:mm";
 
     /**
      * MT4 date & time format
@@ -303,6 +308,8 @@ public class CorePlatformConstants {
          * (1) = country, (2) = area code, (3) = exchange, (4) = subscriber, (5) = extension where (x) indicates matcher group
          */
         public static final String PHONE_NUMBER_REGEX = "^\\s*(?:\\+?(\\d{1,3}))?[-. (]*(\\d{3})[-. )]*(\\d{3})[-. ]*(\\d{4})(?: *x(\\d+))?\\s*$";
+
+        public static final String MARKET_PRICE_VALID_SYMBOL_REGEX = "^[a-zA-Z][a-zA-Z0-9.!]*$";
 
         public static class Import {
 

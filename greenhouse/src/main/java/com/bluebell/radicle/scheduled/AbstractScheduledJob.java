@@ -18,7 +18,7 @@ import java.util.List;
  * Parent-level scheduled job for common functionality
  *
  * @author Stephen Prizio
- * @version 0.1.2
+ * @version 0.1.5
  */
 @Slf4j
 public abstract class AbstractScheduledJob {
@@ -40,7 +40,7 @@ public abstract class AbstractScheduledJob {
     public void checkForConcurrentJob(final JobType jobType) {
         final List<Job> runningJobs = this.jobService.findJobsByStatusAndType(JobStatus.IN_PROGRESS, jobType);
         if (CollectionUtils.isNotEmpty(runningJobs)) {
-            LOGGER.info("A {} is already running. Cancelling this job", jobType.getCode());
+            LOGGER.info("A {} job is already running. Cancelling this job", jobType.getCode());
             throw new ConcurrentJobExecutionException(String.format("A %s is already running. Cancelling this job", jobType.getCode()));
         }
     }

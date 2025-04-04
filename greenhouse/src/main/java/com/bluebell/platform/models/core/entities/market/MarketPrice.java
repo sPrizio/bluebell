@@ -9,18 +9,17 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDateTime;
-import java.util.Objects;
 
 /**
  * Class representation of a market price for an interval of time
  *
  * @author Stephen Prizio
- * @version 0.1.4
+ * @version 0.1.5
  */
 @Getter
 @Entity
 @Builder
-@Table(name = "market_prices", uniqueConstraints = @UniqueConstraint(name = "UniqueDateAndTimeIntervalAndDataSource", columnNames = {"price_date", "market_price_time_interval", "data_source"}))
+@Table(name = "market_prices", uniqueConstraints = @UniqueConstraint(name = "UniqueDateAndTimeIntervalAndDataSourceAndSymbol", columnNames = {"price_date", "market_price_time_interval", "data_source", "symbol"}))
 @NoArgsConstructor
 @AllArgsConstructor
 public class MarketPrice implements GenericEntity, Comparable<MarketPrice> {
@@ -30,12 +29,16 @@ public class MarketPrice implements GenericEntity, Comparable<MarketPrice> {
     private Long id;
 
     @Setter
-    @Column(name = "price_date")
+    @Column(name = "price_date", nullable = false)
     private LocalDateTime date;
 
     @Setter
-    @Column(name = "market_price_time_interval")
+    @Column(name = "market_price_time_interval", nullable = false)
     private MarketPriceTimeInterval interval;
+
+    @Setter
+    @Column(name = "symbol", nullable = false)
+    private String symbol;
 
     @Setter
     @Column
@@ -58,7 +61,7 @@ public class MarketPrice implements GenericEntity, Comparable<MarketPrice> {
     private long volume;
 
     @Setter
-    @Column(name = "data_source")
+    @Column(name = "data_source", nullable = false)
     private DataSource dataSource;
 
 
@@ -204,15 +207,24 @@ public class MarketPrice implements GenericEntity, Comparable<MarketPrice> {
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        MarketPrice that = (MarketPrice) o;
-        return Objects.equals(this.date, that.date) && (this.interval == that.interval) && (this.dataSource == that.dataSource);
+    public boolean equals(Object object) {
+        if (object == null || getClass() != object.getClass()) return false;
+
+        MarketPrice that = (MarketPrice) object;
+        return Double.compare(open, that.open) == 0 && Double.compare(high, that.high) == 0 && Double.compare(low, that.low) == 0 && Double.compare(close, that.close) == 0 && volume == that.volume && date.equals(that.date) && interval == that.interval && symbol.equals(that.symbol) && dataSource == that.dataSource;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(this.date, this.interval, this.dataSource);
+        int result = date.hashCode();
+        result = 31 * result + interval.hashCode();
+        result = 31 * result + symbol.hashCode();
+        result = 31 * result + Double.hashCode(open);
+        result = 31 * result + Double.hashCode(high);
+        result = 31 * result + Double.hashCode(low);
+        result = 31 * result + Double.hashCode(close);
+        result = 31 * result + Long.hashCode(volume);
+        result = 31 * result + dataSource.hashCode();
+        return result;
     }
 }
