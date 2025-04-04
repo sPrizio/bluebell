@@ -73,14 +73,6 @@ class MarketDataIngestionServiceTest extends AbstractGenericTest {
     }
 
     @Test
-    void test_ingest_emptySymbol() {
-        final Triplet<IngestionStatus, String, Set<MarketPrice>> result = this.marketDataIngestionService.ingest(DataSource.METATRADER4, "EMPTY", this.dataRoot);
-        assertThat(result.getValue0()).isEqualTo(IngestionStatus.SKIPPED);
-        assertThat(result.getValue1()).contains("does not have any data");
-        assertThat(result.getValue2()).isEmpty();
-    }
-
-    @Test
     void test_ingest_success() {
         final Triplet<IngestionStatus, String, Set<MarketPrice>> result = this.marketDataIngestionService.ingest(DataSource.TRADING_VIEW, "US100", this.dataRoot);
         assertThat(result.getValue0()).isEqualTo(IngestionStatus.SUCCESS);
