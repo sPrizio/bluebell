@@ -97,7 +97,7 @@ public abstract class AbstractGenericTest {
                 .builder()
                 .id(-1L)
                 .defaultAccount(true)
-                .accountOpenTime(LocalDateTime.of(2022, 8, 24, 22, 48, 0))
+                .accountOpenTime(LocalDateTime.of(2022, 8, 22, 22, 48, 0))
                 .balance(1000.0)
                 .initialBalance(1000.0)
                 .active(true)
@@ -107,7 +107,7 @@ public abstract class AbstractGenericTest {
                 .currency(Currency.CANADIAN_DOLLAR)
                 .broker(Broker.CMC_MARKETS)
                 .tradePlatform(TradePlatform.CMC_MARKETS)
-                .lastTraded(LocalDateTime.of(2022, 10, 25, 11, 37, 24))
+                .lastTraded(LocalDateTime.of(2022, 8, 24, 11, 37, 24))
                 .build();
     }
 
