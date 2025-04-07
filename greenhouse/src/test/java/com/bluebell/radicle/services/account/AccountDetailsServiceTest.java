@@ -5,24 +5,31 @@ import com.bluebell.platform.constants.CorePlatformConstants;
 import com.bluebell.platform.models.core.entities.account.Account;
 import com.bluebell.platform.models.core.entities.trade.Trade;
 import com.bluebell.platform.models.core.nonentities.records.account.AccountEquityPoint;
+import com.bluebell.platform.models.core.nonentities.records.traderecord.TradeRecord;
+import com.bluebell.platform.models.core.nonentities.records.traderecord.TradeRecordReport;
 import com.bluebell.radicle.exceptions.validation.IllegalParameterException;
+import com.bluebell.radicle.services.trade.TradeRecordService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyInt;
 
 /**
  * Testing class for {@link AccountDetailsService}
  *
  * @author Stephen Prizio
- * @version 0.1.3
+ * @version 0.1.6
  */
 @SpringBootTest
 @RunWith(SpringRunner.class)
@@ -32,6 +39,9 @@ class AccountDetailsServiceTest extends AbstractGenericTest {
 
     @Autowired
     private AccountDetailsService accountDetailsService;
+
+    @MockitoBean
+    private TradeRecordService tradeRecordService;
 
     @BeforeEach
     void setUp() {
@@ -50,8 +60,54 @@ class AccountDetailsServiceTest extends AbstractGenericTest {
                 .isThrownBy(() -> this.accountDetailsService.calculateConsistencyScore(null))
                 .withMessageContaining(CorePlatformConstants.Validation.Account.ACCOUNT_CANNOT_BE_NULL);
 
+        Mockito.when(this.tradeRecordService.getTradeRecords(any(), any(), any(), any(), anyInt())).thenReturn(TradeRecordReport.builder().tradeRecords(List.of()).build());
+        assertThat(this.accountDetailsService.calculateConsistencyScore(this.account)).isZero();
+
+        Mockito
+                .when(this.tradeRecordService.getTradeRecords(any(), any(), any(), any(), anyInt()))
+                .thenReturn(
+                        TradeRecordReport.builder().tradeRecords(List.of(
+                                                TradeRecord
+                                                        .builder()
+                                                        .netProfit(100.0)
+                                                        .build(),
+                                                TradeRecord
+                                                        .builder()
+                                                        .netProfit(-500.0)
+                                                        .build(),
+                                                TradeRecord
+                                                        .builder()
+                                                        .netProfit(800.0)
+                                                        .build())
+                                        )
+                                .build()
+                );
+
         assertThat(this.accountDetailsService.calculateConsistencyScore(this.account))
-                .isEqualTo(49);
+                .isEqualTo(43);
+
+        Mockito
+                .when(this.tradeRecordService.getTradeRecords(any(), any(), any(), any(), anyInt()))
+                .thenReturn(
+                        TradeRecordReport.builder().tradeRecords(List.of(
+                                        TradeRecord
+                                                .builder()
+                                                .netProfit(250.0)
+                                                .build(),
+                                        TradeRecord
+                                                .builder()
+                                                .netProfit(-350.0)
+                                                .build(),
+                                        TradeRecord
+                                                .builder()
+                                                .netProfit(400.0)
+                                                .build())
+                                )
+                                .build()
+                );
+
+        assertThat(this.accountDetailsService.calculateConsistencyScore(this.account))
+                .isEqualTo(60);
     }
 
 

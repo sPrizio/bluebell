@@ -43,7 +43,7 @@ import java.util.Random;
  * Parent-level testing class to provide testing assistance for the project
  *
  * @author Stephen Prizio
- * @version 0.1.5
+ * @version 0.1.6
  */
 public abstract class AbstractGenericTest {
 
@@ -97,7 +97,7 @@ public abstract class AbstractGenericTest {
                 .builder()
                 .id(-1L)
                 .defaultAccount(true)
-                .accountOpenTime(LocalDateTime.of(2022, 10, 25, 22, 48, 0))
+                .accountOpenTime(LocalDateTime.of(2022, 8, 22, 22, 48, 0))
                 .balance(1000.0)
                 .initialBalance(1000.0)
                 .active(true)
