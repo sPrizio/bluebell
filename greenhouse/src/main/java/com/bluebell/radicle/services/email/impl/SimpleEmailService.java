@@ -4,10 +4,11 @@ import com.bluebell.platform.constants.CorePlatformConstants;
 import com.bluebell.platform.models.core.entities.job.impl.Job;
 import com.bluebell.platform.models.core.nonentities.email.EmailTemplate;
 import com.bluebell.radicle.services.email.EmailService;
+import io.github.cdimascio.dotenv.Dotenv;
 import jakarta.mail.internet.MimeMessage;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
@@ -25,10 +26,10 @@ import static com.bluebell.radicle.validation.GenericValidator.validateParameter
 public class SimpleEmailService implements EmailService {
 
     @Autowired
-    private JavaMailSender mailSender;
+    private Dotenv dotenv;
 
-    @Value("${bluebell.email.sender}")
-    private String sender;
+    @Autowired
+    private JavaMailSender mailSender;
 
 
     //  METHODS
@@ -40,12 +41,17 @@ public class SimpleEmailService implements EmailService {
         validateParameterIsNotNull(subject, CorePlatformConstants.Validation.Email.SUBJECT_CANNOT_BE_NULL);
         validateParameterIsNotNull(emailTemplate, CorePlatformConstants.Validation.Email.EMAIL_TEMPLATE_CANNOT_BE_NULL);
 
+        final String sender = this.dotenv.get("EMAIL_APP_SENDER");
+        if (StringUtils.isEmpty(sender)) {
+            throw new IllegalStateException("EMAIL_APP_SENDER is not set");
+        }
+
         final String body = interpolate(emailTemplate);
         try {
             MimeMessage message = this.mailSender.createMimeMessage();
             MimeMessageHelper helper = new MimeMessageHelper(message, "utf-8");
 
-            helper.setFrom(this.sender);
+            helper.setFrom(sender);
             helper.setTo(to);
             helper.setSubject(subject);
             helper.setText(body, true);

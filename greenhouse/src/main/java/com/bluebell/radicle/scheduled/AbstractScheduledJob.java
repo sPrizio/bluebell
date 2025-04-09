@@ -10,10 +10,12 @@ import com.bluebell.platform.models.core.nonentities.email.EmailTemplate;
 import com.bluebell.radicle.repositories.job.JobRepository;
 import com.bluebell.radicle.services.email.EmailService;
 import com.bluebell.radicle.services.job.JobService;
+import io.github.cdimascio.dotenv.Dotenv;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
-import org.springframework.beans.factory.annotation.Value;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -29,8 +31,8 @@ import java.util.Map;
 @Slf4j
 public abstract class AbstractScheduledJob {
 
-    @Value("${bluebell.email.system.recipient}")
-    private String recipient;
+    @Autowired
+    private Dotenv dotenv;
 
     @Resource(name = "simpleEmailService")
     private EmailService emailService;
@@ -98,7 +100,12 @@ public abstract class AbstractScheduledJob {
                         .queryParams(Map.of("jobName", job.getName(), "timestamp", LocalDateTime.now().format(DateTimeFormatter.ofPattern(CorePlatformConstants.DATE_TIME_FORMAT)), "errorDetails", details))
                         .build();
 
-        this.emailService.sendEmail(this.recipient, String.format("%s job failure", job.getType().getLabel()), failedJobTemplate);
+        final String recipient = this.dotenv.get("EMAIL_APP_RECIPIENT");
+        if (StringUtils.isEmpty(recipient)) {
+            throw new IllegalStateException("EMAIL_APP_RECIPIENT is not set");
+        }
+
+        this.emailService.sendEmail(recipient, String.format("%s job failure", job.getType().getLabel()), failedJobTemplate);
 
     }
 }
