@@ -22,6 +22,8 @@ public class CorePlatformConstants {
         throw new UnsupportedOperationException(String.format(NO_INSTANTIATION, getClass().getName()));
     }
 
+    public static final String OS_PROFILE_ARGUMENT = "--os-profile";
+
     /**
      * Represents a value that when encountered will basically act as a non-factor when returning a limited collection of entries. This value is akin
      * to asking the collection to not have a size limit, i.e. show me all results

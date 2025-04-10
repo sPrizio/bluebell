@@ -19,7 +19,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.Map;
 
 /**
- * Testing
+ * Generates an email to notify that the app has started in development mode
  *
  * @author Stephen Prizio
  * @version 0.1.6
