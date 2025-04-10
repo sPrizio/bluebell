@@ -27,7 +27,7 @@ class OSUtilTest {
 
     @BeforeEach
     void setUp() throws IOException {
-        Files.createFile(this.tempDir.resolve(".env.dev"));
+        Files.createFile(this.tempDir.resolve("config-dev.txt"));
     }
 
 
@@ -40,7 +40,7 @@ class OSUtilTest {
 
             assertThatExceptionOfType(IllegalStateException.class)
                     .isThrownBy(() -> OSUtil.generateEnv(new String[]{"--os-profile=staging"}))
-                    .withMessageContaining(".env.staging not found!");
+                    .withMessageContaining("config-staging.txt not found!");
         }
     }
 

@@ -1,8 +1,11 @@
 @echo off
 setlocal
 
-set ROOT_FOLDER=%~dp0..
-cd /d %ROOT_FOLDER% || exit
+pushd "%~dp0\..\.."
+set ROOT_FOLDER=%CD%
+popd
+
+echo "%ROOT_FOLDER%"
 
 :: Check for required env argument
 if "%~1"=="" (
@@ -27,8 +30,8 @@ echo Using %ENV_FILE%
 :: Run Docker Compose with or without --build based on FORCE_BUILD
 if "%FORCE_BUILD%"=="true" (
     echo Rebuilding Docker images...
-    docker compose --env-file %ENV_FILE% up --build
+    docker compose --env-file %ENV_FILE% up --build -d
 ) else (
     echo Running Docker based on previous build...
-    docker compose --env-file %ENV_FILE% up
+    docker compose --env-file %ENV_FILE% up -d
 )

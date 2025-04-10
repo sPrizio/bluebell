@@ -20,6 +20,8 @@ services:
     build:
       context: .
       dockerfile: greenhouse/Dockerfile
+      args:
+        - SPRING_PROFILES_ACTIVE=${SPRING_PROFILE:-staging}
     ports:
       - "8080:8080"
     environment:

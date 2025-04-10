@@ -29,7 +29,7 @@ public class OSUtil {
      */
     public void generateEnv(final String[] args) {
 
-        final File env = new File(String.format("%s%s.env.%s", DirectoryUtil.getBaseProjectDirectory(), File.separator, getOSProfile(args)));
+        final File env = new File(String.format("%s%sconfig-%s.txt", DirectoryUtil.getBaseProjectDirectory(), File.separator, getOSProfile(args)));
         if (!env.exists()) {
             throw new IllegalStateException(String.format("%s not found!", env.getName()));
         }
@@ -56,6 +56,7 @@ public class OSUtil {
     private static String getOSProfile(final String[] args) {
 
         if (args == null) {
+            LOGGER.warn("No runtime arguments provided, defaulting to dev profile!");
             return "dev";
         }
 
@@ -65,6 +66,7 @@ public class OSUtil {
             }
         }
 
+        LOGGER.warn("{} runtime argument not provided, defaulting to dev profile!", CorePlatformConstants.OS_PROFILE_ARGUMENT);
         return "dev";
     }
 }
