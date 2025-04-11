@@ -6,8 +6,8 @@ import com.bluebell.anther.models.strategy.StrategyResult;
 import com.bluebell.anther.models.trade.AntherTrade;
 import com.bluebell.anther.strategies.Strategy;
 import com.bluebell.platform.enums.trade.TradeType;
-import com.bluebell.platform.models.core.nonentities.market.AggregatedMarketPrices;
 import com.bluebell.platform.models.core.entities.market.MarketPrice;
+import com.bluebell.platform.models.core.nonentities.market.AggregatedMarketPrices;
 import com.bluebell.platform.services.MathService;
 import lombok.Getter;
 import org.javatuples.Pair;
@@ -23,7 +23,7 @@ import java.util.Optional;
  * to capture this trend via straddling.
  *
  * @author Stephen Prizio
- * @version 0.1.4
+ * @version 0.1.6
  */
 @Getter
 public class Bloom implements Strategy<BloomStrategyParameters> {
