@@ -240,6 +240,17 @@ public class CorePlatformConstants {
                 public static final String TELEPHONE_NUMBER_CANNOT_BE_NEGATIVE = "telephone number cannot be a negative number";
 
             }
+
+            public static class IncomingPing {
+
+                private IncomingPing() {
+                    throw new UnsupportedOperationException(String.format(NO_INSTANTIATION, getClass().getName()));
+                }
+
+                public static final String INCOMING_PING_CANNOT_BE_NULL = "incoming ping cannot be null";
+
+                public static final String SYSTEM_NAME_CANNOT_BE_NULL = "system name cannot be null";
+            }
         }
 
         public static class Trade {
