@@ -480,6 +480,12 @@ public class CorePlatformConstants {
                                     <p><strong>Job Name:</strong> ${jobName}</p>
                                     <p><strong>Failed At:</strong> ${timestamp}</p>
                                     <p><strong>Error Message:</strong> ${errorDetails}</p>
+                                    <p>
+                                        <strong>Details:</strong>
+                                        <blockquote>
+                                            ${detailedMessage}
+                                        </blockquote>
+                                    </p>
                                 </div>
                                 <p>Please investigate the issue and take necessary action.</p>
                             </div>

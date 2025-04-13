@@ -9,6 +9,7 @@ import jakarta.mail.internet.MimeMessage;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
@@ -31,11 +32,19 @@ public class SimpleEmailService implements EmailService {
     @Autowired
     private JavaMailSender mailSender;
 
+    @Value("${bluebell.notify}")
+    private String shouldNotify;
+
 
     //  METHODS
 
     @Override
     public void sendEmail(final String to, final String subject, final EmailTemplate emailTemplate) {
+
+        if (!Boolean.parseBoolean(this.shouldNotify)) {
+            LOGGER.warn("Email notifications are currently disabled for bluebell");
+            return;
+        }
 
         validateParameterIsNotNull(to, CorePlatformConstants.Validation.Email.TO_CANNOT_BE_NULL);
         validateParameterIsNotNull(subject, CorePlatformConstants.Validation.Email.SUBJECT_CANNOT_BE_NULL);
