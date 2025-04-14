@@ -27,7 +27,7 @@ import static org.mockito.Mockito.*;
  * @author Stephen Prizio
  * @version 0.1.6
  */
-@SpringBootTest
+@SpringBootTest(properties = "bluebell.notify=true")
 @RunWith(SpringRunner.class)
 class SimpleEmailServiceTest {
 
