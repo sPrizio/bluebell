@@ -8,6 +8,16 @@ on:
     branches:
       - 'main'
   workflow_dispatch:
+    inputs:
+      env:
+        description: "Target environment for the deployment pipeline"
+        required: true
+        default: "dev"
+        type: choice
+        options:
+          - dev
+          - staging
+          - prod
 
 jobs:
   build:
@@ -53,6 +63,13 @@ jobs:
   test:
     runs-on: ubuntu-22.04
     needs: build
+    env:
+      TARGET_ENV: ${{ github.event.inputs.env || (
+        github.ref == 'refs/heads/main'   && 'prod'    ||
+        github.ref == 'refs/heads/staging' && 'staging' ||
+        'dev'
+        ) }}
+      SPRING_PROFILES_ACTIVE: ${{ env.TARGET_ENV }}
     steps:
       - name: "[bluebell] - Checkout Repo"
         uses: actions/checkout@v4
@@ -63,6 +80,16 @@ jobs:
           java-version: '17'
           distribution: 'temurin'
           cache: maven
+
+      - name: "[greenhouse] - Generate .env "
+        run: |
+          cat > .env <<EOF
+          EMAIL_APP_USERNAME=${{ secrets[ format('{0}_EMAIL_APP_USERNAME', toUpperCase(env.TARGET_ENV)) ] }}
+          EMAIL_APP_PASSWORD=${{ secrets[ format('{0}_EMAIL_APP_PASSWORD', toUpperCase(env.TARGET_ENV)) ] }}
+          EMAIL_APP_SENDER=${{ secrets[ format('{0}_EMAIL_APP_SENDER', toUpperCase(env.TARGET_ENV)) ] }}
+          EMAIL_APP_RECIPIENT=${{ secrets[ format('{0}_EMAIL_APP_RECIPIENT', toUpperCase(env.TARGET_ENV)) ] }}
+          EOF
+        working-directory: './greenhouse'
 
       - name: "[greenhouse] - Test"
         run: mvn test
