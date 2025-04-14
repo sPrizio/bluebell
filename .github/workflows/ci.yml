@@ -69,11 +69,11 @@ jobs:
         github.ref == 'refs/heads/staging' && 'staging' ||
         'dev'
         ) }}
-      UPPER_ENV: ${{
-        env.TARGET_ENV == 'prod'    && 'PROD'    ||
-        env.TARGET_ENV == 'staging' && 'STAGING' ||
+      UPPER_ENV: ${{ github.event.inputs.env || (
+        github.ref == 'refs/heads/main'   && 'PROD'    ||
+        github.ref == 'refs/heads/staging' && 'STAGING' ||
         'DEV'
-        }}
+        ) }}
     steps:
       - name: "[bluebell] - Checkout Repo"
         uses: actions/checkout@v4
