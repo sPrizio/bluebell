@@ -18,7 +18,7 @@ import static com.bluebell.radicle.validation.GenericValidator.validateParameter
  * Service-layer for {@link MarketPrice}
  *
  * @author Stephen Prizio
- * @version 0.1.5
+ * @version 0.1.6
  */
 @Slf4j
 @Service
@@ -34,7 +34,7 @@ public class MarketPriceService {
      * Saves all {@link MarketPrice}s within the given {@link AggregatedMarketPrices} to the database
      *
      * @param aggregatedMarketPrices {@link AggregatedMarketPrices}
-     * @return sorted {@link Set} of {@link MarketPrice}s
+     * @return count of insertions/updates
      */
     @Transactional
     public int saveAll(final AggregatedMarketPrices aggregatedMarketPrices) {
@@ -70,7 +70,7 @@ public class MarketPriceService {
      * Saves all {@link MarketPrice}s within the given set to the database
      *
      * @param marketPrices {@link AggregatedMarketPrices}
-     * @return sorted {@link Set} of {@link MarketPrice}s
+     * @return count of insertions/updates
      */
     @Transactional
     public int saveAllSet(final Set<MarketPrice> marketPrices) {

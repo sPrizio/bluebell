@@ -6,6 +6,7 @@ import com.bluebell.platform.models.core.entities.account.Account;
 import com.bluebell.platform.models.core.entities.trade.Trade;
 import com.bluebell.radicle.repositories.trade.TradeRepository;
 import jakarta.annotation.Resource;
+import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
@@ -21,7 +22,7 @@ import static com.bluebell.radicle.validation.GenericValidator.validateParameter
  * Service-layer for {@link Trade} entities
  *
  * @author Stephen Prizio
- * @version 0.1.3
+ * @version 0.1.6
  */
 @Service
 public class TradeService {
@@ -96,5 +97,40 @@ public class TradeService {
         validateParameterIsNotNull(account, CorePlatformConstants.Validation.Account.ACCOUNT_CANNOT_BE_NULL);
 
         return Optional.ofNullable(this.tradeRepository.findTradeByTradeIdAndAccount(tradeId, account));
+    }
+
+    /**
+     * Saves all {@link Trade}s within the given list to the database
+     *
+     * @param trades {@link List} of {@link Trade}s
+     * @param account {@link Account}
+     * @return count of insertions/updates
+     */
+    public int saveAll(final List<Trade> trades, final Account account) {
+
+        if (CollectionUtils.isEmpty(trades) || account == null) {
+            return -1;
+        }
+
+        int count = 0;
+        for (final Trade trade : trades) {
+            count += this.tradeRepository.upsertTrade(
+                    trade.getTradeId(),
+                    trade.getProduct(),
+                    trade.getTradePlatform(),
+                    trade.getTradeType(),
+                    trade.getTradeOpenTime(),
+                    trade.getTradeCloseTime(),
+                    trade.getLotSize(),
+                    trade.getOpenPrice(),
+                    trade.getClosePrice(),
+                    trade.getNetProfit(),
+                    trade.getStopLoss(),
+                    trade.getTakeProfit(),
+                    account.getId()
+            );
+        }
+
+        return count;
     }
 }
