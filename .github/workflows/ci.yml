@@ -69,7 +69,6 @@ jobs:
         github.ref == 'refs/heads/staging' && 'staging' ||
         'dev'
         ) }}
-      SPRING_PROFILES_ACTIVE: ${{ env.TARGET_ENV }}
     steps:
       - name: "[bluebell] - Checkout Repo"
         uses: actions/checkout@v4
