@@ -3,7 +3,7 @@ on:
   pull_request:
     branches:
       - '**'
-    types: [opened, synchronize, reopened]
+    types: [ opened, synchronize, reopened ]
   push:
     branches:
       - 'main'
@@ -69,6 +69,11 @@ jobs:
         github.ref == 'refs/heads/staging' && 'staging' ||
         'dev'
         ) }}
+      UPPER_ENV: ${{
+        env.TARGET_ENV == 'prod'    && 'PROD'    ||
+        env.TARGET_ENV == 'staging' && 'STAGING' ||
+        'DEV'
+        }}
     steps:
       - name: "[bluebell] - Checkout Repo"
         uses: actions/checkout@v4
@@ -83,10 +88,10 @@ jobs:
       - name: "[greenhouse] - Generate .env "
         run: |
           cat > .env <<EOF
-          EMAIL_APP_USERNAME=${{ secrets[ format('{0}_EMAIL_APP_USERNAME', toUpperCase(env.TARGET_ENV)) ] }}
-          EMAIL_APP_PASSWORD=${{ secrets[ format('{0}_EMAIL_APP_PASSWORD', toUpperCase(env.TARGET_ENV)) ] }}
-          EMAIL_APP_SENDER=${{ secrets[ format('{0}_EMAIL_APP_SENDER', toUpperCase(env.TARGET_ENV)) ] }}
-          EMAIL_APP_RECIPIENT=${{ secrets[ format('{0}_EMAIL_APP_RECIPIENT', toUpperCase(env.TARGET_ENV)) ] }}
+          EMAIL_APP_USERNAME=${{ secrets[ format('{0}_EMAIL_APP_USERNAME', env.UPPER_ENV) ] }}
+          EMAIL_APP_PASSWORD=${{ secrets[ format('{0}_EMAIL_APP_PASSWORD', env.UPPER_ENV) ] }}
+          EMAIL_APP_SENDER=${{ secrets[ format('{0}_EMAIL_APP_SENDER', env.UPPER_ENV) ] }}
+          EMAIL_APP_RECIPIENT=${{ secrets[ format('{0}_EMAIL_APP_RECIPIENT', env.UPPER_ENV) ] }}
           EOF
         working-directory: './greenhouse'
 
