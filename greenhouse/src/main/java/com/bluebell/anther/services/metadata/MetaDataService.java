@@ -2,8 +2,8 @@ package com.bluebell.anther.services.metadata;
 
 import com.bluebell.anther.models.metadata.MetaData;
 import com.bluebell.platform.enums.time.MarketPriceTimeInterval;
-import com.bluebell.platform.models.core.nonentities.market.AggregatedMarketPrices;
 import com.bluebell.platform.models.core.entities.market.MarketPrice;
+import com.bluebell.platform.models.core.nonentities.market.AggregatedMarketPrices;
 
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
@@ -13,7 +13,7 @@ import java.util.*;
  * Computes metadata about a collection of market prices
  *
  * @author Stephen Prizio
- * @version 0.1.4
+ * @version 0.1.6
  */
 public class MetaDataService {
 

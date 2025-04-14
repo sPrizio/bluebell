@@ -6,8 +6,8 @@ import com.bluebell.anther.models.strategy.StrategyResult;
 import com.bluebell.anther.models.trade.AntherTrade;
 import com.bluebell.anther.strategies.Strategy;
 import com.bluebell.platform.enums.trade.TradeType;
-import com.bluebell.platform.models.core.nonentities.market.AggregatedMarketPrices;
 import com.bluebell.platform.models.core.entities.market.MarketPrice;
+import com.bluebell.platform.models.core.nonentities.market.AggregatedMarketPrices;
 import com.bluebell.platform.services.MathService;
 import lombok.Getter;
 
@@ -23,7 +23,7 @@ import java.util.Map;
  * In cases like these, a small (or large) reversal is likely taking place
  *
  * @author Stephen Prizio
- * @version 0.1.4
+ * @version 0.1.6
  */
 @Getter
 public class Sprout implements Strategy<SproutStrategyParameters> {

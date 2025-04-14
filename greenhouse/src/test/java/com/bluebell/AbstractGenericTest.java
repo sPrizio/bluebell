@@ -24,6 +24,7 @@ import com.bluebell.platform.models.core.entities.news.MarketNewsEntry;
 import com.bluebell.platform.models.core.entities.news.MarketNewsSlot;
 import com.bluebell.platform.models.core.entities.portfolio.Portfolio;
 import com.bluebell.platform.models.core.entities.security.User;
+import com.bluebell.platform.models.core.entities.system.IncomingPing;
 import com.bluebell.platform.models.core.entities.system.PhoneNumber;
 import com.bluebell.platform.models.core.entities.trade.Trade;
 import com.bluebell.platform.models.core.entities.transaction.Transaction;
@@ -325,6 +326,19 @@ public abstract class AbstractGenericTest {
                 .low(10258.30)
                 .close(11856.34)
                 .volume(5689L)
+                .build();
+    }
+
+    /**
+     * Generates a test {@link IncomingPing}
+     *
+     * @return {@link IncomingPing}
+     */
+    public IncomingPing generateTestIncomingPing() {
+        return IncomingPing
+                .builder()
+                .systemName("Test System Name")
+                .lastSignalReceived(LocalDateTime.now())
                 .build();
     }
 }

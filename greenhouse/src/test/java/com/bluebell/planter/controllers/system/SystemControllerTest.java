@@ -1,17 +1,24 @@
 package com.bluebell.planter.controllers.system;
 
 import com.bluebell.planter.constants.ApiConstants;
+import com.bluebell.radicle.services.system.IncomingPingService;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 
+import java.util.List;
 import java.util.Map;
 
 import static org.hamcrest.Matchers.containsString;
@@ -25,7 +32,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  * Testing class for {@link SystemController}
  *
  * @author Stephen Prizio
- * @version 0.1.3
+ * @version 0.1.6
  */
 @SpringBootTest
 @AutoConfigureMockMvc(addFilters = false)
@@ -46,6 +53,15 @@ class SystemControllerTest {
 
     @Value("${bluebell.api.version}")
     private String apiVersion;
+
+    @MockitoBean
+    private IncomingPingService incomingPingService;
+
+    @BeforeEach
+    void setUp() {
+        Mockito.when(this.incomingPingService.acknowledgeIncomingPing("good")).thenReturn(true);
+        Mockito.when(this.incomingPingService.acknowledgeIncomingPing("bad")).thenReturn(false);
+    }
 
 
     //  ----------------- getHealthCheck -----------------
@@ -114,6 +130,31 @@ class SystemControllerTest {
                 );
 
         this.mockMvc.perform(post("/api/v1/system/report").contentType(MediaType.APPLICATION_JSON).content(new ObjectMapper().writeValueAsString(data)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.success", is(true)));
+    }
+
+
+    //  ----------------- postAcknowledgeIncomingPing -----------------
+
+    @Test
+    void test_postAcknowledgeIncomingPing_fail() throws Exception {
+
+        MultiValueMap<String, String> map = new LinkedMultiValueMap<>();
+        map.put("systemName", List.of("bad"));
+
+        this.mockMvc.perform(post("/api/v1/system/acknowledge").queryParams(map).contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.success", is(false)));
+    }
+
+    @Test
+    void test_postAcknowledgeIncomingPing_success() throws Exception {
+
+        MultiValueMap<String, String> map = new LinkedMultiValueMap<>();
+        map.put("systemName", List.of("good"));
+
+        this.mockMvc.perform(post("/api/v1/system/acknowledge").queryParams(map).contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.success", is(true)));
     }

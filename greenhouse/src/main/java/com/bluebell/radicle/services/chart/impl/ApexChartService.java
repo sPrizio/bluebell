@@ -2,9 +2,9 @@ package com.bluebell.radicle.services.chart.impl;
 
 import com.bluebell.platform.constants.CorePlatformConstants;
 import com.bluebell.platform.enums.time.MarketPriceTimeInterval;
+import com.bluebell.platform.models.core.entities.market.MarketPrice;
 import com.bluebell.platform.models.core.nonentities.apexcharts.ApexChartCandleStick;
 import com.bluebell.platform.models.core.nonentities.market.AggregatedMarketPrices;
-import com.bluebell.platform.models.core.entities.market.MarketPrice;
 import com.bluebell.radicle.parsers.impl.FirstRateDataParser;
 import com.bluebell.radicle.services.chart.ChartService;
 import org.apache.commons.collections4.CollectionUtils;
@@ -24,7 +24,7 @@ import static com.bluebell.radicle.validation.GenericValidator.validateParameter
  * apexcharts implementation of {@link ChartService}
  *
  * @author Stephen Prizio
- * @version 0.1.5
+ * @version 0.1.6
  */
 @Service
 public class ApexChartService implements ChartService<ApexChartCandleStick> {

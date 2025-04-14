@@ -19,6 +19,7 @@ import com.bluebell.radicle.importing.exceptions.TradeImportFailureException;
 import com.bluebell.radicle.integration.exceptions.IntegrationException;
 import com.bluebell.radicle.security.exceptions.InvalidApiTokenException;
 import com.bluebell.radicle.security.exceptions.NoValidUserForTokenException;
+import jakarta.persistence.EntityNotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -35,7 +36,7 @@ import java.time.DateTimeException;
  * Handles the exceptions thrown by the application
  *
  * @author Stephen Prizio
- * @version 0.1.3
+ * @version 0.1.6
  */
 @ControllerAdvice
 public class GlobalExceptionHandler {
@@ -55,6 +56,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(value = {
             DateTimeException.class,
             EnumValueNotFoundException.class,
+            EntityNotFoundException.class,
             FileExtensionNotSupportedException.class,
             IllegalParameterException.class,
             InvalidEnumException.class,

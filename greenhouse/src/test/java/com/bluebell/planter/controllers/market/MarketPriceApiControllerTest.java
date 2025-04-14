@@ -22,16 +22,16 @@ import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.containsString;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * Testing class for {@link MarketPriceApiController}
  *
  * @author Stephen Prizio
- * @version 0.1.5
+ * @version 0.1.6
  */
 @SpringBootTest
 @AutoConfigureMockMvc(addFilters = false)

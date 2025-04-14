@@ -3,6 +3,7 @@ package com.bluebell.platform.util;
 import com.bluebell.platform.exceptions.system.DirectoryNotFoundException;
 import com.bluebell.radicle.enums.DataSource;
 import lombok.experimental.UtilityClass;
+import lombok.extern.slf4j.Slf4j;
 
 import java.io.File;
 import java.nio.file.Path;
@@ -12,8 +13,9 @@ import java.nio.file.Paths;
  * Utility class for file and directory operations
  *
  * @author Stephen Prizio
- * @version 0.1.5
+ * @version 0.1.6
  */
+@Slf4j
 @UtilityClass
 public class DirectoryUtil {
 
@@ -52,6 +54,10 @@ public class DirectoryUtil {
     public static String getBaseProjectDirectory() {
 
         Path currentPath = Paths.get(new File("").getAbsoluteFile().getPath());
+        if (currentPath.endsWith("/app")) {
+            return currentPath.toAbsolutePath() + "/greenhouse";
+        }
+
         if (currentPath.endsWith("bluebell")) {
             return currentPath + File.separator + "greenhouse";
         }

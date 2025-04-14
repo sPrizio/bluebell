@@ -3,11 +3,21 @@ on:
   pull_request:
     branches:
       - '**'
-    types: [opened, synchronize, reopened]
+    types: [ opened, synchronize, reopened ]
   push:
     branches:
       - 'main'
   workflow_dispatch:
+    inputs:
+      env:
+        description: "Target environment for the deployment pipeline"
+        required: true
+        default: "dev"
+        type: choice
+        options:
+          - dev
+          - staging
+          - prod
 
 jobs:
   build:
@@ -53,6 +63,17 @@ jobs:
   test:
     runs-on: ubuntu-22.04
     needs: build
+    env:
+      TARGET_ENV: ${{ github.event.inputs.env || (
+        github.ref == 'refs/heads/main'   && 'prod'    ||
+        github.ref == 'refs/heads/staging' && 'staging' ||
+        'dev'
+        ) }}
+      UPPER_ENV: ${{ github.event.inputs.env || (
+        github.ref == 'refs/heads/main'   && 'PROD'    ||
+        github.ref == 'refs/heads/staging' && 'STAGING' ||
+        'DEV'
+        ) }}
     steps:
       - name: "[bluebell] - Checkout Repo"
         uses: actions/checkout@v4
@@ -63,6 +84,16 @@ jobs:
           java-version: '17'
           distribution: 'temurin'
           cache: maven
+
+      - name: "[greenhouse] - Generate .env "
+        run: |
+          cat > .env <<EOF
+          EMAIL_APP_USERNAME=${{ secrets[ format('{0}_EMAIL_APP_USERNAME', env.UPPER_ENV) ] }}
+          EMAIL_APP_PASSWORD=${{ secrets[ format('{0}_EMAIL_APP_PASSWORD', env.UPPER_ENV) ] }}
+          EMAIL_APP_SENDER=${{ secrets[ format('{0}_EMAIL_APP_SENDER', env.UPPER_ENV) ] }}
+          EMAIL_APP_RECIPIENT=${{ secrets[ format('{0}_EMAIL_APP_RECIPIENT', env.UPPER_ENV) ] }}
+          EOF
+        working-directory: './greenhouse'
 
       - name: "[greenhouse] - Test"
         run: mvn test
