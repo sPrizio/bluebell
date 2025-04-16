@@ -1,17 +1,24 @@
 package com.bluebell.radicle.services.trade;
 
 import com.bluebell.platform.constants.CorePlatformConstants;
+import com.bluebell.platform.enums.GenericEnum;
+import com.bluebell.platform.enums.trade.TradePlatform;
 import com.bluebell.platform.enums.trade.TradeType;
+import com.bluebell.platform.models.api.dto.trade.CreateUpdateMultipleTradesDTO;
 import com.bluebell.platform.models.core.entities.account.Account;
 import com.bluebell.platform.models.core.entities.trade.Trade;
+import com.bluebell.platform.services.MathService;
+import com.bluebell.radicle.repositories.account.AccountRepository;
 import com.bluebell.radicle.repositories.trade.TradeRepository;
 import jakarta.annotation.Resource;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Optional;
 
@@ -24,8 +31,14 @@ import static com.bluebell.radicle.validation.GenericValidator.validateParameter
  * @author Stephen Prizio
  * @version 0.1.6
  */
+@Slf4j
 @Service
 public class TradeService {
+
+    private final MathService mathService = new MathService();
+
+    @Resource(name = "accountRepository")
+    private AccountRepository accountRepository;
 
     @Resource(name = "tradeRepository")
     private TradeRepository tradeRepository;
@@ -97,6 +110,55 @@ public class TradeService {
         validateParameterIsNotNull(account, CorePlatformConstants.Validation.Account.ACCOUNT_CANNOT_BE_NULL);
 
         return Optional.ofNullable(this.tradeRepository.findTradeByTradeIdAndAccount(tradeId, account));
+    }
+
+    /**
+     * Creates new trades for the given payload
+     *
+     * @param tradesDTO {@link CreateUpdateMultipleTradesDTO}
+     * @return true if trades are created
+     */
+    public boolean createTrades(final CreateUpdateMultipleTradesDTO tradesDTO) {
+        validateParameterIsNotNull(tradesDTO, "trades dto cannot be null");
+        validateParameterIsNotNull(tradesDTO.userIdentifier(), CorePlatformConstants.Validation.Security.User.USER_CANNOT_BE_NULL);
+
+        if (CollectionUtils.isEmpty(tradesDTO.trades())) {
+            LOGGER.error("No trades were given for creation");
+            return false;
+        }
+
+        final Account account = this.accountRepository.findAccountByAccountNumber(tradesDTO.accountNumber());
+        if (account == null) {
+            LOGGER.error("Account not found for number {}", tradesDTO.accountNumber());
+            return false;
+        }
+
+        try {
+            final List<Trade> trades = tradesDTO.trades().stream().map(td ->
+                    Trade
+                            .builder()
+                            .tradeId(td.tradeId())
+                            .product(td.product())
+                            .tradePlatform(GenericEnum.getByCode(TradePlatform.class, td.tradePlatform()))
+                            .tradeType(GenericEnum.getByCode(TradeType.class, td.tradeType()))
+                            .tradeOpenTime(LocalDateTime.parse(td.tradeOpenTime(), DateTimeFormatter.ofPattern(CorePlatformConstants.MT4_DATE_SHORT_TIME_FORMAT)))
+                            .tradeCloseTime(LocalDateTime.parse(td.tradeCloseTime(), DateTimeFormatter.ofPattern(CorePlatformConstants.MT4_DATE_SHORT_TIME_FORMAT)))
+                            .lotSize(this.mathService.getDouble(td.lotSize()))
+                            .openPrice(this.mathService.getDouble(td.openPrice()))
+                            .closePrice(this.mathService.getDouble(td.closePrice()))
+                            .netProfit(this.mathService.getDouble(td.netProfit()))
+                            .stopLoss(this.mathService.getDouble(td.stopLoss()))
+                            .takeProfit(this.mathService.getDouble(td.takeProfit()))
+                            .account(account)
+                            .build()
+            ).toList();
+
+            saveAll(trades, account);
+            return true;
+        } catch (Exception e) {
+            LOGGER.error(e.getMessage(), e);
+            return false;
+        }
     }
 
     /**

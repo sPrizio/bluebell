@@ -7,6 +7,7 @@
 #property link      "https://www.bluebell.com"
 #property version   "1.00"
 #property strict
+#property description "Please be sure to toggle the option 'All-Time History' for the history terminal"
 
 input bool online = true;
 input string InpDirectoryName = "Account";

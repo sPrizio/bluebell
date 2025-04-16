@@ -15,7 +15,7 @@ import org.springframework.stereotype.Component;
  * Converts {@link User}s into {@link UserDTO}s
  *
  * @author Stephen Prizio
- * @version 0.1.3
+ * @version 0.1.6
  */
 @Component("userDTOConverter")
 public class UserDTOConverter implements GenericDTOConverter<User, UserDTO> {
@@ -39,9 +39,11 @@ public class UserDTOConverter implements GenericDTOConverter<User, UserDTO> {
             return UserDTO.builder().build();
         }
 
+        final String uid = this.uniqueIdentifierService.generateUid(entity);
         return UserDTO
                 .builder()
-                .uid(this.uniqueIdentifierService.generateUid(entity))
+                .uid(uid)
+                .userIdentifier(this.uniqueIdentifierService.generateUniqueIdentifierAsLong(uid))
                 .apiToken(entity.getApiToken())
                 .email(entity.getEmail())
                 .username(entity.getUsername())

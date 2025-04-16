@@ -4,10 +4,12 @@ import com.bluebell.planter.AbstractPlanterTest;
 import com.bluebell.planter.constants.ApiConstants;
 import com.bluebell.planter.services.UniqueIdentifierService;
 import com.bluebell.platform.enums.trade.TradeType;
+import com.bluebell.platform.models.api.dto.trade.CreateUpdateMultipleTradesDTO;
 import com.bluebell.platform.models.core.entities.account.Account;
 import com.bluebell.platform.models.core.entities.trade.Trade;
 import com.bluebell.radicle.importing.services.trade.GenericTradeImportService;
 import com.bluebell.radicle.services.trade.TradeService;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.lang3.StringUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -37,6 +39,7 @@ import static org.hamcrest.Matchers.is;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -44,7 +47,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  * Testing class for {@link TradeApiController}
  *
  * @author Stephen Prizio
- * @version 0.1.3
+ * @version 0.1.6
  */
 @SpringBootTest
 @AutoConfigureMockMvc(addFilters = false)
@@ -82,6 +85,7 @@ class TradeApiControllerTest extends AbstractPlanterTest {
         Mockito.when(this.tradeService.findTradeByTradeId("testId1", TEST_ACCOUNT)).thenReturn(Optional.of(TEST_TRADE_1));
         Mockito.when(this.uniqueIdentifierService.generateUid(any())).thenReturn("MTE4");
         Mockito.when(this.tradeService.findAllTradesWithinTimespan(any(), any(), any(), anyInt(), anyInt())).thenReturn(new PageImpl<>(List.of(generateTestBuyTrade(), generateTestSellTrade()), Pageable.ofSize(10), 10));
+        Mockito.when(this.tradeService.createTrades(any())).thenReturn(true);
     }
 
 
@@ -216,6 +220,28 @@ class TradeApiControllerTest extends AbstractPlanterTest {
         map.put("isStrategy", List.of("false"));
 
         mockMvc1.perform(MockMvcRequestBuilders.multipart("/api/v1/trade/import-trades").file(TEST_FILE).with(testUserContext()).params(map))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.data", is(true)));
+    }
+
+
+    //  ----------------- postCreateTrades -----------------
+
+    @Test
+    void test_postCreateTrades_success() throws Exception {
+
+        final CreateUpdateMultipleTradesDTO trades =
+                CreateUpdateMultipleTradesDTO
+                        .builder()
+                        .userIdentifier("Test")
+                        .accountNumber(1234L)
+                        .trades(List.of(
+                                generateTestCreateUpdateTradeDTO(generateTestBuyTrade()),
+                                generateTestCreateUpdateTradeDTO(generateTestSellTrade())
+                        ))
+                        .build();
+
+        this.mockMvc.perform(post("/api/v1/trade/create-trades").contentType(MediaType.APPLICATION_JSON).content(new ObjectMapper().writeValueAsString(trades)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.data", is(true)));
     }

@@ -3,7 +3,9 @@ package com.bluebell.planter.controllers.trade;
 import com.bluebell.planter.controllers.AbstractApiController;
 import com.bluebell.planter.converters.trade.TradeDTOConverter;
 import com.bluebell.platform.constants.CorePlatformConstants;
+import com.bluebell.platform.enums.security.UserRole;
 import com.bluebell.platform.enums.trade.TradeType;
+import com.bluebell.platform.models.api.dto.trade.CreateUpdateMultipleTradesDTO;
 import com.bluebell.platform.models.api.dto.trade.PaginatedTradesDTO;
 import com.bluebell.platform.models.api.dto.trade.TradeDTO;
 import com.bluebell.platform.models.api.json.StandardJsonResponse;
@@ -41,7 +43,7 @@ import static com.bluebell.radicle.validation.GenericValidator.*;
  * Api controller for {@link Trade}
  *
  * @author Stephen Prizio
- * @version 0.1.3
+ * @version 0.1.6
  */
 @RestController
 @RequestMapping("${bluebell.base.api.controller.endpoint}/trade")
@@ -217,10 +219,10 @@ public class TradeApiController extends AbstractApiController {
     /**
      * Returns a {@link StandardJsonResponse} containing {@link Trade}s for the given interval of time
      *
-     * @param request {@link HttpServletRequest}
-     * @param start   start date & time
-     * @param end     end date & time
-     * @param page page
+     * @param request  {@link HttpServletRequest}
+     * @param start    start date & time
+     * @param end      end date & time
+     * @param page     page
      * @param pageSize pageSize
      * @return {@link StandardJsonResponse}
      */
@@ -397,7 +399,7 @@ public class TradeApiController extends AbstractApiController {
             @Parameter(name = "Trade File", description = "The file containing your trades")
             final @RequestParam("file") MultipartFile file,
             final HttpServletRequest request
-            ) throws IOException {
+    ) throws IOException {
 
         final User user = (User) request.getAttribute(SecurityConstants.USER_REQUEST_KEY);
         validateImportFileExtension(file, getAccountForId(user, accountNumber).getTradePlatform().getFormats(), "The given file %s was not of a valid format", file.getOriginalFilename());
@@ -416,6 +418,46 @@ public class TradeApiController extends AbstractApiController {
                 .success(false)
                 .data(false)
                 .message(result)
+                .build();
+    }
+
+    /**
+     * Takes in trade data and creates trades for the user and account configured within the payload. This endpoint is designed to be used by the system
+     *
+     * @param data  {@link CreateUpdateMultipleTradesDTO}
+     * @param request {@link HttpServletRequest}
+     * @return {@link StandardJsonResponse}
+     */
+    @ValidateApiToken(role = UserRole.SYSTEM)
+    @Operation(summary = "Creates trades for the payload", description = "System endpoint that creates trades from the given payload")
+    @ApiResponse(
+            responseCode = "200",
+            description = "Response when the api successfully creates the trades.",
+            content = @Content(
+                    mediaType = "application/json",
+                    schema = @Schema(implementation = StandardJsonResponse.class)
+            )
+    )
+    @ApiResponse(
+            responseCode = "401",
+            description = "Response when the api call made was unauthorized.",
+            content = @Content(
+                    mediaType = "application/json",
+                    schema = @Schema(implementation = StandardJsonResponse.class, example = "The API token was invalid.")
+            )
+    )
+    @PostMapping("/create-trades")
+    public StandardJsonResponse<Boolean> postCreateTrades(
+            @Parameter(name = "Trades Payload", description = "Payload for creating or updating trades")
+            final @RequestBody CreateUpdateMultipleTradesDTO data,
+            final HttpServletRequest request
+    ) {
+        final boolean result = this.tradeService.createTrades(data);
+        return StandardJsonResponse
+                .<Boolean>builder()
+                .success(result)
+                .data(result)
+                .message(result ? "Trades created successfully" : "Trades creation failed")
                 .build();
     }
 }

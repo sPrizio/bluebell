@@ -19,7 +19,7 @@ import java.util.List;
  * A DTO representation of a {@link User}
  *
  * @author Stephen Prizio
- * @version 0.1.3
+ * @version 0.1.6
  */
 @Setter
 @Getter
@@ -29,6 +29,9 @@ public class UserDTO implements GenericDTO {
 
     @Schema(description = "User uid")
     private @Builder.Default String uid = StringUtils.EMPTY;
+
+    @Schema(description = "Unique user number")
+    private long userIdentifier;
 
     @Schema(description = "User's api token")
     private String apiToken;

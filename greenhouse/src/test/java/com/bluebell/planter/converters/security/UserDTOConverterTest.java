@@ -22,7 +22,7 @@ import static org.mockito.ArgumentMatchers.any;
  * Testing class for {@link UserDTOConverter}
  *
  * @author Stephen Prizio
- * @version 0.1.3
+ * @version 0.1.6
  */
 @SpringBootTest
 @RunWith(SpringRunner.class)
@@ -41,6 +41,7 @@ class UserDTOConverterTest extends AbstractPlanterTest {
     void setUp() {
         Mockito.when(this.accountDTOConverter.convert(any())).thenReturn(generateTestAccountDTO());
         Mockito.when(this.uniqueIdentifierService.generateUid(any())).thenReturn("MTE4");
+        Mockito.when(this.uniqueIdentifierService.generateUniqueIdentifierAsLong(any())).thenReturn(1L);
     }
 
 
