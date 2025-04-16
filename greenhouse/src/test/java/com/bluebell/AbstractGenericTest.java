@@ -15,6 +15,7 @@ import com.bluebell.platform.enums.trade.TradeType;
 import com.bluebell.platform.enums.transaction.TransactionStatus;
 import com.bluebell.platform.enums.transaction.TransactionType;
 import com.bluebell.platform.models.api.dto.trade.CreateUpdateTradeDTO;
+import com.bluebell.platform.models.api.dto.transaction.CreateUpdateTransactionDTO;
 import com.bluebell.platform.models.core.entities.account.Account;
 import com.bluebell.platform.models.core.entities.action.impl.Action;
 import com.bluebell.platform.models.core.entities.job.impl.Job;
@@ -72,6 +73,23 @@ public abstract class AbstractGenericTest {
                 .openPrice(trade.getOpenPrice())
                 .stopLoss(trade.getStopLoss())
                 .takeProfit(trade.getTakeProfit())
+                .build();
+    }
+
+    /**
+     * Generates a test {@link CreateUpdateTransactionDTO}
+     *
+     * @param transaction {@link Transaction}
+     * @return {@link CreateUpdateTransactionDTO}
+     */
+    public CreateUpdateTransactionDTO generateTestCreateUpdateTransactionDTO(final Transaction transaction) {
+        return CreateUpdateTransactionDTO
+                .builder()
+                .transactionType(transaction.getTransactionType().getCode())
+                .transactionDate(transaction.getTransactionDate().format(DateTimeFormatter.ofPattern(CorePlatformConstants.MT4_DATE_SHORT_TIME_FORMAT)))
+                .name(transaction.getName())
+                .transactionStatus(transaction.getTransactionStatus().getCode())
+                .amount(transaction.getAmount())
                 .build();
     }
 

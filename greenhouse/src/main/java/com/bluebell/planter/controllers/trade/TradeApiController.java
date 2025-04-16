@@ -3,9 +3,7 @@ package com.bluebell.planter.controllers.trade;
 import com.bluebell.planter.controllers.AbstractApiController;
 import com.bluebell.planter.converters.trade.TradeDTOConverter;
 import com.bluebell.platform.constants.CorePlatformConstants;
-import com.bluebell.platform.enums.security.UserRole;
 import com.bluebell.platform.enums.trade.TradeType;
-import com.bluebell.platform.models.api.dto.trade.CreateUpdateMultipleTradesDTO;
 import com.bluebell.platform.models.api.dto.trade.PaginatedTradesDTO;
 import com.bluebell.platform.models.api.dto.trade.TradeDTO;
 import com.bluebell.platform.models.api.json.StandardJsonResponse;
@@ -418,46 +416,6 @@ public class TradeApiController extends AbstractApiController {
                 .success(false)
                 .data(false)
                 .message(result)
-                .build();
-    }
-
-    /**
-     * Takes in trade data and creates trades for the user and account configured within the payload. This endpoint is designed to be used by the system
-     *
-     * @param data  {@link CreateUpdateMultipleTradesDTO}
-     * @param request {@link HttpServletRequest}
-     * @return {@link StandardJsonResponse}
-     */
-    @ValidateApiToken(role = UserRole.SYSTEM)
-    @Operation(summary = "Creates trades for the payload", description = "System endpoint that creates trades from the given payload")
-    @ApiResponse(
-            responseCode = "200",
-            description = "Response when the api successfully creates the trades.",
-            content = @Content(
-                    mediaType = "application/json",
-                    schema = @Schema(implementation = StandardJsonResponse.class)
-            )
-    )
-    @ApiResponse(
-            responseCode = "401",
-            description = "Response when the api call made was unauthorized.",
-            content = @Content(
-                    mediaType = "application/json",
-                    schema = @Schema(implementation = StandardJsonResponse.class, example = "The API token was invalid.")
-            )
-    )
-    @PostMapping("/create-trades")
-    public StandardJsonResponse<Boolean> postCreateTrades(
-            @Parameter(name = "Trades Payload", description = "Payload for creating or updating trades")
-            final @RequestBody CreateUpdateMultipleTradesDTO data,
-            final HttpServletRequest request
-    ) {
-        final boolean result = this.tradeService.createTrades(data);
-        return StandardJsonResponse
-                .<Boolean>builder()
-                .success(result)
-                .data(result)
-                .message(result ? "Trades created successfully" : "Trades creation failed")
                 .build();
     }
 }

@@ -9,6 +9,7 @@ import com.bluebell.platform.enums.account.Broker;
 import com.bluebell.platform.enums.account.Currency;
 import com.bluebell.platform.enums.trade.TradePlatform;
 import com.bluebell.platform.models.api.dto.account.CreateUpdateAccountDTO;
+import com.bluebell.platform.models.api.dto.account.CreateUpdateAccountTradingDataDTO;
 import com.bluebell.platform.models.core.entities.account.Account;
 import com.bluebell.radicle.security.constants.SecurityConstants;
 import com.bluebell.radicle.services.account.AccountService;
@@ -26,6 +27,7 @@ import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -40,7 +42,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  * Testing class for {@link AccountApiController}
  *
  * @author Stephen Prizio
- * @version 0.1.2
+ * @version 0.1.6
  */
 @SpringBootTest
 @AutoConfigureMockMvc(addFilters = false)
@@ -76,6 +78,7 @@ class AccountApiControllerTest extends AbstractPlanterTest {
         Mockito.when(this.portfolioService.findPortfolioByUid("1234")).thenReturn(Optional.of(generateTestPortfolio()));
         Mockito.when(this.portfolioService.findPortfolioByUid("5678")).thenReturn(Optional.empty());
         Mockito.when(this.accountService.getAccountDetails(any())).thenReturn(generateAccountDetails());
+        Mockito.when(this.accountService.updateAccountTradingData(any())).thenReturn(true);
     }
 
 
@@ -191,6 +194,32 @@ class AccountApiControllerTest extends AbstractPlanterTest {
                         .content(new ObjectMapper().writeValueAsString(data)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.data.balance", is(1000.0)));
+    }
+
+
+    //  ----------------- postUpdateAccountTradingData -----------------
+
+    @Test
+    void test_postUpdateAccountTradingData_success() throws Exception {
+
+        final CreateUpdateAccountTradingDataDTO trades =
+                CreateUpdateAccountTradingDataDTO
+                        .builder()
+                        .userIdentifier("Test")
+                        .accountNumber(1234L)
+                        .trades(List.of(
+                                generateTestCreateUpdateTradeDTO(generateTestBuyTrade()),
+                                generateTestCreateUpdateTradeDTO(generateTestSellTrade())
+                        ))
+                        .transactions(List.of(
+                                generateTestCreateUpdateTransactionDTO(generateTestTransactionDeposit(generateTestAccount())),
+                                generateTestCreateUpdateTransactionDTO(generateTestTransactionWithdrawal(generateTestAccount()))
+                        ))
+                        .build();
+
+        this.mockMvc.perform(post("/api/v1/account/update-trade-data").contentType(MediaType.APPLICATION_JSON).content(new ObjectMapper().writeValueAsString(trades)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.data", is(true)));
     }
 
 

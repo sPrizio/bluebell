@@ -13,16 +13,16 @@ import lombok.Builder;
 @Builder
 @Schema(title = "CreateUpdateTradeDTO", name = "CreateUpdateTradeDTO", description = "Payload for creating and updating trades")
 public record CreateUpdateTradeDTO(
-        String tradeId,
-        String tradePlatform,
-        String product,
-        String tradeType,
-        double closePrice,
-        String tradeCloseTime,
-        String tradeOpenTime,
-        double lotSize,
-        double netProfit,
-        double openPrice,
-        double stopLoss,
-        double takeProfit
+        @Schema(description = "Trade ID") String tradeId,
+        @Schema(description = "Trade platform") String tradePlatform,
+        @Schema(description = "Trade product") String product,
+        @Schema(description = "Trade type") String tradeType,
+        @Schema(description = "Trade close price") double closePrice,
+        @Schema(description = "Trade close time") String tradeCloseTime,
+        @Schema(description = "Trade open time") String tradeOpenTime,
+        @Schema(description = "Trade lot size") double lotSize,
+        @Schema(description = "Trade net profit") double netProfit,
+        @Schema(description = "Trade open price") double openPrice,
+        @Schema(description = "Trade stop loss") double stopLoss,
+        @Schema(description = "Trade take profit") double takeProfit
 ) { }
