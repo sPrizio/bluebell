@@ -61,6 +61,11 @@ public class CorePlatformConstants {
     public static final String TIME_FORMAT = "HH:mm:ss";
 
     /**
+     * Datetime format without timezone information
+     */
+    public static final String DATE_TIME_NO_TIMEZONE = String.format("%s %s", DATE_FORMAT, TIME_FORMAT);
+
+    /**
      * The default date & time format
      */
     public static final String DATE_TIME_FORMAT = "yyyy-MM-dd'T'HH:mm:ss";
