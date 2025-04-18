@@ -5,9 +5,11 @@ import com.bluebell.planter.converters.account.AccountDTOConverter;
 import com.bluebell.platform.enums.account.AccountType;
 import com.bluebell.platform.enums.account.Broker;
 import com.bluebell.platform.enums.account.Currency;
+import com.bluebell.platform.enums.security.UserRole;
 import com.bluebell.platform.enums.trade.TradePlatform;
 import com.bluebell.platform.models.api.dto.account.AccountDTO;
 import com.bluebell.platform.models.api.dto.account.CreateUpdateAccountDTO;
+import com.bluebell.platform.models.api.dto.account.CreateUpdateAccountTradingDataDTO;
 import com.bluebell.platform.models.api.json.StandardJsonResponse;
 import com.bluebell.platform.models.core.entities.account.Account;
 import com.bluebell.platform.models.core.entities.portfolio.Portfolio;
@@ -304,6 +306,46 @@ public class AccountApiController extends AbstractApiController {
                 .<AccountDTO>builder()
                 .success(false)
                 .message(String.format("Portfolio not found for uid: %s", portfolioUid))
+                .build();
+    }
+
+    /**
+     * Takes in account trading data and updates the associated data on the account within the payload. This endpoint is designed to be used by the system
+     *
+     * @param data  {@link CreateUpdateAccountTradingDataDTO}
+     * @param request {@link HttpServletRequest}
+     * @return {@link StandardJsonResponse}
+     */
+    @ValidateApiToken(role = UserRole.SYSTEM)
+    @Operation(summary = "Updates account trading data", description = "System endpoint that creates/updates trades & transactions from the given payload")
+    @ApiResponse(
+            responseCode = "200",
+            description = "Response when the api successfully updates the account's trading information.",
+            content = @Content(
+                    mediaType = "application/json",
+                    schema = @Schema(implementation = StandardJsonResponse.class)
+            )
+    )
+    @ApiResponse(
+            responseCode = "401",
+            description = "Response when the api call made was unauthorized.",
+            content = @Content(
+                    mediaType = "application/json",
+                    schema = @Schema(implementation = StandardJsonResponse.class, example = "The API token was invalid.")
+            )
+    )
+    @PostMapping("/update-trade-data")
+    public StandardJsonResponse<Boolean> postUpdateAccountTradingData(
+            @Parameter(name = "Trading Data Payload", description = "Payload for creating or updating account trading data")
+            final @RequestBody CreateUpdateAccountTradingDataDTO data,
+            final HttpServletRequest request
+    ) {
+        final boolean result = this.accountService.updateAccountTradingData(data);
+        return StandardJsonResponse
+                .<Boolean>builder()
+                .success(result)
+                .data(result)
+                .message(result ? "Trading information updated successfully" : "Trading information updates failed")
                 .build();
     }
 

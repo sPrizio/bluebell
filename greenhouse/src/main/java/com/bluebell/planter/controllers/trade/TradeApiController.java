@@ -41,7 +41,7 @@ import static com.bluebell.radicle.validation.GenericValidator.*;
  * Api controller for {@link Trade}
  *
  * @author Stephen Prizio
- * @version 0.1.3
+ * @version 0.1.6
  */
 @RestController
 @RequestMapping("${bluebell.base.api.controller.endpoint}/trade")
@@ -217,10 +217,10 @@ public class TradeApiController extends AbstractApiController {
     /**
      * Returns a {@link StandardJsonResponse} containing {@link Trade}s for the given interval of time
      *
-     * @param request {@link HttpServletRequest}
-     * @param start   start date & time
-     * @param end     end date & time
-     * @param page page
+     * @param request  {@link HttpServletRequest}
+     * @param start    start date & time
+     * @param end      end date & time
+     * @param page     page
      * @param pageSize pageSize
      * @return {@link StandardJsonResponse}
      */
@@ -397,7 +397,7 @@ public class TradeApiController extends AbstractApiController {
             @Parameter(name = "Trade File", description = "The file containing your trades")
             final @RequestParam("file") MultipartFile file,
             final HttpServletRequest request
-            ) throws IOException {
+    ) throws IOException {
 
         final User user = (User) request.getAttribute(SecurityConstants.USER_REQUEST_KEY);
         validateImportFileExtension(file, getAccountForId(user, accountNumber).getTradePlatform().getFormats(), "The given file %s was not of a valid format", file.getOriginalFilename());

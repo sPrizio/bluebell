@@ -1,5 +1,6 @@
 package com.bluebell.platform.enums.trade;
 
+import com.bluebell.platform.enums.GenericEnum;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
 
@@ -7,11 +8,11 @@ import lombok.Getter;
  * Enum representing different trading platforms
  *
  * @author Stephen Prizio
- * @version 0.0.9
+ * @version 0.1.6
  */
 @Getter
 @Schema(title = "TradePlatform", name = "TradePlatform Enum", description = "List of Trade Platforms supported in bluebell.")
-public enum TradePlatform {
+public enum TradePlatform implements GenericEnum<TradePlatform> {
     BLUEBELL("BLUEBELL_ANTHER", "Anther", ".csv"),
     CMC_MARKETS("CMC_MARKETS", "CMC Markets", ".csv"),
     METATRADER4("METATRADER4", "MetaTrader 4", ".html", ".htm"),

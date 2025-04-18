@@ -1,5 +1,6 @@
 package com.bluebell;
 
+import com.bluebell.platform.constants.CorePlatformConstants;
 import com.bluebell.platform.enums.account.AccountType;
 import com.bluebell.platform.enums.account.Broker;
 import com.bluebell.platform.enums.account.Currency;
@@ -13,6 +14,8 @@ import com.bluebell.platform.enums.trade.TradePlatform;
 import com.bluebell.platform.enums.trade.TradeType;
 import com.bluebell.platform.enums.transaction.TransactionStatus;
 import com.bluebell.platform.enums.transaction.TransactionType;
+import com.bluebell.platform.models.api.dto.trade.CreateUpdateTradeDTO;
+import com.bluebell.platform.models.api.dto.transaction.CreateUpdateTransactionDTO;
 import com.bluebell.platform.models.core.entities.account.Account;
 import com.bluebell.platform.models.core.entities.action.impl.Action;
 import com.bluebell.platform.models.core.entities.job.impl.Job;
@@ -36,6 +39,7 @@ import org.apache.commons.lang3.StringUtils;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -47,6 +51,47 @@ import java.util.Random;
  * @version 0.1.6
  */
 public abstract class AbstractGenericTest {
+
+    /**
+     * Generates a test {@link CreateUpdateTradeDTO}
+     *
+     * @param trade {@link Trade}
+     * @return {@link CreateUpdateTradeDTO}
+     */
+    public CreateUpdateTradeDTO generateTestCreateUpdateTradeDTO(final Trade trade) {
+        return CreateUpdateTradeDTO
+                .builder()
+                .tradeId(trade.getTradeId())
+                .tradePlatform(trade.getTradePlatform().getCode())
+                .product(trade.getProduct())
+                .tradeType(trade.getTradeType().getCode())
+                .closePrice(trade.getClosePrice())
+                .tradeCloseTime(trade.getTradeCloseTime().format(DateTimeFormatter.ofPattern(CorePlatformConstants.DATE_TIME_NO_TIMEZONE)))
+                .tradeOpenTime(trade.getTradeOpenTime().format(DateTimeFormatter.ofPattern(CorePlatformConstants.DATE_TIME_NO_TIMEZONE)))
+                .lotSize(trade.getLotSize())
+                .netProfit(trade.getNetProfit())
+                .openPrice(trade.getOpenPrice())
+                .stopLoss(trade.getStopLoss())
+                .takeProfit(trade.getTakeProfit())
+                .build();
+    }
+
+    /**
+     * Generates a test {@link CreateUpdateTransactionDTO}
+     *
+     * @param transaction {@link Transaction}
+     * @return {@link CreateUpdateTransactionDTO}
+     */
+    public CreateUpdateTransactionDTO generateTestCreateUpdateTransactionDTO(final Transaction transaction) {
+        return CreateUpdateTransactionDTO
+                .builder()
+                .transactionType(transaction.getTransactionType().getCode())
+                .transactionDate(transaction.getTransactionDate().format(DateTimeFormatter.ofPattern(CorePlatformConstants.DATE_TIME_NO_TIMEZONE)))
+                .name(transaction.getName())
+                .transactionStatus(transaction.getTransactionStatus().getCode())
+                .amount(transaction.getAmount())
+                .build();
+    }
 
     /**
      * Generates a test BUY {@link Trade}

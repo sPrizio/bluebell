@@ -1,22 +1,36 @@
 package com.bluebell.radicle.services.account;
 
 import com.bluebell.platform.constants.CorePlatformConstants;
+import com.bluebell.platform.enums.GenericEnum;
 import com.bluebell.platform.enums.account.AccountType;
 import com.bluebell.platform.enums.account.Broker;
 import com.bluebell.platform.enums.account.Currency;
 import com.bluebell.platform.enums.trade.TradePlatform;
+import com.bluebell.platform.enums.trade.TradeType;
+import com.bluebell.platform.enums.transaction.TransactionStatus;
+import com.bluebell.platform.enums.transaction.TransactionType;
 import com.bluebell.platform.models.api.dto.account.CreateUpdateAccountDTO;
+import com.bluebell.platform.models.api.dto.account.CreateUpdateAccountTradingDataDTO;
 import com.bluebell.platform.models.core.entities.account.Account;
 import com.bluebell.platform.models.core.entities.portfolio.Portfolio;
+import com.bluebell.platform.models.core.entities.trade.Trade;
+import com.bluebell.platform.models.core.entities.transaction.Transaction;
 import com.bluebell.platform.models.core.nonentities.records.account.AccountDetails;
+import com.bluebell.platform.services.MathService;
 import com.bluebell.radicle.exceptions.system.EntityCreationException;
 import com.bluebell.radicle.exceptions.system.EntityModificationException;
 import com.bluebell.radicle.exceptions.validation.MissingRequiredDataException;
 import com.bluebell.radicle.repositories.account.AccountRepository;
+import com.bluebell.radicle.services.trade.TradeService;
+import com.bluebell.radicle.services.transaction.TransactionService;
 import jakarta.annotation.Resource;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -27,16 +41,25 @@ import static com.bluebell.radicle.validation.GenericValidator.validateParameter
  * Service-layer for {@link Account} entities
  *
  * @author Stephen Prizio
- * @version 0.1.3
+ * @version 0.1.6
  */
+@Slf4j
 @Service
 public class AccountService {
+
+    private final MathService mathService = new MathService();
 
     @Resource(name = "accountRepository")
     private AccountRepository accountRepository;
 
     @Resource(name = "accountDetailsService")
     private AccountDetailsService accountDetailsService;
+
+    @Resource(name = "tradeService")
+    private TradeService tradeService;
+
+    @Resource(name = "transactionService")
+    private TransactionService transactionService;
 
 
     //  METHODS
@@ -132,6 +155,69 @@ public class AccountService {
             this.accountRepository.delete(account);
             return true;
         } catch (Exception e) {
+            return false;
+        }
+    }
+
+    /**
+     * Updates account trading data for the given payload
+     *
+     * @param data {@link CreateUpdateAccountTradingDataDTO}
+     * @return true if information is updated
+     */
+    public boolean updateAccountTradingData(final CreateUpdateAccountTradingDataDTO data) {
+        validateParameterIsNotNull(data, "trades dto cannot be null");
+        validateParameterIsNotNull(data.userIdentifier(), CorePlatformConstants.Validation.Security.User.USER_CANNOT_BE_NULL);
+
+        final Optional<Account> account = findAccountByAccountNumber(data.accountNumber());
+        if (account.isEmpty()) {
+            LOGGER.error("Account not found for number {}", data.accountNumber());
+            return false;
+        }
+
+        try {
+            if (CollectionUtils.isNotEmpty(data.trades())) {
+                final List<Trade> trades = data.trades().stream().map(td ->
+                        Trade
+                                .builder()
+                                .tradeId(td.tradeId())
+                                .product(td.product())
+                                .tradePlatform(GenericEnum.getByCode(TradePlatform.class, td.tradePlatform()))
+                                .tradeType(GenericEnum.getByCode(TradeType.class, td.tradeType()))
+                                .tradeOpenTime(LocalDateTime.parse(td.tradeOpenTime(), DateTimeFormatter.ofPattern(CorePlatformConstants.DATE_TIME_NO_TIMEZONE)))
+                                .tradeCloseTime(LocalDateTime.parse(td.tradeCloseTime(), DateTimeFormatter.ofPattern(CorePlatformConstants.DATE_TIME_NO_TIMEZONE)))
+                                .lotSize(this.mathService.getDouble(td.lotSize()))
+                                .openPrice(this.mathService.getDouble(td.openPrice()))
+                                .closePrice(this.mathService.getDouble(td.closePrice()))
+                                .netProfit(this.mathService.getDouble(td.netProfit()))
+                                .stopLoss(this.mathService.getDouble(td.stopLoss()))
+                                .takeProfit(this.mathService.getDouble(td.takeProfit()))
+                                .account(account.get())
+                                .build()
+                ).toList();
+
+                this.tradeService.saveAll(trades, account.get());
+            }
+
+            if (CollectionUtils.isNotEmpty(data.transactions())) {
+                final List<Transaction> transactions = data.transactions().stream().map(tr ->
+                        Transaction
+                                .builder()
+                                .transactionType(GenericEnum.getByCode(TransactionType.class, tr.transactionType()))
+                                .transactionDate(LocalDateTime.parse(tr.transactionDate(), DateTimeFormatter.ofPattern(CorePlatformConstants.DATE_TIME_NO_TIMEZONE)))
+                                .name(tr.name())
+                                .transactionStatus(GenericEnum.getByCode(TransactionStatus.class, tr.transactionStatus()))
+                                .amount(tr.amount())
+                                .account(account.get())
+                                .build()
+                ).toList();
+
+                this.transactionService.saveAll(transactions, account.get());
+            }
+
+            return true;
+        } catch (Exception e) {
+            LOGGER.error(e.getMessage(), e);
             return false;
         }
     }
