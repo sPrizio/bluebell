@@ -99,28 +99,65 @@ string FormatNumber(int intVal) {
 }
 
 /*
+   Formats the order type into a readable string
+*/
+string FormatOrderType(int type) {
+   switch (type) {
+      case OP_BUY:
+         return "BUY";
+      case OP_SELL:
+         return "SELL";
+      case OP_BUYLIMIT:
+         return "BUY_LIMIT";
+      case OP_BUYSTOP:
+         return "BUY_STOP";
+      case OP_SELLLIMIT:
+         return "SELL_LIMIT";
+      case OP_SELLSTOP:
+         return "SELL_STOP";
+      default:
+         return "UNKNOWN";
+   }
+}
+
+/*
    Generates the data file with market data
 */
 void GenerateFile() {
 
    // retrieving info from trade history
    int i, hstTotal = OrdersHistoryTotal();
-   string fileName = "AccountTradeHistory.csv";
+   string fileName = StringFormat("AccountTradingData_%d.csv", AccountNumber());
    int file_handle = FileOpen(InpDirectoryName + "//" + fileName, FILE_READ | FILE_WRITE | FILE_CSV);
 
    if (file_handle != INVALID_HANDLE) {
+      FileWrite(
+         file_handle,
+         "Ticket",
+         "Open Time",
+         "Type",
+         "Lots",
+         "Symbol",
+         "Open Price",
+         "Stop Loss",
+         "Take Profit",
+         "Close Time",
+         "Close Price",
+         "Net Profit",
+         "Comment"
+      );
+
       for(i = 0; i < hstTotal; i++) {
          if(OrderSelect(i, SELECT_BY_POS, MODE_HISTORY) == false) {
             Print("Access to history failed with error (", GetLastError(), ")");
             break;
          }
 
-         Print("Order history found");
          FileWrite(
             file_handle,
             OrderTicket(),
             FormatDateTime(OrderOpenTime()),
-            OrderType(),
+            FormatOrderType(OrderType()),
             OrderLots(),
             OrderSymbol(),
             DoubleToString(OrderOpenPrice()),
@@ -144,7 +181,7 @@ void GenerateFile() {
    Formats a datetime entry into a valid string pattern
 */
 string FormatDateTime(datetime dtr) {
-   string result = TimeToString(dtr, TIME_DATE|TIME_MINUTES);
+   string result = TimeToString(dtr, TIME_DATE|TIME_MINUTES|TIME_SECONDS);
    StringReplace(result, " ", ";");
 
    // Extract the time part after the semicolon

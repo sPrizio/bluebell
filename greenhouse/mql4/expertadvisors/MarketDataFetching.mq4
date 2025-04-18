@@ -232,7 +232,7 @@ void GenerateFile(int period) {
    datetime currentTime = iTime(_Symbol, period, 0);
    string fileName = GetFileName(period);
    int file_handle = FileOpen(InpDirectoryName + "//" + fileName, FILE_READ | FILE_WRITE | FILE_CSV);
-   if(file_handle != INVALID_HANDLE) {
+   if (file_handle != INVALID_HANDLE) {
       for (int i = 0; i < lookback; i++) {
          FileWrite(file_handle, FormatDateTime(dateTimes[i]), open[i], high[i], low[i], close[i], volume[i]);
       }
