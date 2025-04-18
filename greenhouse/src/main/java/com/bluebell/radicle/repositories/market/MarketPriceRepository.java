@@ -17,11 +17,25 @@ import java.time.LocalDateTime;
  * Data-access layer for {@link MarketPrice}
  *
  * @author Stephen Prizio
- * @version 0.1.5
+ * @version 0.1.6
  */
 @Repository
 public interface MarketPriceRepository extends PagingAndSortingRepository<MarketPrice, Long>, CrudRepository<MarketPrice, Long> {
 
+    /**
+     * Inserts or updates an existing {@link MarketPrice}
+     *
+     * @param date date and time
+     * @param interval {@link MarketPriceTimeInterval}
+     * @param symbol symbol
+     * @param open open price of period
+     * @param high high price of period
+     * @param low low price of period
+     * @param close close price of period
+     * @param volume volume of period
+     * @param dataSource {@link DataSource}
+     * @return number of entities inserted/updated
+     */
     @Modifying
     @Transactional
     @Query(value = "INSERT INTO market_prices (price_date, market_price_time_interval, symbol, open, high, low, close, volume, data_source) " +

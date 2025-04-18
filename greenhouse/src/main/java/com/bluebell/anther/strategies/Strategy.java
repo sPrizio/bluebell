@@ -4,8 +4,8 @@ import com.bluebell.anther.models.parameter.strategy.impl.BasicStrategyParameter
 import com.bluebell.anther.models.strategy.StrategyResult;
 import com.bluebell.anther.models.trade.AntherTrade;
 import com.bluebell.platform.enums.trade.TradeType;
-import com.bluebell.platform.models.core.nonentities.market.AggregatedMarketPrices;
 import com.bluebell.platform.models.core.entities.market.MarketPrice;
+import com.bluebell.platform.models.core.nonentities.market.AggregatedMarketPrices;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -17,7 +17,7 @@ import java.util.Map;
  * Defines a trading strategy
  *
  * @author Stephen Prizio
- * @version 0.1.4
+ * @version 0.1.6
  */
 public interface Strategy<P extends BasicStrategyParameters> {
 

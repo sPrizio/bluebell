@@ -9,7 +9,7 @@ import java.util.List;
  * Constants defined for the bluebell platform
  *
  * @author Stephen Prizio
- * @version 0.1.5
+ * @version 0.1.6
  */
 public class CorePlatformConstants {
 
@@ -21,6 +21,8 @@ public class CorePlatformConstants {
     private CorePlatformConstants() {
         throw new UnsupportedOperationException(String.format(NO_INSTANTIATION, getClass().getName()));
     }
+
+    public static final String OS_PROFILE_ARGUMENT = "--os-profile";
 
     /**
      * Represents a value that when encountered will basically act as a non-factor when returning a limited collection of entries. This value is akin
@@ -57,6 +59,11 @@ public class CorePlatformConstants {
      * The default time format
      */
     public static final String TIME_FORMAT = "HH:mm:ss";
+
+    /**
+     * Datetime format without timezone information
+     */
+    public static final String DATE_TIME_NO_TIMEZONE = String.format("%s %s", DATE_FORMAT, TIME_FORMAT);
 
     /**
      * The default date & time format
@@ -154,6 +161,19 @@ public class CorePlatformConstants {
             public static final String PERFORMABLE_ACTION_CANNOT_BE_NULL = "performable action cannot be null";
         }
 
+        public static class Email {
+
+            private Email() {
+                throw new UnsupportedOperationException(String.format(NO_INSTANTIATION, getClass().getName()));
+            }
+
+            public static final String TO_CANNOT_BE_NULL = "to cannot be null";
+
+            public static final String SUBJECT_CANNOT_BE_NULL = "subject cannot be null";
+
+            public static final String EMAIL_TEMPLATE_CANNOT_BE_NULL = "email template cannot be null";
+        }
+
         public static class Job {
 
             private Job() {
@@ -224,6 +244,17 @@ public class CorePlatformConstants {
 
                 public static final String TELEPHONE_NUMBER_CANNOT_BE_NEGATIVE = "telephone number cannot be a negative number";
 
+            }
+
+            public static class IncomingPing {
+
+                private IncomingPing() {
+                    throw new UnsupportedOperationException(String.format(NO_INSTANTIATION, getClass().getName()));
+                }
+
+                public static final String INCOMING_PING_CANNOT_BE_NULL = "incoming ping cannot be null";
+
+                public static final String SYSTEM_NAME_CANNOT_BE_NULL = "system name cannot be null";
             }
         }
 
@@ -311,6 +342,8 @@ public class CorePlatformConstants {
 
         public static final String MARKET_PRICE_VALID_SYMBOL_REGEX = "^[a-zA-Z][a-zA-Z0-9.!]*$";
 
+        public static final String EMAIL_TEMPLATE_INTERPOLATION = "\\$\\{[a-zA-Z_]+\\}";
+
         public static class Import {
 
             private Import() {
@@ -329,5 +362,144 @@ public class CorePlatformConstants {
 
             public static final String MT4_HTML_TABLE_ROW_END = "</tr>";
         }
+    }
+
+    /**
+     * Email header & body templates
+     */
+    public static class EmailTemplates {
+
+        private EmailTemplates() {
+            throw new UnsupportedOperationException(String.format(NO_INSTANTIATION, getClass().getName()));
+        }
+
+        public static final String SIMPLE_TEMPLATE =
+                """
+                        <!DOCTYPE html>
+                        <html>
+                        <head>
+                            <meta charset="UTF-8">
+                            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                            <title>Email Notification</title>
+                            <style>
+                                body {
+                                    font-family: Arial, sans-serif;
+                                    background-color: #f4f4f4;
+                                    margin: 0;
+                                    padding: 0;
+                                }
+                                .container {
+                                    width: 100%;
+                                    max-width: 600px;
+                                    margin: 20px auto;
+                                    background: #ffffff;
+                                    padding: 20px;
+                                    border-radius: 8px;
+                                    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+                                }
+                                .content {
+                                    font-size: 16px;
+                                    color: #333;
+                                }
+                                .footer {
+                                    margin-top: 20px;
+                                    font-size: 12px;
+                                    color: #777;
+                                    text-align: center;
+                                    border-top: 1px solid #ddd;
+                                    padding-top: 10px;
+                                }
+                            </style>
+                        </head>
+                        <body>
+                            <div class="container">
+                                <div class="content">
+                                    ${body}
+                                </div>
+                                <div class="footer">
+                                    <p>This is an autogenerated email. Please do not reply to this address.</p>
+                                </div>
+                            </div>
+                        </body>
+                        </html>
+                        """;
+
+        public static final String FAILED_JOB_TEMPLATE =
+                """
+                        <!DOCTYPE html>
+                        <html lang="en">
+                        <head>
+                            <meta charset="UTF-8">
+                            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                            <title>Job Failure Notification</title>
+                            <style>
+                                body {
+                                    font-family: Arial, sans-serif;
+                                    background-color: #f4f4f4;
+                                    margin: 0;
+                                    padding: 0;
+                                }
+                                .container {
+                                    width: 100%;
+                                    max-width: 600px;
+                                    margin: 20px auto;
+                                    background: #ffffff;
+                                    padding: 20px;
+                                    border-radius: 8px;
+                                    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+                                }
+                                .header {
+                                    font-size: 18px;
+                                    font-weight: bold;
+                                    color: #d9534f;
+                                }
+                                .content {
+                                    font-size: 16px;
+                                    color: #333;
+                                    margin-top: 10px;
+                                }
+                                .details {
+                                    font-size: 14px;
+                                    background: #f8d7da;
+                                    color: #721c24;
+                                    padding: 10px;
+                                    border-radius: 5px;
+                                    margin-top: 10px;
+                                }
+                                .footer {
+                                    margin-top: 20px;
+                                    font-size: 12px;
+                                    color: #777;
+                                    text-align: center;
+                                    border-top: 1px solid #ddd;
+                                    padding-top: 10px;
+                                }
+                            </style>
+                        </head>
+                        <body>
+                        <div class="container">
+                            <div class="header">⚠ Job Failure Notification</div>
+                            <div class="content">
+                                <p>The following job has encountered an error:</p>
+                                <div class="details">
+                                    <p><strong>Job Name:</strong> ${jobName}</p>
+                                    <p><strong>Failed At:</strong> ${timestamp}</p>
+                                    <p><strong>Error Message:</strong> ${errorDetails}</p>
+                                    <p>
+                                        <strong>Details:</strong>
+                                        <blockquote>
+                                            ${detailedMessage}
+                                        </blockquote>
+                                    </p>
+                                </div>
+                                <p>Please investigate the issue and take necessary action.</p>
+                            </div>
+                            <div class="footer">
+                                <p>This is an autogenerated email. Please do not reply to this address.</p>
+                            </div>
+                        </div>
+                        </body>
+                        </html>
+                        """;
     }
 }

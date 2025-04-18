@@ -8,6 +8,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
 import java.nio.charset.StandardCharsets;
+import java.util.UUID;
 
 import static com.bluebell.radicle.validation.GenericValidator.validateParameterIsNotNull;
 
@@ -15,7 +16,7 @@ import static com.bluebell.radicle.validation.GenericValidator.validateParameter
  * Service for handling computations regarding unique identifiers that are typical used on {@link GenericDTO}s
  *
  * @author Stephen Prizio
- * @version 0.1.2
+ * @version 0.1.6
  */
 @Service
 public class UniqueIdentifierService {
@@ -51,5 +52,17 @@ public class UniqueIdentifierService {
         }
 
         return Long.parseLong(new String(Base64.decodeBase64(uid), StandardCharsets.UTF_8).split(DELIMITER)[0]);
+    }
+
+    /**
+     * Generates a unique long from the given uid
+     *
+     * @param uid unique identifier
+     * @return unique long
+     */
+    public long generateUniqueIdentifierAsLong(final String uid) {
+        validateParameterIsNotNull(uid, CorePlatformConstants.Validation.DataIntegrity.UID_CANNOT_BE_NULL);
+        UUID uuid = UUID.nameUUIDFromBytes(uid.getBytes());
+        return uuid.getMostSignificantBits();
     }
 }

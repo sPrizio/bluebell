@@ -1,8 +1,8 @@
 package com.bluebell.radicle.parsers.impl;
 
 import com.bluebell.platform.enums.time.MarketPriceTimeInterval;
-import com.bluebell.platform.models.core.nonentities.market.AggregatedMarketPrices;
 import com.bluebell.platform.models.core.entities.market.MarketPrice;
+import com.bluebell.platform.models.core.nonentities.market.AggregatedMarketPrices;
 import com.bluebell.platform.util.DirectoryUtil;
 import com.bluebell.radicle.enums.DataSource;
 import com.bluebell.radicle.exceptions.parsing.TradingViewDataParsingException;
@@ -24,7 +24,7 @@ import java.util.TreeSet;
  * Parses data from TradingView data files
  *
  * @author Stephen Prizio
- * @version 0.1.5
+ * @version 0.1.6
  */
 @Slf4j
 public class TradingViewDataParser extends AbstractDataParser implements MarketPriceParser {

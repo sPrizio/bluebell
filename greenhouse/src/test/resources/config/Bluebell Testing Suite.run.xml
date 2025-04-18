@@ -1,6 +1,6 @@
 <component name="ProjectRunConfigurationManager">
   <configuration default="false" name="Bluebell Testing Suite" type="JUnit" factoryName="JUnit">
-    <module name="greenhouse" />
+    <module name="bluebell" />
     <extension name="coverage">
       <pattern>
         <option name="PATTERN" value="com.bluebell.Bluebell" />

@@ -16,7 +16,7 @@ import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
  * Testing class for {@link UniqueIdentifierService}
  *
  * @author Stephen Prizio
- * @version 0.1.3
+ * @version 0.1.6
  */
 class UniqueIdentifierServiceTest extends AbstractPlanterTest {
 
@@ -66,5 +66,34 @@ class UniqueIdentifierServiceTest extends AbstractPlanterTest {
         TradeDTO tradeDTO = TradeDTO.builder().uid(TEST_UID).build();
         assertThat(this.uniqueIdentifierService.retrieveId(tradeDTO.getUid()))
                 .isEqualTo(118L);
+    }
+
+
+    //  ----------------- generateUniqueIdentifierAsLong -----------------
+
+    @Test
+    void test_generateUniqueIdentifierAsLong_badParams() {
+        assertThatExceptionOfType(IllegalParameterException.class)
+                .isThrownBy(() -> this.uniqueIdentifierService.generateUniqueIdentifierAsLong(null))
+                .withMessage(CorePlatformConstants.Validation.DataIntegrity.UID_CANNOT_BE_NULL);
+    }
+
+    @Test
+    void test_generateUniqueIdentifierAsLong_success_same() {
+        String input = "hello-world";
+        final long result1 = this.uniqueIdentifierService.generateUniqueIdentifierAsLong(input);
+        final long result2 = this.uniqueIdentifierService.generateUniqueIdentifierAsLong(input);
+
+        assertThat(result1).isEqualTo(result2);
+    }
+
+    @Test
+    void test_generateUniqueIdentifierAsLong_success_unique() {
+        String input1 = "string-one";
+        String input2 = "string-two";
+        long result1 = this.uniqueIdentifierService.generateUniqueIdentifierAsLong(input1);
+        long result2 = this.uniqueIdentifierService.generateUniqueIdentifierAsLong(input2);
+
+        assertThat(result1).isNotEqualTo(result2);
     }
 }

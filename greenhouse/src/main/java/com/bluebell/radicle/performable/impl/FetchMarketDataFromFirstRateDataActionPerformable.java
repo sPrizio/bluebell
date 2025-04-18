@@ -1,7 +1,6 @@
 package com.bluebell.radicle.performable.impl;
 
 import com.bluebell.platform.models.core.nonentities.action.ActionData;
-import com.bluebell.platform.util.DirectoryUtil;
 import com.bluebell.radicle.integration.client.firstratedata.FirstRateDataIntegrationClient;
 import com.bluebell.radicle.performable.ActionPerformable;
 import jakarta.annotation.Resource;
@@ -19,7 +18,7 @@ import java.util.Map;
  * Performs the action of fetching market data from the FirstRateData servers
  *
  * @author Stephen Prizio
- * @version 0.1.5
+ * @version 0.1.6
  */
 @Component("fetchMarketDataFromFirstRateDataActionPerformable")
 @Scope("prototype")

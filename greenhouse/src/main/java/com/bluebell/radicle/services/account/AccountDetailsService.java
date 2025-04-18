@@ -10,6 +10,7 @@ import com.bluebell.platform.models.core.nonentities.records.account.AccountInsi
 import com.bluebell.platform.models.core.nonentities.records.account.AccountStatistics;
 import com.bluebell.platform.models.core.nonentities.records.trade.CumulativeTrade;
 import com.bluebell.platform.models.core.nonentities.records.traderecord.TradeRecord;
+import com.bluebell.platform.models.core.nonentities.records.traderecord.TradeRecordReport;
 import com.bluebell.platform.services.MathService;
 import com.bluebell.radicle.services.trade.TradeRecordService;
 import jakarta.annotation.Resource;
@@ -30,7 +31,7 @@ import static com.bluebell.radicle.validation.GenericValidator.validateParameter
  * Service-layer implementation of {@link AccountDetails}
  *
  * @author Stephen Prizio
- * @version 0.1.1
+ * @version 0.1.6
  */
 @Service("accountDetailsService")
 public class AccountDetailsService {
@@ -53,8 +54,24 @@ public class AccountDetailsService {
 
         validateParameterIsNotNull(account, CorePlatformConstants.Validation.Account.ACCOUNT_CANNOT_BE_NULL);
 
-        //  TODO: implement this
-        return 49;
+        final List<TradeRecord> tradeRecords =
+                this.tradeRecordService.getTradeRecords(
+                        account.getAccountOpenTime().toLocalDate().minusDays(1),
+                        account.getLastTraded().toLocalDate().plusDays(1),
+                        account,
+                        TradeRecordTimeInterval.DAILY,
+                        CorePlatformConstants.MAX_RESULT_SIZE
+                ).tradeRecords();
+
+        if (CollectionUtils.isEmpty(tradeRecords)) {
+            return 0;
+        }
+
+        final List<Double> sorted = tradeRecords.stream().map(tr -> Math.abs(tr.getNetProfit())).sorted(Comparator.comparing(Double::doubleValue)).toList();
+        final double max = sorted.get(sorted.size() - 1);
+        final double quotient = this.mathService.divide(max, sorted.stream().mapToDouble(Double::doubleValue).sum());
+
+        return this.mathService.getInteger(this.mathService.multiply((this.mathService.subtract(1.0, quotient)), 100.0));
     }
 
     /**
@@ -293,7 +310,12 @@ public class AccountDetailsService {
      */
     private double calculateSharpeRatio(final Account account) {
 
-        final List<TradeRecord> monthlyRecords = this.tradeRecordService.getTradeRecords(account.getAccountOpenTime().minusYears(1).toLocalDate(), LocalDate.now().plusYears(1), account, TradeRecordTimeInterval.MONTHLY, -1).tradeRecords();
+        final TradeRecordReport report = this.tradeRecordService.getTradeRecords(account.getAccountOpenTime().minusYears(1).toLocalDate(), LocalDate.now().plusYears(1), account, TradeRecordTimeInterval.MONTHLY, -1);
+        if (report == null) {
+            return 0.0;
+        }
+
+        final List<TradeRecord> monthlyRecords = report.tradeRecords();
         final double averageMonthlyReturn = monthlyRecords.stream().mapToInt(tr -> this.mathService.wholePercentage(tr.netProfit(), account.getBalance())).average().orElse(0.0);
         final double std = new StandardDeviation().evaluate(monthlyRecords.stream().mapToDouble(TradeRecord::netProfit).toArray());
 

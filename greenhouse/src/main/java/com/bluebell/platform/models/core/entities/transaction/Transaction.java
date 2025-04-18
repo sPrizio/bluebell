@@ -13,12 +13,12 @@ import java.time.LocalDateTime;
  * Class representation of an account transaction
  *
  * @author Stephen Prizio
- * @version 0.1.1
+ * @version 0.1.6
  */
 @Getter
 @Entity
 @Builder
-@Table(name = "transactions")
+@Table(name = "transactions", uniqueConstraints = @UniqueConstraint(name = "UniqueNameAndAccount", columnNames = {"transaction_name", "account_id"}))
 @NoArgsConstructor
 @AllArgsConstructor
 public class Transaction implements GenericEntity {
@@ -36,7 +36,7 @@ public class Transaction implements GenericEntity {
     private LocalDateTime transactionDate;
 
     @Setter
-    @Column
+    @Column(name = "transaction_name")
     private String name;
 
     @Setter
@@ -44,10 +44,28 @@ public class Transaction implements GenericEntity {
     private TransactionStatus transactionStatus;
 
     @Setter
-    @Column
+    @Column(name = "transaction_amount")
     private double amount;
 
     @Setter
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.REFRESH)
     private Account account;
+
+
+    //  METHODS
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Transaction that = (Transaction) o;
+        return this.name.equals(that.name) && this.account.getId().equals(that.account.getId());
+    }
+
+    @Override
+    public int hashCode() {
+        int result = this.name.hashCode();
+        result = 31 * result + Long.hashCode(this.account.getId());
+        return result;
+    }
 }
