@@ -9,7 +9,7 @@ import java.util.List;
  * Constants defined for the bluebell platform
  *
  * @author Stephen Prizio
- * @version 0.1.6
+ * @version 0.1.7
  */
 public class CorePlatformConstants {
 
@@ -271,6 +271,15 @@ public class CorePlatformConstants {
             public static final String TRADE_ID_CANNOT_BE_NULL = "tradeId cannot be null";
 
             public static final String IMPORT_STREAM_CANNOT_BE_NULL = "import stream cannot be null";
+        }
+
+        public static class Transaction {
+
+            private Transaction() {
+                throw new UnsupportedOperationException(String.format(NO_INSTANTIATION, getClass().getName()));
+            }
+
+            public static final String TRANSACTION_CANNOT_BE_NULL = "transaction cannot be null";
         }
 
         public static class DataIntegrity {
