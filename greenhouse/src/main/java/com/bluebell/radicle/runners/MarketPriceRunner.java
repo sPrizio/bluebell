@@ -18,7 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
  * Generates testing {@link MarketPrice}s
  *
  * @author Stephen Prizio
- * @version 0.1.5
+ * @version 0.1.7
  */
 @Component
 @Order(8)
@@ -36,7 +36,7 @@ public class MarketPriceRunner extends AbstractRunner implements CommandLineRunn
 
     @Override
     @Transactional
-    public void run(String... args) {
+    public void run(final String... args) {
 
         logStart();
 
