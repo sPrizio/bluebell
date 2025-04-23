@@ -280,6 +280,8 @@ public class CorePlatformConstants {
             }
 
             public static final String TRANSACTION_CANNOT_BE_NULL = "transaction cannot be null";
+
+            public static final String TRANSACTION_NAME_CANNOT_BE_NULL = "transaction name cannot be null";
         }
 
         public static class DataIntegrity {

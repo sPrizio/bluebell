@@ -20,6 +20,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Optional;
 
 import static com.bluebell.radicle.validation.GenericValidator.validateParameterIsNotNull;
 
@@ -40,6 +41,20 @@ public class TransactionService {
     //  METHODS
 
     /**
+     * Looks up a {@link Transaction} for the given {@link Account} and transaction name
+     *
+     * @param account {@link Account}
+     * @param name transaction name
+     * @return {@link Optional} {@link Transaction}
+     */
+    public Optional<Transaction> findTransactionForNameAndAccount(final String name, final Account account) {
+        validateParameterIsNotNull(name, CorePlatformConstants.Validation.Transaction.TRANSACTION_NAME_CANNOT_BE_NULL);
+        validateParameterIsNotNull(account, CorePlatformConstants.Validation.Account.ACCOUNT_CANNOT_BE_NULL);
+
+        return Optional.ofNullable(this.transactionRepository.findTransactionByAccountAndName(account, name));
+    }
+
+    /**
      * Creates a new {@link Transaction} with the given data
      *
      * @param data    {@link CreateUpdateTransactionDTO}
@@ -49,7 +64,7 @@ public class TransactionService {
     public Transaction createNewTransaction(final CreateUpdateTransactionDTO data, final Account account) {
         validateParameterIsNotNull(account, CorePlatformConstants.Validation.Account.ACCOUNT_CANNOT_BE_NULL);
 
-        if (data == null || StringUtils.isEmpty(data.transactionDate())) {
+        if (data == null || StringUtils.isEmpty(data.name())) {
             throw new MissingRequiredDataException("The required data for creating a Transaction entity was null or empty");
         }
 
@@ -72,7 +87,7 @@ public class TransactionService {
         validateParameterIsNotNull(transaction, CorePlatformConstants.Validation.Transaction.TRANSACTION_CANNOT_BE_NULL);
         validateParameterIsNotNull(account, CorePlatformConstants.Validation.Account.ACCOUNT_CANNOT_BE_NULL);
 
-        if (data == null || StringUtils.isEmpty(data.transactionDate())) {
+        if (data == null || StringUtils.isEmpty(data.name())) {
             throw new MissingRequiredDataException("The required data for updating a Transaction entity was null or empty");
         }
 

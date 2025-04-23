@@ -18,10 +18,19 @@ import java.time.LocalDateTime;
  * Data-access later for {@link Transaction} entities
  *
  * @author Stephen Prizio
- * @version 0.1.6
+ * @version 0.1.7
  */
 @Repository
 public interface TransactionRepository extends PagingAndSortingRepository<Transaction, Long>, CrudRepository<Transaction, Long> {
+
+    /**
+     * Looks up a {@link Transaction} for the given {@link Account} and transaction name
+     *
+     * @param account {@link Account}
+     * @param name transaction name
+     * @return {@link Transaction}
+     */
+    Transaction findTransactionByAccountAndName(final Account account, final String name);
 
     /**
      * Inserts or updates an existing {@link Transaction}

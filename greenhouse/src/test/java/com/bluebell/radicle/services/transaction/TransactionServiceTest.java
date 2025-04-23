@@ -43,6 +43,23 @@ class TransactionServiceTest extends AbstractGenericTest {
     @BeforeEach
     void setUp() {
         Mockito.when(this.transactionRepository.save(any())).thenReturn(generateTestTransactionDeposit(generateTestAccount()));
+        Mockito.when(this.transactionRepository.findTransactionByAccountAndName(any(), any())).thenReturn(generateTestTransactionDeposit(generateTestAccount()));
+    }
+
+
+    //  ----------------- findTransactionForNameAndAccount -----------------
+
+    @Test
+    void test_findTransactionForNameAndAccount_success() {
+        assertThatExceptionOfType(IllegalParameterException.class)
+                .isThrownBy(() -> this.transactionService.findTransactionForNameAndAccount(null, generateTestAccount()))
+                .withMessage(CorePlatformConstants.Validation.Transaction.TRANSACTION_NAME_CANNOT_BE_NULL);
+        assertThatExceptionOfType(IllegalParameterException.class)
+                .isThrownBy(() -> this.transactionService.findTransactionForNameAndAccount("Test", null))
+                .withMessage(CorePlatformConstants.Validation.Account.ACCOUNT_CANNOT_BE_NULL);
+
+        assertThat(this.transactionService.findTransactionForNameAndAccount("test", generateTestAccount()))
+                .isNotEmpty();
     }
 
 
