@@ -48,7 +48,7 @@ import java.util.Random;
  * Parent-level testing class to provide testing assistance for the project
  *
  * @author Stephen Prizio
- * @version 0.1.6
+ * @version 0.1.7
  */
 public abstract class AbstractGenericTest {
 
@@ -272,6 +272,7 @@ public abstract class AbstractGenericTest {
      */
     public Transaction generateTestTransactionDeposit(final Account account) {
         return Transaction.builder()
+                .id(1L)
                 .name("Test Transaction Deposit")
                 .transactionDate(LocalDateTime.of(2022, 8, new Random().nextInt(28) + 1, 12, 24, 36))
                 .transactionType(TransactionType.DEPOSIT)
@@ -289,6 +290,7 @@ public abstract class AbstractGenericTest {
      */
     public Transaction generateTestTransactionWithdrawal(final Account account) {
         return Transaction.builder()
+                .id(2L)
                 .name("Test Transaction Withdrawal")
                 .transactionDate(LocalDateTime.of(2022, 8, new Random().nextInt(28) + 1, 12, 24, 36))
                 .transactionType(TransactionType.WITHDRAWAL)
