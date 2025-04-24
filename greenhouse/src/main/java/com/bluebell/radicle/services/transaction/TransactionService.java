@@ -22,6 +22,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Optional;
 
+import static com.bluebell.radicle.validation.GenericValidator.validateDatesAreNotMutuallyExclusive;
 import static com.bluebell.radicle.validation.GenericValidator.validateParameterIsNotNull;
 
 /**
@@ -41,17 +42,86 @@ public class TransactionService {
     //  METHODS
 
     /**
-     * Looks up a {@link Transaction} for the given {@link Account} and transaction name
+     * Returns a {@link List} of {@link Transaction}s within the last 6 months
      *
      * @param account {@link Account}
-     * @param name transaction name
+     * @return {@link List} of {@link Transaction}
+     */
+    public List<Transaction> findRecentTransactions(final Account account) {
+        validateParameterIsNotNull(account, CorePlatformConstants.Validation.Account.ACCOUNT_CANNOT_BE_NULL);
+
+        return this.transactionRepository.findAllTransactionsWithinDate(LocalDateTime.now().minusMonths(6), LocalDateTime.now(), account);
+    }
+
+    /**
+     * Returns a {@link List} of {@link Transaction}s for the given {@link Account}
+     *
+     * @param account {@link Account}
+     * @return {@link List} of {@link Transaction}
+     */
+    public List<Transaction> findAllTransactionsForAccount(final Account account) {
+        validateParameterIsNotNull(account, CorePlatformConstants.Validation.Account.ACCOUNT_CANNOT_BE_NULL);
+
+        return this.transactionRepository.findAllByAccount(account);
+    }
+
+    /**
+     * Returns a {@link List} of {@link Transaction}s for the given {@link Account} and {@link TransactionType}
+     *
+     * @param transactionType {@link TransactionType}
+     * @param account         {@link Account}
+     * @return {@link List} of {@link Transaction}
+     */
+    public List<Transaction> findAllTransactionsByTypeForAccount(final TransactionType transactionType, final Account account) {
+        validateParameterIsNotNull(transactionType, CorePlatformConstants.Validation.Transaction.TRANSACTION_TYPE_CANNOT_BE_NULL);
+        validateParameterIsNotNull(account, CorePlatformConstants.Validation.Account.ACCOUNT_CANNOT_BE_NULL);
+
+        return this.transactionRepository.findAllByTransactionTypeAndAccount(transactionType, account);
+    }
+
+    /**
+     * Returns a {@link List} of {@link Transaction}s for the given {@link Account} and {@link TransactionStatus}
+     *
+     * @param transactionStatus {@link TransactionStatus}
+     * @param account           {@link Account}
+     * @return {@link List} of {@link Transaction}
+     */
+    public List<Transaction> findAllTransactionsByStatusForAccount(final TransactionStatus transactionStatus, final Account account) {
+        validateParameterIsNotNull(transactionStatus, CorePlatformConstants.Validation.Transaction.TRANSACTION_STATUS_CANNOT_BE_NULL);
+        validateParameterIsNotNull(account, CorePlatformConstants.Validation.Account.ACCOUNT_CANNOT_BE_NULL);
+
+        return this.transactionRepository.findAllByTransactionStatusAndAccount(transactionStatus, account);
+    }
+
+    /**
+     * Returns a {@link List} of {@link Transaction}s that are within the given timespan for the given {@link Account}
+     *
+     * @param start   {@link LocalDateTime} start of interval (inclusive)
+     * @param end     {@link LocalDateTime} end of interval (exclusive)
+     * @param account {@link Account}
+     * @return {@link List} of {@link Transaction}
+     */
+    public List<Transaction> findTransactionsWithinTimespanForAccount(final LocalDateTime start, final LocalDateTime end, final Account account) {
+        validateParameterIsNotNull(start, CorePlatformConstants.Validation.DateTime.START_DATE_CANNOT_BE_NULL);
+        validateParameterIsNotNull(end, CorePlatformConstants.Validation.DateTime.END_DATE_CANNOT_BE_NULL);
+        validateDatesAreNotMutuallyExclusive(start, end, CorePlatformConstants.Validation.DateTime.MUTUALLY_EXCLUSIVE_DATES);
+        validateParameterIsNotNull(account, CorePlatformConstants.Validation.Account.ACCOUNT_CANNOT_BE_NULL);
+
+        return this.transactionRepository.findAllTransactionsWithinDate(start, end, account);
+    }
+
+    /**
+     * Looks up a {@link Transaction} for the given {@link Account} and transaction name
+     *
+     * @param name    transaction name
+     * @param account {@link Account}
      * @return {@link Optional} {@link Transaction}
      */
     public Optional<Transaction> findTransactionForNameAndAccount(final String name, final Account account) {
         validateParameterIsNotNull(name, CorePlatformConstants.Validation.Transaction.TRANSACTION_NAME_CANNOT_BE_NULL);
         validateParameterIsNotNull(account, CorePlatformConstants.Validation.Account.ACCOUNT_CANNOT_BE_NULL);
 
-        return Optional.ofNullable(this.transactionRepository.findTransactionByAccountAndName(account, name));
+        return Optional.ofNullable(this.transactionRepository.findTransactionByNameAndAccount(name, account));
     }
 
     /**

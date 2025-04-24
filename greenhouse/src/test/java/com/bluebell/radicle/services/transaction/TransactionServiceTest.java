@@ -5,6 +5,7 @@ import com.bluebell.platform.constants.CorePlatformConstants;
 import com.bluebell.platform.enums.transaction.TransactionStatus;
 import com.bluebell.platform.enums.transaction.TransactionType;
 import com.bluebell.platform.models.api.dto.transaction.CreateUpdateTransactionDTO;
+import com.bluebell.platform.models.core.entities.account.Account;
 import com.bluebell.radicle.exceptions.validation.IllegalParameterException;
 import com.bluebell.radicle.exceptions.validation.MissingRequiredDataException;
 import com.bluebell.radicle.repositories.transaction.TransactionRepository;
@@ -19,6 +20,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
@@ -43,7 +45,124 @@ class TransactionServiceTest extends AbstractGenericTest {
     @BeforeEach
     void setUp() {
         Mockito.when(this.transactionRepository.save(any())).thenReturn(generateTestTransactionDeposit(generateTestAccount()));
-        Mockito.when(this.transactionRepository.findTransactionByAccountAndName(any(), any())).thenReturn(generateTestTransactionDeposit(generateTestAccount()));
+        Mockito.when(this.transactionRepository.findTransactionByNameAndAccount(any(), any())).thenReturn(generateTestTransactionDeposit(generateTestAccount()));
+        Mockito.when(this.transactionRepository.findAllTransactionsWithinDate(LocalDateTime.MIN.plusMonths(1), LocalDateTime.MAX, generateTestAccount())).thenReturn(List.of(generateTestTransactionDeposit(generateTestAccount()), generateTestTransactionWithdrawal(generateTestAccount())));
+        Mockito.when(this.transactionRepository.findAllTransactionsWithinDate(
+                Mockito.any(LocalDateTime.class),
+                Mockito.any(LocalDateTime.class),
+                Mockito.any(Account.class)
+        )).thenReturn(List.of(generateTestTransactionDeposit(generateTestAccount()), generateTestTransactionWithdrawal(generateTestAccount())));
+
+        Mockito.when(this.transactionRepository.findAllByTransactionStatusAndAccount(any(), any())).thenReturn(List.of(generateTestTransactionDeposit(generateTestAccount())));
+        Mockito.when(this.transactionRepository.findAllByTransactionTypeAndAccount(any(), any())).thenReturn(List.of(generateTestTransactionDeposit(generateTestAccount())));
+        Mockito.when(this.transactionRepository.findAllByAccount(any())).thenReturn(List.of(generateTestTransactionDeposit(generateTestAccount())));
+    }
+
+
+    //  ----------------- findRecentTransactions -----------------
+
+    @Test
+    void test_findRecentTransactions_badData() {
+        assertThatExceptionOfType(IllegalParameterException.class)
+                .isThrownBy(() -> this.transactionService.findRecentTransactions(null))
+                .withMessage(CorePlatformConstants.Validation.Account.ACCOUNT_CANNOT_BE_NULL);
+    }
+
+    @Test
+    void test_findRecentTransactions_success() {
+        assertThat(this.transactionService.findRecentTransactions(generateTestAccount()))
+                .hasSize(2);
+    }
+
+
+    //  ----------------- findAllTransactionsForAccount -----------------
+
+    @Test
+    void test_findAllTransactionsForAccount_badData() {
+        assertThatExceptionOfType(IllegalParameterException.class)
+                .isThrownBy(() -> this.transactionService.findAllTransactionsForAccount(null))
+                .withMessage(CorePlatformConstants.Validation.Account.ACCOUNT_CANNOT_BE_NULL);
+    }
+
+    @Test
+    void test_findAllTransactionsForAccount_success() {
+        assertThat(this.transactionService.findAllTransactionsForAccount(generateTestAccount()))
+                .hasSize(1);
+    }
+
+
+    //  ----------------- findAllTransactionsByTypeForAccount -----------------
+
+    @Test
+    void test_findAllTransactionsByTypeForAccount_badData() {
+        assertThatExceptionOfType(IllegalParameterException.class)
+                .isThrownBy(() -> this.transactionService.findAllTransactionsByTypeForAccount(null, generateTestAccount()))
+                .withMessage(CorePlatformConstants.Validation.Transaction.TRANSACTION_TYPE_CANNOT_BE_NULL);
+        assertThatExceptionOfType(IllegalParameterException.class)
+                .isThrownBy(() -> this.transactionService.findAllTransactionsByTypeForAccount(TransactionType.DEPOSIT, null))
+                .withMessage(CorePlatformConstants.Validation.Account.ACCOUNT_CANNOT_BE_NULL);
+    }
+
+    @Test
+    void test_findAllTransactionsByTypeForAccount_success() {
+        assertThat(this.transactionService.findAllTransactionsByTypeForAccount(TransactionType.DEPOSIT, generateTestAccount()))
+                .hasSize(1);
+    }
+
+
+    //  ----------------- findAllTransactionsByStatusForAccount -----------------
+
+    @Test
+    void test_findAllTransactionsByStatusForAccount_badData() {
+        assertThatExceptionOfType(IllegalParameterException.class)
+                .isThrownBy(() -> this.transactionService.findAllTransactionsByStatusForAccount(null, generateTestAccount()))
+                .withMessage(CorePlatformConstants.Validation.Transaction.TRANSACTION_STATUS_CANNOT_BE_NULL);
+        assertThatExceptionOfType(IllegalParameterException.class)
+                .isThrownBy(() -> this.transactionService.findAllTransactionsByStatusForAccount(TransactionStatus.COMPLETED, null))
+                .withMessage(CorePlatformConstants.Validation.Account.ACCOUNT_CANNOT_BE_NULL);
+    }
+
+    @Test
+    void test_findAllTransactionsByStatusForAccount_success() {
+        assertThat(this.transactionService.findAllTransactionsByStatusForAccount(TransactionStatus.COMPLETED, generateTestAccount()))
+                .hasSize(1);
+    }
+
+
+    //  ----------------- findTransactionsWithinTimespanForAccount -----------------
+
+    @Test
+    void test_findTransactionsWithinTimespanForAccount_missingParamStart() {
+        assertThatExceptionOfType(IllegalParameterException.class)
+                .isThrownBy(() -> this.transactionService.findTransactionsWithinTimespanForAccount(null, LocalDateTime.MAX, generateTestAccount()))
+                .withMessage(CorePlatformConstants.Validation.DateTime.START_DATE_CANNOT_BE_NULL);
+    }
+
+    @Test
+    void test_findTransactionsWithinTimespanForAccount_missingParamEnd() {
+        assertThatExceptionOfType(IllegalParameterException.class)
+                .isThrownBy(() -> this.transactionService.findTransactionsWithinTimespanForAccount(LocalDateTime.MAX, null, generateTestAccount()))
+                .withMessage(CorePlatformConstants.Validation.DateTime.END_DATE_CANNOT_BE_NULL);
+    }
+
+    @Test
+    void test_findTransactionsWithinTimespanForAccount_invalidInterval() {
+        assertThatExceptionOfType(UnsupportedOperationException.class)
+                .isThrownBy(() -> this.transactionService.findTransactionsWithinTimespanForAccount(LocalDateTime.MAX, LocalDateTime.MIN, generateTestAccount()))
+                .withMessage(CorePlatformConstants.Validation.DateTime.MUTUALLY_EXCLUSIVE_DATES);
+    }
+
+    @Test
+    void test_findTransactionsWithinTimespanForAccount_missingParamAccount() {
+        assertThatExceptionOfType(IllegalParameterException.class)
+                .isThrownBy(() -> this.transactionService.findTransactionsWithinTimespanForAccount(LocalDateTime.MIN, LocalDateTime.MAX, null))
+                .withMessage(CorePlatformConstants.Validation.Account.ACCOUNT_CANNOT_BE_NULL);
+    }
+
+    @Test
+    void test_findTransactionsWithinTimespanForAccount_success() {
+        assertThat(this.transactionService.findTransactionsWithinTimespanForAccount(LocalDateTime.MIN.plusMonths(1), LocalDateTime.MAX, generateTestAccount()))
+                .hasSize(2);
     }
 
 
