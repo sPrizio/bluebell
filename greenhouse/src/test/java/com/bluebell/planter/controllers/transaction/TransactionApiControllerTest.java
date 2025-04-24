@@ -25,6 +25,7 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -47,6 +48,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @RunWith(SpringRunner.class)
 class TransactionApiControllerTest extends AbstractPlanterTest {
 
+    private static final String NO_ACCOUNT_FOR_ACCOUNT_NUMBER = "No account was found for account number %d";
     private static final String ACCOUNT_NUMBER = "accountNumber";
 
     @MockitoBean
@@ -62,11 +64,204 @@ class TransactionApiControllerTest extends AbstractPlanterTest {
     void setUp() {
         Mockito.when(this.accountService.findAccountByAccountNumber(1234)).thenReturn(Optional.empty());
         Mockito.when(this.accountService.findAccountByAccountNumber(5678)).thenReturn(Optional.of(generateTestAccount()));
+        Mockito.when(this.transactionService.findRecentTransactions(any())).thenReturn(List.of(generateTestTransactionDeposit(generateTestAccount())));
+        Mockito.when(this.transactionService.findAllTransactionsForAccount(any())).thenReturn(List.of(generateTestTransactionDeposit(generateTestAccount())));
+        Mockito.when(this.transactionService.findAllTransactionsByTypeForAccount(any(), any())).thenReturn(List.of(generateTestTransactionDeposit(generateTestAccount())));
+        Mockito.when(this.transactionService.findAllTransactionsByStatusForAccount(any(), any())).thenReturn(List.of(generateTestTransactionDeposit(generateTestAccount())));
+        Mockito.when(this.transactionService.findTransactionsWithinTimespanForAccount(any(), any(), any())).thenReturn(List.of(generateTestTransactionDeposit(generateTestAccount())));
         Mockito.when(this.transactionService.findTransactionForNameAndAccount("test 1", generateTestAccount())).thenReturn(Optional.empty());
         Mockito.when(this.transactionService.findTransactionForNameAndAccount("test 2", generateTestAccount())).thenReturn(Optional.of(generateTestTransactionDeposit(generateTestAccount())));
-        Mockito.when(this.transactionService.deleteTransaction(any())).thenReturn(true);
         Mockito.when(this.transactionService.createNewTransaction(any(), any())).thenReturn(generateTestTransactionDeposit(generateTestAccount()));
         Mockito.when(this.transactionService.updateTransaction(any(), any(), any())).thenReturn(generateTestTransactionDeposit(generateTestAccount()));
+        Mockito.when(this.transactionService.deleteTransaction(any())).thenReturn(true);
+    }
+
+
+    //  ----------------- getRecentTransactionsForAccount -----------------
+
+    @Test
+    void test_getRecentTransactionsForAccount_missingAccount() throws Exception {
+        this.mockMvc.perform(get("/api/v1/transaction/get-recent-for-account")
+                        .queryParam(ACCOUNT_NUMBER, "1234")
+                )
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.message", is(String.format(NO_ACCOUNT_FOR_ACCOUNT_NUMBER, 1234))));
+    }
+
+    @Test
+    void test_getRecentTransactionsForAccount_success() throws Exception {
+        this.mockMvc.perform(get("/api/v1/transaction/get-recent-for-account")
+                        .queryParam(ACCOUNT_NUMBER, "5678")
+                )
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.success", is(true)));
+    }
+
+
+    //  ----------------- getAllTransactionsForAccount -----------------
+
+    @Test
+    void test_getAllTransactionsForAccount_missingAccount() throws Exception {
+        this.mockMvc.perform(get("/api/v1/transaction/get-for-account")
+                        .queryParam(ACCOUNT_NUMBER, "1234")
+                )
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.message", is(String.format(NO_ACCOUNT_FOR_ACCOUNT_NUMBER, 1234))));
+    }
+
+    @Test
+    void test_getAllTransactionsForAccount_success() throws Exception {
+        this.mockMvc.perform(get("/api/v1/transaction/get-for-account")
+                        .queryParam(ACCOUNT_NUMBER, "5678")
+                )
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.success", is(true)));
+    }
+
+
+    //  ----------------- getTransactionsByTypeForAccount -----------------
+
+    @Test
+    void test_getTransactionsByTypeForAccount_badEnum() throws Exception {
+        this.mockMvc.perform(get("/api/v1/transaction/get-by-type-for-account")
+                        .queryParam("transactionType", "BAD")
+                        .queryParam(ACCOUNT_NUMBER, "5678")
+                )
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.message", containsString("BAD is not a valid transaction type")));
+    }
+
+    @Test
+    void test_getTransactionsByTypeForAccount_missingAccount() throws Exception {
+        this.mockMvc.perform(get("/api/v1/transaction/get-by-type-for-account")
+                        .queryParam("transactionType", "DEPOSIT")
+                        .queryParam(ACCOUNT_NUMBER, "1234")
+                )
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.message", is(String.format(NO_ACCOUNT_FOR_ACCOUNT_NUMBER, 1234))));
+    }
+
+    @Test
+    void test_getTransactionsByTypeForAccount_success() throws Exception {
+        this.mockMvc.perform(get("/api/v1/transaction/get-by-type-for-account")
+                        .queryParam("transactionType", "DEPOSIT")
+                        .queryParam(ACCOUNT_NUMBER, "5678")
+                )
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.success", is(true)));
+    }
+
+
+    //  ----------------- getTransactionsByStatusForAccount -----------------
+
+    @Test
+    void test_getTransactionsByStatusForAccount_badEnum() throws Exception {
+        this.mockMvc.perform(get("/api/v1/transaction/get-by-status-for-account")
+                        .queryParam("transactionStatus", "BAD")
+                        .queryParam(ACCOUNT_NUMBER, "5678")
+                )
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.message", containsString("BAD is not a valid transaction status")));
+    }
+
+    @Test
+    void test_getTransactionsByStatusForAccount_missingAccount() throws Exception {
+        this.mockMvc.perform(get("/api/v1/transaction/get-by-status-for-account")
+                        .queryParam("transactionStatus", "COMPLETED")
+                        .queryParam(ACCOUNT_NUMBER, "1234")
+                )
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.message", is(String.format(NO_ACCOUNT_FOR_ACCOUNT_NUMBER, 1234))));
+    }
+
+    @Test
+    void test_getTransactionsByStatusForAccount_success() throws Exception {
+        this.mockMvc.perform(get("/api/v1/transaction/get-by-status-for-account")
+                        .queryParam("transactionStatus", "COMPLETED")
+                        .queryParam(ACCOUNT_NUMBER, "5678")
+                )
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.success", is(true)));
+    }
+
+
+    //  ----------------- getTransactionsWithinTimespanForAccount -----------------
+
+    @Test
+    void test_getTransactionsWithinTimespanForAccount_missingParamStart() throws Exception {
+        this.mockMvc.perform(get("/api/v1/transaction/get-within-timespan-for-account")
+                        .queryParam("start", "asdadadas")
+                        .queryParam("end", "2022-08-25T00:00:00")
+                        .queryParam(ACCOUNT_NUMBER, "5678")
+                )
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.message", containsString(ApiConstants.CLIENT_ERROR_DEFAULT_MESSAGE)));
+    }
+
+    @Test
+    void test_getTransactionsWithinTimespanForAccount_missingParamEnd() throws Exception {
+        this.mockMvc.perform(get("/api/v1/transaction/get-within-timespan-for-account")
+                        .queryParam("start", "2022-08-24T00:00:00")
+                        .queryParam("end", "adasdas")
+                        .queryParam(ACCOUNT_NUMBER, "5678")
+                )
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.message", containsString(ApiConstants.CLIENT_ERROR_DEFAULT_MESSAGE)));
+    }
+
+    @Test
+    void test_getTransactionsWithinTimespanForAccount_missingAccount() throws Exception {
+        this.mockMvc.perform(get("/api/v1/transaction/get-within-timespan-for-account")
+                        .queryParam("start", "2022-08-24T00:00:00")
+                        .queryParam("end", "2022-08-25T00:00:00")
+                        .queryParam(ACCOUNT_NUMBER, "1234")
+                )
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.message", is(String.format(NO_ACCOUNT_FOR_ACCOUNT_NUMBER, 1234))));
+    }
+
+    @Test
+    void test_getTransactionsWithinTimespanForAccount_success() throws Exception {
+        this.mockMvc.perform(get("/api/v1/transaction/get-within-timespan-for-account")
+                        .queryParam("start", "2022-08-24T00:00:00")
+                        .queryParam("end", "2022-08-25T00:00:00")
+                        .queryParam(ACCOUNT_NUMBER, "5678")
+                )
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.success", is(true)));
+    }
+
+
+    //  ----------------- getTransactionForNameAndAccount -----------------
+
+    @Test
+    void test_getTransactionForNameAndAccount_missingAccount() throws Exception {
+        this.mockMvc.perform(get("/api/v1/transaction/get-by-name-for-account")
+                        .queryParam("transactionName", "test 1")
+                        .queryParam(ACCOUNT_NUMBER, "1234")
+                )
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.message", is(String.format(NO_ACCOUNT_FOR_ACCOUNT_NUMBER, 1234))));
+    }
+
+    @Test
+    void test_getTransactionForNameAndAccount_missingTransaction() throws Exception {
+        this.mockMvc.perform(get("/api/v1/transaction/get-by-name-for-account")
+                        .queryParam("transactionName", "test 1")
+                        .queryParam(ACCOUNT_NUMBER, "5678")
+                )
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.message", is(is(String.format("No transaction was found for account %d and transaction name %s", 5678, "test 1")))));
+    }
+
+    @Test
+    void test_getTransactionForNameAndAccount_success() throws Exception {
+        this.mockMvc.perform(get("/api/v1/transaction/get-by-name-for-account")
+                        .queryParam("transactionName", "test 2")
+                        .queryParam(ACCOUNT_NUMBER, "5678")
+                )
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.success", is(true)));
     }
 
 
@@ -97,7 +292,7 @@ class TransactionApiControllerTest extends AbstractPlanterTest {
 
         this.mockMvc.perform(post("/api/v1/transaction/create-transaction").queryParam(ACCOUNT_NUMBER, "1234").contentType(MediaType.APPLICATION_JSON).content(new ObjectMapper().writeValueAsString(data)))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.message", containsString("Account not found for account number 1234")));
+                .andExpect(jsonPath("$.message", containsString(String.format(NO_ACCOUNT_FOR_ACCOUNT_NUMBER, 1234))));
     }
 
     @Test
@@ -151,7 +346,7 @@ class TransactionApiControllerTest extends AbstractPlanterTest {
                         .content(new ObjectMapper().writeValueAsString(data))
                 )
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.message", is(String.format("Account not found for account number %d", 1234))));
+                .andExpect(jsonPath("$.message", is(String.format(NO_ACCOUNT_FOR_ACCOUNT_NUMBER, 1234))));
     }
 
     @Test
