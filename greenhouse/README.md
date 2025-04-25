@@ -1,6 +1,6 @@
 # greenhouse
 
-Current Iteration: **0.1.6**\
+Current Iteration: **0.1.7**\
 Current Release: **Pre-release**
 
 ---
@@ -32,6 +32,6 @@ Current Release: **Pre-release**
 - **0.1.3** : Dockerize App (including front-end)
 - **0.1.4** : Store Market data from MT4 and FirstRateData into database
 - **0.1.5** : Automate fetching market data
-- **0.1.6** : (Current) Automate fetching account trades from MT4 (possibly using an API)
-- **0.1.7** : (Planned) Improve ApexChart service to select data, parsers etc...
+- **0.1.6** : Automate fetching account trades from MT4 (possibly using an API)
+- **0.1.7** : (Current) Improve ApexChart service to select data, parsers etc...
 - **0.1.8** : (Planned) Improve Trade import service to include withdrawals and deposits (for withdrawal example, look at live CFD account), Accounts that have not been traded on for 1 calendar year should be marked as inactive (use a cronjob for this)

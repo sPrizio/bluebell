@@ -13,15 +13,62 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 /**
  * Data-access later for {@link Transaction} entities
  *
  * @author Stephen Prizio
- * @version 0.1.6
+ * @version 0.1.7
  */
 @Repository
 public interface TransactionRepository extends PagingAndSortingRepository<Transaction, Long>, CrudRepository<Transaction, Long> {
+
+    /**
+     * Returns a {@link List} of {@link Transaction}s for the given {@link Account}
+     *
+     * @param account {@link Account}
+     * @return {@link List} of {@link Transaction}
+     */
+    List<Transaction> findAllByAccount(final Account account);
+
+    /**
+     * Returns a {@link List} of {@link Transaction}s for the given {@link Account} and {@link TransactionType}
+     *
+     * @param transactionType {@link TransactionType}
+     * @param account         {@link Account}
+     * @return {@link List} of {@link Transaction}
+     */
+    List<Transaction> findAllByTransactionTypeAndAccount(final TransactionType transactionType, final Account account);
+
+    /**
+     * Returns a {@link List} of {@link Transaction}s for the given {@link Account} and {@link TransactionStatus}
+     *
+     * @param transactionStatus {@link TransactionStatus}
+     * @param account           {@link Account}
+     * @return {@link List} of {@link Transaction}
+     */
+    List<Transaction> findAllByTransactionStatusAndAccount(final TransactionStatus transactionStatus, final Account account);
+
+    /**
+     * Returns a {@link List} of {@link Transaction}s that are within the given timespan for the given {@link Account}
+     *
+     * @param start   {@link LocalDateTime} start of interval (inclusive)
+     * @param end     {@link LocalDateTime} end of interval (exclusive)
+     * @param account {@link Account}
+     * @return {@link List} of {@link Transaction}
+     */
+    @Query("SELECT tr from Transaction tr WHERE tr.transactionDate >= ?1 AND tr.transactionDate < ?2 AND tr.account = ?3  ORDER BY tr.transactionDate ASC")
+    List<Transaction> findAllTransactionsWithinDate(final LocalDateTime start, final LocalDateTime end, final Account account);
+
+    /**
+     * Looks up a {@link Transaction} for the given {@link Account} and transaction name
+     *
+     * @param name    transaction name
+     * @param account {@link Account}
+     * @return {@link Transaction}
+     */
+    Transaction findTransactionByNameAndAccount(final String name, final Account account);
 
     /**
      * Inserts or updates an existing {@link Transaction}

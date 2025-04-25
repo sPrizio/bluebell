@@ -39,7 +39,7 @@ import java.util.Optional;
  * API Controller for {@link Account}
  *
  * @author Stephen Prizio
- * @version 0.1.3
+ * @version 0.1.7
  */
 @RestController
 @RequestMapping("${bluebell.base.api.controller.endpoint}/account")
@@ -248,10 +248,11 @@ public class AccountApiController extends AbstractApiController {
     //  ----------------- POST REQUESTS -----------------
 
     /**
-     * Returns a {@link Account}
+     * Creates a new {@link Account}
      *
-     * @param request     {@link HttpServletRequest}
+     * @param portfolioUid portfolio uid
      * @param data {@link CreateUpdateAccountDTO}
+     * @param request     {@link HttpServletRequest}
      * @return {@link StandardJsonResponse}
      */
     @ValidateApiToken
@@ -355,9 +356,9 @@ public class AccountApiController extends AbstractApiController {
     /**
      * Returns an updated {@link Account}
      *
+     * @param data {@link CreateUpdateAccountDTO}
      * @param accountNumber account number
      * @param request {@link HttpServletRequest}
-     * @param data {@link CreateUpdateAccountDTO}
      * @return {@link StandardJsonResponse}
      */
     @ValidateApiToken

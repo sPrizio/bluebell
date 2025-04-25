@@ -41,7 +41,7 @@ import static com.bluebell.radicle.validation.GenericValidator.validateParameter
  * Service-layer for {@link Account} entities
  *
  * @author Stephen Prizio
- * @version 0.1.6
+ * @version 0.1.7
  */
 @Slf4j
 @Service
@@ -71,7 +71,6 @@ public class AccountService {
      * @return {@link AccountDetails}
      */
     public AccountDetails getAccountDetails(final Account account) {
-
         validateParameterIsNotNull(account, CorePlatformConstants.Validation.Account.ACCOUNT_CANNOT_BE_NULL);
 
         return AccountDetails
@@ -103,7 +102,6 @@ public class AccountService {
      * @return new {@link Account}
      */
     public Account createNewAccount(final CreateUpdateAccountDTO data, final Portfolio portfolio) {
-
         validateParameterIsNotNull(portfolio, CorePlatformConstants.Validation.Portfolio.PORTFOLIO_CANNOT_BE_NULL);
 
         if (data == null || data.number() == null) {
@@ -126,7 +124,6 @@ public class AccountService {
      * @return updated {@link Account}
      */
     public Account updateAccount(final Account account, final CreateUpdateAccountDTO data, final Portfolio portfolio) {
-
         validateParameterIsNotNull(account, CorePlatformConstants.Validation.Account.ACCOUNT_CANNOT_BE_NULL);
         validateParameterIsNotNull(portfolio, CorePlatformConstants.Validation.Portfolio.PORTFOLIO_CANNOT_BE_NULL);
 
@@ -148,13 +145,13 @@ public class AccountService {
      * @return true if successfully deleted
      */
     public boolean deleteAccount(final Account account) {
-
         validateParameterIsNotNull(account, CorePlatformConstants.Validation.Account.ACCOUNT_CANNOT_BE_NULL);
 
         try {
             this.accountRepository.delete(account);
             return true;
         } catch (Exception e) {
+            LOGGER.error(e.getMessage(), e);
             return false;
         }
     }
@@ -231,6 +228,7 @@ public class AccountService {
      * @param account   {@link Account}
      * @param data      {@link CreateUpdateAccountDTO}
      * @param portfolio {@link Portfolio}
+     * @param isNew     is this a new account
      * @return updated {@link Account}
      */
     private Account applyChanges(Account account, final CreateUpdateAccountDTO data, final Portfolio portfolio, final boolean isNew) {

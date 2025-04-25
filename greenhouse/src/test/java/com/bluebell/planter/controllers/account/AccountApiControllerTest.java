@@ -42,7 +42,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  * Testing class for {@link AccountApiController}
  *
  * @author Stephen Prizio
- * @version 0.1.6
+ * @version 0.1.7
  */
 @SpringBootTest
 @AutoConfigureMockMvc(addFilters = false)
@@ -259,7 +259,7 @@ class AccountApiControllerTest extends AbstractPlanterTest {
     }
 
     @Test
-    void test_putUpdateAccount_noAccountMatch() throws Exception {
+    void test_putUpdateAccount_missingAccount() throws Exception {
 
         final CreateUpdateAccountDTO data = CreateUpdateAccountDTO
                 .builder()
