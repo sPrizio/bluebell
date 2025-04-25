@@ -9,8 +9,10 @@ import com.bluebell.platform.models.core.entities.portfolio.Portfolio;
 import com.bluebell.platform.models.core.entities.security.User;
 import com.bluebell.platform.models.core.nonentities.records.analysis.AnalysisResult;
 import com.bluebell.radicle.exceptions.account.InvalidAccountNumberException;
+import org.apache.commons.lang3.StringUtils;
 
 import java.util.List;
+import java.util.regex.Pattern;
 
 import static com.bluebell.radicle.validation.GenericValidator.validateLocalDateFormat;
 import static com.bluebell.radicle.validation.GenericValidator.validateParameterIsNotNull;
@@ -20,9 +22,24 @@ import static com.bluebell.radicle.validation.GenericValidator.validateParameter
  * Parent-level controller providing common functionality
  *
  * @author Stephen Prizio
- * @version 0.1.3
+ * @version 0.1.7
  */
 public abstract class AbstractApiController {
+
+    /**
+     * Validates the given symbol is of the correct format
+     *
+     * @param symbol symbol
+     * @return true if no illegal characters are present
+     */
+    public boolean validateSymbol(final String symbol) {
+
+        if (StringUtils.isEmpty(symbol)) {
+            return false;
+        }
+
+        return Pattern.compile(CorePlatformConstants.Regex.MARKET_PRICE_VALID_SYMBOL_REGEX).matcher(symbol).matches();
+    }
 
     /**
      * Basic data integrity validation

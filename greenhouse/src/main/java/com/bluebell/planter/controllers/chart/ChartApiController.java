@@ -6,6 +6,7 @@ import com.bluebell.platform.enums.GenericEnum;
 import com.bluebell.platform.enums.time.MarketPriceTimeInterval;
 import com.bluebell.platform.models.api.json.StandardJsonResponse;
 import com.bluebell.platform.models.core.nonentities.apexcharts.ApexChartCandleStick;
+import com.bluebell.radicle.enums.DataSource;
 import com.bluebell.radicle.security.aspects.ValidateApiToken;
 import com.bluebell.radicle.services.chart.ChartService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -16,6 +17,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.annotation.Resource;
 import jakarta.servlet.http.HttpServletRequest;
+import org.apache.commons.lang3.EnumUtils;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
@@ -29,7 +31,7 @@ import static com.bluebell.radicle.validation.GenericValidator.validateLocalDate
  * API controller for providing charting capabilities based on historical data
  *
  * @author Stephen Prizio
- * @version 0.1.4
+ * @version 0.1.7
  */
 @RestController
 @RequestMapping("${bluebell.base.api.controller.endpoint}/chart")
@@ -49,6 +51,8 @@ public class ChartApiController extends AbstractApiController {
      * @param start    start of time period
      * @param end      end of time period
      * @param interval interval of time
+     * @param symbol symbol
+     * @param dataSource {@link DataSource}
      * @param request  {@link HttpServletRequest}
      * @return {@link StandardJsonResponse}
      */
@@ -94,31 +98,50 @@ public class ChartApiController extends AbstractApiController {
             final @RequestParam("end") String end,
             @Parameter(name = "Intraday Interval", description = "Time interval to look at intra day", example = "ten-minute")
             final @RequestParam("interval") String interval,
+            @Parameter(name = "Symbol", description = "Symbol to look at", example = "NDX")
+            final @RequestParam("symbol") String symbol,
+            @Parameter(name = "DataSource", description = "Which source to pull the market data from", example = "METATRADER4")
+            final @RequestParam("dataSource") String dataSource,
             final HttpServletRequest request
     ) {
-
         validateLocalDateFormat(start, CorePlatformConstants.DATE_FORMAT, String.format(CorePlatformConstants.Validation.DateTime.START_DATE_INVALID_FORMAT, start, CorePlatformConstants.DATE_FORMAT));
         validateLocalDateFormat(end, CorePlatformConstants.DATE_FORMAT, String.format(CorePlatformConstants.Validation.DateTime.END_DATE_INVALID_FORMAT, end, CorePlatformConstants.DATE_FORMAT));
+
+        if (!validateSymbol(symbol)) {
+            return StandardJsonResponse
+                    .<List<ApexChartCandleStick>>builder()
+                    .success(false)
+                    .message(String.format("Invalid symbol: %s", symbol))
+                    .build();
+        }
+
+        if (!EnumUtils.isValidEnumIgnoreCase(DataSource.class, dataSource)) {
+            return StandardJsonResponse
+                    .<List<ApexChartCandleStick>>builder()
+                    .success(false)
+                    .message(String.format("%s is not a valid data source", dataSource))
+                    .build();
+        }
 
         final MarketPriceTimeInterval marketPriceTimeInterval = GenericEnum.getByCode(MarketPriceTimeInterval.class, interval);
         if (marketPriceTimeInterval == MarketPriceTimeInterval.ONE_DAY) {
             return StandardJsonResponse
                     .<List<ApexChartCandleStick>>builder()
                     .success(true)
-                    .data(this.chartService.getChartData(LocalDate.parse(start, DateTimeFormatter.ISO_DATE).minusMonths(1), LocalDate.parse(end, DateTimeFormatter.ISO_DATE), marketPriceTimeInterval))
+                    .data(this.chartService.getChartData(LocalDate.parse(start, DateTimeFormatter.ISO_DATE).minusMonths(1), LocalDate.parse(end, DateTimeFormatter.ISO_DATE), marketPriceTimeInterval, symbol, GenericEnum.getByCode(DataSource.class, dataSource)))
                     .build();
         } else if (marketPriceTimeInterval == MarketPriceTimeInterval.ONE_HOUR) {
             return StandardJsonResponse
                     .<List<ApexChartCandleStick>>builder()
                     .success(true)
-                    .data(this.chartService.getChartData(LocalDate.parse(start, DateTimeFormatter.ISO_DATE).minusDays(5), LocalDate.parse(end, DateTimeFormatter.ISO_DATE), marketPriceTimeInterval))
+                    .data(this.chartService.getChartData(LocalDate.parse(start, DateTimeFormatter.ISO_DATE).minusDays(5), LocalDate.parse(end, DateTimeFormatter.ISO_DATE), marketPriceTimeInterval, symbol, GenericEnum.getByCode(DataSource.class, dataSource)))
                     .build();
         }
 
         return StandardJsonResponse
                 .<List<ApexChartCandleStick>>builder()
                 .success(true)
-                .data(this.chartService.getChartData(LocalDate.parse(start, DateTimeFormatter.ISO_DATE), LocalDate.parse(end, DateTimeFormatter.ISO_DATE), marketPriceTimeInterval))
+                .data(this.chartService.getChartData(LocalDate.parse(start, DateTimeFormatter.ISO_DATE), LocalDate.parse(end, DateTimeFormatter.ISO_DATE), marketPriceTimeInterval, symbol, GenericEnum.getByCode(DataSource.class, dataSource)))
                 .build();
     }
 }
