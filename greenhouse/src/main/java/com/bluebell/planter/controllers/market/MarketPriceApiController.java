@@ -32,7 +32,6 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.regex.Pattern;
 
 import static com.bluebell.radicle.importing.validation.ImportValidator.validateImportFileExtension;
 
@@ -40,7 +39,7 @@ import static com.bluebell.radicle.importing.validation.ImportValidator.validate
  * Api controller for {@link MarketPrice}
  *
  * @author Stephen Prizio
- * @version 0.1.5
+ * @version 0.1.7
  */
 @Slf4j
 @RestController
@@ -178,21 +177,6 @@ public class MarketPriceApiController extends AbstractApiController {
 
 
     //  HELPERS
-
-    /**
-     * Validates the given symbol is of the correct format
-     *
-     * @param symbol symbol
-     * @return true if no illegal characters are present
-     */
-    private boolean validateSymbol(final String symbol) {
-
-        if (StringUtils.isEmpty(symbol)) {
-            return false;
-        }
-
-        return Pattern.compile(CorePlatformConstants.Regex.MARKET_PRICE_VALID_SYMBOL_REGEX).matcher(symbol).matches();
-    }
 
     /**
      * Returns the ingress path depending on the runtime environment
