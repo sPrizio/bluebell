@@ -25,7 +25,7 @@ import java.time.LocalDateTime;
  */
 @Slf4j
 @Component
-public class InvalidateStaleAccountsJob extends AbstractScheduledJob implements GenericScheduledJob<Enum<JobType>> {
+public class InvalidateStaleAccountsScheduledJob extends AbstractScheduledJob implements GenericScheduledJob<Enum<JobType>> {
 
     @Resource(name = "actionRepository")
     private ActionRepository actionRepository;
@@ -41,7 +41,7 @@ public class InvalidateStaleAccountsJob extends AbstractScheduledJob implements 
 
     @Override
     @Async
-    @Scheduled(cron = "0 0 3 * * 6")
+    @Scheduled(cron = "0 0 4 * * 6")
     public void execute() {
 
         checkForConcurrentJob(JobType.INVALIDATE_STALE_ACCOUNTS);
