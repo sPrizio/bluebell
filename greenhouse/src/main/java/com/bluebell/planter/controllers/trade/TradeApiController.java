@@ -1,5 +1,6 @@
 package com.bluebell.planter.controllers.trade;
 
+import com.bluebell.planter.constants.ApiPaths;
 import com.bluebell.planter.controllers.AbstractApiController;
 import com.bluebell.planter.converters.trade.TradeDTOConverter;
 import com.bluebell.platform.constants.CorePlatformConstants;
@@ -41,10 +42,10 @@ import static com.bluebell.radicle.validation.GenericValidator.*;
  * Api controller for {@link Trade}
  *
  * @author Stephen Prizio
- * @version 0.1.6
+ * @version 0.1.9
  */
 @RestController
-@RequestMapping("${bluebell.base.api.controller.endpoint}/trade")
+@RequestMapping("${bluebell.base.api.controller.endpoint}" + ApiPaths.Trade.BASE)
 @Tag(name = "Trade", description = "Handles endpoints & operations related to trades.")
 @CrossOrigin(origins = "*", methods = {RequestMethod.GET, RequestMethod.DELETE, RequestMethod.POST, RequestMethod.PUT})
 public class TradeApiController extends AbstractApiController {
@@ -110,7 +111,7 @@ public class TradeApiController extends AbstractApiController {
                     schema = @Schema(implementation = StandardJsonResponse.class, example = "The API token was invalid.")
             )
     )
-    @GetMapping("/for-type")
+    @GetMapping(ApiPaths.Trade.GET_FOR_TYPE)
     public StandardJsonResponse<List<TradeDTO>> getTradesForTradeType(
             @Parameter(name = "Account Number", description = "The unique identifier for your trading account", example = "1234")
             final @RequestParam("accountNumber") long accountNumber,
@@ -189,7 +190,7 @@ public class TradeApiController extends AbstractApiController {
                     schema = @Schema(implementation = StandardJsonResponse.class, example = "The API token was invalid.")
             )
     )
-    @GetMapping("/for-interval")
+    @GetMapping(ApiPaths.Trade.GET_FOR_INTERVAL)
     public StandardJsonResponse<List<TradeDTO>> getTradesWithinInterval(
             @Parameter(name = "Account Number", description = "The unique identifier for your trading account", example = "1234")
             final @RequestParam("accountNumber") long accountNumber,
@@ -266,7 +267,7 @@ public class TradeApiController extends AbstractApiController {
                     schema = @Schema(implementation = StandardJsonResponse.class, example = "The API token was invalid.")
             )
     )
-    @GetMapping("/for-interval-paged")
+    @GetMapping(ApiPaths.Trade.GET_FOR_INTERVAL_PAGED)
     public StandardJsonResponse<PaginatedTradesDTO> getTradesWithinIntervalPaged(
             @Parameter(name = "Account Number", description = "The unique identifier for your trading account", example = "1234")
             final @RequestParam("accountNumber") long accountNumber,
@@ -336,7 +337,7 @@ public class TradeApiController extends AbstractApiController {
                     schema = @Schema(implementation = StandardJsonResponse.class, example = "The API token was invalid.")
             )
     )
-    @GetMapping("/for-trade-id")
+    @GetMapping(ApiPaths.Trade.GET_FOR_TRADE_ID)
     public StandardJsonResponse<TradeDTO> getTradeForTradeId(
             @Parameter(name = "Account Number", description = "The unique identifier for your trading account", example = "1234")
             final @RequestParam("accountNumber") long accountNumber,
@@ -388,7 +389,7 @@ public class TradeApiController extends AbstractApiController {
                     schema = @Schema(implementation = StandardJsonResponse.class, example = "The API token was invalid.")
             )
     )
-    @PostMapping("/import-trades")
+    @PostMapping(ApiPaths.Trade.IMPORT_TRADES)
     public StandardJsonResponse<Boolean> postImportTrades(
             @Parameter(name = "Account Number", description = "The unique identifier for your trading account", example = "1234")
             final @RequestParam("accountNumber") long accountNumber,

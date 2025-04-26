@@ -1,5 +1,6 @@
 package com.bluebell.planter.controllers.job;
 
+import com.bluebell.planter.constants.ApiPaths;
 import com.bluebell.planter.converters.job.JobDTOConverter;
 import com.bluebell.platform.constants.CorePlatformConstants;
 import com.bluebell.platform.enums.GenericEnum;
@@ -32,10 +33,10 @@ import static com.bluebell.radicle.validation.GenericValidator.validateLocalDate
  * Api controller for {@link Job}
  *
  * @author Stephen Prizio
- * @version 0.1.3
+ * @version 0.1.9
  */
 @RestController
-@RequestMapping("${bluebell.base.api.controller.endpoint}/job")
+@RequestMapping("${bluebell.base.api.controller.endpoint}" + ApiPaths.Job.BASE)
 @Tag(name = "Job", description = "Handles endpoints & operations related to jobs.")
 @CrossOrigin(origins = "*", methods = {RequestMethod.GET, RequestMethod.DELETE, RequestMethod.POST, RequestMethod.PUT})
 public class JobApiController {
@@ -85,7 +86,7 @@ public class JobApiController {
                     schema = @Schema(implementation = StandardJsonResponse.class, example = "The API token was invalid.")
             )
     )
-    @GetMapping("/get-by-id")
+    @GetMapping(ApiPaths.Job.GET_BY_ID)
     public StandardJsonResponse<JobDTO> getJobForJobId(
             @Parameter(name = "Job ID", description = "The unique job id", example = "1234")
             final @RequestParam("jobId") String jobId,
@@ -169,7 +170,7 @@ public class JobApiController {
                     schema = @Schema(implementation = StandardJsonResponse.class, example = "The API token was invalid.")
             )
     )
-    @GetMapping("/get-status-paged")
+    @GetMapping(ApiPaths.Job.GET_STATUS_PAGED)
     public StandardJsonResponse<PaginatedJobsDTO> getJobsWithinIntervalByStatusPaged(
             @Parameter(name = "Job Status", description = "Job status to lookup", example = "COMPLETED")
             final @RequestParam("jobStatus") String jobStatus,
@@ -264,7 +265,7 @@ public class JobApiController {
                     schema = @Schema(implementation = StandardJsonResponse.class, example = "The API token was invalid.")
             )
     )
-    @GetMapping("/get-type-paged")
+    @GetMapping(ApiPaths.Job.GET_TYPE_PAGED)
     public StandardJsonResponse<PaginatedJobsDTO> getJobsWithinIntervalByTypePaged(
             @Parameter(name = "Job Type", description = "Job type to lookup", example = "FETCH_MARKET_NEWS")
             final @RequestParam("jobType") String jobType,
@@ -368,7 +369,7 @@ public class JobApiController {
                     schema = @Schema(implementation = StandardJsonResponse.class, example = "The API token was invalid.")
             )
     )
-    @GetMapping("/get-status-type-paged")
+    @GetMapping(ApiPaths.Job.GET_STATUS_TYPE_PAGED)
     public StandardJsonResponse<PaginatedJobsDTO> getJobsWithinIntervalByStatusAndTypePaged(
             @Parameter(name = "Job Status", description = "Job status to lookup", example = "COMPLETED")
             final @RequestParam("jobStatus") String jobStatus,

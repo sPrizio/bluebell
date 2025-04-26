@@ -1,5 +1,6 @@
 package com.bluebell.planter.controllers.analysis;
 
+import com.bluebell.planter.constants.ApiPaths;
 import com.bluebell.planter.controllers.AbstractApiController;
 import com.bluebell.platform.constants.CorePlatformConstants;
 import com.bluebell.platform.enums.GenericEnum;
@@ -31,10 +32,10 @@ import java.util.Optional;
  * Controller for {@link AnalysisService}
  *
  * @author Stephen Prizio
- * @version 0.1.4
+ * @version 0.1.9
  */
 @RestController
-@RequestMapping("${bluebell.base.api.controller.endpoint}/analysis")
+@RequestMapping("${bluebell.base.api.controller.endpoint}" + ApiPaths.Analysis.BASE)
 @Tag(name = "Analysis", description = "Handles endpoints & operations related to obtaining analysis about trading accounts.")
 @CrossOrigin(origins = "*", methods = {RequestMethod.GET, RequestMethod.DELETE, RequestMethod.POST, RequestMethod.PUT})
 public class AnalysisApiController extends AbstractApiController {
@@ -94,7 +95,7 @@ public class AnalysisApiController extends AbstractApiController {
                     schema = @Schema(implementation = StandardJsonResponse.class, example = "The API token was invalid.")
             )
     )
-    @GetMapping("/time-buckets")
+    @GetMapping(ApiPaths.Analysis.TIME_BUCKETS)
     public StandardJsonResponse<List<AnalysisResult>> getTimeBucketsAnalysis(
             @Parameter(name = "Account Number", description = "The unique identifier for your trading account", example = "1234")
             final @RequestParam("accountNumber") long accountNumber,
@@ -158,7 +159,7 @@ public class AnalysisApiController extends AbstractApiController {
                     schema = @Schema(implementation = StandardJsonResponse.class, example = "The API token was invalid.")
             )
     )
-    @GetMapping("/weekdays")
+    @GetMapping(ApiPaths.Analysis.WEEKDAYS)
     public StandardJsonResponse<List<AnalysisResult>> getWeekdaysAnalysis(
             @Parameter(name = "Account Number", description = "The unique identifier for your trading account", example = "1234")
             final @RequestParam("accountNumber") long accountNumber,
@@ -229,7 +230,7 @@ public class AnalysisApiController extends AbstractApiController {
                     schema = @Schema(implementation = StandardJsonResponse.class, example = "The API token was invalid.")
             )
     )
-    @GetMapping("/weekdays-time-buckets")
+    @GetMapping(ApiPaths.Analysis.WEEKDAYS_TIME_BUCKETS)
     public StandardJsonResponse<List<AnalysisResult>> getWeekdayTimeBucketsAnalysis(
             @Parameter(name = "Account Number", description = "The unique identifier for your trading account", example = "1234")
             final @RequestParam("accountNumber") long accountNumber,
@@ -306,7 +307,7 @@ public class AnalysisApiController extends AbstractApiController {
                     schema = @Schema(implementation = StandardJsonResponse.class, example = "The API token was invalid.")
             )
     )
-    @GetMapping("/trade-durations")
+    @GetMapping(ApiPaths.Analysis.TRADE_DURATIONS)
     public StandardJsonResponse<List<AnalysisResult>> getTradeDurationsAnalysis(
             @Parameter(name = "Account Number", description = "The unique identifier for your trading account", example = "1234")
             final @RequestParam("accountNumber") long accountNumber,
