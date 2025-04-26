@@ -1,7 +1,7 @@
 package com.bluebell.planter.controllers.market;
 
+import com.bluebell.planter.constants.ApiPaths;
 import com.bluebell.planter.controllers.AbstractApiController;
-import com.bluebell.platform.constants.CorePlatformConstants;
 import com.bluebell.platform.enums.GenericEnum;
 import com.bluebell.platform.enums.security.UserRole;
 import com.bluebell.platform.enums.time.MarketPriceTimeInterval;
@@ -39,11 +39,11 @@ import static com.bluebell.radicle.importing.validation.ImportValidator.validate
  * Api controller for {@link MarketPrice}
  *
  * @author Stephen Prizio
- * @version 0.1.7
+ * @version 0.1.9
  */
 @Slf4j
 @RestController
-@RequestMapping("${bluebell.base.api.controller.endpoint}/market-price")
+@RequestMapping("${bluebell.base.api.controller.endpoint}" + ApiPaths.MarketPrice.BASE)
 @Tag(name = "MarketPrice", description = "Handles endpoints & operations related to market prices.")
 @CrossOrigin(origins = "*", methods = {RequestMethod.GET, RequestMethod.DELETE, RequestMethod.POST, RequestMethod.PUT})
 public class MarketPriceApiController extends AbstractApiController {
@@ -106,7 +106,7 @@ public class MarketPriceApiController extends AbstractApiController {
                     schema = @Schema(implementation = StandardJsonResponse.class, example = "The API token was invalid.")
             )
     )
-    @PostMapping("/ingest")
+    @PostMapping(ApiPaths.MarketPrice.INGEST)
     public StandardJsonResponse<Boolean> postIngestMarketPriceDataFromMT4(
             @Parameter(name = "Market Price Symbol", description = "The symbol for the price data")
             final @RequestParam("symbol") String symbol,

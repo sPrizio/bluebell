@@ -21,6 +21,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import java.util.List;
 import java.util.Optional;
 
+import static com.bluebell.planter.constants.ApiPaths.Analysis.*;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.is;
 import static org.mockito.ArgumentMatchers.any;
@@ -33,7 +34,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  * Testing class for {@link AnalysisApiController}
  *
  * @author Stephen Prizio
- * @version 0.1.3
+ * @version 0.1.9
  */
 @SpringBootTest
 @AutoConfigureMockMvc(addFilters = false)
@@ -64,7 +65,7 @@ class AnalysisApiControllerTest extends AbstractPlanterTest {
 
     @Test
     void test_getTimeBucketsAnalysis_badFilter() throws Exception {
-        this.mockMvc.perform(get("/api/v1/analysis/time-buckets")
+        this.mockMvc.perform(get(getApiPath(BASE, TIME_BUCKETS))
                         .queryParam("accountNumber", "5678")
                         .queryParam("filter", "bad_filter")
                         .queryParam("isOpened", "true")
@@ -75,7 +76,7 @@ class AnalysisApiControllerTest extends AbstractPlanterTest {
 
     @Test
     void test_getTimeBucketsAnalysis_missingAccount() throws Exception {
-        this.mockMvc.perform(get("/api/v1/analysis/time-buckets")
+        this.mockMvc.perform(get(getApiPath(BASE, TIME_BUCKETS))
                         .queryParam("accountNumber", "5678")
                         .queryParam("filter", "PROFIT")
                         .queryParam("isOpened", "true")
@@ -86,7 +87,7 @@ class AnalysisApiControllerTest extends AbstractPlanterTest {
 
     @Test
     void test_getTimeBucketsAnalysis_success() throws Exception {
-        this.mockMvc.perform(get("/api/v1/analysis/time-buckets")
+        this.mockMvc.perform(get(getApiPath(BASE, TIME_BUCKETS))
                         .queryParam("accountNumber", "1234")
                         .queryParam("filter", "PROFIT")
                         .queryParam("isOpened", "true")
@@ -100,7 +101,7 @@ class AnalysisApiControllerTest extends AbstractPlanterTest {
 
     @Test
     void test_getWeekdaysAnalysis_badFilter() throws Exception {
-        this.mockMvc.perform(get("/api/v1/analysis/weekdays")
+        this.mockMvc.perform(get(getApiPath(BASE, WEEKDAYS))
                         .queryParam("accountNumber", "5678")
                         .queryParam("filter", "bad_filter")
                 )
@@ -110,7 +111,7 @@ class AnalysisApiControllerTest extends AbstractPlanterTest {
 
     @Test
     void test_getWeekdaysAnalysis_missingAccount() throws Exception {
-        this.mockMvc.perform(get("/api/v1/analysis/weekdays")
+        this.mockMvc.perform(get(getApiPath(BASE, WEEKDAYS))
                         .queryParam("accountNumber", "5678")
                         .queryParam("filter", "PROFIT")
                 )
@@ -120,7 +121,7 @@ class AnalysisApiControllerTest extends AbstractPlanterTest {
 
     @Test
     void test_getWeekdaysAnalysis_success() throws Exception {
-        this.mockMvc.perform(get("/api/v1/analysis/weekdays")
+        this.mockMvc.perform(get(getApiPath(BASE, WEEKDAYS))
                         .queryParam("accountNumber", "1234")
                         .queryParam("filter", "PROFIT")
                 )
@@ -133,7 +134,7 @@ class AnalysisApiControllerTest extends AbstractPlanterTest {
 
     @Test
     void test_getWeekdayTimeBucketsAnalysis_badFilter() throws Exception {
-        this.mockMvc.perform(get("/api/v1/analysis/weekdays-time-buckets")
+        this.mockMvc.perform(get(getApiPath(BASE, WEEKDAYS_TIME_BUCKETS))
                         .queryParam("accountNumber", "5678")
                         .queryParam("filter", "bad_filter")
                         .queryParam("weekday", "MONDAY")
@@ -144,7 +145,7 @@ class AnalysisApiControllerTest extends AbstractPlanterTest {
 
     @Test
     void test_getWeekdayTimeBucketsAnalysis_badWeekday() throws Exception {
-        this.mockMvc.perform(get("/api/v1/analysis/weekdays-time-buckets")
+        this.mockMvc.perform(get(getApiPath(BASE, WEEKDAYS_TIME_BUCKETS))
                         .queryParam("accountNumber", "5678")
                         .queryParam("filter", "PROFIT")
                         .queryParam("weekday", "bad_weekday")
@@ -155,7 +156,7 @@ class AnalysisApiControllerTest extends AbstractPlanterTest {
 
     @Test
     void test_getWeekdayTimeBucketsAnalysis_missingAccount() throws Exception {
-        this.mockMvc.perform(get("/api/v1/analysis/weekdays-time-buckets")
+        this.mockMvc.perform(get(getApiPath(BASE, WEEKDAYS_TIME_BUCKETS))
                         .queryParam("accountNumber", "5678")
                         .queryParam("filter", "PROFIT")
                         .queryParam("weekday", "MONDAY")
@@ -166,7 +167,7 @@ class AnalysisApiControllerTest extends AbstractPlanterTest {
 
     @Test
     void test_getWeekdayTimeBucketsAnalysis_success() throws Exception {
-        this.mockMvc.perform(get("/api/v1/analysis/weekdays-time-buckets")
+        this.mockMvc.perform(get(getApiPath(BASE, WEEKDAYS_TIME_BUCKETS))
                         .queryParam("accountNumber", "1234")
                         .queryParam("filter", "PROFIT")
                         .queryParam("weekday", "MONDAY")
@@ -180,7 +181,7 @@ class AnalysisApiControllerTest extends AbstractPlanterTest {
 
     @Test
     void test_getTradeDurationsAnalysis_badFilter() throws Exception {
-        this.mockMvc.perform(get("/api/v1/analysis/trade-durations")
+        this.mockMvc.perform(get(getApiPath(BASE, TRADE_DURATIONS))
                         .queryParam("accountNumber", "5678")
                         .queryParam("filter", "bad_filter")
                         .queryParam("tradeDurationFilter", "MONDAY")
@@ -191,7 +192,7 @@ class AnalysisApiControllerTest extends AbstractPlanterTest {
 
     @Test
     void test_getTradeDurationsAnalysis_missingAccount() throws Exception {
-        this.mockMvc.perform(get("/api/v1/analysis/trade-durations")
+        this.mockMvc.perform(get(getApiPath(BASE, TRADE_DURATIONS))
                         .queryParam("accountNumber", "5678")
                         .queryParam("filter", "PROFIT")
                         .queryParam("tradeDurationFilter", "WINS")
@@ -202,7 +203,7 @@ class AnalysisApiControllerTest extends AbstractPlanterTest {
 
     @Test
     void test_getTradeDurationsAnalysis_success() throws Exception {
-        this.mockMvc.perform(get("/api/v1/analysis/trade-durations")
+        this.mockMvc.perform(get(getApiPath(BASE, TRADE_DURATIONS))
                         .queryParam("accountNumber", "1234")
                         .queryParam("filter", "PROFIT")
                         .queryParam("tradeDurationFilter", "WINS")

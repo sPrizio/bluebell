@@ -1,5 +1,6 @@
 package com.bluebell.planter.controllers.portfolio;
 
+import com.bluebell.planter.constants.ApiPaths;
 import com.bluebell.planter.controllers.AbstractApiController;
 import com.bluebell.platform.models.api.json.StandardJsonResponse;
 import com.bluebell.platform.models.core.entities.security.User;
@@ -21,10 +22,10 @@ import org.springframework.web.bind.annotation.*;
  * API controller for {@link PortfolioRecord}
  *
  * @author Stephen Prizio
- * @version 0.1.3
+ * @version 0.1.9
  */
 @RestController
-@RequestMapping("${bluebell.base.api.controller.endpoint}/portfolio-record")
+@RequestMapping("${bluebell.base.api.controller.endpoint}" + ApiPaths.PortfolioRecord.BASE)
 @Tag(name = "Portfolio", description = "Handles endpoints & operations related to obtaining portfolio information.")
 @CrossOrigin(origins = "*", methods = {RequestMethod.GET, RequestMethod.DELETE, RequestMethod.POST, RequestMethod.PUT})
 public class PortfolioRecordApiController extends AbstractApiController {
@@ -61,7 +62,7 @@ public class PortfolioRecordApiController extends AbstractApiController {
                     schema = @Schema(implementation = StandardJsonResponse.class, example = "The API token was invalid.")
             )
     )
-    @GetMapping("/get")
+    @GetMapping(ApiPaths.PortfolioRecord.GET)
     public StandardJsonResponse<PortfolioRecord> getPortfolioRecord(
             @Parameter(name = "Portfolio UID", description = "Portfolio UID to add the account to", example = "1234")
             final @RequestParam("portfolioUid") String portfolioUid,
@@ -98,7 +99,7 @@ public class PortfolioRecordApiController extends AbstractApiController {
                     schema = @Schema(implementation = StandardJsonResponse.class, example = "The API token was invalid.")
             )
     )
-    @GetMapping("/get-comprehensive")
+    @GetMapping(ApiPaths.PortfolioRecord.GET_COMPREHENSIVE)
     public StandardJsonResponse<PortfolioRecord> getComprehensivePortfolioRecords(final HttpServletRequest request) {
         final User user = (User) request.getAttribute(SecurityConstants.USER_REQUEST_KEY);
         return StandardJsonResponse

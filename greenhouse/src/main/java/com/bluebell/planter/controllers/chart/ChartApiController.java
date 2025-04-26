@@ -1,5 +1,6 @@
 package com.bluebell.planter.controllers.chart;
 
+import com.bluebell.planter.constants.ApiPaths;
 import com.bluebell.planter.controllers.AbstractApiController;
 import com.bluebell.platform.constants.CorePlatformConstants;
 import com.bluebell.platform.enums.GenericEnum;
@@ -31,10 +32,10 @@ import static com.bluebell.radicle.validation.GenericValidator.validateLocalDate
  * API controller for providing charting capabilities based on historical data
  *
  * @author Stephen Prizio
- * @version 0.1.7
+ * @version 0.1.9
  */
 @RestController
-@RequestMapping("${bluebell.base.api.controller.endpoint}/chart")
+@RequestMapping("${bluebell.base.api.controller.endpoint}" + ApiPaths.Chart.BASE)
 @Tag(name = "Charting", description = "Handles endpoints & operations related to charting data points.")
 @CrossOrigin(origins = "*", methods = {RequestMethod.GET, RequestMethod.DELETE, RequestMethod.POST, RequestMethod.PUT})
 public class ChartApiController extends AbstractApiController {
@@ -90,7 +91,7 @@ public class ChartApiController extends AbstractApiController {
                     schema = @Schema(implementation = StandardJsonResponse.class, example = "The API token was invalid.")
             )
     )
-    @GetMapping("/apex-data")
+    @GetMapping(ApiPaths.Chart.APEX_DATA)
     public StandardJsonResponse<List<ApexChartCandleStick>> getApexChartData(
             @Parameter(name = "Start Date", description = "Start date of time period to analyze", example = "2025-01-01")
             final @RequestParam("start") String start,

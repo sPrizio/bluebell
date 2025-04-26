@@ -1,5 +1,6 @@
 package com.bluebell.planter.controllers.transaction;
 
+import com.bluebell.planter.constants.ApiPaths;
 import com.bluebell.planter.controllers.AbstractApiController;
 import com.bluebell.planter.converters.transaction.TransactionDTOConverter;
 import com.bluebell.platform.constants.CorePlatformConstants;
@@ -38,10 +39,10 @@ import static com.bluebell.radicle.validation.GenericValidator.validateLocalDate
  * Api Controller for {@link Transaction}
  *
  * @author Stephen Prizio
- * @version 0.1.7
+ * @version 0.1.9
  */
 @RestController
-@RequestMapping("${bluebell.base.api.controller.endpoint}/transaction")
+@RequestMapping("${bluebell.base.api.controller.endpoint}" + ApiPaths.Transaction.BASE)
 @Tag(name = "Transaction", description = "Handles endpoints & operations related to an account's transactions")
 @CrossOrigin(origins = "*", methods = {RequestMethod.GET, RequestMethod.DELETE, RequestMethod.POST, RequestMethod.PUT})
 public class TransactionApiController extends AbstractApiController {
@@ -105,7 +106,7 @@ public class TransactionApiController extends AbstractApiController {
                     schema = @Schema(implementation = StandardJsonResponse.class, example = "The API token was invalid.")
             )
     )
-    @GetMapping("/get-recent-for-account")
+    @GetMapping(ApiPaths.Transaction.GET_RECENT_FOR_ACCOUNT)
     public StandardJsonResponse<List<TransactionDTO>> getRecentTransactionsForAccount(
             @Parameter(name = "Account Number", description = "Account number", example = "1234")
             final @RequestParam("accountNumber") long accountNumber,
@@ -169,7 +170,7 @@ public class TransactionApiController extends AbstractApiController {
                     schema = @Schema(implementation = StandardJsonResponse.class, example = "The API token was invalid.")
             )
     )
-    @GetMapping("/get-for-account")
+    @GetMapping(ApiPaths.Transaction.GET_FOR_ACCOUNT)
     public StandardJsonResponse<List<TransactionDTO>> getAllTransactionsForAccount(
             @Parameter(name = "Account Number", description = "Account number", example = "1234")
             final @RequestParam("accountNumber") long accountNumber,
@@ -242,7 +243,7 @@ public class TransactionApiController extends AbstractApiController {
                     schema = @Schema(implementation = StandardJsonResponse.class, example = "The API token was invalid.")
             )
     )
-    @GetMapping("/get-by-type-for-account")
+    @GetMapping(ApiPaths.Transaction.GET_BY_TYPE_FOR_ACCOUNT)
     public StandardJsonResponse<List<TransactionDTO>> getTransactionsByTypeForAccount(
             @Parameter(name = "Transaction Type", description = "Transaction type", example = "DEPOSIT")
             final @RequestParam("transactionType") String transactionType,
@@ -325,7 +326,7 @@ public class TransactionApiController extends AbstractApiController {
                     schema = @Schema(implementation = StandardJsonResponse.class, example = "The API token was invalid.")
             )
     )
-    @GetMapping("/get-by-status-for-account")
+    @GetMapping(ApiPaths.Transaction.GET_BY_STATUS_FOR_ACCOUNT)
     public StandardJsonResponse<List<TransactionDTO>> getTransactionsByStatusForAccount(
             @Parameter(name = "Transaction Status", description = "Transaction status", example = "COMPLETED")
             final @RequestParam("transactionStatus") String transactionStatus,
@@ -417,7 +418,7 @@ public class TransactionApiController extends AbstractApiController {
                     schema = @Schema(implementation = StandardJsonResponse.class, example = "The API token was invalid.")
             )
     )
-    @GetMapping("/get-within-timespan-for-account")
+    @GetMapping(ApiPaths.Transaction.GET_WITHIN_TIMESPAN_FOR_ACCOUNT)
     public StandardJsonResponse<List<TransactionDTO>> getTransactionsWithinTimespanForAccount(
             @Parameter(name = "Start Date", description = "Start date of time period to analyze", example = "2025-01-01")
             final @RequestParam("start") String start,
@@ -493,7 +494,7 @@ public class TransactionApiController extends AbstractApiController {
                     schema = @Schema(implementation = StandardJsonResponse.class, example = "The API token was invalid.")
             )
     )
-    @GetMapping("/get-by-name-for-account")
+    @GetMapping(ApiPaths.Transaction.GET_BY_NAME_FOR_ACCOUNT)
     public StandardJsonResponse<TransactionDTO> getTransactionForNameAndAccount(
             @Parameter(name = "Transaction Name", description = "Transaction name", example = "1234")
             final @RequestParam("transactionName") String name,
@@ -550,7 +551,7 @@ public class TransactionApiController extends AbstractApiController {
                     schema = @Schema(implementation = StandardJsonResponse.class, example = "The API token was invalid.")
             )
     )
-    @PostMapping("/create-transaction")
+    @PostMapping(ApiPaths.Transaction.CREATE_TRANSACTION)
     public StandardJsonResponse<TransactionDTO> postCreateNewAccount(
             @Parameter(name = "Transaction Payload", description = "Payload for creating or updating transactions")
             final @RequestBody CreateUpdateTransactionDTO data,
@@ -623,7 +624,7 @@ public class TransactionApiController extends AbstractApiController {
                     schema = @Schema(implementation = StandardJsonResponse.class, example = "The API token was invalid.")
             )
     )
-    @PutMapping("/update-transaction")
+    @PutMapping(ApiPaths.Transaction.UPDATE_TRANSACTION)
     public StandardJsonResponse<TransactionDTO> putUpdateTransaction(
             @Parameter(name = "Account Number", description = "The unique identifier for your trading account", example = "1234")
             final @RequestParam("accountNumber") long accountNumber,
@@ -688,7 +689,7 @@ public class TransactionApiController extends AbstractApiController {
                     schema = @Schema(implementation = StandardJsonResponse.class, example = "The API token was invalid.")
             )
     )
-    @DeleteMapping("/delete-transaction")
+    @DeleteMapping(ApiPaths.Transaction.DELETE_TRANSACTION)
     public StandardJsonResponse<Boolean> deleteTransaction(
             @Parameter(name = "Transaction Name", description = "The transaction's name")
             final @RequestParam("transactionName") String transactionName,

@@ -22,6 +22,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
+import static com.bluebell.planter.constants.ApiPaths.MarketPrice.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.containsString;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -31,7 +32,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  * Testing class for {@link MarketPriceApiController}
  *
  * @author Stephen Prizio
- * @version 0.1.6
+ * @version 0.1.9
  */
 @SpringBootTest
 @AutoConfigureMockMvc(addFilters = false)
@@ -61,7 +62,7 @@ class MarketPriceApiControllerTest extends AbstractPlanterTest {
         map.put("symbol", List.of("NDAQ100"));
         map.put("priceInterval", List.of("FIVE_MINUTE"));
 
-        this.mockMvc.perform(MockMvcRequestBuilders.multipart("/api/v1/market-price/ingest").file(TEST_FILE_BAD_EXTENSION).with(testUserContext()).params(map))
+        this.mockMvc.perform(MockMvcRequestBuilders.multipart(getApiPath(BASE, INGEST)).file(TEST_FILE_BAD_EXTENSION).with(testUserContext()).params(map))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.message", containsString(ApiConstants.CLIENT_ERROR_DEFAULT_MESSAGE)));
     }
@@ -73,7 +74,7 @@ class MarketPriceApiControllerTest extends AbstractPlanterTest {
         map.put("symbol", List.of("afasf#%^$^$#$%#$%%##%^"));
         map.put("priceInterval", List.of("FIVE_MINUTE"));
 
-        this.mockMvc.perform(MockMvcRequestBuilders.multipart("/api/v1/market-price/ingest").file(TEST_FILE_GOOD).with(testUserContext()).params(map))
+        this.mockMvc.perform(MockMvcRequestBuilders.multipart(getApiPath(BASE, INGEST)).file(TEST_FILE_GOOD).with(testUserContext()).params(map))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.message", containsString("afasf#%^$^$#$%#$%%##%^ was not a valid symbol")));
 
@@ -86,7 +87,7 @@ class MarketPriceApiControllerTest extends AbstractPlanterTest {
         map.put("symbol", List.of("NDAQ100"));
         map.put("priceInterval", List.of("^[a-zA-Z][a-zA-Z0-9.!]*$"));
 
-        this.mockMvc.perform(MockMvcRequestBuilders.multipart("/api/v1/market-price/ingest").file(TEST_FILE_GOOD).with(testUserContext()).params(map))
+        this.mockMvc.perform(MockMvcRequestBuilders.multipart(getApiPath(BASE, INGEST)).file(TEST_FILE_GOOD).with(testUserContext()).params(map))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.message", containsString("^[a-zA-Z][a-zA-Z0-9.!]*$ is not a valid time interval")));
     }
@@ -98,7 +99,7 @@ class MarketPriceApiControllerTest extends AbstractPlanterTest {
         map.put("symbol", List.of("NDAQ100"));
         map.put("priceInterval", List.of("FIVE_MINUTE"));
 
-        this.mockMvc.perform(MockMvcRequestBuilders.multipart("/api/v1/market-price/ingest").file(TEST_FILE_BAD_DATA).with(testUserContext()).params(map))
+        this.mockMvc.perform(MockMvcRequestBuilders.multipart(getApiPath(BASE, INGEST)).file(TEST_FILE_BAD_DATA).with(testUserContext()).params(map))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.message", containsString("File did not contain valid mt4 .csv")));
     }
@@ -110,7 +111,7 @@ class MarketPriceApiControllerTest extends AbstractPlanterTest {
         map.put("symbol", List.of("NDAQ100"));
         map.put("priceInterval", List.of("FIVE_MINUTE"));
 
-        this.mockMvc.perform(MockMvcRequestBuilders.multipart("/api/v1/market-price/ingest").file(TEST_FILE_GOOD_DATA).with(testUserContext()).params(map))
+        this.mockMvc.perform(MockMvcRequestBuilders.multipart(getApiPath(BASE, INGEST)).file(TEST_FILE_GOOD_DATA).with(testUserContext()).params(map))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.message", containsString("was successfully saved to the ingress")));
 

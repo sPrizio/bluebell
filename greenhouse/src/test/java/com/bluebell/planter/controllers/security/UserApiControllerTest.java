@@ -27,6 +27,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import static com.bluebell.planter.constants.ApiPaths.User.*;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.is;
 import static org.mockito.ArgumentMatchers.any;
@@ -38,7 +39,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  * Testing class for {@link UserApiController}
  *
  * @author Stephen Prizio
- * @version 0.1.1
+ * @version 0.1.9
  */
 @SpringBootTest
 @AutoConfigureMockMvc(addFilters = false)
@@ -77,14 +78,14 @@ class UserApiControllerTest extends AbstractPlanterTest {
 
     @Test
     void test_getUser_missingUser() throws Exception {
-        this.mockMvc.perform(get("/api/v1/user/get").queryParam("username", "bad_username"))
+        this.mockMvc.perform(get(getApiPath(BASE, GET)).queryParam("username", "bad_username"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.message", containsString(String.format("No user found for username %s", "bad_username"))));
     }
 
     @Test
     void test_getUser_success() throws Exception {
-        this.mockMvc.perform(get("/api/v1/user/get").queryParam("username", "stephen"))
+        this.mockMvc.perform(get(getApiPath(BASE, GET)).queryParam("username", "stephen"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.data.firstName", is("Stephen")));
     }
@@ -94,7 +95,7 @@ class UserApiControllerTest extends AbstractPlanterTest {
 
     @Test
     void test_getCountryCodes_success() throws Exception {
-        this.mockMvc.perform(get("/api/v1/user/country-codes"))
+        this.mockMvc.perform(get(getApiPath(BASE, COUNTRY_CODES)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.data[1]", is("1")));
     }
@@ -104,7 +105,7 @@ class UserApiControllerTest extends AbstractPlanterTest {
 
     @Test
     void test_getPhoneTypes_success() throws Exception {
-        this.mockMvc.perform(get("/api/v1/user/phone-types"))
+        this.mockMvc.perform(get(getApiPath(BASE, PHONE_TYPES)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.data[0]", is("MOBILE")));
     }
@@ -114,7 +115,7 @@ class UserApiControllerTest extends AbstractPlanterTest {
 
     @Test
     void test_getCurrencies_success() throws Exception {
-        this.mockMvc.perform(get("/api/v1/user/currencies"))
+        this.mockMvc.perform(get(getApiPath(BASE, CURRENCIES)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.data[0]", is("ARS")));
     }
@@ -124,7 +125,7 @@ class UserApiControllerTest extends AbstractPlanterTest {
 
     @Test
     void test_getCountries_success() throws Exception {
-        this.mockMvc.perform(get("/api/v1/user/countries"))
+        this.mockMvc.perform(get(getApiPath(BASE, COUNTRIES)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.data[1]", is("ARGENTINA")));
     }
@@ -134,7 +135,7 @@ class UserApiControllerTest extends AbstractPlanterTest {
 
     @Test
     void test_getLanguages_success() throws Exception {
-        this.mockMvc.perform(get("/api/v1/user/languages"))
+        this.mockMvc.perform(get(getApiPath(BASE, LANGUAGES)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.data[0]", is("ENGLISH")));
     }
@@ -143,7 +144,7 @@ class UserApiControllerTest extends AbstractPlanterTest {
 
     @Test
     void test_getRecentTransactions_success() throws Exception {
-        this.mockMvc.perform(get("/api/v1/user/recent-transactions").with(testUserContext()))
+        this.mockMvc.perform(get(getApiPath(BASE, RECENT_TRANSACTIONS)).with(testUserContext()))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.data[0].name", is("Test")));
     }
@@ -153,7 +154,7 @@ class UserApiControllerTest extends AbstractPlanterTest {
 
     @Test
     void test_postCreateUser_badJsonIntegrity() throws Exception {
-        this.mockMvc.perform(post("/api/v1/user/create").contentType(MediaType.APPLICATION_JSON).content(new ObjectMapper().writeValueAsString(Map.of("hello", "world"))))
+        this.mockMvc.perform(post(getApiPath(BASE, CREATE)).contentType(MediaType.APPLICATION_JSON).content(new ObjectMapper().writeValueAsString(Map.of("hello", "world"))))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.message", containsString(ApiConstants.CLIENT_ERROR_DEFAULT_MESSAGE)));
     }
@@ -180,7 +181,7 @@ class UserApiControllerTest extends AbstractPlanterTest {
                 )
                 .build();
 
-        this.mockMvc.perform(post("/api/v1/user/create").contentType(MediaType.APPLICATION_JSON).content(new ObjectMapper().writeValueAsString(data)))
+        this.mockMvc.perform(post(getApiPath(BASE, CREATE)).contentType(MediaType.APPLICATION_JSON).content(new ObjectMapper().writeValueAsString(data)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.data.firstName", is("Stephen")));
     }
@@ -194,7 +195,7 @@ class UserApiControllerTest extends AbstractPlanterTest {
         MultiValueMap<String, String> map = new LinkedMultiValueMap<>();
         map.put("email", List.of("test@email.com"));
 
-        this.mockMvc.perform(put("/api/v1/user/update").params(map).contentType(MediaType.APPLICATION_JSON).content(new ObjectMapper().writeValueAsString(Map.of("hello", "world"))))
+        this.mockMvc.perform(put(getApiPath(BASE, UPDATE)).params(map).contentType(MediaType.APPLICATION_JSON).content(new ObjectMapper().writeValueAsString(Map.of("hello", "world"))))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.message", containsString(ApiConstants.CLIENT_ERROR_DEFAULT_MESSAGE)));
     }
@@ -224,7 +225,7 @@ class UserApiControllerTest extends AbstractPlanterTest {
                 )
                 .build();
 
-        this.mockMvc.perform(put("/api/v1/user/update").params(map).contentType(MediaType.APPLICATION_JSON).content(new ObjectMapper().writeValueAsString(data)))
+        this.mockMvc.perform(put(getApiPath(BASE, UPDATE)).params(map).contentType(MediaType.APPLICATION_JSON).content(new ObjectMapper().writeValueAsString(data)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.data.firstName", is("Stephen")));
     }
