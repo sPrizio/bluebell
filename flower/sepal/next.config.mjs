@@ -18,6 +18,9 @@ const nextConfig = {
                 port: ''
             }
         ]
+    },
+    env: {
+        ALLOW_FETCHING_MARKET_NEWS: 'false'
     }
 };
 
