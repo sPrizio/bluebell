@@ -3,6 +3,7 @@ package com.bluebell.radicle.services.market;
 import com.bluebell.AbstractGenericTest;
 import com.bluebell.platform.constants.CorePlatformConstants;
 import com.bluebell.platform.enums.time.MarketPriceTimeInterval;
+import com.bluebell.platform.models.core.entities.market.MarketPrice;
 import com.bluebell.platform.models.core.nonentities.market.AggregatedMarketPrices;
 import com.bluebell.radicle.enums.DataSource;
 import com.bluebell.radicle.exceptions.validation.IllegalParameterException;
@@ -15,6 +16,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.List;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
@@ -22,7 +27,7 @@ import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
  * Testing class for {@link MarketPriceService}
  *
  * @author Stephen Prizio
- * @version 0.1.5
+ * @version 0.1.8
  */
 @SpringBootTest
 @RunWith(SpringRunner.class)
@@ -39,6 +44,58 @@ class MarketPriceServiceTest extends AbstractGenericTest {
     @BeforeEach
     void setUp() {
         this.marketPriceRepository.deleteAll();
+    }
+
+
+    //  ----------------- findMarketPricesWithinTimespan -----------------
+
+    @Test
+    void test_findMarketPricesWithinTimespan_badParams() {
+        assertThatExceptionOfType(IllegalParameterException.class)
+                .isThrownBy(() -> this.marketPriceService.findMarketPricesWithinTimespan(null, MarketPriceTimeInterval.FIVE_MINUTE, null, null, DataSource.FIRST_RATE_DATA))
+                .withMessageContaining(CorePlatformConstants.Validation.MarketPrice.SYMBOL_CANNOT_BE_NULL);
+        assertThatExceptionOfType(IllegalParameterException.class)
+                .isThrownBy(() -> this.marketPriceService.findMarketPricesWithinTimespan("Test", null, LocalDateTime.MIN, LocalDateTime.MAX, DataSource.FIRST_RATE_DATA))
+                .withMessageContaining(CorePlatformConstants.Validation.MarketPrice.MARKET_PRICE_TIME_INTERVAL_CANNOT_BE_NULL);
+        assertThatExceptionOfType(IllegalParameterException.class)
+                .isThrownBy(() -> this.marketPriceService.findMarketPricesWithinTimespan("Test", MarketPriceTimeInterval.FIVE_MINUTE, null, LocalDateTime.MAX, DataSource.FIRST_RATE_DATA))
+                .withMessageContaining(CorePlatformConstants.Validation.DateTime.START_DATE_CANNOT_BE_NULL);
+        assertThatExceptionOfType(IllegalParameterException.class)
+                .isThrownBy(() -> this.marketPriceService.findMarketPricesWithinTimespan("Test", MarketPriceTimeInterval.FIVE_MINUTE, LocalDateTime.MIN, null, DataSource.FIRST_RATE_DATA))
+                .withMessageContaining(CorePlatformConstants.Validation.DateTime.END_DATE_CANNOT_BE_NULL);
+        assertThatExceptionOfType(UnsupportedOperationException.class)
+                .isThrownBy(() -> this.marketPriceService.findMarketPricesWithinTimespan("Test", MarketPriceTimeInterval.FIVE_MINUTE, LocalDateTime.MAX, LocalDateTime.MIN, DataSource.FIRST_RATE_DATA))
+                .withMessageContaining(CorePlatformConstants.Validation.DateTime.MUTUALLY_EXCLUSIVE_DATES);
+        assertThatExceptionOfType(IllegalParameterException.class)
+                .isThrownBy(() -> this.marketPriceService.findMarketPricesWithinTimespan("Test", MarketPriceTimeInterval.FIVE_MINUTE, LocalDateTime.MIN, LocalDateTime.MAX, null))
+                .withMessageContaining(CorePlatformConstants.Validation.MarketPrice.DATA_SOURCE_CANNOT_BE_NULL);
+    }
+
+    @Test
+    void test_findMarketPricesWithinTimespan_success() {
+
+        AggregatedMarketPrices prices2 = AggregatedMarketPrices
+                .builder()
+                .marketPrices(this.firstRateDataParser.parseMarketPrices("NDX_5min_sample.csv", MarketPriceTimeInterval.FIVE_MINUTE).marketPrices())
+                .dataSource(DataSource.FIRST_RATE_DATA)
+                .interval(MarketPriceTimeInterval.FIVE_MINUTE)
+                .build();
+
+        this.marketPriceService.saveAll(prices2);
+
+        final List<MarketPrice> prices =
+                this.marketPriceService.findMarketPricesWithinTimespan("NDX", MarketPriceTimeInterval.FIVE_MINUTE, LocalDate.of(2024, 5, 12).atStartOfDay(), LocalDate.of(2024, 5, 14).atStartOfDay(), DataSource.FIRST_RATE_DATA);
+
+        final List<MarketPrice> pricesEmptyTime =
+                this.marketPriceService.findMarketPricesWithinTimespan("NDX", MarketPriceTimeInterval.FIVE_MINUTE, LocalDate.of(2024, 5, 10).atStartOfDay(), LocalDate.of(2024, 5, 12).atStartOfDay(), DataSource.FIRST_RATE_DATA);
+
+        final List<MarketPrice> pricesEmptySource =
+                this.marketPriceService.findMarketPricesWithinTimespan("NDX", MarketPriceTimeInterval.THIRTY_MINUTE, LocalDateTime.MIN, LocalDateTime.MAX, DataSource.TRADING_VIEW);
+
+        assertThat(prices).isNotEmpty();
+        assertThat(prices.get(1).getHigh()).isEqualTo(18220.72);
+        assertThat(pricesEmptyTime).isEmpty();
+        assertThat(pricesEmptySource).isEmpty();
     }
 
 
