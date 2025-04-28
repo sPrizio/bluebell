@@ -337,6 +337,8 @@ public class CorePlatformConstants {
             public static final String DATA_SOURCE_CANNOT_BE_NULL = "data source cannot be null";
 
             public static final String MARKET_PRICE_TIME_INTERVAL_CANNOT_BE_NULL = "market price time interval cannot be null";
+
+            public static final String SYMBOL_CANNOT_BE_NULL = "symbol cannot be null";
         }
     }
 

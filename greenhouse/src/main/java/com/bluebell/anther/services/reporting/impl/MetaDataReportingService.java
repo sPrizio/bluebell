@@ -13,7 +13,7 @@ import java.util.List;
  * Service that allows reports to be generated for strategy results
  *
  * @author Stephen Prizio
- * @version 0.1.1
+ * @version 0.1.8
  */
 public class MetaDataReportingService implements ReportingService {
 
@@ -31,7 +31,7 @@ public class MetaDataReportingService implements ReportingService {
 
         final StringBuilder stringBuilder = new StringBuilder();
         for (final MetaData md : metaData) {
-            final File tempFile = new File(DirectoryUtil.getOutputDirectory(String.format("output%smetadata%s", File.separator, File.separator), true) + String.format("metadata-%s.txt", md.getStart().format(DateTimeFormatter.ISO_DATE)));
+            final File tempFile = new File(DirectoryUtil.getTargetDirectory(String.format("output%smetadata%s", File.separator, File.separator), true) + String.format("metadata-%s.txt", md.getStart().format(DateTimeFormatter.ISO_DATE)));
             try (FileOutputStream os = new FileOutputStream(tempFile)) {
                 stringBuilder
                         .append("Period: ").append(md.getStart().format(DATE_FORMATTER)).append(" to ").append(md.getEnd().format(DATE_FORMATTER))

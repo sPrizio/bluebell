@@ -28,7 +28,7 @@ import java.util.stream.Stream;
  * Implementation of {@link DecisionEngine} specific to {@link Bloom}
  *
  * @author Stephen Prizio
- * @version 0.1.2
+ * @version 0.1.8
  */
 public class BloomDecisionEngine implements DecisionEngine<Bloom, BloomStrategyParameters> {
 
@@ -184,7 +184,7 @@ public class BloomDecisionEngine implements DecisionEngine<Bloom, BloomStrategyP
     private List<CumulativeData> loadDataFromDirectory() {
 
         // look for files. if the directory exists and is not empty, read from it
-        final File directory = new File(DirectoryUtil.getOutputDirectory(String.format("output%scumulative%sbloom%s", File.separator, File.separator, File.separator), true));
+        final File directory = new File(DirectoryUtil.getTargetDirectory(String.format("output%scumulative%sbloom%s", File.separator, File.separator, File.separator), true));
         try (Stream<Path> paths = Files.list(directory.toPath())) {
             final List<Path> list = paths.toList();
 

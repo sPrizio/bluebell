@@ -13,7 +13,7 @@ import java.nio.file.Paths;
  * Utility class for file and directory operations
  *
  * @author Stephen Prizio
- * @version 0.1.6
+ * @version 0.1.8
  */
 @Slf4j
 @UtilityClass
@@ -23,11 +23,20 @@ public class DirectoryUtil {
     //  METHODS
 
     /**
+     * Returns the output directory
+     *
+     * @return output directory path
+     */
+    public static String getOutputDirectory() {
+        return getBaseProjectDirectory() + String.format("%s%s", File.separator, "output");
+    }
+
+    /**
      * Returns the root folder for the given folder name
      *
      * @return sample data path
      */
-    public static String getOutputDirectory(final String root, final boolean create) {
+    public static String getTargetDirectory(final String root, final boolean create) {
 
         final String base = getBaseProjectDirectory();
         if (!new File(base).exists()) {
