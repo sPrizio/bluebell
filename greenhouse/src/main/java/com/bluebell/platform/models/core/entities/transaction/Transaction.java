@@ -13,12 +13,12 @@ import java.time.LocalDateTime;
  * Class representation of an account transaction
  *
  * @author Stephen Prizio
- * @version 0.1.6
+ * @version 0.1.8
  */
 @Getter
 @Entity
 @Builder
-@Table(name = "transactions", uniqueConstraints = @UniqueConstraint(name = "UniqueNameAndAccount", columnNames = {"transaction_name", "account_id"}))
+@Table(name = "transactions", uniqueConstraints = @UniqueConstraint(name = "UniqueNameAndDateTimeAndAccount", columnNames = {"transaction_name", "transaction_date", "account_id"}))
 @NoArgsConstructor
 @AllArgsConstructor
 public class Transaction implements GenericEntity {

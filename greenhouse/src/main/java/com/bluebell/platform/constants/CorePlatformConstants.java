@@ -9,7 +9,7 @@ import java.util.List;
  * Constants defined for the bluebell platform
  *
  * @author Stephen Prizio
- * @version 0.1.7
+ * @version 0.1.8
  */
 public class CorePlatformConstants {
 
@@ -376,6 +376,8 @@ public class CorePlatformConstants {
             public static final String MT4_HTML_TABLE_ROW_START = "<tr.*?>";
 
             public static final String MT4_HTML_TABLE_ROW_END = "</tr>";
+
+            public static final String MT4_TRANSACTION_NAME = "\\[(.*?)]";
         }
     }
 
