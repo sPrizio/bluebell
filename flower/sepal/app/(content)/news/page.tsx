@@ -4,19 +4,18 @@ import {useSepalPageInfoContext} from "@/lib/context/SepalContext";
 import {useEffect, useState} from "react";
 import {Icons} from "@/lib/enums";
 import {BaseCard} from "@/components/Card/BaseCard";
-import {Button} from "@/components/ui/button";
-import {Loader2} from "lucide-react";
 import NewsTable from "@/components/Table/News/NewsTable";
-import {fetchNews, getNews} from "@/lib/functions/news-functions";
+import {getNews} from "@/lib/functions/news-functions";
 import moment from "moment";
 import {DateTime} from "@/lib/constants";
 import {MarketNews} from "@/types/apiTypes";
+import FetchMarketNewsButton from "@/components/Button/FetchMarketNewsButton";
 
 /**
  * Renders the market News page
  *
  * @author Stephen Prizio
- * @version 0.0.2
+ * @version 0.2.2
  */
 export default function MarketNewsPage() {
 
@@ -45,33 +44,19 @@ export default function MarketNewsPage() {
       {label: 'Market News', href: '/market-News', active: true},
     ])
 
-    getTheNews()
+    getMarketNews()
   }, [])
 
-  async function getTheNews() {
+  /**
+   * Fetches the market news for the current week
+   */
+  async function getMarketNews() {
 
     setIsLoading(true)
 
     const data = await getNews(moment().startOf('week').add(1, 'days').format(DateTime.ISODateFormat), moment().startOf('week').add(6, 'days').format(DateTime.ISODateFormat))
     if (data && data.length > 0) {
       setNews(data)
-    }
-
-    setIsLoading(false)
-  }
-
-  /**
-   * Fetches the market news
-   */
-  async function fetch() {
-
-    setIsLoading(true)
-
-    const data = await fetchNews()
-    if (data) {
-      window.location.reload()
-    } else {
-      console.log('Error fetching the news.')
     }
 
     setIsLoading(false)
@@ -85,16 +70,8 @@ export default function MarketNewsPage() {
       <BaseCard
         title={'Market News'}
         subtitle={'A look at your local market News.'}
-        headerControls={[
-          isLoading ?
-            <Button variant={'outline'} disabled={isLoading}>
-              {isLoading ? <Loader2 className="mr-2 h-4 w-4 animate-spin"/> : null}
-              Update
-            </Button>
-            :
-            <Button key={0} onClick={fetch} variant={"outline"}>Update</Button>
-        ]}
         cardContent={<NewsTable news={news} />}
+        headerControls={[<FetchMarketNewsButton key={0} />]}
       />
     </div>
   )
