@@ -1,7 +1,6 @@
 package com.bluebell.planter.controllers.market;
 
 import com.bluebell.planter.controllers.AbstractApiController;
-import com.bluebell.platform.constants.CorePlatformConstants;
 import com.bluebell.platform.enums.GenericEnum;
 import com.bluebell.platform.enums.security.UserRole;
 import com.bluebell.platform.enums.time.MarketPriceTimeInterval;
@@ -39,7 +38,7 @@ import static com.bluebell.radicle.importing.validation.ImportValidator.validate
  * Api controller for {@link MarketPrice}
  *
  * @author Stephen Prizio
- * @version 0.1.7
+ * @version 0.1.8
  */
 @Slf4j
 @RestController
