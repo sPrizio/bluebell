@@ -1,10 +1,12 @@
 package com.bluebell.radicle.importing.services.trade;
 
 import com.bluebell.platform.constants.CorePlatformConstants;
+import com.bluebell.platform.enums.transaction.TransactionType;
 import com.bluebell.platform.models.core.entities.account.Account;
 import com.bluebell.radicle.importing.ImportService;
 import com.bluebell.radicle.importing.exceptions.TradeImportFailureException;
-import com.bluebell.radicle.importing.models.MetaTrader4TradeWrapper;
+import com.bluebell.radicle.importing.models.wrapper.trade.MetaTrader4TradeWrapper;
+import com.bluebell.radicle.importing.models.wrapper.transaction.MetaTrader4TransactionWrapper;
 import com.bluebell.radicle.importing.services.AbstractImportService;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -26,7 +28,7 @@ import java.util.Objects;
  * Service-layer for importing trades into the system from the MetaTrader4 platform
  *
  * @author Stephen Prizio
- * @version 0.1.4
+ * @version 0.1.8
  */
 @Service("metaTrader4TradeImportService")
 public class MetaTrader4TradeImportService extends AbstractImportService implements ImportService {
@@ -86,7 +88,16 @@ public class MetaTrader4TradeImportService extends AbstractImportService impleme
                             .sorted(Comparator.comparing(MetaTrader4TradeWrapper::getOpenTime))
                             .toList();
 
+            List<MetaTrader4TransactionWrapper> transactions =
+                    content
+                            .stream()
+                            .map(this::generateTransactionWrapper)
+                            .filter(Objects::nonNull)
+                            .sorted(Comparator.comparing(MetaTrader4TransactionWrapper::getDateTime))
+                            .toList();
+
             mt4TradeCleanup(account, trades);
+            mt4TransactionCleanup(account, transactions);
         } catch (Exception e) {
             LOGGER.error("The import process failed with reason : {}", e.getMessage(), e);
             throw new TradeImportFailureException(String.format("The import process failed with reason : %s", e.getMessage()), e);
@@ -127,7 +138,7 @@ public class MetaTrader4TradeImportService extends AbstractImportService impleme
             return null;
         }
 
-        final List<String> data = parseMetaTrader4Trade(string);
+        final List<String> data = parseMetaTrader4RowEntry(string);
         if (data.size() != 14) {
             return null;
         }
@@ -138,13 +149,45 @@ public class MetaTrader4TradeImportService extends AbstractImportService impleme
                 .openTime(LocalDateTime.parse(data.get(1), DateTimeFormatter.ofPattern(CorePlatformConstants.MT4_DATE_TIME_FORMAT)))
                 .closeTime(LocalDateTime.parse(data.get(8), DateTimeFormatter.ofPattern(CorePlatformConstants.MT4_DATE_TIME_FORMAT)))
                 .type(data.get(2))
-                .size(Double.parseDouble(data.get(3)))
+                .size(safeParseDouble(data.get(3)))
                 .item(data.get(4))
-                .openPrice(Double.parseDouble(data.get(5)))
-                .stopLoss(Double.parseDouble(data.get(6)))
-                .takeProfit(Double.parseDouble(data.get(7)))
-                .closePrice(Double.parseDouble(data.get(9)))
-                .profit(Double.parseDouble(data.get(13).replace(" ", StringUtils.EMPTY).replace(",", StringUtils.EMPTY).trim()))
+                .openPrice(safeParseDouble(data.get(5)))
+                .stopLoss(safeParseDouble(data.get(6)))
+                .takeProfit(safeParseDouble(data.get(7)))
+                .closePrice(safeParseDouble(data.get(9)))
+                .profit(safeParseDouble(data.get(13).replace(" ", StringUtils.EMPTY).replace(",", StringUtils.EMPTY).trim()))
                 .build();
+    }
+
+    /**
+     * Generates a {@link MetaTrader4TransactionWrapper} from the given string
+     *
+     * @param string input value
+     * @return {@link MetaTrader4TransactionWrapper}
+     */
+    private MetaTrader4TransactionWrapper generateTransactionWrapper(final String string) {
+
+        if (StringUtils.isEmpty(string)) {
+            return null;
+        }
+
+        final List<String> data = parseMetaTrader4RowEntry(string);
+        if (data.size() != 5) {
+            return null;
+        }
+
+        try {
+            final double amount = safeParseDouble(data.get(4));
+            return MetaTrader4TransactionWrapper
+                    .builder()
+                    .amount(amount)
+                    .name(parseMetaTrader4TransactionName(data.get(3), amount))
+                    .dateTime(LocalDateTime.parse(data.get(1), DateTimeFormatter.ofPattern(CorePlatformConstants.MT4_DATE_TIME_FORMAT)))
+                    .type(amount > 0.0 ? TransactionType.DEPOSIT : TransactionType.WITHDRAWAL)
+                    .build();
+        } catch (Exception e) {
+            LOGGER.error("Failed to import row with reason {}", e.getMessage(), e);
+            return null;
+        }
     }
 }

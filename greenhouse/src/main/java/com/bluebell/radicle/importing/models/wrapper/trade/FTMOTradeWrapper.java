@@ -1,5 +1,6 @@
-package com.bluebell.radicle.importing.models;
+package com.bluebell.radicle.importing.models.wrapper.trade;
 
+import com.bluebell.radicle.importing.models.wrapper.ImportedWrapper;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -9,7 +10,7 @@ import java.time.LocalDateTime;
  * A wrapper class for FTMO trades
  *
  * @author Stephen Prizio
- * @version 0.1.1
+ * @version 0.1.8
  */
 @Builder
 public record FTMOTradeWrapper(
@@ -24,7 +25,7 @@ public record FTMOTradeWrapper(
         @Getter double takeProfit,
         @Getter double closePrice,
         @Getter double profit
-) implements ImportedTradeWrapper<FTMOTradeWrapper> {
+) implements ImportedWrapper<FTMOTradeWrapper> {
 
     /**
      * Merges 2 {@link FTMOTradeWrapper}s

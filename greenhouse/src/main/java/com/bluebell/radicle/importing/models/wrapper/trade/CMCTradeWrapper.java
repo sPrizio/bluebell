@@ -1,5 +1,6 @@
-package com.bluebell.radicle.importing.models;
+package com.bluebell.radicle.importing.models.wrapper.trade;
 
+import com.bluebell.radicle.importing.models.wrapper.ImportedWrapper;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -17,7 +18,7 @@ import java.time.LocalDateTime;
  * @param price              price at time of trade
  * @param amount             net profit amount
  * @author Stephen Prizio
- * @version 0.1.1
+ * @version 0.1.8
  */
 @Builder
 public record CMCTradeWrapper(
@@ -29,7 +30,7 @@ public record CMCTradeWrapper(
         @Getter double units,
         @Getter double price,
         @Getter double amount
-) implements ImportedTradeWrapper<CMCTradeWrapper> {
+) implements ImportedWrapper<CMCTradeWrapper> {
 
     @Override
     public CMCTradeWrapper merge(final CMCTradeWrapper wrapper) {

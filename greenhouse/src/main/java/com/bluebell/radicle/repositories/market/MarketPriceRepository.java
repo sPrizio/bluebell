@@ -12,15 +12,29 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 /**
  * Data-access layer for {@link MarketPrice}
  *
  * @author Stephen Prizio
- * @version 0.1.6
+ * @version 0.1.8
  */
 @Repository
 public interface MarketPriceRepository extends PagingAndSortingRepository<MarketPrice, Long>, CrudRepository<MarketPrice, Long> {
+
+    /**
+     * Returns a {@link List} of {@link MarketPrice}s for the given symbol and datasource, within the time span
+     *
+     * @param symbol symbol
+     * @param timeInterval {@link MarketPriceTimeInterval}
+     * @param start {@link LocalDateTime}
+     * @param end {@link LocalDateTime}
+     * @param dataSource {@link DataSource}
+     * @return {@link List} of {@link MarketPrice}
+     */
+    @Query("SELECT mp FROM MarketPrice mp WHERE mp.symbol = ?1 AND mp.interval = ?2 AND mp.date >= ?3 AND mp.date < ?4 AND mp.dataSource = ?5 ORDER BY mp.date ASC")
+    List<MarketPrice> findMarketPricesWithinTimespan(final String symbol, final MarketPriceTimeInterval timeInterval, final LocalDateTime start, final LocalDateTime end, final DataSource dataSource);
 
     /**
      * Inserts or updates an existing {@link MarketPrice}

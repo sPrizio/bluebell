@@ -6,7 +6,7 @@ import com.bluebell.radicle.importing.ImportService;
 import com.bluebell.radicle.importing.enums.MetaTrader4TradeType;
 import com.bluebell.radicle.importing.exceptions.StrategyImportFailureException;
 import com.bluebell.radicle.importing.exceptions.TradeImportFailureException;
-import com.bluebell.radicle.importing.models.MetaTrader4TradeWrapper;
+import com.bluebell.radicle.importing.models.wrapper.trade.MetaTrader4TradeWrapper;
 import com.bluebell.radicle.importing.services.AbstractImportService;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -29,7 +29,7 @@ import java.util.regex.Pattern;
  * Service-layer for importing trades into the system from the MetaTrader4 platform
  *
  * @author Stephen Prizio
- * @version 0.1.4
+ * @version 0.1.8
  */
 @Service("metaTrader4StrategyImportService")
 public class MetaTrader4StrategyImportService extends AbstractImportService implements ImportService {
@@ -205,7 +205,7 @@ public class MetaTrader4StrategyImportService extends AbstractImportService impl
             return null;
         }
 
-        final List<String> data = parseMetaTrader4Trade(string);
+        final List<String> data = parseMetaTrader4RowEntry(string);
         if (CollectionUtils.isEmpty(data) || safeParseInt(data.get(0)) == -1 || data.size() < 8 || data.size() > 10) {
             return null;
         }

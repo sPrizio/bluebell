@@ -1,23 +1,23 @@
 package com.bluebell.radicle.performable.impl;
 
-import com.bluebell.platform.models.core.entities.job.impl.Job;
+import com.bluebell.platform.models.core.entities.account.Account;
 import com.bluebell.platform.models.core.nonentities.action.ActionData;
 import com.bluebell.radicle.performable.ActionPerformable;
-import com.bluebell.radicle.services.job.JobService;
+import com.bluebell.radicle.services.account.AccountService;
 import jakarta.annotation.Resource;
 import org.springframework.stereotype.Component;
 
 /**
- * Action that removes {@link Job}s that might be stuck in an in-progress state or just bad data
+ * Action that marks stale {@link Account}s as inactive
  *
  * @author Stephen Prizio
  * @version 0.1.8
  */
-@Component("removeStaleJobsInProgressActionPerformable")
-public class RemoveStaleJobsInProgressActionPerformable implements ActionPerformable {
+@Component("invalidateStaleAccountsActionPerformable")
+public class InvalidateStaleAccountsActionPerformable implements ActionPerformable {
 
-    @Resource(name = "jobService")
-    private JobService jobService;
+    @Resource(name = "accountService")
+    private AccountService accountService;
 
 
     //  METHODS
@@ -25,18 +25,18 @@ public class RemoveStaleJobsInProgressActionPerformable implements ActionPerform
     @Override
     public ActionData perform() {
         try {
-            final int count = this.jobService.deleteStaleInProgressJobs();
+            final int count = this.accountService.invalidateStaleAccounts();
             if (count > 0) {
                 return ActionData
                         .builder()
                         .success(true)
-                        .data(String.format("%d stale jobs in progress deleted.", count))
+                        .logs(String.format("%d stale accounts were marked as inactive", count))
                         .build();
             } else {
                 return ActionData
                         .builder()
                         .success(true)
-                        .data("No stale jobs were found.")
+                        .data("No stale accounts were found.")
                         .build();
             }
         } catch (Exception e) {
