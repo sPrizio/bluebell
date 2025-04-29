@@ -18,10 +18,10 @@ import org.springframework.stereotype.Component;
 import java.time.LocalDateTime;
 
 /**
- * Job that runs once per day to clean up any stale jobs
+ * Job that runs once per week to clean up any stale {@link Job}s
  *
  * @author Stephen Prizio
- * @version 0.1.5
+ * @version 0.1.8
  */
 @Slf4j
 @Component
@@ -52,7 +52,7 @@ public class CleanupJobsScheduledJob extends AbstractScheduledJob implements Gen
         Action cleanupInProgressAction = Action
                 .builder()
                 .priority(1)
-                .name("CleanupInProgressJobsAction_" + LocalDateTime.now())
+                .name(String.format("CleanupInProgressJobsAction_%s", LocalDateTime.now()))
                 .performableAction(this.removeStaleJobsInProgressActionPerformable)
                 .build();
 
@@ -61,7 +61,7 @@ public class CleanupJobsScheduledJob extends AbstractScheduledJob implements Gen
         Action cleanupOldJobsActions = Action
                 .builder()
                 .priority(2)
-                .name("CleanupOldJobsAction_" + LocalDateTime.now())
+                .name(String.format("CleanupOldJobsAction_%s", LocalDateTime.now()))
                 .performableAction(this.removeOldJobsActionPerformable)
                 .build();
 
@@ -70,7 +70,7 @@ public class CleanupJobsScheduledJob extends AbstractScheduledJob implements Gen
         Job cleanupJobs = Job
                 .builder()
                 .type(JobType.CLEANUP_STALE_JOBS)
-                .name("CleanupStaleJobs_" + LocalDateTime.now())
+                .name(String.format("CleanupStaleJobsJob_%s", LocalDateTime.now()))
                 .build();
 
         cleanupJobs = this.jobRepository.save(cleanupJobs);

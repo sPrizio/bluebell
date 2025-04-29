@@ -17,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -26,7 +27,7 @@ import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
  * Testing integrations for {@link AccountService}
  *
  * @author Stephen Prizio
- * @version 0.1.6
+ * @version 0.1.8
  */
 @SpringBootTest
 @RunWith(SpringRunner.class)
@@ -105,5 +106,50 @@ class AccountServiceIntegrationTest extends AbstractGenericTest {
         assertThat(this.accountService.updateAccountTradingData(data)).isTrue();
         assertThat(this.tradeRepository.count()).isEqualTo(2);
         assertThat(this.transactionRepository.count()).isEqualTo(2);
+    }
+
+
+    //  ----------------- invalidateStaleAccounts -----------------
+
+    @Test
+    void test_invalidateStaleAccounts_success() {
+        this.accountRepository.deleteAll();
+
+        Account acc1 = generateTestAccount();
+        acc1.setId(null);
+        acc1.setAccountNumber(1111L);
+        acc1.setLastTraded(LocalDateTime.now().minusMonths(1));
+        acc1 = this.accountRepository.save(acc1);
+
+        Account acc2 = generateTestAccount();
+        acc2.setId(null);
+        acc2.setAccountNumber(2222L);
+        acc2.setLastTraded(LocalDateTime.now().minusYears(4));
+        acc2 = this.accountRepository.save(acc2);
+
+        Account acc3 = generateTestAccount();
+        acc3.setId(null);
+        acc3.setAccountNumber(3333L);
+        acc3.setLastTraded(null);
+        acc3 = this.accountRepository.save(acc3);
+
+        Account acc4 = generateTestAccount();
+        acc4.setId(null);
+        acc4.setAccountNumber(4444L);
+        acc4.setLastTraded(LocalDateTime.now().minusYears(2));
+        acc4 = this.accountRepository.save(acc4);
+
+        int count = this.accountService.invalidateStaleAccounts();
+        assertThat(count).isEqualTo(2);
+
+        assertThat(this.accountRepository.findById(acc1.getId()).get().isDefaultAccount()).isTrue();
+        assertThat(this.accountRepository.findById(acc2.getId()).get().isDefaultAccount()).isFalse();
+        assertThat(this.accountRepository.findById(acc3.getId()).get().isDefaultAccount()).isTrue();
+        assertThat(this.accountRepository.findById(acc4.getId()).get().isDefaultAccount()).isFalse();
+
+        assertThat(this.accountRepository.findById(acc1.getId()).get().isActive()).isTrue();
+        assertThat(this.accountRepository.findById(acc2.getId()).get().isActive()).isFalse();
+        assertThat(this.accountRepository.findById(acc3.getId()).get().isActive()).isTrue();
+        assertThat(this.accountRepository.findById(acc4.getId()).get().isActive()).isFalse();
     }
 }

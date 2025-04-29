@@ -22,13 +22,13 @@ import java.util.List;
  * Class representation of a trading account, an entity that can hold {@link Trade}s and other information
  *
  * @author Stephen Prizio
- * @version 0.1.2
+ * @version 0.1.8
  */
 @Getter
 @Setter
 @Entity
 @Builder
-@Table(name = "accounts", uniqueConstraints = @UniqueConstraint(name = "UniqueAccountNumber", columnNames = {"account_number"}))
+@Table(name = "accounts", uniqueConstraints = @UniqueConstraint(name = "UniqueAccountNumberAndPortfolio", columnNames = {"account_number", "portfolio_id"}))
 @NoArgsConstructor
 @AllArgsConstructor
 public class Account implements GenericEntity {
@@ -83,6 +83,7 @@ public class Account implements GenericEntity {
     private @Builder.Default List<Transaction> transactions = new ArrayList<>();
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.REFRESH)
+    @JoinColumn(name = "portfolio_id")
     private Portfolio portfolio;
 
 

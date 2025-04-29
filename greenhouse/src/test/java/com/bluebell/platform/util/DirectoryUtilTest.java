@@ -13,19 +13,28 @@ import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
  * Testing class for {@link DirectoryUtil}
  *
  * @author Stephen Prizio
- * @version 0.1.5
+ * @version 0.1.8
  */
 class DirectoryUtilTest {
 
 
-    //  ----------------- getDirectory -----------------
+    //  ----------------- getOutputDirectory -----------------
 
     @Test
     void test_getOutputDirectory_success() {
+        String basePath = DirectoryUtil.getOutputDirectory();
+        assertThat(basePath).contains("output");
+    }
 
-        assertThatExceptionOfType(DirectoryNotFoundException.class).isThrownBy(() -> DirectoryUtil.getOutputDirectory("test", false));
 
-        final String directoryPath = DirectoryUtil.getOutputDirectory("test-output", true);
+    //  ----------------- getTargetDirectory -----------------
+
+    @Test
+    void test_getTargetDirectory_success() {
+
+        assertThatExceptionOfType(DirectoryNotFoundException.class).isThrownBy(() -> DirectoryUtil.getTargetDirectory("test", false));
+
+        final String directoryPath = DirectoryUtil.getTargetDirectory("test-output", true);
         File directory = new File(directoryPath);
 
         assertThat(directory)
@@ -36,8 +45,8 @@ class DirectoryUtilTest {
     }
 
     @Test
-    void test_getOutputDirectory_fallbackToCom() {
-        assertThatExceptionOfType(DirectoryNotFoundException.class).isThrownBy(() -> DirectoryUtil.getOutputDirectory("test", false));
+    void test_getTargetDirectory_fallbackToCom() {
+        assertThatExceptionOfType(DirectoryNotFoundException.class).isThrownBy(() -> DirectoryUtil.getTargetDirectory("test", false));
     }
 
 

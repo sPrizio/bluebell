@@ -6,7 +6,7 @@ import com.bluebell.platform.models.core.entities.account.Account;
 import com.bluebell.platform.models.core.entities.trade.Trade;
 import com.bluebell.radicle.importing.ImportService;
 import com.bluebell.radicle.importing.exceptions.TradeImportFailureException;
-import com.bluebell.radicle.importing.models.CMCTradeWrapper;
+import com.bluebell.radicle.importing.models.wrapper.trade.CMCTradeWrapper;
 import com.bluebell.radicle.importing.services.AbstractImportService;
 import com.bluebell.radicle.repositories.trade.TradeRepository;
 import jakarta.annotation.Resource;
@@ -32,7 +32,7 @@ import java.util.Objects;
  * Service-layer for importing trades into the system from CMC Markets
  *
  * @author Stephen Prizio
- * @version 0.1.1
+ * @version 0.1.8
  */
 @Service("cmcMarketsTradeImportService")
 public class CMCMarketsTradeImportService extends AbstractImportService implements ImportService {

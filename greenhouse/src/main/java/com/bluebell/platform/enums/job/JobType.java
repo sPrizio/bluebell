@@ -9,7 +9,7 @@ import lombok.Getter;
  * Enumeration representing different types of {@link Job}s that can be performed
  *
  * @author Stephen Prizio
- * @version 0.1.6
+ * @version 0.1.8
  */
 @Getter
 @Schema(title = "JobType", name = "JobType", description = "Types of Jobs implemented in bluebell.")
@@ -20,7 +20,8 @@ public enum JobType implements GenericEnum<JobType> {
     CLEANUP_INGESTED_DATA("CLEANUP_INGESTED_DATA", "Cleanup Ingested Data Job"),
     FETCH_MARKET_DATA_FROM_FIRST_DATA("FETCH_MARKET_DATA_FROM_FIRST_DATA", "Fetch Market Data from FirstData Job"),
     FETCH_MARKET_DATA_FROM_MT4("FETCH_MARKET_DATA_FROM_MT4", "Fetch Market Data From MT4 Job"),
-    PING_MIDDLEWARE("PING_MIDDLEWARE", "Ping Middleware Job");
+    PING_MIDDLEWARE("PING_MIDDLEWARE", "Ping Middleware Job"),
+    INVALIDATE_STALE_ACCOUNTS("INVALIDATE_STALE_ACCOUNTS", "Invalidate Stale Accounts"),;
 
     private final String code;
 

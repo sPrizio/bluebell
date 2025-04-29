@@ -1,5 +1,6 @@
-package com.bluebell.radicle.importing.models;
+package com.bluebell.radicle.importing.models.wrapper.trade;
 
+import com.bluebell.radicle.importing.models.wrapper.ImportedWrapper;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -9,7 +10,7 @@ import java.time.LocalDateTime;
  * A wrapper class for MetaTrader4 trades
  *
  * @author Stephen Prizio
- * @version 0.1.3
+ * @version 0.1.8
  */
 @Builder
 public record MetaTrader4TradeWrapper(
@@ -24,7 +25,7 @@ public record MetaTrader4TradeWrapper(
         @Getter double takeProfit,
         @Getter double closePrice,
         @Getter double profit
-) implements ImportedTradeWrapper<MetaTrader4TradeWrapper> {
+) implements ImportedWrapper<MetaTrader4TradeWrapper> {
 
     /**
      * Merges 2 {@link MetaTrader4TradeWrapper}s

@@ -26,7 +26,9 @@ import com.bluebell.radicle.services.transaction.TransactionService;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -41,7 +43,7 @@ import static com.bluebell.radicle.validation.GenericValidator.validateParameter
  * Service-layer for {@link Account} entities
  *
  * @author Stephen Prizio
- * @version 0.1.7
+ * @version 0.1.8
  */
 @Slf4j
 @Service
@@ -60,6 +62,9 @@ public class AccountService {
 
     @Resource(name = "transactionService")
     private TransactionService transactionService;
+
+    @Value("${bluebell.stale.account.lookback}")
+    private long lookbackPeriod;
 
 
     //  METHODS
@@ -217,6 +222,32 @@ public class AccountService {
             LOGGER.error(e.getMessage(), e);
             return false;
         }
+    }
+
+
+    /**
+     * Marks stale {@link Account}s as inactive. A stale account is one that has not been traded on within the lookback period.
+     * The default period is 1 year.
+     *
+     * @return count of accounts changed
+     */
+    @Transactional
+    public int invalidateStaleAccounts() {
+
+        int count = 0;
+        final LocalDateTime lookbackTime = LocalDateTime.now().minusSeconds(this.lookbackPeriod);
+        final List<Account> accounts = this.accountRepository.findAccountsWhereLastTimeTradedIsBeyondLookback(lookbackTime);
+
+        if (CollectionUtils.isNotEmpty(accounts)) {
+            for (final Account account : accounts) {
+                account.setActive(false);
+                account.setDefaultAccount(false);
+                this.accountRepository.save(account);
+                count += 1;
+            }
+        }
+
+        return count;
     }
 
 

@@ -98,11 +98,6 @@
         <option name="INCLUDE" value="false" />
       </pattern>
       <pattern>
-        <option name="PATTERN" value="com.bluebell.radicle.importing.models.*" />
-        <option name="ENABLED" value="true" />
-        <option name="INCLUDE" value="false" />
-      </pattern>
-      <pattern>
         <option name="PATTERN" value="com.bluebell.radicle.integration.exceptions.*" />
         <option name="ENABLED" value="true" />
         <option name="INCLUDE" value="false" />
@@ -111,6 +106,10 @@
         <option name="PATTERN" value="com.bluebell.radicle.integration.models.*" />
         <option name="ENABLED" value="true" />
         <option name="INCLUDE" value="false" />
+      </pattern>
+      <pattern>
+        <option name="PATTERN" value="com.bluebell.radicle.importing.models.*" />
+        <option name="ENABLED" value="true" />
       </pattern>
     </extension>
     <extension name="net.ashald.envfile">
