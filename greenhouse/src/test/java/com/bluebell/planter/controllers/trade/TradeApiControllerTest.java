@@ -32,6 +32,7 @@ import org.springframework.web.context.WebApplicationContext;
 import java.util.List;
 import java.util.Optional;
 
+import static com.bluebell.planter.constants.ApiPaths.Trade.*;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.is;
 import static org.mockito.ArgumentMatchers.any;
@@ -44,7 +45,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  * Testing class for {@link TradeApiController}
  *
  * @author Stephen Prizio
- * @version 0.1.6
+ * @version 0.1.9
  */
 @SpringBootTest
 @AutoConfigureMockMvc(addFilters = false)
@@ -94,7 +95,7 @@ class TradeApiControllerTest extends AbstractPlanterTest {
         map.put("accountNumber", List.of("1234"));
         map.put("tradeType", List.of("BAD"));
 
-        this.mockMvc.perform(get("/api/v1/trade/for-type").with(testUserContext()).params(map))
+        this.mockMvc.perform(get(getApiPath(BASE, GET_FOR_TYPE)).with(testUserContext()).params(map))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.message", containsString("BAD is not a valid trade type")));
     }
@@ -106,7 +107,7 @@ class TradeApiControllerTest extends AbstractPlanterTest {
         map.put("accountNumber", List.of("1234"));
         map.put("tradeType", List.of("BUY"));
 
-        this.mockMvc.perform(get("/api/v1/trade/for-type").with(testUserContext()).params(map))
+        this.mockMvc.perform(get(getApiPath(BASE, GET_FOR_TYPE)).with(testUserContext()).params(map))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.data[0].openPrice", is(13083.41)))
                 .andExpect(jsonPath("$.data[0].closePrice", is(13098.67)))
@@ -124,7 +125,7 @@ class TradeApiControllerTest extends AbstractPlanterTest {
         map.put("start", List.of("dasdfasdfaf"));
         map.put("end", List.of("2022-08-25T00:00:00"));
 
-        this.mockMvc.perform(get("/api/v1/trade/for-interval").with(testUserContext()).params(map))
+        this.mockMvc.perform(get(getApiPath(BASE, GET_FOR_INTERVAL)).with(testUserContext()).params(map))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.message", containsString(ApiConstants.CLIENT_ERROR_DEFAULT_MESSAGE)));
     }
@@ -137,7 +138,7 @@ class TradeApiControllerTest extends AbstractPlanterTest {
         map.put("start", List.of("2022-08-25T00:00:00"));
         map.put("end", List.of("asdadasdasd"));
 
-        this.mockMvc.perform(get("/api/v1/trade/for-interval").with(testUserContext()).params(map))
+        this.mockMvc.perform(get(getApiPath(BASE, GET_FOR_INTERVAL)).with(testUserContext()).params(map))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.message", containsString(ApiConstants.CLIENT_ERROR_DEFAULT_MESSAGE)));
     }
@@ -150,7 +151,7 @@ class TradeApiControllerTest extends AbstractPlanterTest {
         map.put("start", List.of("2022-08-24T00:00:00"));
         map.put("end", List.of("2022-08-25T00:00:00"));
 
-        this.mockMvc.perform(get("/api/v1/trade/for-interval").with(testUserContext()).params(map))
+        this.mockMvc.perform(get(getApiPath(BASE, GET_FOR_INTERVAL)).with(testUserContext()).params(map))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.data[0].openPrice", is(13083.41)))
                 .andExpect(jsonPath("$.data[0].closePrice", is(13098.67)))
@@ -170,7 +171,7 @@ class TradeApiControllerTest extends AbstractPlanterTest {
         map.put("page", List.of("0"));
         map.put("pageSize", List.of("10"));
 
-        this.mockMvc.perform(get("/api/v1/trade/for-interval-paged").with(testUserContext()).params(map))
+        this.mockMvc.perform(get(getApiPath(BASE, GET_FOR_INTERVAL_PAGED)).with(testUserContext()).params(map))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.data.trades[0].openPrice", is(13083.41)))
                 .andExpect(jsonPath("$.data.trades[0].closePrice", is(13098.67)))
@@ -187,7 +188,7 @@ class TradeApiControllerTest extends AbstractPlanterTest {
         map.put("tradeId", List.of("asdasdad"));
         map.put("accountNumber", List.of("1234"));
 
-        this.mockMvc.perform(get("/api/v1/trade/for-trade-id").with(testUserContext()).params(map))
+        this.mockMvc.perform(get(getApiPath(BASE, GET_FOR_TRADE_ID)).with(testUserContext()).params(map))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.message", containsString(ApiConstants.CLIENT_ERROR_DEFAULT_MESSAGE)));
     }
@@ -199,7 +200,7 @@ class TradeApiControllerTest extends AbstractPlanterTest {
         map.put("tradeId", List.of("testId1"));
         map.put("accountNumber", List.of("1234"));
 
-        this.mockMvc.perform(get("/api/v1/trade/for-trade-id").with(testUserContext()).params(map))
+        this.mockMvc.perform(get(getApiPath(BASE, GET_FOR_TRADE_ID)).with(testUserContext()).params(map))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.data.tradeId", is("testId1")));
     }
@@ -215,7 +216,7 @@ class TradeApiControllerTest extends AbstractPlanterTest {
         map.put("accountNumber", List.of("1234"));
         map.put("isStrategy", List.of("false"));
 
-        mockMvc1.perform(MockMvcRequestBuilders.multipart("/api/v1/trade/import-trades").file(TEST_FILE).with(testUserContext()).params(map))
+        mockMvc1.perform(MockMvcRequestBuilders.multipart(getApiPath(BASE, IMPORT_TRADES)).file(TEST_FILE).with(testUserContext()).params(map))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.data", is(true)));
     }

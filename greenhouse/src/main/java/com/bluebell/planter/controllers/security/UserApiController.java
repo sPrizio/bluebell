@@ -1,5 +1,6 @@
 package com.bluebell.planter.controllers.security;
 
+import com.bluebell.planter.constants.ApiPaths;
 import com.bluebell.planter.controllers.AbstractApiController;
 import com.bluebell.planter.converters.security.UserDTOConverter;
 import com.bluebell.planter.converters.transaction.TransactionDTOConverter;
@@ -37,10 +38,10 @@ import java.util.stream.Collectors;
  * API controller for {@link User}
  *
  * @author Stephen Prizio
- * @version 0.1.3
+ * @version 0.1.9
  */
 @RestController
-@RequestMapping("${bluebell.base.api.controller.endpoint}/user")
+@RequestMapping("${bluebell.base.api.controller.endpoint}" + ApiPaths.User.BASE)
 @Tag(name = "User", description = "Handles endpoints & operations related to user information.")
 @CrossOrigin(origins = "*", methods = {RequestMethod.GET, RequestMethod.DELETE, RequestMethod.POST, RequestMethod.PUT})
 public class UserApiController extends AbstractApiController {
@@ -93,7 +94,7 @@ public class UserApiController extends AbstractApiController {
                     schema = @Schema(implementation = StandardJsonResponse.class, example = "The API token was invalid.")
             )
     )
-    @GetMapping("/get")
+    @GetMapping(ApiPaths.User.GET)
     public StandardJsonResponse<UserDTO> getUser(
             @Parameter(name = "Username", description = "User's username", example = "test.test")
             final @RequestParam("username") String username,
@@ -128,7 +129,7 @@ public class UserApiController extends AbstractApiController {
                     schema = @Schema(implementation = StandardJsonResponse.class, example = "The API token was invalid.")
             )
     )
-    @GetMapping("/country-codes")
+    @GetMapping(ApiPaths.User.COUNTRY_CODES)
     public StandardJsonResponse<TreeSet<String>> getCountryCodes() {
         return StandardJsonResponse
                 .<TreeSet<String>>builder()
@@ -160,7 +161,7 @@ public class UserApiController extends AbstractApiController {
                     schema = @Schema(implementation = StandardJsonResponse.class, example = "The API token was invalid.")
             )
     )
-    @GetMapping("/phone-types")
+    @GetMapping(ApiPaths.User.PHONE_TYPES)
     public StandardJsonResponse<PhoneType[]> getPhoneTypes() {
         return StandardJsonResponse
                 .<PhoneType[]>builder()
@@ -192,7 +193,7 @@ public class UserApiController extends AbstractApiController {
                     schema = @Schema(implementation = StandardJsonResponse.class, example = "The API token was invalid.")
             )
     )
-    @GetMapping("/currencies")
+    @GetMapping(ApiPaths.User.CURRENCIES)
     public StandardJsonResponse<TreeSet<String>> getCurrencies() {
         return StandardJsonResponse
                 .<TreeSet<String>>builder()
@@ -224,7 +225,7 @@ public class UserApiController extends AbstractApiController {
                     schema = @Schema(implementation = StandardJsonResponse.class, example = "The API token was invalid.")
             )
     )
-    @GetMapping("/countries")
+    @GetMapping(ApiPaths.User.COUNTRIES)
     public StandardJsonResponse<Country[]> getCountries() {
         return StandardJsonResponse
                 .<Country[]>builder()
@@ -256,7 +257,7 @@ public class UserApiController extends AbstractApiController {
                     schema = @Schema(implementation = StandardJsonResponse.class, example = "The API token was invalid.")
             )
     )
-    @GetMapping("/languages")
+    @GetMapping(ApiPaths.User.LANGUAGES)
     public StandardJsonResponse<Language[]> getLanguages() {
         return StandardJsonResponse
                 .<Language[]>builder()
@@ -289,7 +290,7 @@ public class UserApiController extends AbstractApiController {
                     schema = @Schema(implementation = StandardJsonResponse.class, example = "The API token was invalid.")
             )
     )
-    @GetMapping("/recent-transactions")
+    @GetMapping(ApiPaths.User.RECENT_TRANSACTIONS)
     public StandardJsonResponse<List<TransactionDTO>> getRecentTransactions(final HttpServletRequest request) {
         final User user = (User) request.getAttribute(SecurityConstants.USER_REQUEST_KEY);
         return StandardJsonResponse
@@ -317,7 +318,7 @@ public class UserApiController extends AbstractApiController {
                     schema = @Schema(implementation = StandardJsonResponse.class)
             )
     )
-    @PostMapping("/create")
+    @PostMapping(ApiPaths.User.CREATE)
     public StandardJsonResponse<UserDTO> postCreateUser(
             @Parameter(name = "User Payload", description = "Request body for creating and updating users")
             final @RequestBody CreateUpdateUserDTO data
@@ -369,7 +370,7 @@ public class UserApiController extends AbstractApiController {
                     schema = @Schema(implementation = StandardJsonResponse.class, example = "The API token was invalid.")
             )
     )
-    @PutMapping("/update")
+    @PutMapping(ApiPaths.User.UPDATE)
     public StandardJsonResponse<UserDTO> putUpdateUser(
             @Parameter(name = "User Payload", description = "Request body for creating and updating users")
             final @RequestBody CreateUpdateUserDTO data,

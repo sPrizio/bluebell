@@ -15,6 +15,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.annotation.Resource;
 import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Profile;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
@@ -30,11 +31,12 @@ import java.util.*;
  * Generates testing {@link MarketNews}
  *
  * @author Stephen Prizio
- * @version 0.1.2
+ * @version 0.1.9
  */
 @Component
 @Order(6)
 @Profile("dev")
+@ConditionalOnProperty(name = "bluebell.cmdlr.market.data", havingValue = "true", matchIfMissing = true)
 public class MarketNewsRunner extends AbstractRunner implements CommandLineRunner {
 
     final ObjectMapper objectMapper = new ObjectMapper();

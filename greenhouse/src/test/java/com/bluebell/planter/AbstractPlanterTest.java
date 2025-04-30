@@ -24,6 +24,8 @@ import com.bluebell.platform.models.core.nonentities.records.traderecord.TradeRe
 import com.bluebell.platform.models.core.nonentities.records.traderecord.TradeRecordEquityPoint;
 import com.bluebell.platform.models.core.nonentities.records.traderecord.TradeRecordReport;
 import com.bluebell.radicle.security.constants.SecurityConstants;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.web.servlet.request.RequestPostProcessor;
 
 import java.time.LocalDate;
@@ -35,9 +37,16 @@ import java.util.List;
  * Parent-level testing class to provide testing assistance for planter
  *
  * @author Stephen Prizio
- * @version 0.1.3
+ * @version 0.1.9
  */
+@SpringBootTest
 public abstract class AbstractPlanterTest extends AbstractGenericTest {
+
+    @Value("${bluebell.base.api.controller.endpoint}")
+    private String baseApiDomain;
+
+
+    //  METHODS
 
     /**
      * Generates a test {@link AccountDetails}
@@ -236,5 +245,19 @@ public abstract class AbstractPlanterTest extends AbstractGenericTest {
                 .balance(1000.0)
                 .active(true)
                 .build();
+    }
+
+
+    //  HELPERS
+
+    /**
+     * Returns the api path for controller unit tests
+     *
+     * @param base controller based path
+     * @param suffix endpoint path
+     * @return full api path for testing
+     */
+    protected String getApiPath(final String base, final String suffix) {
+        return String.format("%s/%s/%s", this.baseApiDomain, base, suffix);
     }
 }

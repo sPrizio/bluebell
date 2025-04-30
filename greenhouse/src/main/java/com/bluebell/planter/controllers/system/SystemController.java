@@ -1,5 +1,6 @@
 package com.bluebell.planter.controllers.system;
 
+import com.bluebell.planter.constants.ApiPaths;
 import com.bluebell.planter.controllers.AbstractApiController;
 import com.bluebell.platform.enums.security.UserRole;
 import com.bluebell.platform.models.api.dto.system.HealthCheckDTO;
@@ -26,10 +27,10 @@ import static com.bluebell.radicle.validation.GenericValidator.validateJsonInteg
  * Controller to handle system functions
  *
  * @author Stephen Prizio
- * @version 0.1.6
+ * @version 0.1.9
  */
 @RestController
-@RequestMapping("${bluebell.base.api.controller.endpoint}/system")
+@RequestMapping("${bluebell.base.api.controller.endpoint}" + ApiPaths.System.BASE)
 @Tag(name = "System", description = "Handles endpoints & operations related to the bluebell system.")
 @CrossOrigin(origins = "*", methods = {RequestMethod.GET, RequestMethod.DELETE, RequestMethod.POST, RequestMethod.PUT})
 public class SystemController extends AbstractApiController {
@@ -69,7 +70,7 @@ public class SystemController extends AbstractApiController {
                     schema = @Schema(implementation = StandardJsonResponse.class)
             )
     )
-    @GetMapping("/healthcheck")
+    @GetMapping(ApiPaths.System.HEALTHCHECK)
     public StandardJsonResponse<HealthCheckDTO> getHealthCheck() {
         return StandardJsonResponse
                 .<HealthCheckDTO>builder()
@@ -112,7 +113,7 @@ public class SystemController extends AbstractApiController {
                     schema = @Schema(implementation = StandardJsonResponse.class)
             )
     )
-    @PostMapping("/contact")
+    @PostMapping(ApiPaths.System.CONTACT)
     public StandardJsonResponse<String> postContact(final @RequestBody Map<String, Object> data) {
         validateJsonIntegrity(data, List.of("contact"), "json did not contain of the required keys : %s", List.of("contact").toString());
         return StandardJsonResponse
@@ -145,7 +146,7 @@ public class SystemController extends AbstractApiController {
                     schema = @Schema(implementation = StandardJsonResponse.class)
             )
     )
-    @PostMapping("/report")
+    @PostMapping(ApiPaths.System.REPORT)
     public StandardJsonResponse<String> postReport(final @RequestBody Map<String, Object> data) {
         validateJsonIntegrity(data, List.of("report"), "json did not contain of the required keys : %s", List.of("report").toString());
         return StandardJsonResponse
@@ -188,7 +189,7 @@ public class SystemController extends AbstractApiController {
                     schema = @Schema(implementation = StandardJsonResponse.class, example = "The API token was invalid.")
             )
     )
-    @PostMapping("/acknowledge")
+    @PostMapping(ApiPaths.System.ACKNOWLEDGE)
     public StandardJsonResponse<Boolean> postAcknowledgeIncomingPing(
             @Parameter(name = "System Name", description = "The system doing the pinging")
             final @RequestParam("systemName") String systemName,

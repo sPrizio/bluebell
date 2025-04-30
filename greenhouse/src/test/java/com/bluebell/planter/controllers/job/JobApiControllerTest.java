@@ -20,6 +20,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import java.util.List;
 import java.util.Optional;
 
+import static com.bluebell.planter.constants.ApiPaths.Job.*;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.is;
 import static org.mockito.ArgumentMatchers.any;
@@ -32,7 +33,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  * Testing class for {@link JobApiController}
  *
  * @author Stephen Prizio
- * @version 0.1.3
+ * @version 0.1.9
  */
 @SpringBootTest
 @AutoConfigureMockMvc(addFilters = false)
@@ -63,14 +64,14 @@ class JobApiControllerTest extends AbstractPlanterTest {
 
     @Test
     void test_getJobForJobId_badId() throws Exception {
-        this.mockMvc.perform(get("/api/v1/job/get-by-id").queryParam("jobId", "5678"))
+        this.mockMvc.perform(get(getApiPath(BASE, GET_BY_ID)).queryParam("jobId", "5678"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.message", containsString("Job not found for job id : 5678")));
     }
 
     @Test
     void test_getJobForJobId_success() throws Exception {
-        this.mockMvc.perform(get("/api/v1/job/get-by-id").queryParam("jobId", "1234"))
+        this.mockMvc.perform(get(getApiPath(BASE, GET_BY_ID)).queryParam("jobId", "1234"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.success", is(true)))
                 .andExpect(jsonPath("$.data.name", is("Test Job")));
@@ -81,7 +82,7 @@ class JobApiControllerTest extends AbstractPlanterTest {
 
     @Test
     void test_getJobsWithinIntervalByStatusPaged_badParams() throws Exception {
-        this.mockMvc.perform(get("/api/v1/job/get-status-paged")
+        this.mockMvc.perform(get(getApiPath(BASE, GET_STATUS_PAGED))
                         .queryParam("start", "adasdasdasd")
                         .queryParam("end", "2025-01-01")
                         .queryParam("jobStatus", "COMPLETED")
@@ -89,7 +90,7 @@ class JobApiControllerTest extends AbstractPlanterTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.message", containsString(ApiConstants.CLIENT_ERROR_DEFAULT_MESSAGE)));
 
-        this.mockMvc.perform(get("/api/v1/job/get-status-paged")
+        this.mockMvc.perform(get(getApiPath(BASE, GET_STATUS_PAGED))
                         .queryParam("start", "2025-01-01")
                         .queryParam("end", "adasdasdasd")
                         .queryParam("jobStatus", "COMPLETED")
@@ -100,7 +101,7 @@ class JobApiControllerTest extends AbstractPlanterTest {
 
     @Test
     void test_getJobsWithinIntervalByStatusPaged_success() throws Exception {
-        this.mockMvc.perform(get("/api/v1/job/get-status-paged")
+        this.mockMvc.perform(get(getApiPath(BASE, GET_STATUS_PAGED))
                         .queryParam("start", "2025-01-01")
                         .queryParam("end", "2025-02-02")
                         .queryParam("jobStatus", "COMPLETED")
@@ -115,7 +116,7 @@ class JobApiControllerTest extends AbstractPlanterTest {
 
     @Test
     void test_getJobsWithinIntervalByTypePaged_badParams() throws Exception {
-        this.mockMvc.perform(get("/api/v1/job/get-type-paged")
+        this.mockMvc.perform(get(getApiPath(BASE, GET_TYPE_PAGED))
                         .queryParam("start", "adasdasdasd")
                         .queryParam("end", "2025-01-01")
                         .queryParam("jobType", "COMPLETED")
@@ -123,7 +124,7 @@ class JobApiControllerTest extends AbstractPlanterTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.message", containsString(ApiConstants.CLIENT_ERROR_DEFAULT_MESSAGE)));
 
-        this.mockMvc.perform(get("/api/v1/job/get-type-paged")
+        this.mockMvc.perform(get(getApiPath(BASE, GET_TYPE_PAGED))
                         .queryParam("start", "2025-01-01")
                         .queryParam("end", "adasdasdasd")
                         .queryParam("jobType", "COMPLETED")
@@ -134,7 +135,7 @@ class JobApiControllerTest extends AbstractPlanterTest {
 
     @Test
     void test_getJobsWithinIntervalByTypePaged_success() throws Exception {
-        this.mockMvc.perform(get("/api/v1/job/get-type-paged")
+        this.mockMvc.perform(get(getApiPath(BASE, GET_TYPE_PAGED))
                         .queryParam("start", "2025-01-01")
                         .queryParam("end", "2025-02-02")
                         .queryParam("jobStatus", "COMPLETED")
@@ -149,7 +150,7 @@ class JobApiControllerTest extends AbstractPlanterTest {
 
     @Test
     void test_getJobsWithinIntervalByStatusAndTypePaged_badParams() throws Exception {
-        this.mockMvc.perform(get("/api/v1/job/get-status-type-paged")
+        this.mockMvc.perform(get(getApiPath(BASE, GET_STATUS_TYPE_PAGED))
                         .queryParam("start", "adasdasdasd")
                         .queryParam("end", "2025-01-01")
                         .queryParam("jobStatus", "COMPLETED")
@@ -158,7 +159,7 @@ class JobApiControllerTest extends AbstractPlanterTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.message", containsString(ApiConstants.CLIENT_ERROR_DEFAULT_MESSAGE)));
 
-        this.mockMvc.perform(get("/api/v1/job/get-status-type-paged")
+        this.mockMvc.perform(get(getApiPath(BASE, GET_STATUS_TYPE_PAGED))
                         .queryParam("start", "2025-01-01")
                         .queryParam("end", "adasdasdasd")
                         .queryParam("jobStatus", "COMPLETED")
@@ -170,7 +171,7 @@ class JobApiControllerTest extends AbstractPlanterTest {
 
     @Test
     void test_getJobsWithinIntervalByStatusAndTypePaged_success() throws Exception {
-        this.mockMvc.perform(get("/api/v1/job/get-status-type-paged")
+        this.mockMvc.perform(get(getApiPath(BASE, GET_STATUS_TYPE_PAGED))
                         .queryParam("start", "2025-01-01")
                         .queryParam("end", "2025-02-02")
                         .queryParam("jobStatus", "COMPLETED")

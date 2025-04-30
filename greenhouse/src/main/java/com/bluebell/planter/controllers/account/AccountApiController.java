@@ -1,5 +1,6 @@
 package com.bluebell.planter.controllers.account;
 
+import com.bluebell.planter.constants.ApiPaths;
 import com.bluebell.planter.controllers.AbstractApiController;
 import com.bluebell.planter.converters.account.AccountDTOConverter;
 import com.bluebell.platform.enums.account.AccountType;
@@ -39,10 +40,10 @@ import java.util.Optional;
  * API Controller for {@link Account}
  *
  * @author Stephen Prizio
- * @version 0.1.7
+ * @version 0.1.9
  */
 @RestController
-@RequestMapping("${bluebell.base.api.controller.endpoint}/account")
+@RequestMapping("${bluebell.base.api.controller.endpoint}" + ApiPaths.Account.BASE)
 @Tag(name = "Account", description = "Handles endpoints & operations related to a user's account")
 @CrossOrigin(origins = "*", methods = {RequestMethod.GET, RequestMethod.DELETE, RequestMethod.POST, RequestMethod.PUT})
 public class AccountApiController extends AbstractApiController {
@@ -91,7 +92,7 @@ public class AccountApiController extends AbstractApiController {
                     schema = @Schema(implementation = StandardJsonResponse.class, example = "The API token was invalid.")
             )
     )
-    @GetMapping("/currencies")
+    @GetMapping(ApiPaths.Account.CURRENCIES)
     public StandardJsonResponse<List<PairEntry>> getCurrencies(final HttpServletRequest request) {
         return StandardJsonResponse
                 .<List<PairEntry>>builder()
@@ -124,7 +125,7 @@ public class AccountApiController extends AbstractApiController {
                     schema = @Schema(implementation = StandardJsonResponse.class, example = "The API token was invalid.")
             )
     )
-    @GetMapping("/account-types")
+    @GetMapping(ApiPaths.Account.ACCOUNT_TYPES)
     public StandardJsonResponse<List<PairEntry>> getAccountTypes(final HttpServletRequest request) {
         return StandardJsonResponse
                 .<List<PairEntry>>builder()
@@ -157,7 +158,7 @@ public class AccountApiController extends AbstractApiController {
                     schema = @Schema(implementation = StandardJsonResponse.class, example = "The API token was invalid.")
             )
     )
-    @GetMapping("/brokers")
+    @GetMapping(ApiPaths.Account.BROKERS)
     public StandardJsonResponse<List<PairEntry>> getBrokers(final HttpServletRequest request) {
         return StandardJsonResponse.
                 <List<PairEntry>>builder()
@@ -190,7 +191,7 @@ public class AccountApiController extends AbstractApiController {
                     schema = @Schema(implementation = StandardJsonResponse.class, example = "The API token was invalid.")
             )
     )
-    @GetMapping("/trade-platforms")
+    @GetMapping(ApiPaths.Account.TRADE_PLATFORMS)
     public StandardJsonResponse<List<PairEntry>> getTradePlatforms(final HttpServletRequest request) {
         return StandardJsonResponse
                 .<List<PairEntry>>builder()
@@ -232,7 +233,7 @@ public class AccountApiController extends AbstractApiController {
                     schema = @Schema(implementation = StandardJsonResponse.class, example = "The API token was invalid.")
             )
     )
-    @GetMapping("/get-details")
+    @GetMapping(ApiPaths.Account.GET_DETAILS)
     public StandardJsonResponse<AccountDetails> getDetails(
             @Parameter(name = "Account Number", description = "The unique identifier for your trading account", example = "1234")
             final @RequestParam("accountNumber") Long accountNumber,
@@ -281,7 +282,7 @@ public class AccountApiController extends AbstractApiController {
                     schema = @Schema(implementation = StandardJsonResponse.class, example = "The API token was invalid.")
             )
     )
-    @PostMapping("/create-account")
+    @PostMapping(ApiPaths.Account.CREATE_ACCOUNT)
     public StandardJsonResponse<AccountDTO> postCreateNewAccount(
             @Parameter(name = "Account Payload", description = "Payload for creating or updating accounts")
             final @RequestBody CreateUpdateAccountDTO data,
@@ -335,7 +336,7 @@ public class AccountApiController extends AbstractApiController {
                     schema = @Schema(implementation = StandardJsonResponse.class, example = "The API token was invalid.")
             )
     )
-    @PostMapping("/update-trade-data")
+    @PostMapping(ApiPaths.Account.UPDATE_TRADE_DATA)
     public StandardJsonResponse<Boolean> postUpdateAccountTradingData(
             @Parameter(name = "Trading Data Payload", description = "Payload for creating or updating account trading data")
             final @RequestBody CreateUpdateAccountTradingDataDTO data,
@@ -395,7 +396,7 @@ public class AccountApiController extends AbstractApiController {
                     schema = @Schema(implementation = StandardJsonResponse.class, example = "The API token was invalid.")
             )
     )
-    @PutMapping("/update-account")
+    @PutMapping(ApiPaths.Account.UPDATE_ACCOUNT)
     public StandardJsonResponse<AccountDTO> putUpdateAccount(
             @Parameter(name = "Account Number", description = "The unique identifier for your trading account", example = "1234")
             final @RequestParam("accountNumber") long accountNumber,
@@ -462,7 +463,7 @@ public class AccountApiController extends AbstractApiController {
                     schema = @Schema(implementation = StandardJsonResponse.class, example = "The API token was invalid.")
             )
     )
-    @DeleteMapping("/delete-account")
+    @DeleteMapping(ApiPaths.Account.DELETE_ACCOUNT)
     public StandardJsonResponse<Boolean> deleteAccount(
             @Parameter(name = "Account Number", description = "The unique identifier for your trading account", example = "1234")
             final @RequestParam("accountNumber") long accountNumber,

@@ -1,5 +1,6 @@
 package com.bluebell.planter.controllers.trade;
 
+import com.bluebell.planter.constants.ApiPaths;
 import com.bluebell.planter.controllers.AbstractApiController;
 import com.bluebell.platform.constants.CorePlatformConstants;
 import com.bluebell.platform.enums.GenericEnum;
@@ -32,10 +33,10 @@ import java.util.List;
  * Api controller for {@link TradeRecord}
  *
  * @author Stephen Prizio
- * @version 0.1.3
+ * @version 0.1.9
  */
 @RestController
-@RequestMapping("${bluebell.base.api.controller.endpoint}/trade-record")
+@RequestMapping("${bluebell.base.api.controller.endpoint}" + ApiPaths.TradeRecord.BASE)
 @Tag(name = "Trade Record", description = "Handles endpoints & operations related to trade records.")
 @CrossOrigin(origins = "*", methods = {RequestMethod.GET, RequestMethod.DELETE, RequestMethod.POST, RequestMethod.PUT})
 public class TradeRecordApiController extends AbstractApiController {
@@ -102,7 +103,7 @@ public class TradeRecordApiController extends AbstractApiController {
                     schema = @Schema(implementation = StandardJsonResponse.class, example = "The API token was invalid.")
             )
     )
-    @GetMapping("/for-interval")
+    @GetMapping(ApiPaths.TradeRecord.GET_FOR_INTERVAL)
     public StandardJsonResponse<TradeRecordReport> getTradeRecordsWithinInterval(
             @Parameter(name = "Account Number", description = "The unique identifier for your trading account", example = "1234")
             final @RequestParam("accountNumber") long accountNumber,
@@ -170,7 +171,7 @@ public class TradeRecordApiController extends AbstractApiController {
                     schema = @Schema(implementation = StandardJsonResponse.class, example = "The API token was invalid.")
             )
     )
-    @GetMapping("/recent")
+    @GetMapping(ApiPaths.TradeRecord.GET_RECENT)
     public StandardJsonResponse<TradeRecordReport> getRecentTradeRecords(
             @Parameter(name = "Account Number", description = "The unique identifier for your trading account", example = "1234")
             final @RequestParam("accountNumber") long accountNumber,
@@ -232,7 +233,7 @@ public class TradeRecordApiController extends AbstractApiController {
                     schema = @Schema(implementation = StandardJsonResponse.class, example = "The API token was invalid.")
             )
     )
-    @GetMapping("/trade-record-controls")
+    @GetMapping(ApiPaths.TradeRecord.GET_TRADE_RECORD_CONTROLS)
     public StandardJsonResponse<TradeRecordControls> getTradeRecordControls(
             @Parameter(name = "Account Number", description = "The unique identifier for your trading account", example = "1234")
             final @RequestParam("accountNumber") long accountNumber,
@@ -310,7 +311,7 @@ public class TradeRecordApiController extends AbstractApiController {
                     schema = @Schema(implementation = StandardJsonResponse.class, example = "The API token was invalid.")
             )
     )
-    @GetMapping("/trade-log")
+    @GetMapping(ApiPaths.TradeRecord.TRADE_LOG)
     public StandardJsonResponse<TradeLog> getTradeLog(
             @Parameter(name = "Start Date", description = "Start date of time period to analyze", example = "2025-01-01")
             final @RequestParam("start") String start,

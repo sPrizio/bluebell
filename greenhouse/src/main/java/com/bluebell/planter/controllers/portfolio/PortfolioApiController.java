@@ -1,5 +1,6 @@
 package com.bluebell.planter.controllers.portfolio;
 
+import com.bluebell.planter.constants.ApiPaths;
 import com.bluebell.planter.controllers.AbstractApiController;
 import com.bluebell.planter.converters.portfolio.PortfolioDTOConverter;
 import com.bluebell.platform.models.api.dto.portfolio.CreateUpdatePortfolioDTO;
@@ -29,10 +30,10 @@ import java.util.Optional;
  * API Controller for {@link PortfolioRecord}
  *
  * @author Stephen Prizio
- * @version 0.1.3
+ * @version 0.1.9
  */
 @RestController
-@RequestMapping("${bluebell.base.api.controller.endpoint}/portfolio")
+@RequestMapping("${bluebell.base.api.controller.endpoint}" + ApiPaths.Portfolio.BASE)
 @Tag(name = "Portfolio", description = "Handles endpoints & operations related to obtaining portfolio information.")
 @CrossOrigin(origins = "*", methods = {RequestMethod.GET, RequestMethod.DELETE, RequestMethod.POST, RequestMethod.PUT})
 public class PortfolioApiController extends AbstractApiController {
@@ -82,7 +83,7 @@ public class PortfolioApiController extends AbstractApiController {
                     schema = @Schema(implementation = StandardJsonResponse.class, example = "The API token was invalid.")
             )
     )
-    @GetMapping("/get")
+    @GetMapping(ApiPaths.Portfolio.GET)
     public StandardJsonResponse<PortfolioDTO> getPortfolioForUid(
             @Parameter(name = "Portfolio UID", description = "The UID for the portfolio", example = "1234")
             final @RequestParam("portfolioUid") String portfolioUid,
@@ -133,7 +134,7 @@ public class PortfolioApiController extends AbstractApiController {
                     schema = @Schema(implementation = StandardJsonResponse.class, example = "The API token was invalid.")
             )
     )
-    @PostMapping("/create-portfolio")
+    @PostMapping(ApiPaths.Portfolio.CREATE_PORTFOLIO)
     public StandardJsonResponse<PortfolioDTO> postCreateNewPortfolio(
             @Parameter(name = "Portfolio Payload", description = "Payload for creating or updating portfolios")
             final @RequestBody CreateUpdatePortfolioDTO data,
@@ -187,7 +188,7 @@ public class PortfolioApiController extends AbstractApiController {
                     schema = @Schema(implementation = StandardJsonResponse.class, example = "The API token was invalid.")
             )
     )
-    @PutMapping("/update-portfolio")
+    @PutMapping(ApiPaths.Portfolio.UPDATE_PORTFOLIO)
     public StandardJsonResponse<PortfolioDTO> putUpdatePortfolio(
             @Parameter(name = "Portfolio Payload", description = "Payload for creating or updating portfolios")
             final @RequestBody CreateUpdatePortfolioDTO data,
@@ -253,7 +254,7 @@ public class PortfolioApiController extends AbstractApiController {
                     schema = @Schema(implementation = StandardJsonResponse.class, example = "The API token was invalid.")
             )
     )
-    @DeleteMapping("/delete-portfolio")
+    @DeleteMapping(ApiPaths.Portfolio.DELETE_PORTFOLIO)
     public StandardJsonResponse<Boolean> deletePortfolio(
             @Parameter(name = "Portfolio UID", description = "Portfolio UID to delete", example = "1234")
             final @RequestParam("portfolioUid") String portfolioUid,

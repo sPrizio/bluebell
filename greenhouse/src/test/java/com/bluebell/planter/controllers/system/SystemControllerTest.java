@@ -1,5 +1,6 @@
 package com.bluebell.planter.controllers.system;
 
+import com.bluebell.planter.AbstractPlanterTest;
 import com.bluebell.planter.constants.ApiConstants;
 import com.bluebell.radicle.services.system.IncomingPingService;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -21,6 +22,7 @@ import org.springframework.util.MultiValueMap;
 import java.util.List;
 import java.util.Map;
 
+import static com.bluebell.planter.constants.ApiPaths.System.*;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.is;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -32,12 +34,12 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  * Testing class for {@link SystemController}
  *
  * @author Stephen Prizio
- * @version 0.1.6
+ * @version 0.1.9
  */
 @SpringBootTest
 @AutoConfigureMockMvc(addFilters = false)
 @RunWith(SpringRunner.class)
-class SystemControllerTest {
+class SystemControllerTest extends AbstractPlanterTest {
 
     @Autowired
     private MockMvc mockMvc;
@@ -68,7 +70,7 @@ class SystemControllerTest {
 
     @Test
     void test_getHealthCheck_success() throws Exception {
-        this.mockMvc.perform(get("/api/v1/system/healthcheck"))
+        this.mockMvc.perform(get(getApiPath(BASE, HEALTHCHECK)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.data.domain", is(this.domain)))
                 .andExpect(jsonPath("$.data.baseApiDomain", is(this.baseApiDomain)))
@@ -81,7 +83,7 @@ class SystemControllerTest {
 
     @Test
     void test_postContact_badJsonIntegrity() throws Exception {
-        this.mockMvc.perform(post("/api/v1/system/contact").contentType(MediaType.APPLICATION_JSON).content(new ObjectMapper().writeValueAsString(Map.of("hello", "world"))))
+        this.mockMvc.perform(post(getApiPath(BASE, CONTACT)).contentType(MediaType.APPLICATION_JSON).content(new ObjectMapper().writeValueAsString(Map.of("hello", "world"))))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.message", containsString(ApiConstants.CLIENT_ERROR_DEFAULT_MESSAGE)));
     }
@@ -100,7 +102,7 @@ class SystemControllerTest {
                         )
                 );
 
-        this.mockMvc.perform(post("/api/v1/system/contact").contentType(MediaType.APPLICATION_JSON).content(new ObjectMapper().writeValueAsString(data)))
+        this.mockMvc.perform(post(getApiPath(BASE, CONTACT)).contentType(MediaType.APPLICATION_JSON).content(new ObjectMapper().writeValueAsString(data)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.success", is(true)));
     }
@@ -110,7 +112,7 @@ class SystemControllerTest {
 
     @Test
     void test_postReport_badJsonIntegrity() throws Exception {
-        this.mockMvc.perform(post("/api/v1/system/report").contentType(MediaType.APPLICATION_JSON).content(new ObjectMapper().writeValueAsString(Map.of("hello", "world"))))
+        this.mockMvc.perform(post(getApiPath(BASE, REPORT)).contentType(MediaType.APPLICATION_JSON).content(new ObjectMapper().writeValueAsString(Map.of("hello", "world"))))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.message", containsString(ApiConstants.CLIENT_ERROR_DEFAULT_MESSAGE)));
     }
@@ -129,7 +131,7 @@ class SystemControllerTest {
                         )
                 );
 
-        this.mockMvc.perform(post("/api/v1/system/report").contentType(MediaType.APPLICATION_JSON).content(new ObjectMapper().writeValueAsString(data)))
+        this.mockMvc.perform(post(getApiPath(BASE, REPORT)).contentType(MediaType.APPLICATION_JSON).content(new ObjectMapper().writeValueAsString(data)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.success", is(true)));
     }
@@ -143,7 +145,7 @@ class SystemControllerTest {
         MultiValueMap<String, String> map = new LinkedMultiValueMap<>();
         map.put("systemName", List.of("bad"));
 
-        this.mockMvc.perform(post("/api/v1/system/acknowledge").queryParams(map).contentType(MediaType.APPLICATION_JSON))
+        this.mockMvc.perform(post(getApiPath(BASE, ACKNOWLEDGE)).queryParams(map).contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.success", is(false)));
     }
@@ -154,7 +156,7 @@ class SystemControllerTest {
         MultiValueMap<String, String> map = new LinkedMultiValueMap<>();
         map.put("systemName", List.of("good"));
 
-        this.mockMvc.perform(post("/api/v1/system/acknowledge").queryParams(map).contentType(MediaType.APPLICATION_JSON))
+        this.mockMvc.perform(post(getApiPath(BASE, ACKNOWLEDGE)).queryParams(map).contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.success", is(true)));
     }

@@ -21,6 +21,7 @@ import org.springframework.util.MultiValueMap;
 import java.util.List;
 import java.util.Optional;
 
+import static com.bluebell.planter.constants.ApiPaths.MarketNews.*;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.is;
 import static org.mockito.ArgumentMatchers.any;
@@ -33,7 +34,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  * Testing class for {@link MarketNewsApiController}
  *
  * @author Stephen Prizio
- * @version 0.1.3
+ * @version 0.1.9
  */
 @SpringBootTest
 @AutoConfigureMockMvc(addFilters = false)
@@ -65,7 +66,7 @@ class MarketNewsApiControllerTest extends AbstractPlanterTest {
         MultiValueMap<String, String> map = new LinkedMultiValueMap<>();
         map.put("date", List.of("BAD"));
 
-        this.mockMvc.perform(get("/api/v1/news/get").params(map))
+        this.mockMvc.perform(get(getApiPath(BASE, GET)).params(map))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.message", containsString("Looks like your request could not be processed. Check your inputs and try again!")));
     }
@@ -76,7 +77,7 @@ class MarketNewsApiControllerTest extends AbstractPlanterTest {
         MultiValueMap<String, String> map = new LinkedMultiValueMap<>();
         map.put("date", List.of("2023-01-21"));
 
-        this.mockMvc.perform(get("/api/v1/news/get").params(map))
+        this.mockMvc.perform(get(getApiPath(BASE, GET)).params(map))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.data.date", is("2023-01-19")));
     }
@@ -92,7 +93,7 @@ class MarketNewsApiControllerTest extends AbstractPlanterTest {
         map.put("end", List.of("2023-01-21"));
         map.put("locales", List.of(Country.ALL_COUNTRIES.getIsoCode()));
 
-        this.mockMvc.perform(get("/api/v1/news/get-for-interval").params(map))
+        this.mockMvc.perform(get(getApiPath(BASE, GET_FOR_INTERVAL)).params(map))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.message", containsString("Looks like your request could not be processed. Check your inputs and try again!")));
     }
@@ -105,7 +106,7 @@ class MarketNewsApiControllerTest extends AbstractPlanterTest {
         map.put("end", List.of("2023-01-21"));
         map.put("locales", List.of(Country.ALL_COUNTRIES.getIsoCode()));
 
-        this.mockMvc.perform(get("/api/v1/news/get-for-interval").params(map))
+        this.mockMvc.perform(get(getApiPath(BASE, GET_FOR_INTERVAL)).params(map))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.data[0].date", is("2023-01-19")));
     }
@@ -116,7 +117,7 @@ class MarketNewsApiControllerTest extends AbstractPlanterTest {
     @Test
     void test_postFetchNews_failure() throws Exception {
         Mockito.when(this.marketNewsService.fetchMarketNews()).thenReturn(false);
-        this.mockMvc.perform(post("/api/v1/news/fetch-news").contentType(MediaType.APPLICATION_JSON))
+        this.mockMvc.perform(post(getApiPath(BASE, FETCH_NEWS)).contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.success", is(false)));
     }
@@ -124,7 +125,7 @@ class MarketNewsApiControllerTest extends AbstractPlanterTest {
     @Test
     void test_postFetchNews_success() throws Exception {
         Mockito.when(this.marketNewsService.fetchMarketNews()).thenReturn(true);
-        this.mockMvc.perform(post("/api/v1/news/fetch-news").contentType(MediaType.APPLICATION_JSON))
+        this.mockMvc.perform(post(getApiPath(BASE, FETCH_NEWS)).contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.success", is(true)));
     }

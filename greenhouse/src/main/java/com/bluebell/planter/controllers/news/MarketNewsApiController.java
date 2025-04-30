@@ -1,5 +1,6 @@
 package com.bluebell.planter.controllers.news;
 
+import com.bluebell.planter.constants.ApiPaths;
 import com.bluebell.planter.controllers.AbstractApiController;
 import com.bluebell.planter.converters.news.MarketNewsDTOConverter;
 import com.bluebell.platform.models.api.dto.news.MarketNewsDTO;
@@ -26,10 +27,10 @@ import java.util.Optional;
  * API controller for {@link MarketNews}
  *
  * @author Stephen Prizio
- * @version 0.1.3
+ * @version 0.1.9
  */
 @RestController
-@RequestMapping("${bluebell.base.api.controller.endpoint}/news")
+@RequestMapping("${bluebell.base.api.controller.endpoint}" + ApiPaths.MarketNews.BASE)
 @Tag(name = "Market News", description = "Handles endpoints & operations related to obtaining and fetching market news.")
 @CrossOrigin(origins = "*", methods = {RequestMethod.GET, RequestMethod.DELETE, RequestMethod.POST, RequestMethod.PUT})
 public class MarketNewsApiController extends AbstractApiController {
@@ -87,7 +88,7 @@ public class MarketNewsApiController extends AbstractApiController {
                     schema = @Schema(implementation = StandardJsonResponse.class, example = "The API token was invalid.")
             )
     )
-    @GetMapping("/get")
+    @GetMapping(ApiPaths.MarketNews.GET)
     public StandardJsonResponse<MarketNewsDTO> getNews(
             @Parameter(name = "Date", description = "The date to obtain market news", example = "2025-01-01")
             final @RequestParam("date") String date,
@@ -142,7 +143,7 @@ public class MarketNewsApiController extends AbstractApiController {
                     schema = @Schema(implementation = StandardJsonResponse.class, example = "The API token was invalid.")
             )
     )
-    @GetMapping("/get-for-interval")
+    @GetMapping(ApiPaths.MarketNews.GET_FOR_INTERVAL)
     public StandardJsonResponse<List<MarketNewsDTO>> getNewsForInterval(
             @Parameter(name = "Start Date", description = "Start date of time period to analyze", example = "2025-01-01")
             final @RequestParam("start") String start,
@@ -196,7 +197,7 @@ public class MarketNewsApiController extends AbstractApiController {
                     schema = @Schema(implementation = StandardJsonResponse.class, example = "The API token was invalid.")
             )
     )
-    @PostMapping("/fetch-news")
+    @PostMapping(ApiPaths.MarketNews.FETCH_NEWS)
     public StandardJsonResponse<Boolean> postFetchNews(final HttpServletRequest request) {
 
         final boolean result = this.marketNewsService.fetchMarketNews();

@@ -19,6 +19,8 @@ import org.springframework.util.MultiValueMap;
 
 import java.util.List;
 
+import static com.bluebell.planter.constants.ApiPaths.Chart.APEX_DATA;
+import static com.bluebell.planter.constants.ApiPaths.Chart.BASE;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.is;
 import static org.mockito.ArgumentMatchers.any;
@@ -30,7 +32,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  * Testing class for {@link ChartApiController}
  *
  * @author Stephen Prizio
- * @version 0.1.7
+ * @version 0.1.9
  */
 @SpringBootTest
 @AutoConfigureMockMvc(addFilters = false)
@@ -61,7 +63,7 @@ class ChartApiControllerTest extends AbstractPlanterTest {
         map.put("symbol", List.of("NDX"));
         map.put("dataSource", List.of("METATRADER4"));
 
-        this.mockMvc.perform(get("/api/v1/chart/apex-data").with(testUserContext()).params(map))
+        this.mockMvc.perform(get(getApiPath(BASE, APEX_DATA)).with(testUserContext()).params(map))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.message", containsString(ApiConstants.CLIENT_ERROR_DEFAULT_MESSAGE)));
     }
@@ -76,7 +78,7 @@ class ChartApiControllerTest extends AbstractPlanterTest {
         map.put("symbol", List.of("NDX"));
         map.put("dataSource", List.of("METATRADER4"));
 
-        this.mockMvc.perform(get("/api/v1/chart/apex-data").with(testUserContext()).params(map))
+        this.mockMvc.perform(get(getApiPath(BASE, APEX_DATA)).with(testUserContext()).params(map))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.message", containsString(ApiConstants.CLIENT_ERROR_DEFAULT_MESSAGE)));
     }
@@ -91,7 +93,7 @@ class ChartApiControllerTest extends AbstractPlanterTest {
         map.put("symbol", List.of("NDX%&^$$%^#"));
         map.put("dataSource", List.of("METATRADER4"));
 
-        this.mockMvc.perform(get("/api/v1/chart/apex-data").with(testUserContext()).params(map))
+        this.mockMvc.perform(get(getApiPath(BASE, APEX_DATA)).with(testUserContext()).params(map))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.message", is("Invalid symbol: NDX%&^$$%^#")));
     }
@@ -106,7 +108,7 @@ class ChartApiControllerTest extends AbstractPlanterTest {
         map.put("symbol", List.of("NDX"));
         map.put("dataSource", List.of("BAD"));
 
-        this.mockMvc.perform(get("/api/v1/chart/apex-data").with(testUserContext()).params(map))
+        this.mockMvc.perform(get(getApiPath(BASE, APEX_DATA)).with(testUserContext()).params(map))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.message", is("BAD is not a valid data source")));
     }
@@ -121,7 +123,7 @@ class ChartApiControllerTest extends AbstractPlanterTest {
         map.put("symbol", List.of("NDX"));
         map.put("dataSource", List.of("METATRADER4"));
 
-        this.mockMvc.perform(get("/api/v1/chart/apex-data").with(testUserContext()).params(map))
+        this.mockMvc.perform(get(getApiPath(BASE, APEX_DATA)).with(testUserContext()).params(map))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.data[0].x", is(123)));
     }

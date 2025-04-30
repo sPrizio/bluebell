@@ -23,6 +23,7 @@ import org.springframework.util.MultiValueMap;
 import java.util.Collections;
 import java.util.List;
 
+import static com.bluebell.planter.constants.ApiPaths.TradeRecord.*;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.is;
 import static org.mockito.ArgumentMatchers.any;
@@ -35,7 +36,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  * Testing class for {@link TradeRecordApiController}
  *
  * @author Stephen Prizio
- * @version 0.1.3
+ * @version 0.1.9
  */
 @SpringBootTest
 @AutoConfigureMockMvc(addFilters = false)
@@ -68,7 +69,7 @@ class TradeRecordApiControllerTest extends AbstractPlanterTest {
         map.put("end", List.of("2022-08-25"));
         map.put("interval", List.of("DAILY"));
 
-        this.mockMvc.perform(get("/api/v1/trade-record/for-interval").with(testUserContext()).params(map))
+        this.mockMvc.perform(get(getApiPath(BASE, GET_FOR_INTERVAL)).with(testUserContext()).params(map))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.message", containsString(ApiConstants.CLIENT_ERROR_DEFAULT_MESSAGE)));
     }
@@ -82,7 +83,7 @@ class TradeRecordApiControllerTest extends AbstractPlanterTest {
         map.put("end", List.of("2022-08-05"));
         map.put("interval", List.of("BAD"));
 
-        this.mockMvc.perform(get("/api/v1/trade-record/for-interval").with(testUserContext()).params(map))
+        this.mockMvc.perform(get(getApiPath(BASE, GET_FOR_INTERVAL)).with(testUserContext()).params(map))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.message", containsString("BAD was not a valid interval")));
     }
@@ -96,7 +97,7 @@ class TradeRecordApiControllerTest extends AbstractPlanterTest {
         map.put("end", List.of("2022-08-05"));
         map.put("interval", List.of("DAILY"));
 
-        this.mockMvc.perform(get("/api/v1/trade-record/for-interval").with(testUserContext()).params(map))
+        this.mockMvc.perform(get(getApiPath(BASE, GET_FOR_INTERVAL)).with(testUserContext()).params(map))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.data.tradeRecords[0].points", is(47.36)))
                 .andExpect(jsonPath("$.data.tradeRecords[0].wins", is(9)))
@@ -113,7 +114,7 @@ class TradeRecordApiControllerTest extends AbstractPlanterTest {
         map.put("accountNumber", List.of("1234"));
         map.put("interval", List.of("asdada"));
 
-        this.mockMvc.perform(get("/api/v1/trade-record/recent").with(testUserContext()).params(map))
+        this.mockMvc.perform(get(getApiPath(BASE, GET_RECENT)).with(testUserContext()).params(map))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.message", containsString(String.format(CorePlatformConstants.Validation.DataIntegrity.INVALID_INTERVAL, "asdada"))));
     }
@@ -125,7 +126,7 @@ class TradeRecordApiControllerTest extends AbstractPlanterTest {
         map.put("accountNumber", List.of("1234"));
         map.put("interval", List.of("DAILY"));
 
-        this.mockMvc.perform(get("/api/v1/trade-record/recent").with(testUserContext()).params(map))
+        this.mockMvc.perform(get(getApiPath(BASE, GET_RECENT)).with(testUserContext()).params(map))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.data.tradeRecords[0].points", is(47.36)))
                 .andExpect(jsonPath("$.data.tradeRecords[0].wins", is(9)))
@@ -142,7 +143,7 @@ class TradeRecordApiControllerTest extends AbstractPlanterTest {
         map.put("accountNumber", List.of("1234"));
         map.put("interval", List.of("asdada"));
 
-        this.mockMvc.perform(get("/api/v1/trade-record/trade-record-controls").with(testUserContext()).params(map))
+        this.mockMvc.perform(get(getApiPath(BASE, GET_TRADE_RECORD_CONTROLS)).with(testUserContext()).params(map))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.message", containsString(String.format(CorePlatformConstants.Validation.DataIntegrity.INVALID_INTERVAL, "asdada"))));
     }
@@ -154,7 +155,7 @@ class TradeRecordApiControllerTest extends AbstractPlanterTest {
         map.put("accountNumber", List.of("1234"));
         map.put("interval", List.of("DAILY"));
 
-        this.mockMvc.perform(get("/api/v1/trade-record/trade-record-controls").with(testUserContext()).params(map))
+        this.mockMvc.perform(get(getApiPath(BASE, GET_TRADE_RECORD_CONTROLS)).with(testUserContext()).params(map))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.data.yearEntries[0].year", is("2025")));
     }
@@ -171,7 +172,7 @@ class TradeRecordApiControllerTest extends AbstractPlanterTest {
         map.put("end", List.of("2022-08-25"));
         map.put("interval", List.of("DAILY"));
 
-        this.mockMvc.perform(get("/api/v1/trade-record/trade-log").with(testUserContext()).params(map))
+        this.mockMvc.perform(get(getApiPath(BASE, TRADE_LOG)).with(testUserContext()).params(map))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.message", containsString(ApiConstants.CLIENT_ERROR_DEFAULT_MESSAGE)));
     }
@@ -185,7 +186,7 @@ class TradeRecordApiControllerTest extends AbstractPlanterTest {
         map.put("end", List.of("2022-08-05"));
         map.put("interval", List.of("BAD"));
 
-        this.mockMvc.perform(get("/api/v1/trade-record/trade-log").with(testUserContext()).params(map))
+        this.mockMvc.perform(get(getApiPath(BASE, TRADE_LOG)).with(testUserContext()).params(map))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.message", containsString("BAD was not a valid interval")));
     }
@@ -199,7 +200,7 @@ class TradeRecordApiControllerTest extends AbstractPlanterTest {
         map.put("end", List.of("2022-08-05"));
         map.put("interval", List.of("DAILY"));
 
-        this.mockMvc.perform(get("/api/v1/trade-record/trade-log").with(testUserContext()).params(map))
+        this.mockMvc.perform(get(getApiPath(BASE, TRADE_LOG)).with(testUserContext()).params(map))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.data.entries[0].totals.netPoints", is(89.63)));
     }
