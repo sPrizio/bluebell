@@ -1,4 +1,3 @@
-import configparser
 import csv
 import json
 import logging
@@ -14,28 +13,19 @@ import requests
 from watchdog.events import FileSystemEventHandler
 from watchdog.observers import Observer
 
-BASE_INSTALLATION_DIRECTORY = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
-LOGGING_DIRECTORY = r"{}\mt4_account_trading_data_watcher.log".format(BASE_INSTALLATION_DIRECTORY)
+from mt4.libs.util import get_log_directory, read_config
 
-log_dir = os.path.dirname(LOGGING_DIRECTORY)
-os.makedirs(log_dir, exist_ok=True)
+BASE_INSTALLATION_DIRECTORY = os.path.abspath(os.path.join(os.path.dirname(__file__)))
+LOGGING_DIRECTORY = r"{}\account_data_watcher.log".format(str(get_log_directory()))
 
 logging.basicConfig(filename=LOGGING_DIRECTORY, level=logging.INFO, format="%(asctime)s - %(message)s")
 
-CONFIG_PATH = r"{}\config.ini".format(BASE_INSTALLATION_DIRECTORY)
-config = configparser.ConfigParser()
-config.read(CONFIG_PATH)
+config_values = read_config(BASE_INSTALLATION_DIRECTORY)
 
-WATCH_DIRECTORY = config.get("settings", "watch_directory")
-CLEANUP_THRESHOLD = int(config.get("settings", "cleanup_threshold", fallback="600000"))
-HEARTBEAT_ENDPOINT = config.get("settings", "heartbeat_endpoint")
-HEARTBEAT_INTERVAL = int(config.get("settings", "heartbeat_interval", fallback="60"))
+WATCH_DIRECTORY = config_values["watch_directory"]
 
-API_ENDPOINT = config.get("api", "api_endpoint")
-API_KEY = config.get("api", "api_token")
-HEADERS : dict = {"fp-api_token": API_KEY}
+HEADERS : dict = {"fp-api_token": config_values["api_token"]}
 
-USER = config.get("api", "user")
 
 class TradeType(Enum):
     """Defines a trade type enum"""
@@ -172,20 +162,12 @@ def perform_api_call(req: AccountRequest, file_path: str) -> bool:
     if req is None:
         return False
 
-    # temp
-    temp = AccountRequest(
-        user_identifier=req.user_identifier,
-        account_number=req.account_number,
-        trades=req.trades[:1],
-        transactions=req.transactions[:1]
-    )
-
-    base_dict = asdict(temp)
+    base_dict = asdict(req)
     formatted_dict = dict_keys_to_camel_case(base_dict)
     json_data = json.dumps(formatted_dict, default=str)
 
     HEADERS["Content-Type"] = "application/json"
-    response = requests.post(API_ENDPOINT, headers=HEADERS, data=json_data, timeout=30)
+    response = requests.post(config_values["api_endpoint"], headers=HEADERS, data=json_data, timeout=30)
 
     if response.status_code == 200:
         logging.info(f"Successfully uploaded: {file_path}")
@@ -244,7 +226,7 @@ def read_file(file_path) -> AccountRequest | None:
             rows = [MT4CsvRow.from_csv_row(row) for row in reader]
 
             return AccountRequest(
-                user_identifier=USER,
+                user_identifier=config_values["user"],
                 account_number=account_number,
                 trades=[tr for row in rows if (tr := process_row_as_trade(row)) is not None],
                 transactions=[tx for row in rows if (tx := process_row_as_transaction(row)) is not None],
@@ -302,7 +284,7 @@ def cleanup_files(directory):
         file_path = os.path.join(working_dir, file)
         if os.path.isfile(file_path):
             file_age = now - os.path.getmtime(file_path)
-            if file_age > CLEANUP_THRESHOLD:
+            if file_age > config_values["cleanup_threshold"]:
                 os.remove(file_path)
                 logging.info(f"Cleaned up old file: {os.path.basename(file_path)}")
 

@@ -6,6 +6,7 @@ import com.bluebell.radicle.repositories.system.IncomingPingRepository;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Profile;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
@@ -16,12 +17,13 @@ import java.time.LocalDateTime;
  * Generates mocked incoming ping responses from the middleware systems
  *
  * @author Stephen Prizio
- * @version 0.1.6
+ * @version 0.1.9
  */
 @Slf4j
 @Component
 @Order(10)
 @Profile("dev")
+@ConditionalOnProperty(name = "bluebell.cmdlr.infra.data", havingValue = "true", matchIfMissing = true)
 public class MiddlewareRunner extends AbstractRunner implements CommandLineRunner {
 
     @Resource(name = "incomingPingRepository")

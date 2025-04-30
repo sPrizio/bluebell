@@ -1,4 +1,3 @@
-import configparser
 import logging
 import os
 import re
@@ -8,26 +7,16 @@ import requests
 from watchdog.events import FileSystemEventHandler
 from watchdog.observers import Observer
 
-BASE_INSTALLATION_DIRECTORY = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
-LOGGING_DIRECTORY = r"{}\mt4_data_watcher.log".format(BASE_INSTALLATION_DIRECTORY)
+from mt4.libs.util import get_log_directory, read_config
 
-log_dir = os.path.dirname(LOGGING_DIRECTORY)
-os.makedirs(log_dir, exist_ok=True)
+BASE_INSTALLATION_DIRECTORY = os.path.abspath(os.path.join(os.path.dirname(__file__)))
+LOGGING_DIRECTORY = r"{}\market_price_watcher.log".format(str(get_log_directory()))
 
 logging.basicConfig(filename=LOGGING_DIRECTORY, level=logging.INFO, format="%(asctime)s - %(message)s")
 
-CONFIG_PATH = r"{}\config.ini".format(BASE_INSTALLATION_DIRECTORY)
-config = configparser.ConfigParser()
-config.read(CONFIG_PATH)
+config_values = read_config(BASE_INSTALLATION_DIRECTORY)
 
-WATCH_DIRECTORY = config.get("settings", "watch_directory")
-CLEANUP_THRESHOLD = int(config.get("settings", "cleanup_threshold", fallback="600000"))
-HEARTBEAT_ENDPOINT = config.get("settings", "heartbeat_endpoint")
-HEARTBEAT_INTERVAL = int(config.get("settings", "heartbeat_interval", fallback="60"))
-
-API_ENDPOINT = config.get("api", "api_endpoint")
-API_KEY = config.get("api", "api_token")
-HEADERS = {"fp-api_token": API_KEY}
+WATCH_DIRECTORY = config_values["watch_directory"]
 
 
 class MetaTrader4DataWatcher(FileSystemEventHandler):
@@ -121,7 +110,8 @@ def upload_file(file_path):
 
         with open(file_path, "rb") as file:
             files = {"file": (os.path.basename(file_path), file, "text/csv")}
-            response = requests.post(API_ENDPOINT, headers=HEADERS, params=params, files=files, timeout=30)
+            headers = {"fp-api_token": config_values["api_token"]}
+            response = requests.post(config_values["api_endpoint"], headers=headers, params=params, files=files, timeout=30)
 
             if response.status_code == 200:
                 logging.info(f"Successfully uploaded: {file_path}")
@@ -145,7 +135,7 @@ def cleanup_files(directory):
         file_path = os.path.join(working_dir, file)
         if os.path.isfile(file_path):
             file_age = now - os.path.getmtime(file_path)
-            if file_age > CLEANUP_THRESHOLD:
+            if file_age > config_values["cleanup_threshold"]:
                 os.remove(file_path)
                 logging.info(f"Cleaned up old file: {os.path.basename(file_path)}")
 

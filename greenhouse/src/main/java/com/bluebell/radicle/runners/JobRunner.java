@@ -16,6 +16,7 @@ import com.bluebell.radicle.repositories.job.JobResultRepository;
 import jakarta.annotation.Resource;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Profile;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
@@ -31,11 +32,12 @@ import java.util.Random;
  * Generates testing {@link Job}s
  *
  * @author Stephen Prizio
- * @version 0.1.2
+ * @version 0.1.9
  */
 @Component
 @Order(7)
 @Profile("dev")
+@ConditionalOnProperty(name = "bluebell.cmdlr.infra.data", havingValue = "true", matchIfMissing = true)
 public class JobRunner extends AbstractRunner implements CommandLineRunner {
 
     private static final List<String> WORDS = new ArrayList<>(CorePlatformConstants.RANDOM_WORDS);
@@ -81,7 +83,7 @@ public class JobRunner extends AbstractRunner implements CommandLineRunner {
             final int actionCount = this.random.nextInt(5) + 1;
             final List<JobResultEntry> entries = new ArrayList<>();
             for (int j = 0; j < actionCount; j++) {
-                final Action action = new Action();
+                final Action action = Action.builder().build();
                 boolean success = true;
                 action.setPriority(j + 1);
                 action.setName(getRandomName("Action"));

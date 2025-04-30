@@ -11,6 +11,7 @@ import com.bluebell.radicle.repositories.transaction.TransactionRepository;
 import jakarta.annotation.Resource;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Profile;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
@@ -26,11 +27,12 @@ import java.util.Random;
  * Generates testing {@link Transaction}s
  *
  * @author Stephen Prizio
- * @version 0.1.2
+ * @version 0.1.9
  */
 @Component
 @Order(5)
 @Profile("dev")
+@ConditionalOnProperty(name = "bluebell.cmdlr.trade.data", havingValue = "true", matchIfMissing = true)
 public class TransactionRunner extends AbstractRunner implements CommandLineRunner {
 
     private static final List<String> WORDS = new ArrayList<>(CorePlatformConstants.RANDOM_WORDS);
