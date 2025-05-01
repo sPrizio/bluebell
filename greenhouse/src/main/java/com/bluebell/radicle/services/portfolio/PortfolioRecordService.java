@@ -10,7 +10,7 @@ import com.bluebell.platform.models.core.entities.security.User;
 import com.bluebell.platform.models.core.entities.trade.Trade;
 import com.bluebell.platform.models.core.entities.transaction.Transaction;
 import com.bluebell.platform.models.core.nonentities.account.AccountBalanceHistory;
-import com.bluebell.platform.models.core.nonentities.records.portfolio.PortfolioAccountEquityPoint;
+import com.bluebell.platform.models.core.nonentities.portfolio.PortfolioAccountEquityPoint;
 import com.bluebell.platform.models.core.nonentities.records.portfolio.PortfolioEquityPoint;
 import com.bluebell.platform.models.core.nonentities.records.portfolio.PortfolioRecord;
 import com.bluebell.platform.models.core.nonentities.records.portfolio.PortfolioStatistics;
@@ -225,6 +225,11 @@ public class PortfolioRecordService {
         }
 
         mergedPoints.addAll(new ArrayList<>(mergedMap.values()));
+        mergedPoints.forEach(mp -> {
+            final double port = mp.portfolio();
+            mp.getAccounts().forEach(acc -> acc.setNormalized(this.mathService.wholePercentage(acc.getValue(), port)));
+        });
+
         return new ArrayList<>(mergedPoints.stream().sorted(Comparator.comparing(PortfolioEquityPoint::date)).toList());
     }
 

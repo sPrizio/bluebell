@@ -1,6 +1,7 @@
 package com.bluebell.platform.models.core.nonentities.records.portfolio;
 
 
+import com.bluebell.platform.models.core.nonentities.portfolio.PortfolioAccountEquityPoint;
 import com.bluebell.platform.services.MathService;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
