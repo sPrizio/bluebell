@@ -37,10 +37,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 
 import static com.bluebell.radicle.validation.GenericValidator.validateParameterIsNotNull;
 
@@ -270,11 +267,15 @@ public class AccountService {
         validateParameterIsNotNull(account, CorePlatformConstants.Validation.Account.ACCOUNT_CANNOT_BE_NULL);
         validateParameterIsNotNull(timeInterval, CorePlatformConstants.Validation.System.TIME_INTERVAL_CANNOT_BE_NULL);
 
+        if (!account.isActive() || account.getAccountCloseTime() != null) {
+            return Collections.emptyList();
+        }
+
         double runningBalance = account.getInitialBalance();
         final LocalDate startDate = account.getAccountOpenTime().toLocalDate();
         LocalDate compareStart = startDate;
         LocalDate compareEnd = startDate.plus(timeInterval.getAmount(), timeInterval.getUnit());
-        final LocalDate endDate = account.getLastTraded().plusDays(1).toLocalDate();
+        final LocalDate endDate = LocalDate.now().plusDays(1);
 
 
         final List<AccountBalanceHistory> values = new ArrayList<>();

@@ -208,7 +208,7 @@ public class PortfolioRecordService {
         List<PortfolioEquityPoint> mergedPoints;
         Map<LocalDate, PortfolioEquityPoint> mergedMap = new HashMap<>();
 
-        if (pointsToMerge.size() > computedPoints.size()) {
+        if (pointsToMerge.get(0).date().isBefore(computedPoints.get(0).date())) {
             mergedPoints = new ArrayList<>(pointsToMerge);
             computedPoints.forEach(point -> mergedMap.put(point.date(), point));
         } else {
@@ -220,9 +220,11 @@ public class PortfolioRecordService {
             final PortfolioEquityPoint point = mergedPoints.get(i);
             if (mergedMap.containsKey(point.date())) {
                 mergedPoints.set(i, point.merge(mergedMap.get(point.date())));
+                mergedMap.remove(point.date());
             }
         }
 
+        mergedPoints.addAll(new ArrayList<>(mergedMap.values()));
         return new ArrayList<>(mergedPoints.stream().sorted(Comparator.comparing(PortfolioEquityPoint::date)).toList());
     }
 
