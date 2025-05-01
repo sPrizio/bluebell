@@ -355,3 +355,16 @@ export function formatTimeElapsed(seconds: number): string {
     return Math.floor(seconds / 3600) + 'h ' + Math.floor((seconds % 3600) / 60) + 'm ' + ((seconds % 3600) % 60) + 's'
   }
 }
+
+/**
+ * Logs errors to the logging console
+ *
+ * @param errors errors
+ */
+export function logErrors(...errors: any[]) {
+  errors.forEach((error) => {
+    if (error != null || error) {
+      console.error(error)
+    }
+  })
+}

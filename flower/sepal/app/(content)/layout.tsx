@@ -9,13 +9,14 @@ import AdminPanelLayout from "@/components/ui/admin-panel/admin-panel-layout";
 import {Toaster} from "@/components/ui/toaster";
 import {getUser} from "@/lib/functions/account-functions";
 import {User} from "@/types/apiTypes";
+import {PageInfoProvider} from "@/lib/context/PageInfoProvider";
 
 /**
  * Generic layout for Content pages
  *
  * @param children Content
  * @author Stephen Prizio
- * @version 0.0.2
+ * @version 0.2.0
  */
 export default function ContentPageLayout(
   {
@@ -39,7 +40,7 @@ export default function ContentPageLayout(
   async function getUserInfo() {
 
     setIsLoading(true)
-    const user = await getUser('s.prizio')
+    //const user = await getUser('s.prizio')
     setUser(user)
     setIsLoading(false)
   }
@@ -63,14 +64,15 @@ export default function ContentPageLayout(
       <AdminPanelLayout>
         <ContentLayout title={''}>
           <div className={""}>
-            <PageHeaderSection
+            {/*<PageHeaderSection
               title={pageTitle}
               subtitle={pageSubtitle}
               iconCode={pageIconCode}
               breadcrumbs={breadcrumbs}
-            />
+            />*/}
             <div className={''}>
-              {isLoading ? <p>Loading</p> : children}
+              {/*{isLoading ? <p>Loading</p> : children}*/} {/* TODO: turn this into a global page loader component */}
+              {children} {/* TODO: turn this into a global page loader component */}
             </div>
           </div>
         </ContentLayout>

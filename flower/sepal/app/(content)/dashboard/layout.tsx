@@ -1,5 +1,8 @@
 import React from "react";
 import type {Metadata} from "next";
+import { Icons } from "@/lib/enums";
+import {PageInfoProvider} from "@/lib/context/PageInfoProvider";
+import PageHeaderSection from "@/components/Section/PageHeaderSection";
 
 export const metadata: Metadata = {
   title: "Dashboard - bluebell",
@@ -11,7 +14,7 @@ export const metadata: Metadata = {
  *
  * @param children Content
  * @author Stephen Prizio
- * @version 0.0.1
+ * @version 0.2.0
  */
 export default function DashboardLayout(
   {
@@ -21,8 +24,27 @@ export default function DashboardLayout(
   }>
 ) {
 
+  const pageInfo = {
+    title: "Dashboard",
+    subtitle: "An overview of your trading portfolios",
+    iconCode: Icons.Dashboard,
+    breadcrumbs: [
+      {label: 'Dashboard', href: '/dashboard', active: true},
+    ]
+  }
+
 
   //  RENDER
 
-  return children
+  return (
+    <PageInfoProvider value={pageInfo}>
+      <PageHeaderSection
+        title={pageInfo.title}
+        subtitle={pageInfo.subtitle}
+        iconCode={pageInfo.iconCode}
+        breadcrumbs={pageInfo.breadcrumbs}
+      />
+      {children}
+    </PageInfoProvider>
+  )
 }

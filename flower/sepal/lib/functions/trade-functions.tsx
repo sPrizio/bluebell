@@ -123,35 +123,33 @@ export async function getTradeRecordControls(accNumber: number, interval: string
  * @param interval aggregate interval
  * @param count limit results
  */
-export async function getTradeLog(start: string, end: string, interval: string, count: number): Promise<TradeLog | null> {
+export async function getTradeLog(start: string, end: string, interval: string, count: number): Promise<TradeLog> {
 
   const headers = getAuthHeader()
   headers['Content-Type'] = 'application/json'
 
-  try {
-    const res =
-      await fetch(
-        ApiUrls.TradeRecord.GetTradeLog
-          .replace('{start}', start)
-          .replace('{end}', end)
-          .replace('{interval}', interval)
-          .replace('{count}', count.toString()), {
-          method: 'GET',
-          headers: headers,
-        }
-      )
-
-    if (res.ok) {
-      const data = await res.json()
-      if (data.success) {
-        return data.data
+  const res =
+    await fetch(
+      ApiUrls.TradeRecord.GetTradeLog
+        .replace('{start}', start)
+        .replace('{end}', end)
+        .replace('{interval}', interval)
+        .replace('{count}', count.toString()), {
+        method: 'GET',
+        headers: headers,
       }
-    }
-  } catch (e) {
-    console.log(e)
+    )
+
+  if (!res.ok) {
+    throw new Error(`Failed to get Portfolio with status: ${res.status}`);
   }
 
-  return null;
+  const data = await res.json();
+  if (!data.success) {
+    throw new Error(`API returned with error: ${data.message} || ${JSON.stringify(data)}`);
+  }
+
+  return data.data;
 }
 
 /**

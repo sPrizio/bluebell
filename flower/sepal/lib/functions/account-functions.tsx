@@ -1,12 +1,22 @@
 import {ApiUrls} from "@/lib/constants";
 import {getAuthHeader} from "@/lib/functions/security-functions";
-import { Account, AccountCreationInfo, AccountDetails, AccountType, Broker, Currency, TradePlatform, Transaction, User } from "@/types/apiTypes";
+import {
+  Account,
+  AccountCreationInfo,
+  AccountDetails,
+  AccountType,
+  Broker,
+  Currency,
+  TradePlatform,
+  Transaction,
+  User
+} from "@/types/apiTypes";
 
 /**
  * Searches for an existing username that matches the given value
  *
  * @param username username
- * @param editMode if true, we're editing therefore disregard
+ * @param editMode if true, that means we're editing and should  disregard
  */
 export function hasUsername(username: string, editMode: boolean): boolean {
 
@@ -51,29 +61,27 @@ export function hasEmail(email: string, editMode: boolean): boolean {
  *
  * @param val username
  */
-export async function getUser(val: string): Promise<User | null> {
+export async function getUser(val: string): Promise<User> {
 
   const headers = getAuthHeader()
   headers['Content-Type'] = 'application/json'
 
-  try {
-    const res =
-      await fetch(ApiUrls.User.GetUser.replace('{username}', val), {
-        method: 'GET',
-        headers: headers,
-      })
+  const res =
+    await fetch(ApiUrls.User.GetUser.replace('{username}', val), {
+      method: 'GET',
+      headers: headers,
+    })
 
-    if (res.ok) {
-      const data = await res.json()
-      if (data.success) {
-        return data.data
-      }
-    }
-  } catch (e) {
-    console.log(e)
+  if (!res.ok) {
+    throw new Error(`Failed to get recent transactions with status: ${res.status}`);
   }
 
-  return null;
+  const data = await res.json();
+  if (!data.success) {
+    throw new Error(`API returned with error: ${data.message} || ${JSON.stringify(data)}`);
+  }
+
+  return data.data;
 }
 
 /**
@@ -461,27 +469,25 @@ export async function getAccountDetails(accNumber: number): Promise<AccountDetai
 /**
  * Obtains a list of the recent transactions, this will default to the default account
  */
-export async function getRecentTransactions(): Promise<Array<Transaction> | null> {
+export async function getRecentTransactions(): Promise<Array<Transaction>> {
 
   const headers = getAuthHeader()
   headers['Content-Type'] = 'application/json'
 
-  try {
-    const res =
-      await fetch(ApiUrls.User.GetRecentTransactions, {
-        method: 'GET',
-        headers: headers,
-      })
+  const res =
+    await fetch(ApiUrls.User.GetRecentTransactions, {
+      method: 'GET',
+      headers: headers,
+    })
 
-    if (res.ok) {
-      const data = await res.json()
-      if (data.success) {
-        return data.data
-      }
-    }
-  } catch (e) {
-    console.log(e)
+  if (!res.ok) {
+    throw new Error(`Failed to get recent transactions with status: ${res.status}`);
   }
 
-  return null;
+  const data = await res.json();
+  if (!data.success) {
+    throw new Error(`API returned with error: ${data.message} || ${JSON.stringify(data)}`);
+  }
+
+  return data.data;
 }

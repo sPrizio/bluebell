@@ -46,7 +46,7 @@ export const ApiUrls = {
     FetchNews: getNewsDomain() + '/fetch-news',
   },
   Portfolio: {
-    GetPortfolio: getPortfolioDomain() + '/get'
+    GetPortfolio: getPortfolioDomain() + '/get?portfolioUid={uid}'
   },
   Trade: {
     GetPagedTrades: getTradeDomain() + '/for-interval-paged?accountNumber={accountNumber}&start={start}&end={end}&page={page}&pageSize={pageSize}',

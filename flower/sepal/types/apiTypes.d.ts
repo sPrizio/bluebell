@@ -2,6 +2,11 @@ interface GenericApiType {
   uid: string
 }
 
+interface EnumDisplay {
+  code: string,
+  label: string
+}
+
 interface User extends GenericApiType {
   apiToken: string,
   firstName: string,
@@ -10,7 +15,7 @@ interface User extends GenericApiType {
   email: string,
   dateRegistered: string,
   phones: Array<PhoneNumber>,
-  accounts: Array<Account>,
+  portfolios: Array<Portfolio>,
   roles: Array<string>,
 }
 
@@ -39,6 +44,15 @@ interface PortfolioEquityPoint extends GenericApiType {
 }
 
 interface Portfolio extends GenericApiType {
+  name: string,
+  active: boolean,
+  created: string,
+  defaultPortfolio: boolean,
+  accounts: Array<Account>,
+  user: User,
+}
+
+interface PortfolioRecord extends GenericApiType {
   isNew: boolean,
   netWorth: number
   deltaNetWorth: number,
@@ -72,10 +86,10 @@ interface Account extends GenericApiType {
   active: boolean,
   name: string,
   accountNumber: number,
-  currency: Currency,
-  broker: Broker,
-  accountType: AccountType,
-  tradePlatform: TradePlatform,
+  currency: EnumDisplay,
+  broker: EnumDisplay,
+  accountType: EnumDisplay,
+  tradePlatform: EnumDisplay,
   lastTraded: string,
   transactions: Array<Transaction>
 }
@@ -129,10 +143,11 @@ interface AccountDetails {
 }
 
 interface Transaction extends GenericApiType {
-  date: string,
+  transactionType: EnumDisplay
+  transactionDate: string,
+  name: string
+  transactionStatus: EnumDisplay
   amount: number,
-  type: 'Deposit' | 'Withdrawal'
-  status: 'Pending' | 'Complete' | 'Failed',
   accountNumber: number,
   accountName: string
 }

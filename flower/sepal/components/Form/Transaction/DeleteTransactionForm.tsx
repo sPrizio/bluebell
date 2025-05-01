@@ -15,7 +15,7 @@ import {Account, Transaction} from "@/types/apiTypes";
  * @param account Account
  * @param transaction
  * @author Stephen Prizio
- * @version 0.0.1
+ * @version 0.2.0
  */
 export default function DeleteTransactionForm(
   {
@@ -24,7 +24,7 @@ export default function DeleteTransactionForm(
   }
     : Readonly<{
     account: Account,
-    transaction: Transaction
+    transaction: Transaction | null | undefined
   }>
 ) {
 
