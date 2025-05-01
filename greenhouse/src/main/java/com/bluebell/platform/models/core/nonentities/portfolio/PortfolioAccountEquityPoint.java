@@ -33,5 +33,5 @@ public class PortfolioAccountEquityPoint {
     @Getter
     @Setter
     @Schema(description = "Normalized account value")
-    private int normalized;
+    private double normalized;
 }

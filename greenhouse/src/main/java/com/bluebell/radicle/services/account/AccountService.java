@@ -281,14 +281,15 @@ public class AccountService {
         final List<AccountBalanceHistory> values = new ArrayList<>();
         while (compareStart.isBefore(endDate)) {
             final TradeRecordReport records = this.tradeRecordService.getTradeRecords(compareStart, compareEnd, account, timeInterval, CorePlatformConstants.MAX_RESULT_SIZE);
+            final double percentage = this.mathService.delta(records.tradeRecordTotals().netProfit(), runningBalance);
             runningBalance = this.mathService.add(runningBalance, records.tradeRecordTotals().netProfit());
-            values.add(AccountBalanceHistory.builder().start(compareStart).end(compareEnd).balance(runningBalance).delta(records.tradeRecordTotals().netProfit()).build());
+            values.add(AccountBalanceHistory.builder().start(compareStart).end(compareEnd).balance(runningBalance).normalized(percentage).delta(records.tradeRecordTotals().netProfit()).build());
 
             compareStart = compareStart.plus(timeInterval.getAmount(), timeInterval.getUnit());
             compareEnd = compareEnd.plus(timeInterval.getAmount(), timeInterval.getUnit());
         }
 
-        return values;
+        return values.stream().sorted(Comparator.comparing(AccountBalanceHistory::getStart)).toList();
     }
 
 

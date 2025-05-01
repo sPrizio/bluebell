@@ -190,12 +190,14 @@ public class PortfolioRecordService {
                                 .builder()
                                 .date(hist.start())
                                 .portfolio(hist.balance())
+                                .normalized(hist.normalized())
                                 .accounts(List.of(
                                         PortfolioAccountEquityPoint
                                                 .builder()
                                                 .name(account.getName())
                                                 .value(hist.balance())
                                                 .delta(hist.delta())
+                                                .normalized(hist.normalized())
                                                 .build()
                                 ))
                                 .build())
@@ -224,13 +226,39 @@ public class PortfolioRecordService {
             }
         }
 
-        mergedPoints.addAll(new ArrayList<>(mergedMap.values()));
-        mergedPoints.forEach(mp -> {
-            final double port = mp.portfolio();
-            mp.getAccounts().forEach(acc -> acc.setNormalized(this.mathService.wholePercentage(acc.getValue(), port)));
-        });
+        for (int i = 0; i < mergedPoints.size(); i++) {
+            final PortfolioEquityPoint point = mergedPoints.get(i);
+            if (i == 0) {
+                point.accounts().forEach(acc -> acc.setNormalized(point.normalized()));
+            } else {
+                final PortfolioEquityPoint previousPoint = mergedPoints.get(i - 1);
+                point.accounts().forEach(acc -> acc.setNormalized(computeNormalized(acc, previousPoint.getAccounts(), point.normalized())));
+            }
+        }
 
         return new ArrayList<>(mergedPoints.stream().sorted(Comparator.comparing(PortfolioEquityPoint::date)).toList());
+    }
+
+    /**
+     * Computes the percentage changes for the account equity point
+     *
+     * @param acc {@link PortfolioAccountEquityPoint}
+     * @param accounts {@link List} of {@link PortfolioAccountEquityPoint}
+     * @return percentage
+     */
+    private double computeNormalized(final PortfolioAccountEquityPoint acc, final List<PortfolioAccountEquityPoint> accounts, final double fallback) {
+        double previousTotal = 0.0;
+        for (final PortfolioAccountEquityPoint a : accounts) {
+            if (a.getName().equals(acc.getName())) {
+                previousTotal = a.getValue();
+            }
+        }
+
+        if (previousTotal != 0.0) {
+            return this.mathService.delta(acc.getDelta(), previousTotal);
+        }
+
+        return fallback;
     }
 
     /**

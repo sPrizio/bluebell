@@ -18,5 +18,6 @@ public record AccountBalanceHistory(
         @Getter @Schema(description = "Start of period") LocalDate start,
         @Getter @Schema(description = "End of period") LocalDate end,
         @Getter @Schema(description = "Final balance of period") double balance,
-        @Getter @Schema(description = "Change in balance for period") double delta
+        @Getter @Schema(description = "Change in balance for period") double delta,
+        @Getter @Schema(description = "Delta has a whole percentage") double normalized
 ) { }

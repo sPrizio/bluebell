@@ -25,6 +25,7 @@ import java.util.List;
 public record PortfolioEquityPoint(
         @Getter @Schema(description = "Date of equity view") LocalDate date,
         @Getter @Schema(description = "Amount of equity of the portfolio for the date") double portfolio,
+        @Getter @Schema(description = "Normalized equity of the portfolio for the date") double normalized,
         @Getter @Schema(description = "List of account equity data points for each account in the portfolio") List<PortfolioAccountEquityPoint> accounts
 ) {
 
@@ -43,6 +44,7 @@ public record PortfolioEquityPoint(
                 .builder()
                 .date(this.date)
                 .portfolio(mathService.add(this.portfolio, other.portfolio))
+                .normalized(mathService.weightedAverage(this.normalized, this.portfolio, other.normalized, other.portfolio))
                 .accounts(points)
                 .build();
     }
