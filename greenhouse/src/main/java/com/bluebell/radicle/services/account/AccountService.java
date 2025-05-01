@@ -5,6 +5,7 @@ import com.bluebell.platform.enums.GenericEnum;
 import com.bluebell.platform.enums.account.AccountType;
 import com.bluebell.platform.enums.account.Broker;
 import com.bluebell.platform.enums.account.Currency;
+import com.bluebell.platform.enums.system.TradeRecordTimeInterval;
 import com.bluebell.platform.enums.trade.TradePlatform;
 import com.bluebell.platform.enums.trade.TradeType;
 import com.bluebell.platform.enums.transaction.TransactionStatus;
@@ -15,12 +16,15 @@ import com.bluebell.platform.models.core.entities.account.Account;
 import com.bluebell.platform.models.core.entities.portfolio.Portfolio;
 import com.bluebell.platform.models.core.entities.trade.Trade;
 import com.bluebell.platform.models.core.entities.transaction.Transaction;
+import com.bluebell.platform.models.core.nonentities.account.AccountBalanceHistory;
 import com.bluebell.platform.models.core.nonentities.records.account.AccountDetails;
+import com.bluebell.platform.models.core.nonentities.records.traderecord.TradeRecordReport;
 import com.bluebell.platform.services.MathService;
 import com.bluebell.radicle.exceptions.system.EntityCreationException;
 import com.bluebell.radicle.exceptions.system.EntityModificationException;
 import com.bluebell.radicle.exceptions.validation.MissingRequiredDataException;
 import com.bluebell.radicle.repositories.account.AccountRepository;
+import com.bluebell.radicle.services.trade.TradeRecordService;
 import com.bluebell.radicle.services.trade.TradeService;
 import com.bluebell.radicle.services.transaction.TransactionService;
 import jakarta.annotation.Resource;
@@ -30,8 +34,10 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -43,7 +49,7 @@ import static com.bluebell.radicle.validation.GenericValidator.validateParameter
  * Service-layer for {@link Account} entities
  *
  * @author Stephen Prizio
- * @version 0.1.8
+ * @version 0.2.0
  */
 @Slf4j
 @Service
@@ -56,6 +62,9 @@ public class AccountService {
 
     @Resource(name = "accountDetailsService")
     private AccountDetailsService accountDetailsService;
+
+    @Resource(name = "tradeRecordService")
+    private TradeRecordService tradeRecordService;
 
     @Resource(name = "tradeService")
     private TradeService tradeService;
@@ -248,6 +257,37 @@ public class AccountService {
         }
 
         return count;
+    }
+
+    /**
+     * Generates a {@link List} of {@link AccountBalanceHistory} for the given {@link Account} and {@link TradeRecordTimeInterval}
+     *
+     * @param account      {@link Account}
+     * @param timeInterval {@link TradeRecordTimeInterval}
+     * @return {@link List} of {@link AccountBalanceHistory}
+     */
+    public List<AccountBalanceHistory> generateAccountBalanceHistory(final Account account, final TradeRecordTimeInterval timeInterval) {
+        validateParameterIsNotNull(account, CorePlatformConstants.Validation.Account.ACCOUNT_CANNOT_BE_NULL);
+        validateParameterIsNotNull(timeInterval, CorePlatformConstants.Validation.System.TIME_INTERVAL_CANNOT_BE_NULL);
+
+        double runningBalance = account.getInitialBalance();
+        final LocalDate startDate = account.getAccountOpenTime().toLocalDate();
+        LocalDate compareStart = startDate;
+        LocalDate compareEnd = startDate.plus(timeInterval.getAmount(), timeInterval.getUnit());
+        final LocalDate endDate = account.getLastTraded().plusDays(1).toLocalDate();
+
+
+        final List<AccountBalanceHistory> values = new ArrayList<>();
+        while (compareStart.isBefore(endDate)) {
+            final TradeRecordReport records = this.tradeRecordService.getTradeRecords(compareStart, compareEnd, account, timeInterval, CorePlatformConstants.MAX_RESULT_SIZE);
+            runningBalance = this.mathService.add(runningBalance, records.tradeRecordTotals().netProfit());
+            values.add(AccountBalanceHistory.builder().start(compareStart).end(compareEnd).balance(runningBalance).delta(records.tradeRecordTotals().netProfit()).build());
+
+            compareStart = compareStart.plus(timeInterval.getAmount(), timeInterval.getUnit());
+            compareEnd = compareEnd.plus(timeInterval.getAmount(), timeInterval.getUnit());
+        }
+
+        return values;
     }
 
 

@@ -26,7 +26,7 @@ import java.util.Objects;
  * Generates testing {@link MarketPrice}s
  *
  * @author Stephen Prizio
- * @version 0.1.9
+ * @version 0.2.0
  */
 @Component
 @Order(8)
@@ -60,12 +60,12 @@ public class MarketPriceRunner extends AbstractRunner implements CommandLineRunn
             this.marketPriceService.saveAllSet(this.marketDataIngestionService.ingest(DataSource.METATRADER4, "NDAQ100", getArchive()).getValue2());
             this.marketPriceService.saveAllSet(this.marketDataIngestionService.ingest(DataSource.TRADING_VIEW, "US100", getArchive()).getValue2());
         } else {
-            final FirstRateDataParser firstRateDataParser = new FirstRateDataParser(false, "NDX", this.dataRoot);
-            final MetaTrader4DataParser metaTrader4DataParser = new MetaTrader4DataParser(false, "NDAQ100", this.dataRoot);
-            final TradingViewDataParser tradingViewDataParser = new TradingViewDataParser(false, "US100", this.dataRoot);
+            final FirstRateDataParser firstRateDataParser = new FirstRateDataParser(false, "NDX", getArchive());
+            final MetaTrader4DataParser metaTrader4DataParser = new MetaTrader4DataParser(false, "NDAQ100", getArchive());
+            final TradingViewDataParser tradingViewDataParser = new TradingViewDataParser(false, "US100", getArchive());
 
             this.marketPriceService.saveAll(firstRateDataParser.parseMarketPrices("NDX_5min_sample.csv", MarketPriceTimeInterval.FIVE_MINUTE));
-            this.marketPriceService.saveAll(metaTrader4DataParser.parseMarketPrices("NDAQ10030.csv", MarketPriceTimeInterval.THIRTY_MINUTE));
+            this.marketPriceService.saveAll(metaTrader4DataParser.parseMarketPrices("NDAQ_30MINUTE.csv", MarketPriceTimeInterval.THIRTY_MINUTE));
             this.marketPriceService.saveAll(tradingViewDataParser.parseMarketPrices("CFI_US100-30_8a062.csv", MarketPriceTimeInterval.THIRTY_MINUTE));
         }
 

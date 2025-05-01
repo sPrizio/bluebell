@@ -12,11 +12,12 @@ import lombok.Getter;
  * @param name {@link Account} name
  * @param value {@link Account} value (balance)
  * @author Stephen Prizio
- * @version 0.1.2
+ * @version 0.2.0
  */
 @Builder
 @Schema(title = "PortfolioAccountEquityPoint", name = "PortfolioAccountEquityPoint", description = "A data point of an account's value within a portfolio for a unit of time")
 public record PortfolioAccountEquityPoint(
         @Getter @Schema(description = "Account name") String name,
-        @Getter @Schema(description = "Account value") double value
+        @Getter @Schema(description = "Account value") double value,
+        @Getter @Schema(description = "Account delta") double delta
 ) { }

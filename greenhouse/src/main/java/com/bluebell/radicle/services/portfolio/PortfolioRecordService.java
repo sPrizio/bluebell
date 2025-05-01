@@ -2,18 +2,21 @@ package com.bluebell.radicle.services.portfolio;
 
 import com.bluebell.planter.services.UniqueIdentifierService;
 import com.bluebell.platform.constants.CorePlatformConstants;
+import com.bluebell.platform.enums.system.TradeRecordTimeInterval;
 import com.bluebell.platform.enums.transaction.TransactionType;
 import com.bluebell.platform.models.core.entities.account.Account;
 import com.bluebell.platform.models.core.entities.portfolio.Portfolio;
 import com.bluebell.platform.models.core.entities.security.User;
 import com.bluebell.platform.models.core.entities.trade.Trade;
 import com.bluebell.platform.models.core.entities.transaction.Transaction;
+import com.bluebell.platform.models.core.nonentities.account.AccountBalanceHistory;
 import com.bluebell.platform.models.core.nonentities.records.portfolio.PortfolioAccountEquityPoint;
 import com.bluebell.platform.models.core.nonentities.records.portfolio.PortfolioEquityPoint;
 import com.bluebell.platform.models.core.nonentities.records.portfolio.PortfolioRecord;
 import com.bluebell.platform.models.core.nonentities.records.portfolio.PortfolioStatistics;
 import com.bluebell.platform.services.MathService;
 import com.bluebell.radicle.exceptions.validation.IllegalParameterException;
+import com.bluebell.radicle.services.account.AccountService;
 import jakarta.annotation.Resource;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -24,10 +27,7 @@ import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.temporal.TemporalAdjusters;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
+import java.util.*;
 
 import static com.bluebell.radicle.validation.GenericValidator.validateParameterIsNotNull;
 
@@ -35,12 +35,15 @@ import static com.bluebell.radicle.validation.GenericValidator.validateParameter
  * Service-layer for {@link PortfolioRecord}s
  *
  * @author Stephen Prizio
- * @version 0.1.2
+ * @version 0.2.0
  */
 @Service("portfolioRecordService")
 public class PortfolioRecordService {
 
     private final MathService mathService = new MathService();
+
+    @Resource(name = "accountService")
+    private AccountService accountService;
 
     @Resource(name = "uniqueIdentifierService")
     private UniqueIdentifierService uniqueIdentifierService;
@@ -52,7 +55,7 @@ public class PortfolioRecordService {
      * Obtains the {@link User}'s {@link PortfolioRecord} for the matching portfolio
      *
      * @param portfolioUid portfolio uid
-     * @param user {@link User}
+     * @param user         {@link User}
      * @return {@link PortfolioRecord}
      */
     public PortfolioRecord getSinglePortfolioRecord(final String portfolioUid, final User user) {
@@ -171,6 +174,59 @@ public class PortfolioRecordService {
     }
 
     /**
+     * Merges equity points for the given account
+     *
+     * @param pointsToMerge {@link List} of {@link PortfolioEquityPoint}
+     * @param account {@link Account}
+     * @return updated {@link List} of {@link PortfolioEquityPoint}
+     */
+    private List<PortfolioEquityPoint> mergeEquityPoint(final List<PortfolioEquityPoint> pointsToMerge, final Account account) {
+
+        final List<AccountBalanceHistory> history = this.accountService.generateAccountBalanceHistory(account, TradeRecordTimeInterval.MONTHLY);
+        final List<PortfolioEquityPoint> computedPoints = new ArrayList<>(
+                history
+                        .stream()
+                        .map(hist -> PortfolioEquityPoint
+                                .builder()
+                                .date(hist.start())
+                                .portfolio(hist.balance())
+                                .accounts(List.of(
+                                        PortfolioAccountEquityPoint
+                                                .builder()
+                                                .name(account.getName())
+                                                .value(hist.balance())
+                                                .delta(hist.delta())
+                                                .build()
+                                ))
+                                .build())
+                        .toList());
+
+        if (CollectionUtils.isEmpty(pointsToMerge)) {
+            return computedPoints;
+        }
+
+        List<PortfolioEquityPoint> mergedPoints;
+        Map<LocalDate, PortfolioEquityPoint> mergedMap = new HashMap<>();
+
+        if (pointsToMerge.size() > computedPoints.size()) {
+            mergedPoints = new ArrayList<>(pointsToMerge);
+            computedPoints.forEach(point -> mergedMap.put(point.date(), point));
+        } else {
+            mergedPoints = new ArrayList<>(computedPoints);
+            pointsToMerge.forEach(point -> mergedMap.put(point.date(), point));
+        }
+
+        for (int i = 0; i < mergedPoints.size(); i++) {
+            final PortfolioEquityPoint point = mergedPoints.get(i);
+            if (mergedMap.containsKey(point.date())) {
+                mergedPoints.set(i, point.merge(mergedMap.get(point.date())));
+            }
+        }
+
+        return new ArrayList<>(mergedPoints.stream().sorted(Comparator.comparing(PortfolioEquityPoint::date)).toList());
+    }
+
+    /**
      * Computes a {@link List} of {@link PortfolioEquityPoint}s
      *
      * @param accounts {@link List} of {@link Account}s
@@ -178,38 +234,19 @@ public class PortfolioRecordService {
      */
     private List<PortfolioEquityPoint> computeEquityPoints(final List<Account> accounts) {
 
-        final List<PortfolioEquityPoint> points = new ArrayList<>();
-        final LocalDateTime limit = accounts.stream().map(Account::getLastTraded).max(LocalDateTime::compareTo).orElse(LocalDateTime.now()).with(TemporalAdjusters.firstDayOfNextMonth());
-
-        //  only look at accounts that were last traded within the timespan to reduce number of trades considered
-        final List<Account> relevantAccounts = accounts.stream().filter(acc -> isWithinTimespan(limit.minusMonths(6), limit, acc.getLastTraded())).toList();
-        LocalDateTime compare = limit;
-        double starterBalance = this.mathService.getDouble(accounts.stream().mapToDouble(Account::getBalance).sum());
-
-        while (compare.isAfter(limit.minusMonths(6))) {
-            LocalDateTime start = compare;
-            LocalDateTime end = compare.plusMonths(1);
-
-            final List<PortfolioAccountEquityPoint> accountEquityPoints = new ArrayList<>();
-            for (final Account account : relevantAccounts) {
-                final List<Trade> relevant = account.getTrades().stream().filter(tr -> isWithinTimespan(start, end, tr.getTradeCloseTime())).toList();
-                accountEquityPoints.add(PortfolioAccountEquityPoint.builder().name(account.getName()).value(this.mathService.getDouble(relevant.stream().mapToDouble(Trade::getNetProfit).sum())).build());
-            }
-
-            starterBalance -= this.mathService.getDouble(accountEquityPoints.stream().mapToDouble(PortfolioAccountEquityPoint::value).sum());
-            points.add(PortfolioEquityPoint.builder().date(compare.toLocalDate()).portfolio(starterBalance).accounts(accountEquityPoints).build());
-
-            compare = compare.minusMonths(1);
+        List<PortfolioEquityPoint> points = new ArrayList<>();
+        for (final Account account : accounts) {
+            points = mergeEquityPoint(points, account);
         }
 
-        return points.stream().sorted(Comparator.comparing(PortfolioEquityPoint::date)).toList();
+        return points;
     }
 
     /**
      * Checks that the given {@link LocalDateTime} is contained within the given bounds
      *
-     * @param start start of interval
-     * @param end end of interval
+     * @param start   start of interval
+     * @param end     end of interval
      * @param compare compare date
      * @return true if within the time span, start is inclusive, end is exclusive
      */
