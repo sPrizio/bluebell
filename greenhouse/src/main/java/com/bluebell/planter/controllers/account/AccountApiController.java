@@ -235,7 +235,7 @@ public class AccountApiController extends AbstractApiController {
     )
     @GetMapping(ApiPaths.Account.GET_DETAILS)
     public StandardJsonResponse<AccountDetails> getDetails(
-            @Parameter(name = "Account Number", description = "The unique identifier for your trading account", example = "1234")
+            @Parameter(name = "accountNumber", description = "The unique identifier for your trading account", example = "1234")
             final @RequestParam("accountNumber") Long accountNumber,
             final HttpServletRequest request
     ) {
@@ -398,7 +398,7 @@ public class AccountApiController extends AbstractApiController {
     )
     @PutMapping(ApiPaths.Account.UPDATE_ACCOUNT)
     public StandardJsonResponse<AccountDTO> putUpdateAccount(
-            @Parameter(name = "Account Number", description = "The unique identifier for your trading account", example = "1234")
+            @Parameter(name = "accountNumber", description = "The unique identifier for your trading account", example = "1234")
             final @RequestParam("accountNumber") long accountNumber,
             @Parameter(name = "Account Payload", description = "Payload for creating or updating accounts")
             final @RequestBody CreateUpdateAccountDTO data,

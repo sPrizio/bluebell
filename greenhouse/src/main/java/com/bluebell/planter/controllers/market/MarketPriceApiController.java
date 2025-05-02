@@ -39,7 +39,7 @@ import static com.bluebell.radicle.importing.validation.ImportValidator.validate
  * Api controller for {@link MarketPrice}
  *
  * @author Stephen Prizio
- * @version 0.1.9
+ * @version 0.2.0
  */
 @Slf4j
 @RestController
@@ -108,14 +108,14 @@ public class MarketPriceApiController extends AbstractApiController {
     )
     @PostMapping(ApiPaths.MarketPrice.INGEST)
     public StandardJsonResponse<Boolean> postIngestMarketPriceDataFromMT4(
-            @Parameter(name = "Market Price Symbol", description = "The symbol for the price data")
+            @Parameter(name = "symbol", description = "The symbol for the price data")
             final @RequestParam("symbol") String symbol,
-            @Parameter(name = "Market Price Time Interval", description = "The time interval for the price data")
+            @Parameter(name = "priceInterval", description = "The time interval for the price data")
             final @RequestParam("priceInterval") String priceInterval,
-            @Parameter(name = "Market Price File", description = "The file containing market price data")
+            @Parameter(name = "file", description = "The file containing market price data")
             final @RequestParam("file") MultipartFile file,
             final HttpServletRequest request
-            ) throws IOException {
+    ) throws IOException {
 
         final String[] extensions = {".csv"};
         if (file == null || StringUtils.isEmpty(file.getOriginalFilename())) {

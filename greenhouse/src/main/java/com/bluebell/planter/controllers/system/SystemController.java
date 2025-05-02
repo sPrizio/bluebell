@@ -27,7 +27,7 @@ import static com.bluebell.radicle.validation.GenericValidator.validateJsonInteg
  * Controller to handle system functions
  *
  * @author Stephen Prizio
- * @version 0.1.9
+ * @version 0.2.0
  */
 @RestController
 @RequestMapping("${bluebell.base.api.controller.endpoint}" + ApiPaths.System.BASE)
@@ -57,7 +57,7 @@ public class SystemController extends AbstractApiController {
     //  ----------------- GET REQUESTS -----------------
 
     /**
-     * Returns the applications information and diagnostics
+     * Returns the application's information and diagnostics
      *
      * @return {@link StandardJsonResponse}
      */
@@ -191,7 +191,7 @@ public class SystemController extends AbstractApiController {
     )
     @PostMapping(ApiPaths.System.ACKNOWLEDGE)
     public StandardJsonResponse<Boolean> postAcknowledgeIncomingPing(
-            @Parameter(name = "System Name", description = "The system doing the pinging")
+            @Parameter(name = "systemName", description = "The system doing the pinging")
             final @RequestParam("systemName") String systemName,
             final HttpServletRequest request
     ) {

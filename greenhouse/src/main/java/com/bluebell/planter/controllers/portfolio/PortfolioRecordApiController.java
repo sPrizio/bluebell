@@ -22,7 +22,7 @@ import org.springframework.web.bind.annotation.*;
  * API controller for {@link PortfolioRecord}
  *
  * @author Stephen Prizio
- * @version 0.1.9
+ * @version 0.2.0
  */
 @RestController
 @RequestMapping("${bluebell.base.api.controller.endpoint}" + ApiPaths.PortfolioRecord.BASE)
@@ -64,7 +64,7 @@ public class PortfolioRecordApiController extends AbstractApiController {
     )
     @GetMapping(ApiPaths.PortfolioRecord.GET)
     public StandardJsonResponse<PortfolioRecord> getPortfolioRecord(
-            @Parameter(name = "Portfolio UID", description = "Portfolio UID to add the account to", example = "1234")
+            @Parameter(name = "portfolioUid", description = "Portfolio UID to add the account to", example = "1234")
             final @RequestParam("portfolioUid") String portfolioUid,
             final HttpServletRequest request
     ) {

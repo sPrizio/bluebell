@@ -42,7 +42,7 @@ import static com.bluebell.radicle.validation.GenericValidator.*;
  * Api controller for {@link Trade}
  *
  * @author Stephen Prizio
- * @version 0.1.9
+ * @version 0.2.0
  */
 @RestController
 @RequestMapping("${bluebell.base.api.controller.endpoint}" + ApiPaths.Trade.BASE)
@@ -113,9 +113,9 @@ public class TradeApiController extends AbstractApiController {
     )
     @GetMapping(ApiPaths.Trade.GET_FOR_TYPE)
     public StandardJsonResponse<List<TradeDTO>> getTradesForTradeType(
-            @Parameter(name = "Account Number", description = "The unique identifier for your trading account", example = "1234")
+            @Parameter(name = "accountNumber", description = "The unique identifier for your trading account", example = "1234")
             final @RequestParam("accountNumber") long accountNumber,
-            @Parameter(name = "Trade Type", description = "The type of trade to get", example = "SELL")
+            @Parameter(name = "tradeType", description = "The type of trade to get", example = "SELL")
             final @RequestParam("tradeType") String tradeType,
             final HttpServletRequest request
     ) {
@@ -192,11 +192,11 @@ public class TradeApiController extends AbstractApiController {
     )
     @GetMapping(ApiPaths.Trade.GET_FOR_INTERVAL)
     public StandardJsonResponse<List<TradeDTO>> getTradesWithinInterval(
-            @Parameter(name = "Account Number", description = "The unique identifier for your trading account", example = "1234")
+            @Parameter(name = "accountNumber", description = "The unique identifier for your trading account", example = "1234")
             final @RequestParam("accountNumber") long accountNumber,
-            @Parameter(name = "Start Date", description = "Start date of time period to analyze", example = "2025-01-01")
+            @Parameter(name = "start", description = "Start date of time period to analyze", example = "2025-01-01")
             final @RequestParam("start") String start,
-            @Parameter(name = "End Date", description = "End date of time period to analyze", example = "2025-01-01")
+            @Parameter(name = "end", description = "End date of time period to analyze", example = "2025-01-01")
             final @RequestParam("end") String end,
             final HttpServletRequest request
     ) {
@@ -269,15 +269,15 @@ public class TradeApiController extends AbstractApiController {
     )
     @GetMapping(ApiPaths.Trade.GET_FOR_INTERVAL_PAGED)
     public StandardJsonResponse<PaginatedTradesDTO> getTradesWithinIntervalPaged(
-            @Parameter(name = "Account Number", description = "The unique identifier for your trading account", example = "1234")
+            @Parameter(name = "accountNumber", description = "The unique identifier for your trading account", example = "1234")
             final @RequestParam("accountNumber") long accountNumber,
-            @Parameter(name = "Start Date", description = "Start date of time period to analyze", example = "2025-01-01")
+            @Parameter(name = "start", description = "Start date of time period to analyze", example = "2025-01-01")
             final @RequestParam("start") String start,
-            @Parameter(name = "End Date", description = "End date of time period to analyze", example = "2025-01-01")
+            @Parameter(name = "end", description = "End date of time period to analyze", example = "2025-01-01")
             final @RequestParam("end") String end,
-            @Parameter(name = "Page", description = "Current Page", example = "0")
+            @Parameter(name = "page", description = "Current Page", example = "0")
             final @RequestParam(value = "page", defaultValue = "0") int page,
-            @Parameter(name = "Page Size", description = "Size of page", example = "25")
+            @Parameter(name = "pageSize", description = "Size of page", example = "25")
             final @RequestParam(value = "pageSize", defaultValue = "10") int pageSize,
             final HttpServletRequest request
     ) {
@@ -339,9 +339,9 @@ public class TradeApiController extends AbstractApiController {
     )
     @GetMapping(ApiPaths.Trade.GET_FOR_TRADE_ID)
     public StandardJsonResponse<TradeDTO> getTradeForTradeId(
-            @Parameter(name = "Account Number", description = "The unique identifier for your trading account", example = "1234")
+            @Parameter(name = "accountNumber", description = "The unique identifier for your trading account", example = "1234")
             final @RequestParam("accountNumber") long accountNumber,
-            @Parameter(name = "Trade ID", description = "The unique identifier for the trade", example = "1234")
+            @Parameter(name = TRADE_ID, description = "The unique identifier for the trade", example = "1234")
             final @RequestParam(TRADE_ID) String tradeId,
             final HttpServletRequest request
     ) {
@@ -391,11 +391,11 @@ public class TradeApiController extends AbstractApiController {
     )
     @PostMapping(ApiPaths.Trade.IMPORT_TRADES)
     public StandardJsonResponse<Boolean> postImportTrades(
-            @Parameter(name = "Account Number", description = "The unique identifier for your trading account", example = "1234")
+            @Parameter(name = "accountNumber", description = "The unique identifier for your trading account", example = "1234")
             final @RequestParam("accountNumber") long accountNumber,
-            @Parameter(name = "Strategy or Trading Account", description = "If true, the import will treat the trades as a simulation import", example = "true")
+            @Parameter(name = "isStrategy", description = "If true, the import will treat the trades as a simulation import", example = "true")
             final @RequestParam("isStrategy") boolean isStrategy,
-            @Parameter(name = "Trade File", description = "The file containing your trades")
+            @Parameter(name = "file", description = "The file containing your trades")
             final @RequestParam("file") MultipartFile file,
             final HttpServletRequest request
     ) throws IOException {

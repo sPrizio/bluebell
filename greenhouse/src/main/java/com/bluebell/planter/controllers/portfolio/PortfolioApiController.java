@@ -30,7 +30,7 @@ import java.util.Optional;
  * API Controller for {@link PortfolioRecord}
  *
  * @author Stephen Prizio
- * @version 0.1.9
+ * @version 0.2.0
  */
 @RestController
 @RequestMapping("${bluebell.base.api.controller.endpoint}" + ApiPaths.Portfolio.BASE)
@@ -85,7 +85,7 @@ public class PortfolioApiController extends AbstractApiController {
     )
     @GetMapping(ApiPaths.Portfolio.GET)
     public StandardJsonResponse<PortfolioDTO> getPortfolioForUid(
-            @Parameter(name = "Portfolio UID", description = "The UID for the portfolio", example = "1234")
+            @Parameter(name = "portfolioUid", description = "The UID for the portfolio", example = "1234")
             final @RequestParam("portfolioUid") String portfolioUid,
             final HttpServletRequest request
     ) {
@@ -192,7 +192,7 @@ public class PortfolioApiController extends AbstractApiController {
     public StandardJsonResponse<PortfolioDTO> putUpdatePortfolio(
             @Parameter(name = "Portfolio Payload", description = "Payload for creating or updating portfolios")
             final @RequestBody CreateUpdatePortfolioDTO data,
-            @Parameter(name = "Portfolio UID", description = "Portfolio UID to update", example = "1234")
+            @Parameter(name = "portfolioUid", description = "Portfolio UID to update", example = "1234")
             final @RequestParam("portfolioUid") String portfolioUid,
             final HttpServletRequest request
     ) {
@@ -256,7 +256,7 @@ public class PortfolioApiController extends AbstractApiController {
     )
     @DeleteMapping(ApiPaths.Portfolio.DELETE_PORTFOLIO)
     public StandardJsonResponse<Boolean> deletePortfolio(
-            @Parameter(name = "Portfolio UID", description = "Portfolio UID to delete", example = "1234")
+            @Parameter(name = "portfolioUid", description = "Portfolio UID to delete", example = "1234")
             final @RequestParam("portfolioUid") String portfolioUid,
             final HttpServletRequest request
     ) {
