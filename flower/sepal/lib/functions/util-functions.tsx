@@ -124,21 +124,22 @@ export function emptyObject(object: any) {
  *
  * @param val number to format
  */
-export function formatNumberForDisplay(val: number | string) {
+export function formatNumberForDisplay(val: number | string) : string {
 
   if (!val) {
-    return '0.00'
+    return '0'
   }
 
   if (typeof val === 'string') {
     try {
-      return Number(val).toLocaleString()
+      return Number(val).toLocaleString().replace('.00', '').replace(',', '')
     } catch (e) {
+      console.log(e)
       return 'DATA ERROR!'
     }
   }
 
-  return parseFloat(val.toFixed(2)).toLocaleString('en-US', {minimumFractionDigits: 2})
+  return parseFloat(val.toFixed(2)).toLocaleString('en-US', {minimumFractionDigits: 2}).replace('.00', '')
 }
 
 /**

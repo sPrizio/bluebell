@@ -3,7 +3,7 @@ import {z} from "zod";
 import {safeConvertEnum} from "@/lib/functions/util-functions";
 import {hasEmail, hasUsername} from "@/lib/functions/account-functions";
 import {
-  getAccountDomain, getAnalysisDomain, getNewsDomain, getPortfolioDomain,
+  getAccountDomain, getAnalysisDomain, getNewsDomain, getPortfolioDomain, getPortfolioRecordDomain,
   getTradeDomain,
   getTradeRecordDomain,
   getUserDomain,
@@ -47,6 +47,9 @@ export const ApiUrls = {
   },
   Portfolio: {
     GetPortfolio: getPortfolioDomain() + '/get?portfolioUid={uid}'
+  },
+  PortfolioRecord: {
+    GetPortfolioRecord: getPortfolioRecordDomain() + '/get?portfolioUid={uid}',
   },
   Trade: {
     GetPagedTrades: getTradeDomain() + '/for-interval-paged?accountNumber={accountNumber}&start={start}&end={end}&page={page}&pageSize={pageSize}',

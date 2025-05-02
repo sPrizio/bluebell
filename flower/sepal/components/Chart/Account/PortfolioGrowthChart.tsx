@@ -1,16 +1,18 @@
 'use client'
 
-import React, {useEffect, useState} from "react";
+import React from "react";
 import {Area, ComposedChart, Legend, Line, ResponsiveContainer, Tooltip, TooltipProps, YAxis} from "recharts";
 import {NameType, ValueType,} from 'recharts/types/component/DefaultTooltipContent';
 import {BASE_COLORS, Css, DateTime} from "@/lib/constants";
 import {IconPointFilled} from "@tabler/icons-react";
-// @ts-expect-error : error in import due to 3rd party library
+// @ts-expect-error: error in import due to 3rd party library
 import Please from 'pleasejs/dist/Please';
 import {BaseCard} from "@/components/Card/BaseCard";
 import moment from "moment";
-import {flattenObject, formatNumberForDisplay} from "@/lib/functions/util-functions";
-import { PortfolioEquityPoint } from "@/types/apiTypes";
+import {formatNumberForDisplay} from "@/lib/functions/util-functions";
+import {PortfolioEquityPoint} from "@/types/apiTypes";
+
+type Entry = Record<string, number>;
 
 /**
  * Renders a chart to display an account's growth over time
@@ -18,43 +20,40 @@ import { PortfolioEquityPoint } from "@/types/apiTypes";
  * @param isNew if new, show base chart
  * @param data account equity data points
  * @author Stephen Prizio
- * @version 0.0.2
+ * @version 0.2.0
  */
 export default function PortfolioGrowthChart(
   {
     isNew = false,
     data = [],
   }
-    : Readonly<{
+  : Readonly<{
     isNew: boolean;
     data: Array<PortfolioEquityPoint>,
   }>
 ) {
 
-  const [colors, setColors] = useState<Array<string>>([])
-  const [accChartData, setAccChartData] = useState<Array<PortfolioEquityPoint>>(data)
-
-  useEffect(() => {
-    const colors = []
-    for (let i = 0; i < data.length; i++) {
-      if (i >= 0 && i < data.length) {
-        colors.push(Please.make_color({base_color: BASE_COLORS[i]}))
-      } else {
-        colors.push(Please.make_color({base_color: BASE_COLORS[0]}))
-      }
+  const colors: Array<string> = []
+  for (let i = 0; i < data.length; i++) {
+    if (i >= 0 && i < data.length) {
+      colors.push(Please.make_color({base_color: BASE_COLORS[i]}))
+    } else {
+      colors.push(Please.make_color({base_color: BASE_COLORS[0]}))
     }
+  }
 
-    setColors(colors)
-    setAccChartData(data.map(d => flattenObject(d)))
-  }, [])
+  const accChartData = generateAccData()
 
 
   //  GENERAL FUNCTIONS
 
+  /**
+   * Computes the gradient
+   */
   function computeGradientLimit() {
     const tempPoints = data
-    const min = Math.min(...tempPoints.map(i => i.portfolio))
-    const max = Math.max(...tempPoints.map(i => i.portfolio))
+    const min = Math.min(...tempPoints.map(i => i.normalized))
+    const max = Math.max(...tempPoints.map(i => i.normalized))
 
 
     return Math.round(((max - min) / max) * 100.0) + '%'
@@ -63,13 +62,82 @@ export default function PortfolioGrowthChart(
   /**
    * Gets all the chart keys
    */
-  function getChartKeys() {
+  function getAccountKeys() {
 
     if (data.length > 0) {
-      return Object.keys(data[0]?.accounts ?? []).filter(key => key !== 'date' && key !== 'portfolio' && key !== 'uid');
+      const keys = []
+
+      for (const point of data) {
+        const accounts = point.accounts
+        // @ts-ignore
+        for (const acc of accounts) {
+          if (keys.indexOf(acc.name) === -1) {
+            keys.push(acc.name)
+          }
+        }
+      }
+
+      return keys;
     }
 
     return [];
+  }
+
+  /**
+   * Resolves data
+   */
+  function resolveChartDataPointValue(point: PortfolioEquityPoint, key: string) {
+    // @ts-ignore
+    for (const acc of point.accounts) {
+      if (acc.name === key) {
+        return acc.normalized
+      }
+    }
+
+    return 0;
+  }
+
+  /**
+   * Calculates the sume of keys for the counter object
+   */
+  function aggregateSumByKey(data: Entry[], key: string): number {
+    return data.reduce((sum, item) => {
+      return sum + (item[key] || 0);
+    }, 0);
+  }
+
+  /**
+   * Generates the chart data compatible with recharts
+   */
+  function generateAccData() {
+
+    const res: any[] = []
+    let counter = 0.0
+    let counterObj: Entry[] = []
+
+    for (const point of data) {
+      counter += point.normalized
+
+      const data = {
+        date: point.date,
+        portfolio: counter,
+      }
+
+      for (const key of getAccountKeys()) {
+        // @ts-ignore
+        const obj: Record<string, number> = {
+          [key]: resolveChartDataPointValue(point, key),
+        };
+
+        counterObj.push(obj)
+        // @ts-ignore
+        data[key] = aggregateSumByKey(counterObj, key)
+      }
+
+      res.push(data)
+    }
+
+    return res
   }
 
   /**
@@ -78,7 +146,7 @@ export default function PortfolioGrowthChart(
   function hasMultipleAccounts() {
 
     if (data.length > 0) {
-      return getChartKeys().length > 1;
+      return getAccountKeys().length > 1;
     }
 
     return false;
@@ -138,7 +206,7 @@ export default function PortfolioGrowthChart(
                         {item.dataKey}
                       </div>
                       <div className={'grow justify-end text-right'}>
-                        $&nbsp;{formatNumberForDisplay(item.value)}
+                        {formatNumberForDisplay(item.value)}&nbsp;%
                       </div>
                     </div>
                   )
@@ -172,7 +240,7 @@ export default function PortfolioGrowthChart(
             <Tooltip content={tooltip}/>
             {
               hasMultipleAccounts() ?
-                getChartKeys().map((item: string, itx: number) => {
+                getAccountKeys().map((item: string, itx: number) => {
                   return (
                     <Line key={itx} type="monotone" dot={false} dataKey={item} strokeWidth={3} stroke={colors[itx]}/>
                   )

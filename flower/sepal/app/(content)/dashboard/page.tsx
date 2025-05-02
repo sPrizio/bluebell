@@ -7,12 +7,18 @@ import DashboardContent from "@/components/Card/Content/DashboardContent";
 import {logErrors, resolveIcon} from "@/lib/functions/util-functions";
 import AccountsTable from "@/components/Table/Account/AccountsTable";
 import TradeLogTable from "@/components/Table/Trade/TradeLogTable";
-import AccountTransactionsTable from "@/components/Table/Account/AccountTransactionsTable";
 import PortfolioGrowthChart from "@/components/Chart/Account/PortfolioGrowthChart";
-import {usePortfolioQuery, useRecentTransactionsQuery, useTradeLogQuery, useUserQuery} from "@/lib/hooks/queries";
+import {
+  usePortfolioQuery,
+  usePortfolioRecordQuery,
+  useRecentTransactionsQuery,
+  useTradeLogQuery,
+  useUserQuery
+} from "@/lib/hooks/queries";
 import Error from "@/app/error";
 import LoadingPage from "@/app/loading";
 import {User} from "@/types/apiTypes";
+import TransactionsTable from "@/components/Table/Transaction/TransactionsTable";
 
 /**
  * The page that shows an overview of a user's portfolio
@@ -32,6 +38,12 @@ export default function DashboardPage() {
     isLoading: isPortfolioLoading
   } = usePortfolioQuery(activePortfolioUid)
   const {
+    data: portfolioRecord,
+    isError: isPortfolioRecordError,
+    error: portfolioRecordError,
+    isLoading: isPortfolioRecordLoading
+  } = usePortfolioRecordQuery(activePortfolioUid)
+  const {
     data: recentTransactions,
     isError: isRecentTransactionsError,
     error: recentTransactionsError,
@@ -44,8 +56,8 @@ export default function DashboardPage() {
     isLoading: isTradeLogLoading
   } = useTradeLogQuery()
 
-  const isError = isUserError || isPortfolioError || isRecentTransactionsError || isTradeLogError
-  const isLoading = isUserLoading || isPortfolioLoading || isRecentTransactionsLoading || isTradeLogLoading
+  const isError = isUserError || isPortfolioError || isPortfolioRecordError || isRecentTransactionsError || isTradeLogError
+  const isLoading = isUserLoading || isPortfolioLoading || isPortfolioRecordLoading || isRecentTransactionsLoading || isTradeLogLoading
 
 
   //  GENERAL FUNCTIONS
@@ -74,7 +86,7 @@ export default function DashboardPage() {
   }
 
   if (isError) {
-    logErrors(userError, portfolioError, recentTransactionsError, tradeLogError)
+    logErrors(userError, portfolioError, portfolioRecordError, recentTransactionsError, tradeLogError)
     return <Error/>
   }
 
@@ -82,36 +94,36 @@ export default function DashboardPage() {
     <div>
       <div className={'grid grid-cols-1 gap-8 w-full'}>
         {/* TODO: BB-54 Implement Portfolio UI */}
-        {/*<div className={"grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-8"}>
+        <div className={"grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-8"}>
           <div className={""}>
             <BaseCard
               title={'Net Worth'}
-              cardContent={<DashboardContent prefix={'$ '} value={portfolio?.netWorth ?? 0}
-                                             delta={portfolio?.deltaNetWorth ?? 0}/>}
+              cardContent={<DashboardContent prefix={'$ '} value={portfolioRecord?.netWorth ?? 0}
+                                             delta={portfolioRecord?.statistics?.deltaNetWorth ?? 0}/>}
               icon={resolveIcon(Icons.ChartDoughnut, '', 30)}
             />
           </div>
           <div className={""}>
             <BaseCard
               title={'Trades'}
-              cardContent={<DashboardContent value={portfolio?.trades ?? 0}
-                                             delta={portfolio?.deltaTrades ?? 0}/>}
+              cardContent={<DashboardContent value={portfolioRecord?.trades ?? 0}
+                                             delta={portfolioRecord?.statistics?.deltaTrades ?? 0}/>}
               icon={resolveIcon(Icons.Replace, '', 30)}
             />
           </div>
           <div>
             <BaseCard
               title={'Deposits'}
-              cardContent={<DashboardContent value={portfolio?.deposits ?? 0}
-                                             delta={portfolio?.deltaDeposits ?? 0}/>}
+              cardContent={<DashboardContent value={portfolioRecord?.deposits ?? 0}
+                                             delta={portfolioRecord?.statistics?.deltaDeposits ?? 0}/>}
               icon={resolveIcon(Icons.ArrowBarDown, '', 30)}
             />
           </div>
           <div>
             <BaseCard
               title={'Withdrawals'}
-              cardContent={<DashboardContent value={portfolio?.withdrawals ?? 0}
-                                             delta={portfolio?.deltaWithdrawals ?? 0}/>}
+              cardContent={<DashboardContent value={portfolioRecord?.withdrawals ?? 0}
+                                             delta={portfolioRecord?.statistics?.deltaWithdrawals ?? 0}/>}
               icon={resolveIcon(Icons.ArrowBarUp, '', 30)}
             />
           </div>
@@ -121,8 +133,8 @@ export default function DashboardPage() {
             <BaseCard
               title={'Portfolio Growth'}
               subtitle={'A look back at your portfolio\'s performance over the last 6 months.'}
-              cardContent={<PortfolioGrowthChart key={portfolio?.equity.length} isNew={portfolio?.isNew ?? false}
-                                                 data={portfolio?.equity ?? []}/>}
+              cardContent={<PortfolioGrowthChart key={portfolioRecord?.equity.length} isNew={portfolioRecord?.newPortfolio ?? false}
+                                                 data={portfolioRecord?.equity ?? []}/>}
             />
           </div>
           <div className={""}>
@@ -131,13 +143,13 @@ export default function DashboardPage() {
               subtitle={'Only active accounts will be shown.'}
               cardContent={
                 <AccountsTable
-                  accounts={portfolio?.accounts ?? []}
+                  accounts={portfolio?.accounts.filter(acc => acc.active) ?? []}
                   showAllLink={true}
                 />
               }
             />
           </div>
-        </div>*/}
+        </div>
         <div className={"grid grid-cols-1 xl:grid-cols-3 gap-8"}>
           <div className={"col-span-1 xl:col-span-2"}>
             <BaseCard
@@ -151,10 +163,7 @@ export default function DashboardPage() {
               title={'Transaction Activity'}
               subtitle={'Your most recent account transactions.'}
               cardContent={
-                <AccountTransactionsTable
-                  account={portfolio?.accounts?.[0] ?? null}
-                  transactions={recentTransactions ?? []}
-                />
+                <TransactionsTable transactions={recentTransactions ?? []} />
               }
             />
           </div>

@@ -40,6 +40,7 @@ interface PortfolioAccountEquityPoints {
 interface PortfolioEquityPoint extends GenericApiType {
   date: string,
   portfolio: number
+  normalized: number,
   accounts: PortfolioAccountEquityPoints
 }
 
@@ -52,17 +53,21 @@ interface Portfolio extends GenericApiType {
   user: User,
 }
 
-interface PortfolioRecord extends GenericApiType {
-  isNew: boolean,
-  netWorth: number
-  deltaNetWorth: number,
+interface PortfolioRecord {
+  newPortfolio: boolean,
+  netWorth: number,
   trades: number,
-  deltaTrades: number,
   deposits: number,
-  deltaDeposits: number,
   withdrawals: number,
-  deltaWithdrawals: number,
+  statistics: PortfolioStatistics,
   equity: Array<PortfolioEquityPoint>,
+}
+
+interface PortfolioStatistics {
+  deltaNetWorth: number,
+  deltaTrades: number,
+  deltaDeposits: number,
+  deltaWithdrawals: number,
 }
 
 interface AccountOption extends GenericApiType {

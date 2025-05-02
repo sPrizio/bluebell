@@ -1,5 +1,6 @@
 import {formatNumberForDisplay, resolveIcon} from "@/lib/functions/util-functions";
 import {Icons} from "@/lib/enums";
+import React from "react";
 
 /**
  * Component that renders small cards meant to act as overview Account summaries
@@ -9,7 +10,7 @@ import {Icons} from "@/lib/enums";
  * @param delta change
  * @param icon icon to render
  * @author Stephen Prizio
- * @version 0.0.1
+ * @version 0.2.0
  */
 export default function DashboardContent(
   {
