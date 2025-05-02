@@ -37,6 +37,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.time.temporal.TemporalAdjusters;
 import java.util.*;
 
 import static com.bluebell.radicle.validation.GenericValidator.validateParameterIsNotNull;
@@ -273,8 +274,8 @@ public class AccountService {
 
         double runningBalance = account.getInitialBalance();
         final LocalDate startDate = account.getAccountOpenTime().toLocalDate();
-        LocalDate compareStart = startDate;
-        LocalDate compareEnd = startDate.plus(timeInterval.getAmount(), timeInterval.getUnit());
+        LocalDate compareStart = timeInterval == TradeRecordTimeInterval.MONTHLY ? startDate.with(TemporalAdjusters.firstDayOfMonth()) : startDate;
+        LocalDate compareEnd = compareStart.plus(timeInterval.getAmount(), timeInterval.getUnit());
         final LocalDate endDate = LocalDate.now().plusDays(1);
 
 

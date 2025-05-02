@@ -25,7 +25,7 @@ import static org.mockito.ArgumentMatchers.any;
  * Testing class for {@link PortfolioService}
  *
  * @author Stephen Prizio
- * @version 0.1.2
+ * @version 0.2.0
  */
 @SpringBootTest
 @RunWith(SpringRunner.class)
@@ -66,7 +66,7 @@ class PortfolioRecordServiceTest extends AbstractGenericTest {
                 .isNotEmpty()
                 .element(5)
                 .extracting("portfolio")
-                .isEqualTo(1010.35);
+                .isEqualTo(1000.00);
 
         assertThat(portfolioRecord.statistics())
                 .extracting("deltaNetWorth", "deltaTrades", "deltaDeposits", "deltaWithdrawals")
@@ -96,7 +96,7 @@ class PortfolioRecordServiceTest extends AbstractGenericTest {
                 .isNotEmpty()
                 .element(5)
                 .extracting("portfolio")
-                .isEqualTo(1010.35);
+                .isEqualTo(1000.00);
 
         assertThat(portfolioRecord.statistics())
                 .extracting("deltaNetWorth", "deltaTrades", "deltaDeposits", "deltaWithdrawals")
