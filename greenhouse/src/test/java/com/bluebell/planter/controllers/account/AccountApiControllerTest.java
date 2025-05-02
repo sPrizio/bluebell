@@ -43,7 +43,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  * Testing class for {@link AccountApiController}
  *
  * @author Stephen Prizio
- * @version 0.1.9
+ * @version 0.2.0
  */
 @SpringBootTest
 @AutoConfigureMockMvc(addFilters = false)
@@ -334,6 +334,7 @@ class AccountApiControllerTest extends AbstractPlanterTest {
     void test_deleteAccount_missingAccount() throws Exception {
         this.mockMvc.perform(delete(getApiPath(BASE, DELETE_ACCOUNT))
                         .queryParam("accountNumber", "5678")
+                        .queryParam(PORTFOLIO_UID, "5678")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.message", is(String.format("No account was found for account number %d", 5678))));
@@ -343,8 +344,9 @@ class AccountApiControllerTest extends AbstractPlanterTest {
     void test_deleteAccount_success() throws Exception {
         this.mockMvc.perform(delete(getApiPath(BASE, DELETE_ACCOUNT))
                         .queryParam("accountNumber", "1234")
+                        .queryParam(PORTFOLIO_UID, "5678")
                         .contentType(MediaType.APPLICATION_JSON)
-                        )
+                )
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.success", is(true)));
     }

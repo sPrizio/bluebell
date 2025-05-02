@@ -17,7 +17,7 @@ import java.util.List;
  * A DTO representation for {@link Account}
  *
  * @author Stephen Prizio
- * @version 0.1.1
+ * @version 0.2.0
  */
 @Getter
 @Setter
@@ -27,6 +27,9 @@ public class AccountDTO implements GenericDTO {
 
     @Schema(description = "Account uid")
     private @Builder.Default String uid = StringUtils.EMPTY;
+
+    @Schema(description = "Portfolio uid")
+    private @Builder.Default String portfolioUid = StringUtils.EMPTY;
 
     @Schema(description = "Is the account the default account for the portfolio")
     private boolean defaultAccount;
