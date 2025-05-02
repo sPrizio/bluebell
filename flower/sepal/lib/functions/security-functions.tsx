@@ -1,7 +1,7 @@
 import {ApiCredentials} from "@/lib/constants";
 
 /**
- * Checks for a valid password as per the guidelines defined by bluebell
+ * Checks for a valid password as per the guidelines defined by greenhouse
  *
  * @param val test input
  */

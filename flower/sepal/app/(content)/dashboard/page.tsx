@@ -1,6 +1,6 @@
 'use client'
 
-import React from "react";
+import React, {useState} from "react";
 import {Icons} from "@/lib/enums";
 import {BaseCard} from "@/components/Card/BaseCard";
 import DashboardContent from "@/components/Card/Content/DashboardContent";
@@ -29,20 +29,20 @@ import TransactionsTable from "@/components/Table/Transaction/TransactionsTable"
 export default function DashboardPage() {
 
   const {data: user, isError: isUserError, error: userError, isLoading: isUserLoading} = useUserQuery();
+  const [activePortfolio, setActivePortfolio] = useState(getActivePortfolioUid(user) ?? '')
 
-  const activePortfolioUid : string  = getActivePortfolioUid(user) ?? ''
   const {
     data: portfolio,
     isError: isPortfolioError,
     error: portfolioError,
     isLoading: isPortfolioLoading
-  } = usePortfolioQuery(activePortfolioUid)
+  } = usePortfolioQuery(activePortfolio)
   const {
     data: portfolioRecord,
     isError: isPortfolioRecordError,
     error: portfolioRecordError,
     isLoading: isPortfolioRecordLoading
-  } = usePortfolioRecordQuery(activePortfolioUid)
+  } = usePortfolioRecordQuery(activePortfolio)
   const {
     data: recentTransactions,
     isError: isRecentTransactionsError,
@@ -163,7 +163,7 @@ export default function DashboardPage() {
               title={'Transaction Activity'}
               subtitle={'Your most recent account transactions.'}
               cardContent={
-                <TransactionsTable transactions={recentTransactions ?? []} />
+                <TransactionsTable transactions={recentTransactions ?? []} showBottomLink={true} />
               }
             />
           </div>

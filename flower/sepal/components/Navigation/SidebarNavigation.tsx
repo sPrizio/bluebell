@@ -16,7 +16,7 @@ import {SidebarNavigationLinkType} from "@/types/uiTypes";
  * @param variant color variant
  * @param links navigation links
  * @author Stephen Prizio
- * @version 0.0.1
+ * @version 0.2.0
  */
 export default function SidebarNavigation(
   {
@@ -54,7 +54,7 @@ export default function SidebarNavigation(
             </div>
             <div>
               <small>
-                <strong className="text-primary">bluebell&nbsp;&copy;&nbsp;</strong>{!open ? <br/> : null}V 0.0.1
+                <strong className="text-primary">bluebell&nbsp;&copy;&nbsp;</strong>{!open ? <br/> : null}V 0.2.0
               </small>
             </div>
           </div>

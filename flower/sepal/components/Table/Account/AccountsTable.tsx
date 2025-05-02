@@ -7,7 +7,6 @@ import {formatNumberForDisplay, getBrokerImageForCode, getFlagForCode} from "@/l
 import moment from "moment";
 import {DateTime} from "@/lib/constants";
 import {useRouter} from "next/navigation";
-import Badge from "@/components/Badge/Badge";
 import {Account} from "@/types/apiTypes";
 
 /**
@@ -18,7 +17,7 @@ import {Account} from "@/types/apiTypes";
  * @param allowAccountSelection allow clicking on rows
  * @param showCompactTable minimal table flag
  * @author Stephen Prizio
- * @version 0.0.2
+ * @version 0.2.0
  */
 export default function AccountsTable(
   {

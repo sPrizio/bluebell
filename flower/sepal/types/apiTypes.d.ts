@@ -1,3 +1,9 @@
+type ApiResponse<T> = {
+  success: boolean
+  message?: string
+  data: T
+}
+
 interface GenericApiType {
   uid: string
 }

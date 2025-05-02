@@ -28,7 +28,7 @@ export default function AccountsPage() {
 
   const pageInfo = {
     title: "Accounts",
-    subtitle: "A list of all your trading accounts.",
+    subtitle: "A list of all of your trading accounts.",
     iconCode: Icons.AccountOverview,
     breadcrumbs: [
       {label: 'Dashboard', href: '/dashboard', active: false},

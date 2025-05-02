@@ -7,15 +7,16 @@ import {z} from "zod"
 import {Button} from "@/components/ui/button"
 import {Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage,} from "@/components/ui/form"
 import {Input} from "@/components/ui/input"
-import {useEffect, useState} from "react";
 import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from "@/components/ui/select";
 import {Loader2} from "lucide-react";
 import {useSepalModalContext} from "@/lib/context/SepalContext";
 import {useToast} from "@/hooks/use-toast"
 import {CRUDAccountSchema} from "@/lib/constants";
 import {Switch} from "@/components/ui/switch";
-import {createAccount, getAccountCreationInfo, updateAccount} from "@/lib/functions/account-functions";
-import {Account, AccountCreationInfo, AccountType, Broker, Currency, TradePlatform} from "@/types/apiTypes"
+import {Account, AccountType, Broker, Currency, TradePlatform} from "@/types/apiTypes"
+import {useAccountCreationInfoQuery} from "@/lib/hooks/queries";
+import {logErrors} from "@/lib/functions/util-functions";
+import {useCreateAccountMutation, useUpdateAccountMutation} from "@/lib/hooks/mutations";
 
 /**
  * Renders a form that can create or update an Account
@@ -23,56 +24,57 @@ import {Account, AccountCreationInfo, AccountType, Broker, Currency, TradePlatfo
  * @param create should create / edit
  * @param account Account info
  * @author Stephen Prizio
- * @version 0.0.2
+ * @version 0.2.0
  */
 export default function AccountForm(
   {
     mode = 'create',
+    portfolioUid,
     account,
   }
-    : Readonly<{
-    mode?: 'create' | 'edit';
+  : Readonly<{
+    mode?: 'create' | 'edit'
+    portfolioUid: string
     account?: Account
   }>
 ) {
-
-  const { toast } = useToast();
-
-  const [isLoading, setIsLoading] = useState(false)
-  const [accInfo, setAccInfo] = useState<AccountCreationInfo>()
-  const [success, setSuccess] = useState<'success' | 'failed' | 'undefined'>('undefined')
-
-  useEffect(() => {
-    getAccCreationInfo();
-  }, [])
-
-  useEffect(() => {
-    if (success === 'success') {
-      toast(
-        {
-          title: isCreateMode() ? 'Account Created!' : 'Account Updated!',
-          description: isCreateMode() ? 'Your new trading account was successfully created.' : 'Your trading account was updated successfully.',
-          variant: 'success'
-        }
-      )
-    } else if (success === 'failed') {
-      toast(
-        {
-          title: isCreateMode() ? 'Creation Failed!' : 'Update Failed!',
-          description: isCreateMode() ? 'An error occurred while creating new trading Account. Please check your inputs and try again.' : 'An error occurred while updating your trading account. Please check your inputs and try again.',
-          variant: 'danger'
-        }
-      )
-    }
-  }, [success]);
-
-  const { open, setOpen } = useSepalModalContext()
-  const formSchema = CRUDAccountSchema(accInfo)
 
   if (!isCreateMode() && (!account || !account.accountNumber)) {
     throw new Error('Missing Account for edit mode');
   }
 
+  const {toast} = useToast();
+  const {setOpen} = useSepalModalContext()
+  const {
+    mutate: createAccount,
+    isLoading: isCreateAccountLoading,
+    isSuccess: isCreateAccountSuccess,
+    isError: isCreateAccountError,
+    error: createAccountError
+  } = useCreateAccountMutation();
+  const {
+    mutate: updateAccount,
+    isLoading: isUpdateAccountLoading,
+    isSuccess: isUpdateAccountSuccess,
+    isError: isUpdateAccountError,
+    error: updateAccountError,
+  } = useUpdateAccountMutation(account?.accountNumber ?? -1);
+  const {
+    data: accCreateInfo,
+    error: accCreateInfoError,
+    isError: isAccCreateInfoError,
+    isLoading: isAccCreateInfoLoading
+  } = useAccountCreationInfoQuery();
+
+  if (isAccCreateInfoError) {
+    logErrors(accCreateInfoError)
+    setOpen(false)
+    renderErrorNotification()
+
+    return null
+  }
+
+  const formSchema = CRUDAccountSchema(accCreateInfo)
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -91,6 +93,16 @@ export default function AccountForm(
 
   //  GENERAL FUNCTIONS
 
+  function renderErrorNotification() {
+    toast(
+      {
+        title: isCreateMode() ? 'Creation Failed!' : 'Update Failed!',
+        description: isCreateMode() ? 'An error occurred while creating new trading Account. Please check your inputs and try again.' : 'An error occurred while updating your trading account. Please check your inputs and try again.',
+        variant: 'danger'
+      }
+    )
+  }
+
   /**
    * Submits the form
    *
@@ -98,38 +110,20 @@ export default function AccountForm(
    */
   async function onSubmit(values: z.infer<typeof formSchema>) {
 
-    setIsLoading(true)
-
-    let res
     if (isCreateMode()) {
-      res = await createAccount(values);
+      createAccount(values)
     } else {
-      res = await updateAccount(account?.accountNumber ?? -1, values);
+      updateAccount(values)
     }
 
-    if (!res) {
-      setSuccess('failed');
-    } else {
-      setSuccess('success')
+    if (isCreateAccountSuccess || isUpdateAccountSuccess) {
+      setOpen(false)
+      window.location.reload()
+    } else if (isCreateAccountError) {
+      logErrors(createAccountError)
+    } else if (isUpdateAccountError) {
+      logErrors(updateAccountError)
     }
-
-    setIsLoading(false)
-
-    setOpen(false)
-    window.location.reload()
-  }
-
-  /**
-   * Fetches the Account creation information
-   */
-  async function getAccCreationInfo() {
-
-    setIsLoading(true)
-
-    const data = await getAccountCreationInfo()
-    setAccInfo(data ?? { currencies: [], brokers: [], accountTypes: [], platforms: []})
-
-    setIsLoading(false)
   }
 
   /**
@@ -156,7 +150,7 @@ export default function AccountForm(
                   <FormControl>
                     <Input placeholder="Demo Trading Account" {...field} />
                   </FormControl>
-                  <FormMessage className={'text-primaryRed font-semibold'} />
+                  <FormMessage className={'text-primaryRed font-semibold'}/>
                 </FormItem>
               )}
             />
@@ -170,9 +164,9 @@ export default function AccountForm(
                   <FormItem>
                     <FormLabel className="!text-current">Account Number</FormLabel>
                     <FormControl>
-                      <Input placeholder="123" {...field} type={'number'} />
+                      <Input placeholder="123" {...field} type={'number'}/>
                     </FormControl>
-                    <FormMessage className={'text-primaryRed font-semibold'} />
+                    <FormMessage className={'text-primaryRed font-semibold'}/>
                   </FormItem>
                 )}
               />
@@ -185,9 +179,9 @@ export default function AccountForm(
                   <FormItem>
                     <FormLabel className="!text-current">Balance</FormLabel>
                     <FormControl>
-                      <Input placeholder="10000.00" {...field} type={'number'} />
+                      <Input placeholder="10000.00" {...field} type={'number'}/>
                     </FormControl>
-                    <FormMessage className={'text-primaryRed font-semibold'} />
+                    <FormMessage className={'text-primaryRed font-semibold'}/>
                   </FormItem>
                 )}
               />
@@ -202,13 +196,13 @@ export default function AccountForm(
                     <Select onValueChange={field.onChange} defaultValue={field.value}>
                       <FormControl>
                         <SelectTrigger>
-                          <SelectValue />
+                          <SelectValue/>
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent>
                         <SelectItem value={'default'}>Select a currency</SelectItem>
                         {
-                          accInfo?.currencies?.map((item : Currency) => {
+                          accCreateInfo?.currencies?.map((item: Currency) => {
                             return (
                               <SelectItem key={item.uid} value={item.code}>{item.label}</SelectItem>
                             )
@@ -216,7 +210,7 @@ export default function AccountForm(
                         }
                       </SelectContent>
                     </Select>
-                    <FormMessage className={'text-primaryRed font-semibold'} />
+                    <FormMessage className={'text-primaryRed font-semibold'}/>
                   </FormItem>
                 )}
               />
@@ -231,13 +225,13 @@ export default function AccountForm(
                     <Select onValueChange={field.onChange} defaultValue={field.value}>
                       <FormControl>
                         <SelectTrigger>
-                          <SelectValue />
+                          <SelectValue/>
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent>
                         <SelectItem value={'default'}>Select a broker</SelectItem>
                         {
-                          accInfo?.brokers?.map((item : Broker) => {
+                          accCreateInfo?.brokers?.map((item: Broker) => {
                             return (
                               <SelectItem key={item.uid} value={item.code}>{item.label}</SelectItem>
                             )
@@ -245,7 +239,7 @@ export default function AccountForm(
                         }
                       </SelectContent>
                     </Select>
-                    <FormMessage className={'text-primaryRed font-semibold'} />
+                    <FormMessage className={'text-primaryRed font-semibold'}/>
                   </FormItem>
                 )}
               />
@@ -260,13 +254,13 @@ export default function AccountForm(
                     <Select onValueChange={field.onChange} defaultValue={field.value}>
                       <FormControl>
                         <SelectTrigger>
-                          <SelectValue />
+                          <SelectValue/>
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent>
                         <SelectItem value={'default'}>Select a security type</SelectItem>
                         {
-                          accInfo?.accountTypes?.map((item : AccountType) => {
+                          accCreateInfo?.accountTypes?.map((item: AccountType) => {
                             return (
                               <SelectItem key={item.uid} value={item.code}>{item.label}</SelectItem>
                             )
@@ -277,7 +271,7 @@ export default function AccountForm(
                     <FormDescription>
                       This refers to the type of security traded within the account.
                     </FormDescription>
-                    <FormMessage className={'text-primaryRed font-semibold'} />
+                    <FormMessage className={'text-primaryRed font-semibold'}/>
                   </FormItem>
                 )}
               />
@@ -292,13 +286,13 @@ export default function AccountForm(
                     <Select onValueChange={field.onChange} defaultValue={field.value}>
                       <FormControl>
                         <SelectTrigger>
-                          <SelectValue />
+                          <SelectValue/>
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent>
                         <SelectItem value={'default'}>Select a trading platform</SelectItem>
                         {
-                          accInfo?.platforms?.map((item : TradePlatform) => {
+                          accCreateInfo?.platforms?.map((item: TradePlatform) => {
                             return (
                               <SelectItem key={item.uid} value={item.code}>{item.label}</SelectItem>
                             )
@@ -310,7 +304,7 @@ export default function AccountForm(
                       This field refers to the platform used to execute trades for this account.
                       If multiple platforms, select the most frequently used one.
                     </FormDescription>
-                    <FormMessage className={'text-primaryRed font-semibold'} />
+                    <FormMessage className={'text-primaryRed font-semibold'}/>
                   </FormItem>
                 )}
               />
@@ -337,7 +331,7 @@ export default function AccountForm(
                     <FormDescription>
                       A default account is an account that will be considered the primary or main account.
                     </FormDescription>
-                    <FormMessage className={'text-primaryRed font-semibold'} />
+                    <FormMessage className={'text-primaryRed font-semibold'}/>
                   </FormItem>
                 )}
               />
@@ -372,11 +366,12 @@ export default function AccountForm(
             </div>
           </div>
           <div className={'flex w-full justify-end items-center gap-4'}>
-            <Button type="submit" className={'bg-primary text-white'} disabled={isLoading}>
-            {isLoading ? <Loader2 className="mr-2 h-4 w-4 animate-spin"/> : null}
+            <Button type="submit" className={'bg-primary text-white'} disabled={isCreateAccountLoading || isAccCreateInfoLoading || isUpdateAccountLoading}>
+              {(isCreateAccountLoading || isAccCreateInfoLoading || isUpdateAccountLoading) ? <Loader2 className="mr-2 h-4 w-4 animate-spin"/> : null}
               Submit
             </Button>
-            <Button type="button" className={'border border-gray-400'} variant={"outline"} onClick={() => setOpen(false)}>
+            <Button type="button" className={'border border-gray-400'} variant={"outline"}
+                    onClick={() => setOpen(false)}>
               Cancel
             </Button>
           </div>

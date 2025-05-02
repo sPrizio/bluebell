@@ -116,43 +116,6 @@ export async function getTradeRecordControls(accNumber: number, interval: string
 }
 
 /**
- * Fetches the trade log
- *
- * @param start start of time period
- * @param end end of time period
- * @param interval aggregate interval
- * @param count limit results
- */
-export async function getTradeLog(start: string, end: string, interval: string, count: number): Promise<TradeLog> {
-
-  const headers = getAuthHeader()
-  headers['Content-Type'] = 'application/json'
-
-  const res =
-    await fetch(
-      ApiUrls.TradeRecord.GetTradeLog
-        .replace('{start}', start)
-        .replace('{end}', end)
-        .replace('{interval}', interval)
-        .replace('{count}', count.toString()), {
-        method: 'GET',
-        headers: headers,
-      }
-    )
-
-  if (!res.ok) {
-    throw new Error(`Failed to get Portfolio with status: ${res.status}`);
-  }
-
-  const data = await res.json();
-  if (!data.success) {
-    throw new Error(`API returned with error: ${data.message} || ${JSON.stringify(data)}`);
-  }
-
-  return data.data;
-}
-
-/**
  * Fetches paginated trades
  *
  * @param accNumber account number

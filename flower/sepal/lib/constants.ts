@@ -26,9 +26,9 @@ export const ApiCredentials = {
 
 export const ApiUrls = {
   Account: {
-    CreateAccount: getAccountDomain() + '/create-account',
-    UpdateAccount: getAccountDomain() + '/update-account?accountNumber={accountNumber}',
-    DeleteAccount: getAccountDomain() + '/delete-account?accountNumber={accountNumber}',
+    CreateAccount: getAccountDomain() + '/create-account?portfolioUid={uid}',
+    UpdateAccount: getAccountDomain() + '/update-account?portfolioUid={uid}&accountNumber={accountNumber}',
+    DeleteAccount: getAccountDomain() + '/delete-account?portfolioUid={uid}&accountNumber={accountNumber}',
     GetCurrencies: getAccountDomain() + '/currencies',
     GetAccountTypes: getAccountDomain() + '/account-types',
     GetBrokers: getAccountDomain() + '/brokers',
