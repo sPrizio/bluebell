@@ -1,12 +1,9 @@
 import React from "react";
 import type {Metadata} from "next";
-import { Icons } from "@/lib/enums";
-import {PageInfoProvider} from "@/lib/context/PageInfoProvider";
-import PageHeaderSection from "@/components/Section/PageHeaderSection";
 
 export const metadata: Metadata = {
   title: "Dashboard - bluebell",
-  description: "View all of your Account information in one convenient place",
+  description: "View all of your Account information for a specific portfolio in one convenient place",
 };
 
 /**
@@ -24,27 +21,8 @@ export default function DashboardLayout(
   }>
 ) {
 
-  const pageInfo = {
-    title: "Dashboard",
-    subtitle: "An overview of your trading portfolios",
-    iconCode: Icons.Dashboard,
-    breadcrumbs: [
-      {label: 'Dashboard', href: '/dashboard', active: true},
-    ]
-  }
-
 
   //  RENDER
 
-  return (
-    <PageInfoProvider value={pageInfo}>
-      <PageHeaderSection
-        title={pageInfo.title}
-        subtitle={pageInfo.subtitle}
-        iconCode={pageInfo.iconCode}
-        breadcrumbs={pageInfo.breadcrumbs}
-      />
-      {children}
-    </PageInfoProvider>
-  )
+  return children
 }

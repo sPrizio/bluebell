@@ -26,9 +26,9 @@ export const ApiCredentials = {
 
 export const ApiUrls = {
   Account: {
-    CreateAccount: getAccountDomain() + '/create-account?portfolioUid={uid}',
-    UpdateAccount: getAccountDomain() + '/update-account?portfolioUid={uid}&accountNumber={accountNumber}',
-    DeleteAccount: getAccountDomain() + '/delete-account?portfolioUid={uid}&accountNumber={accountNumber}',
+    CreateAccount: getAccountDomain() + '/create-account?portfolioNumber={portfolioNumber}',
+    UpdateAccount: getAccountDomain() + '/update-account?portfolioNumber={portfolioNumber}&accountNumber={accountNumber}',
+    DeleteAccount: getAccountDomain() + '/delete-account?portfolioNumber={portfolioNumber}&accountNumber={accountNumber}',
     GetCurrencies: getAccountDomain() + '/currencies',
     GetAccountTypes: getAccountDomain() + '/account-types',
     GetBrokers: getAccountDomain() + '/brokers',
@@ -46,10 +46,10 @@ export const ApiUrls = {
     FetchNews: getNewsDomain() + '/fetch-news',
   },
   Portfolio: {
-    GetPortfolio: getPortfolioDomain() + '/get?portfolioUid={uid}'
+    GetPortfolio: getPortfolioDomain() + '/get?portfolioNumber={portfolioNumber}'
   },
   PortfolioRecord: {
-    GetPortfolioRecord: getPortfolioRecordDomain() + '/get?portfolioUid={uid}',
+    GetPortfolioRecord: getPortfolioRecordDomain() + '/get?portfolioNumber={portfolioNumber}',
   },
   Trade: {
     GetPagedTrades: getTradeDomain() + '/for-interval-paged?accountNumber={accountNumber}&start={start}&end={end}&page={page}&pageSize={pageSize}',

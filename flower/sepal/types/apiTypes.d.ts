@@ -51,6 +51,7 @@ interface PortfolioEquityPoint extends GenericApiType {
 }
 
 interface Portfolio extends GenericApiType {
+  portfolioNumber: number,
   name: string,
   active: boolean,
   created: string,
@@ -92,6 +93,7 @@ interface Broker extends AccountOption {}
 interface Account extends GenericApiType {
   defaultAccount: boolean,
   accountOpenTime: string,
+  portfolioNumber: string,
   accountCloseTime: string,
   balance: number,
   active: boolean,

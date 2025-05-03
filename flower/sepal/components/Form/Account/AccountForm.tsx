@@ -22,6 +22,7 @@ import {useCreateAccountMutation, useUpdateAccountMutation} from "@/lib/hooks/mu
  * Renders a form that can create or update an Account
  *
  * @param create should create / edit
+ * @param portfolioNumber portfolio number
  * @param account Account info
  * @author Stephen Prizio
  * @version 0.2.0
@@ -29,12 +30,12 @@ import {useCreateAccountMutation, useUpdateAccountMutation} from "@/lib/hooks/mu
 export default function AccountForm(
   {
     mode = 'create',
-    portfolioUid,
+    portfolioNumber,
     account,
   }
   : Readonly<{
     mode?: 'create' | 'edit'
-    portfolioUid: string
+    portfolioNumber: number
     account?: Account
   }>
 ) {
@@ -51,14 +52,14 @@ export default function AccountForm(
     isSuccess: isCreateAccountSuccess,
     isError: isCreateAccountError,
     error: createAccountError
-  } = useCreateAccountMutation();
+  } = useCreateAccountMutation(portfolioNumber);
   const {
     mutate: updateAccount,
     isLoading: isUpdateAccountLoading,
     isSuccess: isUpdateAccountSuccess,
     isError: isUpdateAccountError,
     error: updateAccountError,
-  } = useUpdateAccountMutation(account?.accountNumber ?? -1);
+  } = useUpdateAccountMutation(portfolioNumber, account?.accountNumber ?? -1);
   const {
     data: accCreateInfo,
     error: accCreateInfoError,

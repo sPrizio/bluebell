@@ -4,12 +4,12 @@ import {del, post, put} from "../functions/client";
 import {ApiUrls} from "../constants";
 import {useToast} from "@/hooks/use-toast";
 
-export const useCreateAccountMutation = (portfolioUid: string) => {
+export const useCreateAccountMutation = (portfolioNumber: number) => {
   const queryClient = useQueryClient()
   const toast = useToast();
 
   return useMutation<Account, Error, any>({
-    mutationFn: (payload) => post<Account>(ApiUrls.Account.CreateAccount, { uid: portfolioUid }, payload),
+    mutationFn: (payload) => post<Account>(ApiUrls.Account.CreateAccount, { portfolioNumber: portfolioNumber }, payload),
     onSuccess: (data) => {
       // @ts-ignore
       toast({
@@ -34,12 +34,12 @@ export const useCreateAccountMutation = (portfolioUid: string) => {
   })
 }
 
-export const useUpdateAccountMutation = (portfolioUid: string, accNumber: number) => {
+export const useUpdateAccountMutation = (portfolioNumber: number, accNumber: number) => {
   const queryClient = useQueryClient()
   const toast = useToast();
 
   return useMutation<Account, Error, any>({
-    mutationFn: (payload) => put<Account>(ApiUrls.Account.UpdateAccount, { uid: portfolioUid, accountNumber: accNumber.toString() }, payload),
+    mutationFn: (payload) => put<Account>(ApiUrls.Account.UpdateAccount, { portfolioNumber: portfolioNumber, accountNumber: accNumber.toString() }, payload),
     onSuccess: (data) => {
       // @ts-ignore
       toast({
@@ -64,13 +64,13 @@ export const useUpdateAccountMutation = (portfolioUid: string, accNumber: number
   })
 }
 
-export const useDeleteAccountMutation = (portfolioUid: string, accNumber: number) => {
+export const useDeleteAccountMutation = (portfolioNumber: number, accNumber: number) => {
 
   const queryClient = useQueryClient()
   const toast = useToast();
 
   return useMutation<boolean, Error, any>({
-    mutationFn: (payload) => del<boolean>(ApiUrls.Account.DeleteAccount, { uid: portfolioUid, accountNumber: accNumber.toString() }),
+    mutationFn: (payload) => del<boolean>(ApiUrls.Account.DeleteAccount, { portfolioNumber: portfolioNumber, accountNumber: accNumber.toString() }),
     onSuccess: (data) => {
       // @ts-ignore
       toast({

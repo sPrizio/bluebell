@@ -22,19 +22,17 @@ export const useUserQuery = () => {
   })
 }
 
-export const usePortfolioQuery = (portfolioUid: string) => {
+export const usePortfolioQuery = (portfolioNumber: number) => {
   return useQuery<Portfolio>({
     queryKey: ['portfolio'],
-    queryFn: () => get<Portfolio>(ApiUrls.Portfolio.GetPortfolio, { uid: portfolioUid }),
-    enabled: (portfolioUid?.length ?? 0) > 0,
+    queryFn: () => get<Portfolio>(ApiUrls.Portfolio.GetPortfolio, { portfolioNumber: portfolioNumber })
   })
 }
 
-export const usePortfolioRecordQuery = (portfolioUid: string) => {
+export const usePortfolioRecordQuery = (portfolioNumber: number) => {
   return useQuery<PortfolioRecord>({
     queryKey: ['portfolio-record'],
-    queryFn: () => get<PortfolioRecord>(ApiUrls.PortfolioRecord.GetPortfolioRecord, { uid: portfolioUid }),
-    enabled: (portfolioUid?.length ?? 0) > 0,
+    queryFn: () => get<PortfolioRecord>(ApiUrls.PortfolioRecord.GetPortfolioRecord, { portfolioNumber: portfolioNumber })
   })
 }
 
