@@ -48,14 +48,13 @@ class PortfolioRecordServiceTest extends AbstractGenericTest {
     @Test
     void test_getSinglePortfolioRecord_success() {
 
-        assertThatExceptionOfType(IllegalParameterException.class).isThrownBy(() -> this.portfolioRecordService.getSinglePortfolioRecord("1234", null));
-        assertThatExceptionOfType(IllegalParameterException.class).isThrownBy(() -> this.portfolioRecordService.getSinglePortfolioRecord(null, null));
+        assertThatExceptionOfType(IllegalParameterException.class).isThrownBy(() -> this.portfolioRecordService.getSinglePortfolioRecord(1234L, null));
 
         final User user = generateTestUser();
         user.getActivePortfolios().stream().map(Portfolio::getActiveAccounts).flatMap(List::stream).toList().get(0).setTrades(List.of(generateTestBuyTrade(), generateTestSellTrade()));
         user.getActivePortfolios().stream().map(Portfolio::getActiveAccounts).flatMap(List::stream).toList().get(0).setBalance(1010.35);
         user.getActivePortfolios().stream().map(Portfolio::getActiveAccounts).flatMap(List::stream).toList().get(0).setTransactions(List.of(generateTestTransactionDeposit(user.getActivePortfolios().stream().map(Portfolio::getActiveAccounts).flatMap(List::stream).toList().get(0)), generateTestTransactionDeposit(user.getActivePortfolios().stream().map(Portfolio::getActiveAccounts).flatMap(List::stream).toList().get(0)), generateTestTransactionWithdrawal(user.getActivePortfolios().stream().map(Portfolio::getActiveAccounts).flatMap(List::stream).toList().get(0))));
-        final PortfolioRecord portfolioRecord = this.portfolioRecordService.getSinglePortfolioRecord("1234", user);
+        final PortfolioRecord portfolioRecord = this.portfolioRecordService.getSinglePortfolioRecord(1234L, user);
 
         assertThat(portfolioRecord).isNotNull();
         assertThat(portfolioRecord)

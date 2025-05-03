@@ -39,7 +39,7 @@ public class PortfolioDTOConverter implements GenericDTOConverter<Portfolio, Por
         final String uid = this.uniqueIdentifierService.generateUid(entity);
         final List<AccountDTO> accounts = this.accountDTOConverter.convertAll(entity.getAccounts());
 
-        accounts.forEach(acc -> acc.setPortfolioUid(uid));
+        accounts.forEach(acc -> acc.setPortfolioNumber(entity.getPortfolioNumber()));
         return PortfolioDTO
                 .builder()
                 .uid(uid)

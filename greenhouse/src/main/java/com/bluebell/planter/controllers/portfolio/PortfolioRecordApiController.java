@@ -64,15 +64,15 @@ public class PortfolioRecordApiController extends AbstractApiController {
     )
     @GetMapping(ApiPaths.PortfolioRecord.GET)
     public StandardJsonResponse<PortfolioRecord> getPortfolioRecord(
-            @Parameter(name = "portfolioUid", description = "Portfolio UID to add the account to", example = "1234")
-            final @RequestParam("portfolioUid") String portfolioUid,
+            @Parameter(name = "portfolioNumber", description = "Portfolio to add the account to", example = "1234")
+            final @RequestParam("portfolioNumber") long portfolioNumber,
             final HttpServletRequest request
     ) {
         final User user = (User) request.getAttribute(SecurityConstants.USER_REQUEST_KEY);
         return StandardJsonResponse
                 .<PortfolioRecord>builder()
                 .success(true)
-                .data(this.portfolioRecordService.getSinglePortfolioRecord(portfolioUid, user))
+                .data(this.portfolioRecordService.getSinglePortfolioRecord(portfolioNumber, user))
                 .build();
     }
 

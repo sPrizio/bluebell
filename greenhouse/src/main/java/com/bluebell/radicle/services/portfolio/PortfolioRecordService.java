@@ -1,6 +1,5 @@
 package com.bluebell.radicle.services.portfolio;
 
-import com.bluebell.planter.services.UniqueIdentifierService;
 import com.bluebell.platform.constants.CorePlatformConstants;
 import com.bluebell.platform.enums.system.TradeRecordTimeInterval;
 import com.bluebell.platform.enums.transaction.TransactionType;
@@ -15,11 +14,9 @@ import com.bluebell.platform.models.core.nonentities.records.portfolio.Portfolio
 import com.bluebell.platform.models.core.nonentities.records.portfolio.PortfolioRecord;
 import com.bluebell.platform.models.core.nonentities.records.portfolio.PortfolioStatistics;
 import com.bluebell.platform.services.MathService;
-import com.bluebell.radicle.exceptions.validation.IllegalParameterException;
 import com.bluebell.radicle.services.account.AccountService;
 import jakarta.annotation.Resource;
 import org.apache.commons.collections4.CollectionUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -45,31 +42,22 @@ public class PortfolioRecordService {
     @Resource(name = "accountService")
     private AccountService accountService;
 
-    @Resource(name = "uniqueIdentifierService")
-    private UniqueIdentifierService uniqueIdentifierService;
-
 
     //  METHODS
 
     /**
      * Obtains the {@link User}'s {@link PortfolioRecord} for the matching portfolio
      *
-     * @param portfolioUid portfolio uid
+     * @param portfolioNumber portfolio number
      * @param user         {@link User}
      * @return {@link PortfolioRecord}
      */
-    public PortfolioRecord getSinglePortfolioRecord(final String portfolioUid, final User user) {
-
-        if (StringUtils.isEmpty(portfolioUid)) {
-            throw new IllegalParameterException("Portfolio uid cannot be empty");
-        }
-
+    public PortfolioRecord getSinglePortfolioRecord(final long portfolioNumber, final User user) {
         validateParameterIsNotNull(user, CorePlatformConstants.Validation.Security.User.USER_CANNOT_BE_NULL);
-        final long id = this.uniqueIdentifierService.retrieveId(portfolioUid);
-        final List<Account> accounts = user.getActivePortfolios().stream().filter(p -> p.getId().equals(id)).map(Portfolio::getActiveAccounts).flatMap(List::stream).toList();
+        final List<Account> accounts = user.getActivePortfolios().stream().filter(p -> p.getPortfolioNumber() == portfolioNumber).map(Portfolio::getActiveAccounts).flatMap(List::stream).toList();
 
         if (CollectionUtils.isEmpty(accounts)) {
-            throw new UnsupportedOperationException(String.format("No accounts for portfolio with uid %s", portfolioUid));
+            throw new UnsupportedOperationException(String.format("No accounts for portfolio with number %d", portfolioNumber));
         }
 
         return generateRecord(accounts);

@@ -29,7 +29,7 @@ public class AccountDTO implements GenericDTO {
     private @Builder.Default String uid = StringUtils.EMPTY;
 
     @Schema(description = "Portfolio uid")
-    private @Builder.Default String portfolioUid = StringUtils.EMPTY;
+    private @Builder.Default long portfolioNumber = -1;
 
     @Schema(description = "Is the account the default account for the portfolio")
     private boolean defaultAccount;
