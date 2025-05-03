@@ -50,7 +50,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @RunWith(SpringRunner.class)
 class AccountApiControllerTest extends AbstractPlanterTest {
 
-    private static final String PORTFOLIO_UID = "portfolioUid";
+    private static final String PORTFOLIO_NUMBER = "portfolioNumber";
 
     @MockitoBean
     private AccountDTOConverter accountDTOConverter;
@@ -76,8 +76,8 @@ class AccountApiControllerTest extends AbstractPlanterTest {
         Mockito.when(this.accountService.findAccountByAccountNumber(1234)).thenReturn(Optional.of(Account.builder().build()));
         Mockito.when(this.accountService.findAccountByAccountNumber(5678)).thenReturn(Optional.empty());
         Mockito.when(this.accountService.deleteAccount(any())).thenReturn(true);
-        Mockito.when(this.portfolioService.findPortfolioByUid("1234")).thenReturn(Optional.of(generateTestPortfolio()));
-        Mockito.when(this.portfolioService.findPortfolioByUid("5678")).thenReturn(Optional.empty());
+        Mockito.when(this.portfolioService.findPortfolioForPortfolioNumber(1234L)).thenReturn(Optional.of(generateTestPortfolio()));
+        Mockito.when(this.portfolioService.findPortfolioForPortfolioNumber(5678L)).thenReturn(Optional.empty());
         Mockito.when(this.accountService.getAccountDetails(any())).thenReturn(generateAccountDetails());
         Mockito.when(this.accountService.updateAccountTradingData(any())).thenReturn(true);
     }
@@ -149,7 +149,7 @@ class AccountApiControllerTest extends AbstractPlanterTest {
     @Test
     void test_postCreateNewAccount_badJsonIntegrity() throws Exception {
         this.mockMvc.perform(post(getApiPath(BASE, CREATE_ACCOUNT))
-                        .queryParam(PORTFOLIO_UID, "1234")
+                        .queryParam(PORTFOLIO_NUMBER, "1234")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(new ObjectMapper().writeValueAsString(Map.of("hello", "world")))
                 )
@@ -173,7 +173,7 @@ class AccountApiControllerTest extends AbstractPlanterTest {
                 .build();
 
         this.mockMvc.perform(post(getApiPath(BASE, CREATE_ACCOUNT))
-                        .queryParam(PORTFOLIO_UID, "5678")
+                        .queryParam(PORTFOLIO_NUMBER, "5678")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(new ObjectMapper().writeValueAsString(data))
                 )
@@ -198,7 +198,7 @@ class AccountApiControllerTest extends AbstractPlanterTest {
 
         this.mockMvc.perform(post(getApiPath(BASE, CREATE_ACCOUNT))
                         .requestAttr(SecurityConstants.USER_REQUEST_KEY, generateTestUser())
-                        .queryParam(PORTFOLIO_UID, "1234")
+                        .queryParam(PORTFOLIO_NUMBER, "1234")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(new ObjectMapper().writeValueAsString(data)))
                 .andExpect(status().isOk())
@@ -241,7 +241,7 @@ class AccountApiControllerTest extends AbstractPlanterTest {
     void test_putUpdateAccount_badJsonIntegrity() throws Exception {
         this.mockMvc.perform(put(getApiPath(BASE, UPDATE_ACCOUNT))
                         .queryParam("accountNumber", "5678")
-                        .queryParam(PORTFOLIO_UID, "1234")
+                        .queryParam(PORTFOLIO_NUMBER, "1234")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(new ObjectMapper().writeValueAsString(Map.of("hello", "world")))
                 )
@@ -267,7 +267,7 @@ class AccountApiControllerTest extends AbstractPlanterTest {
         this.mockMvc.perform(put(getApiPath(BASE, UPDATE_ACCOUNT))
                         .requestAttr(SecurityConstants.USER_REQUEST_KEY, generateTestUser())
                         .queryParam("accountNumber", "5678")
-                        .queryParam(PORTFOLIO_UID, "5678")
+                        .queryParam(PORTFOLIO_NUMBER, "5678")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(new ObjectMapper().writeValueAsString(data))
                 )
@@ -293,7 +293,7 @@ class AccountApiControllerTest extends AbstractPlanterTest {
         this.mockMvc.perform(put(getApiPath(BASE, UPDATE_ACCOUNT))
                         .requestAttr(SecurityConstants.USER_REQUEST_KEY, generateTestUser())
                         .queryParam("accountNumber", "5678")
-                        .queryParam(PORTFOLIO_UID, "1234")
+                        .queryParam(PORTFOLIO_NUMBER, "1234")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(new ObjectMapper().writeValueAsString(data))
                 )
@@ -319,7 +319,7 @@ class AccountApiControllerTest extends AbstractPlanterTest {
         this.mockMvc.perform(put(getApiPath(BASE, UPDATE_ACCOUNT))
                         .requestAttr(SecurityConstants.USER_REQUEST_KEY, generateTestUser())
                         .queryParam("accountNumber", "1234")
-                        .queryParam(PORTFOLIO_UID, "1234")
+                        .queryParam(PORTFOLIO_NUMBER, "1234")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(new ObjectMapper().writeValueAsString(data))
                 )
@@ -334,7 +334,7 @@ class AccountApiControllerTest extends AbstractPlanterTest {
     void test_deleteAccount_missingAccount() throws Exception {
         this.mockMvc.perform(delete(getApiPath(BASE, DELETE_ACCOUNT))
                         .queryParam("accountNumber", "5678")
-                        .queryParam(PORTFOLIO_UID, "5678")
+                        .queryParam(PORTFOLIO_NUMBER, "5678")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.message", is(String.format("No account was found for account number %d", 5678))));
@@ -344,7 +344,7 @@ class AccountApiControllerTest extends AbstractPlanterTest {
     void test_deleteAccount_success() throws Exception {
         this.mockMvc.perform(delete(getApiPath(BASE, DELETE_ACCOUNT))
                         .queryParam("accountNumber", "1234")
-                        .queryParam(PORTFOLIO_UID, "5678")
+                        .queryParam(PORTFOLIO_NUMBER, "5678")
                         .contentType(MediaType.APPLICATION_JSON)
                 )
                 .andExpect(status().isOk())

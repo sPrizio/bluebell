@@ -20,7 +20,7 @@ import java.util.List;
  * Class representation of an individual that can interact with the system, hold accounts and other information
  *
  * @author Stephen Prizio
- * @version 0.1.3
+ * @version 0.2.0
  */
 @Getter
 @Entity
@@ -33,7 +33,7 @@ public class User implements GenericEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    public Long id;
+    private Long id;
 
     @Setter
     @Column

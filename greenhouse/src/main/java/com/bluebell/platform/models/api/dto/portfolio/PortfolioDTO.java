@@ -27,6 +27,9 @@ public class PortfolioDTO implements GenericDTO {
     @Schema(description = "Portfolio uid")
     private @Builder.Default String uid = StringUtils.EMPTY;
 
+    @Schema(description = "Portfolio number")
+    private long portfolioNumber;
+
     @Schema(description = "Portfolio name")
     private String name;
 

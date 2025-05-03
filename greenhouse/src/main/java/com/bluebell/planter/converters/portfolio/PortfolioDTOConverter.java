@@ -43,6 +43,7 @@ public class PortfolioDTOConverter implements GenericDTOConverter<Portfolio, Por
         return PortfolioDTO
                 .builder()
                 .uid(uid)
+                .portfolioNumber(entity.getPortfolioNumber())
                 .name(entity.getName())
                 .active(entity.isActive())
                 .created(entity.getCreated())

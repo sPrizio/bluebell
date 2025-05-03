@@ -16,12 +16,12 @@ import java.util.List;
  * Class representation of a collection of {@link Account}s
  *
  * @author Stephen Prizio
- * @version 0.1.2
+ * @version 0.2.0
  */
 @Getter
 @Entity
 @Builder
-@Table(name = "portfolios")
+@Table(name = "portfolios", uniqueConstraints = @UniqueConstraint(name = "UniquePortfolioNumberAndUser", columnNames = {"portfolio_number", "user_id"}))
 @NoArgsConstructor
 @AllArgsConstructor
 public class Portfolio implements GenericEntity {
@@ -29,7 +29,11 @@ public class Portfolio implements GenericEntity {
     @Id
     @Setter
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    public Long id;
+    private Long id;
+
+    @Setter
+    @Column(name = "portfolio_number")
+    private @Builder.Default long portfolioNumber = -1L;
 
     @Setter
     @Column
@@ -52,6 +56,7 @@ public class Portfolio implements GenericEntity {
 
     @Setter
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.REFRESH)
+    @JoinColumn(name = "user_id")
     private User user;
 
 
