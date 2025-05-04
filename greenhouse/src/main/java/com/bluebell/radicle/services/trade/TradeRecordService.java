@@ -18,7 +18,6 @@ import com.bluebell.platform.models.core.nonentities.records.traderecord.control
 import com.bluebell.platform.models.core.nonentities.records.traderecord.controls.TradeRecordControlsMonthEntry;
 import com.bluebell.platform.models.core.nonentities.records.traderecord.controls.TradeRecordControlsYearEntry;
 import com.bluebell.platform.services.MathService;
-import com.bluebell.radicle.exceptions.trade.TradeRecordComputationException;
 import jakarta.annotation.Resource;
 import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.stereotype.Service;
@@ -36,7 +35,7 @@ import static com.bluebell.radicle.validation.GenericValidator.validateParameter
  * Service-layer for calculating {@link TradeRecord}s
  *
  * @author Stephen Prizio
- * @version 0.1.4
+ * @version 0.2.0
  */
 @Service
 public class TradeRecordService {
@@ -114,12 +113,12 @@ public class TradeRecordService {
         }
 
         if (CollectionUtils.isEmpty(account.getTrades())) {
-            throw new TradeRecordComputationException("No trades found for account " + account.getId());
+            return TradeRecordReport.builder().tradeRecords(Collections.emptyList()).tradeRecordTotals(TradeRecordTotals.builder().build()).build();
         }
 
         final LocalDateTime firstTraded = account.getTrades().get(0).getTradeCloseTime();
         if (firstTraded == null) {
-            throw new TradeRecordComputationException(String.format("Account %s doesn't have any closed trades", account.getName()));
+            return TradeRecordReport.builder().tradeRecords(Collections.emptyList()).tradeRecordTotals(TradeRecordTotals.builder().build()).build();
         }
 
         final Set<TradeRecord> tradeRecords = new HashSet<>();
