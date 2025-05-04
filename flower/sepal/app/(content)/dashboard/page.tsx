@@ -1,6 +1,6 @@
 'use client'
 
-import React from "react";
+import React, {useState} from "react";
 import {Icons} from "@/lib/enums";
 import {BaseCard} from "@/components/Card/BaseCard";
 import DashboardContent from "@/components/Card/Content/DashboardContent";
@@ -21,6 +21,7 @@ import {User} from "@/types/apiTypes";
 import TransactionsTable from "@/components/Table/Transaction/TransactionsTable";
 import PageHeaderSection from "@/components/Section/PageHeaderSection";
 import {PageInfoProvider} from "@/lib/context/PageInfoProvider";
+import ReusableSelect from "@/components/Input/ReusableSelect";
 
 /**
  * The page that shows an overview of a user's portfolio
@@ -83,6 +84,7 @@ export default function DashboardPage() {
 
   //  RENDER
 
+  const [selectedPortfolio, setSelectedPortfolio] = useState(activePortfolio)
   if (isLoading) {
     return <LoadingPage/>
   }
@@ -111,6 +113,16 @@ export default function DashboardPage() {
       />
       <div>
         <div className={'grid grid-cols-1 gap-8 w-full'}>
+          <div className={'flex flex-row items-end justify-end'}>
+            <ReusableSelect
+              title={'Portfolio'}
+              initialValue={selectedPortfolio.toString()}
+              options={user?.portfolios?.map(p => {
+                return {label: p.name, value: p.portfolioNumber}
+              }) ?? []}
+              handler={(val : string) => setSelectedPortfolio(parseInt(val))}
+            />
+          </div>
           {/* TODO: BB-54 Implement Portfolio UI */}
           <div className={"grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-8"}>
             <div className={""}>
