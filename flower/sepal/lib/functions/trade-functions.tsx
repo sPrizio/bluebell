@@ -1,6 +1,6 @@
 import {getAuthHeader} from "@/lib/functions/security-functions";
 import {ApiUrls} from "@/lib/constants";
-import {PagedTrades, TradeLog, TradeRecordControls, TradeRecordReport} from "@/types/apiTypes";
+import {PagedTrades, TradeRecordControls, TradeRecordReport} from "@/types/apiTypes";
 
 /**
  * Fetches a list of trade records for the given time period
@@ -23,43 +23,6 @@ export async function getTradeRecords(accNumber: number, start: string, end: str
           .replace('{accountNumber}', accNumber.toString())
           .replace('{start}', start)
           .replace('{end}', end)
-          .replace('{interval}', interval)
-          .replace('{count}', count.toString()), {
-          method: 'GET',
-          headers: headers,
-        }
-      )
-
-    if (res.ok) {
-      const data = await res.json()
-      if (data.success) {
-        return data.data
-      }
-    }
-  } catch (e) {
-    console.log(e)
-  }
-
-  return null;
-}
-
-/**
- * Fetches a list of recent trade records
- *
- * @param accNumber account number
- * @param interval aggregate interval
- * @param count limit results
- */
-export async function getRecentTradeRecords(accNumber: number, interval: string, count: number): Promise<TradeRecordReport | null> {
-
-  const headers = getAuthHeader()
-  headers['Content-Type'] = 'application/json'
-
-  try {
-    const res =
-      await fetch(
-        ApiUrls.TradeRecord.GetRecentTradeRecords
-          .replace('{accountNumber}', accNumber.toString())
           .replace('{interval}', interval)
           .replace('{count}', count.toString()), {
           method: 'GET',

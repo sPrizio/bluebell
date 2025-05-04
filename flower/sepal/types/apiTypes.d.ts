@@ -93,7 +93,7 @@ interface Broker extends AccountOption {}
 interface Account extends GenericApiType {
   defaultAccount: boolean,
   accountOpenTime: string,
-  portfolioNumber: string,
+  portfolioNumber: number,
   accountCloseTime: string,
   balance: number,
   active: boolean,

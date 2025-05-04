@@ -2,14 +2,12 @@
 
 import React, {useEffect, useState} from "react";
 import {SepalPageInfoContext} from "@/lib/context/SepalContext";
-import PageHeaderSection from "@/components/Section/PageHeaderSection";
 import {ContentLayout} from "@/components/ui/admin-panel/content-layout";
 import {AppLink} from "@/types/uiTypes";
 import AdminPanelLayout from "@/components/ui/admin-panel/admin-panel-layout";
 import {Toaster} from "@/components/ui/toaster";
-import {getUser} from "@/lib/functions/account-functions";
 import {User} from "@/types/apiTypes";
-import {PageInfoProvider} from "@/lib/context/PageInfoProvider";
+import {usePortfolioStore} from "@/lib/store/portfolioStore";
 
 /**
  * Generic layout for Content pages
@@ -47,6 +45,9 @@ export default function ContentPageLayout(
 
 
   //  RENDER
+
+  const { selectedPortfolioId, setSelectedPortfolioId } = usePortfolioStore()
+
 
   return (
     <SepalPageInfoContext.Provider value={{

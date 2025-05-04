@@ -2,13 +2,13 @@ import {useQuery} from '@tanstack/react-query';
 import {ApiUrls, DateTime} from '../constants';
 import moment from 'moment';
 import {
-  Account, AccountCreationInfo, AccountType,
+  Account, AccountCreationInfo, AccountDetails, AccountType,
   Broker,
   Currency,
   Portfolio,
   PortfolioRecord,
   TradeLog,
-  TradePlatform,
+  TradePlatform, TradeRecordReport,
   Transaction,
   User
 } from '@/types/apiTypes';
@@ -61,6 +61,17 @@ export const useTradeLogQuery = () => {
   })
 }
 
+export const useRecentTradeRecordsQuery = (id: string, interval: string, count: number) => {
+  const { data: user } = useUserQuery()
+  const accountId = parseInt(id, 10)
+
+  return useQuery<TradeRecordReport | null>({
+    queryKey: ['recent-trade-records', id],
+    queryFn: () => get<TradeRecordReport>(ApiUrls.TradeRecord.GetRecentTradeRecords, { accountNumber: accountId.toString(), interval: interval, count: count }),
+    enabled: isNumeric(id) && !!user
+  })
+}
+
 export const useAccountQuery = (id: string) => {
   const { data: user } = useUserQuery()
   const accountId = parseInt(id, 10)
@@ -68,6 +79,17 @@ export const useAccountQuery = (id: string) => {
   return useQuery<Account | null>({
     queryKey: ['account', id],
     queryFn: () => user?.portfolios?.flatMap(p => p.accounts)?.find((acc) => acc.accountNumber === accountId) ?? null,
+    enabled: isNumeric(id) && !!user
+  })
+}
+
+export const useAccountDetailsQuery = (id: string) => {
+  const { data: user } = useUserQuery()
+  const accountId = parseInt(id, 10)
+
+  return useQuery<AccountDetails | null>({
+    queryKey: ['account-details', id],
+    queryFn: () => get<AccountDetails>(ApiUrls.Account.GetDetails, { accountNumber: accountId.toString() }),
     enabled: isNumeric(id) && !!user
   })
 }
@@ -101,18 +123,31 @@ export const useAccountTypesQuery = () => {
 }
 
 export const useAccountCreationInfoQuery = () => {
-  const {data: currencies} = useCurrenciesQuery()
-  const {data: brokers} = useBrokersQuery()
-  const {data: platforms} = useTradePlatformsQuery()
-  const {data: accountTypes} = useAccountTypesQuery()
+  const {data: currencies, isLoading: isCurrenciesLoading} = useCurrenciesQuery()
+  const {data: brokers, isLoading: isBrokersLoading} = useBrokersQuery()
+  const {data: platforms, isLoading: isPlatformsLoading} = useTradePlatformsQuery()
+  const {data: accountTypes, isLoading: isAccountTypesLoading} = useAccountTypesQuery()
+
+  const allLoaded = !(
+    isCurrenciesLoading ||
+    isBrokersLoading ||
+    isPlatformsLoading ||
+    isAccountTypesLoading
+  )
 
   return useQuery<AccountCreationInfo>({
     queryKey: ['account-creation-info'],
-    queryFn: () => ({
-      currencies: currencies ?? [],
-      brokers: brokers ?? [],
-      platforms: platforms ?? [],
-      accountTypes: accountTypes ?? [],
-    })
+    queryFn: () => {
+      if (!allLoaded) {
+        throw new Error("Dependent queries not loaded yet")
+      }
+      return {
+        currencies: currencies ?? [],
+        brokers: brokers ?? [],
+        platforms: platforms ?? [],
+        accountTypes: accountTypes ?? [],
+      }
+    },
+    enabled: allLoaded,
   })
 }

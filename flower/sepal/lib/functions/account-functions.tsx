@@ -1,6 +1,6 @@
 import {ApiUrls} from "@/lib/constants";
 import {getAuthHeader} from "@/lib/functions/security-functions";
-import {AccountDetails, User} from "@/types/apiTypes";
+import {User} from "@/types/apiTypes";
 
 /**
  * Searches for an existing username that matches the given value
@@ -131,36 +131,6 @@ export async function updateUser(username: string, values: any): Promise<User | 
         method: 'PUT',
         headers: headers,
         body: JSON.stringify(ret)
-      })
-
-    if (res.ok) {
-      const data = await res.json()
-      if (data.success) {
-        return data.data
-      }
-    }
-  } catch (e) {
-    console.log(e)
-  }
-
-  return null;
-}
-
-/**
- * Obtains account information for the given account number
- *
- * @param accNumber account number
- */
-export async function getAccountDetails(accNumber: number): Promise<AccountDetails | null> {
-
-  const headers = getAuthHeader()
-  headers['Content-Type'] = 'application/json'
-
-  try {
-    const res =
-      await fetch(ApiUrls.Account.GetDetails.replace('{accountNumber}', accNumber.toString()), {
-        method: 'GET',
-        headers: headers,
       })
 
     if (res.ok) {

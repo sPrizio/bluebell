@@ -40,7 +40,7 @@ import ftmo from '@/app/assets/brokers/ftmo.png'
 import td365 from '@/app/assets/brokers/td365.png'
 import td from '@/app/assets/brokers/td.png'
 import {ReadonlyURLSearchParams} from "next/navigation";
-import { Account } from "@/types/apiTypes";
+import {Account, User} from "@/types/apiTypes";
 
 /**
  * Returns the correct icon based on the given enum value
@@ -368,4 +368,20 @@ export function logErrors(...errors: any[]) {
       console.error(error)
     }
   })
+}
+
+/**
+ * Obtains the active portfolio uid, if it exists
+ *
+ * @param user user
+ */
+export function getActivePortfolioNumber(user: User | null | undefined): number | null {
+  if (user?.portfolios ?? false) {
+    const defPort = user?.portfolios?.filter(p => p.defaultPortfolio) ?? null
+    if ((defPort?.length ?? 0) > 0) {
+      return defPort?.[0].portfolioNumber ?? null
+    }
+  }
+
+  return null
 }

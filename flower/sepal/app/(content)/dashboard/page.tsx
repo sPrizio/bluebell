@@ -1,10 +1,10 @@
 'use client'
 
-import React, {useState} from "react";
+import React from "react";
 import {Icons} from "@/lib/enums";
 import {BaseCard} from "@/components/Card/BaseCard";
 import DashboardContent from "@/components/Card/Content/DashboardContent";
-import {logErrors, resolveIcon} from "@/lib/functions/util-functions";
+import {getActivePortfolioNumber, logErrors, resolveIcon} from "@/lib/functions/util-functions";
 import AccountsTable from "@/components/Table/Account/AccountsTable";
 import TradeLogTable from "@/components/Table/Trade/TradeLogTable";
 import PortfolioGrowthChart from "@/components/Chart/Account/PortfolioGrowthChart";
@@ -17,11 +17,11 @@ import {
 } from "@/lib/hooks/queries";
 import Error from "@/app/error";
 import LoadingPage from "@/app/loading";
-import {User} from "@/types/apiTypes";
 import TransactionsTable from "@/components/Table/Transaction/TransactionsTable";
 import PageHeaderSection from "@/components/Section/PageHeaderSection";
 import {PageInfoProvider} from "@/lib/context/PageInfoProvider";
 import ReusableSelect from "@/components/Input/ReusableSelect";
+import {usePortfolioStore} from "@/lib/store/portfolioStore";
 
 /**
  * The page that shows an overview of a user's portfolio
@@ -63,28 +63,9 @@ export default function DashboardPage() {
   const isLoading = isUserLoading || isPortfolioLoading || isPortfolioRecordLoading || isRecentTransactionsLoading || isTradeLogLoading
 
 
-  //  GENERAL FUNCTIONS
-
-  /**
-   * Obtains the active portfolio uid, if it exists
-   *
-   * @param user user
-   */
-  function getActivePortfolioNumber(user: User | null | undefined) : number | null {
-    if (user?.portfolios ?? false) {
-      const defPort = user?.portfolios?.filter(p => p.defaultPortfolio) ?? null
-      if ((defPort?.length ?? 0) > 0) {
-        return defPort?.[0].portfolioNumber ?? null
-      }
-    }
-
-    return null
-  }
-
-
   //  RENDER
 
-  const [selectedPortfolio, setSelectedPortfolio] = useState(activePortfolio)
+  const { selectedPortfolioId, setSelectedPortfolioId } = usePortfolioStore()
   if (isLoading) {
     return <LoadingPage/>
   }
@@ -103,6 +84,10 @@ export default function DashboardPage() {
     ]
   }
 
+  if (selectedPortfolioId === null) {
+    setSelectedPortfolioId(getActivePortfolioNumber(user) ?? -1)
+  }
+
   return (
     <PageInfoProvider value={pageInfo}>
       <PageHeaderSection
@@ -116,11 +101,13 @@ export default function DashboardPage() {
           <div className={'flex flex-row items-end justify-end'}>
             <ReusableSelect
               title={'Portfolio'}
-              initialValue={selectedPortfolio.toString()}
+              initialValue={selectedPortfolioId?.toString()}
               options={user?.portfolios?.map(p => {
                 return {label: p.name, value: p.portfolioNumber}
               }) ?? []}
-              handler={(val : string) => setSelectedPortfolio(parseInt(val))}
+              handler={(val: string) => {
+                setSelectedPortfolioId(parseInt(val))
+              }}
             />
           </div>
           {/* TODO: BB-54 Implement Portfolio UI */}
@@ -163,7 +150,8 @@ export default function DashboardPage() {
               <BaseCard
                 title={'Portfolio Growth'}
                 subtitle={'A look back at your portfolio\'s performance over the last 6 months.'}
-                cardContent={<PortfolioGrowthChart key={portfolioRecord?.equity.length} isNew={portfolioRecord?.newPortfolio ?? false}
+                cardContent={<PortfolioGrowthChart key={portfolioRecord?.equity.length}
+                                                   isNew={portfolioRecord?.newPortfolio ?? false}
                                                    data={portfolioRecord?.equity ?? []}/>}
               />
             </div>
@@ -193,7 +181,7 @@ export default function DashboardPage() {
                 title={'Transaction Activity'}
                 subtitle={'Your most recent account transactions.'}
                 cardContent={
-                  <TransactionsTable transactions={recentTransactions ?? []} showBottomLink={true} />
+                  <TransactionsTable transactions={recentTransactions ?? []} showBottomLink={true}/>
                 }
               />
             </div>

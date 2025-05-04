@@ -4,11 +4,13 @@ import React from "react";
 import {Icons} from "@/lib/enums";
 import {PageInfoProvider} from "@/lib/context/PageInfoProvider";
 import PageHeaderSection from "@/components/Section/PageHeaderSection";
-import {useAccountQuery} from "@/lib/hooks/queries";
+import {useAccountQuery, useUserQuery} from "@/lib/hooks/queries";
 import LoadingPage from "@/app/loading";
 import {logErrors} from "@/lib/functions/util-functions";
 import Error from "@/app/error";
 import AccountDetailsCmp from "@/components/Account/AccountDetailsCmp";
+import {usePortfolioStore} from "@/lib/store/portfolioStore";
+import {Portfolio} from "@/types/apiTypes";
 
 /**
  * The base layout for the Account detail page
@@ -28,7 +30,15 @@ export default function AccountsLayout(
   }>
 ) {
 
+  const { data: user, isLoading: isUserLoading } = useUserQuery();
   const { data: account, isError: isAccountError, error: accountError, isLoading: isAccountLoading } = useAccountQuery(params.id)
+  const {selectedPortfolioId} = usePortfolioStore()
+
+  if (isUserLoading || !user || !selectedPortfolioId || selectedPortfolioId === -1) {
+    return <LoadingPage/>
+  }
+
+  const activePortfolio: Portfolio | null = user?.portfolios?.find(p => p.portfolioNumber === selectedPortfolioId) ?? null
 
   if (isAccountLoading) {
     return <LoadingPage/>
@@ -45,7 +55,7 @@ export default function AccountsLayout(
     iconCode: Icons.Mountain,
     breadcrumbs: [
       {label: 'Dashboard', href: '/dashboard', active: false},
-      {label: 'Accounts', href: '/accounts', active: false},
+      {label: `${activePortfolio?.name ?? ''} Accounts`, href: '/accounts', active: false},
       {label: `${account?.name ?? 'Account'}`, href: `/accounts/${params.id}`, active: true},
     ]
   }

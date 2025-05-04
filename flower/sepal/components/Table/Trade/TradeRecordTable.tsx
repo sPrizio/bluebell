@@ -10,7 +10,7 @@ import {TradeRecordReport} from "@/types/apiTypes";
  *
  * @param records Trade records
  * @author Stephen Prizio
- * @version 0.0.2
+ * @version 0.2.0
  */
 export default function TradeRecordTable(
   {
@@ -18,7 +18,7 @@ export default function TradeRecordTable(
     showTotals = false,
   }
     : Readonly<{
-    report: TradeRecordReport | null,
+    report: TradeRecordReport | null | undefined,
     showTotals?: boolean,
   }>
 ) {

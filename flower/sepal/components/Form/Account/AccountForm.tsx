@@ -17,6 +17,7 @@ import {Account, AccountType, Broker, Currency, TradePlatform} from "@/types/api
 import {useAccountCreationInfoQuery} from "@/lib/hooks/queries";
 import {logErrors} from "@/lib/functions/util-functions";
 import {useCreateAccountMutation, useUpdateAccountMutation} from "@/lib/hooks/mutations";
+import React, {useEffect} from "react";
 
 /**
  * Renders a form that can create or update an Account
@@ -40,7 +41,7 @@ export default function AccountForm(
   }>
 ) {
 
-  if (!isCreateMode() && (!account || !account.accountNumber)) {
+  if (!isCreateMode() && !account?.accountNumber) {
     throw new Error('Missing Account for edit mode');
   }
 
@@ -48,14 +49,14 @@ export default function AccountForm(
   const {setOpen} = useSepalModalContext()
   const {
     mutate: createAccount,
-    isLoading: isCreateAccountLoading,
+    isPending: isCreateAccountLoading,
     isSuccess: isCreateAccountSuccess,
     isError: isCreateAccountError,
     error: createAccountError
   } = useCreateAccountMutation(portfolioNumber);
   const {
     mutate: updateAccount,
-    isLoading: isUpdateAccountLoading,
+    isPending: isUpdateAccountLoading,
     isSuccess: isUpdateAccountSuccess,
     isError: isUpdateAccountError,
     error: updateAccountError,
@@ -67,26 +68,49 @@ export default function AccountForm(
     isLoading: isAccCreateInfoLoading
   } = useAccountCreationInfoQuery();
 
+  const isLoading = isCreateAccountLoading ?? isAccCreateInfoLoading ?? isUpdateAccountLoading
+
+  useEffect(() => {
+    if (isCreateAccountSuccess) {
+      renderSuccessNotification()
+      setOpen(false)
+    } else if (isCreateAccountError) {
+      logErrors(createAccountError)
+      renderErrorNotification()
+    }
+  }, [isCreateAccountSuccess, isCreateAccountError]);
+
+  useEffect(() => {
+    if (isUpdateAccountSuccess) {
+      renderSuccessNotification()
+      setOpen(false)
+      window.location.reload();
+    } else if (isUpdateAccountError) {
+      logErrors(updateAccountError)
+      renderErrorNotification()
+    }
+  }, [isUpdateAccountSuccess, isUpdateAccountError]);
+
   if (isAccCreateInfoError) {
     logErrors(accCreateInfoError)
     setOpen(false)
     renderErrorNotification()
 
-    return null
+    throw new Error('Acc Create Info Error');
   }
 
   const formSchema = CRUDAccountSchema(accCreateInfo)
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      defaultAccount: isCreateMode() ? false : account?.defaultAccount,
+      isDefault: isCreateMode() ? false : account?.defaultAccount,
       balance: isCreateMode() ? 0 : account?.balance,
       active: isCreateMode() ? true : account?.active,
       name: isCreateMode() ? '' : account?.name,
-      accountNumber: isCreateMode() ? 0 : account?.accountNumber,
+      number: isCreateMode() ? 0 : account?.accountNumber,
       currency: isCreateMode() ? 'default' : account?.currency?.code,
       broker: isCreateMode() ? 'default' : account?.broker?.code,
-      accountType: isCreateMode() ? 'default' : account?.accountType?.code,
+      type: isCreateMode() ? 'default' : account?.accountType?.code,
       tradePlatform: isCreateMode() ? 'default' : account?.tradePlatform?.code
     },
   })
@@ -94,6 +118,22 @@ export default function AccountForm(
 
   //  GENERAL FUNCTIONS
 
+  /**
+   * Renders the success notifications
+   */
+  function renderSuccessNotification() {
+    toast(
+      {
+        title: isCreateMode() ? 'Account Created!' : 'Account Updated!',
+        description: isCreateMode() ? 'Your new trading account was successfully created.' : 'Your trading account was updated successfully.',
+        variant: 'success'
+      }
+    )
+  }
+
+  /**
+   * Renders the error notifications
+   */
   function renderErrorNotification() {
     toast(
       {
@@ -109,21 +149,11 @@ export default function AccountForm(
    *
    * @param values form values
    */
-  async function onSubmit(values: z.infer<typeof formSchema>) {
-
+  function onSubmit(values: z.infer<typeof formSchema>) {
     if (isCreateMode()) {
       createAccount(values)
     } else {
       updateAccount(values)
-    }
-
-    if (isCreateAccountSuccess || isUpdateAccountSuccess) {
-      setOpen(false)
-      window.location.reload()
-    } else if (isCreateAccountError) {
-      logErrors(createAccountError)
-    } else if (isUpdateAccountError) {
-      logErrors(updateAccountError)
     }
   }
 
@@ -160,7 +190,7 @@ export default function AccountForm(
             <div className={""}>
               <FormField
                 control={form.control}
-                name="accountNumber"
+                name="number"
                 render={({field}) => (
                   <FormItem>
                     <FormLabel className="!text-current">Account Number</FormLabel>
@@ -248,7 +278,7 @@ export default function AccountForm(
             <div className={""}>
               <FormField
                 control={form.control}
-                name="accountType"
+                name="type"
                 render={({field}) => (
                   <FormItem>
                     <FormLabel className="!text-current">Type of Account</FormLabel>
@@ -313,7 +343,7 @@ export default function AccountForm(
             <div className={''}>
               <FormField
                 control={form.control}
-                name="defaultAccount"
+                name="isDefault"
                 render={({field}) => (
                   <FormItem>
                     <div className={'flex items-center gap-4 w-full'}>
@@ -367,8 +397,8 @@ export default function AccountForm(
             </div>
           </div>
           <div className={'flex w-full justify-end items-center gap-4'}>
-            <Button type="submit" className={'bg-primary text-white'} disabled={isCreateAccountLoading || isAccCreateInfoLoading || isUpdateAccountLoading}>
-              {(isCreateAccountLoading || isAccCreateInfoLoading || isUpdateAccountLoading) ? <Loader2 className="mr-2 h-4 w-4 animate-spin"/> : null}
+            <Button type="submit" className={'bg-primary text-white'} disabled={isLoading}>
+              {(isLoading) ? <Loader2 className="mr-2 h-4 w-4 animate-spin"/> : null}
               Submit
             </Button>
             <Button type="button" className={'border border-gray-400'} variant={"outline"}

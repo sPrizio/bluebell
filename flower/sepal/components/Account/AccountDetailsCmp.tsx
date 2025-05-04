@@ -1,6 +1,6 @@
 'use client'
 
-import React, {useEffect, useState} from "react";
+import React, {useState} from "react";
 import BaseModal from "@/components/Modal/BaseModal";
 import {Button} from "@/components/ui/button";
 import {IconCirclePlus, IconEdit, IconExternalLink, IconTrash} from "@tabler/icons-react";
@@ -19,16 +19,17 @@ import TradeRecordTable from "@/components/Table/Trade/TradeRecordTable";
 import TradeTable from "@/components/Table/Trade/TradeTable";
 import Link from "next/link";
 import ImportTradesForm from "@/components/Form/Trade/ImportTradesForm";
-import {getAccountDetails} from "@/lib/functions/account-functions";
-import {getRecentTradeRecords} from "@/lib/functions/trade-functions";
-import {Account, AccountEquityPoint, TradeRecordReport, AccountDetails} from "@/types/apiTypes";
+import {Account} from "@/types/apiTypes";
+import {useAccountDetailsQuery, useRecentTradeRecordsQuery} from "@/lib/hooks/queries";
+import Error from "@/app/error";
+import {logErrors} from "@/lib/functions/util-functions";
 
 /**
  * Renders the account details layout
  *
  * @param account Account info
  * @author Stephen Prizio
- * @version 0.0.2
+ * @version 0.2.0
  */
 export default function AccountDetailsCmp(
   {
@@ -38,89 +39,20 @@ export default function AccountDetailsCmp(
     account: Account
   }>
 ) {
-
   const tradeRecordReportLookback = 8;
-  const [isLoading, setIsLoading] = useState(false)
-  const [accDetails, setAccDetails] = useState<AccountDetails>()
-  const [accEquity, setAccEquity] = useState<Array<AccountEquityPoint>>([])
-  const [showPoints, setShowPoints] = useState(false)
-  const [recentTradeRecords, setRecentTradeRecords] = useState<TradeRecordReport | null>(null)
+  const { data: accountDetails, isError: isAccountDetailsError, error: accountDetailsError, isLoading: isAccountDetailsLoading } = useAccountDetailsQuery(account.accountNumber.toString())
+  const { data: recentTradeRecords, isError: isRecentTradeRecordsError, error: recentTradeRecordsError, isLoading: isRecentTradeRecordsLoading } = useRecentTradeRecordsQuery(account.accountNumber.toString(), 'DAILY', tradeRecordReportLookback)
 
-  useEffect(() => {
-    getAccDetails()
-    getAccRecentTradeRecords()
-  }, []);
+  const [showPoints, setShowPoints] = useState(false)
 
 
   //  GENERAL FUNCTIONS
 
   /**
-   * Fetches the account details
-   */
-  async function getAccDetails() {
-
-    setIsLoading(true)
-
-    const data = await getAccountDetails(account.accountNumber)
-
-    setAccEquity(data?.equity ?? [])
-    setAccDetails(data ?? {
-      account: account,
-      consistency: 0.0,
-      equity: [],
-      insights: {
-        maxProfit: 0.0,
-        tradingDays: 0,
-        biggestLoss: 0.0,
-        largestGain: 0.0,
-        currentPL: 0.0,
-        drawdown: 0.0,
-        biggestLossDelta: 0.0,
-        largestGainDelta: 0.0,
-        currentPLDelta: 0.0,
-        drawdownDelta: 0.0,
-        maxProfitDelta: 0.0
-      },
-      statistics: {
-        balance: 0.0,
-        averageProfit: 0.0,
-        averageLoss: 0.0,
-        numberOfTrades: 0,
-        rrr: 0.0,
-        lots: 0.0,
-        expectancy: 0.0,
-        winPercentage: 0,
-        profitFactor: 0.0,
-        retention: 0.0,
-        sharpeRatio: 0.0,
-        tradeDuration: 0,
-        winDuration: 0,
-        lossDuration: 0,
-        assumedDrawdown: 0.0
-      },
-    })
-
-    setIsLoading(false)
-  }
-
-  /**
-   * Fetches the recent trade records
-   */
-  async function getAccRecentTradeRecords() {
-
-    setIsLoading(true)
-
-    const data = await getRecentTradeRecords(account.accountNumber, 'DAILY', tradeRecordReportLookback)
-    setRecentTradeRecords(data)
-
-    setIsLoading(false)
-  }
-
-  /**
    * Computes the consistency general color
    */
   function computeConsistencyColor() {
-    const val = accDetails?.consistency ?? 0
+    const val = accountDetails?.consistency ?? 0
     switch (true) {
       case (val < 35):
         return 'primaryRed'
@@ -137,7 +69,7 @@ export default function AccountDetailsCmp(
    * Computes the consistency general value
    */
   function computeConsistency() {
-    const val = accDetails?.consistency ?? 0
+    const val = accountDetails?.consistency ?? 0
     switch (true) {
       case (val < 35):
         return 'danger'
@@ -154,7 +86,7 @@ export default function AccountDetailsCmp(
    * Computes the consistency status text
    */
   function computeConsistencyStatus() {
-    const val = accDetails?.consistency ?? 0
+    const val = accountDetails?.consistency ?? 0
     switch (true) {
       case (val < 35):
         return 'Poor'
@@ -170,7 +102,13 @@ export default function AccountDetailsCmp(
 
   //  RENDER
 
+  const isLoading = isAccountDetailsLoading || isRecentTradeRecordsLoading
   const intervalStyles = ' text-center font-bold text-sm bg-opacity-15 border-r-4 py-2 '
+
+  if (isAccountDetailsError || isRecentTradeRecordsError) {
+    logErrors(accountDetailsError, recentTradeRecordsError)
+    return <Error />
+  }
 
   return (
     <div className={'grid sm:grid-cols-1 lg:grid-cols-2 xl:grid-cols-4 gap-6'}>
@@ -198,7 +136,7 @@ export default function AccountDetailsCmp(
                 title={'Update Trading Account Information'}
                 description={'Here you can edit/update any Account information. Note that some aspects of this Account cannot be changed after Account creation.'}
                 trigger={<Button className="" variant={"outline"}><IconEdit/>&nbsp;Update</Button>}
-                content={<AccountForm mode={'edit'} account={account}/>}
+                content={<AccountForm portfolioNumber={account.portfolioNumber} mode={'edit'} account={account}/>}
               />
             </div>
             <div className={''}>
@@ -221,12 +159,12 @@ export default function AccountDetailsCmp(
                 loading={isLoading}
                 title={'Account Equity'}
                 subtitle={'A look at the evolution of your account since inception.'}
-                cardContent={<AccountEquityChart key={accEquity.length} data={accEquity} showPoints={showPoints}/>}
+                cardContent={<AccountEquityChart key={accountDetails?.equity?.length ?? 0} data={accountDetails?.equity ?? []} showPoints={showPoints}/>}
                 headerControls={[
                   <div key={0} className="flex items-center space-x-2">
                     <Label htmlFor="airplane-mode">Show as Points</Label>
                     <Switch id="airplane-mode" checked={showPoints} onCheckedChange={setShowPoints}
-                            disabled={(accDetails?.equity ?? []).length <= 1}/>
+                            disabled={(accountDetails?.equity ?? []).length <= 1}/>
                   </div>,
                   <div key={1}>
                     <Link href={`/transactions?account=${account?.accountNumber}`}>
@@ -245,12 +183,12 @@ export default function AccountDetailsCmp(
                   <div className={'grid grid-cols-1 items-center justify-end gap-2'}>
                     <div className={'flex items-center justify-end gap-2'}>
                       Consistency Score: <span
-                      className={'font-bold text-' + computeConsistencyColor()}>{computeConsistencyStatus()}&nbsp;&nbsp;({accDetails?.consistency ?? 0}%)</span>
+                      className={'font-bold text-' + computeConsistencyColor()}>{computeConsistencyStatus()}&nbsp;&nbsp;({accountDetails?.consistency ?? 0}%)</span>
                     </div>
                     <div>
                       <Progress
                         className={'h-6'}
-                        value={accDetails?.consistency ?? 0}
+                        value={accountDetails?.consistency ?? 0}
                         variant={computeConsistency()}
                       />
                     </div>
@@ -283,12 +221,12 @@ export default function AccountDetailsCmp(
       </div>
       <div className={'sm:col-span-1 lg:col-span-2 xl:col-span-4'}>
         {
-          accDetails?.insights ?
+          accountDetails?.insights ?
             <BaseCard
               loading={isLoading}
               title={'Insights'}
               subtitle={'A quick look at some of the key markers of this account\'s performance.'}
-              cardContent={<AccountInsights insights={accDetails.insights}/>}
+              cardContent={<AccountInsights insights={accountDetails.insights}/>}
             />
             :
             null
@@ -296,12 +234,12 @@ export default function AccountDetailsCmp(
       </div>
       <div className={'xl:col-span-2'}>
         {
-          accDetails?.statistics ?
+          accountDetails?.statistics ?
             <BaseCard
               loading={isLoading}
               title={'Statistics'}
               subtitle={'A look some of this account\'s key statistical measures for performance.'}
-              cardContent={<AccountStatistics statistics={accDetails.statistics}/>}
+              cardContent={<AccountStatistics statistics={accountDetails.statistics}/>}
             />
             :
             null
