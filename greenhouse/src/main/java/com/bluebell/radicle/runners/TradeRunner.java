@@ -22,7 +22,7 @@ import java.util.Random;
  * Generates testing {@link Trade}s
  *
  * @author Stephen Prizio
- * @version 0.1.9
+ * @version 0.2.0
  */
 @Component
 @Order(4)
@@ -102,7 +102,7 @@ public class TradeRunner extends AbstractRunner implements CommandLineRunner {
 
             Trade trade = Trade
                     .builder()
-                    .tradeId(String.valueOf(this.mathService.getDouble(100_000_000.0 + this.random.nextInt(900_000_000))))
+                    .tradeId(String.valueOf(100_000_000 + this.random.nextInt(900_000_000)))
                     .product("Nasdaq 100")
                     .tradePlatform(TradePlatform.METATRADER4)
                     .tradeType(buyOrSell)

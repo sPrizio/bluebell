@@ -194,9 +194,9 @@ public class TradeApiController extends AbstractApiController {
     public StandardJsonResponse<List<TradeDTO>> getTradesWithinInterval(
             @Parameter(name = "accountNumber", description = "The unique identifier for your trading account", example = "1234")
             final @RequestParam("accountNumber") long accountNumber,
-            @Parameter(name = "start", description = "Start date of time period to analyze", example = "2025-01-01")
+            @Parameter(name = "start", description = "Start date of time period to analyze", example = "2025-01-01T00:00:00")
             final @RequestParam("start") String start,
-            @Parameter(name = "end", description = "End date of time period to analyze", example = "2025-01-01")
+            @Parameter(name = "end", description = "End date of time period to analyze", example = "2025-01-01T00:00:00")
             final @RequestParam("end") String end,
             final HttpServletRequest request
     ) {
@@ -271,9 +271,9 @@ public class TradeApiController extends AbstractApiController {
     public StandardJsonResponse<PaginatedTradesDTO> getTradesWithinIntervalPaged(
             @Parameter(name = "accountNumber", description = "The unique identifier for your trading account", example = "1234")
             final @RequestParam("accountNumber") long accountNumber,
-            @Parameter(name = "start", description = "Start date of time period to analyze", example = "2025-01-01")
+            @Parameter(name = "start", description = "Start date of time period to analyze", example = "2025-01-01T00:00:00")
             final @RequestParam("start") String start,
-            @Parameter(name = "end", description = "End date of time period to analyze", example = "2025-01-01")
+            @Parameter(name = "end", description = "End date of time period to analyze", example = "2025-01-01T00:00:00")
             final @RequestParam("end") String end,
             @Parameter(name = "page", description = "Current Page", example = "0")
             final @RequestParam(value = "page", defaultValue = "0") int page,
