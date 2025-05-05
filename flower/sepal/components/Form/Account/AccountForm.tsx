@@ -10,13 +10,13 @@ import {Input} from "@/components/ui/input"
 import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from "@/components/ui/select";
 import {Loader2} from "lucide-react";
 import {useSepalModalContext} from "@/lib/context/SepalContext";
-import {useToast} from "@/hooks/use-toast"
+import {useToast} from "@/lib/hooks/ui/use-toast"
 import {CRUDAccountSchema} from "@/lib/constants";
 import {Switch} from "@/components/ui/switch";
 import {Account, AccountType, Broker, Currency, TradePlatform} from "@/types/apiTypes"
-import {useAccountCreationInfoQuery} from "@/lib/hooks/queries";
+import {useAccountCreationInfoQuery} from "@/lib/hooks/query/queries";
 import {logErrors} from "@/lib/functions/util-functions";
-import {useCreateAccountMutation, useUpdateAccountMutation} from "@/lib/hooks/mutations";
+import {useCreateAccountMutation, useUpdateAccountMutation} from "@/lib/hooks/query/mutations";
 import React, {useEffect} from "react";
 
 /**

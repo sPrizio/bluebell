@@ -1,8 +1,8 @@
 "use client";
 
 import { Sidebar } from "@/components/ui/admin-panel/sidebar";
-import { useSidebar } from "@/hooks/use-sidebar";
-import { useStore } from "@/hooks/use-store";
+import { useSidebar } from "@/lib/hooks/ui/use-sidebar";
+import { useStore } from "@/lib/hooks/ui/use-store";
 import { cn } from "@/lib/utils";
 import Footer from "@/components/Footer/Footer";
 

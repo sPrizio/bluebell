@@ -14,7 +14,7 @@ import {
   useRecentTransactionsQuery,
   useTradeLogQuery,
   useUserQuery
-} from "@/lib/hooks/queries";
+} from "@/lib/hooks/query/queries";
 import Error from "@/app/error";
 import LoadingPage from "@/app/loading";
 import TransactionsTable from "@/components/Table/Transaction/TransactionsTable";

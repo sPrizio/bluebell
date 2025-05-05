@@ -1,5 +1,5 @@
 import {keepPreviousData, useQuery} from '@tanstack/react-query';
-import {ApiUrls, DateTime} from '../constants';
+import {ApiUrls, DateTime} from '../../constants';
 import moment from 'moment';
 import {
   Account,
@@ -18,7 +18,7 @@ import {
   User
 } from '@/types/apiTypes';
 import {isNumeric} from "@/lib/functions/util-functions";
-import {get} from '../functions/client';
+import {get} from '../../functions/client';
 
 export const useUserQuery = () => {
   return useQuery<User>({

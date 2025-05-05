@@ -4,7 +4,7 @@ import React from "react";
 import {Icons} from "@/lib/enums";
 import {PageInfoProvider} from "@/lib/context/PageInfoProvider";
 import PageHeaderSection from "@/components/Section/PageHeaderSection";
-import {useAccountQuery, useUserQuery} from "@/lib/hooks/queries";
+import {useAccountQuery, useUserQuery} from "@/lib/hooks/query/queries";
 import LoadingPage from "@/app/loading";
 import {logErrors} from "@/lib/functions/util-functions";
 import Error from "@/app/error";

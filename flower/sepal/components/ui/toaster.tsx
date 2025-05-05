@@ -1,6 +1,6 @@
 "use client"
 
-import {useToast} from "@/hooks/use-toast"
+import {useToast} from "@/lib/hooks/ui/use-toast"
 import {Toast, ToastClose, ToastDescription, ToastProvider, ToastTitle, ToastViewport,} from "@/components/ui/toast"
 import {
   IconAlertTriangleFilled,

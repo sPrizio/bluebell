@@ -20,7 +20,7 @@ import TradeTable from "@/components/Table/Trade/TradeTable";
 import Link from "next/link";
 import ImportTradesForm from "@/components/Form/Trade/ImportTradesForm";
 import {Account} from "@/types/apiTypes";
-import {useAccountDetailsQuery, useRecentTradeRecordsQuery} from "@/lib/hooks/queries";
+import {useAccountDetailsQuery, useRecentTradeRecordsQuery} from "@/lib/hooks/query/queries";
 import Error from "@/app/error";
 import {logErrors} from "@/lib/functions/util-functions";
 

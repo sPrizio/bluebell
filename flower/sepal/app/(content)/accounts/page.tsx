@@ -7,16 +7,17 @@ import {IconCirclePlus, IconSquareRoundedCheckFilled} from "@tabler/icons-react"
 import BaseModal from "@/components/Modal/BaseModal";
 import AccountsTable from "@/components/Table/Account/AccountsTable";
 import AccountForm from "@/components/Form/Account/AccountForm";
-import {Account, Portfolio} from "@/types/apiTypes";
-import {useUserQuery} from "@/lib/hooks/queries";
+import {Account} from "@/types/apiTypes";
 import LoadingPage from "@/app/loading";
-import {getActivePortfolioNumber, logErrors} from "@/lib/functions/util-functions";
+import {logErrors} from "@/lib/functions/util-functions";
 import Error from "@/app/error";
 import {Icons} from "@/lib/enums";
 import {PageInfoProvider} from "@/lib/context/PageInfoProvider";
 import PageHeaderSection from "@/components/Section/PageHeaderSection";
 import ReusableSelect from "@/components/Input/ReusableSelect";
 import {usePortfolioStore} from "@/lib/store/portfolioStore";
+import {useActivePortfolio} from "@/lib/hooks/api/useActivePortoflio";
+import {useUserQuery} from "@/lib/hooks/query/queries";
 
 /**
  * The page that shows all of a user's accounts
@@ -26,17 +27,17 @@ import {usePortfolioStore} from "@/lib/store/portfolioStore";
  */
 export default function AccountsPage() {
 
-  const {data: user, isError: isUserError, error: userError, isLoading: isUserLoading} = useUserQuery();
+  const {data: user} = useUserQuery();
+  const { isLoading, isError, error, activePortfolio, hasMismatch } = useActivePortfolio();
   const {selectedPortfolioId, setSelectedPortfolioId} = usePortfolioStore()
 
-  if (isUserLoading || !user || !selectedPortfolioId || selectedPortfolioId === -1) {
-    return <LoadingPage/>
+  if (isLoading) {
+    return <LoadingPage />;
   }
 
-  const activePortfolio: Portfolio | null = user?.portfolios?.find(p => p.portfolioNumber === selectedPortfolioId) ?? null
-  if (!activePortfolio) {
-    logErrors('User and portfolio mismatch!')
-    return <Error/>
+  if (hasMismatch || isError) {
+    logErrors('User and portfolio mismatch!', error);
+    return <Error />;
   }
 
   const pageInfo = {
@@ -45,7 +46,7 @@ export default function AccountsPage() {
     iconCode: Icons.AccountOverview,
     breadcrumbs: [
       {label: 'Dashboard', href: '/dashboard', active: false},
-      {label: `${activePortfolio.name} Accounts`, href: '/accounts', active: true},
+      {label: `${activePortfolio?.name ?? ''} Accounts`, href: '/accounts', active: true},
     ]
   }
 
@@ -55,13 +56,8 @@ export default function AccountsPage() {
 
   //  RENDER
 
-  if (isUserError) {
-    logErrors(userError)
-    return <Error/>
-  }
-
   if (selectedPortfolioId === null) {
-    setSelectedPortfolioId(getActivePortfolioNumber(user) ?? -1)
+    setSelectedPortfolioId(activePortfolio?.portfolioNumber ?? -1)
   }
 
   let inactiveData = null

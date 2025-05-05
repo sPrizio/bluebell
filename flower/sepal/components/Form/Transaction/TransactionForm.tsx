@@ -1,6 +1,6 @@
 'use client'
 
-import {useToast} from "@/hooks/use-toast";
+import {useToast} from "@/lib/hooks/ui/use-toast";
 import {useEffect, useState} from "react";
 import {useSepalModalContext} from "@/lib/context/SepalContext";
 import {CRUDTransactionSchema} from "@/lib/constants";
@@ -24,7 +24,7 @@ import {Account, Transaction} from "@/types/apiTypes";
  * @param account Account info
  * @param transaction transaction info
  * @author Stephen Prizio
- * @version 0.0.1
+ * @version 0.2.0
  */
 export default function TransactionForm(
   {

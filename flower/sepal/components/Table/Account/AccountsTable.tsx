@@ -3,7 +3,8 @@
 import {Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow,} from "@/components/ui/table"
 import {IconExternalLink, IconSquareRoundedCheckFilled} from "@tabler/icons-react";
 import Link from "next/link";
-import {formatNumberForDisplay, getBrokerImageForCode, getFlagForCode} from "@/lib/functions/util-functions";
+import {formatNumberForDisplay} from "@/lib/functions/util-functions";
+import {getBrokerImageForCode, getFlagForCode} from "@/lib/functions/util-component-functions";
 import moment from "moment";
 import {DateTime} from "@/lib/constants";
 import {useRouter} from "next/navigation";

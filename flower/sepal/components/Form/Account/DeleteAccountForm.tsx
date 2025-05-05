@@ -4,11 +4,11 @@ import {Button} from "@/components/ui/button";
 import {Loader2} from "lucide-react";
 import {useEffect} from "react";
 import {useSepalModalContext} from "@/lib/context/SepalContext";
-import {useToast} from "@/hooks/use-toast";
+import {useToast} from "@/lib/hooks/ui/use-toast";
 import {useRouter} from 'next/navigation'
 import {Account} from "@/types/apiTypes";
 import {logErrors} from "@/lib/functions/util-functions";
-import {useDeleteAccountMutation} from "@/lib/hooks/mutations";
+import {useDeleteAccountMutation} from "@/lib/hooks/query/mutations";
 
 /**
  * Renders a form for deleting accounts

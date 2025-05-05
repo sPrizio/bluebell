@@ -3,7 +3,7 @@
 import {useEffect, useState} from "react";
 import {useSepalModalContext} from "@/lib/context/SepalContext";
 import {useRouter} from "next/navigation";
-import {toast} from "@/hooks/use-toast";
+import {toast} from "@/lib/hooks/ui/use-toast";
 import {delay} from "@/lib/functions/util-functions";
 import {Button} from "@/components/ui/button";
 import {Loader2} from "lucide-react";

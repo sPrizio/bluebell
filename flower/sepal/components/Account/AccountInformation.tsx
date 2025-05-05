@@ -2,7 +2,8 @@ import React from "react";
 import {Table, TableBody, TableCell, TableRow} from "@/components/ui/table";
 import moment from "moment";
 import {DateTime} from "@/lib/constants";
-import {formatNumberForDisplay, getBrokerImageForCode, getFlagForCode} from "@/lib/functions/util-functions";
+import {formatNumberForDisplay} from "@/lib/functions/util-functions";
+import {getBrokerImageForCode, getFlagForCode} from "@/lib/functions/util-component-functions";
 import Badge from "@/components/Badge/Badge";
 import {Account} from "@/types/apiTypes";
 
@@ -11,7 +12,7 @@ import {Account} from "@/types/apiTypes";
  *
  * @param account Account info
  * @author Stephen Prizio
- * @version 0.0.2
+ * @version 0.2.0
  */
 export default function AccountInformation(
   {

@@ -1,7 +1,7 @@
 import {useMutation, useQueryClient} from "@tanstack/react-query"
 import {Account} from "@/types/apiTypes";
-import {del, post, put} from "../functions/client";
-import {ApiUrls} from "../constants";
+import {del, post, postFile, put} from "../../functions/client";
+import {ApiUrls} from "../../constants";
 
 export const useCreateAccountMutation = (portfolioNumber: number) => {
   const queryClient = useQueryClient()
@@ -38,6 +38,24 @@ export const useDeleteAccountMutation = (portfolioNumber: number, accNumber: num
       queryClient.invalidateQueries({queryKey: ['portfolio']});
       queryClient.invalidateQueries({queryKey: ['portfolio-record']});
       queryClient.invalidateQueries({queryKey: ['recent-transactions']});
+    }
+  })
+}
+
+export const useImportTradesMutation = (accNumber: number) => {
+  const queryClient = useQueryClient()
+
+  return useMutation<boolean, Error, any>({
+    mutationFn: (payload) => {
+      const formData = new FormData();
+      formData.append('file', payload.filename[0] ?? '');
+      formData.append('fileName', payload.filename[0].name ?? '');
+      console.log(payload.filename[0])
+
+      return postFile<boolean>(ApiUrls.Trade.ImportTrades, { accountNumber: accNumber.toString(), isStrategy: payload.isStrategy.toString() }, formData)
+    },
+    onSuccess: (data) => {
+      queryClient.invalidateQueries({queryKey: ['user']});
     }
   })
 }

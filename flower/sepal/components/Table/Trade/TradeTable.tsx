@@ -15,7 +15,7 @@ import {
   PaginationPrevious,
 } from "@/components/ui/pagination"
 import {Account} from "@/types/apiTypes";
-import {usePagedTradesQuery} from "@/lib/hooks/queries";
+import {usePagedTradesQuery} from "@/lib/hooks/query/queries";
 import Error from "@/app/error";
 
 /**
@@ -76,7 +76,7 @@ export default function TradeTable(
     return <Error />
   }
 
-  const pages = pagedTrades?.totalElements ?? 0;
+  const pages = pagedTrades?.totalPages ?? 0;
   return (
     <div className={'mt-4 pb-2 flex flex-col'}>
       {(pagedTrades?.trades?.length ?? 0) === 0 && <div className="text-center text-sm my-4 text-slate-500">No trades found.</div>}

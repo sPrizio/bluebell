@@ -1,4 +1,4 @@
-import {resolveIcon} from "@/lib/functions/util-functions";
+import {resolveIcon} from "@/lib/functions/util-component-functions";
 import {DEFAULT_PAGE_HEADER_SECTION_ICON_SIZE} from "@/lib/constants";
 import Breadcrumbs from "@/components/Navigation/Breadcrumb/Breadcrumbs";
 import { AppLink } from "@/types/uiTypes";
@@ -11,7 +11,7 @@ import { AppLink } from "@/types/uiTypes";
  * @param subtitle head subtitle
  * @param breadcrumbs breadcrumbs
  * @author Stephen Prizio
- * @version 0.0.1
+ * @version 0.2.0
  */
 export default function PageHeaderSection(
   {

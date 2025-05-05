@@ -2,14 +2,11 @@
 import { Menu } from "@/components/ui/admin-panel/menu";
 import { SidebarToggle } from "@/components/ui/admin-panel/sidebar-toggle";
 import { Button } from "@/components/ui/button";
-import { useSidebar } from "@/hooks/use-sidebar";
-import { useStore } from "@/hooks/use-store";
+import { useSidebar } from "@/lib/hooks/ui/use-sidebar";
+import { useStore } from "@/lib/hooks/ui/use-store";
 import { cn } from "@/lib/utils";
-import { PanelsTopLeft } from "lucide-react";
-import Link from "next/link";
 import MainLogo from "@/components/Navigation/MainLogo";
 import MobileLogo from "@/components/Navigation/MobileLogo";
-import {useEffect} from "react";
 
 export function Sidebar() {
   const sidebar = useStore(useSidebar, (x) => x);

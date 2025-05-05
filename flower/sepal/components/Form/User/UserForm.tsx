@@ -1,6 +1,6 @@
 'use client'
 
-import {useToast} from "@/hooks/use-toast";
+import {useToast} from "@/lib/hooks/ui/use-toast";
 import React, {useEffect, useState} from "react";
 import {delay} from "@/lib/functions/util-functions";
 import {useSepalModalContext} from "@/lib/context/SepalContext";
@@ -22,7 +22,7 @@ import {User} from "@/types/apiTypes";
  * @param mode should create / edit
  * @param user User info
  * @author Stephen Prizio
- * @version 0.0.2
+ * @version 0.2.0
  */
 export default function UserForm(
   {

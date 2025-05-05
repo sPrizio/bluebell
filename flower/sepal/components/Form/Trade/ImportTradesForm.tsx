@@ -1,6 +1,6 @@
 'use client'
 
-import {useEffect, useState} from "react";
+import {useEffect} from "react";
 import {useSepalModalContext} from "@/lib/context/SepalContext";
 import {TradeImportSchema} from "@/lib/constants";
 import {useForm} from "react-hook-form";
@@ -10,17 +10,18 @@ import {Form, FormControl, FormDescription, FormField, FormItem, FormLabel, Form
 import {Input} from "@/components/ui/input";
 import {Button} from "@/components/ui/button";
 import {Loader2} from "lucide-react";
-import {importTrades} from "@/lib/functions/trade-functions";
-import {useToast} from "@/hooks/use-toast"
+import {useToast} from "@/lib/hooks/ui/use-toast"
 import {Switch} from "@/components/ui/switch";
 import {Account} from "@/types/apiTypes";
+import {useImportTradesMutation} from "@/lib/hooks/query/mutations";
+import {logErrors} from "@/lib/functions/util-functions";
 
 /**
  * Renders a form that can import trades
  *
  * @param account account info
  * @author Stephen Prizio
- * @version 0.0.2
+ * @version 0.2.0
  */
 export default function ImportTradesForm(
   {
@@ -31,28 +32,45 @@ export default function ImportTradesForm(
   }>
 ) {
 
-  const { toast } = useToast();
-  const [isLoading, setIsLoading] = useState(false)
-  const [success, setSuccess] = useState<'success' | 'failed' | 'undefined'>('undefined')
-
-  const {open, setOpen} = useSepalModalContext()
+  const {toast} = useToast();
+  const {setOpen} = useSepalModalContext()
   const formSchema = TradeImportSchema()
+
+  const {
+    mutate: importTrades,
+    isPending: isImportTradesLoading,
+    isSuccess: isImportTradesSuccess,
+    isError: isImportTradesError,
+    error: importTradesError
+  } = useImportTradesMutation(account?.accountNumber ?? -1)
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
   })
 
   useEffect(() => {
-    if (success === 'failed') {
-      toast(
-        {
-          title: 'Trade Import Failed!',
-          description: 'An error occurred while importing your trades. Please check your file and try again.',
-          variant: 'danger'
-        }
-      )
+    if (isImportTradesSuccess) {
+      toast({
+        title: 'Trade Import Successful!',
+        description: 'Your trades were successfully imported.',
+        variant: 'success'
+      })
+
+      setOpen(false)
     }
-  }, [success]);
+  }, [isImportTradesSuccess]);
+
+  useEffect(() => {
+    if (isImportTradesError) {
+      toast({
+        title: 'Trade Import Failed!',
+        description: 'An error occurred while importing your trades. Please check your file and try again.',
+        variant: 'danger'
+      })
+
+      logErrors(importTradesError)
+    }
+  }, [isImportTradesError]);
 
 
   //  GENERAL FUNCTIONS
@@ -63,20 +81,7 @@ export default function ImportTradesForm(
    * @param values form values
    */
   async function onSubmit(values: z.infer<typeof formSchema>) {
-
-    setIsLoading(true)
-    const data = await importTrades(account.accountNumber, values.filename[0], values.isStrategy)
-
-    if (data) {
-      setSuccess('success')
-      setIsLoading(false)
-      setOpen(false)
-      window.location.reload()
-    } else {
-      setSuccess('failed')
-      setIsLoading(false)
-      setOpen(false)
-    }
+    importTrades(values)
   }
 
 
@@ -136,8 +141,8 @@ export default function ImportTradesForm(
             </div>
             <div className={''}>
               <div className={'flex w-full justify-end items-center gap-4'}>
-                <Button type="submit" className={'bg-primary text-white'} disabled={isLoading}>
-                  {isLoading ? <Loader2 className="mr-2 h-4 w-4 animate-spin"/> : null}
+                <Button type="submit" className={'bg-primary text-white'} disabled={isImportTradesLoading}>
+                  {isImportTradesLoading ? <Loader2 className="mr-2 h-4 w-4 animate-spin"/> : null}
                   Submit
                 </Button>
                 <Button type="button" className={'border border-gray-400'} variant={"outline"}
