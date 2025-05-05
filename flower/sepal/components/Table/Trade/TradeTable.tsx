@@ -3,8 +3,8 @@
 import {Table, TableBody, TableCell, TableHead, TableHeader, TableRow} from "@/components/ui/table";
 import moment from "moment/moment";
 import {DateTime} from "@/lib/constants";
-import React, {useEffect, useState} from "react";
-import {formatNegativePoints, formatNumberForDisplay} from "@/lib/functions/util-functions";
+import React, {useState} from "react";
+import {formatNegativePoints, formatNumberForDisplay, logErrors} from "@/lib/functions/util-functions";
 import {
   Pagination,
   PaginationContent,
@@ -14,8 +14,9 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from "@/components/ui/pagination"
-import {getPagedTrades} from "@/lib/functions/trade-functions";
-import {Account, Trade} from "@/types/apiTypes";
+import {Account} from "@/types/apiTypes";
+import {usePagedTradesQuery} from "@/lib/hooks/queries";
+import Error from "@/app/error";
 
 /**
  * Renders a table of trades
@@ -24,7 +25,7 @@ import {Account, Trade} from "@/types/apiTypes";
  * @param initialPageSize initial page size
  * @param initialPage initial page
  * @author Stephen Prizio
- * @version 0.0.2
+ * @version 0.2.0
  */
 export default function TradeTable(
   {
@@ -32,47 +33,29 @@ export default function TradeTable(
     initialPageSize = 10,
     initialPage = 0,
   }
-    : Readonly<{
+  : Readonly<{
     account: Account,
     initialPageSize?: number
     initialPage?: number
   }>
 ) {
 
-  const [isLoading, setIsLoading] = useState(false)
-  const [totalElements, setTotalElements] = useState(0)
-  const [currentPage, setCurrentPage] = useState(0)
-  const [pageSize, setPageSize] = useState(initialPageSize)
-  const [data, setData] = useState<Array<Trade>>()
-  const [pages, setPages] = useState(calculatePages())
+  const [currentPage, setCurrentPage] = useState(initialPage)
 
-  useEffect(() => {
-    getAccTrades();
-  }, []);
-
-  useEffect(() => {
-    getAccTrades()
-  }, [currentPage]);
+  const {
+    data: pagedTrades,
+    isError: isPagedTradesError,
+    error: pagedTradesError,
+  } = usePagedTradesQuery(
+    account.accountNumber,
+    moment(account?.accountOpenTime).format(DateTime.ISODateTimeFormat),
+    moment().add(1, 'years').format(DateTime.ISODateTimeFormat),
+    currentPage,
+    initialPageSize
+  )
 
 
   //  GENERAL FUNCTIONS
-
-  /**
-   * Fetches the paginated trades list
-   */
-  async function getAccTrades() {
-
-    setIsLoading(true)
-
-    const trs = await getPagedTrades(account?.accountNumber ?? '', moment(account?.accountOpenTime).format(DateTime.ISODateTimeFormat), moment().add(1, 'years').format(DateTime.ISODateTimeFormat), currentPage, pageSize)
-
-    setTotalElements(trs?.totalTrades ?? 0)
-    setPages(trs?.totalPages ?? 10)
-    setData(trs?.trades ?? [])
-    setPageSize(trs?.pageSize ?? 0)
-
-    setIsLoading(false)
-  }
 
   /**
    * Handles the clicking of a new page button
@@ -85,27 +68,20 @@ export default function TradeTable(
     setCurrentPage(page)
   }
 
-  /**
-   * Calculates the total number of pages
-   */
-  function calculatePages() {
-
-    const val = totalElements;
-    if (val % pageSize === 0) {
-      return val / pageSize
-    }
-
-    return ((val - (val % pageSize)) / pageSize) + 1
-  }
-
 
   //  RENDER
 
+  if (isPagedTradesError) {
+    logErrors(pagedTradesError)
+    return <Error />
+  }
+
+  const pages = pagedTrades?.totalElements ?? 0;
   return (
     <div className={'mt-4 pb-2 flex flex-col'}>
-      {(data?.length ?? 0) === 0 && <div className="text-center text-sm my-4 text-slate-500">No trades found.</div>}
+      {(pagedTrades?.trades?.length ?? 0) === 0 && <div className="text-center text-sm my-4 text-slate-500">No trades found.</div>}
       {
-        (data?.length ?? 0) > 0 &&
+        (pagedTrades?.trades?.length ?? 0) > 0 &&
           <div className={'min-h-[450px]'}>
               <div className={'flex-grow'}>
                   <Table>
@@ -124,9 +100,9 @@ export default function TradeTable(
                       </TableHeader>
                       <TableBody>
                         {
-                          data?.map((item, key) => {
+                          pagedTrades?.trades?.map((item) => {
                             return (
-                              <TableRow key={item.uid} className={'hover:bg-transparent'}>
+                              <TableRow key={item.tradeId} className={'hover:bg-transparent'}>
                                 <TableCell className={'text-center'}>{item.tradeId}</TableCell>
                                 <TableCell className={'text-left'}>{item.product}</TableCell>
                                 <TableCell

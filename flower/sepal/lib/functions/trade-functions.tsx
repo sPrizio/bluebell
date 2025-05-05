@@ -1,6 +1,6 @@
 import {getAuthHeader} from "@/lib/functions/security-functions";
 import {ApiUrls} from "@/lib/constants";
-import {PagedTrades, TradeRecordControls, TradeRecordReport} from "@/types/apiTypes";
+import {TradeRecordControls, TradeRecordReport} from "@/types/apiTypes";
 
 /**
  * Fetches a list of trade records for the given time period
@@ -60,47 +60,6 @@ export async function getTradeRecordControls(accNumber: number, interval: string
         ApiUrls.TradeRecord.GetTradeRecordControls
           .replace('{accountNumber}', accNumber.toString())
           .replace('{interval}', interval), {
-          method: 'GET',
-          headers: headers,
-        }
-      )
-
-    if (res.ok) {
-      const data = await res.json()
-      if (data.success) {
-        return data.data
-      }
-    }
-  } catch (e) {
-    console.log(e)
-  }
-
-  return null;
-}
-
-/**
- * Fetches paginated trades
- *
- * @param accNumber account number
- * @param start start of time period
- * @param end end of time period
- * @param page current page
- * @param pageSize page size
- */
-export async function getPagedTrades(accNumber: number, start: string, end: string, page: number, pageSize: number): Promise<PagedTrades | null> {
-
-  const headers = getAuthHeader()
-  headers['Content-Type'] = 'application/json'
-
-  try {
-    const res =
-      await fetch(
-        ApiUrls.Trade.GetPagedTrades
-          .replace('{accountNumber}', accNumber.toString())
-          .replace('{start}', start)
-          .replace('{end}', end)
-          .replace('{page}', page.toString())
-          .replace('{pageSize}', pageSize.toString()), {
           method: 'GET',
           headers: headers,
         }

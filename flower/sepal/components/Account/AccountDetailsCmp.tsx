@@ -39,9 +39,9 @@ export default function AccountDetailsCmp(
     account: Account
   }>
 ) {
-  const tradeRecordReportLookback = 8;
+  const tradeRecordReportLookBack = 8;
   const { data: accountDetails, isError: isAccountDetailsError, error: accountDetailsError, isLoading: isAccountDetailsLoading } = useAccountDetailsQuery(account.accountNumber.toString())
-  const { data: recentTradeRecords, isError: isRecentTradeRecordsError, error: recentTradeRecordsError, isLoading: isRecentTradeRecordsLoading } = useRecentTradeRecordsQuery(account.accountNumber.toString(), 'DAILY', tradeRecordReportLookback)
+  const { data: recentTradeRecords, isError: isRecentTradeRecordsError, error: recentTradeRecordsError, isLoading: isRecentTradeRecordsLoading } = useRecentTradeRecordsQuery(account.accountNumber.toString(), 'DAILY', tradeRecordReportLookBack)
 
   const [showPoints, setShowPoints] = useState(false)
 
@@ -249,7 +249,7 @@ export default function AccountDetailsCmp(
         <BaseCard
           loading={isLoading}
           title={'Performance'}
-          subtitle={`Reviewing the last ${tradeRecordReportLookback} days of daily trading performances.`}
+          subtitle={`Reviewing the last ${tradeRecordReportLookBack} days of daily trading performances.`}
           cardContent={<TradeRecordTable report={recentTradeRecords} showTotals={true} />}
           headerControls={[
             <Link key={0} href={`/performance?account=${account?.accountNumber}`}>

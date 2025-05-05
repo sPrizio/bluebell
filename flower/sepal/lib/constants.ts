@@ -52,7 +52,7 @@ export const ApiUrls = {
     GetPortfolioRecord: getPortfolioRecordDomain() + '/get?portfolioNumber={portfolioNumber}',
   },
   Trade: {
-    GetPagedTrades: getTradeDomain() + '/for-interval-paged?accountNumber={accountNumber}&start={start}&end={end}&page={page}&pageSize={pageSize}',
+    GetPagedTrades: getTradeDomain() + '/get-for-interval-paged?accountNumber={accountNumber}&start={start}&end={end}&page={page}&pageSize={pageSize}',
     ImportTrades: getTradeDomain() + '/import-trades?accountNumber={accountNumber}&isStrategy={isStrategy}',
   },
   TradeRecord: {

@@ -32,7 +32,7 @@ export const useUpdateAccountMutation = (portfolioNumber: number, accNumber: num
 export const useDeleteAccountMutation = (portfolioNumber: number, accNumber: number) => {
   const queryClient = useQueryClient()
   return useMutation<boolean, Error, any>({
-    mutationFn: (payload) => del<boolean>(ApiUrls.Account.DeleteAccount, { portfolioNumber: portfolioNumber, accountNumber: accNumber.toString() }),
+    mutationFn: () => del<boolean>(ApiUrls.Account.DeleteAccount, { portfolioNumber: portfolioNumber, accountNumber: accNumber.toString() }),
     onSuccess: (data) => {
       queryClient.invalidateQueries({queryKey: ['user']});
       queryClient.invalidateQueries({queryKey: ['portfolio']});

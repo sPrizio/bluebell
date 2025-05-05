@@ -1,14 +1,19 @@
-import {useQuery} from '@tanstack/react-query';
+import {keepPreviousData, useQuery} from '@tanstack/react-query';
 import {ApiUrls, DateTime} from '../constants';
 import moment from 'moment';
 import {
-  Account, AccountCreationInfo, AccountDetails, AccountType,
+  Account,
+  AccountCreationInfo,
+  AccountDetails,
+  AccountType,
   Broker,
   Currency,
+  PagedTrades,
   Portfolio,
   PortfolioRecord,
   TradeLog,
-  TradePlatform, TradeRecordReport,
+  TradePlatform,
+  TradeRecordReport,
   Transaction,
   User
 } from '@/types/apiTypes';
@@ -149,5 +154,14 @@ export const useAccountCreationInfoQuery = () => {
       }
     },
     enabled: allLoaded,
+  })
+}
+
+export const usePagedTradesQuery = (accountNumber: number, start: string, end: string, page: number, pageSize: number) => {
+  return useQuery<PagedTrades | null>({
+    placeholderData: keepPreviousData,
+    queryKey: ['paginated-trades', accountNumber, start, end, page, pageSize],
+    queryFn: () => get<PagedTrades>(ApiUrls.Trade.GetPagedTrades, { accountNumber: accountNumber.toString(), start: start, end: end, page: page.toString(), pageSize: pageSize.toString() }),
+    enabled: accountNumber > -1,
   })
 }
