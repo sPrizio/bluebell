@@ -16,6 +16,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.Random;
 
 /**
@@ -78,7 +79,7 @@ public class TradeRunner extends AbstractRunner implements CommandLineRunner {
      */
     private void generateTrades(final Account account, final double scale) {
 
-        final int tradeCount = 50 + this.random.nextInt(251);
+        final int tradeCount = 25 + this.random.nextInt(351);
         for (int i = 0; i < tradeCount; i++) {
             final TradeType buyOrSell = this.random.nextInt(11) % 2 == 0 ? TradeType.BUY : TradeType.SELL;
             double randomOpenPrice = 17_000 + (this.random.nextDouble() * 4_000);
@@ -92,10 +93,12 @@ public class TradeRunner extends AbstractRunner implements CommandLineRunner {
             double randomProfit = 20.0 + (this.random.nextDouble() * (150.0 - 20.0));
             randomProfit = Math.round(randomProfit * 100.0) / 100.0;
 
+            final long daysBetween = ChronoUnit.DAYS.between(account.getAccountOpenTime(), LocalDateTime.now());
+
             final LocalDateTime randomDay =
                     account
                             .getAccountOpenTime()
-                            .plusDays(this.random.nextInt(44))
+                            .plusDays(this.random.nextInt((int) daysBetween))
                             .withHour(9 + this.random.nextInt(7))
                             .withMinute(this.random.nextInt(60))
                             .withSecond(this.random.nextInt(60));
