@@ -11,7 +11,7 @@ export const metadata: Metadata = {
  * @author Stephen Prizio
  * @version 0.2.0
  */
-export default function AccountDetailPage() {
+export default function AccountDetailsPage() {
 
   //  RENDER
 

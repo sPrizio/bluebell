@@ -12,7 +12,7 @@ import {
   Portfolio,
   PortfolioRecord,
   TradeLog,
-  TradePlatform,
+  TradePlatform, TradeRecordControls,
   TradeRecordReport,
   Transaction,
   User
@@ -198,5 +198,21 @@ export const useMarketNewsQuery = (start: string, end: string) => {
   return useQuery<Array<MarketNews>>({
     queryKey: ['market-news', start, end],
     queryFn: () => get<Array<MarketNews>>(ApiUrls.News.GetNews, { start: start, end: end })
+  })
+}
+
+export const useTradeRecordControlsQuery = (accountNumber: number, interval: string, options: { enabled: boolean; }) => {
+  return useQuery<TradeRecordControls>({
+    queryKey: ['trade-record-controls', accountNumber, interval],
+    queryFn: () => get<TradeRecordControls>(ApiUrls.TradeRecord.GetTradeRecordControls, { accountNumber: accountNumber.toString(), interval: interval }),
+    enabled: accountNumber > -1,
+  })
+}
+
+export const useTradeRecordsQuery = (accountNumber: number, start: string, end: string, interval: string, count: number, options: { enabled: boolean; }) => {
+  return useQuery<TradeRecordReport>({
+    queryKey: ['trade-records', accountNumber, start, end, interval, count],
+    queryFn: () => get<TradeRecordReport>(ApiUrls.TradeRecord.GetTradeRecords, { accountNumber: accountNumber.toString(), start: start, end: end, interval: interval, count: count }),
+    enabled: accountNumber > -1,
   })
 }

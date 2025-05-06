@@ -3,14 +3,12 @@
 import React from "react";
 import {Icons} from "@/lib/enums";
 import {PageInfoProvider} from "@/lib/context/PageInfoProvider";
-import PageHeaderSection from "@/components/Section/PageHeaderSection";
-import {useAccountQuery, useUserQuery} from "@/lib/hooks/query/queries";
+import {useAccountQuery} from "@/lib/hooks/query/queries";
 import LoadingPage from "@/app/loading";
 import {logErrors} from "@/lib/functions/util-functions";
 import Error from "@/app/error";
 import AccountDetailsCmp from "@/components/Account/AccountDetailsCmp";
-import {usePortfolioStore} from "@/lib/store/portfolioStore";
-import {Portfolio} from "@/types/apiTypes";
+import {useActivePortfolio} from "@/lib/hooks/api/useActivePortoflio";
 
 /**
  * The base layout for the Account detail page
@@ -20,7 +18,7 @@ import {Portfolio} from "@/types/apiTypes";
  * @author Stephen Prizio
  * @version 0.2.0
  */
-export default function AccountsLayout(
+export default function AccountDetailsLayout(
   {
     children,
     params
@@ -30,23 +28,16 @@ export default function AccountsLayout(
   }>
 ) {
 
-  const { data: user, isLoading: isUserLoading } = useUserQuery();
+  const { isLoading: isPortfolioLoading, isError: isPortfolioError, error: portfolioError, activePortfolio, hasMismatch: portfolioMisMatch } = useActivePortfolio();
   const { data: account, isError: isAccountError, error: accountError, isLoading: isAccountLoading } = useAccountQuery(params.id)
-  const {selectedPortfolioId} = usePortfolioStore()
 
-  if (isUserLoading || !user || !selectedPortfolioId || selectedPortfolioId === -1) {
-    return <LoadingPage/>
+  if (isPortfolioLoading || isAccountLoading) {
+    return <LoadingPage />;
   }
 
-  const activePortfolio: Portfolio | null = user?.portfolios?.find(p => p.portfolioNumber === selectedPortfolioId) ?? null
-
-  if (isAccountLoading) {
-    return <LoadingPage/>
-  }
-
-  if (isAccountError) {
-    logErrors(accountError)
-    return <Error/>
+  if (isPortfolioError || portfolioError || isAccountError) {
+    logErrors('User and portfolio mismatch!', portfolioError, portfolioMisMatch, accountError);
+    return <Error />;
   }
 
   const pageInfo = {
@@ -84,12 +75,6 @@ export default function AccountsLayout(
 
   return (
     <PageInfoProvider value={pageInfo}>
-      <PageHeaderSection
-        title={pageInfo.title}
-        subtitle={pageInfo.subtitle}
-        iconCode={pageInfo.iconCode}
-        breadcrumbs={pageInfo.breadcrumbs}
-      />
       <div className={''}>
         <div className={'grid grid-cols-1 gap-4'}>
           {!account ? <div>No Content</div> : <AccountDetailsCmp account={account}/>}

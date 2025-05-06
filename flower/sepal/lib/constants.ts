@@ -56,10 +56,10 @@ export const ApiUrls = {
     ImportTrades: getTradeDomain() + '/import-trades?accountNumber={accountNumber}&isStrategy={isStrategy}',
   },
   TradeRecord: {
-    GetTradeRecords: getTradeRecordDomain() + '/for-interval?accountNumber={accountNumber}&start={start}&end={end}&interval={interval}&count={count}',
+    GetTradeRecords: getTradeRecordDomain() + '/get-for-interval?accountNumber={accountNumber}&start={start}&end={end}&interval={interval}&count={count}',
     GetRecentTradeRecords: getTradeRecordDomain() + '/get-recent?accountNumber={accountNumber}&interval={interval}&count={count}',
     GetTradeLog: getTradeRecordDomain() + '/trade-log?start={start}&end={end}&interval={interval}&count={count}',
-    GetTradeRecordControls: getTradeRecordDomain() + '/trade-record-controls?accountNumber={accountNumber}&interval={interval}',
+    GetTradeRecordControls: getTradeRecordDomain() + '/get-trade-record-controls?accountNumber={accountNumber}&interval={interval}',
   },
   User: {
     GetRecentTransactions: getUserDomain() + '/recent-transactions',

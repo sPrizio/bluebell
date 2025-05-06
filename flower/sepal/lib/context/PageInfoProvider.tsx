@@ -2,6 +2,7 @@
 
 import React, {createContext, useContext} from 'react';
 import {Icons} from '@/lib/enums';
+import PageHeaderSection from "@/components/Section/PageHeaderSection";
 
 type PageInfo = {
   title: string;
@@ -23,6 +24,12 @@ export function PageInfoProvider({children, value,}: Readonly<{
 }>) {
   return (
     <PageInfoContext.Provider value={value}>
+      <PageHeaderSection
+        title={value.title}
+        subtitle={value.subtitle}
+        iconCode={value.iconCode}
+        breadcrumbs={value.breadcrumbs}
+      />
       {children}
     </PageInfoContext.Provider>
   );

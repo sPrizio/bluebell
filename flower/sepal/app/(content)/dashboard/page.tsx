@@ -18,7 +18,6 @@ import {
 import Error from "@/app/error";
 import LoadingPage from "@/app/loading";
 import TransactionsTable from "@/components/Table/Transaction/TransactionsTable";
-import PageHeaderSection from "@/components/Section/PageHeaderSection";
 import {PageInfoProvider} from "@/lib/context/PageInfoProvider";
 import ReusableSelect from "@/components/Input/ReusableSelect";
 import {usePortfolioStore} from "@/lib/store/portfolioStore";
@@ -91,12 +90,6 @@ export default function DashboardPage() {
 
   return (
     <PageInfoProvider value={pageInfo}>
-      <PageHeaderSection
-        title={pageInfo.title}
-        subtitle={pageInfo.subtitle}
-        iconCode={pageInfo.iconCode}
-        breadcrumbs={pageInfo.breadcrumbs}
-      />
       <div>
         <div className={'grid grid-cols-1 gap-8 w-full'}>
           <div className={'flex flex-row items-end justify-end'}>

@@ -13,7 +13,6 @@ import {logErrors} from "@/lib/functions/util-functions";
 import Error from "@/app/error";
 import {Icons} from "@/lib/enums";
 import {PageInfoProvider} from "@/lib/context/PageInfoProvider";
-import PageHeaderSection from "@/components/Section/PageHeaderSection";
 import ReusableSelect from "@/components/Input/ReusableSelect";
 import {usePortfolioStore} from "@/lib/store/portfolioStore";
 import {useActivePortfolio} from "@/lib/hooks/api/useActivePortoflio";
@@ -102,12 +101,6 @@ export default function AccountsPage() {
 
   return (
     <PageInfoProvider value={pageInfo}>
-      <PageHeaderSection
-        title={pageInfo.title}
-        subtitle={pageInfo.subtitle}
-        iconCode={pageInfo.iconCode}
-        breadcrumbs={pageInfo.breadcrumbs}
-      />
       <div className={'grid grid-cols-1 gap-8 w-full'}>
         <div className={'flex gap-8 w-full items-end justify-end'}>
           <div className={'w-1/2 flex items-end justify-end gap-8'}>

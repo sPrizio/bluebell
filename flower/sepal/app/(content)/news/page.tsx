@@ -56,12 +56,6 @@ export default function MarketNewsPage() {
 
   return (
     <PageInfoProvider value={pageInfo}>
-      <PageHeaderSection
-        title={pageInfo.title}
-        subtitle={pageInfo.subtitle}
-        iconCode={pageInfo.iconCode}
-        breadcrumbs={pageInfo.breadcrumbs}
-      />
       <div className={''}>
         <BaseCard
           title={'Market News'}
