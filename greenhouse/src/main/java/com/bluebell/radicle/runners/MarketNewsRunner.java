@@ -21,17 +21,19 @@ import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
+import java.time.temporal.TemporalAdjusters;
 import java.util.*;
 
 /**
  * Generates testing {@link MarketNews}
  *
  * @author Stephen Prizio
- * @version 0.1.9
+ * @version 0.2.0
  */
 @Component
 @Order(6)
@@ -64,6 +66,29 @@ public class MarketNewsRunner extends AbstractRunner implements CommandLineRunne
 
         try {
             generate();
+
+            final LocalDate now = LocalDate.now().with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY));
+            this.marketNewsRepository.findAll().forEach(marketNews -> {
+                if (marketNews.getDate().equals(LocalDate.of(2025, 3, 9))) {
+                    marketNews.setDate(now);
+                    this.marketNewsRepository.save(marketNews);
+                } else if (marketNews.getDate().equals(LocalDate.of(2025, 3, 10))) {
+                    marketNews.setDate(now.plusDays(1));
+                    this.marketNewsRepository.save(marketNews);
+                } else if (marketNews.getDate().equals(LocalDate.of(2025, 3, 11))) {
+                    marketNews.setDate(now.plusDays(2));
+                    this.marketNewsRepository.save(marketNews);
+                } else if (marketNews.getDate().equals(LocalDate.of(2025, 3, 12))) {
+                    marketNews.setDate(now.plusDays(3));
+                    this.marketNewsRepository.save(marketNews);
+                } else if (marketNews.getDate().equals(LocalDate.of(2025, 3, 13))) {
+                    marketNews.setDate(now.plusDays(4));
+                    this.marketNewsRepository.save(marketNews);
+                } else if (marketNews.getDate().equals(LocalDate.of(2025, 3, 14))) {
+                    marketNews.setDate(now.plusDays(5));
+                    this.marketNewsRepository.save(marketNews);
+                }
+            });
         } catch (Exception e) {
             //  DO NOTHING
         }
