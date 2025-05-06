@@ -4,7 +4,7 @@ import React from "react";
 import {Icons} from "@/lib/enums";
 import {BaseCard} from "@/components/Card/BaseCard";
 import DashboardContent from "@/components/Card/Content/DashboardContent";
-import {getActivePortfolioNumber, logErrors, resolveIcon} from "@/lib/functions/util-functions";
+import {getActivePortfolioNumber, logErrors} from "@/lib/functions/util-functions";
 import AccountsTable from "@/components/Table/Account/AccountsTable";
 import TradeLogTable from "@/components/Table/Trade/TradeLogTable";
 import PortfolioGrowthChart from "@/components/Chart/Account/PortfolioGrowthChart";
@@ -22,6 +22,7 @@ import PageHeaderSection from "@/components/Section/PageHeaderSection";
 import {PageInfoProvider} from "@/lib/context/PageInfoProvider";
 import ReusableSelect from "@/components/Input/ReusableSelect";
 import {usePortfolioStore} from "@/lib/store/portfolioStore";
+import { resolveIcon } from "@/lib/functions/util-component-functions";
 
 /**
  * The page that shows an overview of a user's portfolio

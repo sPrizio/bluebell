@@ -34,20 +34,6 @@ services:
         condition: service_healthy
     mem_limit: 8g
 
-  sepal:
-    build:
-      context: .
-      dockerfile: flower/sepal/Dockerfile
-      args:
-        - FLOWER_PROFILE=${FLOWER_PROFILE:-staging}
-    ports:
-      - "3000:3000"
-    environment:
-      - FLOWER_PROFILE=${FLOWER_PROFILE:-staging}
-    depends_on:
-      greenhouse:
-        condition: service_started
-
   petal:
     build:
       context: .

@@ -1,10 +1,11 @@
 'use client'
 
 import AnalysisBarChart from "@/components/Chart/Analysis/AnalysisBarChart";
-import React, {useEffect, useState} from "react";
-import {getTimeBucketsAnalysis} from "@/lib/functions/analysis-functions";
-import {AnalysisResult, FilterSelector} from "@/types/apiTypes";
+import React from "react";
+import {FilterSelector} from "@/types/apiTypes";
 import {Loader2} from "lucide-react";
+import {logErrors} from "@/lib/functions/util-functions";
+import {useTimeBucketsAnalysisQuery} from "@/lib/hooks/query/queries";
 
 /**
  * Renders the time bucket analysis content with chart
@@ -13,7 +14,7 @@ import {Loader2} from "lucide-react";
  * @param filter filter
  * @param opened trades opened or closed
  * @author Stephen Prizio
- * @version 0.0.2
+ * @version 0.2.0
  */
 export default function TimeBucketAnalysis(
   {
@@ -28,36 +29,24 @@ export default function TimeBucketAnalysis(
   }>
 ) {
 
-  useEffect(() => {
-    getAccTimeBucketsAnalysis()
-  }, [filter, accountNumber]);
-
-  const [isLoading, setIsLoading] = useState(false)
-  const [data, setData] = useState<Array<AnalysisResult>>([])
-
-
-  //  GENERAL FUNCTIONS
-
-  /**
-   * Fetches the analysis data
-   */
-  async function getAccTimeBucketsAnalysis() {
-
-    setIsLoading(true)
-
-    const data = await getTimeBucketsAnalysis(accountNumber, filter, opened)
-    setData(data ?? [])
-
-    setIsLoading(false)
-  }
+  const {
+    data: timeBucketsAnalysisData,
+    isLoading: isTimeBucketsAnalysisLoading,
+    isError: isTimeBucketsAnalysisError,
+  } = useTimeBucketsAnalysisQuery(accountNumber, opened, filter)
 
 
   //  RENDER
 
+  if (isTimeBucketsAnalysisError) {
+    logErrors(isTimeBucketsAnalysisError)
+    return <p>Data could not be displayed.</p>
+  }
+
   return (
     <div className={''}>
       {
-        isLoading ?
+        isTimeBucketsAnalysisLoading ?
           <div className={'h-[100px] flex items-center justify-center'}>
             <div className={'grid grid-cols-1 justify-items-center gap-8'}>
               <div>
@@ -66,7 +55,7 @@ export default function TimeBucketAnalysis(
             </div>
           </div>
           :
-          <AnalysisBarChart data={data} filter={filter} />
+          <AnalysisBarChart data={timeBucketsAnalysisData ?? []} filter={filter} />
       }
     </div>
   )

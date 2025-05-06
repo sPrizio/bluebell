@@ -1,8 +1,9 @@
-import {AnalysisResult, FilterSelector} from "@/types/apiTypes";
-import React, {useEffect, useState} from "react";
-import {getWeekdaysAnalysis} from "@/lib/functions/analysis-functions";
+import {FilterSelector} from "@/types/apiTypes";
+import React from "react";
 import {Loader2} from "lucide-react";
 import AnalysisBarChart from "@/components/Chart/Analysis/AnalysisBarChart";
+import {useWeekdaysAnalysisQuery} from "@/lib/hooks/query/queries";
+import {logErrors} from "@/lib/functions/util-functions";
 
 /**
  * Renders the weekday analysis content with chart
@@ -10,7 +11,7 @@ import AnalysisBarChart from "@/components/Chart/Analysis/AnalysisBarChart";
  * @param accountNumber account number
  * @param filter filter
  * @author Stephen Prizio
- * @version 0.0.2
+ * @version 0.2.0
  */
 export default function WeekdayAnalysis(
   {
@@ -23,36 +24,24 @@ export default function WeekdayAnalysis(
   }>
 ) {
 
-  useEffect(() => {
-    getAccWeekdayAnalysis()
-  }, [filter, accountNumber]);
-
-  const [isLoading, setIsLoading] = useState(false)
-  const [data, setData] = useState<Array<AnalysisResult>>([])
-
-
-  //  GENERAL FUNCTIONS
-
-  /**
-   * Fetches the analysis data
-   */
-  async function getAccWeekdayAnalysis() {
-
-    setIsLoading(true)
-
-    const data = await getWeekdaysAnalysis(accountNumber, filter)
-    setData(data ?? [])
-
-    setIsLoading(false)
-  }
+  const {
+    data: weekdaysAnalysisData,
+    isLoading: isWeekdaysAnalysisLoading,
+    isError: isWeekdaysAnalysisError,
+  } = useWeekdaysAnalysisQuery(accountNumber, filter)
 
 
   //  RENDER
 
+  if (isWeekdaysAnalysisError) {
+    logErrors(isWeekdaysAnalysisError)
+    return <p>Data could not be displayed.</p>
+  }
+
   return (
     <div className={''}>
       {
-        isLoading ?
+        isWeekdaysAnalysisLoading ?
           <div className={'h-[100px] flex items-center justify-center'}>
             <div className={'grid grid-cols-1 justify-items-center gap-8'}>
               <div>
@@ -61,7 +50,7 @@ export default function WeekdayAnalysis(
             </div>
           </div>
           :
-          <AnalysisBarChart data={data} filter={filter} />
+          <AnalysisBarChart data={weekdaysAnalysisData ?? []} filter={filter} />
       }
     </div>
   )

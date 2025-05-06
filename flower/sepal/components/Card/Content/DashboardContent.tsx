@@ -1,6 +1,7 @@
-import {formatNumberForDisplay, resolveIcon} from "@/lib/functions/util-functions";
+import {formatNumberForDisplay} from "@/lib/functions/util-functions";
 import {Icons} from "@/lib/enums";
 import React from "react";
+import {resolveIcon} from "@/lib/functions/util-component-functions";
 
 /**
  * Component that renders small cards meant to act as overview Account summaries

@@ -5,7 +5,7 @@ import {
   Account,
   AccountCreationInfo,
   AccountDetails,
-  AccountType,
+  AccountType, AnalysisResult,
   Broker,
   Currency,
   PagedTrades,
@@ -29,14 +29,14 @@ export const useUserQuery = () => {
 
 export const usePortfolioQuery = (portfolioNumber: number) => {
   return useQuery<Portfolio>({
-    queryKey: ['portfolio'],
+    queryKey: ['portfolio', portfolioNumber],
     queryFn: () => get<Portfolio>(ApiUrls.Portfolio.GetPortfolio, { portfolioNumber: portfolioNumber })
   })
 }
 
 export const usePortfolioRecordQuery = (portfolioNumber: number) => {
   return useQuery<PortfolioRecord>({
-    queryKey: ['portfolio-record'],
+    queryKey: ['portfolio-record', portfolioNumber],
     queryFn: () => get<PortfolioRecord>(ApiUrls.PortfolioRecord.GetPortfolioRecord, { portfolioNumber: portfolioNumber })
   })
 }
@@ -61,7 +61,7 @@ export const useTradeLogQuery = () => {
   }
 
   return useQuery<TradeLog>({
-    queryKey: ['trade-log'],
+    queryKey: ['trade-log', from, to, params.interval, params.count],
     queryFn: () => get<TradeLog>(ApiUrls.TradeRecord.GetTradeLog, params),
   })
 }
@@ -163,5 +163,33 @@ export const usePagedTradesQuery = (accountNumber: number, start: string, end: s
     queryKey: ['paginated-trades', accountNumber, start, end, page, pageSize],
     queryFn: () => get<PagedTrades>(ApiUrls.Trade.GetPagedTrades, { accountNumber: accountNumber.toString(), start: start, end: end, page: page.toString(), pageSize: pageSize.toString() }),
     enabled: accountNumber > -1,
+  })
+}
+
+export const useTimeBucketsAnalysisQuery = (accountNumber: number, isOpened: boolean, filter: string) => {
+  return useQuery<Array<AnalysisResult>>({
+    queryKey: ['time-buckets', accountNumber, isOpened, filter],
+    queryFn: () => get<Array<AnalysisResult>>(ApiUrls.Analysis.TimeBuckets, { accountNumber: accountNumber.toString(), isOpened: isOpened.toString(), filter: filter })
+  })
+}
+
+export const useWeekdaysAnalysisQuery = (accountNumber: number, filter: string) => {
+  return useQuery<Array<AnalysisResult>>({
+    queryKey: ['weekdays', accountNumber, filter],
+    queryFn: () => get<Array<AnalysisResult>>(ApiUrls.Analysis.Weekdays, { accountNumber: accountNumber.toString(), filter: filter })
+  })
+}
+
+export const useWeekdaysTimeBucketsAnalysisQuery = (accountNumber: number, weekday: string, filter: string) => {
+  return useQuery<Array<AnalysisResult>>({
+    queryKey: ['weekdays-time-buckets', accountNumber, weekday, filter],
+    queryFn: () => get<Array<AnalysisResult>>(ApiUrls.Analysis.WeekdaysTimeBuckets, { accountNumber: accountNumber.toString(), weekday: weekday, filter: filter })
+  })
+}
+
+export const useTradeDurationAnalysisQuery = (accountNumber: number, tradeDurationFilter: string, filter: string) => {
+  return useQuery<Array<AnalysisResult>>({
+    queryKey: ['time-buckets', accountNumber, tradeDurationFilter, filter],
+    queryFn: () => get<Array<AnalysisResult>>(ApiUrls.Analysis.TradeDuration, { accountNumber: accountNumber.toString(), tradeDurationFilter: tradeDurationFilter.toString(), filter: filter })
   })
 }
