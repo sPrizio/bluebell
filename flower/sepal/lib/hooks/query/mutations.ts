@@ -59,3 +59,9 @@ export const useImportTradesMutation = (accNumber: number) => {
     }
   })
 }
+
+export const useFetchMarketNewsMutation = () => {
+  return useMutation<boolean, Error, any>({
+    mutationFn: (payload) => post<boolean>(ApiUrls.News.FetchNews, {}, {})
+  })
+}

@@ -7,7 +7,7 @@ import {
   AccountDetails,
   AccountType, AnalysisResult,
   Broker,
-  Currency,
+  Currency, MarketNews,
   PagedTrades,
   Portfolio,
   PortfolioRecord,
@@ -191,5 +191,12 @@ export const useTradeDurationAnalysisQuery = (accountNumber: number, tradeDurati
   return useQuery<Array<AnalysisResult>>({
     queryKey: ['time-buckets', accountNumber, tradeDurationFilter, filter],
     queryFn: () => get<Array<AnalysisResult>>(ApiUrls.Analysis.TradeDuration, { accountNumber: accountNumber.toString(), tradeDurationFilter: tradeDurationFilter.toString(), filter: filter })
+  })
+}
+
+export const useMarketNewsQuery = (start: string, end: string) => {
+  return useQuery<Array<MarketNews>>({
+    queryKey: ['market-news', start, end],
+    queryFn: () => get<Array<MarketNews>>(ApiUrls.News.GetNews, { start: start, end: end })
   })
 }
