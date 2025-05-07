@@ -87,7 +87,7 @@ export default function TransactionsPage() {
                       <BaseModal
                         key={0}
                         title={'Add a new Transaction'}
-                        description={'Keep track of your Account\'s transactions by adding withdrawals & deposits.'}
+                        description={'Keep track of your account\'s transactions by adding withdrawals & deposits.'}
                         trigger={<Button className="w-full text-white"><IconCirclePlus/>&nbsp;Add Transaction</Button>}
                         content={<TransactionForm account={activeAccount} mode={'create'}/>}
                       />

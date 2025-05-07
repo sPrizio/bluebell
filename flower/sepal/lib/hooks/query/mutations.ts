@@ -1,5 +1,5 @@
 import {useMutation, useQueryClient} from "@tanstack/react-query"
-import {Account, User} from "@/types/apiTypes";
+import {Account, Transaction, User} from "@/types/apiTypes";
 import {del, post, postFile, put} from "../../functions/client";
 import {ApiUrls} from "../../constants";
 
@@ -83,5 +83,38 @@ export const useImportTradesMutation = (accNumber: number) => {
 export const useFetchMarketNewsMutation = () => {
   return useMutation<boolean, Error, any>({
     mutationFn: (payload) => post<boolean>(ApiUrls.News.FetchNews, {}, {})
+  })
+}
+
+export const useCreateTransactionMutation = (accountNumber: number) => {
+  const queryClient = useQueryClient()
+  return useMutation<Transaction, Error, any>({
+    // @ts-ignore : TODO: TEMP
+    mutationFn: (payload) => {console.log(payload); return null}, //TODO: BB-118
+    onSuccess: (data) => {
+      queryClient.invalidateQueries({queryKey: ['user']})
+    }
+  })
+}
+
+export const useUpdateTransactionMutation = (accountNumber: number) => {
+  const queryClient = useQueryClient()
+  return useMutation<Transaction, Error, any>({
+    // @ts-ignore : TODO: TEMP
+    mutationFn: (payload) => {console.log(payload); return null}, //TODO: BB-118
+    onSuccess: (data) => {
+      queryClient.invalidateQueries({queryKey: ['user']})
+    }
+  })
+}
+
+export const useDeleteTransactionMutation = (accountNumber: number) => {
+  const queryClient = useQueryClient()
+  return useMutation<Transaction, Error, any>({
+    // @ts-ignore : TODO: TEMP
+    mutationFn: (payload) => {console.log(payload); return null}, //TODO: BB-118
+    onSuccess: (data) => {
+      queryClient.invalidateQueries({queryKey: ['user']})
+    }
   })
 }

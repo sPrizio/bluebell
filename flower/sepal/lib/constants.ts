@@ -128,7 +128,7 @@ export function CRUDTransactionSchema() {
     date: z.date({
       required_error: "A transaction date is required.",
     }),
-    type: z.enum(safeConvertEnum(['Deposit', 'Withdrawal']), { message: 'Please select a transaction type.' }),
+    type: z.enum(safeConvertEnum(['DEPOSIT', 'WITHDRAWAL']), { message: 'Please select a transaction type.' }),
     amount: z.coerce.number().min(1, { message: 'Please enter a number between 1 and 999999999.' }).max(999999999, { message: 'Please enter a number between 1 and 999999999.' }),
     account: z.coerce.number()
   })
@@ -152,7 +152,7 @@ export function CRUDUserSchema(editMode: boolean) {
       });
 
       // when it's good
-      if (phone && phone.isValid()) {
+      if (phone?.isValid() ?? false) {
         return phone.formatNational();
       }
 

@@ -27,6 +27,8 @@ export default function DeleteAccountForm(
 ) {
 
   const {toast} = useToast();
+  const {setOpen} = useSepalModalContext()
+  const router = useRouter();
   const {
     mutate: deleteAccount,
     isPending: isDeleteAccountLoading,
@@ -34,9 +36,6 @@ export default function DeleteAccountForm(
     isError: isDeleteAccountError,
     error: deleteAccountError
   } = useDeleteAccountMutation(account.portfolioNumber, account.accountNumber)
-
-  const {setOpen} = useSepalModalContext()
-  const router = useRouter();
 
   useEffect(() => {
     if (isDeleteAccountSuccess) {

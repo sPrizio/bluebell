@@ -1,13 +1,14 @@
 'use client'
 
-import {useEffect, useState} from "react";
+import {useEffect} from "react";
 import {useSepalModalContext} from "@/lib/context/SepalContext";
 import {useRouter} from "next/navigation";
-import {toast} from "@/lib/hooks/ui/use-toast";
-import {delay} from "@/lib/functions/util-functions";
+import {useToast} from "@/lib/hooks/ui/use-toast";
+import {delay, logErrors} from "@/lib/functions/util-functions";
 import {Button} from "@/components/ui/button";
 import {Loader2} from "lucide-react";
 import {Account, Transaction} from "@/types/apiTypes";
+import {useDeleteTransactionMutation} from "@/lib/hooks/query/mutations";
 
 /**
  * Renders a form for deleting transactions
@@ -23,35 +24,43 @@ export default function DeleteTransactionForm(
     transaction
   }
     : Readonly<{
-    account: Account,
+    account: Account | null | undefined,
     transaction: Transaction | null | undefined
   }>
 ) {
 
-  const [isLoading, setIsLoading] = useState(false)
-  const { open, setOpen } = useSepalModalContext()
-  const [success, setSuccess] = useState<'success' | 'failed' | 'undefined'>('undefined')
+  const { toast } = useToast();
+  const { setOpen } = useSepalModalContext()
   const router = useRouter();
+  const {
+    mutate: deleteTransaction,
+    isPending: isDeleteTransactionLoading,
+    isSuccess: isDeleteTransactionSuccess,
+    isError: isDeleteTransactionError,
+    error: deleteTransactionError
+  } = useDeleteTransactionMutation(account?.accountNumber ?? -1)
 
   useEffect(() => {
-    if (success === 'success') {
-      toast(
-        {
-          title: 'Deletion Successful!',
-          description: 'The transaction was successfully deleted.',
-          variant: 'success'
-        }
-      )
-    } else if (success === 'failed') {
-      toast(
-        {
-          title: 'Deletion Failed!',
-          description: 'An error occurred while updating the transaction. Please try again.',
-          variant: 'danger'
-        }
-      )
+    if (isDeleteTransactionSuccess) {
+      toast({
+        title: 'Deletion Successful!',
+        description: 'The transaction was successfully deleted.',
+        variant: 'success'
+      })
+
+      setOpen(false)
+      router.push(`/transactions?account=${account?.accountNumber ?? -1}`)
+    } else if (isDeleteTransactionError) {
+      toast({
+        title: 'Deletion Failed!',
+        description: 'An error occurred while updating the transaction. Please try again.',
+        variant: 'danger'
+      })
+
+      logErrors(deleteTransactionError)
+      setOpen(false)
     }
-  }, [success]);
+  }, [isDeleteTransactionSuccess, isDeleteTransactionError]);
 
 
   //  GENERAL FUNCTIONS
@@ -60,14 +69,9 @@ export default function DeleteTransactionForm(
    * Deletes the transaction
    */
   async function handleDelete() {
-
-    setIsLoading(true)
-    await delay(4000)
-    setIsLoading(false)
-
-    setSuccess('success')
-    setOpen(false)
-    router.push(`/transactions?account=${account.accountNumber}`)
+    //  TODO: temp
+    await delay(2000)
+    deleteTransaction({ transactionName: transaction?.name ?? '', transactionDate: transaction?.transactionDate ?? '' })
   }
 
 
@@ -77,8 +81,8 @@ export default function DeleteTransactionForm(
     <div>
       <div className={'mb-3'}>Are you sure you want to delete this transaction? This action cannot be undone.</div>
       <div className={'flex w-full justify-end items-center gap-4'}>
-        <Button type="submit" className={'bg-primaryRed hover:bg-primaryRedLight text-white'} disabled={isLoading} onClick={handleDelete}>
-          {isLoading ? <Loader2 className="mr-2 h-4 w-4 animate-spin"/> : null}
+        <Button type="submit" className={'bg-primaryRed hover:bg-primaryRedLight text-white'} disabled={isDeleteTransactionLoading} onClick={handleDelete}>
+          {isDeleteTransactionLoading ? <Loader2 className="mr-2 h-4 w-4 animate-spin"/> : null}
           Delete
         </Button>
         <Button type="button" className={'border border-gray-400'} variant={"outline"} onClick={() => setOpen(false)}>

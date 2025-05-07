@@ -6,7 +6,7 @@ import {IconEdit, IconExternalLink, IconPointFilled, IconTrash} from "@tabler/ic
 import moment from "moment/moment";
 import {DateTime} from "@/lib/constants";
 import {formatNumberForDisplay} from "@/lib/functions/util-functions";
-import React, {useEffect, useState} from "react";
+import React, {useState} from "react";
 
 import {Button} from "@/components/ui/button"
 import {
@@ -49,19 +49,8 @@ export default function AccountTransactionsTable(
   }>
 ) {
 
-  const [modalActive, setModalActive] = useState(false)
   const [showModal, setShowModal] = useState<'edit' | 'delete' | 'none'>('none')
   const [transaction, setTransaction] = useState<Transaction>()
-
-  useEffect(() => {
-    if (showModal === 'edit') {
-      setModalActive(true)
-    } else if (showModal === 'none') {
-      setModalActive(false)
-    } else {
-      setModalActive(true)
-    }
-  }, [showModal]);
 
 
   //  GENERAL FUNCTIONS
@@ -173,31 +162,21 @@ export default function AccountTransactionsTable(
           {
             account && (transaction?.transactionDate ?? false) ?
               <BaseModal
-                isOpen={modalActive && showModal === 'edit'}
+                isOpen={showModal === 'edit'}
                 title={'Edit Transaction'}
-                description={'Keep track of your Account\'s transactions by adding withdrawals & deposits.'}
+                description={'Keep track of your account\'s transactions by adding withdrawals & deposits.'}
                 content={<TransactionForm account={account} mode={'edit'} transaction={transaction}/>}
-                closeHandler={() => {
-                  if (showModal !== 'none' && modalActive) {
-                    setShowModal('none');
-                  }
-                }
-                }
+                closeHandler={() => setShowModal('none')}
               /> : null
           }
           {
             account && (transaction?.transactionDate ?? false) ?
               <BaseModal
-                isOpen={modalActive && showModal === 'delete'}
+                isOpen={showModal === 'delete'}
                 title={'Edit Transaction'}
-                description={'Keep track of your Account\'s transactions by adding withdrawals & deposits.'}
+                description={'Keep track of your account\'s transactions by adding withdrawals & deposits.'}
                 content={<DeleteTransactionForm account={account} transaction={transaction} />}
-                closeHandler={() => {
-                  if (showModal !== 'none' && modalActive) {
-                    setShowModal('none');
-                  }
-                }
-                }
+                closeHandler={() => setShowModal('none')}
               /> : null
           }
         </>

@@ -1,13 +1,13 @@
 'use client'
 
 import {useToast} from "@/lib/hooks/ui/use-toast";
-import {useEffect, useState} from "react";
+import {useEffect} from "react";
 import {useSepalModalContext} from "@/lib/context/SepalContext";
 import {CRUDTransactionSchema} from "@/lib/constants";
 import {zodResolver} from "@hookform/resolvers/zod";
 import {useForm} from "react-hook-form"
 import {z} from "zod";
-import {delay} from "@/lib/functions/util-functions";
+import {delay, logErrors} from "@/lib/functions/util-functions";
 import {Form, FormControl, FormField, FormItem, FormLabel, FormMessage,} from "@/components/ui/form"
 import TransactionDatePicker from "@/components/DateTime/TransactionDatePicker";
 import {Button} from "@/components/ui/button";
@@ -16,6 +16,7 @@ import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from "@/c
 import {Input} from "@/components/ui/input";
 import moment from "moment";
 import {Account, Transaction} from "@/types/apiTypes";
+import {useCreateTransactionMutation, useUpdateTransactionMutation} from "@/lib/hooks/query/mutations";
 
 /**
  * Renders a form that can create or update a transaction
@@ -39,45 +40,61 @@ export default function TransactionForm(
   }>
 ) {
 
-  const {toast} = useToast();
+  if (!isCreateMode() && !account?.accountNumber) {
+    throw new Error('Missing Account for edit mode');
+  }
 
-  const [isLoading, setIsLoading] = useState(false)
-  const [success, setSuccess] = useState<'success' | 'failed' | 'undefined'>('undefined')
-
-  useEffect(() => {
-    if (success === 'success') {
-      toast(
-        {
-          title: isCreateMode() ? 'Transaction Created!' : 'Transaction Updated!',
-          description: isCreateMode() ? 'The transaction was successfully created.' : 'The transaction was updated successfully.',
-          variant: 'success'
-        }
-      )
-    } else if (success === 'failed') {
-      toast(
-        {
-          title: isCreateMode() ? 'Creation Failed!' : 'Update Failed!',
-          description: isCreateMode() ? 'An error occurred while creating the transaction. Please check your inputs and try again.' : 'An error occurred while updating the transaction. Please check your inputs and try again.',
-          variant: 'danger'
-        }
-      )
-    }
-  }, [success]);
-
-  const {open, setOpen} = useSepalModalContext()
-  const formSchema = CRUDTransactionSchema()
-
-  if (!isCreateMode() && (!transaction || !transaction.date)) {
+  if (!isCreateMode() && !(transaction?.transactionDate ?? null)) {
     throw new Error('Missing transaction for edit mode');
   }
 
+  const {toast} = useToast();
+  const {setOpen} = useSepalModalContext()
+  const {
+    mutate: createTransaction,
+    isPending: isCreateTransactionLoading,
+    isSuccess: isCreateTransactionSuccess,
+    isError: isCreateTransactionError,
+    error: createTransactionError,
+  } = useCreateTransactionMutation(account?.accountNumber ?? -1)
+
+  const {
+    mutate: updateTransaction,
+    isPending: isUpdateTransactionLoading,
+    isSuccess: isUpdateTransactionSuccess,
+    isError: isUpdateTransactionError,
+    error: updateTransactionError,
+  } = useUpdateTransactionMutation(account?.accountNumber ?? -1)
+
+  useEffect(() => {
+    if (isCreateTransactionSuccess) {
+      renderSuccessNotification()
+      setOpen(false)
+    } else if (isCreateTransactionError) {
+      logErrors(createTransactionError)
+      renderErrorNotification()
+    }
+  }, [isCreateTransactionSuccess, isCreateTransactionError]);
+
+  useEffect(() => {
+    if (isUpdateTransactionSuccess) {
+      renderSuccessNotification()
+      setOpen(false)
+    } else if (isUpdateTransactionError) {
+      logErrors(updateTransactionError)
+      renderErrorNotification()
+    }
+  }, [isUpdateTransactionSuccess, isUpdateTransactionError]);
+
+  const isLoading = isCreateTransactionLoading || isUpdateTransactionLoading
+  const formSchema = CRUDTransactionSchema()
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      date: isCreateMode() ? new Date() : moment(transaction?.date).toDate(),
-      type: isCreateMode() ? 'default' : transaction?.type,
+      date: isCreateMode() ? new Date() : moment(transaction?.transactionDate).toDate(),
+      type: isCreateMode() ? 'default' : transaction?.transactionType.code.toUpperCase(),
       amount: isCreateMode() ? 0.0 : transaction?.amount,
-      account: account.accountNumber
+      account: account?.accountNumber ?? -1
     }
   })
 
@@ -85,20 +102,46 @@ export default function TransactionForm(
   //  GENERAL FUNCTIONS
 
   /**
+   * Renders the success notifications
+   */
+  function renderSuccessNotification() {
+    toast(
+      {
+        title: isCreateMode() ? 'Transaction Created!' : 'Transaction Updated!',
+        description: isCreateMode() ? 'The transaction was successfully created.' : 'The transaction was updated successfully.',
+        variant: 'success'
+      }
+    )
+  }
+
+  /**
+   * Renders the error notifications
+   */
+  function renderErrorNotification() {
+    toast(
+      {
+        title: isCreateMode() ? 'Creation Failed!' : 'Update Failed!',
+        description: isCreateMode() ? 'An error occurred while creating the transaction. Please check your inputs and try again.' : 'An error occurred while updating the transaction. Please check your inputs and try again.',
+        variant: 'danger'
+      }
+    )
+  }
+
+  /**
    * Submits the form
    *
    * @param values form values
    */
   async function onSubmit(values: z.infer<typeof formSchema>) {
-    // Do something with the form values.
-    // ✅ This will be type-safe and validated.
-    setIsLoading(true)
-    await delay(4000);
+    //TODO: temp
+    await delay(2000);
     console.log(values)
-    setIsLoading(false)
 
-    setSuccess('success')
-    setOpen(false)
+    if (isCreateMode()) {
+      createTransaction(values)
+    } else {
+      updateTransaction(values)
+    }
   }
 
   /**
@@ -159,8 +202,8 @@ export default function TransactionForm(
                       </FormControl>
                       <SelectContent>
                         <SelectItem value={'default'}>Select a type</SelectItem>
-                        <SelectItem value={'Deposit'}>Deposit</SelectItem>
-                        <SelectItem value={'Withdrawal'}>Withdrawal</SelectItem>
+                        <SelectItem value={'DEPOSIT'}>Deposit</SelectItem>
+                        <SelectItem value={'WITHDRAWAL'}>Withdrawal</SelectItem>
                       </SelectContent>
                     </Select>
                     <FormMessage className={'text-primaryRed font-semibold'} />
