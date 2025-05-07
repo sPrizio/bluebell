@@ -1,7 +1,27 @@
 import {useMutation, useQueryClient} from "@tanstack/react-query"
-import {Account} from "@/types/apiTypes";
+import {Account, User} from "@/types/apiTypes";
 import {del, post, postFile, put} from "../../functions/client";
 import {ApiUrls} from "../../constants";
+
+export const useCreateUserMutation = () => {
+  const queryClient = useQueryClient()
+  return useMutation<User, Error, any>({
+    mutationFn: (payload) => post<User>(ApiUrls.User.RegisterUser, {}, payload),
+    onSuccess: (data) => {
+      queryClient.invalidateQueries({queryKey: ['user']});
+    }
+  })
+}
+
+export const useUpdateUserMutation = (username: string) => {
+  const queryClient = useQueryClient()
+  return useMutation<User, Error, any>({
+    mutationFn: (payload) => put<User>(ApiUrls.User.UpdateUser, { username: username }, payload),
+    onSuccess: (data) => {
+      queryClient.invalidateQueries({queryKey: ['user']});
+    }
+  })
+}
 
 export const useCreateAccountMutation = (portfolioNumber: number) => {
   const queryClient = useQueryClient()

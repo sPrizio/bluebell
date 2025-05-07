@@ -3,7 +3,7 @@ import type {Metadata} from "next";
 
 export const metadata: Metadata = {
   title: "Transactions - bluebell",
-  description: "View a list of your transactions per Account",
+  description: "View a list of your transactions per account",
 };
 
 /**

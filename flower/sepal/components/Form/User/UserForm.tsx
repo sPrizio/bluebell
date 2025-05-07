@@ -1,8 +1,8 @@
 'use client'
 
 import {useToast} from "@/lib/hooks/ui/use-toast";
-import React, {useEffect, useState} from "react";
-import {delay} from "@/lib/functions/util-functions";
+import React, {useEffect} from "react";
+import {delay, logErrors} from "@/lib/functions/util-functions";
 import {useSepalModalContext} from "@/lib/context/SepalContext";
 import {CRUDUserSchema} from "@/lib/constants";
 import {zodResolver} from "@hookform/resolvers/zod"
@@ -13,8 +13,8 @@ import {Input} from "@/components/ui/input";
 import {Button} from "@/components/ui/button";
 import {Loader2} from "lucide-react";
 import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from "@/components/ui/select";
-import {updateUser} from "@/lib/functions/account-functions";
 import {User} from "@/types/apiTypes";
+import {useUpdateUserMutation} from "@/lib/hooks/query/mutations";
 
 /**
  * Renders a form that can create or update a User
@@ -29,39 +29,35 @@ export default function UserForm(
     mode = 'create',
     user,
   }
-    : Readonly<{
+  : Readonly<{
     mode?: 'create' | 'edit';
     user?: User
   }>
 ) {
 
   const {toast} = useToast();
-
-  const [isLoading, setIsLoading] = useState(false)
-  const [success, setSuccess] = useState<'success' | 'failed' | 'undefined'>('undefined')
-
-  useEffect(() => {
-    if (success === 'success') {
-      toast(
-        {
-          title: isCreateMode() ? 'User Created!' : 'User Modified!',
-          description: isCreateMode() ? 'Your profile was successfully registered.' : 'Your profile was modified successfully.',
-          variant: 'success'
-        }
-      )
-    } else if (success === 'failed') {
-      toast(
-        {
-          title: isCreateMode() ? 'Registration Failed!' : 'Update Failed!',
-          description: isCreateMode() ? 'An error occurred while registering your profile. Please check your inputs and try again.' : 'An error occurred while updating your profile. Please check your inputs and try again.',
-          variant: 'danger'
-        }
-      )
-    }
-  }, [success]);
-
-  const {open, setOpen} = useSepalModalContext()
+  const {setOpen} = useSepalModalContext()
   const formSchema = CRUDUserSchema(!isCreateMode())
+  const username = "";
+
+  const {
+    mutate: updateUser,
+    isPending: isUpdateUserLoading,
+    isSuccess: isUpdateUserSuccess,
+    isError: isUpdateUserError,
+    error: updateUserError,
+  } = useUpdateUserMutation(username)
+
+  const isLoading = isUpdateUserLoading
+  useEffect(() => {
+    if (isUpdateUserSuccess) {
+      renderSuccessNotification()
+      setOpen(false)
+    } else if (isUpdateUserError) {
+      logErrors(updateUserError)
+      renderErrorNotification()
+    }
+  }, [isUpdateUserSuccess, isUpdateUserError]);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -81,32 +77,41 @@ export default function UserForm(
   //  GENERAL FUNCTIONS
 
   /**
+   * Renders the success notifications
+   */
+  function renderSuccessNotification() {
+    toast({
+      title: isCreateMode() ? 'User Created!' : 'User Modified!',
+      description: isCreateMode() ? 'Your profile was successfully registered.' : 'Your profile was updated successfully.',
+      variant: 'success'
+    })
+  }
+
+  /**
+   * Renders the error notifications
+   */
+  function renderErrorNotification() {
+    toast({
+      title: isCreateMode() ? 'Registration Failed!' : 'Update Failed!',
+      description: isCreateMode() ? 'An error occurred while registering your profile. Please check your inputs and try again.' : 'An error occurred while updating your profile. Please check your inputs and try again.',
+      variant: 'danger'
+    })
+  }
+
+  /**
    * Submits the form
    *
    * @param values form values
    */
   async function onSubmit(values: z.infer<typeof formSchema>) {
 
-    setIsLoading(true)
-
-    let data
+    // TODO: as part of BB-35, will likely need to re-format request to take in a list of phone numbers
     if (isCreateMode()) {
+      //  TODO: create user logic
       await delay(4000)
-      data = null
       console.log(values)
     } else {
-      data = await updateUser(user?.username ?? '', values)
-    }
-
-    if (!data) {
-      setSuccess('failed');
-      setIsLoading(false)
-      setOpen(false)
-    } else {
-      setSuccess('success')
-      setIsLoading(false)
-      setOpen(false)
-      window.location.reload()
+      updateUser(values)
     }
   }
 
@@ -163,7 +168,7 @@ export default function UserForm(
                   <FormItem>
                     <FormLabel className="!text-current">Username</FormLabel>
                     <FormControl>
-                      <Input placeholder="john.trader" {...field} type={'text'} disabled={!isCreateMode()} />
+                      <Input placeholder="john.trader" {...field} type={'text'} disabled={!isCreateMode()}/>
                     </FormControl>
                     <FormMessage className={'text-primaryRed font-semibold'}/>
                   </FormItem>
@@ -195,7 +200,7 @@ export default function UserForm(
                     <Select onValueChange={field.onChange} defaultValue={field.value}>
                       <FormControl>
                         <SelectTrigger>
-                          <SelectValue />
+                          <SelectValue/>
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent>
@@ -205,7 +210,7 @@ export default function UserForm(
                         <SelectItem value={'OTHER'}>Other</SelectItem>
                       </SelectContent>
                     </Select>
-                    <FormMessage className={'text-primaryRed font-semibold'} />
+                    <FormMessage className={'text-primaryRed font-semibold'}/>
                   </FormItem>
                 )}
               />

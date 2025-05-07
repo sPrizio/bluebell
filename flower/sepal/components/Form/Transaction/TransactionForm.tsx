@@ -34,8 +34,8 @@ export default function TransactionForm(
   }
     : Readonly<{
     mode?: 'create' | 'edit'
-    account: Account,
-    transaction?: Transaction
+    account: Account | null,
+    transaction?: Transaction | null
   }>
 ) {
 

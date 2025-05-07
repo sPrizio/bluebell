@@ -34,7 +34,7 @@ export default function TradeTable(
     initialPage = 0,
   }
   : Readonly<{
-    account: Account,
+    account: Account | null,
     initialPageSize?: number
     initialPage?: number
   }>
@@ -47,7 +47,7 @@ export default function TradeTable(
     isError: isPagedTradesError,
     error: pagedTradesError,
   } = usePagedTradesQuery(
-    account.accountNumber,
+    account?.accountNumber ?? -1,
     moment(account?.accountOpenTime).format(DateTime.ISODateTimeFormat),
     moment().add(1, 'years').format(DateTime.ISODateTimeFormat),
     currentPage,
@@ -70,6 +70,10 @@ export default function TradeTable(
 
 
   //  RENDER
+
+  if (!account) {
+    return <Error />
+  }
 
   if (isPagedTradesError) {
     logErrors(pagedTradesError)

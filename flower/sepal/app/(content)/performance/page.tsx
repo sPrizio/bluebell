@@ -16,6 +16,7 @@ import Error from "@/app/error";
 import {useActiveAccount} from "@/lib/hooks/api/useActiveAccount";
 import {useTradeData} from "@/lib/hooks/api/useTradeRecordsData";
 import PerformanceDrawer from "@/components/Drawer/PerformanceDrawer";
+import ReusableSelect from "@/components/Input/ReusableSelect";
 
 /**
  * The page that shows an account's performance over time
@@ -105,24 +106,18 @@ export default function PerformancePage() {
             :
             <>
               <div className={'grid grid-cols-1 gap-8'}>
-                <div className={'flex items-center justify-end gap-4'}>
+                <div className={'flex items-end justify-end gap-4'}>
                   <div>
-                    <Select value={accNumber.toString()}
-                            onValueChange={(val) => selectNewAccount(router, searchParams, parseInt(val))}>
-                      <SelectTrigger className="w-[180px] bg-white">
-                        <SelectValue placeholder="Account"/>
-                      </SelectTrigger>
-                      <SelectContent>
-                        {
-                          activePortfolio?.accounts?.filter(acc => acc.active)?.map((item: Account, idx: number) => {
-                            return (
-                              <SelectItem key={item.uid + 'a' + idx}
-                                          value={item.accountNumber.toString()}>{item.name}</SelectItem>
-                            )
-                          }) ?? null
-                        }
-                      </SelectContent>
-                    </Select>
+                    <ReusableSelect
+                      title={'Account'}
+                      initialValue={accNumber.toString()}
+                      options={activePortfolio?.accounts?.filter(acc => acc.active)?.map(a => {
+                        return {label: a.name, value: a.accountNumber.toString()}
+                      }) ?? []}
+                      handler={(val: string) => {
+                        selectNewAccount(router, searchParams, parseInt(val))
+                      }}
+                    />
                   </div>
                   <div>
                     <PerformanceDrawer

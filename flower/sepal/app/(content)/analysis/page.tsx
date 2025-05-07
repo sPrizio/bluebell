@@ -6,7 +6,7 @@ import {Icons} from "@/lib/enums";
 import {BaseCard} from "@/components/Card/BaseCard";
 import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from "@/components/ui/select";
 import TimeBucketAnalysis from "@/components/Analysis/TimeBucketAnalysis";
-import {Account, FilterSelector, TradeDurationFilterSelector, Weekday} from "@/types/apiTypes";
+import {FilterSelector, TradeDurationFilterSelector, Weekday} from "@/types/apiTypes";
 import WeekdayAnalysis from "@/components/Analysis/WeekdayAnalysis";
 import WeekdayTimeBucketAnalysis from "@/components/Analysis/WeekdayTimeBucketAnalysis";
 import TradeDurationAnalysis from "@/components/Analysis/TradeDurationAnalysis";
@@ -15,6 +15,7 @@ import Error from "@/app/error";
 import {PageInfoProvider} from "@/lib/context/PageInfoProvider";
 import {useActiveAccount} from "@/lib/hooks/api/useActiveAccount";
 import {useRouter, useSearchParams} from "next/navigation";
+import ReusableSelect from "@/components/Input/ReusableSelect";
 
 /**
  * The page that shows an analysis of an account's performance
@@ -44,16 +45,15 @@ export default function AnalysisPage() {
     return <Error />;
   }
 
-
   const accNumber = activeAccount?.accountNumber ?? -1
   const pageInfo = {
     title: "Analysis",
-    subtitle: `A more in-depth look at various aspects of trading account ${accNumber}'s performance.`,
+    subtitle: `A more in-depth look at ${activeAccount?.name ?? ''}'s performance.`,
     iconCode: Icons.Analysis,
     breadcrumbs: [
       {label: 'Dashboard', href: '/dashboard', active: false},
       {label: 'Accounts', href: '/accounts', active: false},
-      {label: accNumber.toString(), href: '/accounts/' + accNumber, active: false},
+      {label: activeAccount?.name ?? '', href: '/accounts/' + accNumber, active: false},
       {label: 'Analysis', href: '/analysis?account=default', active: true},
     ]
   }
@@ -95,20 +95,16 @@ export default function AnalysisPage() {
             <div className={'col-span-2'}>
               <div className={'flex items-center justify-end gap-4'}>
                 <div>
-                  <Select value={accNumber.toString()} onValueChange={(val) => selectNewAccount(router, searchParams, parseInt(val))}>
-                    <SelectTrigger className="w-[180px] bg-white">
-                      <SelectValue placeholder="Account"/>
-                    </SelectTrigger>
-                    <SelectContent>
-                      {
-                        activePortfolio?.accounts?.filter(acc => acc.active)?.map((item: Account) => {
-                          return (
-                            <SelectItem key={item.uid} value={item.accountNumber.toString()}>{item.name}</SelectItem>
-                          )
-                        }) ?? null
-                      }
-                    </SelectContent>
-                  </Select>
+                  <ReusableSelect
+                    title={'Account'}
+                    initialValue={accNumber.toString()}
+                    options={activePortfolio?.accounts?.filter(acc => acc.active)?.map(a => {
+                      return {label: a.name, value: a.accountNumber.toString()}
+                    }) ?? []}
+                    handler={(val: string) => {
+                      selectNewAccount(router, searchParams, parseInt(val))
+                    }}
+                  />
                 </div>
               </div>
             </div>
