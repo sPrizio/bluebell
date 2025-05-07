@@ -3,7 +3,11 @@ import {z} from "zod";
 import {safeConvertEnum} from "@/lib/functions/util-functions";
 import {hasEmail, hasUsername} from "@/lib/functions/account-functions";
 import {
-  getAccountDomain, getAnalysisDomain, getNewsDomain, getPortfolioDomain, getPortfolioRecordDomain,
+  getAccountDomain,
+  getAnalysisDomain,
+  getNewsDomain,
+  getPortfolioDomain,
+  getPortfolioRecordDomain,
   getTradeDomain,
   getTradeRecordDomain,
   getUserDomain,
@@ -153,7 +157,7 @@ export function CRUDUserSchema(editMode: boolean) {
 
       // when it's good
       if (phone?.isValid() ?? false) {
-        return phone.formatNational();
+        return phone?.formatNational() ?? '';
       }
 
       // when it's not

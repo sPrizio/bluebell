@@ -1,7 +1,7 @@
-import { DateTime } from "@/lib/constants";
+import {DateTime} from "@/lib/constants";
 import {UserTradeRecordControlSelection} from "@/types/uiTypes";
 import moment from "moment";
-import { useTradeRecordControlsQuery, useTradeRecordsQuery } from "../query/queries";
+import {useTradeRecordControlsQuery, useTradeRecordsQuery} from "../query/queries";
 
 /**
  * Computes the start and dates for lookup based on the filters

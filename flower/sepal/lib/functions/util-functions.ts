@@ -1,6 +1,6 @@
-import { Account, User } from "@/types/apiTypes"
-import { AppRouterInstance } from "next/dist/shared/lib/app-router-context.shared-runtime"
-import { ReadonlyURLSearchParams } from "next/navigation"
+import {Account, User} from "@/types/apiTypes"
+import {AppRouterInstance} from "next/dist/shared/lib/app-router-context.shared-runtime"
+import {ReadonlyURLSearchParams} from "next/navigation"
 
 /**
  * Checks whether the given data is valid and exists

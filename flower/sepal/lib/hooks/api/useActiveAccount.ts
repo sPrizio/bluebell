@@ -1,8 +1,8 @@
-import { useSearchParams } from 'next/navigation';
-import { useMemo } from 'react';
-import { useActivePortfolio } from './useActivePortoflio';
-import { getAccountNumber } from '@/lib/functions/util-functions';
-import { Account } from '@/types/apiTypes';
+import {useSearchParams} from 'next/navigation';
+import {useMemo} from 'react';
+import {useActivePortfolio} from './useActivePortoflio';
+import {getAccountNumber} from '@/lib/functions/util-functions';
+import {Account} from '@/types/apiTypes';
 
 export function useActiveAccount() {
   const searchParams = useSearchParams();

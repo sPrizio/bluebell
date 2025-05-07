@@ -12,7 +12,6 @@ import {PageInfoProvider} from "@/lib/context/PageInfoProvider";
 import LoadingPage from "@/app/loading";
 import {logErrors} from "@/lib/functions/util-functions";
 import Error from "@/app/error";
-import PageHeaderSection from "@/components/Section/PageHeaderSection";
 
 /**
  * Renders the market News page

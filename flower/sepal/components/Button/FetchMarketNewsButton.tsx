@@ -27,7 +27,7 @@ export default function FetchMarketNewsButton() {
     if (isFetched) {
       window.location.reload();
     }
-  }, []);
+  }, [isFetched]);
 
 
   //  RENDER

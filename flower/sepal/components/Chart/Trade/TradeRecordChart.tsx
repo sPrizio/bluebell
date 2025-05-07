@@ -1,12 +1,8 @@
 import {Area, AreaChart, ReferenceLine, ResponsiveContainer} from "recharts";
-import React, {useEffect, useState} from "react";
+import React, {useMemo} from "react";
 import {Css} from "@/lib/constants";
 import {TradeRecordEquityPoint} from "@/types/apiTypes";
 
-interface ChartPoint {
-  id: string | number,
-  value: number
-}
 
 /**
  * Renders a chart showing a trade records equity over a count of trades
@@ -14,7 +10,7 @@ interface ChartPoint {
  * @param data array of trade record equity points
  * @param showAsPoints show points instead of balance
  * @author Stephen Prizio
- * @version 0.0.2
+ * @version 0.2.0
  */
 export default function TradeRecordChart(
   {
@@ -27,23 +23,16 @@ export default function TradeRecordChart(
   }>
 ) {
 
-  const [chartData, setChartData] = useState<Array<ChartPoint>>([])
-
-  useEffect(() => {
-    if (showAsPoints) {
-      setChartData(data?.map(item => ({id: item.count, value: item.cumPoints})) ?? [])
-    } else {
-      setChartData(data?.map(item => ({id: item.count, value: item.cumAmount})) ?? [])
+  const chartData = useMemo(() => {
+    if (!data) {
+      return []
     }
-  }, []);
 
-  useEffect(() => {
-    if (showAsPoints) {
-      setChartData(data?.map(item => ({id: item.count, value: item.cumPoints})) ?? [])
-    } else {
-      setChartData(data?.map(item => ({id: item.count, value: item.cumAmount})) ?? [])
-    }
-  }, [showAsPoints]);
+    return data.map(item => ({
+      id: item.count,
+      value: showAsPoints ? item.cumPoints : item.cumAmount
+    }))
+  }, [data, showAsPoints])
 
 
   //  GENERAL FUNCTIONS

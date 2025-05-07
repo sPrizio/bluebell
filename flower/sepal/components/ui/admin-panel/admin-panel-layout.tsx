@@ -1,9 +1,9 @@
 "use client";
 
-import { Sidebar } from "@/components/ui/admin-panel/sidebar";
-import { useSidebar } from "@/lib/hooks/ui/use-sidebar";
-import { useStore } from "@/lib/hooks/ui/use-store";
-import { cn } from "@/lib/utils";
+import {Sidebar} from "@/components/ui/admin-panel/sidebar";
+import {useSidebar} from "@/lib/hooks/ui/use-sidebar";
+import {useStore} from "@/lib/hooks/ui/use-store";
+import {cn} from "@/lib/utils";
 import Footer from "@/components/Footer/Footer";
 
 export default function AdminPanelLayout({

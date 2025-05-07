@@ -1,4 +1,5 @@
 'use client'
+
 import Image from "next/image";
 import brandTertiary from '../../app/assets/brand/bluebell/bluebell_logo_tertiary.png';
 import brandWhite from '../../app/assets/brand/bluebell/bluebell_logo_white.png';
@@ -13,7 +14,7 @@ import Link from "next/link";
  * @param variant color variant
  * @param hasBackground should have a background
  * @author Stephen Prizio
- * @version 0.0.1
+ * @version 0.2.0
  */
 export default function MobileLogo(
   {
@@ -29,10 +30,6 @@ export default function MobileLogo(
   const [windowSize, setWindowSize] = useState([0, 0])
 
   useEffect(() => {
-    function updateSize() {
-      setWindowSize([window.innerWidth, window.innerHeight]);
-    }
-
     window.addEventListener('resize', updateSize);
     updateSize();
     return () => window.removeEventListener('resize', updateSize);
@@ -48,6 +45,9 @@ export default function MobileLogo(
     setWindowSize([window.innerWidth, window.innerHeight]);
   }
 
+  /**
+   * Computes the background color depending on the variant
+   */
   function computeBackground() {
     if (hasBackground) {
       switch (variant) {

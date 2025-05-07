@@ -1,4 +1,4 @@
-import { Navbar } from "@/components/ui/admin-panel/navbar";
+import {Navbar} from "@/components/ui/admin-panel/navbar";
 
 interface ContentLayoutProps {
   title: string;

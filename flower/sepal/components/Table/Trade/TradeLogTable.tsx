@@ -1,13 +1,5 @@
 import React from 'react';
-import {
-  Table,
-  TableBody,
-  TableCaption,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table"
+import {Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow,} from "@/components/ui/table"
 import {IconExternalLink} from "@tabler/icons-react";
 import Link from "next/link";
 import {formatNegativePoints, formatNumberForDisplay} from "@/lib/functions/util-functions";

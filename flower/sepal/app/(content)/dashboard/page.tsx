@@ -21,7 +21,7 @@ import TransactionsTable from "@/components/Table/Transaction/TransactionsTable"
 import {PageInfoProvider} from "@/lib/context/PageInfoProvider";
 import ReusableSelect from "@/components/Input/ReusableSelect";
 import {usePortfolioStore} from "@/lib/store/portfolioStore";
-import { resolveIcon } from "@/lib/functions/util-component-functions";
+import {resolveIcon} from "@/lib/functions/util-component-functions";
 
 /**
  * The page that shows an overview of a user's portfolio

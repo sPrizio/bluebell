@@ -2,7 +2,7 @@
 
 import {Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue} from "@/components/ui/select";
 import React, {useState} from "react";
-import { Label } from "../ui/label";
+import {Label} from "../ui/label";
 
 type Option = {
   label: string,
