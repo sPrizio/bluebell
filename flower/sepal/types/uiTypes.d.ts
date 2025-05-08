@@ -1,17 +1,5 @@
 import {AggregateInterval} from "@/lib/enums";
-
-export interface PageInfoContext {
-  pageTitle: string,
-  pageSubtitle: string,
-  pageIconCode: string,
-  breadcrumbs: Array<AppLink>,
-  user: User | null,
-  setPageTitle: React.Dispatch<React.SetStateAction<string>>,
-  setPageSubtitle: React.Dispatch<React.SetStateAction<string>>,
-  setPageIconCode: React.Dispatch<React.SetStateAction<string>>,
-  setBreadcrumbs: React.Dispatch<React.SetStateAction<Array<AppLink>>>,
-  setUser: React.Dispatch<React.SetStateAction<User | null>>,
-}
+import React from "react";
 
 export interface SidebarNavigationLinkType {
   label: string,

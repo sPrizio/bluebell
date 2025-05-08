@@ -89,7 +89,7 @@ export const useFetchMarketNewsMutation = () => {
 export const useCreateTransactionMutation = (accountNumber: number) => {
   const queryClient = useQueryClient()
   return useMutation<Transaction, Error, any>({
-    // @ts-ignore : TODO: TEMP
+    // @ts-expect-error : TODO: TEMP
     mutationFn: (payload) => {console.log(payload); return null}, //TODO: BB-118
     onSuccess: (data) => {
       queryClient.invalidateQueries({queryKey: ['user']})
@@ -100,7 +100,7 @@ export const useCreateTransactionMutation = (accountNumber: number) => {
 export const useUpdateTransactionMutation = (accountNumber: number) => {
   const queryClient = useQueryClient()
   return useMutation<Transaction, Error, any>({
-    // @ts-ignore : TODO: TEMP
+    // @ts-expect-error : TODO: TEMP
     mutationFn: (payload) => {console.log(payload); return null}, //TODO: BB-118
     onSuccess: (data) => {
       queryClient.invalidateQueries({queryKey: ['user']})
@@ -111,7 +111,7 @@ export const useUpdateTransactionMutation = (accountNumber: number) => {
 export const useDeleteTransactionMutation = (accountNumber: number) => {
   const queryClient = useQueryClient()
   return useMutation<Transaction, Error, any>({
-    // @ts-ignore : TODO: TEMP
+    // @ts-expect-error : TODO: TEMP
     mutationFn: (payload) => {console.log(payload); return null}, //TODO: BB-118
     onSuccess: (data) => {
       queryClient.invalidateQueries({queryKey: ['user']})
