@@ -67,10 +67,10 @@ export default function AnalysisPage() {
    * @param value state variable
    * @param callBack setState function
    */
-  const select = (value: string, callBack: Function) => {
+  const select = (value: string, callBack: React.Dispatch<FilterSelector>) => {
     return (
       <div>
-        <Select value={value} onValueChange={(val) => callBack(val)}>
+        <Select value={value} onValueChange={(val : FilterSelector) => callBack(val)}>
           <SelectTrigger className="w-[120px] bg-white">
             <SelectValue placeholder={'Select a value...'}/>
           </SelectTrigger>

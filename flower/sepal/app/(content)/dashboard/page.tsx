@@ -145,7 +145,6 @@ export default function DashboardPage() {
                 title={'Portfolio Growth'}
                 subtitle={'A look back at your portfolio\'s performance over the last 6 months.'}
                 cardContent={<PortfolioGrowthChart key={portfolioRecord?.equity.length}
-                                                   isNew={portfolioRecord?.newPortfolio ?? false}
                                                    data={portfolioRecord?.equity ?? []}/>}
               />
             </div>

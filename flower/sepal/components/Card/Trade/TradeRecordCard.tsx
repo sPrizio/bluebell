@@ -63,7 +63,7 @@ export default function TradeRecordCard(
    * @param val data to render
    * @param className custom css classes
    */
-  const simpleCellNoBg = (val: any, className = '') => {
+  const simpleCellNoBg = (val: string, className = '') => {
     return (
       <div className={`py-1 px-2 text-sm ${className}`}>
         {val}
@@ -77,7 +77,7 @@ export default function TradeRecordCard(
    * @param val data to render
    * @param className custom css classes
    */
-  const simpleCellWithBg = (val: any, className = '') => {
+  const simpleCellWithBg = (val: string, className = '') => {
     return (
       <div className={`py-1 px-2 bg-primary bg-opacity-10 ${className}`}>
         {val}
@@ -197,7 +197,7 @@ export default function TradeRecordCard(
                   {simpleCellNoBg('Win%')}
                   {simpleCellWithBg(tradeRecord.winPercentage + '%', 'text-right')}
                   {simpleCellNoBg('Profitability')}
-                  {simpleCellWithBg(tradeRecord.profitability, 'text-right')}
+                  {simpleCellWithBg(tradeRecord?.profitability.toString() ?? '', 'text-right')}
                   {simpleCellNoBg('Retention')}
                   {simpleCellWithBg(tradeRecord.retention + '%', 'text-right')}
                 </div>

@@ -71,7 +71,7 @@ export default function ProfilePage() {
    * @param label label
    * @param val text
    */
-  const basicCell = (label: string, val: any) => {
+  const basicCell = (label: string, val: string) => {
     return (
       <div className={'flex flex-col gap-1'}>
         <div className={'text-xxs uppercase font-bold tracking-normal text-primary'}>{label}</div>
@@ -88,10 +88,10 @@ export default function ProfilePage() {
           subtitle={'Your profile at a glance'}
           cardContent={
             <div className={'my-4 grid grid-cols-1 lg:grid-cols-3 gap-4'}>
-              {basicCell('First Name', user?.firstName)}
-              {basicCell('Last Name', user?.lastName)}
-              {basicCell('Username', user?.username)}
-              {basicCell('Email', user?.email)}
+              {basicCell('First Name', user?.firstName ?? '')}
+              {basicCell('Last Name', user?.lastName ?? '')}
+              {basicCell('Username', user?.username ?? '')}
+              {basicCell('Email', user?.email ?? '')}
               {basicCell('Date Registered', moment(user?.dateRegistered).format(DateTime.ISOLongMonthDayYearWithTimeFormat))}
               {basicCell('Roles', formatRoles(user?.roles ?? []))}
               <div className={'flex flex-col gap-1'}>

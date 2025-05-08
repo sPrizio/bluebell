@@ -17,18 +17,15 @@ type Entry = Record<string, number>;
 /**
  * Renders a chart to display an account's growth over time
  *
- * @param isNew if new, show base chart
  * @param data account equity data points
  * @author Stephen Prizio
  * @version 0.2.0
  */
 export default function PortfolioGrowthChart(
   {
-    isNew = false,
     data = [],
   }
   : Readonly<{
-    isNew: boolean;
     data: Array<PortfolioEquityPoint>,
   }>
 ) {
@@ -69,7 +66,7 @@ export default function PortfolioGrowthChart(
 
       for (const point of data) {
         const accounts = point.accounts
-        // @ts-ignore
+        // @ts-expect-error : ignore typing
         for (const acc of accounts) {
           if (keys.indexOf(acc.name) === -1) {
             keys.push(acc.name)
@@ -87,7 +84,7 @@ export default function PortfolioGrowthChart(
    * Resolves data
    */
   function resolveChartDataPointValue(point: PortfolioEquityPoint, key: string) {
-    // @ts-ignore
+    // @ts-expect-error : ignore typing
     for (const acc of point.accounts) {
       if (acc.name === key) {
         return acc.normalized
@@ -111,9 +108,10 @@ export default function PortfolioGrowthChart(
    */
   function generateAccData() {
 
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     const res: any[] = []
     let counter = 0.0
-    let counterObj: Entry[] = []
+    const counterObj: Entry[] = []
 
     for (const point of data) {
       counter += point.normalized
@@ -124,13 +122,12 @@ export default function PortfolioGrowthChart(
       }
 
       for (const key of getAccountKeys()) {
-        // @ts-ignore
         const obj: Record<string, number> = {
           [key]: resolveChartDataPointValue(point, key),
         };
 
         counterObj.push(obj)
-        // @ts-ignore
+        // @ts-expect-error : ignore typing
         data[key] = aggregateSumByKey(counterObj, key)
       }
 
@@ -160,12 +157,14 @@ export default function PortfolioGrowthChart(
    *
    * @param props payload
    */
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   const legend = (props: any) => {
     const {payload} = props;
 
     return (
       <div className={'flex flex-row items-center justify-end gap-4 text-sm '}>
         {
+          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
           payload.filter((item: any) => item.dataKey !== 'portfolio').map((item: any, itx: number) => {
             return (
               <div key={item.dataKey} className={'flex items-center justify-end '} style={{color: colors[itx]}}>
@@ -188,7 +187,7 @@ export default function PortfolioGrowthChart(
    * @param payload data
    * @param label label
    */
-  const tooltip = ({active, payload, label}: TooltipProps<ValueType, NameType>) => {
+  const tooltip = ({active, payload}: TooltipProps<ValueType, NameType>) => {
 
     if (active && (payload?.length ?? -1 > 0)) {
 
@@ -199,6 +198,7 @@ export default function PortfolioGrowthChart(
           cardContent={
             <div className={'flex flex-col items-center'}>
               {
+                // eslint-disable-next-line @typescript-eslint/ban-ts-comment
                 payload?.map((item: any, itx: number) => {
                   return (
                     <div key={itx} className={"flex flex-row items-center w-[250px] gap-6"} style={{color: item.color}}>
