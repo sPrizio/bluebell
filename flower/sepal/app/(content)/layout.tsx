@@ -1,7 +1,7 @@
 import React from "react";
-import {ContentLayout} from "@/components/ui/admin-panel/content-layout";
+import { ContentLayout } from "@/components/ui/admin-panel/content-layout";
 import AdminPanelLayout from "@/components/ui/admin-panel/admin-panel-layout";
-import {Toaster} from "@/components/ui/toaster";
+import { Toaster } from "@/components/ui/toaster";
 
 /**
  * Generic layout for Content pages
@@ -10,23 +10,19 @@ import {Toaster} from "@/components/ui/toaster";
  * @author Stephen Prizio
  * @version 0.2.0
  */
-export default function ContentPageLayout(
-  {
-    children,
-  }: Readonly<{
-    children: React.ReactNode;
-  }>
-) {
-
-
+export default function ContentPageLayout({
+  children,
+}: Readonly<{
+  children: React.ReactNode;
+}>) {
   //  RENDER
 
   return (
     <AdminPanelLayout>
-      <ContentLayout title={''}>
+      <ContentLayout title={""}>
         <div>{children}</div>
       </ContentLayout>
-      <Toaster/>
+      <Toaster />
     </AdminPanelLayout>
-  )
+  );
 }

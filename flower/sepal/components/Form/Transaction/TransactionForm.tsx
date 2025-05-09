@@ -1,22 +1,38 @@
-'use client'
+"use client";
 
-import {useToast} from "@/lib/hooks/ui/use-toast";
-import {useEffect} from "react";
-import {useSepalModalContext} from "@/lib/context/SepalContext";
-import {CRUDTransactionSchema} from "@/lib/constants";
-import {zodResolver} from "@hookform/resolvers/zod";
-import {useForm} from "react-hook-form"
-import {z} from "zod";
-import {delay, logErrors} from "@/lib/functions/util-functions";
-import {Form, FormControl, FormField, FormItem, FormLabel, FormMessage,} from "@/components/ui/form"
+import { useToast } from "@/lib/hooks/ui/use-toast";
+import { useEffect } from "react";
+import { useSepalModalContext } from "@/lib/context/SepalContext";
+import { CRUDTransactionSchema } from "@/lib/constants";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
+import { delay, logErrors } from "@/lib/functions/util-functions";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
 import TransactionDatePicker from "@/components/DateTime/TransactionDatePicker";
-import {Button} from "@/components/ui/button";
-import {Loader2} from "lucide-react";
-import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from "@/components/ui/select";
-import {Input} from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { Loader2 } from "lucide-react";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Input } from "@/components/ui/input";
 import moment from "moment";
-import {Account, Transaction} from "@/types/apiTypes";
-import {useCreateTransactionMutation, useUpdateTransactionMutation} from "@/lib/hooks/query/mutations";
+import { Account, Transaction } from "@/types/apiTypes";
+import {
+  useCreateTransactionMutation,
+  useUpdateTransactionMutation,
+} from "@/lib/hooks/query/mutations";
 
 /**
  * Renders a form that can create or update a transaction
@@ -27,36 +43,32 @@ import {useCreateTransactionMutation, useUpdateTransactionMutation} from "@/lib/
  * @author Stephen Prizio
  * @version 0.2.0
  */
-export default function TransactionForm(
-  {
-    mode = 'create',
-    account,
-    transaction,
-  }
-    : Readonly<{
-    mode?: 'create' | 'edit'
-    account: Account | null,
-    transaction?: Transaction | null
-  }>
-) {
-
+export default function TransactionForm({
+  mode = "create",
+  account,
+  transaction,
+}: Readonly<{
+  mode?: "create" | "edit";
+  account: Account | null;
+  transaction?: Transaction | null;
+}>) {
   if (!isCreateMode() && !account?.accountNumber) {
-    throw new Error('Missing Account for edit mode');
+    throw new Error("Missing Account for edit mode");
   }
 
   if (!isCreateMode() && !(transaction?.transactionDate ?? null)) {
-    throw new Error('Missing transaction for edit mode');
+    throw new Error("Missing transaction for edit mode");
   }
 
-  const {toast} = useToast();
-  const {setOpen} = useSepalModalContext()
+  const { toast } = useToast();
+  const { setOpen } = useSepalModalContext();
   const {
     mutate: createTransaction,
     isPending: isCreateTransactionLoading,
     isSuccess: isCreateTransactionSuccess,
     isError: isCreateTransactionError,
     error: createTransactionError,
-  } = useCreateTransactionMutation(account?.accountNumber ?? -1)
+  } = useCreateTransactionMutation(account?.accountNumber ?? -1);
 
   const {
     mutate: updateTransaction,
@@ -64,40 +76,43 @@ export default function TransactionForm(
     isSuccess: isUpdateTransactionSuccess,
     isError: isUpdateTransactionError,
     error: updateTransactionError,
-  } = useUpdateTransactionMutation(account?.accountNumber ?? -1)
+  } = useUpdateTransactionMutation(account?.accountNumber ?? -1);
 
   useEffect(() => {
     if (isCreateTransactionSuccess) {
-      renderSuccessNotification()
-      setOpen(false)
+      renderSuccessNotification();
+      setOpen(false);
     } else if (isCreateTransactionError) {
-      logErrors(createTransactionError)
-      renderErrorNotification()
+      logErrors(createTransactionError);
+      renderErrorNotification();
     }
   }, [isCreateTransactionSuccess, isCreateTransactionError]);
 
   useEffect(() => {
     if (isUpdateTransactionSuccess) {
-      renderSuccessNotification()
-      setOpen(false)
+      renderSuccessNotification();
+      setOpen(false);
     } else if (isUpdateTransactionError) {
-      logErrors(updateTransactionError)
-      renderErrorNotification()
+      logErrors(updateTransactionError);
+      renderErrorNotification();
     }
   }, [isUpdateTransactionSuccess, isUpdateTransactionError]);
 
-  const isLoading = isCreateTransactionLoading || isUpdateTransactionLoading
-  const formSchema = CRUDTransactionSchema()
+  const isLoading = isCreateTransactionLoading || isUpdateTransactionLoading;
+  const formSchema = CRUDTransactionSchema();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      date: isCreateMode() ? new Date() : moment(transaction?.transactionDate).toDate(),
-      type: isCreateMode() ? 'default' : transaction?.transactionType.code.toUpperCase(),
+      date: isCreateMode()
+        ? new Date()
+        : moment(transaction?.transactionDate).toDate(),
+      type: isCreateMode()
+        ? "default"
+        : transaction?.transactionType.code.toUpperCase(),
       amount: isCreateMode() ? 0.0 : transaction?.amount,
-      account: account?.accountNumber ?? -1
-    }
-  })
-
+      account: account?.accountNumber ?? -1,
+    },
+  });
 
   //  GENERAL FUNCTIONS
 
@@ -105,26 +120,26 @@ export default function TransactionForm(
    * Renders the success notifications
    */
   function renderSuccessNotification() {
-    toast(
-      {
-        title: isCreateMode() ? 'Transaction Created!' : 'Transaction Updated!',
-        description: isCreateMode() ? 'The transaction was successfully created.' : 'The transaction was updated successfully.',
-        variant: 'success'
-      }
-    )
+    toast({
+      title: isCreateMode() ? "Transaction Created!" : "Transaction Updated!",
+      description: isCreateMode()
+        ? "The transaction was successfully created."
+        : "The transaction was updated successfully.",
+      variant: "success",
+    });
   }
 
   /**
    * Renders the error notifications
    */
   function renderErrorNotification() {
-    toast(
-      {
-        title: isCreateMode() ? 'Creation Failed!' : 'Update Failed!',
-        description: isCreateMode() ? 'An error occurred while creating the transaction. Please check your inputs and try again.' : 'An error occurred while updating the transaction. Please check your inputs and try again.',
-        variant: 'danger'
-      }
-    )
+    toast({
+      title: isCreateMode() ? "Creation Failed!" : "Update Failed!",
+      description: isCreateMode()
+        ? "An error occurred while creating the transaction. Please check your inputs and try again."
+        : "An error occurred while updating the transaction. Please check your inputs and try again.",
+      variant: "danger",
+    });
   }
 
   /**
@@ -135,12 +150,12 @@ export default function TransactionForm(
   async function onSubmit(values: z.infer<typeof formSchema>) {
     //TODO: temp
     await delay(2000);
-    console.log(values)
+    console.log(values);
 
     if (isCreateMode()) {
-      createTransaction(values)
+      createTransaction(values);
     } else {
-      updateTransaction(values)
+      updateTransaction(values);
     }
   }
 
@@ -148,26 +163,28 @@ export default function TransactionForm(
    * Returns true if the form is set to be in create mode, i.e. creating a new Account
    */
   function isCreateMode() {
-    return mode === 'create';
+    return mode === "create";
   }
-
 
   //  RENDER
 
   return (
     <div>
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit, (e) => console.log(e))} className={'space-y-8'}>
-          <div className={'grid grid-cols-2 gap-4'}>
-            <div className={''}>
+        <form
+          onSubmit={form.handleSubmit(onSubmit, (e) => console.log(e))}
+          className={"space-y-8"}
+        >
+          <div className={"grid grid-cols-2 gap-4"}>
+            <div className={""}>
               <FormField
                 control={form.control}
-                name='date'
-                render={({field}) => (
+                name="date"
+                render={({ field }) => (
                   <FormItem>
                     <FormLabel>Transaction Date</FormLabel>
-                    <TransactionDatePicker field={field}/>
-                    <FormMessage className={'text-primaryRed font-semibold'} />
+                    <TransactionDatePicker field={field} />
+                    <FormMessage className={"text-primaryRed font-semibold"} />
                   </FormItem>
                 )}
               />
@@ -176,13 +193,13 @@ export default function TransactionForm(
               <FormField
                 control={form.control}
                 name="account"
-                render={({field}) => (
+                render={({ field }) => (
                   <FormItem>
                     <FormLabel className="!text-current">Account</FormLabel>
                     <FormControl>
-                      <Input {...field} type={'number'} disabled={true} />
+                      <Input {...field} type={"number"} disabled={true} />
                     </FormControl>
-                    <FormMessage className={'text-primaryRed font-semibold'} />
+                    <FormMessage className={"text-primaryRed font-semibold"} />
                   </FormItem>
                 )}
               />
@@ -191,22 +208,27 @@ export default function TransactionForm(
               <FormField
                 control={form.control}
                 name="type"
-                render={({field}) => (
+                render={({ field }) => (
                   <FormItem>
-                    <FormLabel className="!text-current">Transaction Type</FormLabel>
-                    <Select onValueChange={field.onChange} defaultValue={field.value}>
+                    <FormLabel className="!text-current">
+                      Transaction Type
+                    </FormLabel>
+                    <Select
+                      onValueChange={field.onChange}
+                      defaultValue={field.value}
+                    >
                       <FormControl>
                         <SelectTrigger>
                           <SelectValue />
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent>
-                        <SelectItem value={'default'}>Select a type</SelectItem>
-                        <SelectItem value={'DEPOSIT'}>Deposit</SelectItem>
-                        <SelectItem value={'WITHDRAWAL'}>Withdrawal</SelectItem>
+                        <SelectItem value={"default"}>Select a type</SelectItem>
+                        <SelectItem value={"DEPOSIT"}>Deposit</SelectItem>
+                        <SelectItem value={"WITHDRAWAL"}>Withdrawal</SelectItem>
                       </SelectContent>
                     </Select>
-                    <FormMessage className={'text-primaryRed font-semibold'} />
+                    <FormMessage className={"text-primaryRed font-semibold"} />
                   </FormItem>
                 )}
               />
@@ -215,33 +237,40 @@ export default function TransactionForm(
               <FormField
                 control={form.control}
                 name="amount"
-                render={({field}) => (
+                render={({ field }) => (
                   <FormItem>
                     <FormLabel className="!text-current">Balance</FormLabel>
                     <FormControl>
-                      <Input placeholder="1000.00" {...field} type={'number'} />
+                      <Input placeholder="1000.00" {...field} type={"number"} />
                     </FormControl>
-                    <FormMessage className={'text-primaryRed font-semibold'} />
+                    <FormMessage className={"text-primaryRed font-semibold"} />
                   </FormItem>
                 )}
               />
             </div>
           </div>
-          <div className={'flex w-full justify-end items-center gap-4'}>
-            <Button type="submit" className={'bg-primary text-white'} disabled={isLoading}>
-              {isLoading ? <Loader2 className="mr-2 h-4 w-4 animate-spin"/> : null}
+          <div className={"flex w-full justify-end items-center gap-4"}>
+            <Button
+              type="submit"
+              className={"bg-primary text-white"}
+              disabled={isLoading}
+            >
+              {isLoading ? (
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+              ) : null}
               Submit
             </Button>
             <Button
               type="button"
-              className={'border border-gray-400'}
+              className={"border border-gray-400"}
               variant={"outline"}
-              onClick={() => setOpen(false)}>
+              onClick={() => setOpen(false)}
+            >
               Cancel
             </Button>
           </div>
         </form>
       </Form>
     </div>
-  )
+  );
 }

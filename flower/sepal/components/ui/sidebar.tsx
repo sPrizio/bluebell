@@ -1,8 +1,8 @@
 "use client";
-import {cn} from "@/lib/utils";
-import React, {createContext, useContext, useState} from "react";
-import {AnimatePresence, motion} from "framer-motion";
-import {IconMenu2, IconX} from "@tabler/icons-react";
+import { cn } from "@/lib/utils";
+import React, { createContext, useContext, useState } from "react";
+import { AnimatePresence, motion } from "framer-motion";
+import { IconMenu2, IconX } from "@tabler/icons-react";
 
 interface Links {
   label: string;
@@ -17,7 +17,7 @@ interface SidebarContextProps {
 }
 
 const SidebarContext = createContext<SidebarContextProps | undefined>(
-  undefined
+  undefined,
 );
 
 export const useSidebar = () => {
@@ -89,7 +89,7 @@ export const DesktopSidebar = ({
       <motion.div
         className={cn(
           "h-full px-4 py-8 hidden text-center md:flex md:flex-col items-center bg-white w-[300px] flex-shrink-0",
-          className
+          className,
         )}
         animate={{
           width: animate ? (open ? "300px" : "100px") : "300px",
@@ -114,7 +114,7 @@ export const MobileSidebar = ({
     <>
       <div
         className={cn(
-          "h-10 px-4 py-4 flex flex-row md:hidden  items-center justify-between bg-white w-full"
+          "h-10 px-4 py-4 flex flex-row md:hidden  items-center justify-between bg-white w-full",
         )}
         {...props}
       >
@@ -136,7 +136,7 @@ export const MobileSidebar = ({
               }}
               className={cn(
                 "fixed h-full w-full inset-0 bg-white p-10 z-[100] flex flex-col justify-between",
-                className
+                className,
               )}
             >
               <div

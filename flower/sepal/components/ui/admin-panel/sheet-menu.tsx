@@ -1,8 +1,14 @@
-import {MenuIcon} from "lucide-react";
+import { MenuIcon } from "lucide-react";
 
-import {Button} from "@/components/ui/button";
-import {Menu} from "@/components/ui/admin-panel/menu";
-import {Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger} from "@/components/ui/sheet";
+import { Button } from "@/components/ui/button";
+import { Menu } from "@/components/ui/admin-panel/menu";
+import {
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet";
 import MainLogo from "@/components/Navigation/MainLogo";
 
 export function SheetMenu() {
@@ -10,7 +16,7 @@ export function SheetMenu() {
     <Sheet>
       <SheetTrigger className="lg:hidden" asChild>
         <Button className="h-8" variant="outline" size="icon">
-          <MenuIcon size={20}/>
+          <MenuIcon size={20} />
         </Button>
       </SheetTrigger>
       <SheetContent className="sm:w-72 px-3 h-full flex flex-col" side="left">
@@ -21,11 +27,11 @@ export function SheetMenu() {
             asChild
           >
             <SheetTitle className="font-bold text-lg">
-              <MainLogo variant={'primary'}/>
+              <MainLogo variant={"primary"} />
             </SheetTitle>
           </Button>
         </SheetHeader>
-        <Menu isOpen/>
+        <Menu isOpen />
       </SheetContent>
     </Sheet>
   );

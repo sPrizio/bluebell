@@ -1,7 +1,7 @@
-'use client'
+"use client";
 
-import React, {createContext, useContext} from 'react';
-import {Icons} from '@/lib/enums';
+import React, { createContext, useContext } from "react";
+import { Icons } from "@/lib/enums";
 import PageHeaderSection from "@/components/Section/PageHeaderSection";
 
 type PageInfo = {
@@ -15,12 +15,17 @@ const PageInfoContext = createContext<PageInfo | null>(null);
 
 export function usePageInfo() {
   const context = useContext(PageInfoContext);
-  if (!context) throw new Error('usePageInfo must be used inside PageInfoProvider');
+  if (!context)
+    throw new Error("usePageInfo must be used inside PageInfoProvider");
   return context;
 }
 
-export function PageInfoProvider({children, value,}: Readonly<{
-  children: React.ReactNode; value: PageInfo;
+export function PageInfoProvider({
+  children,
+  value,
+}: Readonly<{
+  children: React.ReactNode;
+  value: PageInfo;
 }>) {
   return (
     <PageInfoContext.Provider value={value}>

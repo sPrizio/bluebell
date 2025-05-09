@@ -1,4 +1,4 @@
-import type {Metadata} from "next";
+import type { Metadata } from "next";
 
 export const metadata: Metadata = {
   title: "Account Overview - bluebell",
@@ -12,9 +12,8 @@ export const metadata: Metadata = {
  * @version 0.2.0
  */
 export default function AccountDetailsPage() {
-
   //  RENDER
 
   //  all logic is contained within the layout.tsx file
-  return null
+  return null;
 }

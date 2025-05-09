@@ -1,6 +1,5 @@
-import {getAuthHeader} from "@/lib/functions/security-functions";
-import {ApiResponse} from "@/types/apiTypes";
-
+import { getAuthHeader } from "@/lib/functions/security-functions";
+import { ApiResponse } from "@/types/apiTypes";
 
 /**
  * Performs an HTTP GET request to the greenhouse api
@@ -8,18 +7,23 @@ import {ApiResponse} from "@/types/apiTypes";
  * @param url endpoint url
  * @param params query params
  */
-export async function get<T>(url: string, params: Record<string, string | number>): Promise<T> {
-
-  const headers = getAuthHeader()
-  headers['Content-Type'] = 'application/json'
+export async function get<T>(
+  url: string,
+  params: Record<string, string | number>,
+): Promise<T> {
+  const headers = getAuthHeader();
+  headers["Content-Type"] = "application/json";
 
   let finalUrl = url;
   for (const [key, value] of Object.entries(params)) {
-    finalUrl = finalUrl.replace(`{${key}}`, encodeURIComponent(value.toString()));
+    finalUrl = finalUrl.replace(
+      `{${key}}`,
+      encodeURIComponent(value.toString()),
+    );
   }
 
   const res = await fetch(finalUrl, {
-    method: 'GET',
+    method: "GET",
     headers,
   });
 
@@ -29,7 +33,9 @@ export async function get<T>(url: string, params: Record<string, string | number
 
   const data: ApiResponse<T> = await res.json();
   if (!data.success) {
-    throw new Error(`API returned with error: ${data.message} || ${JSON.stringify(data)}`);
+    throw new Error(
+      `API returned with error: ${data.message} || ${JSON.stringify(data)}`,
+    );
   }
 
   return data.data;
@@ -42,18 +48,24 @@ export async function get<T>(url: string, params: Record<string, string | number
  * @param params query params
  * @param body request body
  */
-export async function post<T>(url: string, params: Record<string, string | number>, body: any): Promise<T> {
-
-  const headers = getAuthHeader()
-  headers['Content-Type'] = 'application/json'
+export async function post<T>(
+  url: string,
+  params: Record<string, string | number>,
+  body: any,
+): Promise<T> {
+  const headers = getAuthHeader();
+  headers["Content-Type"] = "application/json";
 
   let finalUrl = url;
   for (const [key, value] of Object.entries(params)) {
-    finalUrl = finalUrl.replace(`{${key}}`, encodeURIComponent(value.toString()));
+    finalUrl = finalUrl.replace(
+      `{${key}}`,
+      encodeURIComponent(value.toString()),
+    );
   }
 
   const res = await fetch(finalUrl, {
-    method: 'POST',
+    method: "POST",
     headers,
     body: JSON.stringify(body),
   });
@@ -64,7 +76,9 @@ export async function post<T>(url: string, params: Record<string, string | numbe
 
   const data: ApiResponse<T> = await res.json();
   if (!data.success) {
-    throw new Error(`API returned with error: ${data.message} || ${JSON.stringify(data)}`);
+    throw new Error(
+      `API returned with error: ${data.message} || ${JSON.stringify(data)}`,
+    );
   }
 
   return data.data;
@@ -77,17 +91,23 @@ export async function post<T>(url: string, params: Record<string, string | numbe
  * @param params query params
  * @param formData form data file
  */
-export async function postFile<T>(url: string, params: Record<string, string | number>, formData: any): Promise<T> {
-
-  const headers = getAuthHeader()
+export async function postFile<T>(
+  url: string,
+  params: Record<string, string | number>,
+  formData: any,
+): Promise<T> {
+  const headers = getAuthHeader();
 
   let finalUrl = url;
   for (const [key, value] of Object.entries(params)) {
-    finalUrl = finalUrl.replace(`{${key}}`, encodeURIComponent(value.toString()));
+    finalUrl = finalUrl.replace(
+      `{${key}}`,
+      encodeURIComponent(value.toString()),
+    );
   }
 
   const res = await fetch(finalUrl, {
-    method: 'POST',
+    method: "POST",
     headers,
     body: formData,
   });
@@ -98,7 +118,9 @@ export async function postFile<T>(url: string, params: Record<string, string | n
 
   const data: ApiResponse<T> = await res.json();
   if (!data.success) {
-    throw new Error(`API returned with error: ${data.message} || ${JSON.stringify(data)}`);
+    throw new Error(
+      `API returned with error: ${data.message} || ${JSON.stringify(data)}`,
+    );
   }
 
   return data.data;
@@ -111,18 +133,24 @@ export async function postFile<T>(url: string, params: Record<string, string | n
  * @param params query params
  * @param body request body
  */
-export async function put<T>(url: string, params: Record<string, string | number>, body: any): Promise<T> {
-
-  const headers = getAuthHeader()
-  headers['Content-Type'] = 'application/json'
+export async function put<T>(
+  url: string,
+  params: Record<string, string | number>,
+  body: any,
+): Promise<T> {
+  const headers = getAuthHeader();
+  headers["Content-Type"] = "application/json";
 
   let finalUrl = url;
   for (const [key, value] of Object.entries(params)) {
-    finalUrl = finalUrl.replace(`{${key}}`, encodeURIComponent(value.toString()));
+    finalUrl = finalUrl.replace(
+      `{${key}}`,
+      encodeURIComponent(value.toString()),
+    );
   }
 
   const res = await fetch(finalUrl, {
-    method: 'PUT',
+    method: "PUT",
     headers,
     body: JSON.stringify(body),
   });
@@ -133,24 +161,31 @@ export async function put<T>(url: string, params: Record<string, string | number
 
   const data: ApiResponse<T> = await res.json();
   if (!data.success) {
-    throw new Error(`API returned with error: ${data.message} || ${JSON.stringify(data)}`);
+    throw new Error(
+      `API returned with error: ${data.message} || ${JSON.stringify(data)}`,
+    );
   }
 
   return data.data;
 }
 
-export async function del<T>(url: string, params: Record<string, string | number>): Promise<T> {
-
-  const headers = getAuthHeader()
-  headers['Content-Type'] = 'application/json'
+export async function del<T>(
+  url: string,
+  params: Record<string, string | number>,
+): Promise<T> {
+  const headers = getAuthHeader();
+  headers["Content-Type"] = "application/json";
 
   let finalUrl = url;
   for (const [key, value] of Object.entries(params)) {
-    finalUrl = finalUrl.replace(`{${key}}`, encodeURIComponent(value.toString()));
+    finalUrl = finalUrl.replace(
+      `{${key}}`,
+      encodeURIComponent(value.toString()),
+    );
   }
 
   const res = await fetch(finalUrl, {
-    method: 'DELETE',
+    method: "DELETE",
     headers,
   });
 
@@ -160,7 +195,9 @@ export async function del<T>(url: string, params: Record<string, string | number
 
   const data: ApiResponse<T> = await res.json();
   if (!data.success) {
-    throw new Error(`API returned with error: ${data.message} || ${JSON.stringify(data)}`);
+    throw new Error(
+      `API returned with error: ${data.message} || ${JSON.stringify(data)}`,
+    );
   }
 
   return data.data;

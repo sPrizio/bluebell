@@ -1,7 +1,7 @@
-import {formatNumberForDisplay} from "@/lib/functions/util-functions";
-import {Icons} from "@/lib/enums";
+import { formatNumberForDisplay } from "@/lib/functions/util-functions";
+import { Icons } from "@/lib/enums";
 import React from "react";
-import {resolveIcon} from "@/lib/functions/util-component-functions";
+import { resolveIcon } from "@/lib/functions/util-component-functions";
 
 /**
  * Component that renders small cards meant to act as overview Account summaries
@@ -13,22 +13,17 @@ import {resolveIcon} from "@/lib/functions/util-component-functions";
  * @author Stephen Prizio
  * @version 0.2.0
  */
-export default function DashboardContent(
-  {
-    prefix = '',
-    value = 0.0,
-    delta = 0.0,
-    icon = null
-  }
-    : Readonly<{
-    prefix?: string,
-    value: number | string,
-    delta?: number,
-    icon?: React.ReactNode,
-  }>
-) {
-
-
+export default function DashboardContent({
+  prefix = "",
+  value = 0.0,
+  delta = 0.0,
+  icon = null,
+}: Readonly<{
+  prefix?: string;
+  value: number | string;
+  delta?: number;
+  icon?: React.ReactNode;
+}>) {
   //  GENERAL FUNCTIONS
 
   /**
@@ -36,12 +31,12 @@ export default function DashboardContent(
    */
   function computeDeltaColor() {
     if (delta > 0) {
-      return ' text-primaryGreen '
+      return " text-primaryGreen ";
     } else if (delta < 0) {
-      return ' text-primaryRed '
+      return " text-primaryRed ";
     }
 
-    return ' text-slate-500 '
+    return " text-slate-500 ";
   }
 
   /**
@@ -49,35 +44,40 @@ export default function DashboardContent(
    */
   function computeDeltaDirection() {
     if (delta > 0) {
-      return resolveIcon(Icons.ArrowUp, '', 18)
+      return resolveIcon(Icons.ArrowUp, "", 18);
     } else if (delta < 0) {
-      return resolveIcon(Icons.ArrowDown, '', 18)
+      return resolveIcon(Icons.ArrowDown, "", 18);
     }
 
-    return resolveIcon(Icons.ArrowLeftRight, '', 18)
+    return resolveIcon(Icons.ArrowLeftRight, "", 18);
   }
-
 
   //  RENDER
 
   return (
     <div className={"flex gap-2 items-start w-full"}>
       <div className={"grow"}>
-        <span className={'text-xl'}>{prefix}{typeof value === "string" ? value : formatNumberForDisplay(value)}</span>
-        <br/>
-        <div className={'flex items-center text-sm gap-1 pt-1'}>
-          <span className={'inline-block font-bold' + computeDeltaColor()}>{computeDeltaDirection()}</span><span className={computeDeltaColor() + 'font-bold'}>{formatNumberForDisplay(Math.abs(delta))}%</span>
-          <span className={''}>Since last month</span>
+        <span className={"text-xl"}>
+          {prefix}
+          {typeof value === "string" ? value : formatNumberForDisplay(value)}
+        </span>
+        <br />
+        <div className={"flex items-center text-sm gap-1 pt-1"}>
+          <span className={"inline-block font-bold" + computeDeltaColor()}>
+            {computeDeltaDirection()}
+          </span>
+          <span className={computeDeltaColor() + "font-bold"}>
+            {formatNumberForDisplay(Math.abs(delta))}%
+          </span>
+          <span className={""}>Since last month</span>
         </div>
         &nbsp;
       </div>
-      {
-        icon ?
-          <div className={"flex items-center justify-center w-1/4"}>
-            <span className={'text-primary'}>{icon}</span>
-          </div>
-          : null
-      }
+      {icon ? (
+        <div className={"flex items-center justify-center w-1/4"}>
+          <span className={"text-primary"}>{icon}</span>
+        </div>
+      ) : null}
     </div>
-  )
+  );
 }
