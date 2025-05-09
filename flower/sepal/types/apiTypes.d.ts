@@ -14,6 +14,7 @@ interface EnumDisplay {
 }
 
 interface User extends GenericApiType {
+  userIdentifier: string,
   apiToken: string,
   firstName: string,
   lastName: string,
@@ -57,7 +58,6 @@ interface Portfolio extends GenericApiType {
   created: string,
   defaultPortfolio: boolean,
   accounts: Array<Account>,
-  user: User,
 }
 
 interface PortfolioRecord {
@@ -77,24 +77,33 @@ interface PortfolioStatistics {
   deltaWithdrawals: number,
 }
 
-interface AccountOption extends GenericApiType {
+interface GenericEnum extends GenericApiType {
   code: string,
   label: string
 }
 
-interface Currency extends AccountOption {}
+type Language = GenericEnum
 
-interface AccountType extends AccountOption {}
+type PhoneType = GenericEnum
 
-interface TradePlatform extends AccountOption {}
+type Country = GenericEnum
 
-interface Broker extends AccountOption {}
+type Currency = GenericEnum
+
+type AccountType = GenericEnum
+
+type TradePlatform = GenericEnum
+
+type Broker = GenericEnum
+
+type TradeRecordTimeInterval = GenericEnum
 
 interface Account extends GenericApiType {
+  portfolioNumber: number,
   defaultAccount: boolean,
   accountOpenTime: string,
-  portfolioNumber: number,
   accountCloseTime: string,
+  initialBalance: number,
   balance: number,
   active: boolean,
   name: string,
@@ -116,15 +125,15 @@ interface AccountEquityPoint {
 }
 
 interface AccountInsightsType {
-  maxProfit: number,
   tradingDays: number,
+  currentPL: number,
   biggestLoss: number,
   largestGain: number,
-  currentPL: number,
   drawdown: number,
+  maxProfit: number,
+  currentPLDelta: number,
   biggestLossDelta: number,
   largestGainDelta: number,
-  currentPLDelta: number,
   drawdownDelta: number,
   maxProfitDelta: number
 }
@@ -148,11 +157,11 @@ interface AccountStatisticsType {
 }
 
 interface AccountDetails {
-  account: Account,
   consistency: number,
   equity: Array<AccountEquityPoint>,
   insights: AccountInsightsType,
   statistics: AccountStatisticsType
+  riskFreeRate: number
 }
 
 interface Transaction extends GenericApiType {
@@ -201,6 +210,8 @@ interface TradeRecordEquityPoint {
 interface TradeRecordTotals {
   count: number,
   trades: number,
+  tradesWon: number,
+  tradesLost: number,
   winPercentage: number,
   netProfit: number,
   netPoints: number
@@ -212,23 +223,24 @@ interface TradeRecordReport {
 }
 
 interface TradeRecord extends GenericApiType {
+  start: string,
   end: string,
-  largestLoss: number,
-  largestWin: number,
-  lossAverage: number,
-  losses: number,
-  lowestPoint: number,
   netProfit: number,
-  points: number,
+  lowestPoint: number,
   pointsGained: number,
   pointsLost: number,
-  profitability: number,
-  retention: number,
-  start: string,
-  trades: number,
+  points: number,
+  largestWin: number,
   winAverage: number,
+  largestLoss: number,
+  lossAverage: number,
   winPercentage: number,
   wins: number,
+  losses: number,
+  trades: number,
+  profitability: number,
+  retention: number,
+  interval: TradeRecordTimeInterval
   equityPoints: Array<TradeRecordEquityPoint>
   account: Account,
 }
@@ -254,19 +266,12 @@ interface TradeLogEntryRecordTotals {
   accountsTraded: number,
   netProfit: number,
   netPoints: number,
-  winPercentage: number,
   trades: number,
-}
-
-interface PagedTrades {
-  currentPage: number,
-  pageSize: number,
-  totalPages: number,
-  totalTrades: number,
-  trades: Array<Trade>
+  winPercentage: number,
 }
 
 interface TradeRecordControlMonthEntry extends GenericApiType {
+  monthNumber: number,
   month: string,
   value: number
 }
@@ -307,6 +312,62 @@ interface MarketNewsEntry extends GenericApiType {
   country: string,
   forecast: string,
   previous: string
+}
+
+interface PairEntry {
+  code: any,
+  label: any,
+  symbol: string,
+}
+
+interface ApexChartCandleStick {
+  x: number,
+  y: Array<number>,
+}
+
+interface Action extends GenericApiType {
+  actionId: string,
+  priority: number,
+  name: string,
+  status: EnumDisplay,
+  performableAction: string
+}
+
+interface JobResultEntry extends GenericApiType {
+  success: boolean,
+  data: string,
+  logs: string,
+}
+
+interface JobResult extends GenericApiType {
+  jobId: string,
+  entries: Array<JobResultEntry>
+}
+
+interface Job extends GenericApiType {
+  jobId: string,
+  name: string,
+  executionTime: string,
+  completionTime: string,
+  status: EnumDisplay,
+  type: EnumDisplay,
+  actions: Array<Action>,
+  jobResult: JobResult
+}
+
+interface PagedJobs {
+  page: number,
+  pageSize: number,
+  job: Array<Job>,
+  totalElements: number,
+  totalPages: number,
+}
+
+interface HealthCheck {
+  domain: string,
+  baseApiDomain: string,
+  version: string,
+  apiVersion: string,
 }
 
 export type FilterSelector = 'POINTS' | 'PROFIT' | 'PERCENTAGE'
