@@ -1,4 +1,4 @@
-name: bluebell CI / CD
+name: bluebell CI
 on:
   pull_request:
     branches:

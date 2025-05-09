@@ -278,16 +278,12 @@ export function CRUDUserSchema(editMode: boolean) {
 
           return z.NEVER;
         }),
-      password: z
-        .string()
-        .min(8, {
-          message: "Please enter a password with a minimum of 8 characters.",
-        }),
-      confirmPassword: z
-        .string()
-        .min(8, {
-          message: "Please enter a password with a minimum of 8 characters.",
-        }),
+      password: z.string().min(8, {
+        message: "Please enter a password with a minimum of 8 characters.",
+      }),
+      confirmPassword: z.string().min(8, {
+        message: "Please enter a password with a minimum of 8 characters.",
+      }),
     })
     .superRefine(({ confirmPassword, password, username, email }, ctx) => {
       if (!isValidPassword(password)) {
@@ -335,11 +331,9 @@ export function LoginSchema() {
       .max(75, {
         message: "Please enter a username with at most 75 characters.",
       }),
-    password: z
-      .string()
-      .min(8, {
-        message: "Please enter a password with a minimum of 8 characters.",
-      }),
+    password: z.string().min(8, {
+      message: "Please enter a password with a minimum of 8 characters.",
+    }),
   });
 }
 
