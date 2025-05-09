@@ -33,7 +33,7 @@ import static com.bluebell.radicle.validation.GenericValidator.validateLocalDate
  * Api controller for {@link Job}
  *
  * @author Stephen Prizio
- * @version 0.1.9
+ * @version 0.2.0
  */
 @RestController
 @RequestMapping("${bluebell.base.api.controller.endpoint}" + ApiPaths.Job.BASE)
@@ -88,7 +88,7 @@ public class JobApiController {
     )
     @GetMapping(ApiPaths.Job.GET_BY_ID)
     public StandardJsonResponse<JobDTO> getJobForJobId(
-            @Parameter(name = "Job ID", description = "The unique job id", example = "1234")
+            @Parameter(name = "jobId", description = "The unique job id", example = "1234")
             final @RequestParam("jobId") String jobId,
             final HttpServletRequest request
     ) {
@@ -172,15 +172,15 @@ public class JobApiController {
     )
     @GetMapping(ApiPaths.Job.GET_STATUS_PAGED)
     public StandardJsonResponse<PaginatedJobsDTO> getJobsWithinIntervalByStatusPaged(
-            @Parameter(name = "Job Status", description = "Job status to lookup", example = "COMPLETED")
+            @Parameter(name = "jobStatus", description = "Job status to lookup", example = "COMPLETED")
             final @RequestParam("jobStatus") String jobStatus,
-            @Parameter(name = "Start Date", description = "Start date of time period to analyze", example = "2025-01-01")
+            @Parameter(name = "start", description = "Start date of time period to analyze", example = "2025-01-01")
             final @RequestParam("start") String start,
-            @Parameter(name = "End Date", description = "End date of time period to analyze", example = "2025-01-01")
+            @Parameter(name = "end", description = "End date of time period to analyze", example = "2025-01-01")
             final @RequestParam("end") String end,
-            @Parameter(name = "Page", description = "Current Page", example = "0")
+            @Parameter(name = "page", description = "Current Page", example = "0")
             final @RequestParam(value = "page", defaultValue = "0") int page,
-            @Parameter(name = "Page Size", description = "Size of page", example = "25")
+            @Parameter(name = "pageSize", description = "Size of page", example = "25")
             final @RequestParam(value = "pageSize", defaultValue = "10") int pageSize,
             final HttpServletRequest request
     ) {
@@ -267,15 +267,15 @@ public class JobApiController {
     )
     @GetMapping(ApiPaths.Job.GET_TYPE_PAGED)
     public StandardJsonResponse<PaginatedJobsDTO> getJobsWithinIntervalByTypePaged(
-            @Parameter(name = "Job Type", description = "Job type to lookup", example = "FETCH_MARKET_NEWS")
+            @Parameter(name = "jobType", description = "Job type to lookup", example = "FETCH_MARKET_NEWS")
             final @RequestParam("jobType") String jobType,
-            @Parameter(name = "Start Date", description = "Start date of time period to analyze", example = "2025-01-01")
+            @Parameter(name = "start", description = "Start date of time period to analyze", example = "2025-01-01")
             final @RequestParam("start") String start,
-            @Parameter(name = "End Date", description = "End date of time period to analyze", example = "2025-01-01")
+            @Parameter(name = "end", description = "End date of time period to analyze", example = "2025-01-01")
             final @RequestParam("end") String end,
-            @Parameter(name = "Page", description = "Current Page", example = "0")
+            @Parameter(name = "page", description = "Current Page", example = "0")
             final @RequestParam(value = "page", defaultValue = "0") int page,
-            @Parameter(name = "Page Size", description = "Size of page", example = "25")
+            @Parameter(name = "pageSize", description = "Size of page", example = "25")
             final @RequestParam(value = "pageSize", defaultValue = "10") int pageSize,
             final HttpServletRequest request
     ) {
@@ -371,17 +371,17 @@ public class JobApiController {
     )
     @GetMapping(ApiPaths.Job.GET_STATUS_TYPE_PAGED)
     public StandardJsonResponse<PaginatedJobsDTO> getJobsWithinIntervalByStatusAndTypePaged(
-            @Parameter(name = "Job Status", description = "Job status to lookup", example = "COMPLETED")
+            @Parameter(name = "jobStatus", description = "Job status to lookup", example = "COMPLETED")
             final @RequestParam("jobStatus") String jobStatus,
-            @Parameter(name = "Job Type", description = "Job type to lookup", example = "FETCH_MARKET_NEWS")
+            @Parameter(name = "jobType", description = "Job type to lookup", example = "FETCH_MARKET_NEWS")
             final @RequestParam("jobType") String jobType,
-            @Parameter(name = "Start Date", description = "Start date of time period to analyze", example = "2025-01-01")
+            @Parameter(name = "start", description = "Start date of time period to analyze", example = "2025-01-01")
             final @RequestParam("start") String start,
-            @Parameter(name = "End Date", description = "End date of time period to analyze", example = "2025-01-01")
+            @Parameter(name = "end", description = "End date of time period to analyze", example = "2025-01-01")
             final @RequestParam("end") String end,
-            @Parameter(name = "Page", description = "Current Page", example = "0")
+            @Parameter(name = "page", description = "Current Page", example = "0")
             final @RequestParam(value = "page", defaultValue = "0") int page,
-            @Parameter(name = "Page Size", description = "Size of page", example = "25")
+            @Parameter(name = "pageSize", description = "Size of page", example = "25")
             final @RequestParam(value = "pageSize", defaultValue = "10") int pageSize,
             final HttpServletRequest request
     ) {

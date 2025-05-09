@@ -33,7 +33,7 @@ import java.util.List;
  * Api controller for {@link TradeRecord}
  *
  * @author Stephen Prizio
- * @version 0.1.9
+ * @version 0.2.0
  */
 @RestController
 @RequestMapping("${bluebell.base.api.controller.endpoint}" + ApiPaths.TradeRecord.BASE)
@@ -105,15 +105,15 @@ public class TradeRecordApiController extends AbstractApiController {
     )
     @GetMapping(ApiPaths.TradeRecord.GET_FOR_INTERVAL)
     public StandardJsonResponse<TradeRecordReport> getTradeRecordsWithinInterval(
-            @Parameter(name = "Account Number", description = "The unique identifier for your trading account", example = "1234")
+            @Parameter(name = "accountNumber", description = "The unique identifier for your trading account", example = "1234")
             final @RequestParam("accountNumber") long accountNumber,
-            @Parameter(name = "Start Date", description = "Start date of time period to analyze", example = "2025-01-01")
+            @Parameter(name = "start", description = "Start date of time period to analyze", example = "2025-01-01")
             final @RequestParam("start") String start,
-            @Parameter(name = "End Date", description = "End date of time period to analyze", example = "2025-01-01")
+            @Parameter(name = "end", description = "End date of time period to analyze", example = "2025-01-01")
             final @RequestParam("end") String end,
-            @Parameter(name = "Aggregate Interval", description = "Time period to aggregate trades. Currently supported: DAILY, WEEKLY, YEARLY", example = "DAILY")
+            @Parameter(name = "interval", description = "Time period to aggregate trades. Currently supported: DAILY, WEEKLY, YEARLY", example = "DAILY")
             final @RequestParam("interval") String interval,
-            @Parameter(name = "Count", description = "Number of results to return", example = "25")
+            @Parameter(name = "count", description = "Number of results to return", example = "25")
             final @RequestParam(value = "count", defaultValue = "" + CorePlatformConstants.DEFAULT_TRADE_RECORD_COLLECTION_SIZE, required = false) int count,
             final HttpServletRequest request
     ) {
@@ -173,11 +173,11 @@ public class TradeRecordApiController extends AbstractApiController {
     )
     @GetMapping(ApiPaths.TradeRecord.GET_RECENT)
     public StandardJsonResponse<TradeRecordReport> getRecentTradeRecords(
-            @Parameter(name = "Account Number", description = "The unique identifier for your trading account", example = "1234")
+            @Parameter(name = "accountNumber", description = "The unique identifier for your trading account", example = "1234")
             final @RequestParam("accountNumber") long accountNumber,
-            @Parameter(name = "Aggregate Interval", description = "Time period to aggregate trades. Currently supported: DAILY, WEEKLY, YEARLY", example = "DAILY")
+            @Parameter(name = "interval", description = "Time period to aggregate trades. Currently supported: DAILY, WEEKLY, YEARLY", example = "DAILY")
             final @RequestParam("interval") String interval,
-            @Parameter(name = "Count", description = "Number of results to return", example = "25")
+            @Parameter(name = "count", description = "Number of results to return", example = "25")
             final @RequestParam(value = "count", defaultValue = "" + CorePlatformConstants.DEFAULT_TRADE_RECORD_COLLECTION_SIZE, required = false) int count,
             final HttpServletRequest request
     ) {
@@ -235,9 +235,9 @@ public class TradeRecordApiController extends AbstractApiController {
     )
     @GetMapping(ApiPaths.TradeRecord.GET_TRADE_RECORD_CONTROLS)
     public StandardJsonResponse<TradeRecordControls> getTradeRecordControls(
-            @Parameter(name = "Account Number", description = "The unique identifier for your trading account", example = "1234")
+            @Parameter(name = "accountNumber", description = "The unique identifier for your trading account", example = "1234")
             final @RequestParam("accountNumber") long accountNumber,
-            @Parameter(name = "Aggregate Interval", description = "Time period to aggregate trades. Currently supported: DAILY, WEEKLY, YEARLY", example = "DAILY")
+            @Parameter(name = "interval", description = "Time period to aggregate trades. Currently supported: DAILY, WEEKLY, YEARLY", example = "DAILY")
             final @RequestParam("interval") String interval,
             final HttpServletRequest request
     ) {
@@ -313,13 +313,13 @@ public class TradeRecordApiController extends AbstractApiController {
     )
     @GetMapping(ApiPaths.TradeRecord.TRADE_LOG)
     public StandardJsonResponse<TradeLog> getTradeLog(
-            @Parameter(name = "Start Date", description = "Start date of time period to analyze", example = "2025-01-01")
+            @Parameter(name = "start", description = "Start date of time period to analyze", example = "2025-01-01")
             final @RequestParam("start") String start,
-            @Parameter(name = "End Date", description = "End date of time period to analyze", example = "2025-01-01")
+            @Parameter(name = "end", description = "End date of time period to analyze", example = "2025-01-01")
             final @RequestParam("end") String end,
-            @Parameter(name = "Aggregate Interval", description = "Time period to aggregate trades. Currently supported: DAILY, WEEKLY, YEARLY", example = "DAILY")
+            @Parameter(name = "interval", description = "Time period to aggregate trades. Currently supported: DAILY, WEEKLY, YEARLY", example = "DAILY")
             final @RequestParam("interval") String interval,
-            @Parameter(name = "Count", description = "Number of results to return", example = "25")
+            @Parameter(name = "count", description = "Number of results to return", example = "25")
             final @RequestParam(value = "count", defaultValue = "" + CorePlatformConstants.DEFAULT_TRADE_RECORD_COLLECTION_SIZE, required = false) int count,
             final HttpServletRequest request
     ) {

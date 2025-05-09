@@ -38,7 +38,7 @@ import java.util.stream.Collectors;
  * API controller for {@link User}
  *
  * @author Stephen Prizio
- * @version 0.1.9
+ * @version 0.2.0
  */
 @RestController
 @RequestMapping("${bluebell.base.api.controller.endpoint}" + ApiPaths.User.BASE)
@@ -96,7 +96,7 @@ public class UserApiController extends AbstractApiController {
     )
     @GetMapping(ApiPaths.User.GET)
     public StandardJsonResponse<UserDTO> getUser(
-            @Parameter(name = "Username", description = "User's username", example = "test.test")
+            @Parameter(name = "username", description = "User's username", example = "test.test")
             final @RequestParam("username") String username,
             final HttpServletRequest request
     ) {

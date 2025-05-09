@@ -2,79 +2,62 @@
 
 import {Button} from "@/components/ui/button";
 import {Loader2} from "lucide-react";
-import {useEffect, useState} from "react";
+import {useEffect} from "react";
 import {useSepalModalContext} from "@/lib/context/SepalContext";
-import {toast} from "@/hooks/use-toast";
+import {useToast} from "@/lib/hooks/ui/use-toast";
 import {useRouter} from 'next/navigation'
-import {deleteAccount} from "@/lib/functions/account-functions";
 import {Account} from "@/types/apiTypes";
-import {delay} from "@/lib/functions/util-functions";
+import {logErrors} from "@/lib/functions/util-functions";
+import {useDeleteAccountMutation} from "@/lib/hooks/query/mutations";
 
 /**
  * Renders a form for deleting accounts
  *
  * @param account account
  * @author Stephen Prizio
- * @version 0.0.2
+ * @version 0.2.0
  */
 export default function DeleteAccountForm(
   {
     account,
   }
-    : Readonly<{
+  : Readonly<{
     account: Account,
   }>
 ) {
 
-  const [isLoading, setIsLoading] = useState(false)
-  const { open, setOpen } = useSepalModalContext()
-  const [success, setSuccess] = useState<'success' | 'failed' | 'undefined'>('undefined')
+  const {toast} = useToast();
+  const {setOpen} = useSepalModalContext()
   const router = useRouter();
+  const {
+    mutate: deleteAccount,
+    isPending: isDeleteAccountLoading,
+    isSuccess: isDeleteAccountSuccess,
+    isError: isDeleteAccountError,
+    error: deleteAccountError
+  } = useDeleteAccountMutation(account.portfolioNumber, account.accountNumber)
 
   useEffect(() => {
-    if (success === 'success') {
-      toast(
-        {
+    if (isDeleteAccountSuccess) {
+      toast({
           title: 'Deletion Successful!',
           description: 'Your trading account was successfully deleted.',
           variant: 'success'
-        }
-      )
-    } else if (success === 'failed') {
-      toast(
-        {
+        })
+
+      setOpen(false)
+      router.push('/accounts')
+    } else if (isDeleteAccountError) {
+      toast({
           title: 'Deletion Failed!',
           description: 'An error occurred while deleting your trading account. Please try again.',
           variant: 'danger'
-        }
-      )
-    }
-  }, [success]);
+        })
 
-
-  //  GENERAL FUNCTIONS
-
-  /**
-   * Deletes the account
-   */
-  async function handleDelete() {
-
-    setIsLoading(true)
-
-    const data = await deleteAccount(account.accountNumber)
-    if (data) {
-      setSuccess('success')
-      setIsLoading(false)
-      setOpen(false)
-      router.push('/accounts')
-      await delay(1000)
-      window.location.reload()
-    } else {
-      setSuccess('failed')
-      setIsLoading(false)
+      logErrors(deleteAccountError)
       setOpen(false)
     }
-  }
+  }, [isDeleteAccountSuccess, isDeleteAccountError]);
 
 
   //  RENDER
@@ -83,8 +66,9 @@ export default function DeleteAccountForm(
     <div>
       <div className={'mb-3'}>Are you sure you want to delete this account? This action cannot be undone.</div>
       <div className={'flex w-full justify-end items-center gap-4'}>
-        <Button type="submit" className={'bg-primaryRed hover:bg-primaryRedLight text-white'} disabled={isLoading} onClick={handleDelete}>
-          {isLoading ? <Loader2 className="mr-2 h-4 w-4 animate-spin"/> : null}
+        <Button type="submit" className={'bg-primaryRed hover:bg-primaryRedLight text-white'} disabled={isDeleteAccountLoading}
+                onClick={deleteAccount}>
+          {isDeleteAccountLoading ? <Loader2 className="mr-2 h-4 w-4 animate-spin"/> : null}
           Delete
         </Button>
         <Button type="button" className={'border border-gray-400'} variant={"outline"} onClick={() => setOpen(false)}>

@@ -1,18 +1,5 @@
 import {createContext, useContext} from "react";
-import {ModalContext, PageInfoContext} from "@/types/uiTypes";
-
-//  page information context
-export const SepalPageInfoContext = createContext<PageInfoContext | undefined>(undefined);
-
-export const useSepalPageInfoContext = () => {
-  const context = useContext(SepalPageInfoContext);
-
-  if (context === undefined) {
-    throw new Error('context not found');
-  }
-
-  return context;
-};
+import {ModalContext} from "@/types/uiTypes";
 
 //  modal context
 export const SepalModalContext = createContext<ModalContext | undefined>(undefined)

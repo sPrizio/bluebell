@@ -16,7 +16,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import static com.bluebell.planter.constants.ApiPaths.PortfolioRecord.*;
 import static org.hamcrest.Matchers.is;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -25,7 +25,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  * Testing class for {@link PortfolioRecordApiController}
  *
  * @author Stephen Prizio
- * @version 0.1.9
+ * @version 0.2.0
  */
 @SpringBootTest
 @AutoConfigureMockMvc(addFilters = false)
@@ -40,7 +40,7 @@ class PortfolioRecordApiControllerTest extends AbstractPlanterTest {
 
     @BeforeEach
     void setUp() {
-        Mockito.when(this.portfolioRecordService.getSinglePortfolioRecord(anyString(), any())).thenReturn(generatePortfolioRecord());
+        Mockito.when(this.portfolioRecordService.getSinglePortfolioRecord(anyLong(), any())).thenReturn(generatePortfolioRecord());
         Mockito.when(this.portfolioRecordService.getComprehensivePortfolioRecord(any())).thenReturn(generatePortfolioRecord());
     }
 
@@ -49,7 +49,7 @@ class PortfolioRecordApiControllerTest extends AbstractPlanterTest {
 
     @Test
     void test_getPortfolioRecord_success() throws Exception {
-        this.mockMvc.perform(get(getApiPath(BASE, GET)).queryParam("portfolioUid", "1234"))
+        this.mockMvc.perform(get(getApiPath(BASE, GET)).queryParam("portfolioNumber", "1234"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.data.netWorth", is(1000000.0)));
     }

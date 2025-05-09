@@ -6,7 +6,9 @@ import {
   LayoutDashboard,
   LogOut,
   LucideIcon,
-  Newspaper, ReplaceAll, Search
+  Newspaper,
+  ReplaceAll,
+  Search
 } from "lucide-react";
 
 type Submenu = {

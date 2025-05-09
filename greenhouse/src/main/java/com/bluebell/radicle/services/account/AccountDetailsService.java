@@ -31,7 +31,7 @@ import static com.bluebell.radicle.validation.GenericValidator.validateParameter
  * Service-layer implementation of {@link AccountDetails}
  *
  * @author Stephen Prizio
- * @version 0.1.6
+ * @version 0.2.0
  */
 @Service("accountDetailsService")
 public class AccountDetailsService {
@@ -54,19 +54,20 @@ public class AccountDetailsService {
 
         validateParameterIsNotNull(account, CorePlatformConstants.Validation.Account.ACCOUNT_CANNOT_BE_NULL);
 
-        final List<TradeRecord> tradeRecords =
+        final TradeRecordReport report =
                 this.tradeRecordService.getTradeRecords(
                         account.getAccountOpenTime().toLocalDate().minusDays(1),
                         account.getLastTraded().toLocalDate().plusDays(1),
                         account,
                         TradeRecordTimeInterval.DAILY,
                         CorePlatformConstants.MAX_RESULT_SIZE
-                ).tradeRecords();
+                );
 
-        if (CollectionUtils.isEmpty(tradeRecords)) {
+        if (report == null || CollectionUtils.isEmpty(report.tradeRecords())) {
             return 0;
         }
 
+        final List<TradeRecord> tradeRecords = report.tradeRecords();
         final List<Double> sorted = tradeRecords.stream().map(tr -> Math.abs(tr.getNetProfit())).sorted(Comparator.comparing(Double::doubleValue)).toList();
         final double max = sorted.get(sorted.size() - 1);
         final double quotient = this.mathService.divide(max, sorted.stream().mapToDouble(Double::doubleValue).sum());

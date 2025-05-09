@@ -36,14 +36,14 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  * Testing class for {@link PortfolioApiController}
  *
  * @author Stephen Prizio
- * @version 0.1.9
+ * @version 0.2.0
  */
 @SpringBootTest
 @AutoConfigureMockMvc(addFilters = false)
 @RunWith(SpringRunner.class)
 class PortfolioApiControllerTest extends AbstractPlanterTest {
 
-    private static final String PORTFOLIO_UID = "portfolioUid";
+    private static final String PORTFOLIO_NUMBER = "portfolioNumber";
 
     @MockitoBean
     private PortfolioDTOConverter portfolioDTOConverter;
@@ -59,26 +59,26 @@ class PortfolioApiControllerTest extends AbstractPlanterTest {
 
     @BeforeEach
     void setUp() {
-        Mockito.when(this.portfolioService.findPortfolioByUid("1234")).thenReturn(Optional.of(generateTestPortfolio()));
-        Mockito.when(this.portfolioService.findPortfolioByUid("5678")).thenReturn(Optional.empty());
+        Mockito.when(this.portfolioService.findPortfolioForPortfolioNumber(1234L)).thenReturn(Optional.of(generateTestPortfolio()));
+        Mockito.when(this.portfolioService.findPortfolioForPortfolioNumber(5678L)).thenReturn(Optional.empty());
         Mockito.when(this.portfolioService.createPortfolio(any(), any())).thenReturn(generateTestPortfolio());
         Mockito.when(this.portfolioDTOConverter.convert(any())).thenReturn(PortfolioDTO.builder().name("Test").active(true).defaultPortfolio(true).build());
         Mockito.when(this.portfolioService.deletePortfolio(any())).thenReturn(true);
     }
 
 
-    //  ----------------- getPortfolioForUid -----------------
+    //  ----------------- getPortfolioForNumber -----------------
 
     @Test
     void test_getPortfolioForUid_success() throws Exception {
         this.mockMvc.perform(get(getApiPath(BASE, GET))
-                        .queryParam(PORTFOLIO_UID, "1234")
+                        .queryParam(PORTFOLIO_NUMBER, "1234")
                 )
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.success", is(true)));
 
         this.mockMvc.perform(get(getApiPath(BASE, GET))
-                        .queryParam(PORTFOLIO_UID, "5678")
+                        .queryParam(PORTFOLIO_NUMBER, "5678")
                 )
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.success", is(false)));
@@ -122,7 +122,7 @@ class PortfolioApiControllerTest extends AbstractPlanterTest {
     void test_putUpdatePortfolio_badJsonIntegrity() throws Exception {
         this.mockMvc.perform(put(getApiPath(BASE, UPDATE_PORTFOLIO))
                         .contentType(MediaType.APPLICATION_JSON)
-                        .queryParam(PORTFOLIO_UID, "1234")
+                        .queryParam(PORTFOLIO_NUMBER, "1234")
                         .content(new ObjectMapper().writeValueAsString(Map.of("hello", "world")))
                 )
                 .andExpect(status().isOk())
@@ -141,7 +141,7 @@ class PortfolioApiControllerTest extends AbstractPlanterTest {
 
         this.mockMvc.perform(put(getApiPath(BASE, UPDATE_PORTFOLIO))
                         .requestAttr(SecurityConstants.USER_REQUEST_KEY, generateTestUser())
-                        .queryParam(PORTFOLIO_UID, "5678")
+                        .queryParam(PORTFOLIO_NUMBER, "5678")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(new ObjectMapper().writeValueAsString(data)))
                 .andExpect(status().isOk())
@@ -160,7 +160,7 @@ class PortfolioApiControllerTest extends AbstractPlanterTest {
 
         this.mockMvc.perform(put(getApiPath(BASE, UPDATE_PORTFOLIO))
                         .requestAttr(SecurityConstants.USER_REQUEST_KEY, generateTestUser())
-                        .queryParam(PORTFOLIO_UID, "1234")
+                        .queryParam(PORTFOLIO_NUMBER, "1234")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(new ObjectMapper().writeValueAsString(data)))
                 .andExpect(status().isOk())
@@ -173,7 +173,7 @@ class PortfolioApiControllerTest extends AbstractPlanterTest {
     @Test
     void test_deletePortfolio_missingPortfolio() throws Exception {
         this.mockMvc.perform(delete(getApiPath(BASE, DELETE_PORTFOLIO))
-                        .queryParam(PORTFOLIO_UID, "5678")
+                        .queryParam(PORTFOLIO_NUMBER, "5678")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.message", containsString("Portfolio not found")));
@@ -182,7 +182,7 @@ class PortfolioApiControllerTest extends AbstractPlanterTest {
     @Test
     void test_deletePortfolio_success() throws Exception {
         this.mockMvc.perform(delete(getApiPath(BASE, DELETE_PORTFOLIO))
-                        .queryParam(PORTFOLIO_UID, "1234")
+                        .queryParam(PORTFOLIO_NUMBER, "1234")
                         .contentType(MediaType.APPLICATION_JSON)
                 )
                 .andExpect(status().isOk())

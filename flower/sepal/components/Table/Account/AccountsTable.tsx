@@ -3,11 +3,11 @@
 import {Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow,} from "@/components/ui/table"
 import {IconExternalLink, IconSquareRoundedCheckFilled} from "@tabler/icons-react";
 import Link from "next/link";
-import {formatNumberForDisplay, getBrokerImageForCode, getFlagForCode} from "@/lib/functions/util-functions";
+import {formatNumberForDisplay} from "@/lib/functions/util-functions";
+import {getBrokerImageForCode, getFlagForCode} from "@/lib/functions/util-component-functions";
 import moment from "moment";
 import {DateTime} from "@/lib/constants";
 import {useRouter} from "next/navigation";
-import Badge from "@/components/Badge/Badge";
 import {Account} from "@/types/apiTypes";
 
 /**
@@ -18,7 +18,7 @@ import {Account} from "@/types/apiTypes";
  * @param allowAccountSelection allow clicking on rows
  * @param showCompactTable minimal table flag
  * @author Stephen Prizio
- * @version 0.0.2
+ * @version 0.2.0
  */
 export default function AccountsTable(
   {

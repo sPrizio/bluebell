@@ -1,7 +1,7 @@
 import {ApiCredentials} from "@/lib/constants";
 
 /**
- * Checks for a valid password as per the guidelines defined by bluebell
+ * Checks for a valid password as per the guidelines defined by greenhouse
  *
  * @param val test input
  */
@@ -113,10 +113,19 @@ export function getAccountDomain(): string {
 }
 
 /**
- * Gets the account url
+ * Gets the portfolio url
  *
  * @returns {string} url
  */
 export function getPortfolioDomain(): string {
   return getDomain('/portfolio')
+}
+
+/**
+ * Gets the portfolio record url
+ *
+ * @returns {string} url
+ */
+export function getPortfolioRecordDomain(): string {
+  return getDomain('/portfolio-record')
 }

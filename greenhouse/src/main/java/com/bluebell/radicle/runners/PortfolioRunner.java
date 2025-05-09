@@ -13,10 +13,10 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
- * Test
+ * Generates testing {@link Portfolio}s
  *
  * @author Stephen Prizio
- * @version 0.1.9
+ * @version 0.2.0
  */
 @Component
 @Order(2)
@@ -43,6 +43,7 @@ public class PortfolioRunner extends AbstractRunner implements CommandLineRunner
         this.portfolioRepository.save(Portfolio
                 .builder()
                 .name("Test Portfolio")
+                .portfolioNumber(1234L)
                 .active(true)
                 .defaultPortfolio(true)
                 .user(user)

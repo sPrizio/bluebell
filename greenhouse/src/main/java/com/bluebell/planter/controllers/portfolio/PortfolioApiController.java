@@ -30,7 +30,7 @@ import java.util.Optional;
  * API Controller for {@link PortfolioRecord}
  *
  * @author Stephen Prizio
- * @version 0.1.9
+ * @version 0.2.0
  */
 @RestController
 @RequestMapping("${bluebell.base.api.controller.endpoint}" + ApiPaths.Portfolio.BASE)
@@ -53,12 +53,12 @@ public class PortfolioApiController extends AbstractApiController {
     /**
      * Returns a {@link StandardJsonResponse} containing a {@link PortfolioDTO}
      *
-     * @param portfolioUid portfolio uid
+     * @param portfolioNumber portfolio number
      * @param request      {@link HttpServletRequest}
      * @return {@link StandardJsonResponse}
      */
     @ValidateApiToken
-    @Operation(summary = "Get the portfolio for the uid", description = "Obtains the Portfolio for the given uid")
+    @Operation(summary = "Get the portfolio for the number", description = "Obtains the Portfolio for the given number")
     @ApiResponse(
             responseCode = "200",
             description = "Response when the api successfully retrieves the portfolio.",
@@ -69,10 +69,10 @@ public class PortfolioApiController extends AbstractApiController {
     )
     @ApiResponse(
             responseCode = "200",
-            description = "Response when the api cannot find the portfolio for the given uid.",
+            description = "Response when the api cannot find the portfolio for the given number.",
             content = @Content(
                     mediaType = "application/json",
-                    schema = @Schema(implementation = StandardJsonResponse.class, example = "No portfolio was found for uid 1234")
+                    schema = @Schema(implementation = StandardJsonResponse.class, example = "No portfolio was found for number 1234")
             )
     )
     @ApiResponse(
@@ -84,13 +84,13 @@ public class PortfolioApiController extends AbstractApiController {
             )
     )
     @GetMapping(ApiPaths.Portfolio.GET)
-    public StandardJsonResponse<PortfolioDTO> getPortfolioForUid(
-            @Parameter(name = "Portfolio UID", description = "The UID for the portfolio", example = "1234")
-            final @RequestParam("portfolioUid") String portfolioUid,
+    public StandardJsonResponse<PortfolioDTO> getPortfolioForNumber(
+            @Parameter(name = "portfolioNumber", description = "The number for the portfolio", example = "1234")
+            final @RequestParam("portfolioNumber") long portfolioNumber,
             final HttpServletRequest request
     ) {
 
-        final Optional<Portfolio> portfolio = this.portfolioService.findPortfolioByUid(portfolioUid);
+        final Optional<Portfolio> portfolio = this.portfolioService.findPortfolioForPortfolioNumber(portfolioNumber);
         if (portfolio.isPresent()) {
             return StandardJsonResponse
                     .<PortfolioDTO>builder()
@@ -101,7 +101,7 @@ public class PortfolioApiController extends AbstractApiController {
             return StandardJsonResponse
                     .<PortfolioDTO>builder()
                     .success(false)
-                    .message(String.format("No portfolio was found for uid %s", portfolioUid))
+                    .message(String.format("No portfolio was found for number %d", portfolioNumber))
                     .build();
         }
     }
@@ -192,8 +192,8 @@ public class PortfolioApiController extends AbstractApiController {
     public StandardJsonResponse<PortfolioDTO> putUpdatePortfolio(
             @Parameter(name = "Portfolio Payload", description = "Payload for creating or updating portfolios")
             final @RequestBody CreateUpdatePortfolioDTO data,
-            @Parameter(name = "Portfolio UID", description = "Portfolio UID to update", example = "1234")
-            final @RequestParam("portfolioUid") String portfolioUid,
+            @Parameter(name = "portfolioNumber", description = "Portfolio to update", example = "1234")
+            final @RequestParam("portfolioNumber") long portfolioNumber,
             final HttpServletRequest request
     ) {
         if (data == null || StringUtils.isEmpty(data.name())) {
@@ -201,7 +201,7 @@ public class PortfolioApiController extends AbstractApiController {
         }
 
         final User user = (User) request.getAttribute(SecurityConstants.USER_REQUEST_KEY);
-        final Optional<Portfolio> portfolio = this.portfolioService.findPortfolioByUid(portfolioUid);
+        final Optional<Portfolio> portfolio = this.portfolioService.findPortfolioForPortfolioNumber(portfolioNumber);
 
         if (portfolio.isPresent() && user.getActivePortfolios().contains(portfolio.get())) {
             return StandardJsonResponse
@@ -213,7 +213,7 @@ public class PortfolioApiController extends AbstractApiController {
             return StandardJsonResponse
                     .<PortfolioDTO>builder()
                     .success(false)
-                    .message(String.format("Portfolio not found for uid: %s", portfolioUid))
+                    .message(String.format("Portfolio not found for number: %d", portfolioNumber))
                     .build();
         }
     }
@@ -222,14 +222,14 @@ public class PortfolioApiController extends AbstractApiController {
     //  ----------------- DELETE REQUESTS -----------------
 
     /**
-     * Deletes an {@link Portfolio} with the matching uid
+     * Deletes an {@link Portfolio} with the matching number
      *
-     * @param portfolioUid portfolio uid
+     * @param portfolioNumber portfolio number
      * @param request {@link HttpServletRequest}
      * @return {@link StandardJsonResponse}
      */
     @ValidateApiToken
-    @Operation(summary = "Deletes a user portfolio", description = "Deletes the user portfolio with the matching uid.")
+    @Operation(summary = "Deletes a user portfolio", description = "Deletes the user portfolio with the matching number.")
     @ApiResponse(
             responseCode = "200",
             description = "Response when the api successfully deletes a portfolio.",
@@ -240,10 +240,10 @@ public class PortfolioApiController extends AbstractApiController {
     )
     @ApiResponse(
             responseCode = "200",
-            description = "Response when the api cannot find the portfolio for the given uid.",
+            description = "Response when the api cannot find the portfolio for the given number.",
             content = @Content(
                     mediaType = "application/json",
-                    schema = @Schema(implementation = StandardJsonResponse.class, example = "No portfolio was found for uid 1234")
+                    schema = @Schema(implementation = StandardJsonResponse.class, example = "No portfolio was found for number 1234")
             )
     )
     @ApiResponse(
@@ -256,14 +256,14 @@ public class PortfolioApiController extends AbstractApiController {
     )
     @DeleteMapping(ApiPaths.Portfolio.DELETE_PORTFOLIO)
     public StandardJsonResponse<Boolean> deletePortfolio(
-            @Parameter(name = "Portfolio UID", description = "Portfolio UID to delete", example = "1234")
-            final @RequestParam("portfolioUid") String portfolioUid,
+            @Parameter(name = "portfolioNumber", description = "Portfolio to delete", example = "1234")
+            final @RequestParam("portfolioNumber") long portfolioNumber,
             final HttpServletRequest request
     ) {
-        final Optional<Portfolio> portfolio = this.portfolioService.findPortfolioByUid(portfolioUid);
+        final Optional<Portfolio> portfolio = this.portfolioService.findPortfolioForPortfolioNumber(portfolioNumber);
         return portfolio.map(value -> {
             final boolean result = this.portfolioService.deletePortfolio(value);
             return StandardJsonResponse.<Boolean>builder().success(result).data(result).build();
-        }).orElseGet(() -> StandardJsonResponse.<Boolean>builder().success(false).data(false).message(String.format("Portfolio not found for uid %s", portfolioUid)).build());
+        }).orElseGet(() -> StandardJsonResponse.<Boolean>builder().success(false).data(false).message(String.format("Portfolio not found for number %d", portfolioNumber)).build());
     }
 }

@@ -1,43 +1,33 @@
 'use client'
 
-import {useSepalPageInfoContext} from "@/lib/context/SepalContext";
-import {getAccount, getAccountNumber} from "@/lib/functions/util-functions";
-import {notFound, useSearchParams} from "next/navigation";
-import React, {useEffect, useState} from "react";
+import {logErrors, selectNewAccount} from "@/lib/functions/util-functions";
+import React, {useState} from "react";
 import {Icons} from "@/lib/enums";
-import {Loader2} from "lucide-react";
 import {BaseCard} from "@/components/Card/BaseCard";
 import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from "@/components/ui/select";
 import TimeBucketAnalysis from "@/components/Analysis/TimeBucketAnalysis";
-import {Account, FilterSelector, TradeDurationFilterSelector, Weekday} from "@/types/apiTypes";
+import {FilterSelector, TradeDurationFilterSelector, Weekday} from "@/types/apiTypes";
 import WeekdayAnalysis from "@/components/Analysis/WeekdayAnalysis";
 import WeekdayTimeBucketAnalysis from "@/components/Analysis/WeekdayTimeBucketAnalysis";
 import TradeDurationAnalysis from "@/components/Analysis/TradeDurationAnalysis";
+import LoadingPage from "@/app/loading";
+import Error from "@/app/error";
+import {PageInfoProvider} from "@/lib/context/PageInfoProvider";
+import {useActiveAccount} from "@/lib/hooks/api/useActiveAccount";
+import {useRouter, useSearchParams} from "next/navigation";
+import ReusableSelect from "@/components/Input/ReusableSelect";
 
 /**
  * The page that shows an analysis of an account's performance
  *
  * @author Stephen Prizio
- * @version 0.0.2
+ * @version 0.2.0
  */
 export default function AnalysisPage() {
 
-  const {
-    pageTitle,
-    pageSubtitle,
-    pageIconCode,
-    breadcrumbs,
-    user,
-    setPageTitle,
-    setPageSubtitle,
-    setPageIconCode,
-    setBreadcrumbs,
-    setUser
-  } = useSepalPageInfoContext()
-
-  const searchParams = useSearchParams()
-  const [isLoading, setIsLoading] = useState(false)
-  const [accNumber, setAccNumber] = useState(getAccountNumber(searchParams, user?.accounts ?? []))
+  const searchParams = useSearchParams();
+  const router = useRouter();
+  const { isLoading, isError, error, activePortfolio, activeAccount, hasMismatch } = useActiveAccount();
   const [openTbType, setOpenTbType] = useState<FilterSelector>('PROFIT')
   const [closedTbType, setClosedTbType] = useState<FilterSelector>('PROFIT')
   const [wdType, setWdType] = useState<FilterSelector>('PROFIT')
@@ -46,35 +36,26 @@ export default function AnalysisPage() {
   const [weekday, setWeekday] = useState<Weekday>('MONDAY')
   const [tdFilter, setTdFilter] = useState<TradeDurationFilterSelector>('ALL')
 
-  useEffect(() => {
-    setPageTitle('Analysis')
-    setPageSubtitle(`A more in-depth look at various aspects of trading account ${accNumber}'s performance.`)
-    setPageIconCode(Icons.Analysis)
-    setBreadcrumbs([
+  if (isLoading) {
+    return <LoadingPage />;
+  }
+
+  if (hasMismatch || isError) {
+    logErrors('User and portfolio mismatch!', error);
+    return <Error />;
+  }
+
+  const accNumber = activeAccount?.accountNumber ?? -1
+  const pageInfo = {
+    title: "Analysis",
+    subtitle: `A more in-depth look at ${activeAccount?.name ?? ''}'s performance.`,
+    iconCode: Icons.Analysis,
+    breadcrumbs: [
       {label: 'Dashboard', href: '/dashboard', active: false},
       {label: 'Accounts', href: '/accounts', active: false},
-      {label: accNumber.toString(), href: '/accounts/' + accNumber, active: false},
+      {label: activeAccount?.name ?? '', href: '/accounts/' + accNumber, active: false},
       {label: 'Analysis', href: '/analysis?account=default', active: true},
-    ])
-  }, [])
-
-  useEffect(() => {
-    setPageTitle('Analysis')
-    setPageSubtitle(`A more in-depth look at various aspects of trading account ${accNumber}'s performance.`)
-    setPageIconCode(Icons.Analysis)
-    setBreadcrumbs([
-      {label: 'Dashboard', href: '/dashboard', active: false},
-      {label: 'Accounts', href: '/accounts', active: false},
-      {label: accNumber.toString(), href: '/accounts/' + accNumber, active: false},
-      {label: 'Analysis', href: '/analysis?account=default', active: true},
-    ])
-
-    setAccNumber(accNumber)
-  }, [accNumber]);
-
-  const acc = getAccount(accNumber, user?.accounts ?? [])
-  if (!acc) {
-    return notFound()
+    ]
   }
 
 
@@ -86,10 +67,10 @@ export default function AnalysisPage() {
    * @param value state variable
    * @param callBack setState function
    */
-  const select = (value: string, callBack: Function) => {
+  const select = (value: string, callBack: React.Dispatch<FilterSelector>) => {
     return (
       <div>
-        <Select value={value} onValueChange={(val) => callBack(val)}>
+        <Select value={value} onValueChange={(val : FilterSelector) => callBack(val)}>
           <SelectTrigger className="w-[120px] bg-white">
             <SelectValue placeholder={'Select a value...'}/>
           </SelectTrigger>
@@ -107,36 +88,23 @@ export default function AnalysisPage() {
   //  RENDER
 
   return (
-    <div className={''}>
-      {
-        isLoading ?
-          <div className={'h-[72vh] flex items-center justify-center'}>
-            <div className={'grid grid-cols-1 justify-items-center gap-8'}>
-              <div>
-                <Loader2 className="animate-spin text-primary" size={50}/>
-              </div>
-              <div className={'text-lg'}>Loading Performance</div>
-            </div>
-          </div>
-          :
+    <PageInfoProvider value={pageInfo}>
+      <div className={''}>
+        {
           <div className={'grid grid-cols-2 justify-center gap-8'}>
             <div className={'col-span-2'}>
               <div className={'flex items-center justify-end gap-4'}>
                 <div>
-                  <Select value={accNumber.toString()} onValueChange={(val) => setAccNumber(parseInt(val))}>
-                    <SelectTrigger className="w-[180px] bg-white">
-                      <SelectValue placeholder="Account"/>
-                    </SelectTrigger>
-                    <SelectContent>
-                      {
-                        user?.accounts?.map((item: Account) => {
-                          return (
-                            <SelectItem key={item.uid} value={item.accountNumber.toString()}>{item.name}</SelectItem>
-                          )
-                        }) ?? null
-                      }
-                    </SelectContent>
-                  </Select>
+                  <ReusableSelect
+                    title={'Account'}
+                    initialValue={accNumber.toString()}
+                    options={activePortfolio?.accounts?.filter(acc => acc.active)?.map(a => {
+                      return {label: a.name, value: a.accountNumber.toString()}
+                    }) ?? []}
+                    handler={(val: string) => {
+                      selectNewAccount(router, searchParams, parseInt(val))
+                    }}
+                  />
                 </div>
               </div>
             </div>
@@ -207,14 +175,15 @@ export default function AnalysisPage() {
                   </div>,
                   select(tdType, setTdType)
                 ]}
-                cardContent={<TradeDurationAnalysis accountNumber={accNumber} filter={tdType} tdFilter={tdFilter} />}
+                cardContent={<TradeDurationAnalysis accountNumber={accNumber} filter={tdType} tdFilter={tdFilter}/>}
               />
             </div>
             <div>
               Add average count and change color of bar if the count is above average/std<br/>
             </div>
           </div>
-      }
-    </div>
+        }
+      </div>
+    </PageInfoProvider>
   )
 }

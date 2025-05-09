@@ -22,7 +22,7 @@ import static com.bluebell.radicle.validation.GenericValidator.validateParameter
  * Parent-level controller providing common functionality
  *
  * @author Stephen Prizio
- * @version 0.1.7
+ * @version 0.2.0
  */
 public abstract class AbstractApiController {
 
@@ -70,7 +70,7 @@ public abstract class AbstractApiController {
      */
     public Account getAccountForId(final User user, final long accountNumber) {
         validateParameterIsNotNull(user, CorePlatformConstants.Validation.Security.User.USER_CANNOT_BE_NULL);
-        return user.getActivePortfolios().stream().map(Portfolio::getActiveAccounts).flatMap(List::stream).filter(acc -> acc.getAccountNumber() == accountNumber).findFirst().orElseThrow(() -> new InvalidAccountNumberException("The given account number did not match and user accounts"));
+        return user.getActivePortfolios().stream().map(Portfolio::getActiveAccounts).flatMap(List::stream).filter(acc -> acc.getAccountNumber() == accountNumber).findFirst().orElseThrow(() -> new InvalidAccountNumberException(String.format("The given account number %d did not match any user accounts", accountNumber)));
     }
 
     /**

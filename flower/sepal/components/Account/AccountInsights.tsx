@@ -2,7 +2,7 @@ import React from "react";
 import {formatNumberForDisplay} from "@/lib/functions/util-functions";
 import {Tooltip, TooltipContent, TooltipProvider, TooltipTrigger,} from "@/components/ui/tooltip"
 import {IconHelpSquareRounded} from "@tabler/icons-react";
-import { AccountInsightsType } from "@/types/apiTypes";
+import {AccountInsightsType} from "@/types/apiTypes";
 
 /**
  * Renders an Account's insights

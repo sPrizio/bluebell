@@ -11,6 +11,7 @@ import Link from "next/link";
  * Renders the main logo of the app
  *
  * @param variant color variant
+ * @param size logo size
  * @author Stephen Prizio
  * @version 0.0.1
  */
@@ -28,10 +29,6 @@ export default function MainLogo(
   const [windowSize, setWindowSize] = useState([0, 0])
 
   useEffect(() => {
-    function updateSize() {
-      setWindowSize([window.innerWidth, window.innerHeight]);
-    }
-
     window.addEventListener('resize', updateSize);
     updateSize();
     return () => window.removeEventListener('resize', updateSize);

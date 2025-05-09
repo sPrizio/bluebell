@@ -32,7 +32,8 @@ services:
     depends_on:
       db:
         condition: service_healthy
-
+    mem_limit: 8g
+    
   sepal:
     build:
       context: .

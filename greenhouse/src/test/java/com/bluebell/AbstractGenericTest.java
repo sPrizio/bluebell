@@ -48,7 +48,7 @@ import java.util.Random;
  * Parent-level testing class to provide testing assistance for the project
  *
  * @author Stephen Prizio
- * @version 0.1.7
+ * @version 0.2.0
  */
 public abstract class AbstractGenericTest {
 
@@ -166,6 +166,7 @@ public abstract class AbstractGenericTest {
         return Portfolio
                 .builder()
                 .id(1L)
+                .portfolioNumber(1234L)
                 .name("Test Portfolio")
                 .active(true)
                 .defaultPortfolio(true)

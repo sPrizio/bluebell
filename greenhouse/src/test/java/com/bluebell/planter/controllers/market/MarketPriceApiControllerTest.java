@@ -22,7 +22,8 @@ import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
-import static com.bluebell.planter.constants.ApiPaths.MarketPrice.*;
+import static com.bluebell.planter.constants.ApiPaths.MarketPrice.BASE;
+import static com.bluebell.planter.constants.ApiPaths.MarketPrice.INGEST;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.containsString;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -32,7 +33,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  * Testing class for {@link MarketPriceApiController}
  *
  * @author Stephen Prizio
- * @version 0.1.9
+ * @version 0.2.0
  */
 @SpringBootTest
 @AutoConfigureMockMvc(addFilters = false)

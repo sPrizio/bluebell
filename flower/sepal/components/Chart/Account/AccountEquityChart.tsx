@@ -1,6 +1,6 @@
 'use client'
 
-import React, {useEffect, useState} from "react";
+import React, {useMemo} from "react";
 import {Area, ComposedChart, ResponsiveContainer, Tooltip, TooltipProps, YAxis} from "recharts";
 import {NameType, ValueType,} from 'recharts/types/component/DefaultTooltipContent';
 import {Css, DateTime} from "@/lib/constants";
@@ -9,18 +9,13 @@ import moment from "moment";
 import {formatNumberForDisplay} from "@/lib/functions/util-functions";
 import {AccountEquityPoint} from "@/types/apiTypes";
 
-interface InternalEquityPoint {
-  date: string,
-  value: number,
-}
-
 /**
  * Renders a chart to display an Account's growth over time
  *
  * @param data Account equity data points
  * @param showPoints show balance or points
  * @author Stephen Prizio
- * @version 0.0.2
+ * @version 0.2.0
  */
 export default function AccountEquityChart(
   {
@@ -33,14 +28,12 @@ export default function AccountEquityChart(
   }>
 ) {
 
-  const [chartData, setChartData] = useState<Array<InternalEquityPoint>>()
-  useEffect(() => {
-    if (showPoints) {
-      setChartData(data.map(item => ({date: item.date, value: item.cumPoints})))
-    } else {
-      setChartData(data.map(item => ({date: item.date, value: item.cumAmount})))
-    }
-  }, [showPoints]);
+  const chartData = useMemo(() => {
+    return data.map(item => ({
+      date: item.date,
+      value: showPoints ? item.cumPoints : item.cumAmount,
+    }));
+  }, [data, showPoints]);
 
 
   //  GENERAL FUNCTIONS
@@ -84,7 +77,7 @@ export default function AccountEquityChart(
               {
                 payload?.map((item: any, itx: number) => {
                   return (
-                    <div key={itx} className={"flex flex-row items-center w-[200px] gap-6"} style={{color: item.color}}>
+                    <div key={itx + 1} className={"flex flex-row items-center w-[200px] gap-6"} style={{color: item.color}}>
                       <div className={'justify-start capitalize'}>
                         {showPoints ? 'Points' : 'Balance'}
                       </div>

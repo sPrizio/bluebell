@@ -21,15 +21,14 @@ import {
 import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from "@/components/ui/select";
 import parsePhoneNumberFromString from "libphonenumber-js";
 import SimpleMessage from "@/components/Message/SimpleMessage";
-import {registerUser} from "@/lib/functions/account-functions";
-import {useToast} from "@/hooks/use-toast";
+import {useToast} from "@/lib/hooks/ui/use-toast";
 import {Toaster} from "@/components/ui/toaster";
 
 /**
  * Renders the login page
  *
  * @author Stephen Prizio
- * @version 0.0.1
+ * @version 0.2.0
  */
 export default function Login() {
 
@@ -117,7 +116,8 @@ export default function Login() {
     setIsLoading(true)
     await delay(2000);
 
-    const user = await registerUser(values)
+    //const user = await registerUser(values)
+    const user = null
     if (!user) {
       toast({
         title: "Account Creation Error",

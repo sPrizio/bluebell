@@ -1,6 +1,5 @@
 'use client'
 
-import {AggregateInterval} from "@/lib/enums";
 import TradeRecordChart from "@/components/Chart/Trade/TradeRecordChart";
 import {BaseCard} from "@/components/Card/BaseCard";
 import moment from "moment";
@@ -18,16 +17,16 @@ import {TradeRecord} from "@/types/apiTypes";
  * @param tradeRecord Trade record
  * @param aggInterval aggregated interval
  * @author Stephen Prizio
- * @version 0.0.2
+ * @version 0.2.0
  */
 export default function TradeRecordCard(
   {
     tradeRecord,
     aggInterval,
   }
-    : Readonly<{
+  : Readonly<{
     tradeRecord: TradeRecord,
-    aggInterval: AggregateInterval,
+    aggInterval: string,
   }>
 ) {
 
@@ -44,12 +43,14 @@ export default function TradeRecordCard(
    */
   function formatDate(val: string) {
     switch (aggInterval) {
-      case AggregateInterval.DAILY:
-        return moment(val).format(DateTime.ISOMonthWeekDayFormat)
-      case AggregateInterval.MONTHLY:
-        return moment(val).format(DateTime.ISOMonthYearFormat)
+      case 'DAILY':
+        return moment(val).format(DateTime.ISOMonthWeekDayFormat);
+      case 'MONTHLY':
+        return moment(val).format(DateTime.ISOMonthYearFormat);
+      case 'YEARLY':
+        return moment(val).format(DateTime.ISOYearFormat);
       default:
-        return moment(val).format(DateTime.ISOYearFormat)
+        return val;
     }
   }
 
@@ -57,26 +58,31 @@ export default function TradeRecordCard(
   //  RENDER
 
   /**
+   * Returns a simple cell for data with no bg
+   *
+   * @param val data to render
+   * @param className custom css classes
+   */
+  const simpleCellNoBg = (val: string, className = '') => {
+    return (
+      <div className={`py-1 px-2 text-sm ${className}`}>
+        {val}
+      </div>
+    )
+  }
+
+  /**
    * Returns a simple cell for data
    *
    * @param val data to render
-   * @param hasBg should have a background color
    * @param className custom css classes
    */
-  const simpleCell = (val: any, hasBg = false, className = '') => {
-    if (!hasBg) {
-      return (
-        <div className={`py-1 px-2 text-sm ${className}`}>
-          {val}
-        </div>
-      )
-    } else {
-      return (
-        <div className={`py-1 px-2 bg-primary bg-opacity-10 ${className}`}>
-          {val}
-        </div>
-      )
-    }
+  const simpleCellWithBg = (val: string, className = '') => {
+    return (
+      <div className={`py-1 px-2 bg-primary bg-opacity-10 ${className}`}>
+        {val}
+      </div>
+    )
   }
 
   return (
@@ -85,7 +91,7 @@ export default function TradeRecordCard(
       cardContent={
         <div className={'grid grid-cols-1 lg:grid-cols-5 gap-8 items-center mb-4'}>
           <div className={'lg:col-span-2'}>
-            <TradeRecordChart data={tradeRecord.equityPoints} showAsPoints={showPoints} />
+            <TradeRecordChart data={tradeRecord.equityPoints} showAsPoints={showPoints}/>
           </div>
           <div className={'lg:col-span-3'}>
             <div className={'grid grid-cols-3 gap-4 text-sm'}>
@@ -186,14 +192,14 @@ export default function TradeRecordCard(
                   <div className={'col-span-2 bg-primary bg-opacity-10 p-2'}>
                     <Label className={'font-semibold'}>Results</Label>
                   </div>
-                  {simpleCell('P & L')}
-                  {simpleCell('$ ' + formatNumberForDisplay(tradeRecord.netProfit), true, 'text-right')}
-                  {simpleCell('Win%')}
-                  {simpleCell(tradeRecord.winPercentage + '%', true, 'text-right')}
-                  {simpleCell('Profitability')}
-                  {simpleCell(tradeRecord.profitability, true, 'text-right')}
-                  {simpleCell('Retention')}
-                  {simpleCell(tradeRecord.retention + '%', true, 'text-right')}
+                  {simpleCellNoBg('P & L')}
+                  {simpleCellWithBg('$ ' + formatNumberForDisplay(tradeRecord.netProfit), 'text-right')}
+                  {simpleCellNoBg('Win%')}
+                  {simpleCellWithBg(tradeRecord.winPercentage + '%', 'text-right')}
+                  {simpleCellNoBg('Profitability')}
+                  {simpleCellWithBg(tradeRecord?.profitability.toString() ?? '', 'text-right')}
+                  {simpleCellNoBg('Retention')}
+                  {simpleCellWithBg(tradeRecord.retention + '%', 'text-right')}
                 </div>
               </div>
             </div>

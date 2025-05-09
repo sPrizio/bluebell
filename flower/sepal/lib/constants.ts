@@ -3,7 +3,11 @@ import {z} from "zod";
 import {safeConvertEnum} from "@/lib/functions/util-functions";
 import {hasEmail, hasUsername} from "@/lib/functions/account-functions";
 import {
-  getAccountDomain, getAnalysisDomain, getNewsDomain, getPortfolioDomain,
+  getAccountDomain,
+  getAnalysisDomain,
+  getNewsDomain,
+  getPortfolioDomain,
+  getPortfolioRecordDomain,
   getTradeDomain,
   getTradeRecordDomain,
   getUserDomain,
@@ -26,9 +30,9 @@ export const ApiCredentials = {
 
 export const ApiUrls = {
   Account: {
-    CreateAccount: getAccountDomain() + '/create-account',
-    UpdateAccount: getAccountDomain() + '/update-account?accountNumber={accountNumber}',
-    DeleteAccount: getAccountDomain() + '/delete-account?accountNumber={accountNumber}',
+    CreateAccount: getAccountDomain() + '/create-account?portfolioNumber={portfolioNumber}',
+    UpdateAccount: getAccountDomain() + '/update-account?portfolioNumber={portfolioNumber}&accountNumber={accountNumber}',
+    DeleteAccount: getAccountDomain() + '/delete-account?portfolioNumber={portfolioNumber}&accountNumber={accountNumber}',
     GetCurrencies: getAccountDomain() + '/currencies',
     GetAccountTypes: getAccountDomain() + '/account-types',
     GetBrokers: getAccountDomain() + '/brokers',
@@ -46,17 +50,20 @@ export const ApiUrls = {
     FetchNews: getNewsDomain() + '/fetch-news',
   },
   Portfolio: {
-    GetPortfolio: getPortfolioDomain() + '/get'
+    GetPortfolio: getPortfolioDomain() + '/get?portfolioNumber={portfolioNumber}'
+  },
+  PortfolioRecord: {
+    GetPortfolioRecord: getPortfolioRecordDomain() + '/get?portfolioNumber={portfolioNumber}',
   },
   Trade: {
-    GetPagedTrades: getTradeDomain() + '/for-interval-paged?accountNumber={accountNumber}&start={start}&end={end}&page={page}&pageSize={pageSize}',
+    GetPagedTrades: getTradeDomain() + '/get-for-interval-paged?accountNumber={accountNumber}&start={start}&end={end}&page={page}&pageSize={pageSize}',
     ImportTrades: getTradeDomain() + '/import-trades?accountNumber={accountNumber}&isStrategy={isStrategy}',
   },
   TradeRecord: {
-    GetTradeRecords: getTradeRecordDomain() + '/for-interval?accountNumber={accountNumber}&start={start}&end={end}&interval={interval}&count={count}',
-    GetRecentTradeRecords: getTradeRecordDomain() + '/recent?accountNumber={accountNumber}&interval={interval}&count={count}',
+    GetTradeRecords: getTradeRecordDomain() + '/get-for-interval?accountNumber={accountNumber}&start={start}&end={end}&interval={interval}&count={count}',
+    GetRecentTradeRecords: getTradeRecordDomain() + '/get-recent?accountNumber={accountNumber}&interval={interval}&count={count}',
     GetTradeLog: getTradeRecordDomain() + '/trade-log?start={start}&end={end}&interval={interval}&count={count}',
-    GetTradeRecordControls: getTradeRecordDomain() + '/trade-record-controls?accountNumber={accountNumber}&interval={interval}',
+    GetTradeRecordControls: getTradeRecordDomain() + '/get-trade-record-controls?accountNumber={accountNumber}&interval={interval}',
   },
   User: {
     GetRecentTransactions: getUserDomain() + '/recent-transactions',
@@ -108,14 +115,14 @@ export const Css = {
 
 export function CRUDAccountSchema(accInfo: AccountCreationInfo | undefined) {
   return z.object({
-    defaultAccount: z.boolean(),
+    isDefault: z.boolean(),
     balance: z.coerce.number().min(1, { message: 'Please enter a number between 1 and 999999999.' }).max(999999999, { message: 'Please enter a number between 1 and 999999999.' }),
     active: z.boolean(),
     name: z.string().min(3, { message: 'Please enter an Account name with a minimum of 3 characters.' }).max(75, { message: 'Please enter an Account name with at most 75 characters.' }),
-    accountNumber: z.coerce.number().min(1, { message: 'Please enter a number between 1 and 99999999999.' }).max(99999999999, { message: 'Please enter a number between 1 and 99999999999.' }),
+    number: z.coerce.number().min(1, { message: 'Please enter a number between 1 and 99999999999.' }).max(99999999999, { message: 'Please enter a number between 1 and 99999999999.' }),
     currency: z.enum(safeConvertEnum(accInfo?.currencies?.map(item => item.code) ?? []), { message: 'Please select one of the given currencies.' }),
     broker: z.enum(safeConvertEnum(accInfo?.brokers?.map(item => item.code) ?? []), { message: 'Please select one of the given brokers.' }),
-    accountType: z.enum(safeConvertEnum(accInfo?.accountTypes?.map(item => item.code) ?? []), { message: 'Please select one of the given Account types.' }),
+    type: z.enum(safeConvertEnum(accInfo?.accountTypes?.map(item => item.code) ?? []), { message: 'Please select one of the given Account types.' }),
     tradePlatform: z.enum(safeConvertEnum(accInfo?.platforms?.map(item => item.code) ?? []), { message: 'Please select one of the given trading platforms.' })
   })
 }
@@ -125,7 +132,7 @@ export function CRUDTransactionSchema() {
     date: z.date({
       required_error: "A transaction date is required.",
     }),
-    type: z.enum(safeConvertEnum(['Deposit', 'Withdrawal']), { message: 'Please select a transaction type.' }),
+    type: z.enum(safeConvertEnum(['DEPOSIT', 'WITHDRAWAL']), { message: 'Please select a transaction type.' }),
     amount: z.coerce.number().min(1, { message: 'Please enter a number between 1 and 999999999.' }).max(999999999, { message: 'Please enter a number between 1 and 999999999.' }),
     account: z.coerce.number()
   })
@@ -149,8 +156,8 @@ export function CRUDUserSchema(editMode: boolean) {
       });
 
       // when it's good
-      if (phone && phone.isValid()) {
-        return phone.formatNational();
+      if (phone?.isValid() ?? false) {
+        return phone?.formatNational() ?? '';
       }
 
       // when it's not

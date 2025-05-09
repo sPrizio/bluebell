@@ -4,6 +4,7 @@
 .env.prod
 greenhouse/middleware/**/venv
 greenhouse/middleware/**/**.log
+**/__pycache__/
 
 stem/.idea
 stem/log

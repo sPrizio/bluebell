@@ -3,7 +3,7 @@ import type {Metadata} from "next";
 
 export const metadata: Metadata = {
   title: "Dashboard - bluebell",
-  description: "View all of your Account information in one convenient place",
+  description: "View all of your Account information for a specific portfolio in one convenient place",
 };
 
 /**
@@ -11,7 +11,7 @@ export const metadata: Metadata = {
  *
  * @param children Content
  * @author Stephen Prizio
- * @version 0.0.1
+ * @version 0.2.0
  */
 export default function DashboardLayout(
   {

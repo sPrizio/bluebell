@@ -32,7 +32,7 @@ import java.util.Optional;
  * Controller for {@link AnalysisService}
  *
  * @author Stephen Prizio
- * @version 0.1.9
+ * @version 0.2.0
  */
 @RestController
 @RequestMapping("${bluebell.base.api.controller.endpoint}" + ApiPaths.Analysis.BASE)
@@ -97,11 +97,11 @@ public class AnalysisApiController extends AbstractApiController {
     )
     @GetMapping(ApiPaths.Analysis.TIME_BUCKETS)
     public StandardJsonResponse<List<AnalysisResult>> getTimeBucketsAnalysis(
-            @Parameter(name = "Account Number", description = "The unique identifier for your trading account", example = "1234")
+            @Parameter(name = "accountNumber", description = "The unique identifier for your trading account", example = "1234")
             final @RequestParam("accountNumber") long accountNumber,
-            @Parameter(name = "Analysis Filter", description = "Refers to the attribute on which to analyze. Supported values are currently: PROFIT, PERCENTAGE or POINTS", example = "PROFIT")
+            @Parameter(name = "filter", description = "Refers to the attribute on which to analyze. Supported values are currently: PROFIT, PERCENTAGE or POINTS", example = "PROFIT")
             final @RequestParam("filter") String filter,
-            @Parameter(name = "Use Open Price", description = "If true, uses the trade's open time, else uses the close time (if applicable)", example = "true")
+            @Parameter(name = "isOpened", description = "If true, uses the trade's open time, else uses the close time (if applicable)", example = "true")
             final @RequestParam("isOpened") boolean isOpened,
             final HttpServletRequest request
     ) {
@@ -161,9 +161,9 @@ public class AnalysisApiController extends AbstractApiController {
     )
     @GetMapping(ApiPaths.Analysis.WEEKDAYS)
     public StandardJsonResponse<List<AnalysisResult>> getWeekdaysAnalysis(
-            @Parameter(name = "Account Number", description = "The unique identifier for your trading account", example = "1234")
+            @Parameter(name = "accountNumber", description = "The unique identifier for your trading account", example = "1234")
             final @RequestParam("accountNumber") long accountNumber,
-            @Parameter(name = "Analysis Filter", description = "Refers to the attribute on which to analyze. Supported values are currently: PROFIT, PERCENTAGE or POINTS", example = "PROFIT")
+            @Parameter(name = "filter", description = "Refers to the attribute on which to analyze. Supported values are currently: PROFIT, PERCENTAGE or POINTS", example = "PROFIT")
             final @RequestParam("filter") String filter,
             final HttpServletRequest request
     ) {
@@ -232,11 +232,11 @@ public class AnalysisApiController extends AbstractApiController {
     )
     @GetMapping(ApiPaths.Analysis.WEEKDAYS_TIME_BUCKETS)
     public StandardJsonResponse<List<AnalysisResult>> getWeekdayTimeBucketsAnalysis(
-            @Parameter(name = "Account Number", description = "The unique identifier for your trading account", example = "1234")
+            @Parameter(name = "accountNumber", description = "The unique identifier for your trading account", example = "1234")
             final @RequestParam("accountNumber") long accountNumber,
-            @Parameter(name = "Analysis Filter", description = "Refers to the attribute on which to analyze. Supported values are currently: PROFIT, PERCENTAGE or POINTS", example = "PROFIT")
+            @Parameter(name = "filter", description = "Refers to the attribute on which to analyze. Supported values are currently: PROFIT, PERCENTAGE or POINTS", example = "PROFIT")
             final @RequestParam("filter") String filter,
-            @Parameter(name = "Weekday", description = "Day of the week on which to analyze", example = "THURSDAY")
+            @Parameter(name = "weekday", description = "Day of the week on which to analyze", example = "THURSDAY")
             final @RequestParam("weekday") String weekday,
             final HttpServletRequest request
     ) {
@@ -309,11 +309,11 @@ public class AnalysisApiController extends AbstractApiController {
     )
     @GetMapping(ApiPaths.Analysis.TRADE_DURATIONS)
     public StandardJsonResponse<List<AnalysisResult>> getTradeDurationsAnalysis(
-            @Parameter(name = "Account Number", description = "The unique identifier for your trading account", example = "1234")
+            @Parameter(name = "accountNumber", description = "The unique identifier for your trading account", example = "1234")
             final @RequestParam("accountNumber") long accountNumber,
-            @Parameter(name = "Analysis Filter", description = "Refers to the attribute on which to analyze. Supported values are currently: PROFIT, PERCENTAGE or POINTS", example = "PROFIT")
+            @Parameter(name = "filter", description = "Refers to the attribute on which to analyze. Supported values are currently: PROFIT, PERCENTAGE or POINTS", example = "PROFIT")
             final @RequestParam("filter") String filter,
-            @Parameter(name = "Trade Type Filter", description = "Type of trade to compute durations. Examples are: ALL, WINS, LOSSES", example = "WINS")
+            @Parameter(name = "tradeDurationFilter", description = "Type of trade to compute durations. Examples are: ALL, WINS, LOSSES", example = "WINS")
             final @RequestParam("tradeDurationFilter") String tradeDurationFilter,
             final HttpServletRequest request
     ) {

@@ -1,6 +1,5 @@
 package com.bluebell.radicle.services.portfolio;
 
-import com.bluebell.planter.services.UniqueIdentifierService;
 import com.bluebell.platform.constants.CorePlatformConstants;
 import com.bluebell.platform.models.api.dto.portfolio.CreateUpdatePortfolioDTO;
 import com.bluebell.platform.models.core.entities.portfolio.Portfolio;
@@ -24,7 +23,7 @@ import static com.bluebell.radicle.validation.GenericValidator.validateParameter
  * Service-layer for {@link PortfolioRecord}
  *
  * @author Stephen Prizio
- * @version 0.1.2
+ * @version 0.2.0
  */
 @Service("portfolioService")
 public class PortfolioService {
@@ -32,25 +31,17 @@ public class PortfolioService {
     @Resource(name = "portfolioRepository")
     private PortfolioRepository portfolioRepository;
 
-    @Resource(name = "uniqueIdentifierService")
-    private UniqueIdentifierService uniqueIdentifierService;
-
 
     //  METHODS
 
     /**
-     * Retrieves a {@link Portfolio} for the given uid
+     * Retrieves a {@link Portfolio} for the given portfolio number
      *
-     * @param uid uid
+     * @param portfolioNumber portfolio number
      * @return {@link Optional} {@link Portfolio}
      */
-    public Optional<Portfolio> findPortfolioByUid(final String uid) {
-
-        if (StringUtils.isEmpty(uid)) {
-            return Optional.empty();
-        }
-
-        return this.portfolioRepository.findById(this.uniqueIdentifierService.retrieveId(uid));
+    public Optional<Portfolio> findPortfolioForPortfolioNumber(final long portfolioNumber) {
+        return Optional.ofNullable(this.portfolioRepository.findPortfolioByPortfolioNumber(portfolioNumber));
     }
 
     /**
@@ -162,6 +153,19 @@ public class PortfolioService {
             portfolio.setDefaultPortfolio(data.defaultPortfolio());
         }
 
+        portfolio = this.portfolioRepository.save(portfolio);
+        portfolio.setPortfolioNumber(generatePortfolioNumber(portfolio.getId()));
+
         return this.portfolioRepository.save(portfolio);
+    }
+
+    /**
+     * Generates the portfolio number
+     *
+     * @param seed base seed
+     * @return number
+     */
+    private long generatePortfolioNumber(final long seed) {
+        return seed * 1000L;
     }
 }

@@ -7,7 +7,6 @@ import com.bluebell.platform.models.core.entities.account.Account;
 import com.bluebell.platform.models.core.entities.security.User;
 import com.bluebell.platform.models.core.entities.trade.Trade;
 import com.bluebell.platform.models.core.nonentities.records.traderecord.controls.TradeRecordControls;
-import com.bluebell.radicle.exceptions.trade.TradeRecordComputationException;
 import com.bluebell.radicle.exceptions.validation.IllegalParameterException;
 import org.assertj.core.api.InstanceOfAssertFactories;
 import org.junit.jupiter.api.BeforeEach;
@@ -32,7 +31,7 @@ import static org.mockito.ArgumentMatchers.any;
  * Testing class for {@link TradeRecordService}
  *
  * @author Stephen Prizio
- * @version 0.1.2
+ * @version 0.2.0
  */
 @SpringBootTest
 @RunWith(SpringRunner.class)
@@ -122,17 +121,13 @@ class TradeRecordServiceTest extends AbstractGenericTest {
                 .isEmpty();
 
         empty.setLastTraded(LocalDateTime.now());
-        assertThatExceptionOfType(TradeRecordComputationException.class)
-                .isThrownBy(() -> this.tradeRecordService.getRecentTradeRecords(empty, TradeRecordTimeInterval.DAILY, CorePlatformConstants.MAX_RESULT_SIZE))
-                .withMessageContaining("No trades found for account");
+        assertThat(this.tradeRecordService.getRecentTradeRecords(empty, TradeRecordTimeInterval.DAILY, CorePlatformConstants.MAX_RESULT_SIZE).tradeRecords()).isEmpty();
 
         final Trade test = generateTestBuyTrade();
         test.setTradeCloseTime(null);
         empty.setTrades(new ArrayList<>(List.of(test)));
 
-        assertThatExceptionOfType(TradeRecordComputationException.class)
-                .isThrownBy(() -> this.tradeRecordService.getRecentTradeRecords(empty, TradeRecordTimeInterval.DAILY, CorePlatformConstants.MAX_RESULT_SIZE))
-                .withMessageContaining("doesn't have any closed trades");
+        assertThat(this.tradeRecordService.getRecentTradeRecords(empty, TradeRecordTimeInterval.DAILY, CorePlatformConstants.MAX_RESULT_SIZE).tradeRecords()).isEmpty();
 
         final Account testAccount = generateTestAccount();
         testAccount.setTrades(new ArrayList<>(List.of(generateTestBuyTrade(), generateTestSellTrade())));

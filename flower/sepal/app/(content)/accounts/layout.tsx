@@ -11,18 +11,18 @@ export const metadata: Metadata = {
  *
  * @param children Content
  * @author Stephen Prizio
- * @version 0.0.1
+ * @version 0.2.0
  */
 export default function AccountsLayout(
   {
     children,
   }: Readonly<{
-    children: React.ReactNode;
+    children: React.ReactNode,
   }>
 ) {
 
 
   //  RENDER
 
-  return children
+  return (children)
 }

@@ -13,7 +13,7 @@ import java.time.LocalDateTime;
  * Class representation of an account transaction
  *
  * @author Stephen Prizio
- * @version 0.1.8
+ * @version 0.2.0
  */
 @Getter
 @Entity
@@ -21,7 +21,7 @@ import java.time.LocalDateTime;
 @Table(name = "transactions", uniqueConstraints = @UniqueConstraint(name = "UniqueNameAndDateTimeAndAccount", columnNames = {"transaction_name", "transaction_date", "account_id"}))
 @NoArgsConstructor
 @AllArgsConstructor
-public class Transaction implements GenericEntity {
+public class Transaction implements GenericEntity, Comparable<Transaction> {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -67,5 +67,10 @@ public class Transaction implements GenericEntity {
         int result = this.name.hashCode();
         result = 31 * result + Long.hashCode(this.account.getId());
         return result;
+    }
+
+    @Override
+    public int compareTo(Transaction o) {
+        return this.transactionDate.compareTo(o.transactionDate);
     }
 }

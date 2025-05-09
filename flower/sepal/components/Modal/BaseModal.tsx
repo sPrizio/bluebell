@@ -3,14 +3,13 @@
 import {
   Dialog,
   DialogContent,
-  DialogDescription, DialogFooter,
+  DialogDescription,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog"
-import {Button} from "@/components/ui/button";
 import {ReactNode, useEffect, useState} from "react";
-import {SepalModalContext, useSepalModalContext} from "@/lib/context/SepalContext";
+import {SepalModalContext} from "@/lib/context/SepalContext";
 
 /**
  * Basic, re-usable modal
@@ -22,7 +21,7 @@ import {SepalModalContext, useSepalModalContext} from "@/lib/context/SepalContex
  * @param content modal Content
  * @param closeHandler custom handler on modal close
  * @author Stephen Prizio
- * @version 0.0.1
+ * @version 0.2.0
  */
 export default function BaseModal(
   {
@@ -33,7 +32,7 @@ export default function BaseModal(
     content = null,
     closeHandler
   }
-    : Readonly<{
+  : Readonly<{
     isOpen?: boolean,
     trigger?: ReactNode,
     title: string,
@@ -50,10 +49,8 @@ export default function BaseModal(
   }, [isOpen]);
 
   useEffect(() => {
-    if (!open) {
-      if (closeHandler) {
-        closeHandler.call({})
-      }
+    if (!open && closeHandler) {
+      closeHandler.call({})
     }
   }, [open]);
 

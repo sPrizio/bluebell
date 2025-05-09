@@ -6,7 +6,7 @@ import {IconEdit, IconExternalLink, IconPointFilled, IconTrash} from "@tabler/ic
 import moment from "moment/moment";
 import {DateTime} from "@/lib/constants";
 import {formatNumberForDisplay} from "@/lib/functions/util-functions";
-import React, {useEffect, useState} from "react";
+import React, {useState} from "react";
 
 import {Button} from "@/components/ui/button"
 import {
@@ -32,7 +32,7 @@ import {Account, Transaction} from "@/types/apiTypes";
  * @param showActions shows the modification actions
  * @param showBottomLink show table caption
  * @author Stephen Prizio
- * @version 0.0.2
+ * @version 0.2.0
  */
 export default function AccountTransactionsTable(
   {
@@ -49,19 +49,8 @@ export default function AccountTransactionsTable(
   }>
 ) {
 
-  const [modalActive, setModalActive] = useState(false)
   const [showModal, setShowModal] = useState<'edit' | 'delete' | 'none'>('none')
   const [transaction, setTransaction] = useState<Transaction>()
-
-  useEffect(() => {
-    if (showModal === 'edit') {
-      setModalActive(true)
-    } else if (showModal === 'none') {
-      setModalActive(false)
-    } else {
-      setModalActive(true)
-    }
-  }, [showModal]);
 
 
   //  GENERAL FUNCTIONS
@@ -71,10 +60,10 @@ export default function AccountTransactionsTable(
    *
    * @param val status
    */
-  function computeColors(val: 'Complete' | 'Failed' | 'Pending') {
-    if (val === 'Complete') {
+  function computeColors(val: string) {
+    if (val === 'COMPLETED') {
       return ' text-primaryGreen '
-    } else if (val === 'Failed') {
+    } else if (val === 'FAILED') {
       return ' text-primaryRed '
     }
 
@@ -123,13 +112,13 @@ export default function AccountTransactionsTable(
                     transactions?.map((item) => {
                       return (
                         <TableRow key={item.uid} className={'hover:bg-transparent'}>
-                          <TableCell>{moment(item.date).format(DateTime.ISOShortMonthFullDayFormat)}</TableCell>
+                          <TableCell>{moment(item.transactionDate).format(DateTime.ISOShortMonthFullDayFormat)}</TableCell>
                           <TableCell>{item.accountName}</TableCell>
-                          <TableCell className={'text-center'}>{item.type}</TableCell>
-                          <TableCell className={'text-center'}>${formatNumberForDisplay(item.amount)}</TableCell>
+                          <TableCell className={'text-center'}>{item.transactionType.label}</TableCell>
+                          <TableCell className={'text-center'}>$&nbsp;{formatNumberForDisplay(item.amount)}</TableCell>
                           <TableCell className={'text-right h-full'}>
                             <div className={'flex items-center justify-end'}>
-                              {item.status}&nbsp;<span className={'inline-block ' + computeColors(item.status)}><IconPointFilled
+                              {item.transactionStatus.label}&nbsp;<span className={'inline-block ' + computeColors(item.transactionStatus.code)}><IconPointFilled
                               size={15}/></span>
                             </div>
                           </TableCell>
@@ -171,33 +160,23 @@ export default function AccountTransactionsTable(
                 </TableBody>
             </Table>
           {
-            account && transaction && transaction.date ?
+            account && (transaction?.transactionDate ?? false) ?
               <BaseModal
-                isOpen={modalActive && showModal === 'edit'}
+                isOpen={showModal === 'edit'}
                 title={'Edit Transaction'}
-                description={'Keep track of your Account\'s transactions by adding withdrawals & deposits.'}
+                description={'Keep track of your account\'s transactions by adding withdrawals & deposits.'}
                 content={<TransactionForm account={account} mode={'edit'} transaction={transaction}/>}
-                closeHandler={() => {
-                  if (showModal !== 'none' && modalActive) {
-                    setShowModal('none');
-                  }
-                }
-                }
+                closeHandler={() => setShowModal('none')}
               /> : null
           }
           {
-            account && transaction && transaction.date ?
+            account && (transaction?.transactionDate ?? false) ?
               <BaseModal
-                isOpen={modalActive && showModal === 'delete'}
+                isOpen={showModal === 'delete'}
                 title={'Edit Transaction'}
-                description={'Keep track of your Account\'s transactions by adding withdrawals & deposits.'}
+                description={'Keep track of your account\'s transactions by adding withdrawals & deposits.'}
                 content={<DeleteTransactionForm account={account} transaction={transaction} />}
-                closeHandler={() => {
-                  if (showModal !== 'none' && modalActive) {
-                    setShowModal('none');
-                  }
-                }
-                }
+                closeHandler={() => setShowModal('none')}
               /> : null
           }
         </>

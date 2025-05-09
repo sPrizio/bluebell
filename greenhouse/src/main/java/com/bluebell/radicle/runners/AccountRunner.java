@@ -23,7 +23,7 @@ import java.time.LocalDateTime;
  * Generates testing {@link Account}s
  *
  * @author Stephen Prizio
- * @version 0.1.9
+ * @version 0.2.0
  */
 @Component
 @Order(3)
@@ -52,7 +52,7 @@ public class AccountRunner extends AbstractRunner implements CommandLineRunner {
         Account account1 = Account
                 .builder()
                 .defaultAccount(true)
-                .accountOpenTime(LocalDateTime.of(2024, 9, 13, 14, 18, 36))
+                .accountOpenTime(LocalDateTime.now().minusMonths(5))
                 .initialBalance(30000)
                 .balance(30000)
                 .active(true)
@@ -71,7 +71,7 @@ public class AccountRunner extends AbstractRunner implements CommandLineRunner {
         Account account2 = Account
                 .builder()
                 .defaultAccount(false)
-                .accountOpenTime(LocalDateTime.of(2025, 1, 13, 9, 30, 56))
+                .accountOpenTime(LocalDateTime.now().minusMonths(3))
                 .initialBalance(10000)
                 .balance(10000)
                 .active(true)
@@ -81,7 +81,7 @@ public class AccountRunner extends AbstractRunner implements CommandLineRunner {
                 .broker(Broker.FTMO)
                 .accountType(AccountType.CFD)
                 .tradePlatform(TradePlatform.METATRADER4)
-                .lastTraded(LocalDateTime.of(2025, 2, 26, 16, 11, 3))
+                .lastTraded(LocalDateTime.now().minusDays(5))
                 .portfolio(portfolio)
                 .build();
 

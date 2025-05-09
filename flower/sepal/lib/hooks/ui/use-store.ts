@@ -1,4 +1,5 @@
-import { useState, useEffect } from "react";
+import {useEffect, useState} from "react";
+
 /**
  * This hook fix hydration when use persist to save hook data to localStorage
  */

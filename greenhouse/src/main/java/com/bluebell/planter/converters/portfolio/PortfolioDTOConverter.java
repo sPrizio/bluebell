@@ -3,16 +3,19 @@ package com.bluebell.planter.converters.portfolio;
 import com.bluebell.planter.converters.GenericDTOConverter;
 import com.bluebell.planter.converters.account.AccountDTOConverter;
 import com.bluebell.planter.services.UniqueIdentifierService;
+import com.bluebell.platform.models.api.dto.account.AccountDTO;
 import com.bluebell.platform.models.api.dto.portfolio.PortfolioDTO;
 import com.bluebell.platform.models.core.entities.portfolio.Portfolio;
 import jakarta.annotation.Resource;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
+
 /**
  * Converts {@link Portfolio}s into {@link PortfolioDTO}s
  *
  * @author Stephen Prizio
- * @version 0.1.2
+ * @version 0.2.0
  */
 @Component("portfolioDTOConverter")
 public class PortfolioDTOConverter implements GenericDTOConverter<Portfolio, PortfolioDTO> {
@@ -33,14 +36,19 @@ public class PortfolioDTOConverter implements GenericDTOConverter<Portfolio, Por
             return PortfolioDTO.builder().build();
         }
 
+        final String uid = this.uniqueIdentifierService.generateUid(entity);
+        final List<AccountDTO> accounts = this.accountDTOConverter.convertAll(entity.getAccounts());
+
+        accounts.forEach(acc -> acc.setPortfolioNumber(entity.getPortfolioNumber()));
         return PortfolioDTO
                 .builder()
-                .uid(this.uniqueIdentifierService.generateUid(entity))
+                .uid(uid)
+                .portfolioNumber(entity.getPortfolioNumber())
                 .name(entity.getName())
                 .active(entity.isActive())
                 .created(entity.getCreated())
                 .defaultPortfolio(entity.isDefaultPortfolio())
-                .accounts(this.accountDTOConverter.convertAll(entity.getAccounts()))
+                .accounts(accounts)
                 .build();
     }
 }

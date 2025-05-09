@@ -1,198 +1,186 @@
 'use client'
 
-import React, {useEffect, useState} from "react";
+import React from "react";
 import {Icons} from "@/lib/enums";
-import {useSepalPageInfoContext} from "@/lib/context/SepalContext";
 import {BaseCard} from "@/components/Card/BaseCard";
 import DashboardContent from "@/components/Card/Content/DashboardContent";
-import {resolveIcon} from "@/lib/functions/util-functions";
+import {getActivePortfolioNumber, logErrors} from "@/lib/functions/util-functions";
 import AccountsTable from "@/components/Table/Account/AccountsTable";
 import TradeLogTable from "@/components/Table/Trade/TradeLogTable";
-import AccountTransactionsTable from "@/components/Table/Account/AccountTransactionsTable";
 import PortfolioGrowthChart from "@/components/Chart/Account/PortfolioGrowthChart";
-import {getPortfolio} from "@/lib/functions/portfolio-functions";
-import {Loader2} from "lucide-react";
-import {getRecentTransactions} from "@/lib/functions/account-functions";
-import {getTradeLog} from "@/lib/functions/trade-functions";
-import moment from "moment/moment";
-import {DateTime} from "@/lib/constants";
-import {Portfolio, Transaction, TradeLog} from "@/types/apiTypes";
+import {
+  usePortfolioQuery,
+  usePortfolioRecordQuery,
+  useRecentTransactionsQuery,
+  useTradeLogQuery,
+  useUserQuery
+} from "@/lib/hooks/query/queries";
+import Error from "@/app/error";
+import LoadingPage from "@/app/loading";
+import TransactionsTable from "@/components/Table/Transaction/TransactionsTable";
+import {PageInfoProvider} from "@/lib/context/PageInfoProvider";
+import ReusableSelect from "@/components/Input/ReusableSelect";
+import {usePortfolioStore} from "@/lib/store/portfolioStore";
+import {resolveIcon} from "@/lib/functions/util-component-functions";
 
 /**
  * The page that shows an overview of a user's portfolio
  *
  * @author Stephen Prizio
- * @version 0.0.2
+ * @version 0.2.0
  */
 export default function DashboardPage() {
 
+  const {data: user, isError: isUserError, error: userError, isLoading: isUserLoading} = useUserQuery();
+  const activePortfolio = getActivePortfolioNumber(user) ?? -1
+
   const {
-    user,
-    pageTitle,
-    pageSubtitle,
-    pageIconCode,
-    breadcrumbs,
-    setUser,
-    setPageTitle,
-    setPageSubtitle,
-    setPageIconCode,
-    setBreadcrumbs
-  } = useSepalPageInfoContext()
+    data: portfolio,
+    isError: isPortfolioError,
+    error: portfolioError,
+    isLoading: isPortfolioLoading
+  } = usePortfolioQuery(activePortfolio)
+  const {
+    data: portfolioRecord,
+    isError: isPortfolioRecordError,
+    error: portfolioRecordError,
+    isLoading: isPortfolioRecordLoading
+  } = usePortfolioRecordQuery(activePortfolio)
+  const {
+    data: recentTransactions,
+    isError: isRecentTransactionsError,
+    error: recentTransactionsError,
+    isLoading: isRecentTransactionsLoading
+  } = useRecentTransactionsQuery()
+  const {
+    data: tradeLog,
+    isError: isTradeLogError,
+    error: tradeLogError,
+    isLoading: isTradeLogLoading
+  } = useTradeLogQuery()
 
-  useEffect(() => {
-    setPageTitle('Dashboard')
-    setPageSubtitle('An overview of your trading portfolio.')
-    setPageIconCode(Icons.Dashboard)
-    setBreadcrumbs([
-      {label: 'Dashboard', href: '/dashboard', active: true},
-    ])
-
-    getAccPortfolioInfo()
-    getAccRecentTransactions()
-    getAccTradeLog()
-  }, [])
-
-  const [isLoading, setIsLoading] = useState(false)
-  const [portfolioInfo, setPortfolioInfo] = useState<Portfolio | null>()
-  const [recentTransactions, setRecentTransactions] = useState<Array<Transaction> | null>()
-  const [tradeLog, setTradeLog] = useState<TradeLog | null>()
-
-
-  //  GENERAL FUNCTIONS
-
-  /**
-   * Fetches the portfolio information
-   */
-  async function getAccPortfolioInfo() {
-
-    setIsLoading(true)
-
-    const data = await getPortfolio();
-    setPortfolioInfo(data)
-
-    setIsLoading(false)
-  }
-
-  /**
-   * Fetches the user's recent transactions
-   */
-  async function getAccRecentTransactions() {
-
-    setIsLoading(true)
-
-    const data = await getRecentTransactions();
-    setRecentTransactions(data)
-
-    setIsLoading(false)
-  }
-
-  /**
-   * Fetches the trade log
-   */
-  async function getAccTradeLog() {
-
-    setIsLoading(true)
-
-    const data = await getTradeLog(moment().subtract(5, 'days').format(DateTime.ISODateFormat), moment().format(DateTime.ISODateFormat), 'DAILY', 6);
-    setTradeLog(data)
-
-    setIsLoading(false)
-  }
+  const isError = isUserError || isPortfolioError || isPortfolioRecordError || isRecentTransactionsError || isTradeLogError
+  const isLoading = isUserLoading || isPortfolioLoading || isPortfolioRecordLoading || isRecentTransactionsLoading || isTradeLogLoading
 
 
   //  RENDER
 
+  const { selectedPortfolioId, setSelectedPortfolioId } = usePortfolioStore()
+  if (isLoading) {
+    return <LoadingPage/>
+  }
+
+  if (isError) {
+    logErrors(userError, portfolioError, portfolioRecordError, recentTransactionsError, tradeLogError)
+    return <Error/>
+  }
+
+  const pageInfo = {
+    title: "Portfolio Dashboard",
+    subtitle: `An overview of portfolio ${portfolio?.name ?? ''}`,
+    iconCode: Icons.Dashboard,
+    breadcrumbs: [
+      {label: 'Dashboard', href: '/dashboard', active: true},
+    ]
+  }
+
+  if (selectedPortfolioId === null) {
+    setSelectedPortfolioId(getActivePortfolioNumber(user) ?? -1)
+  }
+
   return (
-    <div>
-      {
-        isLoading ?
-          <div className={'h-[72vh] flex items-center justify-center'}>
-            <div className={'grid grid-cols-1 justify-items-center gap-8'}>
-              <div>
-                <Loader2 className="animate-spin text-primary" size={50}/>
-              </div>
-              <div className={'text-lg'}>Loading Dashboard</div>
+    <PageInfoProvider value={pageInfo}>
+      <div>
+        <div className={'grid grid-cols-1 gap-8 w-full'}>
+          <div className={'flex flex-row items-end justify-end'}>
+            <ReusableSelect
+              title={'Portfolio'}
+              initialValue={selectedPortfolioId?.toString()}
+              options={user?.portfolios?.map(p => {
+                return {label: p.name, value: p.portfolioNumber}
+              }) ?? []}
+              handler={(val: string) => {
+                setSelectedPortfolioId(parseInt(val))
+              }}
+            />
+          </div>
+          {/* TODO: BB-54 Implement Portfolio UI */}
+          <div className={"grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-8"}>
+            <div className={""}>
+              <BaseCard
+                title={'Net Worth'}
+                cardContent={<DashboardContent prefix={'$ '} value={portfolioRecord?.netWorth ?? 0}
+                                               delta={portfolioRecord?.statistics?.deltaNetWorth ?? 0}/>}
+                icon={resolveIcon(Icons.ChartDoughnut, '', 30)}
+              />
             </div>
-          </div> :
-          <div className={'grid grid-cols-1 gap-8 w-full'}>
-            <div className={"grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-8"}>
-              <div className={""}>
-                <BaseCard
-                  title={'Net Worth'}
-                  cardContent={<DashboardContent prefix={'$ '} value={portfolioInfo?.netWorth ?? 0}
-                                                 delta={portfolioInfo?.deltaNetWorth ?? 0}/>}
-                  icon={resolveIcon(Icons.ChartDoughnut, '', 30)}
-                />
-              </div>
-              <div className={""}>
-                <BaseCard
-                  title={'Trades'}
-                  cardContent={<DashboardContent value={portfolioInfo?.trades ?? 0}
-                                                 delta={portfolioInfo?.deltaTrades ?? 0}/>}
-                  icon={resolveIcon(Icons.Replace, '', 30)}
-                />
-              </div>
-              <div>
-                <BaseCard
-                  title={'Deposits'}
-                  cardContent={<DashboardContent value={portfolioInfo?.deposits ?? 0}
-                                                 delta={portfolioInfo?.deltaDeposits ?? 0}/>}
-                  icon={resolveIcon(Icons.ArrowBarDown, '', 30)}
-                />
-              </div>
-              <div>
-                <BaseCard
-                  title={'Withdrawals'}
-                  cardContent={<DashboardContent value={portfolioInfo?.withdrawals ?? 0}
-                                                 delta={portfolioInfo?.deltaWithdrawals ?? 0}/>}
-                  icon={resolveIcon(Icons.ArrowBarUp, '', 30)}
-                />
-              </div>
+            <div className={""}>
+              <BaseCard
+                title={'Trades'}
+                cardContent={<DashboardContent value={portfolioRecord?.trades ?? 0}
+                                               delta={portfolioRecord?.statistics?.deltaTrades ?? 0}/>}
+                icon={resolveIcon(Icons.Replace, '', 30)}
+              />
             </div>
-            <div className={"grid grid-cols-1 xl:grid-cols-3 gap-8"}>
-              <div className={"col-span-1 xl:col-span-2"}>
-                <BaseCard
-                  title={'Portfolio Growth'}
-                  subtitle={'A look back at your portfolio\'s performance over the last 6 months.'}
-                  cardContent={<PortfolioGrowthChart key={portfolioInfo?.equity.length} isNew={portfolioInfo?.isNew ?? false} data={portfolioInfo?.equity ?? []}/>}
-                />
-              </div>
-              <div className={""}>
-                <BaseCard
-                  title={'Accounts'}
-                  subtitle={'Only active accounts will be shown.'}
-                  cardContent={
-                    <AccountsTable
-                      accounts={user?.accounts ?? []}
-                      showAllLink={true}
-                    />
-                  }
-                />
-              </div>
+            <div>
+              <BaseCard
+                title={'Deposits'}
+                cardContent={<DashboardContent value={portfolioRecord?.deposits ?? 0}
+                                               delta={portfolioRecord?.statistics?.deltaDeposits ?? 0}/>}
+                icon={resolveIcon(Icons.ArrowBarDown, '', 30)}
+              />
             </div>
-            <div className={"grid grid-cols-1 xl:grid-cols-3 gap-8"}>
-              <div className={"col-span-1 xl:col-span-2"}>
-                <BaseCard
-                  title={'Trade Log'}
-                  subtitle={'Your performance over the last few days.'}
-                  cardContent={<TradeLogTable log={tradeLog} showTotals={true}/>}
-                />
-              </div>
-              <div className={""}>
-                <BaseCard
-                  title={'Transaction Activity'}
-                  subtitle={'Your most recent account transactions.'}
-                  cardContent={
-                    <AccountTransactionsTable
-                      account={user?.accounts?.[0] ?? null}
-                      transactions={recentTransactions ?? []}
-                    />
-                  }
-                />
-              </div>
+            <div>
+              <BaseCard
+                title={'Withdrawals'}
+                cardContent={<DashboardContent value={portfolioRecord?.withdrawals ?? 0}
+                                               delta={portfolioRecord?.statistics?.deltaWithdrawals ?? 0}/>}
+                icon={resolveIcon(Icons.ArrowBarUp, '', 30)}
+              />
             </div>
           </div>
-      }
-    </div>
+          <div className={"grid grid-cols-1 xl:grid-cols-3 gap-8"}>
+            <div className={"col-span-1 xl:col-span-2"}>
+              <BaseCard
+                title={'Portfolio Growth'}
+                subtitle={'A look back at your portfolio\'s performance over the last 6 months.'}
+                cardContent={<PortfolioGrowthChart key={portfolioRecord?.equity.length}
+                                                   data={portfolioRecord?.equity ?? []}/>}
+              />
+            </div>
+            <div className={""}>
+              <BaseCard
+                title={'Accounts'}
+                subtitle={'Only active accounts will be shown.'}
+                cardContent={
+                  <AccountsTable
+                    accounts={portfolio?.accounts.filter(acc => acc.active) ?? []}
+                    showAllLink={true}
+                  />
+                }
+              />
+            </div>
+          </div>
+          <div className={"grid grid-cols-1 xl:grid-cols-3 gap-8"}>
+            <div className={"col-span-1 xl:col-span-2"}>
+              <BaseCard
+                title={'Trade Log'}
+                subtitle={'Your performance over the last few days.'}
+                cardContent={<TradeLogTable log={tradeLog} showTotals={true}/>}
+              />
+            </div>
+            <div className={""}>
+              <BaseCard
+                title={'Transaction Activity'}
+                subtitle={'Your most recent account transactions.'}
+                cardContent={
+                  <TransactionsTable transactions={recentTransactions ?? []} showBottomLink={true}/>
+                }
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+    </PageInfoProvider>
   );
 }

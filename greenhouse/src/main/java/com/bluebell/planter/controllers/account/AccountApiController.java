@@ -40,7 +40,7 @@ import java.util.Optional;
  * API Controller for {@link Account}
  *
  * @author Stephen Prizio
- * @version 0.1.9
+ * @version 0.2.0
  */
 @RestController
 @RequestMapping("${bluebell.base.api.controller.endpoint}" + ApiPaths.Account.BASE)
@@ -235,7 +235,7 @@ public class AccountApiController extends AbstractApiController {
     )
     @GetMapping(ApiPaths.Account.GET_DETAILS)
     public StandardJsonResponse<AccountDetails> getDetails(
-            @Parameter(name = "Account Number", description = "The unique identifier for your trading account", example = "1234")
+            @Parameter(name = "accountNumber", description = "The unique identifier for your trading account", example = "1234")
             final @RequestParam("accountNumber") Long accountNumber,
             final HttpServletRequest request
     ) {
@@ -251,7 +251,7 @@ public class AccountApiController extends AbstractApiController {
     /**
      * Creates a new {@link Account}
      *
-     * @param portfolioUid portfolio uid
+     * @param portfolioNumber portfolio number
      * @param data {@link CreateUpdateAccountDTO}
      * @param request     {@link HttpServletRequest}
      * @return {@link StandardJsonResponse}
@@ -286,8 +286,8 @@ public class AccountApiController extends AbstractApiController {
     public StandardJsonResponse<AccountDTO> postCreateNewAccount(
             @Parameter(name = "Account Payload", description = "Payload for creating or updating accounts")
             final @RequestBody CreateUpdateAccountDTO data,
-            @Parameter(name = "Portfolio UID", description = "Portfolio UID to add the account to", example = "1234")
-            final @RequestParam("portfolioUid") String portfolioUid,
+            @Parameter(name = "portfolioNumber", description = "Portfolio to add the account to", example = "1234")
+            final @RequestParam("portfolioNumber") long portfolioNumber,
             final HttpServletRequest request
     ) {
         if (data == null || data.number() == null) {
@@ -295,7 +295,7 @@ public class AccountApiController extends AbstractApiController {
         }
 
         final User user = (User) request.getAttribute(SecurityConstants.USER_REQUEST_KEY);
-        final Optional<Portfolio> portfolio = this.portfolioService.findPortfolioByUid(portfolioUid);
+        final Optional<Portfolio> portfolio = this.portfolioService.findPortfolioForPortfolioNumber(portfolioNumber);
         if (portfolio.isPresent() && user.getActivePortfolios().contains(portfolio.get())) {
             return StandardJsonResponse
                     .<AccountDTO>builder()
@@ -307,7 +307,7 @@ public class AccountApiController extends AbstractApiController {
         return StandardJsonResponse
                 .<AccountDTO>builder()
                 .success(false)
-                .message(String.format("Portfolio not found for uid: %s", portfolioUid))
+                .message(String.format("Portfolio not found for number: %d", portfolioNumber))
                 .build();
     }
 
@@ -398,12 +398,12 @@ public class AccountApiController extends AbstractApiController {
     )
     @PutMapping(ApiPaths.Account.UPDATE_ACCOUNT)
     public StandardJsonResponse<AccountDTO> putUpdateAccount(
-            @Parameter(name = "Account Number", description = "The unique identifier for your trading account", example = "1234")
+            @Parameter(name = "accountNumber", description = "The unique identifier for your trading account", example = "1234")
             final @RequestParam("accountNumber") long accountNumber,
             @Parameter(name = "Account Payload", description = "Payload for creating or updating accounts")
             final @RequestBody CreateUpdateAccountDTO data,
-            @Parameter(name = "Portfolio UID", description = "Portfolio UID to add the account to", example = "1234")
-            final @RequestParam("portfolioUid") String portfolioUid,
+            @Parameter(name = "portfolioNumber", description = "Portfolio to add the account to", example = "1234")
+            final @RequestParam("portfolioNumber") long portfolioNumber,
             final HttpServletRequest request
     ) {
         if (data == null || data.number() == null) {
@@ -412,7 +412,7 @@ public class AccountApiController extends AbstractApiController {
 
         final User user = (User) request.getAttribute(SecurityConstants.USER_REQUEST_KEY);
         final Optional<Account> account = this.accountService.findAccountByAccountNumber(accountNumber);
-        final Optional<Portfolio> portfolio = this.portfolioService.findPortfolioByUid(portfolioUid);
+        final Optional<Portfolio> portfolio = this.portfolioService.findPortfolioForPortfolioNumber(portfolioNumber);
 
         if (portfolio.isPresent() && user.getActivePortfolios().contains(portfolio.get())) {
             return account
@@ -422,7 +422,7 @@ public class AccountApiController extends AbstractApiController {
             return StandardJsonResponse
                     .<AccountDTO>builder()
                     .success(false)
-                    .message(String.format("Portfolio not found for uid: %s", portfolioUid))
+                    .message(String.format("Portfolio not found for number: %d", portfolioNumber))
                     .build();
         }
     }
@@ -465,6 +465,8 @@ public class AccountApiController extends AbstractApiController {
     )
     @DeleteMapping(ApiPaths.Account.DELETE_ACCOUNT)
     public StandardJsonResponse<Boolean> deleteAccount(
+            @Parameter(name = "portfolioNumber", description = "Portfolio to add the account to", example = "1234")
+            final @RequestParam("portfolioNumber") long portfolioNumber,
             @Parameter(name = "Account Number", description = "The unique identifier for your trading account", example = "1234")
             final @RequestParam("accountNumber") long accountNumber,
             final HttpServletRequest request
