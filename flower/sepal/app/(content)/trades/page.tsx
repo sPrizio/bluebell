@@ -1,6 +1,6 @@
 "use client";
 
-import { useRouter, useSearchParams } from "next/navigation";
+import { redirect, useRouter, useSearchParams } from "next/navigation";
 import React from "react";
 import { logErrors, selectNewAccount } from "@/lib/functions/util-functions";
 import { Icons } from "@/lib/enums";
@@ -32,6 +32,10 @@ export default function TradesPage() {
 
   if (isLoading) {
     return <LoadingPage />;
+  }
+
+  if (!activePortfolio) {
+    redirect("/portfolios");
   }
 
   if (hasMismatch || isError) {

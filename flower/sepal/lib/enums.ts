@@ -21,6 +21,7 @@ export enum Icons {
   Mountain = "mountain",
   Trades = "trades",
   Analysis = "analysis",
+  Portfolios = "portfolios",
 }
 
 /**

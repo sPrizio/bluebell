@@ -2,7 +2,7 @@
 
 import React from "react";
 import { Icons } from "@/lib/enums";
-import { useRouter, useSearchParams } from "next/navigation";
+import { redirect, useRouter, useSearchParams } from "next/navigation";
 import { logErrors, selectNewAccount } from "@/lib/functions/util-functions";
 import { BaseCard } from "@/components/Card/BaseCard";
 import AccountTransactionsTable from "@/components/Table/Account/AccountTransactionsTable";
@@ -36,6 +36,10 @@ export default function TransactionsPage() {
 
   if (isLoading) {
     return <LoadingPage />;
+  }
+
+  if (!activePortfolio) {
+    redirect("/portfolios");
   }
 
   if (hasMismatch || isError) {

@@ -24,7 +24,7 @@ import LoadingPage from "@/app/loading";
 import Error from "@/app/error";
 import { PageInfoProvider } from "@/lib/context/PageInfoProvider";
 import { useActiveAccount } from "@/lib/hooks/api/useActiveAccount";
-import { useRouter, useSearchParams } from "next/navigation";
+import { redirect, useRouter, useSearchParams } from "next/navigation";
 import ReusableSelect from "@/components/Input/ReusableSelect";
 
 /**
@@ -54,6 +54,10 @@ export default function AnalysisPage() {
 
   if (isLoading) {
     return <LoadingPage />;
+  }
+
+  if (!activePortfolio) {
+    redirect("/portfolios");
   }
 
   if (hasMismatch || isError) {

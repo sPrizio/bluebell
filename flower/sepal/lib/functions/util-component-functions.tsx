@@ -9,6 +9,7 @@ import {
   IconChartDonutFilled,
   IconChartPie,
   IconChartScatter,
+  IconFolders,
   IconLayoutDashboard,
   IconLogout,
   IconMountain,
@@ -88,6 +89,8 @@ export function resolveIcon(iconCode: string, className = "", iconSize = 24) {
       return <IconReplaceFilled className={className} size={iconSize} />;
     case Icons.Analysis:
       return <IconSearch className={className} size={iconSize} />;
+    case Icons.Portfolios:
+      return <IconFolders className={className} size={iconSize} />;
     default:
       return <span>-</span>;
   }

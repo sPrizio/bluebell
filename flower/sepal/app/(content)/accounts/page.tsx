@@ -20,6 +20,7 @@ import ReusableSelect from "@/components/Input/ReusableSelect";
 import { usePortfolioStore } from "@/lib/store/portfolioStore";
 import { useActivePortfolio } from "@/lib/hooks/api/useActivePortoflio";
 import { useUserQuery } from "@/lib/hooks/query/queries";
+import { redirect } from "next/navigation";
 
 /**
  * The page that shows all of a user's accounts
@@ -35,6 +36,10 @@ export default function AccountsPage() {
 
   if (isLoading) {
     return <LoadingPage />;
+  }
+
+  if (!activePortfolio) {
+    redirect("/portfolios");
   }
 
   if (hasMismatch || isError) {
