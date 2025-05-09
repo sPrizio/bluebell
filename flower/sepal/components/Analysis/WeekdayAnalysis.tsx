@@ -1,8 +1,9 @@
-import {AnalysisResult, FilterSelector} from "@/types/apiTypes";
-import React, {useEffect, useState} from "react";
-import {getWeekdaysAnalysis} from "@/lib/functions/analysis-functions";
-import {Loader2} from "lucide-react";
+import { FilterSelector } from "@/types/apiTypes";
+import React from "react";
+import { Loader2 } from "lucide-react";
 import AnalysisBarChart from "@/components/Chart/Analysis/AnalysisBarChart";
+import { useWeekdaysAnalysisQuery } from "@/lib/hooks/query/queries";
+import { logErrors } from "@/lib/functions/util-functions";
 
 /**
  * Renders the weekday analysis content with chart
@@ -10,59 +11,41 @@ import AnalysisBarChart from "@/components/Chart/Analysis/AnalysisBarChart";
  * @param accountNumber account number
  * @param filter filter
  * @author Stephen Prizio
- * @version 0.0.2
+ * @version 0.2.0
  */
-export default function WeekdayAnalysis(
-  {
-    accountNumber,
-    filter = 'PROFIT',
-  }
-  : Readonly<{
-    accountNumber: number,
-    filter: FilterSelector
-  }>
-) {
-
-  useEffect(() => {
-    getAccWeekdayAnalysis()
-  }, [filter, accountNumber]);
-
-  const [isLoading, setIsLoading] = useState(false)
-  const [data, setData] = useState<Array<AnalysisResult>>([])
-
-
-  //  GENERAL FUNCTIONS
-
-  /**
-   * Fetches the analysis data
-   */
-  async function getAccWeekdayAnalysis() {
-
-    setIsLoading(true)
-
-    const data = await getWeekdaysAnalysis(accountNumber, filter)
-    setData(data ?? [])
-
-    setIsLoading(false)
-  }
-
+export default function WeekdayAnalysis({
+  accountNumber,
+  filter = "PROFIT",
+}: Readonly<{
+  accountNumber: number;
+  filter: FilterSelector;
+}>) {
+  const {
+    data: weekdaysAnalysisData,
+    isLoading: isWeekdaysAnalysisLoading,
+    isError: isWeekdaysAnalysisError,
+  } = useWeekdaysAnalysisQuery(accountNumber, filter);
 
   //  RENDER
 
+  if (isWeekdaysAnalysisError) {
+    logErrors(isWeekdaysAnalysisError);
+    return <p>Data could not be displayed.</p>;
+  }
+
   return (
-    <div className={''}>
-      {
-        isLoading ?
-          <div className={'h-[100px] flex items-center justify-center'}>
-            <div className={'grid grid-cols-1 justify-items-center gap-8'}>
-              <div>
-                <Loader2 className="animate-spin text-secondary" size={50}/>
-              </div>
+    <div className={""}>
+      {isWeekdaysAnalysisLoading ? (
+        <div className={"h-[100px] flex items-center justify-center"}>
+          <div className={"grid grid-cols-1 justify-items-center gap-8"}>
+            <div>
+              <Loader2 className="animate-spin text-secondary" size={50} />
             </div>
           </div>
-          :
-          <AnalysisBarChart data={data} filter={filter} />
-      }
+        </div>
+      ) : (
+        <AnalysisBarChart data={weekdaysAnalysisData ?? []} filter={filter} />
+      )}
     </div>
-  )
+  );
 }

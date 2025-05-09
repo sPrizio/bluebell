@@ -1,280 +1,382 @@
+type ApiResponse<T> = {
+  success: boolean;
+  message?: string;
+  data: T;
+};
+
 interface GenericApiType {
-  uid: string
+  uid: string;
+}
+
+interface EnumDisplay {
+  code: string;
+  label: string;
 }
 
 interface User extends GenericApiType {
-  apiToken: string,
-  firstName: string,
-  lastName: string,
-  username: string,
-  email: string,
-  dateRegistered: string,
-  phones: Array<PhoneNumber>,
-  accounts: Array<Account>,
-  roles: Array<string>,
+  userIdentifier: string;
+  apiToken: string;
+  firstName: string;
+  lastName: string;
+  username: string;
+  email: string;
+  dateRegistered: string;
+  phones: Array<PhoneNumber>;
+  portfolios: Array<Portfolio>;
+  roles: Array<string>;
 }
 
 interface PhoneNumber extends GenericApiType {
-  phoneType: string,
-  countryCode: string,
-  telephoneNumber: number,
-  display: string
+  phoneType: string;
+  countryCode: string;
+  telephoneNumber: number;
+  display: string;
 }
 
 interface AccountCreationInfo {
-  currencies: Array<Currency>,
-  brokers: Array<Broker>,
-  platforms: Array<TradePlatform>,
-  accountTypes: Array<AccountType>
+  currencies: Array<Currency>;
+  brokers: Array<Broker>;
+  platforms: Array<TradePlatform>;
+  accountTypes: Array<AccountType>;
 }
 
 interface PortfolioAccountEquityPoints {
-  [others: string]: number
+  [others: string]: number;
 }
 
 interface PortfolioEquityPoint extends GenericApiType {
-  date: string,
-  portfolio: number
-  accounts: PortfolioAccountEquityPoints
+  date: string;
+  portfolio: number;
+  normalized: number;
+  accounts: PortfolioAccountEquityPoints;
 }
 
 interface Portfolio extends GenericApiType {
-  isNew: boolean,
-  netWorth: number
-  deltaNetWorth: number,
-  trades: number,
-  deltaTrades: number,
-  deposits: number,
-  deltaDeposits: number,
-  withdrawals: number,
-  deltaWithdrawals: number,
-  equity: Array<PortfolioEquityPoint>,
+  portfolioNumber: number;
+  name: string;
+  active: boolean;
+  created: string;
+  defaultPortfolio: boolean;
+  accounts: Array<Account>;
 }
 
-interface AccountOption extends GenericApiType {
-  code: string,
-  label: string
+interface PortfolioRecord {
+  newPortfolio: boolean;
+  netWorth: number;
+  trades: number;
+  deposits: number;
+  withdrawals: number;
+  statistics: PortfolioStatistics;
+  equity: Array<PortfolioEquityPoint>;
 }
 
-interface Currency extends AccountOption {}
+interface PortfolioStatistics {
+  deltaNetWorth: number;
+  deltaTrades: number;
+  deltaDeposits: number;
+  deltaWithdrawals: number;
+}
 
-interface AccountType extends AccountOption {}
+interface GenericEnum extends GenericApiType {
+  code: string;
+  label: string;
+}
 
-interface TradePlatform extends AccountOption {}
+type Language = GenericEnum;
 
-interface Broker extends AccountOption {}
+type PhoneType = GenericEnum;
+
+type Country = GenericEnum;
+
+type Currency = GenericEnum;
+
+type AccountType = GenericEnum;
+
+type TradePlatform = GenericEnum;
+
+type Broker = GenericEnum;
+
+type TradeRecordTimeInterval = GenericEnum;
 
 interface Account extends GenericApiType {
-  defaultAccount: boolean,
-  accountOpenTime: string,
-  accountCloseTime: string,
-  balance: number,
-  active: boolean,
-  name: string,
-  accountNumber: number,
-  currency: Currency,
-  broker: Broker,
-  accountType: AccountType,
-  tradePlatform: TradePlatform,
-  lastTraded: string,
-  transactions: Array<Transaction>
+  portfolioNumber: number;
+  defaultAccount: boolean;
+  accountOpenTime: string;
+  accountCloseTime: string;
+  initialBalance: number;
+  balance: number;
+  active: boolean;
+  name: string;
+  accountNumber: number;
+  currency: EnumDisplay;
+  broker: EnumDisplay;
+  accountType: EnumDisplay;
+  tradePlatform: EnumDisplay;
+  lastTraded: string;
+  transactions: Array<Transaction>;
 }
 
 interface AccountEquityPoint {
-  date: string,
-  amount: number,
-  points: number,
-  cumAmount: number,
-  cumPoints: number
+  date: string;
+  amount: number;
+  points: number;
+  cumAmount: number;
+  cumPoints: number;
 }
 
 interface AccountInsightsType {
-  maxProfit: number,
-  tradingDays: number,
-  biggestLoss: number,
-  largestGain: number,
-  currentPL: number,
-  drawdown: number,
-  biggestLossDelta: number,
-  largestGainDelta: number,
-  currentPLDelta: number,
-  drawdownDelta: number,
-  maxProfitDelta: number
+  tradingDays: number;
+  currentPL: number;
+  biggestLoss: number;
+  largestGain: number;
+  drawdown: number;
+  maxProfit: number;
+  currentPLDelta: number;
+  biggestLossDelta: number;
+  largestGainDelta: number;
+  drawdownDelta: number;
+  maxProfitDelta: number;
 }
 
 interface AccountStatisticsType {
-  balance: number,
-  averageProfit: number,
-  averageLoss: number,
-  numberOfTrades: number,
-  rrr: number,
-  lots: number,
-  expectancy: number,
-  winPercentage: number,
-  profitFactor: number,
-  retention: number,
-  sharpeRatio: number,
-  tradeDuration: number,
-  winDuration: number,
-  lossDuration: number,
-  assumedDrawdown: number
+  balance: number;
+  averageProfit: number;
+  averageLoss: number;
+  numberOfTrades: number;
+  rrr: number;
+  lots: number;
+  expectancy: number;
+  winPercentage: number;
+  profitFactor: number;
+  retention: number;
+  sharpeRatio: number;
+  tradeDuration: number;
+  winDuration: number;
+  lossDuration: number;
+  assumedDrawdown: number;
 }
 
 interface AccountDetails {
-  account: Account,
-  consistency: number,
-  equity: Array<AccountEquityPoint>,
-  insights: AccountInsightsType,
-  statistics: AccountStatisticsType
+  consistency: number;
+  equity: Array<AccountEquityPoint>;
+  insights: AccountInsightsType;
+  statistics: AccountStatisticsType;
+  riskFreeRate: number;
 }
 
 interface Transaction extends GenericApiType {
-  date: string,
-  amount: number,
-  type: 'Deposit' | 'Withdrawal'
-  status: 'Pending' | 'Complete' | 'Failed',
-  accountNumber: number,
-  accountName: string
-}
-
-interface Trade extends GenericApiType {
-  tradeId: string,
-  product: string,
-  tradePlatform: string,
-  tradeType: string,
-  tradeOpenTime: string,
-  tradeCloseTime: string,
-  lotSize: number,
-  openPrice: number,
-  closePrice: number,
-  netProfit: number,
-  points: number,
-  stopLoss: number,
-  takeProfit: number,
-  account: Account
-}
-
-interface TradeRecordEquityPoint {
-  count: number,
-  amount: number,
-  points: number,
-  cumAmount: number,
-  cumPoints: number
-}
-
-interface TradeRecordTotals {
-  count: number,
-  trades: number,
-  winPercentage: number,
-  netProfit: number,
-  netPoints: number
-}
-
-interface TradeRecordReport {
-  tradeRecords: Array<TradeRecord>,
-  tradeRecordTotals: TradeRecordTotals
-}
-
-interface TradeRecord extends GenericApiType {
-  end: string,
-  largestLoss: number,
-  largestWin: number,
-  lossAverage: number,
-  losses: number,
-  lowestPoint: number,
-  netProfit: number,
-  points: number,
-  pointsGained: number,
-  pointsLost: number,
-  profitability: number,
-  retention: number,
-  start: string,
-  trades: number,
-  winAverage: number,
-  winPercentage: number,
-  wins: number,
-  equityPoints: Array<TradeRecordEquityPoint>
-  account: Account,
-}
-
-interface TradeLog {
-  entries: Array<TradeLogEntry>
-}
-
-interface TradeLogEntry {
-  start: string,
-  end: string,
-  records: Array<TradeLogEntryRecord>,
-  totals: TradeLogEntryRecordTotals
-}
-
-interface TradeLogEntryRecord {
-  accountNumber: number,
-  accountName: string,
-  report: TradeRecordReport
-}
-
-interface TradeLogEntryRecordTotals {
-  accountsTraded: number,
-  netProfit: number,
-  netPoints: number,
-  winPercentage: number,
-  trades: number,
+  transactionType: EnumDisplay;
+  transactionDate: string;
+  name: string;
+  transactionStatus: EnumDisplay;
+  amount: number;
+  accountNumber: number;
+  accountName: string;
 }
 
 interface PagedTrades {
-  currentPage: number,
-  pageSize: number,
-  totalPages: number,
-  totalTrades: number,
-  trades: Array<Trade>
+  page: number;
+  pageSize: number;
+  trades: Array<Trade>;
+  totalElements: number;
+  totalPages: number;
+}
+
+interface Trade extends GenericApiType {
+  tradeId: string;
+  product: string;
+  tradePlatform: string;
+  tradeType: string;
+  tradeOpenTime: string;
+  tradeCloseTime: string;
+  lotSize: number;
+  openPrice: number;
+  closePrice: number;
+  netProfit: number;
+  points: number;
+  stopLoss: number;
+  takeProfit: number;
+  account: Account;
+}
+
+interface TradeRecordEquityPoint {
+  count: number;
+  amount: number;
+  points: number;
+  cumAmount: number;
+  cumPoints: number;
+}
+
+interface TradeRecordTotals {
+  count: number;
+  trades: number;
+  tradesWon: number;
+  tradesLost: number;
+  winPercentage: number;
+  netProfit: number;
+  netPoints: number;
+}
+
+interface TradeRecordReport {
+  tradeRecords: Array<TradeRecord>;
+  tradeRecordTotals: TradeRecordTotals;
+}
+
+interface TradeRecord extends GenericApiType {
+  start: string;
+  end: string;
+  netProfit: number;
+  lowestPoint: number;
+  pointsGained: number;
+  pointsLost: number;
+  points: number;
+  largestWin: number;
+  winAverage: number;
+  largestLoss: number;
+  lossAverage: number;
+  winPercentage: number;
+  wins: number;
+  losses: number;
+  trades: number;
+  profitability: number;
+  retention: number;
+  interval: TradeRecordTimeInterval;
+  equityPoints: Array<TradeRecordEquityPoint>;
+  account: Account;
+}
+
+interface TradeLog {
+  entries: Array<TradeLogEntry>;
+}
+
+interface TradeLogEntry {
+  start: string;
+  end: string;
+  records: Array<TradeLogEntryRecord>;
+  totals: TradeLogEntryRecordTotals;
+}
+
+interface TradeLogEntryRecord {
+  accountNumber: number;
+  accountName: string;
+  report: TradeRecordReport;
+}
+
+interface TradeLogEntryRecordTotals {
+  accountsTraded: number;
+  netProfit: number;
+  netPoints: number;
+  trades: number;
+  winPercentage: number;
 }
 
 interface TradeRecordControlMonthEntry extends GenericApiType {
-  month: string,
-  value: number
+  monthNumber: number;
+  month: string;
+  value: number;
 }
 
 interface TradeRecordControlsYearEntry extends GenericApiType {
-  year: string,
-  monthEntries: Array<TradeRecordControlMonthEntry>
+  year: string;
+  monthEntries: Array<TradeRecordControlMonthEntry>;
 }
 
 interface TradeRecordControls extends GenericApiType {
-  yearEntries: Array<TradeRecordControlsYearEntry>
+  yearEntries: Array<TradeRecordControlsYearEntry>;
 }
 
 interface AnalysisResult {
-  label: string,
-  value: number,
-  count: number
+  label: string;
+  value: number;
+  count: number;
 }
 
 interface MarketNews extends GenericApiType {
-  date: string,
-  slots: Array<MarketNewsSlot>,
-  active: boolean,
-  past: boolean,
-  future: boolean
+  date: string;
+  slots: Array<MarketNewsSlot>;
+  active: boolean;
+  past: boolean;
+  future: boolean;
 }
 
 interface MarketNewsSlot extends GenericApiType {
-  time: string,
-  entries: Array<MarketNewsEntry>,
-  active: boolean
+  time: string;
+  entries: Array<MarketNewsEntry>;
+  active: boolean;
 }
 
 interface MarketNewsEntry extends GenericApiType {
-  content: string,
-  severity: string,
-  severityLevel: number
-  country: string,
-  forecast: string,
-  previous: string
+  content: string;
+  severity: string;
+  severityLevel: number;
+  country: string;
+  forecast: string;
+  previous: string;
 }
 
-export type FilterSelector = 'POINTS' | 'PROFIT' | 'PERCENTAGE'
+interface PairEntry {
+  code: any;
+  label: any;
+  symbol: string;
+}
 
-export type TradeDurationFilterSelector = 'ALL' | 'WINS' | 'LOSSES'
+interface ApexChartCandleStick {
+  x: number;
+  y: Array<number>;
+}
 
-export type Weekday = 'MONDAY' | 'TUESDAY' | 'WEDNESDAY' | 'THURSDAY' | 'FRIDAY'
+interface Action extends GenericApiType {
+  actionId: string;
+  priority: number;
+  name: string;
+  status: EnumDisplay;
+  performableAction: string;
+}
+
+interface JobResultEntry extends GenericApiType {
+  success: boolean;
+  data: string;
+  logs: string;
+}
+
+interface JobResult extends GenericApiType {
+  jobId: string;
+  entries: Array<JobResultEntry>;
+}
+
+interface Job extends GenericApiType {
+  jobId: string;
+  name: string;
+  executionTime: string;
+  completionTime: string;
+  status: EnumDisplay;
+  type: EnumDisplay;
+  actions: Array<Action>;
+  jobResult: JobResult;
+}
+
+interface PagedJobs {
+  page: number;
+  pageSize: number;
+  job: Array<Job>;
+  totalElements: number;
+  totalPages: number;
+}
+
+interface HealthCheck {
+  domain: string;
+  baseApiDomain: string;
+  version: string;
+  apiVersion: string;
+}
+
+export type FilterSelector = "POINTS" | "PROFIT" | "PERCENTAGE";
+
+export type TradeDurationFilterSelector = "ALL" | "WINS" | "LOSSES";
+
+export type Weekday =
+  | "MONDAY"
+  | "TUESDAY"
+  | "WEDNESDAY"
+  | "THURSDAY"
+  | "FRIDAY";

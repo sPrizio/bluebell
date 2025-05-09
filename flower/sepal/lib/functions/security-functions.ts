@@ -1,13 +1,24 @@
-import {ApiCredentials} from "@/lib/constants";
+import { ApiCredentials } from "@/lib/constants";
 
 /**
- * Checks for a valid password as per the guidelines defined by bluebell
+ * Checks for a valid password as per the guidelines defined by greenhouse
  *
  * @param val test input
  */
 export function isValidPassword(val: string): boolean {
-
-  const allowedSymbols = ['!', '@', '#', '$', '%', '&', '*', '-', '_', '+', ' ']
+  const allowedSymbols = [
+    "!",
+    "@",
+    "#",
+    "$",
+    "%",
+    "&",
+    "*",
+    "-",
+    "_",
+    "+",
+    " ",
+  ];
 
   const hasAlphanumeric = (/^[a-z0-9]+$/i.exec(val)?.length ?? -1) > 0;
   let hasSymbols = false;
@@ -15,7 +26,7 @@ export function isValidPassword(val: string): boolean {
   for (const str of allowedSymbols) {
     if (val.includes(str)) {
       hasSymbols = true;
-      break
+      break;
     }
   }
 
@@ -26,9 +37,9 @@ export function isValidPassword(val: string): boolean {
  * Returns the auth header for api calls
  */
 export function getAuthHeader(): any {
-  const obj : any = {}
-  obj[ApiCredentials.AuthHeader] = ApiCredentials.TestUserToken
-  return obj
+  const obj: any = {};
+  obj[ApiCredentials.AuthHeader] = ApiCredentials.TestUserToken;
+  return obj;
 }
 
 /**
@@ -37,7 +48,7 @@ export function getAuthHeader(): any {
  * @returns {string} url
  */
 export function baseUrl(): string {
-  return process.env.NEXT_PUBLIC_BASE_API_DOMAIN ?? ''
+  return process.env.NEXT_PUBLIC_BASE_API_DOMAIN ?? "";
 }
 
 /**
@@ -46,7 +57,7 @@ export function baseUrl(): string {
  * @returns {string} url
  */
 export function getDomain(appendVal: string): string {
-  return baseUrl() + process.env.NEXT_PUBLIC_BASE_API_VERSION + appendVal
+  return baseUrl() + process.env.NEXT_PUBLIC_BASE_API_VERSION + appendVal;
 }
 
 /**
@@ -55,7 +66,7 @@ export function getDomain(appendVal: string): string {
  * @returns {string} url
  */
 export function getChartDomain(): string {
-  return getDomain('/chart')
+  return getDomain("/chart");
 }
 
 /**
@@ -64,7 +75,7 @@ export function getChartDomain(): string {
  * @returns {string} url
  */
 export function getNewsDomain(): string {
-  return getDomain('/news')
+  return getDomain("/news");
 }
 
 /**
@@ -73,7 +84,7 @@ export function getNewsDomain(): string {
  * @returns {string} url
  */
 export function getTradeDomain(): string {
-  return getDomain('/trade')
+  return getDomain("/trade");
 }
 
 /**
@@ -82,7 +93,7 @@ export function getTradeDomain(): string {
  * @returns {string} url
  */
 export function getTradeRecordDomain(): string {
-  return getDomain('/trade-record')
+  return getDomain("/trade-record");
 }
 
 /**
@@ -91,7 +102,7 @@ export function getTradeRecordDomain(): string {
  * @returns {string} url
  */
 export function getUserDomain(): string {
-  return getDomain('/user')
+  return getDomain("/user");
 }
 
 /**
@@ -100,7 +111,7 @@ export function getUserDomain(): string {
  * @returns {string} url
  */
 export function getAnalysisDomain(): string {
-  return getDomain('/analysis')
+  return getDomain("/analysis");
 }
 
 /**
@@ -109,14 +120,23 @@ export function getAnalysisDomain(): string {
  * @returns {string} url
  */
 export function getAccountDomain(): string {
-  return getDomain('/account')
+  return getDomain("/account");
 }
 
 /**
- * Gets the account url
+ * Gets the portfolio url
  *
  * @returns {string} url
  */
 export function getPortfolioDomain(): string {
-  return getDomain('/portfolio')
+  return getDomain("/portfolio");
+}
+
+/**
+ * Gets the portfolio record url
+ *
+ * @returns {string} url
+ */
+export function getPortfolioRecordDomain(): string {
+  return getDomain("/portfolio-record");
 }

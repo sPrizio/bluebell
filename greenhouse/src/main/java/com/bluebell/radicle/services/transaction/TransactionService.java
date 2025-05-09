@@ -19,6 +19,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 
@@ -29,7 +30,7 @@ import static com.bluebell.radicle.validation.GenericValidator.validateParameter
  * Service-layer for {@link Transaction}
  *
  * @author Stephen Prizio
- * @version 0.1.7
+ * @version 0.2.0
  */
 @Slf4j
 @Service
@@ -50,7 +51,7 @@ public class TransactionService {
     public List<Transaction> findRecentTransactions(final Account account) {
         validateParameterIsNotNull(account, CorePlatformConstants.Validation.Account.ACCOUNT_CANNOT_BE_NULL);
 
-        return this.transactionRepository.findAllTransactionsWithinDate(LocalDateTime.now().minusMonths(6), LocalDateTime.now(), account);
+        return this.transactionRepository.findAllTransactionsWithinDate(LocalDateTime.now().minusMonths(6), LocalDateTime.now(), account).stream().sorted(Comparator.reverseOrder()).toList();
     }
 
     /**

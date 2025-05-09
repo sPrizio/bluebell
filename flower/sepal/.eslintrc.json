@@ -2,9 +2,10 @@
   "extends": ["next/core-web-vitals", "next/typescript"],
   "rules": {
     "@typescript-eslint/no-empty-object-type": "warn",
-    "@typescript-eslint/no-explicit-any": "warn",
+    "@typescript-eslint/no-explicit-any": "off",
     "@typescript-eslint/no-unsafe-function-type": "warn",
-    "@typescript-eslint/no-unused-vars": "off", // turn into "warn" when final checks before launch
-    "react-hooks/rules-of-hooks": "warn"
+    "@typescript-eslint/no-unused-vars": "warn", // turn into "warn" when final checks before launch
+    "react-hooks/rules-of-hooks": "warn",
+    "react-hooks/exhaustive-deps": "off"
   }
 }

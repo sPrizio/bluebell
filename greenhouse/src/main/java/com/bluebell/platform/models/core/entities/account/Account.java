@@ -22,7 +22,7 @@ import java.util.List;
  * Class representation of a trading account, an entity that can hold {@link Trade}s and other information
  *
  * @author Stephen Prizio
- * @version 0.1.8
+ * @version 0.2.0
  */
 @Getter
 @Setter
@@ -58,7 +58,7 @@ public class Account implements GenericEntity {
     @Column
     private String name;
 
-    @Column(name = "account_number", unique = true)
+    @Column(name = "account_number")
     private long accountNumber;
 
     @Column

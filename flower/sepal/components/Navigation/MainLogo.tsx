@@ -1,42 +1,34 @@
-'use client'
+"use client";
 
 import Image from "next/image";
-import brandTertiary from '../../app/assets/brand/bluebell/bluebell_tertiary.png';
-import brandWhite from '../../app/assets/brand/bluebell/bluebell_white.png';
-import brandPrimary from '../../app/assets/brand/bluebell/bluebell_primary.png';
-import {useEffect, useState} from "react";
+import brandTertiary from "../../app/assets/brand/bluebell/bluebell_tertiary.png";
+import brandWhite from "../../app/assets/brand/bluebell/bluebell_white.png";
+import brandPrimary from "../../app/assets/brand/bluebell/bluebell_primary.png";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 
 /**
  * Renders the main logo of the app
  *
  * @param variant color variant
+ * @param size logo size
  * @author Stephen Prizio
  * @version 0.0.1
  */
-export default function MainLogo(
-  {
-    variant = 'primary',
-    size = 65
-  }
-    : Readonly<{
-    variant?: 'primary' | 'secondary' | 'tertiary' | 'white' | 'transparent',
-    size?: number;
-  }>
-) {
-
-  const [windowSize, setWindowSize] = useState([0, 0])
+export default function MainLogo({
+  variant = "primary",
+  size = 65,
+}: Readonly<{
+  variant?: "primary" | "secondary" | "tertiary" | "white" | "transparent";
+  size?: number;
+}>) {
+  const [windowSize, setWindowSize] = useState([0, 0]);
 
   useEffect(() => {
-    function updateSize() {
-      setWindowSize([window.innerWidth, window.innerHeight]);
-    }
-
-    window.addEventListener('resize', updateSize);
+    window.addEventListener("resize", updateSize);
     updateSize();
-    return () => window.removeEventListener('resize', updateSize);
-  }, [])
-
+    return () => window.removeEventListener("resize", updateSize);
+  }, []);
 
   //  FUNCTIONS
 
@@ -52,21 +44,24 @@ export default function MainLogo(
    */
   function determineImage(): any {
     switch (variant) {
-      case 'primary':
+      case "primary":
         return brandPrimary;
-      case 'secondary':
+      case "secondary":
         return brandTertiary;
       default:
         return brandWhite;
     }
   }
 
-
   //  RENDER
 
   return (
-    <Link href={'/home'}>
-      <Image src={determineImage()} height={windowSize[0] < 992 ? 50 : size} alt={'Brand Logo'}/>
+    <Link href={"/home"}>
+      <Image
+        src={determineImage()}
+        height={windowSize[0] < 992 ? 50 : size}
+        alt={"Brand Logo"}
+      />
     </Link>
-  )
+  );
 }

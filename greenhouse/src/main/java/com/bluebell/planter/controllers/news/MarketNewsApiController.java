@@ -27,7 +27,7 @@ import java.util.Optional;
  * API controller for {@link MarketNews}
  *
  * @author Stephen Prizio
- * @version 0.1.9
+ * @version 0.2.0
  */
 @RestController
 @RequestMapping("${bluebell.base.api.controller.endpoint}" + ApiPaths.MarketNews.BASE)
@@ -90,7 +90,7 @@ public class MarketNewsApiController extends AbstractApiController {
     )
     @GetMapping(ApiPaths.MarketNews.GET)
     public StandardJsonResponse<MarketNewsDTO> getNews(
-            @Parameter(name = "Date", description = "The date to obtain market news", example = "2025-01-01")
+            @Parameter(name = "date", description = "The date to obtain market news", example = "2025-01-01")
             final @RequestParam("date") String date,
             final HttpServletRequest request
     ) {
@@ -145,11 +145,11 @@ public class MarketNewsApiController extends AbstractApiController {
     )
     @GetMapping(ApiPaths.MarketNews.GET_FOR_INTERVAL)
     public StandardJsonResponse<List<MarketNewsDTO>> getNewsForInterval(
-            @Parameter(name = "Start Date", description = "Start date of time period to analyze", example = "2025-01-01")
+            @Parameter(name = "start", description = "Start date of time period to analyze", example = "2025-01-01")
             final @RequestParam("start") String start,
-            @Parameter(name = "End Date", description = "End date of time period to analyze", example = "2025-01-01")
+            @Parameter(name = "end", description = "End date of time period to analyze", example = "2025-01-01")
             final @RequestParam("end") String end,
-            @Parameter(name = "Locales", description = "Locales on which to obtain market news", example = "CAN, USA")
+            @Parameter(name = "locales", description = "Locales on which to obtain market news", example = "CAN, USA")
             final @RequestParam(required = false) String[] locales,
             final HttpServletRequest request
     ) {

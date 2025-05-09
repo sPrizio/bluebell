@@ -7,7 +7,7 @@ import java.math.RoundingMode;
  * General arithmetic and number formatting service
  *
  * @author Stephen Prizio
- * @version 0.0.9
+ * @version 0.2.0
  */
 public class MathService {
 
@@ -160,7 +160,7 @@ public class MathService {
      * @param countB count b
      * @return average of both averages
      */
-    public double weightedAverage(final double a, final int countA, final double b, final int countB) {
+    public double weightedAverage(final double a, final double countA, final double b, final double countB) {
 
         double sum = add(getDouble(countA), getDouble(countB));
         BigDecimal averageA = fullDivide(countA, sum);

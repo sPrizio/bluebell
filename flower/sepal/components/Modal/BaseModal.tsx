@@ -1,16 +1,15 @@
-'use client'
+"use client";
 
 import {
   Dialog,
   DialogContent,
-  DialogDescription, DialogFooter,
+  DialogDescription,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "@/components/ui/dialog"
-import {Button} from "@/components/ui/button";
-import {ReactNode, useEffect, useState} from "react";
-import {SepalModalContext, useSepalModalContext} from "@/lib/context/SepalContext";
+} from "@/components/ui/dialog";
+import { ReactNode, useEffect, useState } from "react";
+import { SepalModalContext } from "@/lib/context/SepalContext";
 
 /**
  * Basic, re-usable modal
@@ -22,63 +21,53 @@ import {SepalModalContext, useSepalModalContext} from "@/lib/context/SepalContex
  * @param content modal Content
  * @param closeHandler custom handler on modal close
  * @author Stephen Prizio
- * @version 0.0.1
+ * @version 0.2.0
  */
-export default function BaseModal(
-  {
-    isOpen = false,
-    trigger,
-    title = '',
-    description = '',
-    content = null,
-    closeHandler
-  }
-    : Readonly<{
-    isOpen?: boolean,
-    trigger?: ReactNode,
-    title: string,
-    description?: string,
-    content: ReactNode,
-    closeHandler?: Function
-  }>
-) {
-
-  const [open, setOpen] = useState(isOpen)
+export default function BaseModal({
+  isOpen = false,
+  trigger,
+  title = "",
+  description = "",
+  content = null,
+  closeHandler,
+}: Readonly<{
+  isOpen?: boolean;
+  trigger?: ReactNode;
+  title: string;
+  description?: string;
+  content: ReactNode;
+  closeHandler?: Function;
+}>) {
+  const [open, setOpen] = useState(isOpen);
 
   useEffect(() => {
-    setOpen(isOpen)
+    setOpen(isOpen);
   }, [isOpen]);
 
   useEffect(() => {
-    if (!open) {
-      if (closeHandler) {
-        closeHandler.call({})
-      }
+    if (!open && closeHandler) {
+      closeHandler.call({});
     }
   }, [open]);
-
 
   //  RENDER
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      {
-        trigger ?
-          <DialogTrigger asChild>
-            {trigger}
-          </DialogTrigger> : null
-      }
+      {trigger ? <DialogTrigger asChild>{trigger}</DialogTrigger> : null}
       <DialogContent>
         <DialogHeader>
           <DialogTitle>{title}</DialogTitle>
-          {description ? <DialogDescription>{description}</DialogDescription> : null}
+          {description ? (
+            <DialogDescription>{description}</DialogDescription>
+          ) : null}
         </DialogHeader>
         <div className="grid gap-4 py-4">
-          <SepalModalContext.Provider value={{open, setOpen}}>
+          <SepalModalContext.Provider value={{ open, setOpen }}>
             {content}
           </SepalModalContext.Provider>
         </div>
       </DialogContent>
     </Dialog>
-  )
+  );
 }

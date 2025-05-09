@@ -162,16 +162,19 @@ public class UserService {
             user = this.userRepository.save(user);
         }
 
-        for (CreateUpdatePhoneNumberDTO d : data.phoneNumbers()) {
-            final PhoneNumber phoneNumber = this.phoneNumberService.createPhoneNumber(d, user);
-            if (!phoneNumbers.contains(phoneNumber)) {
-                phoneNumbers.add(phoneNumber);
-            } else {
-                this.phoneNumberService.deletePhoneNumber(phoneNumber);
+        if (CollectionUtils.isNotEmpty(data.phoneNumbers())) {
+            for (CreateUpdatePhoneNumberDTO d : data.phoneNumbers()) {
+                final PhoneNumber phoneNumber = this.phoneNumberService.createPhoneNumber(d, user);
+                if (!phoneNumbers.contains(phoneNumber)) {
+                    phoneNumbers.add(phoneNumber);
+                } else {
+                    this.phoneNumberService.deletePhoneNumber(phoneNumber);
+                }
             }
+
+            user.setPhones(new ArrayList<>(phoneNumbers));
         }
 
-        user.setPhones(new ArrayList<>(phoneNumbers));
         return this.userRepository.save(user);
     }
 }

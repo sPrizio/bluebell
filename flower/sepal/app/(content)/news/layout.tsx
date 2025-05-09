@@ -1,9 +1,9 @@
 import React from "react";
-import type {Metadata} from "next";
+import type { Metadata } from "next";
 
 export const metadata: Metadata = {
   title: "Market News - bluebell",
-  description: "View your local market News",
+  description: "View your local market news",
 };
 
 /**
@@ -11,18 +11,14 @@ export const metadata: Metadata = {
  *
  * @param children Content
  * @author Stephen Prizio
- * @version 0.0.1
+ * @version 0.2.0
  */
-export default function MarketNewsLayout(
-  {
-    children,
-  }: Readonly<{
-    children: React.ReactNode;
-  }>
-) {
-
-
+export default function MarketNewsLayout({
+  children,
+}: Readonly<{
+  children: React.ReactNode;
+}>) {
   //  RENDER
 
-  return children
+  return children;
 }

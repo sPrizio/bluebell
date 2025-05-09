@@ -1,126 +1,102 @@
-'use client'
+"use client";
 
-import {useSepalPageInfoContext} from "@/lib/context/SepalContext";
-import {notFound, useSearchParams} from "next/navigation";
-import React, {useEffect, useState} from "react";
-import {getAccount, getAccountNumber} from "@/lib/functions/util-functions";
-import {Icons} from "@/lib/enums";
-import {Loader2} from "lucide-react";
+import { useRouter, useSearchParams } from "next/navigation";
+import React from "react";
+import { logErrors, selectNewAccount } from "@/lib/functions/util-functions";
+import { Icons } from "@/lib/enums";
 import TradeTable from "@/components/Table/Trade/TradeTable";
-import {BaseCard} from "@/components/Card/BaseCard";
-import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from "@/components/ui/select";
-import {Account, Trade } from "@/types/apiTypes";
+import { BaseCard } from "@/components/Card/BaseCard";
+import { useActiveAccount } from "@/lib/hooks/api/useActiveAccount";
+import { PageInfoProvider } from "@/lib/context/PageInfoProvider";
+import LoadingPage from "@/app/loading";
+import Error from "@/app/error";
+import ReusableSelect from "@/components/Input/ReusableSelect";
 
 /**
  * Renders the Trade history page
  *
  * @author Stephen Prizio
- * @version 0.0.2
+ * @version 0.2.0
  */
 export default function TradesPage() {
-
+  const searchParams = useSearchParams();
+  const router = useRouter();
   const {
-    pageTitle,
-    pageSubtitle,
-    pageIconCode,
-    breadcrumbs,
-    user,
-    setPageTitle,
-    setPageSubtitle,
-    setPageIconCode,
-    setBreadcrumbs,
-    setUser
-  } = useSepalPageInfoContext()
+    isLoading,
+    isError,
+    error,
+    activePortfolio,
+    activeAccount,
+    hasMismatch,
+  } = useActiveAccount();
 
-  const searchParams = useSearchParams()
-  const [isLoading, setIsLoading] = useState(false)
-  const [accNumber, setAccNumber] = useState(getAccountNumber(searchParams, user?.accounts))
-  const [aggTrades, setAggTrades] = useState<Array<Trade>>([])
-
-  const acc = getAccount(accNumber, user?.accounts)
-  if (!acc) {
-    return notFound()
+  if (isLoading) {
+    return <LoadingPage />;
   }
 
-  useEffect(() => {
-    setPageTitle('Trades')
-    setPageSubtitle(`A look at the trades inside trading account ${accNumber}`)
-    setPageIconCode(Icons.Performance)
-    setBreadcrumbs([
-      {label: 'Dashboard', href: '/dashboard', active: false},
-      {label: 'Accounts', href: '/accounts', active: false},
-      {label: accNumber.toString(), href: '/accounts/' + accNumber, active: false},
-      {label: 'Trades', href: '/trades?account=default', active: true},
-    ])
-  }, [])
+  if (hasMismatch || isError) {
+    logErrors("User and portfolio mismatch!", error);
+    return <Error />;
+  }
 
-  useEffect(() => {
-    setPageTitle('Trades')
-    setPageSubtitle(`A look at the trades inside trading account ${accNumber}`)
-    setPageIconCode(Icons.Performance)
-    setBreadcrumbs([
-      {label: 'Dashboard', href: '/dashboard', active: false},
-      {label: 'Accounts', href: '/accounts', active: false},
-      {label: accNumber.toString(), href: '/accounts/' + accNumber, active: false},
-      {label: 'Trades', href: '/trades?account=default', active: true},
-    ])
-
-    setAccNumber(accNumber)
-  }, [accNumber]);
-
-
-  //  GENERAL FUNCTIONS
-
+  const accNumber = activeAccount?.accountNumber ?? -1;
+  const pageInfo = {
+    title: "Trades",
+    subtitle: `A look at the trades for ${activeAccount?.name ?? ""}`,
+    iconCode: Icons.Trades,
+    breadcrumbs: [
+      { label: "Dashboard", href: "/dashboard", active: false },
+      { label: "Accounts", href: "/accounts", active: false },
+      {
+        label: `${activeAccount?.name ?? ""}`,
+        href: "/accounts/" + accNumber,
+        active: false,
+      },
+      { label: "Trades", href: "/trades?account=default", active: true },
+    ],
+  };
 
   //  RENDER
 
   return (
-    <div className={''}>
-      {
-        isLoading ?
-          <div className={'h-[72vh] flex items-center justify-center'}>
-            <div className={'grid grid-cols-1 justify-items-center gap-8'}>
+    <PageInfoProvider value={pageInfo}>
+      <div className={""}>
+        {
+          <div className={"grid grid-cols-1 gap-8"}>
+            <div className={"flex items-center justify-end gap-4"}>
               <div>
-                <Loader2 className="animate-spin text-primary" size={50}/>
-              </div>
-              <div className={'text-lg'}>Loading Trades</div>
-            </div>
-          </div>
-          :
-          <div className={'grid grid-cols-1 gap-8'}>
-            <div className={'flex items-center justify-end gap-4'}>
-              <div>
-                <Select value={accNumber.toString()} onValueChange={(val) => setAccNumber(parseInt(val))}>
-                  <SelectTrigger className="w-[180px] bg-white">
-                    <SelectValue placeholder="Account"/>
-                  </SelectTrigger>
-                  <SelectContent>
-                    {
-                      user?.accounts.map((item: Account) => {
-                        return (
-                          <SelectItem key={item.uid} value={item.accountNumber.toString()}>{item.name}</SelectItem>
-                        )
-                      })
-                    }
-                  </SelectContent>
-                </Select>
+                <ReusableSelect
+                  title={"Account"}
+                  initialValue={accNumber.toString()}
+                  options={
+                    activePortfolio?.accounts
+                      ?.filter((acc) => acc.active)
+                      ?.map((a) => {
+                        return {
+                          label: a.name,
+                          value: a.accountNumber.toString(),
+                        };
+                      }) ?? []
+                  }
+                  handler={(val: string) => {
+                    selectNewAccount(router, searchParams, parseInt(val));
+                  }}
+                />
               </div>
             </div>
             <div>
               <BaseCard
                 loading={isLoading}
-                title={'Trades'}
-                subtitle={'A view of each Trade taken in this account.'}
+                title={"Trades"}
+                subtitle={"A view of each trade taken in this account."}
                 cardContent={
-                  <TradeTable
-                    account={acc}
-                    initialPageSize={25}
-                  />
+                  <TradeTable account={activeAccount} initialPageSize={15} />
                 }
               />
             </div>
           </div>
-      }
-    </div>
-  )
+        }
+      </div>
+    </PageInfoProvider>
+  );
 }

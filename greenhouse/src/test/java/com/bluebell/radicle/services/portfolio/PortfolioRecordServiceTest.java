@@ -25,7 +25,7 @@ import static org.mockito.ArgumentMatchers.any;
  * Testing class for {@link PortfolioService}
  *
  * @author Stephen Prizio
- * @version 0.1.2
+ * @version 0.2.0
  */
 @SpringBootTest
 @RunWith(SpringRunner.class)
@@ -48,14 +48,13 @@ class PortfolioRecordServiceTest extends AbstractGenericTest {
     @Test
     void test_getSinglePortfolioRecord_success() {
 
-        assertThatExceptionOfType(IllegalParameterException.class).isThrownBy(() -> this.portfolioRecordService.getSinglePortfolioRecord("1234", null));
-        assertThatExceptionOfType(IllegalParameterException.class).isThrownBy(() -> this.portfolioRecordService.getSinglePortfolioRecord(null, null));
+        assertThatExceptionOfType(IllegalParameterException.class).isThrownBy(() -> this.portfolioRecordService.getSinglePortfolioRecord(1234L, null));
 
         final User user = generateTestUser();
         user.getActivePortfolios().stream().map(Portfolio::getActiveAccounts).flatMap(List::stream).toList().get(0).setTrades(List.of(generateTestBuyTrade(), generateTestSellTrade()));
         user.getActivePortfolios().stream().map(Portfolio::getActiveAccounts).flatMap(List::stream).toList().get(0).setBalance(1010.35);
         user.getActivePortfolios().stream().map(Portfolio::getActiveAccounts).flatMap(List::stream).toList().get(0).setTransactions(List.of(generateTestTransactionDeposit(user.getActivePortfolios().stream().map(Portfolio::getActiveAccounts).flatMap(List::stream).toList().get(0)), generateTestTransactionDeposit(user.getActivePortfolios().stream().map(Portfolio::getActiveAccounts).flatMap(List::stream).toList().get(0)), generateTestTransactionWithdrawal(user.getActivePortfolios().stream().map(Portfolio::getActiveAccounts).flatMap(List::stream).toList().get(0))));
-        final PortfolioRecord portfolioRecord = this.portfolioRecordService.getSinglePortfolioRecord("1234", user);
+        final PortfolioRecord portfolioRecord = this.portfolioRecordService.getSinglePortfolioRecord(1234L, user);
 
         assertThat(portfolioRecord).isNotNull();
         assertThat(portfolioRecord)
@@ -66,7 +65,7 @@ class PortfolioRecordServiceTest extends AbstractGenericTest {
                 .isNotEmpty()
                 .element(5)
                 .extracting("portfolio")
-                .isEqualTo(1010.35);
+                .isEqualTo(1000.00);
 
         assertThat(portfolioRecord.statistics())
                 .extracting("deltaNetWorth", "deltaTrades", "deltaDeposits", "deltaWithdrawals")
@@ -96,7 +95,7 @@ class PortfolioRecordServiceTest extends AbstractGenericTest {
                 .isNotEmpty()
                 .element(5)
                 .extracting("portfolio")
-                .isEqualTo(1010.35);
+                .isEqualTo(1000.00);
 
         assertThat(portfolioRecord.statistics())
                 .extracting("deltaNetWorth", "deltaTrades", "deltaDeposits", "deltaWithdrawals")

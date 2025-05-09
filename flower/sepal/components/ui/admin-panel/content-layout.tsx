@@ -8,7 +8,7 @@ interface ContentLayoutProps {
 export function ContentLayout({ title, children }: ContentLayoutProps) {
   return (
     <div>
-      <div className={'hidden max-lg:block'}>
+      <div className={"hidden max-lg:block"}>
         <Navbar title={title} />
       </div>
       <div className="container pt-8 pb-8 px-4 sm:px-8">{children}</div>

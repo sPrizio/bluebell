@@ -29,7 +29,7 @@ import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
  * Testing class for {@link PortfolioService}
  *
  * @author Stephen Prizio
- * @version 0.1.2
+ * @version 0.2.0
  */
 @SpringBootTest
 @RunWith(SpringRunner.class)
@@ -82,18 +82,13 @@ class PortfolioServiceTest extends AbstractGenericTest {
     }
 
 
-    //  ----------------- findPortfolioByUid -----------------
+    //  ----------------- findPortfolioForPortfolioNumber -----------------
 
     @Test
-    void test_findPortfolioByUid_badUid() {
-        assertThat(this.portfolioService.findPortfolioByUid(null)).isEmpty();
-    }
-
-    @Test
-    void test_findPortfolioByUid_success() {
-        final String uid = this.uniqueIdentifierService.generateUid(this.portfolio);
-        assertThat(this.portfolioService.findPortfolioByUid(uid)).isNotEmpty();
-        assertThat(this.portfolioService.findPortfolioByUid(uid)).isEqualTo(Optional.of(this.portfolio));
+    void test_findPortfolioForPortfolioNumber_success() {
+        assertThat(this.portfolioService.findPortfolioForPortfolioNumber(1234L)).isNotEmpty();
+        assertThat(this.portfolioService.findPortfolioForPortfolioNumber(5678L)).isEmpty();
+        assertThat(this.portfolioService.findPortfolioForPortfolioNumber(1234L)).isEqualTo(Optional.of(this.portfolio));
     }
 
 
@@ -187,6 +182,7 @@ class PortfolioServiceTest extends AbstractGenericTest {
                 .build();
 
         Portfolio yetAnotherPortfolio = generateTestPortfolio();
+        yetAnotherPortfolio.setPortfolioNumber(5678L);
         yetAnotherPortfolio.setId(null);
         yetAnotherPortfolio.setAccounts(Collections.emptyList());
         yetAnotherPortfolio = this.portfolioRepository.save(yetAnotherPortfolio);
@@ -215,6 +211,7 @@ class PortfolioServiceTest extends AbstractGenericTest {
                 .build();
 
         Portfolio yetAnotherPortfolio = generateTestPortfolio();
+        yetAnotherPortfolio.setPortfolioNumber(5678L);
         yetAnotherPortfolio.setId(null);
         yetAnotherPortfolio.setAccounts(Collections.emptyList());
         yetAnotherPortfolio = this.portfolioRepository.save(yetAnotherPortfolio);
@@ -245,6 +242,7 @@ class PortfolioServiceTest extends AbstractGenericTest {
                 .build();
 
         Portfolio yetAnotherPortfolio = generateTestPortfolio();
+        yetAnotherPortfolio.setPortfolioNumber(5678L);
         yetAnotherPortfolio.setId(null);
         yetAnotherPortfolio.setAccounts(Collections.emptyList());
         yetAnotherPortfolio = this.portfolioRepository.save(yetAnotherPortfolio);
@@ -291,6 +289,7 @@ class PortfolioServiceTest extends AbstractGenericTest {
     void test_deletePortfolio_onlyActive_success() {
 
         Portfolio yetAnotherPortfolio = generateTestPortfolio();
+        yetAnotherPortfolio.setPortfolioNumber(5678L);
         yetAnotherPortfolio.setActive(true);
         yetAnotherPortfolio.setId(null);
         yetAnotherPortfolio.setAccounts(Collections.emptyList());
@@ -313,6 +312,7 @@ class PortfolioServiceTest extends AbstractGenericTest {
     void test_deletePortfolio_inactive_success() {
 
         Portfolio yetAnotherPortfolio = generateTestPortfolio();
+        yetAnotherPortfolio.setPortfolioNumber(5678L);
         yetAnotherPortfolio.setActive(false);
         yetAnotherPortfolio.setId(null);
         yetAnotherPortfolio.setAccounts(Collections.emptyList());
