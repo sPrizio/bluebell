@@ -8,7 +8,7 @@ import {
   LucideIcon,
   Newspaper,
   ReplaceAll,
-  Search
+  Search,
 } from "lucide-react";
 
 type Submenu = {
@@ -39,9 +39,9 @@ export function getMenuList(pathname: string): Group[] {
           href: "/dashboard",
           label: "Dashboard",
           icon: LayoutDashboard,
-          submenus: []
-        }
-      ]
+          submenus: [],
+        },
+      ],
     },
     {
       groupLabel: "Portfolio Information",
@@ -64,24 +64,24 @@ export function getMenuList(pathname: string): Group[] {
         {
           href: "/transactions?account=default",
           label: "Transactions",
-          icon: ArrowRightLeft
+          icon: ArrowRightLeft,
         },
         {
           href: "/performance?account=default",
           label: "Performance",
-          icon: ChartScatter
+          icon: ChartScatter,
         },
         {
           href: "/analysis?account=default",
-          label: 'Analysis',
-          icon: Search
+          label: "Analysis",
+          icon: Search,
         },
         {
           href: "/trades?account=default",
           label: "Trades",
-          icon: ReplaceAll
-        }
-      ]
+          icon: ReplaceAll,
+        },
+      ],
     },
     {
       groupLabel: "Insights",
@@ -89,9 +89,9 @@ export function getMenuList(pathname: string): Group[] {
         {
           href: "/news",
           label: "Market News",
-          icon: Newspaper
+          icon: Newspaper,
         },
-      ]
+      ],
     },
     {
       groupLabel: "Settings",
@@ -99,14 +99,14 @@ export function getMenuList(pathname: string): Group[] {
         {
           href: "/profile",
           label: "My Profile",
-          icon: CircleUserRound
+          icon: CircleUserRound,
         },
         {
           href: "/logout",
           label: "Sign Out",
-          icon: LogOut
+          icon: LogOut,
         },
-      ]
-    }
+      ],
+    },
   ];
 }

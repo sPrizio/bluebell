@@ -1,5 +1,5 @@
 import React from "react";
-import type {Metadata} from "next";
+import type { Metadata } from "next";
 
 export const metadata: Metadata = {
   title: "Analysis - bluebell",
@@ -13,16 +13,12 @@ export const metadata: Metadata = {
  * @author Stephen Prizio
  * @version 0.0.2
  */
-export default function AnalysisLayout(
-  {
-    children,
-  }: Readonly<{
-    children: React.ReactNode;
-  }>
-) {
-
-
+export default function AnalysisLayout({
+  children,
+}: Readonly<{
+  children: React.ReactNode;
+}>) {
   //  RENDER
 
-  return children
+  return children;
 }

@@ -1,8 +1,8 @@
-import {useSearchParams} from 'next/navigation';
-import {useMemo} from 'react';
-import {useActivePortfolio} from './useActivePortoflio';
-import {getAccountNumber} from '@/lib/functions/util-functions';
-import {Account} from '@/types/apiTypes';
+import { useSearchParams } from "next/navigation";
+import { useMemo } from "react";
+import { useActivePortfolio } from "./useActivePortoflio";
+import { getAccountNumber } from "@/lib/functions/util-functions";
+import { Account } from "@/types/apiTypes";
 
 export function useActiveAccount() {
   const searchParams = useSearchParams();
@@ -11,7 +11,7 @@ export function useActiveAccount() {
     isError,
     error,
     activePortfolio,
-    hasMismatch: hasPortfolioMismatch
+    hasMismatch: hasPortfolioMismatch,
   } = useActivePortfolio();
 
   const accountNumber = useMemo(() => {
@@ -19,10 +19,15 @@ export function useActiveAccount() {
   }, [searchParams, activePortfolio]);
 
   const activeAccount: Account | null = useMemo(() => {
-    return activePortfolio?.accounts?.find(a => a.accountNumber === accountNumber) ?? null;
+    return (
+      activePortfolio?.accounts?.find(
+        (a) => a.accountNumber === accountNumber,
+      ) ?? null
+    );
   }, [activePortfolio, accountNumber]);
 
-  const hasAccountMismatch = !isPortfolioLoading && !!activePortfolio && !activeAccount;
+  const hasAccountMismatch =
+    !isPortfolioLoading && !!activePortfolio && !activeAccount;
   return {
     isLoading: isPortfolioLoading,
     isError,

@@ -1,13 +1,13 @@
-'use client'
+"use client";
 
-import {useRouter, useSearchParams} from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import React from "react";
-import {logErrors, selectNewAccount} from "@/lib/functions/util-functions";
-import {Icons} from "@/lib/enums";
+import { logErrors, selectNewAccount } from "@/lib/functions/util-functions";
+import { Icons } from "@/lib/enums";
 import TradeTable from "@/components/Table/Trade/TradeTable";
-import {BaseCard} from "@/components/Card/BaseCard";
-import {useActiveAccount} from "@/lib/hooks/api/useActiveAccount";
-import {PageInfoProvider} from "@/lib/context/PageInfoProvider";
+import { BaseCard } from "@/components/Card/BaseCard";
+import { useActiveAccount } from "@/lib/hooks/api/useActiveAccount";
+import { PageInfoProvider } from "@/lib/context/PageInfoProvider";
 import LoadingPage from "@/app/loading";
 import Error from "@/app/error";
 import ReusableSelect from "@/components/Input/ReusableSelect";
@@ -19,51 +19,67 @@ import ReusableSelect from "@/components/Input/ReusableSelect";
  * @version 0.2.0
  */
 export default function TradesPage() {
-
   const searchParams = useSearchParams();
   const router = useRouter();
-  const {isLoading, isError, error, activePortfolio, activeAccount, hasMismatch} = useActiveAccount();
+  const {
+    isLoading,
+    isError,
+    error,
+    activePortfolio,
+    activeAccount,
+    hasMismatch,
+  } = useActiveAccount();
 
   if (isLoading) {
-    return <LoadingPage/>;
+    return <LoadingPage />;
   }
 
   if (hasMismatch || isError) {
-    logErrors('User and portfolio mismatch!', error);
-    return <Error/>;
+    logErrors("User and portfolio mismatch!", error);
+    return <Error />;
   }
 
-  const accNumber = activeAccount?.accountNumber ?? -1
+  const accNumber = activeAccount?.accountNumber ?? -1;
   const pageInfo = {
-    title: 'Trades',
-    subtitle: `A look at the trades for ${activeAccount?.name ?? ''}`,
+    title: "Trades",
+    subtitle: `A look at the trades for ${activeAccount?.name ?? ""}`,
     iconCode: Icons.Trades,
     breadcrumbs: [
-      {label: 'Dashboard', href: '/dashboard', active: false},
-      {label: 'Accounts', href: '/accounts', active: false},
-      {label: `${activeAccount?.name ?? ''}`, href: '/accounts/' + accNumber, active: false},
-      {label: 'Trades', href: '/trades?account=default', active: true},
-    ]
-  }
-
+      { label: "Dashboard", href: "/dashboard", active: false },
+      { label: "Accounts", href: "/accounts", active: false },
+      {
+        label: `${activeAccount?.name ?? ""}`,
+        href: "/accounts/" + accNumber,
+        active: false,
+      },
+      { label: "Trades", href: "/trades?account=default", active: true },
+    ],
+  };
 
   //  RENDER
 
   return (
     <PageInfoProvider value={pageInfo}>
-      <div className={''}>
+      <div className={""}>
         {
-          <div className={'grid grid-cols-1 gap-8'}>
-            <div className={'flex items-center justify-end gap-4'}>
+          <div className={"grid grid-cols-1 gap-8"}>
+            <div className={"flex items-center justify-end gap-4"}>
               <div>
                 <ReusableSelect
-                  title={'Account'}
+                  title={"Account"}
                   initialValue={accNumber.toString()}
-                  options={activePortfolio?.accounts?.filter(acc => acc.active)?.map(a => {
-                    return {label: a.name, value: a.accountNumber.toString()}
-                  }) ?? []}
+                  options={
+                    activePortfolio?.accounts
+                      ?.filter((acc) => acc.active)
+                      ?.map((a) => {
+                        return {
+                          label: a.name,
+                          value: a.accountNumber.toString(),
+                        };
+                      }) ?? []
+                  }
                   handler={(val: string) => {
-                    selectNewAccount(router, searchParams, parseInt(val))
+                    selectNewAccount(router, searchParams, parseInt(val));
                   }}
                 />
               </div>
@@ -71,13 +87,10 @@ export default function TradesPage() {
             <div>
               <BaseCard
                 loading={isLoading}
-                title={'Trades'}
-                subtitle={'A view of each trade taken in this account.'}
+                title={"Trades"}
+                subtitle={"A view of each trade taken in this account."}
                 cardContent={
-                  <TradeTable
-                    account={activeAccount}
-                    initialPageSize={15}
-                  />
+                  <TradeTable account={activeAccount} initialPageSize={15} />
                 }
               />
             </div>
@@ -85,5 +98,5 @@ export default function TradesPage() {
         }
       </div>
     </PageInfoProvider>
-  )
+  );
 }

@@ -1,4 +1,4 @@
-import {SheetMenu} from "@/components/ui/admin-panel/sheet-menu";
+import { SheetMenu } from "@/components/ui/admin-panel/sheet-menu";
 
 interface NavbarProps {
   title: string;
