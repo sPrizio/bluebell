@@ -102,7 +102,7 @@ jobs:
 
   test:
     runs-on: ubuntu-22.04
-    needs: [ build-greenhouse, build-sepal, build-petal ]
+    needs: [ format-sepal, build-greenhouse, build-sepal, build-petal ]
     env:
       TARGET_ENV: ${{ github.event.inputs.env || (
         github.ref == 'refs/heads/main'   && 'prod'    ||
