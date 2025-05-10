@@ -239,7 +239,9 @@ export default function DashboardPage() {
                     <TradeLogTable log={tradeLog} showTotals={true} />
                   ) : null
                 }
-                emptyText={"There doesn't appear to be any trading activity."}
+                emptyText={
+                  "You haven't taken any trades. Once you do, your activity and statuses will be updated here."
+                }
               />
             </div>
             <div className={""}>

@@ -249,6 +249,8 @@ export default function AnalysisPage() {
               Add average count and change color of bar if the count is above
               average/std
               <br />
+              Add performance per symbol
+              <br />
             </div>
           </div>
         }

@@ -87,7 +87,7 @@ export default function TransactionsPage() {
             <div>
               {(activeAccount?.transactions?.length ?? 0) === 0 && (
                 <div className="text-center text-slate-500">
-                  No account activity.
+                  No transaction activity.
                 </div>
               )}
               {(activeAccount?.transactions?.length ?? 0) > 0 ? (
