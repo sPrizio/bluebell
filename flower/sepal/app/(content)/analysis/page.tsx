@@ -1,6 +1,6 @@
 "use client";
 
-import { logErrors, selectNewAccount } from "@/lib/functions/util-functions";
+import { selectNewAccount } from "@/lib/functions/util-functions";
 import React, { useState } from "react";
 import { Icons } from "@/lib/enums";
 import { BaseCard } from "@/components/Card/BaseCard";
@@ -20,12 +20,11 @@ import {
 import WeekdayAnalysis from "@/components/Analysis/WeekdayAnalysis";
 import WeekdayTimeBucketAnalysis from "@/components/Analysis/WeekdayTimeBucketAnalysis";
 import TradeDurationAnalysis from "@/components/Analysis/TradeDurationAnalysis";
-import LoadingPage from "@/app/loading";
-import Error from "@/app/error";
 import { PageInfoProvider } from "@/lib/context/PageInfoProvider";
 import { useActiveAccount } from "@/lib/hooks/api/useActiveAccount";
 import { useRouter, useSearchParams } from "next/navigation";
 import ReusableSelect from "@/components/Input/ReusableSelect";
+import { validatePageQueryFlow } from "@/lib/functions/util-component-functions";
 
 /**
  * The page that shows an analysis of an account's performance
@@ -52,14 +51,13 @@ export default function AnalysisPage() {
   const [weekday, setWeekday] = useState<Weekday>("MONDAY");
   const [tdFilter, setTdFilter] = useState<TradeDurationFilterSelector>("ALL");
 
-  if (isLoading) {
-    return <LoadingPage />;
-  }
-
-  if (hasMismatch || isError) {
-    logErrors("User and portfolio mismatch!", error);
-    return <Error />;
-  }
+  validatePageQueryFlow(
+    isLoading,
+    isError,
+    activePortfolio,
+    hasMismatch,
+    error,
+  );
 
   const accNumber = activeAccount?.accountNumber ?? -1;
   const pageInfo = {
@@ -250,6 +248,8 @@ export default function AnalysisPage() {
             <div>
               Add average count and change color of bar if the count is above
               average/std
+              <br />
+              Add performance per symbol
               <br />
             </div>
           </div>

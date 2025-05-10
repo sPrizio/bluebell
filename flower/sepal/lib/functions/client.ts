@@ -28,13 +28,15 @@ export async function get<T>(
   });
 
   if (!res.ok) {
-    throw new Error(`Failed to get with status: ${res.status}`);
+    throw new Error(
+      `Failed to get from ${url} with params ${params} with status: ${res.status}`,
+    );
   }
 
   const data: ApiResponse<T> = await res.json();
   if (!data.success) {
     throw new Error(
-      `API returned with error: ${data.message} || ${JSON.stringify(data)}`,
+      `API call to ${url} with params: ${params} returned with error: ${data.message} || ${JSON.stringify(data)}`,
     );
   }
 
@@ -71,13 +73,15 @@ export async function post<T>(
   });
 
   if (!res.ok) {
-    throw new Error(`Failed to post with status: ${res.status}`);
+    throw new Error(
+      `Failed to post from ${url} with params ${params} with status: ${res.status}`,
+    );
   }
 
   const data: ApiResponse<T> = await res.json();
   if (!data.success) {
     throw new Error(
-      `API returned with error: ${data.message} || ${JSON.stringify(data)}`,
+      `API call to ${url} with params ${params} returned with error: ${data.message} || ${JSON.stringify(data)}`,
     );
   }
 
@@ -113,13 +117,15 @@ export async function postFile<T>(
   });
 
   if (!res.ok) {
-    throw new Error(`Failed to post with status: ${res.status}`);
+    throw new Error(
+      `Failed to post from ${url} with params ${params} with status: ${res.status}`,
+    );
   }
 
   const data: ApiResponse<T> = await res.json();
   if (!data.success) {
     throw new Error(
-      `API returned with error: ${data.message} || ${JSON.stringify(data)}`,
+      `API call to ${url} with params: ${params} returned with error: ${data.message} || ${JSON.stringify(data)}`,
     );
   }
 
@@ -156,13 +162,15 @@ export async function put<T>(
   });
 
   if (!res.ok) {
-    throw new Error(`Failed to put with status: ${res.status}`);
+    throw new Error(
+      `Failed to put from ${url} with params ${params} with status: ${res.status}`,
+    );
   }
 
   const data: ApiResponse<T> = await res.json();
   if (!data.success) {
     throw new Error(
-      `API returned with error: ${data.message} || ${JSON.stringify(data)}`,
+      `API call to ${url} with params: ${params} returned with error: ${data.message} || ${JSON.stringify(data)}`,
     );
   }
 
@@ -190,13 +198,15 @@ export async function del<T>(
   });
 
   if (!res.ok) {
-    throw new Error(`Failed to delete with status: ${res.status}`);
+    throw new Error(
+      `Failed to delete from ${url} with params ${params} with status: ${res.status}`,
+    );
   }
 
   const data: ApiResponse<T> = await res.json();
   if (!data.success) {
     throw new Error(
-      `API returned with error: ${data.message} || ${JSON.stringify(data)}`,
+      `API call to ${url} with params: ${params} returned with error: ${data.message} || ${JSON.stringify(data)}`,
     );
   }
 

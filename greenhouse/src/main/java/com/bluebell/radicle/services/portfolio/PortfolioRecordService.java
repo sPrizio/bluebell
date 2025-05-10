@@ -57,7 +57,7 @@ public class PortfolioRecordService {
         final List<Account> accounts = user.getActivePortfolios().stream().filter(p -> p.getPortfolioNumber() == portfolioNumber).map(Portfolio::getActiveAccounts).flatMap(List::stream).toList();
 
         if (CollectionUtils.isEmpty(accounts)) {
-            throw new UnsupportedOperationException(String.format("No accounts for portfolio with number %d", portfolioNumber));
+            return PortfolioRecord.builder().build();
         }
 
         return generateRecord(accounts);

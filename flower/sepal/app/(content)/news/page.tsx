@@ -11,7 +11,6 @@ import { useMarketNewsQuery } from "@/lib/hooks/query/queries";
 import { PageInfoProvider } from "@/lib/context/PageInfoProvider";
 import LoadingPage from "@/app/loading";
 import { logErrors } from "@/lib/functions/util-functions";
-import Error from "@/app/error";
 
 /**
  * Renders the market News page
@@ -24,6 +23,7 @@ export default function MarketNewsPage() {
     data: marketNews,
     isLoading: isLoadingNews,
     isError: isErrorNews,
+    isSuccess: isSuccessNews,
     error: newsError,
   } = useMarketNewsQuery(
     moment().startOf("week").add(1, "days").format(DateTime.ISODateFormat),
@@ -48,8 +48,12 @@ export default function MarketNewsPage() {
 
   if (isErrorNews) {
     logErrors(newsError);
-    return <Error />;
   }
+
+  const content =
+    isSuccessNews && !isErrorNews && marketNews?.length ? (
+      <NewsTable news={marketNews ?? []} />
+    ) : null;
 
   return (
     <PageInfoProvider value={pageInfo}>
@@ -57,8 +61,11 @@ export default function MarketNewsPage() {
         <BaseCard
           title={"Market News"}
           subtitle={"A look at your local market news."}
-          cardContent={<NewsTable news={marketNews ?? []} />}
+          cardContent={content}
           headerControls={[<FetchMarketNewsButton key={0} />]}
+          emptyText={
+            "There doesn\'t seem to be any news for this week. Come back later for an update."
+          }
         />
       </div>
     </PageInfoProvider>

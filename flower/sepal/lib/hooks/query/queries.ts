@@ -37,6 +37,7 @@ export const usePortfolioQuery = (portfolioNumber: number) => {
       get<Portfolio>(ApiUrls.Portfolio.GetPortfolio, {
         portfolioNumber: portfolioNumber,
       }),
+    enabled: portfolioNumber !== -1,
   });
 };
 
@@ -47,6 +48,7 @@ export const usePortfolioRecordQuery = (portfolioNumber: number) => {
       get<PortfolioRecord>(ApiUrls.PortfolioRecord.GetPortfolioRecord, {
         portfolioNumber: portfolioNumber,
       }),
+    enabled: portfolioNumber !== -1,
   });
 };
 
