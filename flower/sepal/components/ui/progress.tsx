@@ -8,17 +8,20 @@ import { cn } from "@/lib/utils";
 type CustomProgressProps = React.ComponentPropsWithoutRef<
   typeof ProgressPrimitive.Root
 > & {
-  variant: "info" | "success" | "warning" | "danger";
+  variant: "info" | "success" | "warning" | "danger" | "neutral";
 };
 
 //  GENERAL FUNCTIONS
 
 function computeVariant(
-  val: "info" | "success" | "warning" | "danger",
+  val: "info" | "success" | "warning" | "danger" | "neutral",
   withOpacity = false,
 ) {
   let color = "bg-primary";
   switch (val) {
+    case "neutral":
+      color = "bg-slate-200";
+      break;
     case "success":
       color += "Green";
       break;
@@ -30,6 +33,10 @@ function computeVariant(
       break;
     default:
       break;
+  }
+
+  if (val === "neutral") {
+    return color;
   }
 
   return withOpacity ? color + "Light" : color;
