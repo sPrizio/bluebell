@@ -28,7 +28,7 @@ import java.time.LocalDateTime;
 @Component
 @Order(3)
 @Profile("dev")
-@ConditionalOnProperty(name = "bluebell.cmdlr.user.data", havingValue = "true", matchIfMissing = true)
+@ConditionalOnProperty(name = "bluebell.cmdlr.account.data", havingValue = "true", matchIfMissing = true)
 public class AccountRunner extends AbstractRunner implements CommandLineRunner {
 
     @Resource(name = "accountRepository")

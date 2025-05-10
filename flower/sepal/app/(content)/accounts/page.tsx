@@ -20,6 +20,7 @@ import ReusableSelect from "@/components/Input/ReusableSelect";
 import { usePortfolioStore } from "@/lib/store/portfolioStore";
 import { useActivePortfolio } from "@/lib/hooks/api/useActivePortoflio";
 import { useUserQuery } from "@/lib/hooks/query/queries";
+import { redirect } from "next/navigation";
 
 /**
  * The page that shows all of a user's accounts
@@ -35,6 +36,10 @@ export default function AccountsPage() {
 
   if (isLoading) {
     return <LoadingPage />;
+  }
+
+  if (isError || (!isError && !activePortfolio)) {
+    redirect("/portfolios");
   }
 
   if (hasMismatch || isError) {
@@ -69,7 +74,9 @@ export default function AccountsPage() {
 
   let inactiveData = null;
   let activeData = (
-    <div className={"text-center"}>No active accounts for this portfolio.</div>
+    <div className={"text-center"}>
+      No active accounts for this portfolio, consider adding one!
+    </div>
   );
 
   if ((activeAccounts?.length ?? 0) > 0) {

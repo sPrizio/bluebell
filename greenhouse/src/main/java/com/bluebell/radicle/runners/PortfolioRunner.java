@@ -21,7 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Component
 @Order(2)
 @Profile("dev")
-@ConditionalOnProperty(name = "bluebell.cmdlr.user.data", havingValue = "true", matchIfMissing = true)
+@ConditionalOnProperty(name = "bluebell.cmdlr.portfolio.data", havingValue = "true", matchIfMissing = true)
 public class PortfolioRunner extends AbstractRunner implements CommandLineRunner {
 
     @Resource(name = "portfolioRepository")

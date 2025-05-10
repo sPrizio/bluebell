@@ -7,6 +7,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
+import React from "react";
 
 /**
  * Base card component
@@ -17,6 +18,7 @@ import { Skeleton } from "@/components/ui/skeleton";
  * @param headerControl card header button
  * @param footerControls card footer buttons
  * @param loading loading flag on the card
+ * @param emptyText empty text to display when the card is rendered without content
  * @author Stephen Prizio
  * @version 0.0.1
  */
@@ -28,6 +30,7 @@ export function BaseCard({
   footerControls = [],
   icon = null,
   loading = false,
+  emptyText = "No data present.",
 }: Readonly<{
   title?: string;
   subtitle?: string;
@@ -36,6 +39,7 @@ export function BaseCard({
   footerControls?: Array<React.ReactNode>;
   icon?: React.ReactNode;
   loading?: boolean;
+  emptyText?: string;
 }>) {
   //  RENDER
 
@@ -62,7 +66,7 @@ export function BaseCard({
                 </div>
                 <div className={"flex items-center gap-4"}>
                   {headerControls?.map((item, key) => {
-                    return <div key={key}>{item}</div>;
+                    return <div key={key + 1}>{item}</div>;
                   })}
                   {icon ? <div className={"text-primary"}>{icon}</div> : null}
                 </div>
@@ -73,7 +77,9 @@ export function BaseCard({
           )}
           <CardContent className={"pb-2"}>
             {cardContent || (
-              <p className={"text-slate-400 text-center"}>No data present.</p>
+              <div className="text-center text-slate-500 mt-2 mb-6 text-sm">
+                {emptyText}
+              </div>
             )}
           </CardContent>
           {footerControls && footerControls.length > 0 ? (
@@ -83,7 +89,7 @@ export function BaseCard({
                   footerControls.length > 0 &&
                   footerControls.map((item, itx) => {
                     return (
-                      <div key={itx} className={"grow"}>
+                      <div key={itx + 1} className={"grow"}>
                         {item}
                       </div>
                     );

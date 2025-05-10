@@ -1,6 +1,6 @@
 "use client";
 
-import { useRouter, useSearchParams } from "next/navigation";
+import { redirect, useRouter, useSearchParams } from "next/navigation";
 import React, { useState } from "react";
 import { AggregateInterval, Icons } from "@/lib/enums";
 import { logErrors, selectNewAccount } from "@/lib/functions/util-functions";
@@ -71,6 +71,14 @@ export default function PerformancePage() {
 
   if (isLoading) {
     return <LoadingPage />;
+  }
+
+  if (isError || (!isError && !activePortfolio)) {
+    redirect("/portfolios");
+  }
+
+  if ((activePortfolio?.accounts?.length ?? 0) === 0) {
+    redirect("/accounts");
   }
 
   if (hasMismatch || isError) {

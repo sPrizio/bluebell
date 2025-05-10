@@ -217,7 +217,7 @@ export default function PortfolioGrowthChart({
                 payload?.map((item: any, itx: number) => {
                   return (
                     <div
-                      key={itx}
+                      key={itx + 1}
                       className={"flex flex-row items-center w-[250px] gap-6"}
                       style={{ color: item.color }}
                     >
@@ -241,61 +241,71 @@ export default function PortfolioGrowthChart({
   //  RENDER
 
   return (
-    <div className={"flex items-center justify-center pb-2"}>
-      <div className={"w-[100%]"}>
-        <ResponsiveContainer width="100%" minHeight={300}>
-          <ComposedChart data={accChartData}>
-            <defs>
-              <linearGradient id="color" x1="0" y1="0" x2="0" y2="1">
-                <stop
-                  offset="5%"
-                  stopColor={`${Css.ColorPrimary}`}
-                  stopOpacity={0.8}
-                />
-                <stop
-                  offset={computeGradientLimit()}
-                  stopColor={`${Css.ColorPrimary}`}
-                  stopOpacity={0}
-                />
-              </linearGradient>
-            </defs>
-            <Legend content={legend} verticalAlign={"top"} height={40} />
-            {hasMultipleAccounts() ? (
-              <Legend content={legend} verticalAlign={"top"} height={40} />
-            ) : null}
-            <Tooltip content={tooltip} />
-            {hasMultipleAccounts()
-              ? getAccountKeys().map((item: string, itx: number) => {
-                  return (
-                    <Line
-                      key={itx}
-                      type="monotone"
-                      dot={false}
-                      dataKey={item}
-                      strokeWidth={3}
-                      stroke={colors[itx]}
+    <>
+      {(data?.length ?? 0) > 0 && (
+        <div className={"flex items-center justify-center pb-2"}>
+          <div className={"w-[100%]"}>
+            <ResponsiveContainer width="100%" minHeight={300}>
+              <ComposedChart data={accChartData}>
+                <defs>
+                  <linearGradient id="color" x1="0" y1="0" x2="0" y2="1">
+                    <stop
+                      offset="5%"
+                      stopColor={`${Css.ColorPrimary}`}
+                      stopOpacity={0.8}
                     />
-                  );
-                })
-              : null}
-            <YAxis
-              dataKey={"portfolio"}
-              type="number"
-              domain={["dataMin", "dataMax"]}
-              hide={true}
-            />
-            <Area
-              type="monotone"
-              dot={false}
-              dataKey="portfolio"
-              stackId="1"
-              stroke={`${Css.ColorPrimary}`}
-              strokeWidth={4}
-              fill="url(#color)"
-            />
-          </ComposedChart>
-        </ResponsiveContainer>
-      </div>
-    </div>
+                    <stop
+                      offset={computeGradientLimit()}
+                      stopColor={`${Css.ColorPrimary}`}
+                      stopOpacity={0}
+                    />
+                  </linearGradient>
+                </defs>
+                <Legend content={legend} verticalAlign={"top"} height={40} />
+                {hasMultipleAccounts() ? (
+                  <Legend content={legend} verticalAlign={"top"} height={40} />
+                ) : null}
+                <Tooltip content={tooltip} />
+                {hasMultipleAccounts()
+                  ? getAccountKeys().map((item: string, itx: number) => {
+                      return (
+                        <Line
+                          key={itx}
+                          type="monotone"
+                          dot={false}
+                          dataKey={item}
+                          strokeWidth={3}
+                          stroke={colors[itx]}
+                        />
+                      );
+                    })
+                  : null}
+                <YAxis
+                  dataKey={"portfolio"}
+                  type="number"
+                  domain={["dataMin", "dataMax"]}
+                  hide={true}
+                />
+                <Area
+                  type="monotone"
+                  dot={false}
+                  dataKey="portfolio"
+                  stackId="1"
+                  stroke={`${Css.ColorPrimary}`}
+                  strokeWidth={4}
+                  fill="url(#color)"
+                />
+              </ComposedChart>
+            </ResponsiveContainer>
+          </div>
+        </div>
+      )}
+      {data?.length === 0 && (
+        <div className="text-center text-slate-500 mt-2 mb-6 text-sm">
+          You haven&apos;t taken any trades or made any deposits yet. Once you
+          do, this chart will update.
+        </div>
+      )}
+    </>
   );
 }

@@ -28,14 +28,6 @@ export default function TradeRecordTable({
 }>) {
   //  RENDER
 
-  if ((report?.tradeRecords?.length ?? 0) === 0) {
-    return (
-      <div className={"text-center mt-4"}>
-        <p className={"text-slate-500"}>No recent activity.</p>
-      </div>
-    );
-  }
-
   return (
     <Table>
       <TableHeader className={"border-b-2 border-primaryLight"}>

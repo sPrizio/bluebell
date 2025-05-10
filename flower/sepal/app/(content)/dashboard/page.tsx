@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Icons } from "@/lib/enums";
 import { BaseCard } from "@/components/Card/BaseCard";
 import DashboardContent from "@/components/Card/Content/DashboardContent";
@@ -25,6 +25,7 @@ import { PageInfoProvider } from "@/lib/context/PageInfoProvider";
 import ReusableSelect from "@/components/Input/ReusableSelect";
 import { usePortfolioStore } from "@/lib/store/portfolioStore";
 import { resolveIcon } from "@/lib/functions/util-component-functions";
+import { redirect } from "next/navigation";
 
 /**
  * The page that shows an overview of a user's portfolio
@@ -38,8 +39,21 @@ export default function DashboardPage() {
     isError: isUserError,
     error: userError,
     isLoading: isUserLoading,
+    isSuccess: isUserSuccess,
   } = useUserQuery();
-  const activePortfolio = getActivePortfolioNumber(user) ?? -1;
+
+  const { setSelectedPortfolioId } = usePortfolioStore();
+  const [activePortfolio, setActivePortfolio] = useState(-1);
+
+  useEffect(() => {
+    const accPId = getActivePortfolioNumber(user) ?? -1;
+    if (isUserSuccess && accPId !== -1) {
+      setActivePortfolio(accPId);
+      setSelectedPortfolioId(accPId);
+    } else if (isUserError) {
+      redirect("/portfolios");
+    }
+  }, [user, setSelectedPortfolioId, isUserSuccess, isUserError]);
 
   const {
     data: portfolio,
@@ -81,8 +95,7 @@ export default function DashboardPage() {
 
   //  RENDER
 
-  const { selectedPortfolioId, setSelectedPortfolioId } = usePortfolioStore();
-  if (isLoading) {
+  if (isLoading || activePortfolio === null) {
     return <LoadingPage />;
   }
 
@@ -104,27 +117,25 @@ export default function DashboardPage() {
     breadcrumbs: [{ label: "Dashboard", href: "/dashboard", active: true }],
   };
 
-  if (selectedPortfolioId === null) {
-    setSelectedPortfolioId(getActivePortfolioNumber(user) ?? -1);
-  }
-
   return (
     <PageInfoProvider value={pageInfo}>
       <div>
         <div className={"grid grid-cols-1 gap-8 w-full"}>
           <div className={"flex flex-row items-end justify-end"}>
-            <ReusableSelect
-              title={"Portfolio"}
-              initialValue={selectedPortfolioId?.toString()}
-              options={
-                user?.portfolios?.map((p) => {
-                  return { label: p.name, value: p.portfolioNumber };
-                }) ?? []
-              }
-              handler={(val: string) => {
-                setSelectedPortfolioId(parseInt(val));
-              }}
-            />
+            {activePortfolio !== -1 && (
+              <ReusableSelect
+                title={"Portfolio"}
+                initialValue={activePortfolio?.toString()}
+                options={
+                  user?.portfolios?.map((p) => {
+                    return { label: p.name, value: p.portfolioNumber };
+                  }) ?? []
+                }
+                handler={(val: string) => {
+                  setSelectedPortfolioId(parseInt(val));
+                }}
+              />
+            )}
           </div>
           {/* TODO: BB-54 Implement Portfolio UI */}
           <div
@@ -188,10 +199,15 @@ export default function DashboardPage() {
                   "A look back at your portfolio's performance over the last 6 months."
                 }
                 cardContent={
-                  <PortfolioGrowthChart
-                    key={portfolioRecord?.equity.length}
-                    data={portfolioRecord?.equity ?? []}
-                  />
+                  portfolioRecord?.equity?.length ? (
+                    <PortfolioGrowthChart
+                      key={portfolioRecord.equity.length}
+                      data={portfolioRecord.equity}
+                    />
+                  ) : null
+                }
+                emptyText={
+                  "You haven't taken any trades or made any deposits yet. Once you do, this chart will update."
                 }
               />
             </div>
@@ -200,12 +216,15 @@ export default function DashboardPage() {
                 title={"Accounts"}
                 subtitle={"Only active accounts will be shown."}
                 cardContent={
-                  <AccountsTable
-                    accounts={
-                      portfolio?.accounts.filter((acc) => acc.active) ?? []
-                    }
-                    showAllLink={true}
-                  />
+                  portfolio?.accounts?.filter((acc) => acc.active).length ? (
+                    <AccountsTable
+                      accounts={portfolio.accounts.filter((acc) => acc.active)}
+                      showAllLink={true}
+                    />
+                  ) : null
+                }
+                emptyText={
+                  "This portfolio doesn't currently have any trading accounts."
                 }
               />
             </div>
@@ -215,7 +234,14 @@ export default function DashboardPage() {
               <BaseCard
                 title={"Trade Log"}
                 subtitle={"Your performance over the last few days."}
-                cardContent={<TradeLogTable log={tradeLog} showTotals={true} />}
+                cardContent={
+                  tradeLog?.entries?.length ? (
+                    <TradeLogTable log={tradeLog} showTotals={true} />
+                  ) : null
+                }
+                emptyText={
+                  "You haven't taken any trades. Once you do, your activity and statuses will be updated here."
+                }
               />
             </div>
             <div className={""}>
@@ -223,10 +249,15 @@ export default function DashboardPage() {
                 title={"Transaction Activity"}
                 subtitle={"Your most recent account transactions."}
                 cardContent={
-                  <TransactionsTable
-                    transactions={recentTransactions ?? []}
-                    showBottomLink={true}
-                  />
+                  recentTransactions?.length ? (
+                    <TransactionsTable
+                      transactions={recentTransactions ?? []}
+                      showBottomLink={true}
+                    />
+                  ) : null
+                }
+                emptyText={
+                  "You haven't made any transactions yet. Once you do, this table will update."
                 }
               />
             </div>

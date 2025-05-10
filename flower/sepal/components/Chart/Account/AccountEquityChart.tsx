@@ -113,13 +113,6 @@ export default function AccountEquityChart({
 
   return (
     <div className={"flex items-center justify-center pb-2"}>
-      {(!data || data.length <= 1) && (
-        <div className="mt-4 flex flex-col items-center">
-          <p className={"text-slate-500"}>
-            No trades to show. Come back after trading a bit!
-          </p>
-        </div>
-      )}
       {data && data.length > 1 && (
         <div className={"w-[100%]"} key={showPoints.toString()}>
           <ResponsiveContainer width="100%" minHeight={400}>
