@@ -1,16 +1,15 @@
 "use client";
 
-import { redirect, useRouter, useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import React from "react";
-import { logErrors, selectNewAccount } from "@/lib/functions/util-functions";
+import { selectNewAccount } from "@/lib/functions/util-functions";
 import { Icons } from "@/lib/enums";
 import TradeTable from "@/components/Table/Trade/TradeTable";
 import { BaseCard } from "@/components/Card/BaseCard";
 import { useActiveAccount } from "@/lib/hooks/api/useActiveAccount";
 import { PageInfoProvider } from "@/lib/context/PageInfoProvider";
-import LoadingPage from "@/app/loading";
-import Error from "@/app/error";
 import ReusableSelect from "@/components/Input/ReusableSelect";
+import { validatePageQueryFlow } from "@/lib/functions/util-component-functions";
 
 /**
  * Renders the Trade history page
@@ -30,18 +29,13 @@ export default function TradesPage() {
     hasMismatch,
   } = useActiveAccount();
 
-  if (isLoading) {
-    return <LoadingPage />;
-  }
-
-  if (!activePortfolio) {
-    redirect("/portfolios");
-  }
-
-  if (hasMismatch || isError) {
-    logErrors("User and portfolio mismatch!", error);
-    return <Error />;
-  }
+  validatePageQueryFlow(
+    isLoading,
+    isError,
+    activePortfolio,
+    hasMismatch,
+    error,
+  );
 
   const accNumber = activeAccount?.accountNumber ?? -1;
   const pageInfo = {

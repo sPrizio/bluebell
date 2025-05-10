@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Icons } from "@/lib/enums";
 import { BaseCard } from "@/components/Card/BaseCard";
 import DashboardContent from "@/components/Card/Content/DashboardContent";
@@ -39,12 +39,21 @@ export default function DashboardPage() {
     isError: isUserError,
     error: userError,
     isLoading: isUserLoading,
+    isSuccess: isUserSuccess,
   } = useUserQuery();
-  const activePortfolio = getActivePortfolioNumber(user) ?? -1;
 
-  if (activePortfolio === -1) {
-    redirect("/portfolios");
-  }
+  const { setSelectedPortfolioId } = usePortfolioStore();
+  const [activePortfolio, setActivePortfolio] = useState(-1);
+
+  useEffect(() => {
+    const accPId = getActivePortfolioNumber(user) ?? -1;
+    if (isUserSuccess && accPId !== -1) {
+      setActivePortfolio(accPId);
+      setSelectedPortfolioId(accPId);
+    } else if (isUserError) {
+      redirect("/portfolios");
+    }
+  }, [user, setSelectedPortfolioId, isUserSuccess, isUserError]);
 
   const {
     data: portfolio,
@@ -86,8 +95,7 @@ export default function DashboardPage() {
 
   //  RENDER
 
-  const { selectedPortfolioId, setSelectedPortfolioId } = usePortfolioStore();
-  if (isLoading) {
+  if (isLoading || activePortfolio === null) {
     return <LoadingPage />;
   }
 
@@ -109,10 +117,6 @@ export default function DashboardPage() {
     breadcrumbs: [{ label: "Dashboard", href: "/dashboard", active: true }],
   };
 
-  if (selectedPortfolioId === null) {
-    setSelectedPortfolioId(getActivePortfolioNumber(user) ?? -1);
-  }
-
   return (
     <PageInfoProvider value={pageInfo}>
       <div>
@@ -121,7 +125,7 @@ export default function DashboardPage() {
             {activePortfolio !== -1 && (
               <ReusableSelect
                 title={"Portfolio"}
-                initialValue={selectedPortfolioId?.toString()}
+                initialValue={activePortfolio?.toString()}
                 options={
                   user?.portfolios?.map((p) => {
                     return { label: p.name, value: p.portfolioNumber };
@@ -212,7 +216,7 @@ export default function DashboardPage() {
                 title={"Accounts"}
                 subtitle={"Only active accounts will be shown."}
                 cardContent={
-                  portfolio?.accounts?.filter((acc) => acc.active) ? (
+                  portfolio?.accounts?.filter((acc) => acc.active).length ? (
                     <AccountsTable
                       accounts={portfolio.accounts.filter((acc) => acc.active)}
                       showAllLink={true}
@@ -220,7 +224,7 @@ export default function DashboardPage() {
                   ) : null
                 }
                 emptyText={
-                  "This portfolio doesn't currently have any trading accounts"
+                  "This portfolio doesn't currently have any trading accounts."
                 }
               />
             </div>

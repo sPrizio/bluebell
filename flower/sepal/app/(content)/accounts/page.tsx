@@ -38,7 +38,7 @@ export default function AccountsPage() {
     return <LoadingPage />;
   }
 
-  if (!activePortfolio) {
+  if (isError || (!isError && !activePortfolio)) {
     redirect("/portfolios");
   }
 
@@ -74,7 +74,9 @@ export default function AccountsPage() {
 
   let inactiveData = null;
   let activeData = (
-    <div className={"text-center"}>No active accounts for this portfolio.</div>
+    <div className={"text-center"}>
+      No active accounts for this portfolio, consider adding one!
+    </div>
   );
 
   if ((activeAccounts?.length ?? 0) > 0) {

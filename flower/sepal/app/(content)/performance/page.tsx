@@ -73,8 +73,12 @@ export default function PerformancePage() {
     return <LoadingPage />;
   }
 
-  if (!activePortfolio) {
+  if (isError || (!isError && !activePortfolio)) {
     redirect("/portfolios");
+  }
+
+  if ((activePortfolio?.accounts?.length ?? 0) === 0) {
+    redirect("/accounts");
   }
 
   if (hasMismatch || isError) {
