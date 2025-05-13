@@ -28,6 +28,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Optional;
 
@@ -115,6 +116,30 @@ class AccountServiceTest extends AbstractGenericTest {
                 .builder()
                 .name("Test")
                 .active(false)
+                .balance(150)
+                .number(1234L)
+                .currency("CAD")
+                .type("CFD")
+                .broker("CMC_MARKETS")
+                .tradePlatform("METATRADER4")
+                .build();
+
+        assertThat(this.accountService.createNewAccount(data, generateTestPortfolio()))
+                .isNotNull()
+                .extracting("balance", "accountType", "accountNumber")
+                .containsExactly(1000.0, AccountType.CFD, 1234L);
+    }
+
+    @Test
+    void test_createNewLegacyAccount_success() {
+
+        final CreateUpdateAccountDTO data = CreateUpdateAccountDTO
+                .builder()
+                .name("Test")
+                .active(false)
+                .isLegacy(true)
+                .accountOpenTime(LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME))
+                .accountCloseTime(LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME))
                 .balance(150)
                 .number(1234L)
                 .currency("CAD")
