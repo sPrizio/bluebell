@@ -24,12 +24,14 @@ import com.bluebell.radicle.exceptions.system.EntityCreationException;
 import com.bluebell.radicle.exceptions.system.EntityModificationException;
 import com.bluebell.radicle.exceptions.validation.MissingRequiredDataException;
 import com.bluebell.radicle.repositories.account.AccountRepository;
+import com.bluebell.radicle.services.portfolio.PortfolioService;
 import com.bluebell.radicle.services.trade.TradeRecordService;
 import com.bluebell.radicle.services.trade.TradeService;
 import com.bluebell.radicle.services.transaction.TransactionService;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -60,6 +62,9 @@ public class AccountService {
 
     @Resource(name = "accountDetailsService")
     private AccountDetailsService accountDetailsService;
+
+    @Resource(name = "portfolioService")
+    private PortfolioService portfolioService;
 
     @Resource(name = "tradeRecordService")
     private TradeRecordService tradeRecordService;
@@ -150,21 +155,38 @@ public class AccountService {
         }
     }
 
-    /**
-     * Attempts to delete the given {@link Account}
-     *
-     * @param account {@link Account}
-     * @return true if successfully deleted
-     */
+    @Transactional
     public boolean deleteAccount(final Account account) {
         validateParameterIsNotNull(account, CorePlatformConstants.Validation.Account.ACCOUNT_CANNOT_BE_NULL);
 
         try {
-            this.accountRepository.delete(account);
+            this.accountRepository.deleteById(account.getId());
             return true;
         } catch (Exception e) {
             LOGGER.error(e.getMessage(), e);
             return false;
+        }
+    }
+
+    @Transactional
+    public void reassignAccounts(final long portfolioNumber) {
+
+        final Optional<Portfolio> portfolio = this.portfolioService.findPortfolioForPortfolioNumber(portfolioNumber);
+        if (portfolio.isEmpty()) {
+            LOGGER.warn("No accounts to reassign for portfolio {}", portfolioNumber);
+            return;
+        }
+
+        final List<Account> accounts = portfolio.get().getActiveAccounts();
+        if (CollectionUtils.isNotEmpty(accounts)) {
+            final Account first = accounts.stream().min(Comparator.comparing(Account::getAccountNumber)).orElse(null);
+            if (first == null) {
+                LOGGER.warn("IMPOSSIBLE ERROR");
+                return;
+            }
+
+            first.setDefaultAccount(true);
+            this.accountRepository.save(first);
         }
     }
 
@@ -335,7 +357,7 @@ public class AccountService {
             account.setLastTraded(LocalDateTime.now());
         }
 
-        if (!Objects.isNull(data.isDefault())) {
+        if (!Objects.isNull(data.isDefault()) && data.isDefault()) {
             portfolio.getAccounts().forEach(a -> {
                 a.setDefaultAccount(false);
                 this.accountRepository.save(a);
@@ -344,6 +366,17 @@ public class AccountService {
             account.setDefaultAccount(true);
         } else {
             account.setDefaultAccount(false);
+        }
+
+        if (Boolean.TRUE.equals(data.isLegacy())) {
+            account.setAccountOpenTime(LocalDateTime.parse(data.accountOpenTime(), DateTimeFormatter.ISO_DATE_TIME));
+
+            if (StringUtils.isNotEmpty(data.accountCloseTime())) {
+                account.setAccountCloseTime(LocalDateTime.parse(data.accountCloseTime(), DateTimeFormatter.ISO_DATE_TIME));
+                account.setLastTraded(LocalDateTime.parse(data.accountCloseTime(), DateTimeFormatter.ISO_DATE_TIME));
+            }
+
+            account.setLastTraded(null);
         }
 
         return this.accountRepository.save(account);
