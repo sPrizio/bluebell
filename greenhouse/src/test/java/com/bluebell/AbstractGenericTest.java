@@ -109,6 +109,7 @@ public abstract class AbstractGenericTest {
                 .lotSize(0.75)
                 .netProfit(14.85)
                 .openPrice(13083.41)
+                .product("Test Product")
                 .account(generateTestAccount())
                 .build();
     }
@@ -129,6 +130,7 @@ public abstract class AbstractGenericTest {
                 .lotSize(0.75)
                 .netProfit(-4.50)
                 .openPrice(13160.09)
+                .product("Test Product")
                 .account(generateTestAccount())
                 .build();
     }
