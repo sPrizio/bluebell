@@ -70,7 +70,7 @@ public abstract class AbstractApiController {
      */
     public Account getAccountForId(final User user, final long accountNumber) {
         validateParameterIsNotNull(user, CorePlatformConstants.Validation.Security.User.USER_CANNOT_BE_NULL);
-        return user.getActivePortfolios().stream().map(Portfolio::getActiveAccounts).flatMap(List::stream).filter(acc -> acc.getAccountNumber() == accountNumber).findFirst().orElseThrow(() -> new InvalidAccountNumberException(String.format("The given account number %d did not match any user accounts", accountNumber)));
+        return user.getActivePortfolios().stream().map(Portfolio::getAccounts).flatMap(List::stream).filter(acc -> acc.getAccountNumber() == accountNumber).findFirst().orElseThrow(() -> new InvalidAccountNumberException(String.format("The given account number %d did not match any user accounts", accountNumber)));
     }
 
     /**

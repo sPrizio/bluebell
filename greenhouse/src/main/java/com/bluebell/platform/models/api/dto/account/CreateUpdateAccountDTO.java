@@ -8,7 +8,7 @@ import lombok.Builder;
  * Request object for creating and updating {@link Account}s
  *
  * @author Stephen Prizio
- * @version 0.1.1
+ * @version 0.2.0
  */
 @Builder
 @Schema(title = "CreateUpdateAccountDTO", name = "CreateUpdateAccountDTO", description = "Payload for creating and updating accounts")
@@ -21,5 +21,8 @@ public record CreateUpdateAccountDTO(
         @Schema(description = "Account type") String type,
         @Schema(description = "Account broker") String broker,
         @Schema(description = "Account trade platform") String tradePlatform,
-        @Schema(description = "Is this the user's default account") Boolean isDefault
+        @Schema(description = "Is this the user's default account") Boolean isDefault,
+        @Schema(description = "If true, allow setting manual dates") Boolean isLegacy,
+        @Schema(description = "Account open time") String accountOpenTime,
+        @Schema(description = "Account close time") String accountCloseTime
 ) { }

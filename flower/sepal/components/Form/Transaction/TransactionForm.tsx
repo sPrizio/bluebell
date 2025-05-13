@@ -16,7 +16,7 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import TransactionDatePicker from "@/components/DateTime/TransactionDatePicker";
+import ReusableDatePicker from "@/components/DateTime/ReusableDatePicker";
 import { Button } from "@/components/ui/button";
 import { Loader2 } from "lucide-react";
 import {
@@ -183,7 +183,10 @@ export default function TransactionForm({
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Transaction Date</FormLabel>
-                    <TransactionDatePicker field={field} />
+                    <ReusableDatePicker
+                      label={"Transaction Date"}
+                      field={field}
+                    />
                     <FormMessage className={"text-primaryRed font-semibold"} />
                   </FormItem>
                 )}
