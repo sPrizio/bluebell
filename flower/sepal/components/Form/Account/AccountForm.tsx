@@ -25,12 +25,13 @@ import {
 import { Loader2 } from "lucide-react";
 import { useSepalModalContext } from "@/lib/context/SepalContext";
 import { useToast } from "@/lib/hooks/ui/use-toast";
-import { CRUDAccountSchema } from "@/lib/constants";
+import { CRUDAccountSchema, DateTime } from "@/lib/constants";
 import { Switch } from "@/components/ui/switch";
 import {
   Account,
   AccountType,
   Broker,
+  CreateUpdateAccountRequest,
   Currency,
   TradePlatform,
 } from "@/types/apiTypes";
@@ -40,7 +41,9 @@ import {
   useCreateAccountMutation,
   useUpdateAccountMutation,
 } from "@/lib/hooks/query/mutations";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
+import moment from "moment";
+import ReusableDatePicker from "@/components/DateTime/ReusableDatePicker";
 
 /**
  * Renders a form that can create or update an Account
@@ -119,6 +122,8 @@ export default function AccountForm({
     throw new Error("Acc Create Info Error");
   }
 
+  const isClosed = !!account?.accountCloseTime;
+  const [showLegacyDates, setShowLegacyDates] = useState(isClosed);
   const formSchema = CRUDAccountSchema(accCreateInfo);
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -132,6 +137,13 @@ export default function AccountForm({
       broker: isCreateMode() ? "default" : account?.broker?.code,
       type: isCreateMode() ? "default" : account?.accountType?.code,
       tradePlatform: isCreateMode() ? "default" : account?.tradePlatform?.code,
+      isLegacy: isCreateMode() ? false : isClosed,
+      accountOpenTime: isCreateMode()
+        ? null
+        : moment(account?.accountOpenTime).toDate(),
+      accountCloseTime: isCreateMode()
+        ? null
+        : moment(account?.accountCloseTime).toDate(),
     },
   });
 
@@ -164,15 +176,38 @@ export default function AccountForm({
   }
 
   /**
+   * Safely parses a date for the backend request
+   *
+   * @param val input date
+   */
+  function getDate(val: Date | null | undefined): string | null {
+    if (val) {
+      return moment(val).format(DateTime.ISODateTimeFormat);
+    } else {
+      return null;
+    }
+  }
+
+  /**
    * Submits the form
    *
    * @param values form values
    */
   function onSubmit(values: z.infer<typeof formSchema>) {
+    const req: CreateUpdateAccountRequest = {
+      ...values,
+      accountOpenTime: values.isLegacy
+        ? moment(values.accountOpenTime).format(DateTime.ISODateTimeFormat)
+        : null,
+      accountCloseTime: values.isLegacy
+        ? getDate(values.accountCloseTime)
+        : null,
+    };
+
     if (isCreateMode()) {
-      createAccount(values);
+      createAccount(req);
     } else {
-      updateAccount(values);
+      updateAccount(req);
     }
   }
 
@@ -192,20 +227,63 @@ export default function AccountForm({
           onSubmit={form.handleSubmit(onSubmit, (e) => console.log(e))}
           className="space-y-8"
         >
-          <div className={"grid grid-cols-1 gap-4"}>
-            <FormField
-              control={form.control}
-              name="name"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel className="!text-current">Account Name</FormLabel>
-                  <FormControl>
-                    <Input placeholder="Demo Trading Account" {...field} />
-                  </FormControl>
-                  <FormMessage className={"text-primaryRed font-semibold"} />
-                </FormItem>
-              )}
-            />
+          <div className={"grid grid-cols-2 gap-4"}>
+            <div>
+              <FormField
+                control={form.control}
+                name="name"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="!text-current">
+                      Account Name
+                    </FormLabel>
+                    <FormControl>
+                      <Input placeholder="Demo Trading Account" {...field} />
+                    </FormControl>
+                    <FormMessage className={"text-primaryRed font-semibold"} />
+                  </FormItem>
+                )}
+              />
+            </div>
+            <div>
+              <div className={""}>
+                <FormField
+                  control={form.control}
+                  name="isLegacy"
+                  render={({ field }) => (
+                    <FormItem>
+                      <div className={"flex items-center gap-4 w-full"}>
+                        <div className={"w-full"}>
+                          <FormLabel className="!text-current">
+                            Legacy Account
+                          </FormLabel>
+                        </div>
+                        <div
+                          className={"flex items-center justify-end text-right"}
+                        >
+                          <FormControl>
+                            <Switch
+                              checked={field.value}
+                              onCheckedChange={(checked) => {
+                                field.onChange(checked);
+                                setShowLegacyDates(checked);
+                              }}
+                            />
+                          </FormControl>
+                        </div>
+                      </div>
+                      <FormDescription>
+                        A legacy account is an account that was once opened and
+                        is now closed.
+                      </FormDescription>
+                      <FormMessage
+                        className={"text-primaryRed font-semibold"}
+                      />
+                    </FormItem>
+                  )}
+                />
+              </div>
+            </div>
           </div>
           <div className={"grid grid-cols-2 gap-4"}>
             <div className={""}>
@@ -346,8 +424,7 @@ export default function AccountForm({
                       </SelectContent>
                     </Select>
                     <FormDescription>
-                      This refers to the type of security traded within the
-                      account.
+                      Refers to the type of security traded on the account.
                     </FormDescription>
                     <FormMessage className={"text-primaryRed font-semibold"} />
                   </FormItem>
@@ -388,9 +465,8 @@ export default function AccountForm({
                       </SelectContent>
                     </Select>
                     <FormDescription>
-                      This field refers to the platform used to execute trades
-                      for this account. If multiple platforms, select the most
-                      frequently used one.
+                      Refers to the platform used to execute trades for this
+                      account. One platform per account.
                     </FormDescription>
                     <FormMessage className={"text-primaryRed font-semibold"} />
                   </FormItem>
@@ -422,7 +498,7 @@ export default function AccountForm({
                     </div>
                     <FormDescription>
                       A default account is an account that will be considered
-                      the primary or main account.
+                      the primary/main account.
                     </FormDescription>
                     <FormMessage className={"text-primaryRed font-semibold"} />
                   </FormItem>
@@ -452,14 +528,55 @@ export default function AccountForm({
                     </div>
                     <FormDescription>
                       Active accounts will have their trades tracked and
-                      periodically updated, inactive accounts will be archived
-                      for reference purposes.
+                      periodically updated.
                     </FormDescription>
                     <FormMessage className={"text-primaryRed font-semibold"} />
                   </FormItem>
                 )}
               />
             </div>
+            {showLegacyDates && (
+              <>
+                <div>
+                  <FormField
+                    control={form.control}
+                    name="accountOpenTime"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Open Time</FormLabel>
+                        <ReusableDatePicker
+                          label={"Open Time"}
+                          hasIcon={false}
+                          field={field}
+                        />
+                        <FormMessage
+                          className={"text-primaryRed font-semibold"}
+                        />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+                <div>
+                  <FormField
+                    control={form.control}
+                    name="accountCloseTime"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Close Time</FormLabel>
+                        <ReusableDatePicker
+                          label={"Open Time"}
+                          hasIcon={false}
+                          field={field}
+                        />
+                        <FormMessage
+                          className={"text-primaryRed font-semibold"}
+                        />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+              </>
+            )}
           </div>
           <div className={"flex w-full justify-end items-center gap-4"}>
             <Button

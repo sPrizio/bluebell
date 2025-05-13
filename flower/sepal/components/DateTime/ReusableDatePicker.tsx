@@ -12,28 +12,27 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { IconCalendarMonth } from "@tabler/icons-react";
-import { ControllerRenderProps } from "react-hook-form";
+import { ControllerRenderProps, FieldValues, Path } from "react-hook-form";
+
+interface Props<T extends FieldValues, K extends Path<T>> {
+  label: string;
+  hasIcon?: boolean;
+  field: ControllerRenderProps<T, K>;
+}
 
 /**
  * Renders a datepicker component
  *
+ * @param label display label
+ * @param hasIcon render icon
  * @param field form field handler
  * @author Stephen Prizio
  * @version 0.0.1
  */
-export default function TransactionDatePicker({
-  field,
-}: Readonly<{
-  field: ControllerRenderProps<
-    {
-      date: Date;
-      type: string;
-      amount: number;
-      account: number;
-    },
-    "date"
-  >;
-}>) {
+export default function ReusableDatePicker<
+  T extends FieldValues,
+  K extends Path<T>,
+>({ label, hasIcon = true, field }: Readonly<Props<T, K>>) {
   //  RENDER
 
   return (
@@ -46,13 +45,9 @@ export default function TransactionDatePicker({
             !field.value && "text-muted-foreground",
           )}
         >
-          <IconCalendarMonth size={18} />
+          {hasIcon && <IconCalendarMonth size={18} />}
           &nbsp;&nbsp;
-          {field.value ? (
-            format(field.value, "PPP")
-          ) : (
-            <span>Transaction Date</span>
-          )}
+          {field.value ? format(field.value, "PPP") : <span>{label}</span>}
         </Button>
       </PopoverTrigger>
       <PopoverContent className="w-auto p-0">
