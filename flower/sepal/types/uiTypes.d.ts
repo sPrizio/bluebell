@@ -23,3 +23,11 @@ export interface UserTradeRecordControlSelection {
   month: string;
   year: string;
 }
+
+export interface UserTradeControlSelection {
+  start: Date;
+  end: Date;
+  sort: "asc" | "desc";
+  type: string;
+  symbol: string;
+}

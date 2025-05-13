@@ -33,6 +33,8 @@ import Error from "@/app/error";
  * Renders a table of trades
  *
  * @param account account
+ * @param start start date
+ * @param end end date
  * @param initialPageSize initial page size
  * @param initialPage initial page
  * @author Stephen Prizio
@@ -40,10 +42,14 @@ import Error from "@/app/error";
  */
 export default function TradeTable({
   account,
+  start,
+  end,
   initialPageSize = 10,
   initialPage = 0,
 }: Readonly<{
   account: Account | null;
+  start?: string;
+  end?: string;
   initialPageSize?: number;
   initialPage?: number;
 }>) {
@@ -55,8 +61,8 @@ export default function TradeTable({
     error: pagedTradesError,
   } = usePagedTradesQuery(
     account?.accountNumber ?? -1,
-    moment(account?.accountOpenTime).format(DateTime.ISODateTimeFormat),
-    moment().add(1, "years").format(DateTime.ISODateTimeFormat),
+    start ?? "",
+    end ?? "",
     currentPage,
     initialPageSize,
   );
@@ -129,10 +135,10 @@ export default function TradeTable({
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {pagedTrades?.trades?.map((item) => {
+                {pagedTrades?.trades?.map((item, index) => {
                   return (
                     <TableRow
-                      key={item.tradeId}
+                      key={item.tradeId + index}
                       className={"hover:bg-transparent"}
                     >
                       <TableCell className={"text-center"}>

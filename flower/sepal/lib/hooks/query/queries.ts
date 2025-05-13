@@ -206,7 +206,7 @@ export const usePagedTradesQuery = (
         page: page.toString(),
         pageSize: pageSize.toString(),
       }),
-    enabled: accountNumber > -1,
+    enabled: accountNumber !== -1,
   });
 };
 
