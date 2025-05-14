@@ -8,6 +8,7 @@ import {
   getNewsDomain,
   getPortfolioDomain,
   getPortfolioRecordDomain,
+  getSymbolDomain,
   getTradeDomain,
   getTradeRecordDomain,
   getUserDomain,
@@ -81,10 +82,14 @@ export const ApiUrls = {
     GetPortfolioRecord:
       getPortfolioRecordDomain() + "/get?portfolioNumber={portfolioNumber}",
   },
+  Symbol: {
+    GetTradedSymbols:
+      getSymbolDomain() + "/get-traded-symbols?accountNumber={accountNumber}",
+  },
   Trade: {
     GetPagedTrades:
       getTradeDomain() +
-      "/get-for-interval-paged?accountNumber={accountNumber}&start={start}&end={end}&page={page}&pageSize={pageSize}",
+      "/get-for-interval-paged?accountNumber={accountNumber}&start={start}&end={end}&page={page}&pageSize={pageSize}&tradeType={tradeType}&symbol={symbol}&sort={sort}",
     ImportTrades:
       getTradeDomain() +
       "/import-trades?accountNumber={accountNumber}&isStrategy={isStrategy}",

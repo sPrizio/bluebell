@@ -140,3 +140,12 @@ export function getPortfolioDomain(): string {
 export function getPortfolioRecordDomain(): string {
   return getDomain("/portfolio-record");
 }
+
+/**
+ * Gets the symbol url
+ *
+ * @returns {string} url
+ */
+export function getSymbolDomain(): string {
+  return getDomain("/symbol");
+}

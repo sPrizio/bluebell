@@ -2,7 +2,7 @@
 
 import { useRouter, useSearchParams } from "next/navigation";
 import React, { useEffect, useState } from "react";
-import { selectNewAccount } from "@/lib/functions/util-functions";
+import { logErrors, selectNewAccount } from "@/lib/functions/util-functions";
 import { Icons } from "@/lib/enums";
 import { BaseCard } from "@/components/Card/BaseCard";
 import { useActiveAccount } from "@/lib/hooks/api/useActiveAccount";
@@ -16,6 +16,8 @@ import { Button } from "@/components/ui/button";
 import LoadingPage from "@/app/loading";
 import TradeTable from "@/components/Table/Trade/TradeTable";
 import { DateTime } from "@/lib/constants";
+import { useTradedSymbolsQuery } from "@/lib/hooks/query/queries";
+import Error from "@/app/error";
 
 /**
  * Renders the Trade history page
@@ -34,6 +36,13 @@ export default function TradesPage() {
     activeAccount,
     hasMismatch,
   } = useActiveAccount();
+
+  const {
+    data: tradedSymbols,
+    isError: isTradedSymbolsError,
+    error: tradedSymbolsError,
+    isLoading: isTradedSymbolsLoading,
+  } = useTradedSymbolsQuery(activeAccount?.accountNumber ?? -1);
 
   validatePageQueryFlow(
     isLoading,
@@ -102,7 +111,12 @@ export default function TradesPage() {
 
   //  RENDER
 
-  if (!activeAccount) {
+  if (isTradedSymbolsError) {
+    logErrors(tradedSymbolsError);
+    return <Error />;
+  }
+
+  if (!activeAccount || isTradedSymbolsLoading) {
     return <LoadingPage />;
   }
 
@@ -141,8 +155,10 @@ export default function TradesPage() {
                   }}
                   onCancel={() => {
                     setUserSelection(submittedFilters);
+                    setSubmittedFilters(userSelection);
                     setHasSubmitted(false);
                   }}
+                  symbols={tradedSymbols}
                 />
               </div>
             </div>
@@ -158,12 +174,7 @@ export default function TradesPage() {
                 cardContent={
                   <TradeTable
                     account={activeAccount}
-                    start={moment(submittedFilters.start).format(
-                      DateTime.ISODateTimeFormat,
-                    )}
-                    end={moment(submittedFilters.end).format(
-                      DateTime.ISODateTimeFormat,
-                    )}
+                    filters={submittedFilters}
                     initialPageSize={pageSize}
                   />
                 }

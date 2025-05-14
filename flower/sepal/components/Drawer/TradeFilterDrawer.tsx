@@ -20,13 +20,13 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import TradeControlDatePicker from "@/components/DateTime/TradeControlDatePicker";
-import { Switch } from "@/components/ui/switch";
 
 type Props = {
   userSelection: UserTradeControlSelection;
   onChange: (newSelection: UserTradeControlSelection) => void;
   onSubmit: () => void;
   onCancel: () => void;
+  symbols?: Array<string>;
 };
 
 export default function TradeFilterDrawer({
@@ -34,6 +34,7 @@ export default function TradeFilterDrawer({
   onChange,
   onSubmit,
   onCancel,
+  symbols = [],
 }: Readonly<Props>) {
   //  RENDER
   return (
@@ -125,8 +126,11 @@ export default function TradeFilterDrawer({
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value={"ALL"}>All</SelectItem>
-                  {/*<SelectItem value={"BUY"}>Buy Trades</SelectItem>
-                  <SelectItem value={"SELL"}>Sell Trades</SelectItem>*/}
+                  {symbols?.map((symbol) => (
+                    <SelectItem key={symbol} value={symbol}>
+                      {symbol}
+                    </SelectItem>
+                  ))}
                 </SelectContent>
               </Select>
             </div>

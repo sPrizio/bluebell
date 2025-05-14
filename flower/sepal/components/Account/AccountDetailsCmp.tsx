@@ -31,6 +31,7 @@ import {
 } from "@/lib/hooks/query/queries";
 import Error from "@/app/error";
 import { logErrors } from "@/lib/functions/util-functions";
+import moment from "moment";
 
 /**
  * Renders the account details layout
@@ -377,7 +378,7 @@ export default function AccountDetailsCmp({
         <BaseCard
           loading={isLoading}
           title={"Trades"}
-          subtitle={"A view of each trade taken in this account."}
+          subtitle={"A view of some recent trades taken in this account."}
           headerControls={[
             <Link key={0} href={`/trades?account=${account?.accountNumber}`}>
               <Button className="" variant={"outline"}>
@@ -386,7 +387,18 @@ export default function AccountDetailsCmp({
               </Button>
             </Link>,
           ]}
-          cardContent={<TradeTable account={account} />}
+          cardContent={
+            <TradeTable
+              account={account}
+              filters={{
+                start: moment().subtract(1, "weeks").toDate(),
+                end: moment().add(1, "days").toDate(),
+                sort: "desc",
+                type: "ALL",
+                symbol: "ALL",
+              }}
+            />
+          }
         />
       </div>
     </div>
