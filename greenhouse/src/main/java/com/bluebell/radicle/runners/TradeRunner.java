@@ -106,7 +106,7 @@ public class TradeRunner extends AbstractRunner implements CommandLineRunner {
             Trade trade = Trade
                     .builder()
                     .tradeId(String.valueOf(100_000_000 + this.random.nextInt(900_000_000)))
-                    .product("Nasdaq 100")
+                    .product(Math.random() < 0.5 ? "Nasdaq 100" : "S&P 500")
                     .tradePlatform(TradePlatform.METATRADER4)
                     .tradeType(buyOrSell)
                     .tradeOpenTime(randomDay)

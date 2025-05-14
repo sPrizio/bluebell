@@ -21,7 +21,7 @@ import java.util.List;
  * Data-access layer for {@link Trade} entities
  *
  * @author Stephen Prizio
- * @version 0.1.6
+ * @version 0.2.0
  */
 @Repository
 public interface TradeRepository extends PagingAndSortingRepository<Trade, Long>, CrudRepository<Trade, Long> {
@@ -55,8 +55,48 @@ public interface TradeRepository extends PagingAndSortingRepository<Trade, Long>
      * @param pageable {@link Pageable}
      * @return {@link Page} of {@link Trade}s
      */
-    @Query("SELECT t FROM Trade t WHERE t.tradeOpenTime >= ?1 AND t.tradeOpenTime < ?2 AND t.account = ?3 ORDER BY t.tradeOpenTime ASC")
+    @Query("SELECT t FROM Trade t WHERE t.tradeOpenTime >= ?1 AND t.tradeOpenTime < ?2 AND t.account = ?3")
     Page<Trade> findAllTradesWithinDatePaged(final LocalDateTime start, final LocalDateTime end, final Account account, final Pageable pageable);
+
+    /**
+     * Returns a paginated {@link List} of {@link Trade}s that are within the given time span for the given symbol
+     *
+     * @param start    {@link LocalDateTime} start of interval (inclusive)
+     * @param end      {@link LocalDateTime} end of interval (exclusive)
+     * @param account  {@link Account}
+     * @param symbol  symbol
+     * @param pageable {@link Pageable}
+     * @return {@link Page} of {@link Trade}s
+     */
+    @Query("SELECT t FROM Trade t WHERE t.tradeOpenTime >= ?1 AND t.tradeOpenTime < ?2 AND t.account = ?3 AND t.product = ?4")
+    Page<Trade> findAllTradesForSymbolWithinDatePaged(final LocalDateTime start, final LocalDateTime end, final Account account, final String symbol, final Pageable pageable);
+
+    /**
+     * Returns a paginated {@link List} of {@link Trade}s that are within the given time span for the given trade type
+     *
+     * @param start    {@link LocalDateTime} start of interval (inclusive)
+     * @param end      {@link LocalDateTime} end of interval (exclusive)
+     * @param account  {@link Account}
+     * @param tradeType {@link TradeType}
+     * @param pageable {@link Pageable}
+     * @return {@link Page} of {@link Trade}s
+     */
+    @Query("SELECT t FROM Trade t WHERE t.tradeOpenTime >= ?1 AND t.tradeOpenTime < ?2 AND t.account = ?3 AND t.tradeType = ?4")
+    Page<Trade> findAllTradesForTypeWithinDatePaged(final LocalDateTime start, final LocalDateTime end, final Account account, final TradeType tradeType, final Pageable pageable);
+
+    /**
+     * Returns a paginated {@link List} of {@link Trade}s that are within the given time span for the given symbol and trade type
+     *
+     * @param start    {@link LocalDateTime} start of interval (inclusive)
+     * @param end      {@link LocalDateTime} end of interval (exclusive)
+     * @param account  {@link Account}
+     * @param symbol  symbol
+     * @param tradeType {@link TradeType}
+     * @param pageable {@link Pageable}
+     * @return {@link Page} of {@link Trade}s
+     */
+    @Query("SELECT t FROM Trade t WHERE t.tradeOpenTime >= ?1 AND t.tradeOpenTime < ?2 AND t.account = ?3 AND t.product = ?4 AND t.tradeType = ?5")
+    Page<Trade> findAllTradesForSymbolAndTypeWithinDatePaged(final LocalDateTime start, final LocalDateTime end, final Account account, final String symbol, final TradeType tradeType, final Pageable pageable);
 
     /**
      * Returns a {@link Trade} for the given tradeId

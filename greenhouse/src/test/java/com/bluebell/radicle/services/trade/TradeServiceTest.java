@@ -17,6 +17,7 @@ import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Sort;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.context.junit4.SpringRunner;
 
@@ -32,7 +33,7 @@ import static org.mockito.ArgumentMatchers.any;
  * Testing class for {@link TradeService}
  *
  * @author Stephen Prizio
- * @version 0.1.3
+ * @version 0.2.0
  */
 @SpringBootTest
 @RunWith(SpringRunner.class)
@@ -124,27 +125,27 @@ class TradeServiceTest extends AbstractGenericTest {
     @Test
     void test_findAllTradesWithinTimespan_paged_missingParamStart() {
         assertThatExceptionOfType(IllegalParameterException.class)
-                .isThrownBy(() -> this.tradeService.findAllTradesWithinTimespan(null, LocalDateTime.MAX, generateTestAccount(), 0, 10))
+                .isThrownBy(() -> this.tradeService.findAllTradesWithinTimespan(null, LocalDateTime.MAX, generateTestAccount(), 0, 10, Sort.by(Sort.Direction.ASC, "tradeOpenTime", "tradeCloseTime")))
                 .withMessage(CorePlatformConstants.Validation.DateTime.START_DATE_CANNOT_BE_NULL);
     }
 
     @Test
     void test_findAllTradesWithinTimespan_paged_missingParamEnd() {
         assertThatExceptionOfType(IllegalParameterException.class)
-                .isThrownBy(() -> this.tradeService.findAllTradesWithinTimespan(LocalDateTime.MAX, null, generateTestAccount(), 0, 10))
+                .isThrownBy(() -> this.tradeService.findAllTradesWithinTimespan(LocalDateTime.MAX, null, generateTestAccount(), 0, 10, Sort.by(Sort.Direction.ASC, "tradeOpenTime", "tradeCloseTime")))
                 .withMessage(CorePlatformConstants.Validation.DateTime.END_DATE_CANNOT_BE_NULL);
     }
 
     @Test
     void test_findAllTradesWithinTimespan_paged_invalidInterval() {
         assertThatExceptionOfType(UnsupportedOperationException.class)
-                .isThrownBy(() -> this.tradeService.findAllTradesWithinTimespan(LocalDateTime.MAX, LocalDateTime.MIN, generateTestAccount(), 0, 10))
+                .isThrownBy(() -> this.tradeService.findAllTradesWithinTimespan(LocalDateTime.MAX, LocalDateTime.MIN, generateTestAccount(), 0, 10, Sort.by(Sort.Direction.ASC, "tradeOpenTime", "tradeCloseTime")))
                 .withMessage(CorePlatformConstants.Validation.DateTime.MUTUALLY_EXCLUSIVE_DATES);
     }
 
     @Test
     void test_findAllTradesWithinTimespan_paged_success() {
-        assertThat(this.tradeService.findAllTradesWithinTimespan(TEST1, TEST2, generateTestAccount(), 0, 10))
+        assertThat(this.tradeService.findAllTradesWithinTimespan(TEST1, TEST2, generateTestAccount(), 0, 10, Sort.by(Sort.Direction.ASC, "tradeOpenTime", "tradeCloseTime")))
                 .hasSize(2)
                 .extracting("openPrice", "closePrice", "netProfit")
                 .contains(Tuple.tuple(13083.41, 13098.67, 14.85), Tuple.tuple(13160.09, 13156.12, -4.50));

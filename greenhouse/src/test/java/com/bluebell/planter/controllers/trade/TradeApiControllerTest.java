@@ -45,7 +45,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  * Testing class for {@link TradeApiController}
  *
  * @author Stephen Prizio
- * @version 0.1.9
+ * @version 0.2.0
  */
 @SpringBootTest
 @AutoConfigureMockMvc(addFilters = false)
@@ -82,7 +82,7 @@ class TradeApiControllerTest extends AbstractPlanterTest {
         Mockito.when(this.tradeService.findAllTradesWithinTimespan(any(), any(), any())).thenReturn(List.of(TEST_TRADE_1, TEST_TRADE_2));
         Mockito.when(this.tradeService.findTradeByTradeId("testId1", TEST_ACCOUNT)).thenReturn(Optional.of(TEST_TRADE_1));
         Mockito.when(this.uniqueIdentifierService.generateUid(any())).thenReturn("MTE4");
-        Mockito.when(this.tradeService.findAllTradesWithinTimespan(any(), any(), any(), anyInt(), anyInt())).thenReturn(new PageImpl<>(List.of(generateTestBuyTrade(), generateTestSellTrade()), Pageable.ofSize(10), 10));
+        Mockito.when(this.tradeService.findAllTradesWithinTimespan(any(), any(), any(), anyInt(), anyInt(), any())).thenReturn(new PageImpl<>(List.of(generateTestBuyTrade(), generateTestSellTrade()), Pageable.ofSize(10), 10));
     }
 
 
