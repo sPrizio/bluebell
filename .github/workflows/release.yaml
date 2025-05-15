@@ -109,7 +109,7 @@ jobs:
           )
             
           for IMAGE in "${IMAGES[@]}"; do
-            docker tag "$IMAGE:latest" "$IMAGE:${{ env.VERSION_LOWER }}"
+            docker tag "$IMAGE:${{ env.VERSION_LOWER }}" "$IMAGE:${{ env.VERSION_LOWER }}"
             docker push "$IMAGE:${VERSION}"
           done
       - name: "[bluebell] - Create GitHub Release"
