@@ -102,11 +102,16 @@ jobs:
 
       - name: "[bluebell] - Tag and Push Docker Images"
         run: |
-          IMAGE_NAME=ghcr.io/${{ env.REPO_LOWER }}/bluebell
-          docker tag $IMAGE_NAME:latest $IMAGE_NAME:${{ env.VERSION_LOWER }}
-          docker push $IMAGE_NAME:${{ env.VERSION_LOWER }}
-          docker push $IMAGE_NAME:latest
-
+          IMAGES=(
+            "ghcr.io/sprizio/bluebell/greenhouse"
+            "ghcr.io/sprizio/bluebell/sepal"
+            "ghcr.io/sprizio/bluebell/petal"
+          )
+            
+          for IMAGE in "${IMAGES[@]}"; do
+            docker tag "$IMAGE:${{ env.VERSION_LOWER }}"
+            docker push "$IMAGE:${VERSION}"
+          done
       - name: "[bluebell] - Create GitHub Release"
         uses: softprops/action-gh-release@v2
         with:
