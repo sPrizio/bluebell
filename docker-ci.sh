@@ -13,12 +13,12 @@ fi
 echo "Using environment file: $ENV_FILE"
 export SPRING_PROFILE=$ENV
 export FLOWER_PROFILE=$ENV
+export TAG=$TAG
 
 echo "Loading and exporting environment variables..."
 set -a
 source "$ENV_FILE"
 set +a
 
-IMAGE_NAME="ghcr.io/sprizio/bluebell/bluebell"
-echo "Building image $IMAGE_NAME:latest with SPRING_PROFILE=$SPRING_PROFILE and FLOWER_PROFILE=$FLOWER_PROFILE"
-docker compose --env-file "$ENV_FILE" -t "$IMAGE_NAME:$TAG" build
+echo "Building docker image with SPRING_PROFILE=$SPRING_PROFILE and FLOWER_PROFILE=$FLOWER_PROFILE for version $TAG"
+docker compose --env-file "$ENV_FILE" build

@@ -22,6 +22,7 @@ services:
       dockerfile: greenhouse/Dockerfile
       args:
         - SPRING_PROFILES_ACTIVE=${SPRING_PROFILE:-staging}
+    image: ghcr.io/sprizio/bluebell/greenhouse:${TAG:-latest}
     ports:
       - "8080:8080"
     environment:
@@ -40,6 +41,7 @@ services:
       dockerfile: flower/sepal/Dockerfile
       args:
         - FLOWER_PROFILE=${FLOWER_PROFILE:-staging}
+    image: ghcr.io/sprizio/sepal/greenhouse:${TAG:-latest}
     ports:
       - "3000:3000"
     environment:
@@ -52,6 +54,7 @@ services:
     build:
       context: .
       dockerfile: flower/petal/Dockerfile
+    image: ghcr.io/sprizio/bluebell/petal:${TAG:-latest}
     ports:
       - "4000:4000"
     depends_on:
