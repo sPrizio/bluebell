@@ -10,5 +10,11 @@ if [ ! -f "$ENV_FILE" ]; then
 fi
 
 echo "Using environment file: $ENV_FILE"
-echo "Running docker compose build only"
+
+echo "Loading and exporting environment variables..."
+set -a
+source "$ENV_FILE"
+set +a
+
+echo "Running docker compose build"
 docker compose --env-file "$ENV_FILE" build
