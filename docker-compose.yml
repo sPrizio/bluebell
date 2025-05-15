@@ -41,7 +41,7 @@ services:
       dockerfile: flower/sepal/Dockerfile
       args:
         - FLOWER_PROFILE=${FLOWER_PROFILE:-staging}
-    image: ghcr.io/sprizio/sepal/greenhouse:${TAG:-latest}
+    image: ghcr.io/sprizio/bluebell/sepal:${TAG:-latest}
     ports:
       - "3000:3000"
     environment:
