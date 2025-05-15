@@ -83,6 +83,9 @@ class TradeApiControllerTest extends AbstractPlanterTest {
         Mockito.when(this.tradeService.findTradeByTradeId("testId1", TEST_ACCOUNT)).thenReturn(Optional.of(TEST_TRADE_1));
         Mockito.when(this.uniqueIdentifierService.generateUid(any())).thenReturn("MTE4");
         Mockito.when(this.tradeService.findAllTradesWithinTimespan(any(), any(), any(), anyInt(), anyInt(), any())).thenReturn(new PageImpl<>(List.of(generateTestBuyTrade(), generateTestSellTrade()), Pageable.ofSize(10), 10));
+        Mockito.when(this.tradeService.findAllTradesForSymbolWithinTimespan(any(), any(), any(), any(), anyInt(), anyInt(), any())).thenReturn(new PageImpl<>(List.of(generateTestBuyTrade(), generateTestSellTrade()), Pageable.ofSize(10), 10));
+        Mockito.when(this.tradeService.findAllTradesForTradeTypeWithinTimespan(any(), any(), any(), any(), anyInt(), anyInt(), any())).thenReturn(new PageImpl<>(List.of(generateTestBuyTrade(), generateTestSellTrade()), Pageable.ofSize(10), 10));
+        Mockito.when(this.tradeService.findAllTradesForSymbolAndTradeTypeWithinTimespan(any(), any(), any(), any(), any(), anyInt(), anyInt(), any())).thenReturn(new PageImpl<>(List.of(generateTestBuyTrade(), generateTestSellTrade()), Pageable.ofSize(10), 10));
     }
 
 
@@ -160,6 +163,61 @@ class TradeApiControllerTest extends AbstractPlanterTest {
 
 
     //  ----------------- getTradesWithinIntervalPaged -----------------
+
+    @Test
+    void test_getTradesWithinIntervalPaged_symbol_tradeType_success() throws Exception {
+
+        MultiValueMap<String, String> map = new LinkedMultiValueMap<>();
+        map.put("start", List.of("2022-08-24T00:00:00"));
+        map.put("end", List.of("2022-08-25T00:00:00"));
+        map.put("accountNumber", List.of("1234"));
+        map.put("page", List.of("0"));
+        map.put("symbol", List.of("test_symbol"));
+        map.put("tradeType", List.of("BUY"));
+        map.put("pageSize", List.of("10"));
+
+        this.mockMvc.perform(get(getApiPath(BASE, GET_FOR_INTERVAL_PAGED)).with(testUserContext()).params(map))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.data.trades[0].openPrice", is(13083.41)))
+                .andExpect(jsonPath("$.data.trades[0].closePrice", is(13098.67)))
+                .andExpect(jsonPath("$.data.trades[0].netProfit", is(14.85)));
+    }
+
+    @Test
+    void test_getTradesWithinIntervalPaged__symbol_success() throws Exception {
+
+        MultiValueMap<String, String> map = new LinkedMultiValueMap<>();
+        map.put("start", List.of("2022-08-24T00:00:00"));
+        map.put("end", List.of("2022-08-25T00:00:00"));
+        map.put("accountNumber", List.of("1234"));
+        map.put("symbol", List.of("test_symbol"));
+        map.put("page", List.of("0"));
+        map.put("pageSize", List.of("10"));
+
+        this.mockMvc.perform(get(getApiPath(BASE, GET_FOR_INTERVAL_PAGED)).with(testUserContext()).params(map))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.data.trades[0].openPrice", is(13083.41)))
+                .andExpect(jsonPath("$.data.trades[0].closePrice", is(13098.67)))
+                .andExpect(jsonPath("$.data.trades[0].netProfit", is(14.85)));
+    }
+
+    @Test
+    void test_getTradesWithinIntervalPaged_tradeType_success() throws Exception {
+
+        MultiValueMap<String, String> map = new LinkedMultiValueMap<>();
+        map.put("start", List.of("2022-08-24T00:00:00"));
+        map.put("end", List.of("2022-08-25T00:00:00"));
+        map.put("accountNumber", List.of("1234"));
+        map.put("tradeType", List.of("BUY"));
+        map.put("page", List.of("0"));
+        map.put("pageSize", List.of("10"));
+
+        this.mockMvc.perform(get(getApiPath(BASE, GET_FOR_INTERVAL_PAGED)).with(testUserContext()).params(map))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.data.trades[0].openPrice", is(13083.41)))
+                .andExpect(jsonPath("$.data.trades[0].closePrice", is(13098.67)))
+                .andExpect(jsonPath("$.data.trades[0].netProfit", is(14.85)));
+    }
 
     @Test
     void test_getTradesWithinIntervalPaged_success() throws Exception {
