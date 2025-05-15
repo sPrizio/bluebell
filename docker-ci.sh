@@ -10,11 +10,13 @@ if [ ! -f "$ENV_FILE" ]; then
 fi
 
 echo "Using environment file: $ENV_FILE"
+export SPRING_PROFILE=$ENV
+export FLOWER_PROFILE=$ENV
 
 echo "Loading and exporting environment variables..."
 set -a
 source "$ENV_FILE"
 set +a
 
-echo "Running docker compose build"
+echo "Running docker compose build with SPRING_PROFILE=$SPRING_PROFILE and FLOWER_PROFILE=$FLOWER_PROFILE"
 docker compose --env-file "$ENV_FILE" build

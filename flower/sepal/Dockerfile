@@ -10,7 +10,6 @@ RUN npm install --prefix ./flower/sepal
 COPY ./flower/sepal/ ./flower/sepal/
 RUN node ./flower/sepal/scripts/init-env.js "$FLOWER_PROFILE"
 
-RUN echo "Using FLOWER_PROFILE=$FLOWER_PROFILE"
 RUN npm run build --prefix ./flower/sepal
 
 
