@@ -90,7 +90,7 @@ jobs:
         with:
           node-version: '22.x'
           cache: 'npm'
-          cache-dependency-path: './flower/sepal/package-lock.json'
+          cache-dependency-path: './flower/petal/package-lock.json'
 
       - name: "[petal] - Install Dependencies"
         run: npm ci
