@@ -42,7 +42,7 @@ jobs:
           echo "REPO_LOWER=$REPO_LOWER" >> $GITHUB_ENV
           echo "VERSION_LOWER=$VERSION_LOWER" >> $GITHUB_ENV
           echo "ENV=$ENV" >> $GITHUB_ENV
-          echo "UPPER_ENV" >> $GITHUB_ENV
+          echo "UPPER_ENV=$UPPER_ENV" >> $GITHUB_ENV
           echo "version=$VERSION" >> $GITHUB_OUTPUT
 
       - name: "[bluebell] - Generate .env"
