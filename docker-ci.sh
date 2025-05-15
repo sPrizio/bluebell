@@ -3,6 +3,7 @@ set -e
 
 ENV=${1:-prod}
 ENV_FILE=".env.$ENV"
+TAG=${2:-latest}
 
 if [ ! -f "$ENV_FILE" ]; then
   echo "$ENV_FILE not found, generating default version..."
@@ -18,5 +19,6 @@ set -a
 source "$ENV_FILE"
 set +a
 
-echo "Running docker compose build with SPRING_PROFILE=$SPRING_PROFILE and FLOWER_PROFILE=$FLOWER_PROFILE"
-docker compose --env-file "$ENV_FILE" build
+IMAGE_NAME="ghcr.io/sprizio/bluebell/bluebell"
+echo "Building image $IMAGE_NAME:latest with SPRING_PROFILE=$SPRING_PROFILE and FLOWER_PROFILE=$FLOWER_PROFILE"
+docker compose --env-file "$ENV_FILE" -t "$IMAGE_NAME:$TAG" build

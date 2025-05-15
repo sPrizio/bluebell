@@ -91,7 +91,7 @@ jobs:
       - name: "[bluebell] - Build Docker Image"
         run: |
           chmod +x ./docker-ci.sh
-          ./docker-ci.sh ${{ env.ENV }}
+          ./docker-ci.sh ${{ env.ENV }} ${{ env.VERSION }}
 
       - name: "[bluebell] - Log in to GitHub Container Registry"
         uses: docker/login-action@v3
