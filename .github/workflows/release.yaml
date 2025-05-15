@@ -38,6 +38,7 @@ jobs:
             UPPER_ENV=PROD
           fi
 
+          echo "HERE"
           echo "VERSION=$VERSION" >> $GITHUB_ENV
           echo "REPO_LOWER=$REPO_LOWER" >> $GITHUB_ENV
           echo "VERSION_LOWER=$VERSION_LOWER" >> $GITHUB_ENV
@@ -47,7 +48,7 @@ jobs:
 
       - name: "[bluebell] - Generate .env"
         run: |
-          case "$UPPER_ENV" in
+          case "${{ env.UPPER_ENV }}" in
             PROD)
               GH_URL="${{ secrets.GREENHOUSE_HEALTHCHECK_URL_PROD }}"
               ;;
@@ -63,12 +64,9 @@ jobs:
               ;;
           esac
           
-          echo "SPRING_PROFILE=${ENV}" > .env
+          echo "SPRING_PROFILE=${{ env.ENV }}" > .env
           echo "GREENHOUSE_HEALTHCHECK_URL=${GH_URL}" >> .env
-          echo "FLOWER_PROFILE=${ENV}" >> .env
-        env:
-          ENV: ${{ env.ENV }}
-          UPPER_ENV: ${{ env.UPPER_ENV }}
+          echo "FLOWER_PROFILE=${{ env.ENV }}" >> .env
 
       - name: "[bluebell] - Run docker-ci.sh to build images"
         run: ./docker-ci.sh ${{ env.ENV }}
