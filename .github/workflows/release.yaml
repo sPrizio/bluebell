@@ -67,6 +67,27 @@ jobs:
           echo "GREENHOUSE_HEALTHCHECK_URL=${GH_URL}" >> .env
           echo "FLOWER_PROFILE=${{ env.ENV }}" >> .env
 
+      - name: "[greenhouse] - Generate .env"
+        run: |
+          cat > .env <<EOF
+          EMAIL_APP_USERNAME=${{ secrets[ format('{0}_EMAIL_APP_USERNAME', env.UPPER_ENV) ] }}
+          EMAIL_APP_PASSWORD=${{ secrets[ format('{0}_EMAIL_APP_PASSWORD', env.UPPER_ENV) ] }}
+          EMAIL_APP_SENDER=${{ secrets[ format('{0}_EMAIL_APP_SENDER', env.UPPER_ENV) ] }}
+          EMAIL_APP_RECIPIENT=${{ secrets[ format('{0}_EMAIL_APP_RECIPIENT', env.UPPER_ENV) ] }}
+          EOF
+        working-directory: './greenhouse'
+
+      - name: "[sepal] - Generate config"
+        run: |
+          ENV_FILE=".env.${{ env.ENV }}"
+          mkdir -p flower/sepal/config
+          cat > "flower/sepal/config/$ENV_FILE" <<EOF
+          BASE_API_DOMAIN=${{ secrets[ format('FLOWER_BASE_API_DOMAIN_{0}', env.UPPER_ENV) ] }}
+          BASE_API_VERSION=${{ secrets[ format('FLOWER_BASE_API_VERSION_{0}', env.UPPER_ENV) ] }}
+          NEXT_PUBLIC_BASE_API_DOMAIN=${{ secrets[ format('FLOWER_BASE_API_DOMAIN_{0}', env.UPPER_ENV) ] }}
+          NEXT_PUBLIC_BASE_API_VERSION=${{ secrets[ format('FLOWER_BASE_API_VERSION_{0}', env.UPPER_ENV) ] }}
+          EOF
+
       - name: "[bluebell] - Build Docker Image"
         run: |
           chmod +x ./docker-ci.sh

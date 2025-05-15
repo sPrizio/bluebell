@@ -125,7 +125,7 @@ jobs:
           distribution: 'temurin'
           cache: maven
 
-      - name: "[greenhouse] - Generate .env "
+      - name: "[greenhouse] - Generate .env"
         run: |
           cat > .env <<EOF
           EMAIL_APP_USERNAME=${{ secrets[ format('{0}_EMAIL_APP_USERNAME', env.UPPER_ENV) ] }}
