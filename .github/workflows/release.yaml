@@ -47,13 +47,28 @@ jobs:
 
       - name: "[bluebell] - Generate .env"
         run: |
-          echo "SPRING_PROFILE=${SPRING_PROFILE}" > .env
-          echo "GREENHOUSE_HEALTHCHECK_URL=${GREENHOUSE_HEALTHCHECK_URL}" >> .env
-          echo "FLOWER_PROFILE=${FLOWER_PROFILE}" >> .env
+          case "$UPPER_ENV" in
+            PROD)
+              GH_URL="${{ secrets.GREENHOUSE_HEALTHCHECK_URL_PROD }}"
+              ;;
+            DEV)
+              GH_URL="${{ secrets.GREENHOUSE_HEALTHCHECK_URL_DEV }}"
+              ;;
+            STAGING)
+              GH_URL="${{ secrets.GREENHOUSE_HEALTHCHECK_URL_STAGING }}"
+              ;;
+            *)
+              echo "Unknown env $UPPER_ENV"
+              exit 1
+              ;;
+          esac
+          
+          echo "SPRING_PROFILE=${ENV}" > .env
+          echo "GREENHOUSE_HEALTHCHECK_URL=${GH_URL}" >> .env
+          echo "FLOWER_PROFILE=${ENV}" >> .env
         env:
-          SPRING_PROFILE: ${{ env.ENV }}
-          FLOWER_PROFILE: ${{ env.ENV }}
-          GREENHOUSE_HEALTHCHECK_URL: ${{ secrets[ format('GREENHOUSE_HEALTHCHECK_URL_{0}', env.UPPER_ENV) ] }}
+          ENV: ${{ env.ENV }}
+          UPPER_ENV: ${{ env.UPPER_ENV }}
 
       - name: "[bluebell] - Run docker-ci.sh to build images"
         run: ./docker-ci.sh ${{ env.ENV }}
