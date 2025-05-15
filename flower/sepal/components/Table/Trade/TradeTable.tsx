@@ -28,11 +28,13 @@ import {
 import { Account } from "@/types/apiTypes";
 import { usePagedTradesQuery } from "@/lib/hooks/query/queries";
 import Error from "@/app/error";
+import { UserTradeControlSelection } from "@/types/uiTypes";
 
 /**
  * Renders a table of trades
  *
  * @param account account
+ * @param filters filters
  * @param initialPageSize initial page size
  * @param initialPage initial page
  * @author Stephen Prizio
@@ -40,10 +42,12 @@ import Error from "@/app/error";
  */
 export default function TradeTable({
   account,
+  filters,
   initialPageSize = 10,
   initialPage = 0,
 }: Readonly<{
   account: Account | null;
+  filters: UserTradeControlSelection;
   initialPageSize?: number;
   initialPage?: number;
 }>) {
@@ -55,10 +59,13 @@ export default function TradeTable({
     error: pagedTradesError,
   } = usePagedTradesQuery(
     account?.accountNumber ?? -1,
-    moment(account?.accountOpenTime).format(DateTime.ISODateTimeFormat),
-    moment().add(1, "years").format(DateTime.ISODateTimeFormat),
+    moment(filters.start).format(DateTime.ISODateTimeFormat) ?? "",
+    moment(filters.end).format(DateTime.ISODateTimeFormat) ?? "",
     currentPage,
     initialPageSize,
+    filters.type,
+    filters.symbol,
+    filters.sort,
   );
 
   //  GENERAL FUNCTIONS
@@ -106,6 +113,9 @@ export default function TradeTable({
                     Product
                   </TableHead>
                   <TableHead className={"text-left text-primary font-bold"}>
+                    Type
+                  </TableHead>
+                  <TableHead className={"text-left text-primary font-bold"}>
                     Open Time
                   </TableHead>
                   <TableHead className={"text-center text-primary font-bold"}>
@@ -129,10 +139,10 @@ export default function TradeTable({
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {pagedTrades?.trades?.map((item) => {
+                {pagedTrades?.trades?.map((item, index) => {
                   return (
                     <TableRow
-                      key={item.tradeId}
+                      key={item.tradeId + index}
                       className={"hover:bg-transparent"}
                     >
                       <TableCell className={"text-center"}>
@@ -141,6 +151,7 @@ export default function TradeTable({
                       <TableCell className={"text-left"}>
                         {item.product}
                       </TableCell>
+                      <TableCell>{item.tradeType}</TableCell>
                       <TableCell className={"text-left"}>
                         {moment(item.tradeOpenTime).format(
                           DateTime.ISOShortMonthDayYearWithTimeFormat,

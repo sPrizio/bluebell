@@ -15,6 +15,7 @@ import { useActiveAccount } from "@/lib/hooks/api/useActiveAccount";
 import { useTradeData } from "@/lib/hooks/api/useTradeRecordsData";
 import PerformanceDrawer from "@/components/Drawer/PerformanceDrawer";
 import ReusableSelect from "@/components/Input/ReusableSelect";
+import { DateTime } from "@/lib/constants";
 
 /**
  * The page that shows an account's performance over time
@@ -40,8 +41,8 @@ export default function PerformancePage() {
   const [userSelection, setUserSelection] =
     useState<UserTradeRecordControlSelection>({
       aggInterval: AggregateInterval.DAILY,
-      month: moment().format("MMMM").toUpperCase(),
-      year: moment().format("YYYY"),
+      month: moment().format(DateTime.ISOMonthFormat).toUpperCase(),
+      year: moment().format(DateTime.ISOYearFormat),
     });
 
   const [submittedFilters, setSubmittedFilters] = useState(userSelection);

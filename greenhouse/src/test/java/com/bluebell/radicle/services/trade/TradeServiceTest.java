@@ -17,6 +17,7 @@ import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Sort;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.context.junit4.SpringRunner;
 
@@ -32,11 +33,13 @@ import static org.mockito.ArgumentMatchers.any;
  * Testing class for {@link TradeService}
  *
  * @author Stephen Prizio
- * @version 0.1.3
+ * @version 0.2.0
  */
 @SpringBootTest
 @RunWith(SpringRunner.class)
 class TradeServiceTest extends AbstractGenericTest {
+
+    private static final String TEST_SYMBOL = "test_symbol";
 
     private final Account TEST_ACCOUNT = generateTestAccount();
 
@@ -66,6 +69,9 @@ class TradeServiceTest extends AbstractGenericTest {
         Mockito.when(this.tradeRepository.findTradeByTradeIdAndAccount("testId1", TEST_ACCOUNT)).thenReturn(TEST_TRADE_1);
         Mockito.when(this.tradeRepository.findAllTradesWithinDatePaged(any(), any(), any(), any())).thenReturn(new PageImpl<>(List.of(TEST_TRADE_1, TEST_TRADE_2)));
         Mockito.when(this.tradeRepository.findTradeByTradeIdAndAccount("123", TEST_ACCOUNT)).thenReturn(generateTestBuyTrade());
+        Mockito.when(this.tradeRepository.findAllTradesForSymbolWithinDatePaged(any(), any(), any(), any(), any())).thenReturn(new PageImpl<>(List.of(TEST_TRADE_1, TEST_TRADE_2)));
+        Mockito.when(this.tradeRepository.findAllTradesForTypeWithinDatePaged(any(), any(), any(), any(), any())).thenReturn(new PageImpl<>(List.of(TEST_TRADE_1, TEST_TRADE_2)));
+        Mockito.when(this.tradeRepository.findAllTradesForSymbolAndTypeWithinDatePaged(any(), any(), any(), any(), any(), any())).thenReturn(new PageImpl<>(List.of(TEST_TRADE_1, TEST_TRADE_2)));
     }
 
 
@@ -124,27 +130,111 @@ class TradeServiceTest extends AbstractGenericTest {
     @Test
     void test_findAllTradesWithinTimespan_paged_missingParamStart() {
         assertThatExceptionOfType(IllegalParameterException.class)
-                .isThrownBy(() -> this.tradeService.findAllTradesWithinTimespan(null, LocalDateTime.MAX, generateTestAccount(), 0, 10))
+                .isThrownBy(() -> this.tradeService.findAllTradesWithinTimespan(null, LocalDateTime.MAX, generateTestAccount(), 0, 10, Sort.by(Sort.Direction.ASC, "tradeOpenTime", "tradeCloseTime")))
                 .withMessage(CorePlatformConstants.Validation.DateTime.START_DATE_CANNOT_BE_NULL);
     }
 
     @Test
     void test_findAllTradesWithinTimespan_paged_missingParamEnd() {
         assertThatExceptionOfType(IllegalParameterException.class)
-                .isThrownBy(() -> this.tradeService.findAllTradesWithinTimespan(LocalDateTime.MAX, null, generateTestAccount(), 0, 10))
+                .isThrownBy(() -> this.tradeService.findAllTradesWithinTimespan(LocalDateTime.MAX, null, generateTestAccount(), 0, 10, Sort.by(Sort.Direction.ASC, "tradeOpenTime", "tradeCloseTime")))
                 .withMessage(CorePlatformConstants.Validation.DateTime.END_DATE_CANNOT_BE_NULL);
     }
 
     @Test
     void test_findAllTradesWithinTimespan_paged_invalidInterval() {
         assertThatExceptionOfType(UnsupportedOperationException.class)
-                .isThrownBy(() -> this.tradeService.findAllTradesWithinTimespan(LocalDateTime.MAX, LocalDateTime.MIN, generateTestAccount(), 0, 10))
+                .isThrownBy(() -> this.tradeService.findAllTradesWithinTimespan(LocalDateTime.MAX, LocalDateTime.MIN, generateTestAccount(), 0, 10, Sort.by(Sort.Direction.ASC, "tradeOpenTime", "tradeCloseTime")))
                 .withMessage(CorePlatformConstants.Validation.DateTime.MUTUALLY_EXCLUSIVE_DATES);
     }
 
     @Test
     void test_findAllTradesWithinTimespan_paged_success() {
-        assertThat(this.tradeService.findAllTradesWithinTimespan(TEST1, TEST2, generateTestAccount(), 0, 10))
+        assertThat(this.tradeService.findAllTradesWithinTimespan(TEST1, TEST2, generateTestAccount(), 0, 10, Sort.by(Sort.Direction.ASC, "tradeOpenTime", "tradeCloseTime")))
+                .hasSize(2)
+                .extracting("openPrice", "closePrice", "netProfit")
+                .contains(Tuple.tuple(13083.41, 13098.67, 14.85), Tuple.tuple(13160.09, 13156.12, -4.50));
+    }
+
+
+    //  ----------------- findAllTradesForSymbolWithinTimespan (paged) -----------------
+
+    @Test
+    void test_findAllTradesForSymbolWithinTimespan_missingParams() {
+        assertThatExceptionOfType(IllegalParameterException.class)
+                .isThrownBy(() -> this.tradeService.findAllTradesForSymbolWithinTimespan(null, LocalDateTime.MAX, generateTestAccount(), TEST_SYMBOL, 0, 10, Sort.by(Sort.Direction.ASC, "tradeOpenTime", "tradeCloseTime")))
+                .withMessage(CorePlatformConstants.Validation.DateTime.START_DATE_CANNOT_BE_NULL);
+        assertThatExceptionOfType(IllegalParameterException.class)
+                .isThrownBy(() -> this.tradeService.findAllTradesForSymbolWithinTimespan(LocalDateTime.MIN, null, generateTestAccount(), TEST_SYMBOL, 0, 10, Sort.by(Sort.Direction.ASC, "tradeOpenTime", "tradeCloseTime")))
+                .withMessage(CorePlatformConstants.Validation.DateTime.END_DATE_CANNOT_BE_NULL);
+        assertThatExceptionOfType(UnsupportedOperationException.class)
+                .isThrownBy(() -> this.tradeService.findAllTradesForSymbolWithinTimespan(LocalDateTime.MAX, LocalDateTime.MIN, generateTestAccount(), TEST_SYMBOL, 0, 10, Sort.by(Sort.Direction.ASC, "tradeOpenTime", "tradeCloseTime")))
+                .withMessage(CorePlatformConstants.Validation.DateTime.MUTUALLY_EXCLUSIVE_DATES);
+        assertThatExceptionOfType(IllegalParameterException.class)
+                .isThrownBy(() -> this.tradeService.findAllTradesForSymbolWithinTimespan(LocalDateTime.MIN, LocalDateTime.MAX, generateTestAccount(), null, 0, 10, Sort.by(Sort.Direction.ASC, "tradeOpenTime", "tradeCloseTime")))
+                .withMessage(CorePlatformConstants.Validation.MarketPrice.SYMBOL_CANNOT_BE_NULL);
+    }
+
+    @Test
+    void test_findAllTradesForSymbolWithinTimespan_success() {
+        assertThat(this.tradeService.findAllTradesForSymbolWithinTimespan(TEST1, TEST2, generateTestAccount(), TEST_SYMBOL, 0, 10, Sort.by(Sort.Direction.ASC, "tradeOpenTime", "tradeCloseTime")))
+                .hasSize(2)
+                .extracting("openPrice", "closePrice", "netProfit")
+                .contains(Tuple.tuple(13083.41, 13098.67, 14.85), Tuple.tuple(13160.09, 13156.12, -4.50));
+    }
+
+
+    //  ----------------- findAllTradesForTradeTypeWithinTimespan (paged) -----------------
+
+    @Test
+    void test_findAllTradesForTradeTypeWithinTimespan_missingParams() {
+        assertThatExceptionOfType(IllegalParameterException.class)
+                .isThrownBy(() -> this.tradeService.findAllTradesForTradeTypeWithinTimespan(null, LocalDateTime.MAX, generateTestAccount(), TradeType.BUY, 0, 10, Sort.by(Sort.Direction.ASC, "tradeOpenTime", "tradeCloseTime")))
+                .withMessage(CorePlatformConstants.Validation.DateTime.START_DATE_CANNOT_BE_NULL);
+        assertThatExceptionOfType(IllegalParameterException.class)
+                .isThrownBy(() -> this.tradeService.findAllTradesForTradeTypeWithinTimespan(LocalDateTime.MIN, null, generateTestAccount(), TradeType.BUY, 0, 10, Sort.by(Sort.Direction.ASC, "tradeOpenTime", "tradeCloseTime")))
+                .withMessage(CorePlatformConstants.Validation.DateTime.END_DATE_CANNOT_BE_NULL);
+        assertThatExceptionOfType(UnsupportedOperationException.class)
+                .isThrownBy(() -> this.tradeService.findAllTradesForTradeTypeWithinTimespan(LocalDateTime.MAX, LocalDateTime.MIN, generateTestAccount(), TradeType.BUY, 0, 10, Sort.by(Sort.Direction.ASC, "tradeOpenTime", "tradeCloseTime")))
+                .withMessage(CorePlatformConstants.Validation.DateTime.MUTUALLY_EXCLUSIVE_DATES);
+        assertThatExceptionOfType(IllegalParameterException.class)
+                .isThrownBy(() -> this.tradeService.findAllTradesForTradeTypeWithinTimespan(LocalDateTime.MIN, LocalDateTime.MAX, generateTestAccount(), null, 0, 10, Sort.by(Sort.Direction.ASC, "tradeOpenTime", "tradeCloseTime")))
+                .withMessage(CorePlatformConstants.Validation.Trade.TRADE_TYPE_CANNOT_BE_NULL);
+    }
+
+    @Test
+    void test_findAllTradesForTradeTypeWithinTimespan_success() {
+        assertThat(this.tradeService.findAllTradesForSymbolWithinTimespan(TEST1, TEST2, generateTestAccount(), TEST_SYMBOL, 0, 10, Sort.by(Sort.Direction.ASC, "tradeOpenTime", "tradeCloseTime")))
+                .hasSize(2)
+                .extracting("openPrice", "closePrice", "netProfit")
+                .contains(Tuple.tuple(13083.41, 13098.67, 14.85), Tuple.tuple(13160.09, 13156.12, -4.50));
+    }
+
+
+    //  ----------------- findAllTradesForSymbolAndTradeTypeWithinTimespan (paged) -----------------
+
+    @Test
+    void test_findAllTradesForSymbolAndTradeTypeWithinTimespan_missingParams() {
+        assertThatExceptionOfType(IllegalParameterException.class)
+                .isThrownBy(() -> this.tradeService.findAllTradesForSymbolAndTradeTypeWithinTimespan(null, LocalDateTime.MAX, generateTestAccount(), TEST_SYMBOL, TradeType.BUY, 0, 10, Sort.by(Sort.Direction.ASC, "tradeOpenTime", "tradeCloseTime")))
+                .withMessage(CorePlatformConstants.Validation.DateTime.START_DATE_CANNOT_BE_NULL);
+        assertThatExceptionOfType(IllegalParameterException.class)
+                .isThrownBy(() -> this.tradeService.findAllTradesForSymbolAndTradeTypeWithinTimespan(LocalDateTime.MIN, null, generateTestAccount(), TEST_SYMBOL, TradeType.BUY, 0, 10, Sort.by(Sort.Direction.ASC, "tradeOpenTime", "tradeCloseTime")))
+                .withMessage(CorePlatformConstants.Validation.DateTime.END_DATE_CANNOT_BE_NULL);
+        assertThatExceptionOfType(UnsupportedOperationException.class)
+                .isThrownBy(() -> this.tradeService.findAllTradesForSymbolAndTradeTypeWithinTimespan(LocalDateTime.MAX, LocalDateTime.MIN, generateTestAccount(), TEST_SYMBOL, TradeType.BUY, 0, 10, Sort.by(Sort.Direction.ASC, "tradeOpenTime", "tradeCloseTime")))
+                .withMessage(CorePlatformConstants.Validation.DateTime.MUTUALLY_EXCLUSIVE_DATES);
+        assertThatExceptionOfType(IllegalParameterException.class)
+                .isThrownBy(() -> this.tradeService.findAllTradesForSymbolAndTradeTypeWithinTimespan(LocalDateTime.MIN, LocalDateTime.MAX, generateTestAccount(), null, TradeType.BUY, 0, 10, Sort.by(Sort.Direction.ASC, "tradeOpenTime", "tradeCloseTime")))
+                .withMessage(CorePlatformConstants.Validation.MarketPrice.SYMBOL_CANNOT_BE_NULL);
+        assertThatExceptionOfType(IllegalParameterException.class)
+                .isThrownBy(() -> this.tradeService.findAllTradesForSymbolAndTradeTypeWithinTimespan(LocalDateTime.MIN, LocalDateTime.MAX, generateTestAccount(), TEST_SYMBOL, null, 0, 10, Sort.by(Sort.Direction.ASC, "tradeOpenTime", "tradeCloseTime")))
+                .withMessage(CorePlatformConstants.Validation.Trade.TRADE_TYPE_CANNOT_BE_NULL);
+    }
+
+    @Test
+    void test_findAllTradesForSymbolAndTradeTypeWithinTimespan_success() {
+        assertThat(this.tradeService.findAllTradesForSymbolAndTradeTypeWithinTimespan(TEST1, TEST2, generateTestAccount(), "test", TradeType.BUY, 0, 10, Sort.by(Sort.Direction.ASC, "tradeOpenTime", "tradeCloseTime")))
                 .hasSize(2)
                 .extracting("openPrice", "closePrice", "netProfit")
                 .contains(Tuple.tuple(13083.41, 13098.67, 14.85), Tuple.tuple(13160.09, 13156.12, -4.50));

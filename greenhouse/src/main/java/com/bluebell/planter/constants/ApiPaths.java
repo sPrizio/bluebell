@@ -6,7 +6,7 @@ import static com.bluebell.platform.constants.CorePlatformConstants.NO_INSTANTIA
  * Defines all api paths used by the endpoints and testing module
  *
  * @author Stephen Prizio
- * @version 0.1.9
+ * @version 0.2.0
  */
 public class ApiPaths {
 
@@ -140,6 +140,17 @@ public class ApiPaths {
         public static final String GET = "/get";
 
         public static final String GET_COMPREHENSIVE = "/get-comprehensive";
+    }
+
+    public static class Symbol {
+
+        private Symbol() {
+            throw new UnsupportedOperationException(String.format(NO_INSTANTIATION, getClass().getName()));
+        }
+
+        public static final String BASE = "/symbol";
+
+        public static final String GET_TRADED_SYMBOLS = "/get-traded-symbols";
     }
 
     public static class User {

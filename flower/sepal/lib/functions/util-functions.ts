@@ -118,21 +118,19 @@ export function getAccount(
 /**
  * Fetches the Account number requested by the page
  *
- * @param params search params
+ * @param val account number
  * @param accounts accounts list
  */
 export function getAccountNumber(
-  params: ReadonlyURLSearchParams,
+  val: string | null,
   accounts: Array<Account>,
 ): number {
-  const val = params.get("account") ?? -1;
-
   if (val === "default") {
     return getDefaultAccount(accounts)?.accountNumber ?? -1;
   }
 
-  if (val !== -1 && isNumeric(val)) {
-    return parseInt(val as string);
+  if (isNumeric(val)) {
+    return parseInt(val ?? "-1");
   }
 
   return -1;

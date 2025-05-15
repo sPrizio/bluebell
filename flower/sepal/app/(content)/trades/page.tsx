@@ -1,15 +1,23 @@
 "use client";
 
 import { useRouter, useSearchParams } from "next/navigation";
-import React from "react";
-import { selectNewAccount } from "@/lib/functions/util-functions";
+import React, { useEffect, useState } from "react";
+import { logErrors, selectNewAccount } from "@/lib/functions/util-functions";
 import { Icons } from "@/lib/enums";
-import TradeTable from "@/components/Table/Trade/TradeTable";
 import { BaseCard } from "@/components/Card/BaseCard";
 import { useActiveAccount } from "@/lib/hooks/api/useActiveAccount";
 import { PageInfoProvider } from "@/lib/context/PageInfoProvider";
 import ReusableSelect from "@/components/Input/ReusableSelect";
 import { validatePageQueryFlow } from "@/lib/functions/util-component-functions";
+import TradeFilterDrawer from "@/components/Drawer/TradeFilterDrawer";
+import { UserTradeControlSelection } from "@/types/uiTypes";
+import moment from "moment";
+import { Button } from "@/components/ui/button";
+import LoadingPage from "@/app/loading";
+import TradeTable from "@/components/Table/Trade/TradeTable";
+import { DateTime } from "@/lib/constants";
+import { useTradedSymbolsQuery } from "@/lib/hooks/query/queries";
+import Error from "@/app/error";
 
 /**
  * Renders the Trade history page
@@ -29,6 +37,13 @@ export default function TradesPage() {
     hasMismatch,
   } = useActiveAccount();
 
+  const {
+    data: tradedSymbols,
+    isError: isTradedSymbolsError,
+    error: tradedSymbolsError,
+    isLoading: isTradedSymbolsLoading,
+  } = useTradedSymbolsQuery(activeAccount?.accountNumber ?? -1);
+
   validatePageQueryFlow(
     isLoading,
     isError,
@@ -36,6 +51,35 @@ export default function TradesPage() {
     hasMismatch,
     error,
   );
+
+  const [pageSize, setPageSize] = useState(15);
+  const [hasSubmitted, setHasSubmitted] = useState(false);
+  const [userSelection, setUserSelection] = useState<UserTradeControlSelection>(
+    {
+      start: activeAccount?.accountOpenTime
+        ? moment(activeAccount?.accountOpenTime ?? "").toDate()
+        : moment().toDate(),
+      end: moment().toDate(),
+      sort: "asc",
+      type: "ALL",
+      symbol: "ALL",
+    },
+  );
+  const [submittedFilters, setSubmittedFilters] = useState(userSelection);
+
+  useEffect(() => {
+    if (activeAccount?.accountOpenTime) {
+      const newStart = moment(activeAccount.accountOpenTime).toDate();
+      setUserSelection((prev) => ({
+        ...prev,
+        start: newStart,
+      }));
+      setSubmittedFilters((prev) => ({
+        ...prev,
+        start: newStart,
+      }));
+    }
+  }, [activeAccount]);
 
   const accNumber = activeAccount?.accountNumber ?? -1;
   const pageInfo = {
@@ -54,14 +98,34 @@ export default function TradesPage() {
     ],
   };
 
+  //  GENERAL FUNCTIONS
+
+  /**
+   * Formats the given date into a nicer string
+   *
+   * @param date date to format
+   */
+  function formatDate(date: Date): string {
+    return moment(date).format(DateTime.ISOLongMonthDayYearFormat);
+  }
+
   //  RENDER
+
+  if (isTradedSymbolsError) {
+    logErrors(tradedSymbolsError);
+    return <Error />;
+  }
+
+  if (!activeAccount || isTradedSymbolsLoading) {
+    return <LoadingPage />;
+  }
 
   return (
     <PageInfoProvider value={pageInfo}>
       <div className={""}>
         {
           <div className={"grid grid-cols-1 gap-8"}>
-            <div className={"flex items-center justify-end gap-4"}>
+            <div className={"flex items-end justify-end gap-4"}>
               <div>
                 <ReusableSelect
                   title={"Account"}
@@ -81,15 +145,49 @@ export default function TradesPage() {
                   }}
                 />
               </div>
+              <div>
+                <TradeFilterDrawer
+                  userSelection={userSelection}
+                  onChange={setUserSelection}
+                  onSubmit={() => {
+                    setSubmittedFilters(userSelection);
+                    setHasSubmitted(true);
+                  }}
+                  onCancel={() => {
+                    setUserSelection(submittedFilters);
+                    setSubmittedFilters(userSelection);
+                    setHasSubmitted(false);
+                  }}
+                  symbols={tradedSymbols}
+                />
+              </div>
             </div>
             <div>
               <BaseCard
                 loading={isLoading}
                 title={"Trades"}
-                subtitle={"A view of each trade taken in this account."}
-                cardContent={
-                  <TradeTable account={activeAccount} initialPageSize={15} />
+                subtitle={
+                  formatDate(submittedFilters.start) +
+                  " - " +
+                  formatDate(submittedFilters.end)
                 }
+                cardContent={
+                  <TradeTable
+                    account={activeAccount}
+                    filters={submittedFilters}
+                    initialPageSize={pageSize}
+                  />
+                }
+                headerControls={[
+                  <Button
+                    key={0}
+                    className=""
+                    variant={"outline"}
+                    onClick={() => setPageSize(100000)}
+                  >
+                    View All Trades
+                  </Button>,
+                ]}
               />
             </div>
           </div>

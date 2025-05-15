@@ -1,7 +1,7 @@
 package com.bluebell.radicle.importing.validation;
 
 import com.bluebell.radicle.importing.exceptions.FileExtensionNotSupportedException;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
 
@@ -13,7 +13,7 @@ import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
  * Testing class for {@link ImportValidator}
  *
  * @author Stephen Prizio
- * @version 0.1.3
+ * @version 0.2.0
  */
 public class ImportValidatorTest {
 

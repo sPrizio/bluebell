@@ -33,6 +33,17 @@ type Props = {
     | undefined;
 };
 
+/**
+ * Component that allows a user to filter trade record performances by various filters
+ *
+ * @param userSelection user's selection
+ * @param onChange what to do on changing of a value
+ * @param onSubmit submit handler
+ * @param onCancel cancel handler
+ * @param tradeRecordControls control filter
+ * @author Stephen Prizio
+ * @version 0.2.0
+ */
 export default function PerformanceDrawer({
   userSelection,
   onChange,
@@ -153,7 +164,7 @@ export default function PerformanceDrawer({
           </div>
           <DrawerFooter className={""}>
             <Button variant={"primary"} onClick={onSubmit}>
-              Submit
+              Apply
             </Button>
             <DrawerClose asChild>
               <Button variant="outline" onClick={onCancel}>
