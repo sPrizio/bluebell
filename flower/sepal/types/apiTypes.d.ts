@@ -370,6 +370,21 @@ interface HealthCheck {
   apiVersion: string;
 }
 
+interface CreateUpdateAccountRequest {
+  isDefault: boolean;
+  balance: number;
+  active: boolean;
+  name: string;
+  number: number;
+  currency: string;
+  broker: string;
+  type: string;
+  tradePlatform: string;
+  isLegacy: boolean;
+  accountOpenTime: string | undefined | null;
+  accountCloseTime: string | undefined | null;
+}
+
 export type FilterSelector = "POINTS" | "PROFIT" | "PERCENTAGE";
 
 export type TradeDurationFilterSelector = "ALL" | "WINS" | "LOSSES";

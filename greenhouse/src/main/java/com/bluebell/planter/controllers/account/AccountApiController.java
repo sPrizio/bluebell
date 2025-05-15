@@ -474,6 +474,10 @@ public class AccountApiController extends AbstractApiController {
         final Optional<Account> account = this.accountService.findAccountByAccountNumber(accountNumber);
         return account.map(value -> {
             final boolean result = this.accountService.deleteAccount(value);
+            if (result) {
+                this.accountService.reassignAccounts(portfolioNumber);
+            }
+
             return StandardJsonResponse.<Boolean>builder().success(result).data(result).build();
         }).orElseGet(() -> StandardJsonResponse.<Boolean>builder().success(false).data(false).message(String.format(NO_ACCOUNT_FOR_ACCOUNT_NUMBER, accountNumber)).build());
     }

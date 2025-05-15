@@ -6,6 +6,7 @@ import { Account } from "@/types/apiTypes";
 
 export function useActiveAccount() {
   const searchParams = useSearchParams();
+  const accountParam = searchParams.get("account");
   const {
     isLoading: isPortfolioLoading,
     isError,
@@ -15,8 +16,8 @@ export function useActiveAccount() {
   } = useActivePortfolio();
 
   const accountNumber = useMemo(() => {
-    return getAccountNumber(searchParams, activePortfolio?.accounts ?? []);
-  }, [searchParams, activePortfolio]);
+    return getAccountNumber(accountParam, activePortfolio?.accounts ?? []);
+  }, [accountParam, activePortfolio]);
 
   const activeAccount: Account | null = useMemo(() => {
     return (

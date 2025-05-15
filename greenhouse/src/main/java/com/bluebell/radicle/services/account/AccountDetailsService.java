@@ -57,7 +57,7 @@ public class AccountDetailsService {
         final TradeRecordReport report =
                 this.tradeRecordService.getTradeRecords(
                         account.getAccountOpenTime().toLocalDate().minusDays(1),
-                        account.getLastTraded().toLocalDate().plusDays(1),
+                        account.getLastTraded() == null ? LocalDate.now().plusDays(1) : account.getLastTraded().toLocalDate().plusDays(1),
                         account,
                         TradeRecordTimeInterval.DAILY,
                         CorePlatformConstants.MAX_RESULT_SIZE

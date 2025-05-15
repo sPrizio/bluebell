@@ -3,7 +3,7 @@
 import React from "react";
 import { Icons } from "@/lib/enums";
 import { useRouter, useSearchParams } from "next/navigation";
-import { logErrors, selectNewAccount } from "@/lib/functions/util-functions";
+import { selectNewAccount } from "@/lib/functions/util-functions";
 import { BaseCard } from "@/components/Card/BaseCard";
 import AccountTransactionsTable from "@/components/Table/Account/AccountTransactionsTable";
 import { Button } from "@/components/ui/button";
@@ -13,8 +13,7 @@ import TransactionForm from "@/components/Form/Transaction/TransactionForm";
 import { useActiveAccount } from "@/lib/hooks/api/useActiveAccount";
 import ReusableSelect from "@/components/Input/ReusableSelect";
 import { PageInfoProvider } from "@/lib/context/PageInfoProvider";
-import LoadingPage from "@/app/loading";
-import Error from "@/app/error";
+import { validatePageQueryFlow } from "@/lib/functions/util-component-functions";
 
 /**
  * The page that shows all of a user's account's transactions. Accounts can be cycled
@@ -34,14 +33,13 @@ export default function TransactionsPage() {
     hasMismatch,
   } = useActiveAccount();
 
-  if (isLoading) {
-    return <LoadingPage />;
-  }
-
-  if (hasMismatch || isError) {
-    logErrors("User and portfolio mismatch!", error);
-    return <Error />;
-  }
+  validatePageQueryFlow(
+    isLoading,
+    isError,
+    activePortfolio,
+    hasMismatch,
+    error,
+  );
 
   const accNumber = activeAccount?.accountNumber ?? -1;
   const pageInfo = {
@@ -89,7 +87,7 @@ export default function TransactionsPage() {
             <div>
               {(activeAccount?.transactions?.length ?? 0) === 0 && (
                 <div className="text-center text-slate-500">
-                  No account activity.
+                  No transaction activity.
                 </div>
               )}
               {(activeAccount?.transactions?.length ?? 0) > 0 ? (

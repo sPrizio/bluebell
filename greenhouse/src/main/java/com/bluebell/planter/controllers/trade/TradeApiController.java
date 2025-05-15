@@ -4,6 +4,7 @@ import com.bluebell.planter.constants.ApiPaths;
 import com.bluebell.planter.controllers.AbstractApiController;
 import com.bluebell.planter.converters.trade.TradeDTOConverter;
 import com.bluebell.platform.constants.CorePlatformConstants;
+import com.bluebell.platform.enums.GenericEnum;
 import com.bluebell.platform.enums.trade.TradeType;
 import com.bluebell.platform.models.api.dto.trade.PaginatedTradesDTO;
 import com.bluebell.platform.models.api.dto.trade.TradeDTO;
@@ -25,7 +26,9 @@ import jakarta.annotation.Resource;
 import jakarta.servlet.http.HttpServletRequest;
 import org.apache.commons.lang3.EnumUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.javatuples.Triplet;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Sort;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -279,13 +282,33 @@ public class TradeApiController extends AbstractApiController {
             final @RequestParam(value = "page", defaultValue = "0") int page,
             @Parameter(name = "pageSize", description = "Size of page", example = "25")
             final @RequestParam(value = "pageSize", defaultValue = "10") int pageSize,
+            @Parameter(name = "tradeType", description = "Type of trade", example = "BUY")
+            final @RequestParam(value = "tradeType", defaultValue = "ALL") String tradeType,
+            @Parameter(name = "symbol", description = "Symbol", example = "NDX")
+            final @RequestParam(value = "symbol", defaultValue = "ALL") String symbol,
+            @Parameter(name = "sort", description = "Sort order", example = "asc")
+            final @RequestParam(value = "sort", defaultValue = "asc") String sort,
             final HttpServletRequest request
     ) {
         validateLocalDateTimeFormat(start, CorePlatformConstants.DATE_TIME_FORMAT, String.format(CorePlatformConstants.Validation.DateTime.START_DATE_INVALID_FORMAT, start, CorePlatformConstants.DATE_TIME_FORMAT));
         validateLocalDateTimeFormat(end, CorePlatformConstants.DATE_TIME_FORMAT, String.format(CorePlatformConstants.Validation.DateTime.START_DATE_INVALID_FORMAT, end, CorePlatformConstants.DATE_TIME_FORMAT));
 
         final User user = (User) request.getAttribute(SecurityConstants.USER_REQUEST_KEY);
-        Page<Trade> trades = this.tradeService.findAllTradesWithinTimespan(LocalDateTime.parse(start, DateTimeFormatter.ISO_DATE_TIME), LocalDateTime.parse(end, DateTimeFormatter.ISO_DATE_TIME), getAccountForId(user, accountNumber), page, pageSize);
+        final Triplet<TradeType, String, Sort> filters = resolveFilters(tradeType, symbol, sort);
+
+        Page<Trade> trades;
+        if (filters.getValue0() != null && StringUtils.isNotEmpty(filters.getValue1())) {
+            //  filter by type and symbol
+            trades = this.tradeService.findAllTradesForSymbolAndTradeTypeWithinTimespan(LocalDateTime.parse(start, DateTimeFormatter.ISO_DATE_TIME), LocalDateTime.parse(end, DateTimeFormatter.ISO_DATE_TIME), getAccountForId(user, accountNumber), filters.getValue1(), filters.getValue0(), page, pageSize, filters.getValue2());
+        } else if (filters.getValue0() != null) {
+            //  filter by type only
+            trades = this.tradeService.findAllTradesForTradeTypeWithinTimespan(LocalDateTime.parse(start, DateTimeFormatter.ISO_DATE_TIME), LocalDateTime.parse(end, DateTimeFormatter.ISO_DATE_TIME), getAccountForId(user, accountNumber), filters.getValue0(), page, pageSize, filters.getValue2());
+        } else if (StringUtils.isNotEmpty(filters.getValue1())) {
+            //  filter by symbol only
+            trades = this.tradeService.findAllTradesForSymbolWithinTimespan(LocalDateTime.parse(start, DateTimeFormatter.ISO_DATE_TIME), LocalDateTime.parse(end, DateTimeFormatter.ISO_DATE_TIME), getAccountForId(user, accountNumber), filters.getValue1(), page, pageSize, filters.getValue2());
+        } else {
+            trades = this.tradeService.findAllTradesWithinTimespan(LocalDateTime.parse(start, DateTimeFormatter.ISO_DATE_TIME), LocalDateTime.parse(end, DateTimeFormatter.ISO_DATE_TIME), getAccountForId(user, accountNumber), page, pageSize, filters.getValue2());
+        }
 
         return StandardJsonResponse
                 .<PaginatedTradesDTO>builder()
@@ -418,5 +441,39 @@ public class TradeApiController extends AbstractApiController {
                 .data(false)
                 .message(result)
                 .build();
+    }
+
+
+    //  HELPERS
+
+    /**
+     * Resolves the paged trade filters
+     *
+     * @param type trade type
+     * @param symbol symbol to filter on
+     * @param sort sort order
+     * @return {@link Triplet}
+     */
+    private Triplet<TradeType, String, Sort> resolveFilters(final String type, final String symbol, final String sort) {
+
+        TradeType tradeType = null;
+        String finalSymbol = null;
+        final Sort finalSort;
+
+        if (StringUtils.isNotEmpty(type) && EnumUtils.isValidEnumIgnoreCase(TradeType.class, type)) {
+            tradeType = GenericEnum.getByCode(TradeType.class, type);
+        }
+
+        if (StringUtils.isNotEmpty(symbol) && !symbol.equalsIgnoreCase("ALL")) {
+            finalSymbol = symbol;
+        }
+
+        if (sort.equalsIgnoreCase("asc")) {
+            finalSort = Sort.by(Sort.Direction.ASC, "tradeOpenTime", "tradeCloseTime");
+        } else {
+            finalSort = Sort.by(Sort.Direction.DESC, "tradeOpenTime", "tradeCloseTime");
+        }
+
+        return Triplet.with(tradeType, finalSymbol, finalSort);
     }
 }

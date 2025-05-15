@@ -9,6 +9,7 @@ import {
   IconChartDonutFilled,
   IconChartPie,
   IconChartScatter,
+  IconFolders,
   IconLayoutDashboard,
   IconLogout,
   IconMountain,
@@ -40,6 +41,11 @@ import cmc from "@/app/assets/brokers/cmc.png";
 import ftmo from "@/app/assets/brokers/ftmo.png";
 import td365 from "@/app/assets/brokers/td365.png";
 import td from "@/app/assets/brokers/td.png";
+import LoadingPage from "@/app/loading";
+import { redirect } from "next/navigation";
+import { logErrors } from "@/lib/functions/util-functions";
+import Error from "@/app/error";
+import { Portfolio } from "@/types/apiTypes";
 
 /**
  * Returns the correct icon based on the given enum value
@@ -88,6 +94,8 @@ export function resolveIcon(iconCode: string, className = "", iconSize = 24) {
       return <IconReplaceFilled className={className} size={iconSize} />;
     case Icons.Analysis:
       return <IconSearch className={className} size={iconSize} />;
+    case Icons.Portfolios:
+      return <IconFolders className={className} size={iconSize} />;
     default:
       return <span>-</span>;
   }
@@ -224,5 +232,39 @@ export function getBrokerImageForCode(val: string, height = 25, width = 25) {
     case "":
     default:
       return <span>-</span>;
+  }
+}
+
+/**
+ * Validates the page flow for certain, repeated, use queries
+ *
+ * @param isLoading is loading
+ * @param isError has an error
+ * @param activePortfolio the active portfolio
+ * @param hasMismatch mismatch between account and portfolio
+ * @param error possible error
+ */
+export function validatePageQueryFlow(
+  isLoading: boolean,
+  isError: boolean,
+  activePortfolio: Portfolio | null,
+  hasMismatch: boolean,
+  error: Error | null,
+) {
+  if (isLoading) {
+    return <LoadingPage />;
+  }
+
+  if (isError || (!isError && !activePortfolio)) {
+    redirect("/portfolios");
+  }
+
+  if ((activePortfolio?.accounts?.length ?? 0) === 0) {
+    redirect("/accounts");
+  }
+
+  if (hasMismatch || isError) {
+    logErrors("User and portfolio mismatch!", error);
+    return <Error />;
   }
 }

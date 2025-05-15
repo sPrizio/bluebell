@@ -37,6 +37,7 @@ export const usePortfolioQuery = (portfolioNumber: number) => {
       get<Portfolio>(ApiUrls.Portfolio.GetPortfolio, {
         portfolioNumber: portfolioNumber,
       }),
+    enabled: portfolioNumber !== -1,
   });
 };
 
@@ -47,6 +48,7 @@ export const usePortfolioRecordQuery = (portfolioNumber: number) => {
       get<PortfolioRecord>(ApiUrls.PortfolioRecord.GetPortfolioRecord, {
         portfolioNumber: portfolioNumber,
       }),
+    enabled: portfolioNumber !== -1,
   });
 };
 
@@ -192,10 +194,23 @@ export const usePagedTradesQuery = (
   end: string,
   page: number,
   pageSize: number,
+  tradeType: string,
+  symbol: string,
+  sort: "asc" | "desc" = "asc",
 ) => {
   return useQuery<PagedTrades | null>({
     placeholderData: keepPreviousData,
-    queryKey: ["paginated-trades", accountNumber, start, end, page, pageSize],
+    queryKey: [
+      "paginated-trades",
+      accountNumber,
+      start,
+      end,
+      page,
+      pageSize,
+      tradeType,
+      symbol,
+      sort,
+    ],
     queryFn: () =>
       get<PagedTrades>(ApiUrls.Trade.GetPagedTrades, {
         accountNumber: accountNumber.toString(),
@@ -203,8 +218,11 @@ export const usePagedTradesQuery = (
         end: end,
         page: page.toString(),
         pageSize: pageSize.toString(),
+        tradeType: tradeType,
+        symbol: symbol,
+        sort: sort,
       }),
-    enabled: accountNumber > -1,
+    enabled: accountNumber !== -1,
   });
 };
 
@@ -311,6 +329,17 @@ export const useTradeRecordsQuery = (
         end: end,
         interval: interval,
         count: count,
+      }),
+    enabled: accountNumber > -1,
+  });
+};
+
+export const useTradedSymbolsQuery = (accountNumber: number) => {
+  return useQuery<Array<string>>({
+    queryKey: ["traded-symbols", accountNumber],
+    queryFn: () =>
+      get<Array<string>>(ApiUrls.Symbol.GetTradedSymbols, {
+        accountNumber: accountNumber.toString(),
       }),
     enabled: accountNumber > -1,
   });

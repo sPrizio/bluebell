@@ -31,6 +31,7 @@ import {
 } from "@/lib/hooks/query/queries";
 import Error from "@/app/error";
 import { logErrors } from "@/lib/functions/util-functions";
+import moment from "moment";
 
 /**
  * Renders the account details layout
@@ -72,6 +73,8 @@ export default function AccountDetailsCmp({
   function computeConsistencyColor() {
     const val = accountDetails?.consistency ?? 0;
     switch (true) {
+      case val === 0:
+        return "slate-500";
       case val < 35:
         return "primaryRed";
       case val < 75:
@@ -89,6 +92,8 @@ export default function AccountDetailsCmp({
   function computeConsistency() {
     const val = accountDetails?.consistency ?? 0;
     switch (true) {
+      case val === 0:
+        return "neutral";
       case val < 35:
         return "danger";
       case val < 75:
@@ -106,6 +111,8 @@ export default function AccountDetailsCmp({
   function computeConsistencyStatus() {
     const val = accountDetails?.consistency ?? 0;
     switch (true) {
+      case val === 0:
+        return "Ready";
       case val < 35:
         return "Poor";
       case val < 75:
@@ -208,11 +215,16 @@ export default function AccountDetailsCmp({
                   "A look at the evolution of your account since inception."
                 }
                 cardContent={
-                  <AccountEquityChart
-                    key={accountDetails?.equity?.length ?? 0}
-                    data={accountDetails?.equity ?? []}
-                    showPoints={showPoints}
-                  />
+                  (accountDetails?.equity?.length ?? 0) > 1 ? (
+                    <AccountEquityChart
+                      key={accountDetails?.equity?.length ?? 0}
+                      data={accountDetails?.equity ?? []}
+                      showPoints={showPoints}
+                    />
+                  ) : null
+                }
+                emptyText={
+                  "Once you start taking some trades in this account, this chart will update."
                 }
                 headerControls={[
                   <div key={0} className="flex items-center space-x-2">
@@ -342,7 +354,12 @@ export default function AccountDetailsCmp({
           title={"Performance"}
           subtitle={`Reviewing the last ${tradeRecordReportLookBack} days of daily trading performances.`}
           cardContent={
-            <TradeRecordTable report={recentTradeRecords} showTotals={true} />
+            recentTradeRecords?.tradeRecords?.length ? (
+              <TradeRecordTable report={recentTradeRecords} showTotals={true} />
+            ) : null
+          }
+          emptyText={
+            "Once you start trading, your history & performance will update here."
           }
           headerControls={[
             <Link
@@ -361,7 +378,7 @@ export default function AccountDetailsCmp({
         <BaseCard
           loading={isLoading}
           title={"Trades"}
-          subtitle={"A view of each trade taken in this account."}
+          subtitle={"A view of some recent trades taken in this account."}
           headerControls={[
             <Link key={0} href={`/trades?account=${account?.accountNumber}`}>
               <Button className="" variant={"outline"}>
@@ -370,7 +387,18 @@ export default function AccountDetailsCmp({
               </Button>
             </Link>,
           ]}
-          cardContent={<TradeTable account={account} />}
+          cardContent={
+            <TradeTable
+              account={account}
+              filters={{
+                start: moment().subtract(1, "weeks").toDate(),
+                end: moment().add(1, "days").toDate(),
+                sort: "desc",
+                type: "ALL",
+                symbol: "ALL",
+              }}
+            />
+          }
         />
       </div>
     </div>

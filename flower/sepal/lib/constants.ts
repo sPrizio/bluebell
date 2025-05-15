@@ -8,6 +8,7 @@ import {
   getNewsDomain,
   getPortfolioDomain,
   getPortfolioRecordDomain,
+  getSymbolDomain,
   getTradeDomain,
   getTradeRecordDomain,
   getUserDomain,
@@ -81,10 +82,14 @@ export const ApiUrls = {
     GetPortfolioRecord:
       getPortfolioRecordDomain() + "/get?portfolioNumber={portfolioNumber}",
   },
+  Symbol: {
+    GetTradedSymbols:
+      getSymbolDomain() + "/get-traded-symbols?accountNumber={accountNumber}",
+  },
   Trade: {
     GetPagedTrades:
       getTradeDomain() +
-      "/get-for-interval-paged?accountNumber={accountNumber}&start={start}&end={end}&page={page}&pageSize={pageSize}",
+      "/get-for-interval-paged?accountNumber={accountNumber}&start={start}&end={end}&page={page}&pageSize={pageSize}&tradeType={tradeType}&symbol={symbol}&sort={sort}",
     ImportTrades:
       getTradeDomain() +
       "/import-trades?accountNumber={accountNumber}&isStrategy={isStrategy}",
@@ -152,46 +157,82 @@ export const Css = {
 };
 
 export function CRUDAccountSchema(accInfo: AccountCreationInfo | undefined) {
-  return z.object({
-    isDefault: z.boolean(),
-    balance: z.coerce
-      .number()
-      .min(1, { message: "Please enter a number between 1 and 999999999." })
-      .max(999999999, {
-        message: "Please enter a number between 1 and 999999999.",
-      }),
-    active: z.boolean(),
-    name: z
-      .string()
-      .min(3, {
-        message: "Please enter an Account name with a minimum of 3 characters.",
-      })
-      .max(75, {
-        message: "Please enter an Account name with at most 75 characters.",
-      }),
-    number: z.coerce
-      .number()
-      .min(1, { message: "Please enter a number between 1 and 99999999999." })
-      .max(99999999999, {
-        message: "Please enter a number between 1 and 99999999999.",
-      }),
-    currency: z.enum(
-      safeConvertEnum(accInfo?.currencies?.map((item) => item.code) ?? []),
-      { message: "Please select one of the given currencies." },
-    ),
-    broker: z.enum(
-      safeConvertEnum(accInfo?.brokers?.map((item) => item.code) ?? []),
-      { message: "Please select one of the given brokers." },
-    ),
-    type: z.enum(
-      safeConvertEnum(accInfo?.accountTypes?.map((item) => item.code) ?? []),
-      { message: "Please select one of the given Account types." },
-    ),
-    tradePlatform: z.enum(
-      safeConvertEnum(accInfo?.platforms?.map((item) => item.code) ?? []),
-      { message: "Please select one of the given trading platforms." },
-    ),
-  });
+  return z
+    .object({
+      isDefault: z.boolean(),
+      balance: z.coerce
+        .number()
+        .min(1, { message: "Please enter a number between 1 and 999999999." })
+        .max(999999999, {
+          message: "Please enter a number between 1 and 999999999.",
+        }),
+      active: z.boolean(),
+      name: z
+        .string()
+        .min(3, {
+          message:
+            "Please enter an Account name with a minimum of 3 characters.",
+        })
+        .max(75, {
+          message: "Please enter an Account name with at most 75 characters.",
+        }),
+      number: z.coerce
+        .number()
+        .min(1, { message: "Please enter a number between 1 and 99999999999." })
+        .max(99999999999, {
+          message: "Please enter a number between 1 and 99999999999.",
+        }),
+      currency: z.enum(
+        safeConvertEnum(accInfo?.currencies?.map((item) => item.code) ?? []),
+        { message: "Please select one of the given currencies." },
+      ),
+      broker: z.enum(
+        safeConvertEnum(accInfo?.brokers?.map((item) => item.code) ?? []),
+        { message: "Please select one of the given brokers." },
+      ),
+      type: z.enum(
+        safeConvertEnum(accInfo?.accountTypes?.map((item) => item.code) ?? []),
+        { message: "Please select one of the given Account types." },
+      ),
+      tradePlatform: z.enum(
+        safeConvertEnum(accInfo?.platforms?.map((item) => item.code) ?? []),
+        { message: "Please select one of the given trading platforms." },
+      ),
+      isLegacy: z.boolean(),
+      accountOpenTime: z
+        .date({
+          required_error: "A transaction date is required.",
+        })
+        .nullable()
+        .optional(),
+      accountCloseTime: z
+        .date({
+          required_error: "A transaction date is required.",
+        })
+        .nullable()
+        .optional(),
+    })
+    .superRefine((data, ctx) => {
+      if (data.isLegacy) {
+        if (!data.accountOpenTime) {
+          ctx.addIssue({
+            path: ["accountOpenTime"],
+            code: z.ZodIssueCode.custom,
+            message: "Open time is required for legacy accounts.",
+          });
+        }
+
+        if (data.accountOpenTime && data.accountCloseTime) {
+          if (data.accountCloseTime <= data.accountOpenTime) {
+            ctx.addIssue({
+              path: ["accountCloseTime"],
+              code: z.ZodIssueCode.custom,
+              message: "Close time must be after open time.",
+            });
+          }
+        }
+      }
+    });
 }
 
 export function CRUDTransactionSchema() {
