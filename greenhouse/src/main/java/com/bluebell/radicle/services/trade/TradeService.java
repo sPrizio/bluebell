@@ -24,7 +24,7 @@ import static com.bluebell.radicle.validation.GenericValidator.validateParameter
  * Service-layer for {@link Trade} entities
  *
  * @author Stephen Prizio
- * @version 0.2.0
+ * @version 0.2.1
  */
 @Slf4j
 @Service
@@ -80,7 +80,7 @@ public class TradeService {
      * @return {@link Page} of {@link Trade}s
      */
     public Page<Trade> findAllTradesWithinTimespan(final LocalDateTime start, final LocalDateTime end, final Account account, final int page, final int pageSize, final Sort sort) {
-        validateStandardParameters(start, end, account);
+        validateStandardParameters(start, end, account, sort);
         return this.tradeRepository.findAllTradesWithinDatePaged(start.toLocalDate().atStartOfDay(), end.toLocalDate().atStartOfDay(), account, PageRequest.of(page, pageSize, sort));
     }
 
@@ -97,7 +97,7 @@ public class TradeService {
      * @return {@link Page} of {@link Trade}s
      */
     public Page<Trade> findAllTradesForSymbolWithinTimespan(final LocalDateTime start, final LocalDateTime end, final Account account, final String symbol, final int page, final int pageSize, final Sort sort) {
-        validateStandardParameters(start, end, account);
+        validateStandardParameters(start, end, account, sort);
         validateParameterIsNotNull(symbol, CorePlatformConstants.Validation.MarketPrice.SYMBOL_CANNOT_BE_NULL);
         return this.tradeRepository.findAllTradesForSymbolWithinDatePaged(start.toLocalDate().atStartOfDay(), end.toLocalDate().atStartOfDay(), account, symbol, PageRequest.of(page, pageSize, sort));
     }
@@ -115,7 +115,7 @@ public class TradeService {
      * @return {@link Page} of {@link Trade}s
      */
     public Page<Trade> findAllTradesForTradeTypeWithinTimespan(final LocalDateTime start, final LocalDateTime end, final Account account, final TradeType tradeType, final int page, final int pageSize, final Sort sort) {
-        validateStandardParameters(start, end, account);
+        validateStandardParameters(start, end, account, sort);
         validateParameterIsNotNull(tradeType, CorePlatformConstants.Validation.Trade.TRADE_TYPE_CANNOT_BE_NULL);
         return this.tradeRepository.findAllTradesForTypeWithinDatePaged(start.toLocalDate().atStartOfDay(), end.toLocalDate().atStartOfDay(), account, tradeType, PageRequest.of(page, pageSize, sort));
     }
@@ -134,7 +134,7 @@ public class TradeService {
      * @return {@link Page} of {@link Trade}s
      */
     public Page<Trade> findAllTradesForSymbolAndTradeTypeWithinTimespan(final LocalDateTime start, final LocalDateTime end, final Account account, final String symbol, final TradeType tradeType, final int page, final int pageSize, final Sort sort) {
-        validateStandardParameters(start, end, account);
+        validateStandardParameters(start, end, account, sort);
         validateParameterIsNotNull(symbol, CorePlatformConstants.Validation.MarketPrice.SYMBOL_CANNOT_BE_NULL);
         validateParameterIsNotNull(tradeType, CorePlatformConstants.Validation.Trade.TRADE_TYPE_CANNOT_BE_NULL);
         return this.tradeRepository.findAllTradesForSymbolAndTypeWithinDatePaged(start.toLocalDate().atStartOfDay(), end.toLocalDate().atStartOfDay(), account, symbol, tradeType, PageRequest.of(page, pageSize, sort));
@@ -198,11 +198,13 @@ public class TradeService {
      * @param start start date
      * @param end end date
      * @param account {@link Account}
+     * @param sort {@link Sort}
      */
-    private void validateStandardParameters(final LocalDateTime start, final LocalDateTime end, final Account account) {
+    private void validateStandardParameters(final LocalDateTime start, final LocalDateTime end, final Account account, final Sort sort) {
         validateParameterIsNotNull(start, CorePlatformConstants.Validation.DateTime.START_DATE_CANNOT_BE_NULL);
         validateParameterIsNotNull(end, CorePlatformConstants.Validation.DateTime.END_DATE_CANNOT_BE_NULL);
         validateDatesAreNotMutuallyExclusive(start, end, CorePlatformConstants.Validation.DateTime.MUTUALLY_EXCLUSIVE_DATES);
         validateParameterIsNotNull(account, CorePlatformConstants.Validation.Account.ACCOUNT_CANNOT_BE_NULL);
+        validateParameterIsNotNull(sort, CorePlatformConstants.Validation.System.SORT_CANNOT_BE_NULL);
     }
 }
