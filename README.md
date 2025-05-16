@@ -30,7 +30,7 @@ Dependencies & Integrations
 ### flower | Front-End
 ***flower*** is the front-end, consumer-facing subset of bluebell. Currently, ***flower*** is composed of the following modules:
 
-- Current Iteration: **0.2.0**
+- Current Iteration: **0.2.1**
 - Current Release: **Pre-Release**
 
 #### sepal
