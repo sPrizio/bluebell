@@ -14,12 +14,13 @@ import { useActiveAccount } from "@/lib/hooks/api/useActiveAccount";
 import ReusableSelect from "@/components/Input/ReusableSelect";
 import { PageInfoProvider } from "@/lib/context/PageInfoProvider";
 import { validatePageQueryFlow } from "@/lib/functions/util-component-functions";
+import LoadingPage from "@/app/loading";
 
 /**
  * The page that shows all of a user's account's transactions. Accounts can be cycled
  *
  * @author Stephen Prizio
- * @version 0.2.0
+ * @version 0.2.1
  */
 export default function TransactionsPage() {
   const searchParams = useSearchParams();
@@ -59,6 +60,10 @@ export default function TransactionsPage() {
   };
 
   //  RENDER
+
+  if (!activeAccount || isLoading) {
+    return <LoadingPage />;
+  }
 
   return (
     <PageInfoProvider value={pageInfo}>

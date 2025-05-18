@@ -1,53 +1,54 @@
+import { UserJobControlSelection } from "@/types/uiTypes";
 import {
   Drawer,
+  DrawerClose,
   DrawerContent,
-  DrawerTrigger,
+  DrawerDescription,
+  DrawerFooter,
   DrawerHeader,
   DrawerTitle,
-  DrawerDescription,
-  DrawerClose,
-  DrawerFooter,
+  DrawerTrigger,
 } from "@/components/ui/drawer";
 import { Button } from "@/components/ui/button";
-import React from "react";
-import { UserTradeControlSelection } from "@/types/uiTypes";
 import { Label } from "@/components/ui/label";
+import TradeControlDatePicker from "@/components/DateTime/TradeControlDatePicker";
 import {
   Select,
-  SelectTrigger,
   SelectContent,
   SelectItem,
+  SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import TradeControlDatePicker from "@/components/DateTime/TradeControlDatePicker";
+import React from "react";
+import { EnumDisplay } from "@/types/apiTypes";
 
 type Props = {
-  userSelection: UserTradeControlSelection;
-  onChange: (newSelection: UserTradeControlSelection) => void;
+  userSelection: UserJobControlSelection;
+  onChange: (newSelection: UserJobControlSelection) => void;
   onSubmit: () => void;
   onCancel: () => void;
-  symbols?: Array<string>;
+  jobTypes?: Array<EnumDisplay>;
 };
 
 /**
- * Renders the trade filters popup drawer
+ * Renders the job filters popup drawer
  *
  * @param userSelection user's selected filters
- * @param onChange on change of a filter
+ * @param onChange on changed of a filter
  * @param onSubmit on apply of filters
  * @param onCancel on cancel of filters
- * @param symbols symbol filters
+ * @param jobTypes job type filters
+ * @param jobStatuses job status filters
  * @author Stephen Prizio
  * @version 0.2.1
  */
-export default function TradeFilterDrawer({
+export default function JobsFilterDrawer({
   userSelection,
   onChange,
   onSubmit,
   onCancel,
-  symbols = [],
+  jobTypes = [],
 }: Readonly<Props>) {
-  //  RENDER
   return (
     <Drawer>
       <DrawerTrigger asChild>
@@ -101,13 +102,13 @@ export default function TradeFilterDrawer({
               </Select>
             </div>
             <div>
-              <Label>Trade Type</Label>
+              <Label>Job Type</Label>
               <Select
-                value={userSelection.type}
+                value={userSelection.jobType}
                 onValueChange={(val: string) =>
                   onChange({
                     ...userSelection,
-                    type: val,
+                    jobType: val,
                   })
                 }
               >
@@ -116,19 +117,22 @@ export default function TradeFilterDrawer({
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value={"ALL"}>All</SelectItem>
-                  <SelectItem value={"BUY"}>Buy Trades</SelectItem>
-                  <SelectItem value={"SELL"}>Sell Trades</SelectItem>
+                  {jobTypes?.map((jt) => (
+                    <SelectItem key={jt.code} value={jt.code}>
+                      {jt.label}
+                    </SelectItem>
+                  ))}
                 </SelectContent>
               </Select>
             </div>
             <div>
-              <Label>Symbol/Equity</Label>
+              <Label>Status</Label>
               <Select
-                value={userSelection.symbol}
+                value={userSelection.jobStatus}
                 onValueChange={(val: string) =>
                   onChange({
                     ...userSelection,
-                    symbol: val,
+                    jobStatus: val,
                   })
                 }
               >
@@ -137,11 +141,10 @@ export default function TradeFilterDrawer({
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value={"ALL"}>All</SelectItem>
-                  {symbols?.map((symbol) => (
-                    <SelectItem key={symbol} value={symbol}>
-                      {symbol}
-                    </SelectItem>
-                  ))}
+                  <SelectItem value={"NOT_STARTED"}>Not Started</SelectItem>
+                  <SelectItem value={"IN_PROGRESS"}>In Progress</SelectItem>
+                  <SelectItem value={"COMPLETED"}>Completed</SelectItem>
+                  <SelectItem value={"FAILED"}>Failed</SelectItem>
                 </SelectContent>
               </Select>
             </div>

@@ -6,7 +6,7 @@ import static com.bluebell.platform.constants.CorePlatformConstants.NO_INSTANTIA
  * Defines all api paths used by the endpoints and testing module
  *
  * @author Stephen Prizio
- * @version 0.2.0
+ * @version 0.2.1
  */
 public class ApiPaths {
 
@@ -83,7 +83,9 @@ public class ApiPaths {
 
         public static final String GET_TYPE_PAGED = "/get-type-paged";
 
-        public static final String GET_STATUS_TYPE_PAGED = "/get-status-type-paged";
+        public static final String GET_PAGED = "/get-status-type-paged";
+
+        public static final String GET_JOB_TYPES = "/get-job-types";
     }
 
     public static class MarketPrice {

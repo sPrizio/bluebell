@@ -21,7 +21,7 @@ import static org.mockito.ArgumentMatchers.any;
  * Testing class for {@link ActionDTOConverter}
  *
  * @author Stephen Prizio
- * @version 0.1.3
+ * @version 0.2.1
  */
 @SpringBootTest
 @RunWith(SpringRunner.class)
@@ -53,8 +53,8 @@ class ActionDTOConverterTest extends AbstractPlanterTest {
     void test_convert_success() {
         assertThat(this.actionDTOConverter.convert(generateTestAction()))
                 .isNotNull()
-                .extracting("priority", "name", "performableAction")
-                .containsExactly(1, "Test Action", "FetchMarketNewsActionPerformable");
+                .extracting("priority", "name")
+                .containsExactly(1, "Test Action");
 
     }
 
@@ -66,7 +66,7 @@ class ActionDTOConverterTest extends AbstractPlanterTest {
         assertThat(this.actionDTOConverter.convertAll(List.of(generateTestAction())))
                 .isNotEmpty()
                 .first()
-                .extracting("priority", "name", "performableAction")
-                .containsExactly(1, "Test Action", "FetchMarketNewsActionPerformable");
+                .extracting("priority", "name")
+                .containsExactly(1, "Test Action");
     }
 }

@@ -29,6 +29,7 @@ import { Account } from "@/types/apiTypes";
 import { usePagedTradesQuery } from "@/lib/hooks/query/queries";
 import Error from "@/app/error";
 import { UserTradeControlSelection } from "@/types/uiTypes";
+import LoadingPage from "@/app/loading";
 
 /**
  * Renders a table of trades
@@ -38,7 +39,7 @@ import { UserTradeControlSelection } from "@/types/uiTypes";
  * @param initialPageSize initial page size
  * @param initialPage initial page
  * @author Stephen Prizio
- * @version 0.2.0
+ * @version 0.2.1
  */
 export default function TradeTable({
   account,
@@ -55,6 +56,7 @@ export default function TradeTable({
 
   const {
     data: pagedTrades,
+    isLoading: isPagedTradesLoading,
     isError: isPagedTradesError,
     error: pagedTradesError,
   } = usePagedTradesQuery(
@@ -85,6 +87,10 @@ export default function TradeTable({
 
   if (!account) {
     return <Error />;
+  }
+
+  if (isPagedTradesLoading) {
+    return <LoadingPage />;
   }
 
   if (isPagedTradesError) {

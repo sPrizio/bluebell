@@ -149,3 +149,12 @@ export function getPortfolioRecordDomain(): string {
 export function getSymbolDomain(): string {
   return getDomain("/symbol");
 }
+
+/**
+ * Gets the job url
+ *
+ * @returns {string} url
+ */
+export function getJobDomain(): string {
+  return getDomain("/job");
+}

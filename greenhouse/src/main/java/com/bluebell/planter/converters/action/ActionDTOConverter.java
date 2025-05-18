@@ -12,7 +12,7 @@ import org.springframework.stereotype.Component;
  * Converts {@link Action}s into {@link ActionDTO}s
  *
  * @author Stephen Prizio
- * @version 0.1.3
+ * @version 0.2.1
  */
 @Component("actionDTOConverter")
 public class ActionDTOConverter implements GenericDTOConverter<Action, ActionDTO> {
@@ -37,7 +37,6 @@ public class ActionDTOConverter implements GenericDTOConverter<Action, ActionDTO
                 .priority(entity.getPriority())
                 .name(entity.getName())
                 .status(EnumDisplay.builder().code(entity.getStatus().getCode()).label(entity.getStatus().getLabel()).build())
-                .performableAction(entity.getPerformableAction().getActionPerformableName())
                 .build();
     }
 }

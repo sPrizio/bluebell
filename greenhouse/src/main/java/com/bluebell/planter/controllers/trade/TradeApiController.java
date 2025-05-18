@@ -45,7 +45,7 @@ import static com.bluebell.radicle.validation.GenericValidator.*;
  * Api controller for {@link Trade}
  *
  * @author Stephen Prizio
- * @version 0.2.0
+ * @version 0.2.1
  */
 @RestController
 @RequestMapping("${bluebell.base.api.controller.endpoint}" + ApiPaths.Trade.BASE)
@@ -469,9 +469,9 @@ public class TradeApiController extends AbstractApiController {
         }
 
         if (sort.equalsIgnoreCase("asc")) {
-            finalSort = Sort.by(Sort.Direction.ASC, "tradeOpenTime", "tradeCloseTime");
+            finalSort = Sort.by(Sort.Direction.ASC, "tradeOpenTime");
         } else {
-            finalSort = Sort.by(Sort.Direction.DESC, "tradeOpenTime", "tradeCloseTime");
+            finalSort = Sort.by(Sort.Direction.DESC, "tradeOpenTime");
         }
 
         return Triplet.with(tradeType, finalSymbol, finalSort);

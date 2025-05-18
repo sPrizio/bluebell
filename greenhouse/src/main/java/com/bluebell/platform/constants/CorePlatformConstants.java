@@ -9,7 +9,7 @@ import java.util.List;
  * Constants defined for the bluebell platform
  *
  * @author Stephen Prizio
- * @version 0.1.8
+ * @version 0.2.1
  */
 public class CorePlatformConstants {
 
@@ -229,6 +229,8 @@ public class CorePlatformConstants {
             }
 
             public static final String TIME_INTERVAL_CANNOT_BE_NULL = "time interval cannot be null";
+
+            public static final String SORT_CANNOT_BE_NULL = "sort cannot be null";
 
             public static class PhoneNumber {
 

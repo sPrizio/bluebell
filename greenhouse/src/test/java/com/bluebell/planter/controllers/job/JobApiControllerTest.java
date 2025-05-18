@@ -3,6 +3,7 @@ package com.bluebell.planter.controllers.job;
 import com.bluebell.planter.AbstractPlanterTest;
 import com.bluebell.planter.constants.ApiConstants;
 import com.bluebell.planter.services.UniqueIdentifierService;
+import com.bluebell.platform.enums.job.JobType;
 import com.bluebell.radicle.services.job.JobService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -33,7 +34,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  * Testing class for {@link JobApiController}
  *
  * @author Stephen Prizio
- * @version 0.1.9
+ * @version 0.2.1
  */
 @SpringBootTest
 @AutoConfigureMockMvc(addFilters = false)
@@ -54,11 +55,21 @@ class JobApiControllerTest extends AbstractPlanterTest {
         Mockito.when(this.uniqueIdentifierService.generateUid(any())).thenReturn("1234");
         Mockito.when(this.jobService.findJobByJobId("1234")).thenReturn(Optional.of(generateTestJob()));
         Mockito.when(this.jobService.findJobByJobId("5678")).thenReturn(Optional.empty());
-        Mockito.when(this.jobService.findJobsByStatusPaged(any(), any(), any(), anyInt(), anyInt())).thenReturn(new PageImpl<>(List.of(generateTestJob()), Pageable.ofSize(10), 10));
-        Mockito.when(this.jobService.findJobsByTypePaged(any(), any(), any(), anyInt(), anyInt())).thenReturn(new PageImpl<>(List.of(generateTestJob()), Pageable.ofSize(10), 10));
-        Mockito.when(this.jobService.findJobsByStatusAndTypePaged(any(), any(), any(), any(), anyInt(), anyInt())).thenReturn(new PageImpl<>(List.of(generateTestJob()), Pageable.ofSize(10), 10));
+        Mockito.when(this.jobService.findJobsPaged(any(), any(), anyInt(), anyInt(), any())).thenReturn(new PageImpl<>(List.of(generateTestJob()), Pageable.ofSize(10), 10));
+        Mockito.when(this.jobService.findJobsByStatusPaged(any(), any(), any(), anyInt(), anyInt(), any())).thenReturn(new PageImpl<>(List.of(generateTestJob()), Pageable.ofSize(10), 10));
+        Mockito.when(this.jobService.findJobsByTypePaged(any(), any(), any(), anyInt(), anyInt(), any())).thenReturn(new PageImpl<>(List.of(generateTestJob()), Pageable.ofSize(10), 10));
+        Mockito.when(this.jobService.findJobsByStatusAndTypePaged(any(), any(), any(), any(), anyInt(), anyInt(), any())).thenReturn(new PageImpl<>(List.of(generateTestJob()), Pageable.ofSize(10), 10));
     }
 
+
+    //  ----------------- getJobTypes -----------------
+
+    @Test
+    void test_getJobTypes_success() throws Exception {
+        this.mockMvc.perform(get(getApiPath(BASE, GET_JOB_TYPES)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.data[0].code", is(JobType.values()[0].getCode())));
+    }
 
     //  ----------------- getJobForJobId -----------------
 
@@ -146,11 +157,11 @@ class JobApiControllerTest extends AbstractPlanterTest {
                 .andExpect(jsonPath("$.data.jobs[0].name", is("Test Job")));
     }
 
-    //  ----------------- getJobsWithinIntervalByStatusAndTypePaged -----------------
+    //  ----------------- getJobsWithinIntervalPaged -----------------
 
     @Test
-    void test_getJobsWithinIntervalByStatusAndTypePaged_badParams() throws Exception {
-        this.mockMvc.perform(get(getApiPath(BASE, GET_STATUS_TYPE_PAGED))
+    void test_getJobsWithinIntervalPaged_badParams() throws Exception {
+        this.mockMvc.perform(get(getApiPath(BASE, GET_PAGED))
                         .queryParam("start", "adasdasdasd")
                         .queryParam("end", "2025-01-01")
                         .queryParam("jobStatus", "COMPLETED")
@@ -159,7 +170,7 @@ class JobApiControllerTest extends AbstractPlanterTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.message", containsString(ApiConstants.CLIENT_ERROR_DEFAULT_MESSAGE)));
 
-        this.mockMvc.perform(get(getApiPath(BASE, GET_STATUS_TYPE_PAGED))
+        this.mockMvc.perform(get(getApiPath(BASE, GET_PAGED))
                         .queryParam("start", "2025-01-01")
                         .queryParam("end", "adasdasdasd")
                         .queryParam("jobStatus", "COMPLETED")
@@ -170,12 +181,51 @@ class JobApiControllerTest extends AbstractPlanterTest {
     }
 
     @Test
-    void test_getJobsWithinIntervalByStatusAndTypePaged_success() throws Exception {
-        this.mockMvc.perform(get(getApiPath(BASE, GET_STATUS_TYPE_PAGED))
+    void test_getJobsWithinIntervalPaged_status_type_success() throws Exception {
+        this.mockMvc.perform(get(getApiPath(BASE, GET_PAGED))
                         .queryParam("start", "2025-01-01")
                         .queryParam("end", "2025-02-02")
                         .queryParam("jobStatus", "COMPLETED")
                         .queryParam("jobType", "FETCH_MARKET_NEWS")
+                )
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.success", is(true)))
+                .andExpect(jsonPath("$.data.jobs[0].name", is("Test Job")));
+    }
+
+    @Test
+    void test_getJobsWithinIntervalPaged_type_success() throws Exception {
+        this.mockMvc.perform(get(getApiPath(BASE, GET_PAGED))
+                        .queryParam("start", "2025-01-01")
+                        .queryParam("end", "2025-02-02")
+                        .queryParam("jobStatus", "ALL")
+                        .queryParam("jobType", "FETCH_MARKET_NEWS")
+                )
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.success", is(true)))
+                .andExpect(jsonPath("$.data.jobs[0].name", is("Test Job")));
+    }
+
+    @Test
+    void test_getJobsWithinIntervalPaged_status_success() throws Exception {
+        this.mockMvc.perform(get(getApiPath(BASE, GET_PAGED))
+                        .queryParam("start", "2025-01-01")
+                        .queryParam("end", "2025-02-02")
+                        .queryParam("jobStatus", "COMPLETED")
+                        .queryParam("jobType", "ALL")
+                )
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.success", is(true)))
+                .andExpect(jsonPath("$.data.jobs[0].name", is("Test Job")));
+    }
+
+    @Test
+    void test_getJobsWithinIntervalPaged_all_success() throws Exception {
+        this.mockMvc.perform(get(getApiPath(BASE, GET_PAGED))
+                        .queryParam("start", "2025-01-01")
+                        .queryParam("end", "2025-02-02")
+                        .queryParam("jobStatus", "ALL")
+                        .queryParam("jobType", "ALL")
                 )
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.success", is(true)))

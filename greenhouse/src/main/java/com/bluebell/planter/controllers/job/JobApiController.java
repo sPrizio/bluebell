@@ -10,6 +10,7 @@ import com.bluebell.platform.models.api.dto.job.JobDTO;
 import com.bluebell.platform.models.api.dto.job.PaginatedJobsDTO;
 import com.bluebell.platform.models.api.json.StandardJsonResponse;
 import com.bluebell.platform.models.core.entities.job.impl.Job;
+import com.bluebell.platform.models.core.nonentities.data.EnumDisplay;
 import com.bluebell.radicle.security.aspects.ValidateApiToken;
 import com.bluebell.radicle.services.job.JobService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -20,11 +21,17 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.annotation.Resource;
 import jakarta.servlet.http.HttpServletRequest;
+import org.apache.commons.lang3.EnumUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.javatuples.Triplet;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Sort;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 
 import static com.bluebell.radicle.validation.GenericValidator.validateLocalDateFormat;
@@ -33,7 +40,7 @@ import static com.bluebell.radicle.validation.GenericValidator.validateLocalDate
  * Api controller for {@link Job}
  *
  * @author Stephen Prizio
- * @version 0.2.0
+ * @version 0.2.1
  */
 @RestController
 @RequestMapping("${bluebell.base.api.controller.endpoint}" + ApiPaths.Job.BASE)
@@ -52,6 +59,42 @@ public class JobApiController {
 
 
     //  ----------------- GET REQUESTS -----------------
+
+    /**
+     * Returns a {@link StandardJsonResponse} containing all {@link JobType}s
+     *
+     * @param request {@link HttpServletRequest}
+     * @return {@link StandardJsonResponse}
+     */
+    @ValidateApiToken
+    @Operation(summary = "Get all system job types", description = "Fetches all job types that are currently supported in bluebell.")
+    @ApiResponse(
+            responseCode = "200",
+            description = "Response when the api successfully retrieves all job types.",
+            content = @Content(
+                    mediaType = "application/json",
+                    schema = @Schema(
+                            implementation = StandardJsonResponse.class,
+                            type = "object"
+                    )
+            )
+    )
+    @ApiResponse(
+            responseCode = "401",
+            description = "Response when the api call made was unauthorized.",
+            content = @Content(
+                    mediaType = "application/json",
+                    schema = @Schema(implementation = StandardJsonResponse.class, example = "The API token was invalid.")
+            )
+    )
+    @GetMapping(ApiPaths.Job.GET_JOB_TYPES)
+    public StandardJsonResponse<List<EnumDisplay>> getJobTypes(final HttpServletRequest request) {
+        return StandardJsonResponse
+                .<List<EnumDisplay>>builder()
+                .success(true)
+                .data(Arrays.stream(JobType.values()).map(c -> EnumDisplay.builder().code(c.getCode()).label(c.getLabel()).build()).toList())
+                .build();
+    }
 
     /**
      * Returns a {@link StandardJsonResponse} containing the {@link JobDTO} for the given job id
@@ -143,7 +186,7 @@ public class JobApiController {
             description = "Response when the api call was made with an invalid status.",
             content = @Content(
                     mediaType = "application/json",
-                    schema = @Schema(implementation = StandardJsonResponse.class, example = "Invalid filter")
+                    schema = @Schema(implementation = StandardJsonResponse.class, example = "Invalid status")
             )
     )
     @ApiResponse(
@@ -182,12 +225,23 @@ public class JobApiController {
             final @RequestParam(value = "page", defaultValue = "0") int page,
             @Parameter(name = "pageSize", description = "Size of page", example = "25")
             final @RequestParam(value = "pageSize", defaultValue = "10") int pageSize,
+            @Parameter(name = "sort", description = "Sort order", example = "asc")
+            final @RequestParam(value = "sort", defaultValue = "asc") String sort,
             final HttpServletRequest request
     ) {
         validateLocalDateFormat(start, CorePlatformConstants.DATE_FORMAT, String.format(CorePlatformConstants.Validation.DateTime.START_DATE_INVALID_FORMAT, start, CorePlatformConstants.DATE_FORMAT));
         validateLocalDateFormat(end, CorePlatformConstants.DATE_FORMAT, String.format(CorePlatformConstants.Validation.DateTime.END_DATE_INVALID_FORMAT, end, CorePlatformConstants.DATE_FORMAT));
 
-        final Page<Job> jobs = this.jobService.findJobsByStatusPaged(LocalDate.parse(start, DateTimeFormatter.ISO_DATE).atStartOfDay(), LocalDate.parse(end, DateTimeFormatter.ISO_DATE).atStartOfDay(), GenericEnum.getByCode(JobStatus.class, jobStatus), page, pageSize);
+        final Triplet<JobType, JobStatus, Sort> filters = resolveFilters(null, jobStatus, sort);
+        final Page<Job> jobs = this.jobService.findJobsByStatusPaged(
+                LocalDate.parse(start, DateTimeFormatter.ISO_DATE).atStartOfDay(),
+                LocalDate.parse(end, DateTimeFormatter.ISO_DATE).atStartOfDay(),
+                filters.getValue1(),
+                page,
+                pageSize,
+                filters.getValue2()
+        );
+
         return StandardJsonResponse
                 .<PaginatedJobsDTO>builder()
                 .success(true)
@@ -238,7 +292,7 @@ public class JobApiController {
             description = "Response when the api call was made with an invalid type.",
             content = @Content(
                     mediaType = "application/json",
-                    schema = @Schema(implementation = StandardJsonResponse.class, example = "Invalid filter")
+                    schema = @Schema(implementation = StandardJsonResponse.class, example = "Invalid type")
             )
     )
     @ApiResponse(
@@ -277,12 +331,22 @@ public class JobApiController {
             final @RequestParam(value = "page", defaultValue = "0") int page,
             @Parameter(name = "pageSize", description = "Size of page", example = "25")
             final @RequestParam(value = "pageSize", defaultValue = "10") int pageSize,
+            @Parameter(name = "sort", description = "Sort order", example = "asc")
+            final @RequestParam(value = "sort", defaultValue = "asc") String sort,
             final HttpServletRequest request
     ) {
         validateLocalDateFormat(start, CorePlatformConstants.DATE_FORMAT, String.format(CorePlatformConstants.Validation.DateTime.START_DATE_INVALID_FORMAT, start, CorePlatformConstants.DATE_FORMAT));
         validateLocalDateFormat(end, CorePlatformConstants.DATE_FORMAT, String.format(CorePlatformConstants.Validation.DateTime.END_DATE_INVALID_FORMAT, end, CorePlatformConstants.DATE_FORMAT));
 
-        final Page<Job> jobs = this.jobService.findJobsByTypePaged(LocalDate.parse(start, DateTimeFormatter.ISO_DATE).atStartOfDay(), LocalDate.parse(end, DateTimeFormatter.ISO_DATE).atStartOfDay(), GenericEnum.getByCode(JobType.class, jobType), page, pageSize);
+        final Triplet<JobType, JobStatus, Sort> filters = resolveFilters(jobType, null, sort);
+        final Page<Job> jobs = this.jobService.findJobsByTypePaged(
+                LocalDate.parse(start, DateTimeFormatter.ISO_DATE).atStartOfDay(),
+                LocalDate.parse(end, DateTimeFormatter.ISO_DATE).atStartOfDay(),
+                filters.getValue0(),
+                page,
+                pageSize,
+                filters.getValue2()
+        );
         return StandardJsonResponse
                 .<PaginatedJobsDTO>builder()
                 .success(true)
@@ -334,7 +398,7 @@ public class JobApiController {
             description = "Response when the api call was made with an invalid status.",
             content = @Content(
                     mediaType = "application/json",
-                    schema = @Schema(implementation = StandardJsonResponse.class, example = "Invalid filter")
+                    schema = @Schema(implementation = StandardJsonResponse.class, example = "Invalid status")
             )
     )
     @ApiResponse(
@@ -342,7 +406,7 @@ public class JobApiController {
             description = "Response when the api call was made with an invalid type.",
             content = @Content(
                     mediaType = "application/json",
-                    schema = @Schema(implementation = StandardJsonResponse.class, example = "Invalid filter")
+                    schema = @Schema(implementation = StandardJsonResponse.class, example = "Invalid type")
             )
     )
     @ApiResponse(
@@ -369,8 +433,8 @@ public class JobApiController {
                     schema = @Schema(implementation = StandardJsonResponse.class, example = "The API token was invalid.")
             )
     )
-    @GetMapping(ApiPaths.Job.GET_STATUS_TYPE_PAGED)
-    public StandardJsonResponse<PaginatedJobsDTO> getJobsWithinIntervalByStatusAndTypePaged(
+    @GetMapping(ApiPaths.Job.GET_PAGED)
+    public StandardJsonResponse<PaginatedJobsDTO> getJobsWithinIntervalPaged(
             @Parameter(name = "jobStatus", description = "Job status to lookup", example = "COMPLETED")
             final @RequestParam("jobStatus") String jobStatus,
             @Parameter(name = "jobType", description = "Job type to lookup", example = "FETCH_MARKET_NEWS")
@@ -383,12 +447,56 @@ public class JobApiController {
             final @RequestParam(value = "page", defaultValue = "0") int page,
             @Parameter(name = "pageSize", description = "Size of page", example = "25")
             final @RequestParam(value = "pageSize", defaultValue = "10") int pageSize,
+            @Parameter(name = "sort", description = "Sort order", example = "asc")
+            final @RequestParam(value = "sort", defaultValue = "asc") String sort,
             final HttpServletRequest request
     ) {
-        validateLocalDateFormat(start, CorePlatformConstants.DATE_FORMAT, String.format(CorePlatformConstants.Validation.DateTime.START_DATE_INVALID_FORMAT, start, CorePlatformConstants.DATE_FORMAT));
         validateLocalDateFormat(end, CorePlatformConstants.DATE_FORMAT, String.format(CorePlatformConstants.Validation.DateTime.END_DATE_INVALID_FORMAT, end, CorePlatformConstants.DATE_FORMAT));
+        validateLocalDateFormat(start, CorePlatformConstants.DATE_FORMAT, String.format(CorePlatformConstants.Validation.DateTime.START_DATE_INVALID_FORMAT, start, CorePlatformConstants.DATE_FORMAT));
 
-        final Page<Job> jobs = this.jobService.findJobsByStatusAndTypePaged(LocalDate.parse(start, DateTimeFormatter.ISO_DATE).atStartOfDay(), LocalDate.parse(end, DateTimeFormatter.ISO_DATE).atStartOfDay(), GenericEnum.getByCode(JobStatus.class, jobStatus), GenericEnum.getByCode(JobType.class, jobType), page, pageSize);
+        Page<Job> jobs;
+        final Triplet<JobType, JobStatus, Sort> filters = resolveFilters(jobType, jobStatus, sort);
+        if (filters.getValue0() != null && filters.getValue1() != null) {
+            //  filter by type and status
+            jobs = this.jobService.findJobsByStatusAndTypePaged(
+                    LocalDate.parse(start, DateTimeFormatter.ISO_DATE).atStartOfDay(),
+                    LocalDate.parse(end, DateTimeFormatter.ISO_DATE).atStartOfDay(),
+                    filters.getValue1(),
+                    filters.getValue0(),
+                    page,
+                    pageSize,
+                    filters.getValue2()
+            );
+        } else if (filters.getValue0() != null) {
+            //  filter by type
+            jobs = this.jobService.findJobsByTypePaged(
+                    LocalDate.parse(start, DateTimeFormatter.ISO_DATE).atStartOfDay(),
+                    LocalDate.parse(end, DateTimeFormatter.ISO_DATE).atStartOfDay(),
+                    filters.getValue0(),
+                    page,
+                    pageSize,
+                    filters.getValue2()
+            );
+        } else if (filters.getValue1() != null) {
+            //  filter by status
+            jobs = this.jobService.findJobsByStatusPaged(
+                    LocalDate.parse(start, DateTimeFormatter.ISO_DATE).atStartOfDay(),
+                    LocalDate.parse(end, DateTimeFormatter.ISO_DATE).atStartOfDay(),
+                    filters.getValue1(),
+                    page,
+                    pageSize,
+                    filters.getValue2()
+            );
+        } else {
+            jobs = this.jobService.findJobsPaged(
+                    LocalDate.parse(start, DateTimeFormatter.ISO_DATE).atStartOfDay(),
+                    LocalDate.parse(end, DateTimeFormatter.ISO_DATE).atStartOfDay(),
+                    page,
+                    pageSize,
+                    filters.getValue2()
+            );
+        }
+
         return StandardJsonResponse
                 .<PaginatedJobsDTO>builder()
                 .success(true)
@@ -403,5 +511,39 @@ public class JobApiController {
                                 .build()
                 )
                 .build();
+    }
+
+
+    //  HELPERS
+
+    /**
+     * Resolves the paged job filters
+     *
+     * @param type job type
+     * @param status job status
+     * @param sort sort order
+     * @return {@link Triplet}
+     */
+    private Triplet<JobType, JobStatus, Sort> resolveFilters(final String type, final String status, final String sort) {
+
+        JobType jobType = null;
+        JobStatus jobStatus = null;
+        final Sort finalSort;
+
+        if (StringUtils.isNotEmpty(type) && EnumUtils.isValidEnumIgnoreCase(JobType.class, type)) {
+            jobType = GenericEnum.getByCode(JobType.class, type);
+        }
+
+        if (StringUtils.isNotEmpty(status) && EnumUtils.isValidEnumIgnoreCase(JobStatus.class, status)) {
+            jobStatus = GenericEnum.getByCode(JobStatus.class, status);
+        }
+
+        if (sort.equalsIgnoreCase("asc")) {
+            finalSort = Sort.by(Sort.Direction.ASC, "executionTime");
+        } else {
+            finalSort = Sort.by(Sort.Direction.DESC, "executionTime");
+        }
+
+        return Triplet.with(jobType, jobStatus, finalSort);
     }
 }

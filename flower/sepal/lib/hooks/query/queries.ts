@@ -9,7 +9,9 @@ import {
   AnalysisResult,
   Broker,
   Currency,
+  EnumDisplay,
   MarketNews,
+  PagedJobs,
   PagedTrades,
   Portfolio,
   PortfolioRecord,
@@ -342,5 +344,46 @@ export const useTradedSymbolsQuery = (accountNumber: number) => {
         accountNumber: accountNumber.toString(),
       }),
     enabled: accountNumber > -1,
+  });
+};
+
+export const usePagedJobsQuery = (
+  start: string,
+  end: string,
+  page: number,
+  pageSize: number,
+  jobType: string,
+  jobStatus: string,
+  sort: "asc" | "desc" = "asc",
+) => {
+  return useQuery<PagedJobs | null>({
+    placeholderData: keepPreviousData,
+    queryKey: [
+      "paginated-jobs",
+      start,
+      end,
+      page,
+      pageSize,
+      jobType,
+      jobStatus,
+      sort,
+    ],
+    queryFn: () =>
+      get<PagedJobs>(ApiUrls.Job.GetJobsByStatusAndTypePaged, {
+        start: start,
+        end: end,
+        page: page.toString(),
+        pageSize: pageSize.toString(),
+        jobStatus: jobStatus,
+        jobType: jobType,
+        sort: sort,
+      }),
+  });
+};
+
+export const useJobTypesQuery = () => {
+  return useQuery<Array<EnumDisplay>>({
+    queryKey: ["job-types"],
+    queryFn: () => get<Array<EnumDisplay>>(ApiUrls.Job.GetJobTypes, {}),
   });
 };

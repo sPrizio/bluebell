@@ -20,13 +20,14 @@ if [ ! -f "$ENV_FILE" ]; then
 fi
 
 FORCE_BUILD="${2:-false}"
+export TAG=$ENV
 
 # Run Docker Compose with or without --build based on FORCE_BUILD
 echo "Using $ENV_FILE"
 if [ "$FORCE_BUILD" == "true" ]; then
     echo "Rebuilding Docker images..."
-    docker compose --env-file "$ENV_FILE" up --build
+    docker compose --env-file "$ENV_FILE" up --build -d
 else
     echo "Running Docker based on previous build..."
-    docker compose --env-file "$ENV_FILE" up
+    docker compose --env-file "$ENV_FILE" up -d
 fi
