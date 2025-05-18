@@ -10,6 +10,7 @@ import com.bluebell.platform.models.api.dto.job.JobDTO;
 import com.bluebell.platform.models.api.dto.job.PaginatedJobsDTO;
 import com.bluebell.platform.models.api.json.StandardJsonResponse;
 import com.bluebell.platform.models.core.entities.job.impl.Job;
+import com.bluebell.platform.models.core.nonentities.data.EnumDisplay;
 import com.bluebell.radicle.security.aspects.ValidateApiToken;
 import com.bluebell.radicle.services.job.JobService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -29,6 +30,8 @@ import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 
 import static com.bluebell.radicle.validation.GenericValidator.validateLocalDateFormat;
@@ -56,6 +59,42 @@ public class JobApiController {
 
 
     //  ----------------- GET REQUESTS -----------------
+
+    /**
+     * Returns a {@link StandardJsonResponse} containing all {@link JobType}s
+     *
+     * @param request {@link HttpServletRequest}
+     * @return {@link StandardJsonResponse}
+     */
+    @ValidateApiToken
+    @Operation(summary = "Get all system job types", description = "Fetches all job types that are currently supported in bluebell.")
+    @ApiResponse(
+            responseCode = "200",
+            description = "Response when the api successfully retrieves all job types.",
+            content = @Content(
+                    mediaType = "application/json",
+                    schema = @Schema(
+                            implementation = StandardJsonResponse.class,
+                            type = "object"
+                    )
+            )
+    )
+    @ApiResponse(
+            responseCode = "401",
+            description = "Response when the api call made was unauthorized.",
+            content = @Content(
+                    mediaType = "application/json",
+                    schema = @Schema(implementation = StandardJsonResponse.class, example = "The API token was invalid.")
+            )
+    )
+    @GetMapping(ApiPaths.Job.GET_JOB_TYPES)
+    public StandardJsonResponse<List<EnumDisplay>> getJobTypes(final HttpServletRequest request) {
+        return StandardJsonResponse
+                .<List<EnumDisplay>>builder()
+                .success(true)
+                .data(Arrays.stream(JobType.values()).map(c -> EnumDisplay.builder().code(c.getCode()).label(c.getLabel()).build()).toList())
+                .build();
+    }
 
     /**
      * Returns a {@link StandardJsonResponse} containing the {@link JobDTO} for the given job id
@@ -416,7 +455,7 @@ public class JobApiController {
         validateLocalDateFormat(start, CorePlatformConstants.DATE_FORMAT, String.format(CorePlatformConstants.Validation.DateTime.START_DATE_INVALID_FORMAT, start, CorePlatformConstants.DATE_FORMAT));
 
         Page<Job> jobs;
-        final Triplet<JobType, JobStatus, Sort> filters = resolveFilters(jobType, null, sort);
+        final Triplet<JobType, JobStatus, Sort> filters = resolveFilters(jobType, jobStatus, sort);
         if (filters.getValue0() != null && filters.getValue1() != null) {
             //  filter by type and status
             jobs = this.jobService.findJobsByStatusAndTypePaged(

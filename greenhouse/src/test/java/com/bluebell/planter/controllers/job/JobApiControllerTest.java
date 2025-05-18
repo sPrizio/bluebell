@@ -3,6 +3,7 @@ package com.bluebell.planter.controllers.job;
 import com.bluebell.planter.AbstractPlanterTest;
 import com.bluebell.planter.constants.ApiConstants;
 import com.bluebell.planter.services.UniqueIdentifierService;
+import com.bluebell.platform.enums.job.JobType;
 import com.bluebell.radicle.services.job.JobService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -60,6 +61,15 @@ class JobApiControllerTest extends AbstractPlanterTest {
         Mockito.when(this.jobService.findJobsByStatusAndTypePaged(any(), any(), any(), any(), anyInt(), anyInt(), any())).thenReturn(new PageImpl<>(List.of(generateTestJob()), Pageable.ofSize(10), 10));
     }
 
+
+    //  ----------------- getJobTypes -----------------
+
+    @Test
+    void test_getJobTypes_success() throws Exception {
+        this.mockMvc.perform(get(getApiPath(BASE, GET_JOB_TYPES)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.data[0].code", is(JobType.values()[0].getCode())));
+    }
 
     //  ----------------- getJobForJobId -----------------
 

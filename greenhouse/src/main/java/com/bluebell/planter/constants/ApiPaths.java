@@ -84,6 +84,8 @@ public class ApiPaths {
         public static final String GET_TYPE_PAGED = "/get-type-paged";
 
         public static final String GET_PAGED = "/get-status-type-paged";
+
+        public static final String GET_JOB_TYPES = "/get-job-types";
     }
 
     public static class MarketPrice {
