@@ -385,6 +385,14 @@ interface CreateUpdateAccountRequest {
   accountCloseTime: string | undefined | null;
 }
 
+interface PagedJobs {
+  page: number;
+  pageSize: number;
+  jobs: Array<Job>;
+  totalElements: number;
+  totalPages: number;
+}
+
 export type FilterSelector = "POINTS" | "PROFIT" | "PERCENTAGE";
 
 export type TradeDurationFilterSelector = "ALL" | "WINS" | "LOSSES";

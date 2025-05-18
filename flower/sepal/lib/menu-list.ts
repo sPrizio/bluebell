@@ -1,6 +1,6 @@
 import {
   ArrowRightLeft,
-  BrainCircuit,
+  BrainIcon,
   ChartPie,
   ChartScatter,
   CircleUserRound,
@@ -100,7 +100,7 @@ export function getMenuList(pathname: string): Group[] {
         {
           href: "/jobs",
           label: "Jobs",
-          icon: BrainCircuit,
+          icon: BrainIcon,
         },
       ],
     },

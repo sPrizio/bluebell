@@ -31,3 +31,11 @@ export interface UserTradeControlSelection {
   type: string;
   symbol: string;
 }
+
+export interface UserJobControlSelection {
+  start: Date;
+  end: Date;
+  jobType: string;
+  jobStatus: string;
+  sort: "asc" | "desc";
+}
