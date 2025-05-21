@@ -15,7 +15,7 @@ import java.util.TreeSet;
  * Converts {@link Job}s  into {@link JobDTO}s
  *
  * @author Stephen Prizio
- * @version 0.1.3
+ * @version 0.2.1
  */
 @Component("jobDTOConverter")
 public class JobDTOConverter implements GenericDTOConverter<Job, JobDTO> {
@@ -42,6 +42,7 @@ public class JobDTOConverter implements GenericDTOConverter<Job, JobDTO> {
         return JobDTO
                 .builder()
                 .uid(this.uniqueIdentifierService.generateUid(entity))
+                .id(entity.getId())
                 .jobId(entity.getJobId())
                 .name(entity.getName())
                 .executionTime(entity.getExecutionTime())

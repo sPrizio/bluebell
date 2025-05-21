@@ -108,12 +108,16 @@ public class JobRunner extends AbstractRunner implements CommandLineRunner {
                             .data(getRandomString(StringUtils.EMPTY))
                             .logs("Action completed successfully")
                             .build();
+
+                    jobResultEntry.setJobResult(jobResult);
                 } else {
                     jobResultEntry = JobResultEntry
                             .builder()
                             .success(false)
                             .logs(getRandomLongString(StringUtils.EMPTY))
                             .build();
+
+                    jobResultEntry.setJobResult(jobResult);
                 }
 
                 entries.add(this.jobResultEntryRepository.save(jobResultEntry));
