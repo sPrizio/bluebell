@@ -346,6 +346,7 @@ interface JobResult extends GenericApiType {
 
 interface Job extends GenericApiType {
   jobId: string;
+  id: number;
   name: string;
   executionTime: string;
   completionTime: string;

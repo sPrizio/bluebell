@@ -198,10 +198,20 @@ public class JobService {
     }
 
     /**
-     * Finds a {@link Job} by its job is
+     * Finds a {@link Job} by its id
+     *
+     * @param id id
+     * @return {@link Optional} {@link Job}
+     */
+    public Optional<Job> findJobById(final long id) {
+        return this.jobRepository.findById(id);
+    }
+
+    /**
+     * Finds a {@link Job} by its job id
      *
      * @param jobId job id
-     * @return {@link Job}
+     * @return {@link Optional} {@link Job}
      */
     public Optional<Job> findJobByJobId(final String jobId) {
         validateParameterIsNotNull(jobId, CorePlatformConstants.Validation.Job.JOB_ID_CANNOT_BE_NULL);

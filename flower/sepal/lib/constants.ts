@@ -72,6 +72,7 @@ export const ApiUrls = {
       "/weekdays-time-buckets?accountNumber={accountNumber}&weekday={weekday}&filter={filter}",
   },
   Job: {
+    GetJobById: getJobDomain() + "/get-by-id?jobId={jobId}",
     GetJobsByStatusAndTypePaged:
       getJobDomain() +
       "/get-status-type-paged?start={start}&end={end}&jobStatus={jobStatus}&jobType={jobType}&page={page}&pageSize={pageSize}&sort={sort}",

@@ -233,6 +233,16 @@ class JobServiceTest extends AbstractGenericTest {
     }
 
 
+    //  ----------------- findJobBybId -----------------
+
+    @Test
+    void test_findJobBybId_success() {
+        final Job job = this.jobRepository.save(Job.builder().build());
+        assertThat(job).isNotNull();
+        assertThat(this.jobService.findJobById(job.getId())).isNotNull();
+    }
+
+
     //  ----------------- findJobByJobId -----------------
 
     @Test

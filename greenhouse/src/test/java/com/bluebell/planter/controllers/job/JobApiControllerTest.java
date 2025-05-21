@@ -53,8 +53,8 @@ class JobApiControllerTest extends AbstractPlanterTest {
     @BeforeEach
     void setUp() {
         Mockito.when(this.uniqueIdentifierService.generateUid(any())).thenReturn("1234");
-        Mockito.when(this.jobService.findJobByJobId("1234")).thenReturn(Optional.of(generateTestJob()));
-        Mockito.when(this.jobService.findJobByJobId("5678")).thenReturn(Optional.empty());
+        Mockito.when(this.jobService.findJobById(1234L)).thenReturn(Optional.of(generateTestJob()));
+        Mockito.when(this.jobService.findJobById(5678L)).thenReturn(Optional.empty());
         Mockito.when(this.jobService.findJobsPaged(any(), any(), anyInt(), anyInt(), any())).thenReturn(new PageImpl<>(List.of(generateTestJob()), Pageable.ofSize(10), 10));
         Mockito.when(this.jobService.findJobsByStatusPaged(any(), any(), any(), anyInt(), anyInt(), any())).thenReturn(new PageImpl<>(List.of(generateTestJob()), Pageable.ofSize(10), 10));
         Mockito.when(this.jobService.findJobsByTypePaged(any(), any(), any(), anyInt(), anyInt(), any())).thenReturn(new PageImpl<>(List.of(generateTestJob()), Pageable.ofSize(10), 10));

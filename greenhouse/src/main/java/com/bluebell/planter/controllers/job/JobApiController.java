@@ -136,7 +136,7 @@ public class JobApiController {
             final HttpServletRequest request
     ) {
 
-        final Optional<Job> job = this.jobService.findJobByJobId(jobId);
+        final Optional<Job> job = this.jobService.findJobById(Long.parseLong(jobId));
         if (job.isPresent()) {
             return StandardJsonResponse
                     .<JobDTO>builder()
