@@ -5,6 +5,7 @@ import { hasEmail, hasUsername } from "@/lib/functions/account-functions";
 import {
   getAccountDomain,
   getAnalysisDomain,
+  getJobDomain,
   getNewsDomain,
   getPortfolioDomain,
   getPortfolioRecordDomain,
@@ -69,6 +70,13 @@ export const ApiUrls = {
     WeekdaysTimeBuckets:
       getAnalysisDomain() +
       "/weekdays-time-buckets?accountNumber={accountNumber}&weekday={weekday}&filter={filter}",
+  },
+  Job: {
+    GetJobById: getJobDomain() + "/get-by-id?jobId={jobId}",
+    GetJobsByStatusAndTypePaged:
+      getJobDomain() +
+      "/get-status-type-paged?start={start}&end={end}&jobStatus={jobStatus}&jobType={jobType}&page={page}&pageSize={pageSize}&sort={sort}",
+    GetJobTypes: getJobDomain() + "/get-job-types",
   },
   News: {
     GetNews: getNewsDomain() + "/get-for-interval?start={start}&end={end}",

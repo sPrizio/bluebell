@@ -16,6 +16,7 @@ if "%~1"=="" (
 
 set ENV=%1
 set ENV_FILE=.env.%ENV%
+set TAG=%ENV%
 
 :: Check if the .env file exists
 if not exist "%ENV_FILE%" (

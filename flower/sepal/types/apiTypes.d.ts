@@ -346,6 +346,7 @@ interface JobResult extends GenericApiType {
 
 interface Job extends GenericApiType {
   jobId: string;
+  id: number;
   name: string;
   executionTime: string;
   completionTime: string;
@@ -383,6 +384,14 @@ interface CreateUpdateAccountRequest {
   isLegacy: boolean;
   accountOpenTime: string | undefined | null;
   accountCloseTime: string | undefined | null;
+}
+
+interface PagedJobs {
+  page: number;
+  pageSize: number;
+  jobs: Array<Job>;
+  totalElements: number;
+  totalPages: number;
 }
 
 export type FilterSelector = "POINTS" | "PROFIT" | "PERCENTAGE";

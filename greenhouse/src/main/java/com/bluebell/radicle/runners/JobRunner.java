@@ -32,7 +32,7 @@ import java.util.Random;
  * Generates testing {@link Job}s
  *
  * @author Stephen Prizio
- * @version 0.1.9
+ * @version 0.2.1
  */
 @Component
 @Order(7)
@@ -71,9 +71,10 @@ public class JobRunner extends AbstractRunner implements CommandLineRunner {
         for (int i = 0; i < jobCount; i++) {
             Job job = new Job();
             job.setName(getRandomName("Job"));
-            job.setExecutionTime(LocalDateTime.now().minusMinutes(this.random.nextInt(500)));
-            job.setCompletionTime(LocalDateTime.now().plusMinutes(this.random.nextInt(500)));
-            job.setType(JobType.FETCH_MARKET_NEWS);
+            final LocalDateTime start = LocalDateTime.now().minusDays(this.random.nextInt(50)).minusSeconds(this.random.nextInt(500));
+            job.setExecutionTime(start);
+            job.setCompletionTime(start.plusMinutes(this.random.nextInt(10000) + 1L));
+            job.setType(this.random.nextInt(100) % 2 == 0 ? JobType.FETCH_MARKET_NEWS : JobType.INVALIDATE_STALE_ACCOUNTS);
             job = this.jobRepository.save(job);
 
             JobResult jobResult = new JobResult();
@@ -107,12 +108,16 @@ public class JobRunner extends AbstractRunner implements CommandLineRunner {
                             .data(getRandomString(StringUtils.EMPTY))
                             .logs("Action completed successfully")
                             .build();
+
+                    jobResultEntry.setJobResult(jobResult);
                 } else {
                     jobResultEntry = JobResultEntry
                             .builder()
                             .success(false)
                             .logs(getRandomLongString(StringUtils.EMPTY))
                             .build();
+
+                    jobResultEntry.setJobResult(jobResult);
                 }
 
                 entries.add(this.jobResultEntryRepository.save(jobResultEntry));

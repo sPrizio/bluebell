@@ -18,7 +18,7 @@ import java.util.List;
  * Data-access layer for {@link Job}
  *
  * @author Stephen Prizio
- * @version 0.1.3
+ * @version 0.2.1
  */
 @Repository
 public interface JobRepository extends PagingAndSortingRepository<Job, Long>, CrudRepository<Job, Long> {
@@ -55,6 +55,17 @@ public interface JobRepository extends PagingAndSortingRepository<Job, Long>, Cr
      * @return {@link List} of {@link Job}
      */
     List<Job> findJobsByStatusAndType(final JobStatus status, final JobType jobType);
+
+    /**
+     * Returns a {@link List} of {@link Job}s
+     *
+     * @param start    {@link LocalDateTime} start of interval (inclusive)
+     * @param end      {@link LocalDateTime} end of interval (exclusive)
+     * @param pageable {@link Pageable}
+     * @return {@link Page} of {@link Job}
+     */
+    @Query("SELECT j FROM Job j WHERE j.executionTime >= ?1 AND j.executionTime < ?2")
+    Page<Job> findAllJobsWithinDatePaged(final LocalDateTime start, final LocalDateTime end, final Pageable pageable);
 
     /**
      * Returns a {@link List} of {@link Job}s by their status

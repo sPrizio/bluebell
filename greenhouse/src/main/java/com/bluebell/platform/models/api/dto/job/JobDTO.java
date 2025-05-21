@@ -17,7 +17,7 @@ import java.util.Set;
  * DTO representation of {@link Job}
  *
  * @author Stephen Prizio
- * @version 0.1.3
+ * @version 0.2.1
  */
 @Getter
 @Setter
@@ -27,6 +27,9 @@ public class JobDTO implements GenericDTO {
 
     @Schema(description = "Job uid")
     private @Builder.Default String uid = StringUtils.EMPTY;
+
+    @Schema(description = "Job pk")
+    private Long id;
 
     @Schema(description = "Job id")
     private String jobId;
