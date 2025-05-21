@@ -26,6 +26,7 @@ import {
   PaginationPrevious,
 } from "@/components/ui/pagination";
 import { IconPointFilled } from "@tabler/icons-react";
+import { useRouter } from "next/navigation";
 
 /**
  * Renders the jobs table
@@ -44,6 +45,7 @@ export default function JobsTable({
   initialPageSize?: number;
   initialPage?: number;
 }>) {
+  const router = useRouter();
   const [currentPage, setCurrentPage] = useState(initialPage);
 
   const {
@@ -87,6 +89,15 @@ export default function JobsTable({
     }
 
     return " text-primaryYellow ";
+  }
+
+  /**
+   * Redirect to the account page based on input value
+   *
+   * @param val account number
+   */
+  function redirectToJob(val: number) {
+    router.push(`/jobs/${val}`);
   }
 
   //  RENDER
@@ -136,7 +147,8 @@ export default function JobsTable({
                   return (
                     <TableRow
                       key={job.jobId + index}
-                      className={"hover:bg-transparent"}
+                      className={"hover:cursor-pointer"}
+                      onClick={() => redirectToJob(job.id)}
                     >
                       <TableCell className={"text-left"}>{job.name}</TableCell>
                       <TableCell className={"text-left"}>

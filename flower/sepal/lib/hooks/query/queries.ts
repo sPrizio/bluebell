@@ -10,6 +10,7 @@ import {
   Broker,
   Currency,
   EnumDisplay,
+  Job,
   MarketNews,
   PagedJobs,
   PagedTrades,
@@ -385,5 +386,12 @@ export const useJobTypesQuery = () => {
   return useQuery<Array<EnumDisplay>>({
     queryKey: ["job-types"],
     queryFn: () => get<Array<EnumDisplay>>(ApiUrls.Job.GetJobTypes, {}),
+  });
+};
+
+export const useJobQuery = (jobId: string) => {
+  return useQuery<Job>({
+    queryKey: ["job", jobId],
+    queryFn: () => get<Job>(ApiUrls.Job.GetJobById, { jobId: jobId }),
   });
 };
