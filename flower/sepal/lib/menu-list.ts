@@ -1,6 +1,7 @@
 import {
   ArrowRightLeft,
   BrainIcon,
+  BriefcaseBusinessIcon,
   ChartPie,
   ChartScatter,
   CircleUserRound,
@@ -40,6 +41,12 @@ export function getMenuList(pathname: string): Group[] {
           href: "/dashboard",
           label: "Dashboard",
           icon: LayoutDashboard,
+          submenus: [],
+        },
+        {
+          href: "/portfolios",
+          label: "Portfolios",
+          icon: BriefcaseBusinessIcon,
           submenus: [],
         },
       ],

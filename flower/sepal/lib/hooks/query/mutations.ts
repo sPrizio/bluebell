@@ -86,6 +86,21 @@ export const useDeleteAccountMutation = (
   });
 };
 
+export const useDeletePortfolioMutation = (portfolioNumber: number) => {
+  const queryClient = useQueryClient();
+  return useMutation<boolean, Error, any>({
+    mutationFn: () =>
+      del<boolean>(ApiUrls.Portfolio.DeletePortfolio, {
+        portfolioNumber: portfolioNumber,
+      }),
+    onSuccess: (data) => {
+      queryClient.invalidateQueries({ queryKey: ["user"] });
+      queryClient.invalidateQueries({ queryKey: ["portfolio"] });
+      queryClient.invalidateQueries({ queryKey: ["portfolio-record"] });
+    },
+  });
+};
+
 export const useImportTradesMutation = (accNumber: number) => {
   const queryClient = useQueryClient();
 

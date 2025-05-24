@@ -85,6 +85,9 @@ export const ApiUrls = {
   Portfolio: {
     GetPortfolio:
       getPortfolioDomain() + "/get?portfolioNumber={portfolioNumber}",
+    DeletePortfolio:
+      getPortfolioDomain() +
+      "/delete-portfolio?portfolioNumber={portfolioNumber}",
   },
   PortfolioRecord: {
     GetPortfolioRecord:

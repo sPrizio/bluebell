@@ -44,7 +44,7 @@ import { Account, Transaction } from "@/types/apiTypes";
  * @param showActions shows the modification actions
  * @param showBottomLink show table caption
  * @author Stephen Prizio
- * @version 0.2.0
+ * @version 0.2.2
  */
 export default function AccountTransactionsTable({
   account,
@@ -113,12 +113,22 @@ export default function AccountTransactionsTable({
             ) : null}
             <TableHeader>
               <TableRow className={"hover:bg-transparent"}>
-                <TableHead>Date</TableHead>
-                <TableHead>Account</TableHead>
-                <TableHead className={"text-center"}>Type</TableHead>
-                <TableHead className={"text-center"}>Value</TableHead>
-                <TableHead className={"text-right"}>Status</TableHead>
-                {showActions ? <TableHead className={"text-right"} /> : null}
+                <TableHead className={"text-primary font-bold"}>Date</TableHead>
+                <TableHead className={"text-primary font-bold"}>
+                  Account
+                </TableHead>
+                <TableHead className={"text-center text-primary font-bold"}>
+                  Type
+                </TableHead>
+                <TableHead className={"text-center text-primary font-bold"}>
+                  Value
+                </TableHead>
+                <TableHead className={"text-right text-primary font-bold"}>
+                  Status
+                </TableHead>
+                {showActions ? (
+                  <TableHead className={"text-right text-primary font-bold"} />
+                ) : null}
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -214,10 +224,8 @@ export default function AccountTransactionsTable({
           {account && (transaction?.transactionDate ?? false) ? (
             <BaseModal
               isOpen={showModal === "delete"}
-              title={"Edit Transaction"}
-              description={
-                "Keep track of your account's transactions by adding withdrawals & deposits."
-              }
+              title={"Delete Transaction"}
+              description={""}
               content={
                 <DeleteTransactionForm
                   account={account}
