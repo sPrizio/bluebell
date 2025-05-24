@@ -375,6 +375,12 @@ interface HealthCheck {
   apiVersion: string;
 }
 
+interface CreateUpdatePortfolioRequest {
+  defaultPortfolio: boolean;
+  active: boolean;
+  name: string;
+}
+
 interface CreateUpdateAccountRequest {
   isDefault: boolean;
   balance: number;

@@ -18,6 +18,7 @@ import { Button } from "@/components/ui/button";
 import React, { useState } from "react";
 import BaseModal from "@/components/Modal/BaseModal";
 import DeletePortfolioForm from "@/components/Form/Portfolio/DeletePortfolioForm";
+import PortfolioForm from "@/components/Form/Portfolio/PortfolioForm";
 
 /**
  * Renders a table of portfolios
@@ -78,7 +79,9 @@ export default function PortfoliosTable({
                       <BaseModal
                         title={"Edit Portfolio"}
                         description={"Edit your portfolio information."}
-                        content={<p>Edit portfolio form</p>}
+                        content={
+                          <PortfolioForm portfolio={portfolio} mode={"edit"} />
+                        }
                         trigger={
                           <Button variant={"outline"}>
                             <IconEdit />

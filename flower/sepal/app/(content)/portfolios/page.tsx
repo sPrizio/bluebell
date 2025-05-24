@@ -16,6 +16,7 @@ import { logErrors } from "@/lib/functions/util-functions";
 import Error from "@/app/error";
 import AccountsTable from "@/components/Table/Account/AccountsTable";
 import PortfoliosTable from "@/components/Table/Portfolio/PortfoliosTable";
+import PortfolioForm from "@/components/Form/Portfolio/PortfolioForm";
 
 /**
  * The page that shows all of a user's portfolios
@@ -106,7 +107,7 @@ export default function PortfoliosPage() {
                     &nbsp;Add a new portfolio
                   </Button>
                 }
-                content={<p>HELLO WORLD!</p>}
+                content={<PortfolioForm mode={"create"} />}
               />
             </div>
           </div>

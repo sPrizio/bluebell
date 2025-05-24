@@ -1,5 +1,5 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { Account, Transaction, User } from "@/types/apiTypes";
+import { Account, Portfolio, Transaction, User } from "@/types/apiTypes";
 import { del, post, postFile, put } from "../../functions/client";
 import { ApiUrls } from "../../constants";
 
@@ -82,6 +82,34 @@ export const useDeleteAccountMutation = (
       queryClient.invalidateQueries({ queryKey: ["portfolio"] });
       queryClient.invalidateQueries({ queryKey: ["portfolio-record"] });
       queryClient.invalidateQueries({ queryKey: ["recent-transactions"] });
+    },
+  });
+};
+
+export const useCreatePortfolioMutation = () => {
+  const queryClient = useQueryClient();
+  return useMutation<Portfolio, Error, any>({
+    mutationFn: (payload) =>
+      post<Portfolio>(ApiUrls.Portfolio.CreatePortfolio, {}, payload),
+    onSuccess: (data) => {
+      queryClient.invalidateQueries({ queryKey: ["user"] });
+    },
+  });
+};
+
+export const useUpdatePortfolioMutation = (portfolioNumber: number) => {
+  const queryClient = useQueryClient();
+  return useMutation<Portfolio, Error, any>({
+    mutationFn: (payload) =>
+      put<Portfolio>(
+        ApiUrls.Portfolio.UpdatePortfolio,
+        { portfolioNumber: portfolioNumber },
+        payload,
+      ),
+    onSuccess: (data) => {
+      queryClient.invalidateQueries({ queryKey: ["user"] });
+      queryClient.invalidateQueries({ queryKey: ["portfolio"] });
+      queryClient.invalidateQueries({ queryKey: ["portfolio-record"] });
     },
   });
 };
