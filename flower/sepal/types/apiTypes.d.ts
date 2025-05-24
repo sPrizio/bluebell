@@ -71,6 +71,10 @@ interface PortfolioRecord {
 }
 
 interface PortfolioStatistics {
+  differenceNetWorth: number;
+  differenceTrades: number;
+  differenceDeposits: number;
+  differenceWithdrawals: number;
   deltaNetWorth: number;
   deltaTrades: number;
   deltaDeposits: number;

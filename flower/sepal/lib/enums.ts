@@ -24,6 +24,7 @@ export enum Icons {
   Portfolios = "portfolios",
   JobsOverview = "jobs-overview",
   Job = "job",
+  CirclePlus = "circle-plus",
 }
 
 /**

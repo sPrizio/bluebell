@@ -11,6 +11,7 @@ import {
   IconChartDonutFilled,
   IconChartPie,
   IconChartScatter,
+  IconCirclePlus,
   IconFolders,
   IconLayoutDashboard,
   IconLogout,
@@ -102,6 +103,8 @@ export function resolveIcon(iconCode: string, className = "", iconSize = 24) {
       return <IconBrain className={className} size={iconSize} />;
     case Icons.Job:
       return <IconBrandReact className={className} size={iconSize} />;
+    case Icons.CirclePlus:
+      return <IconCirclePlus className={className} size={iconSize} />;
     default:
       return <span>-</span>;
   }
