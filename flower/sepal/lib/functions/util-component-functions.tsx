@@ -13,7 +13,7 @@ import {
   IconChartPie,
   IconChartScatter,
   IconCirclePlus,
-  IconFolders,
+  IconFlag3Filled,
   IconLayoutDashboard,
   IconLogout,
   IconMountain,
@@ -106,6 +106,8 @@ export function resolveIcon(iconCode: string, className = "", iconSize = 24) {
       return <IconBrandReact className={className} size={iconSize} />;
     case Icons.CirclePlus:
       return <IconCirclePlus className={className} size={iconSize} />;
+    case Icons.DefaultIcon:
+      return <IconFlag3Filled className={className} size={iconSize} />;
     default:
       return <span>-</span>;
   }

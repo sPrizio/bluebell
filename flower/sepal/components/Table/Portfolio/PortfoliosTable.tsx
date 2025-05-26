@@ -7,18 +7,16 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import {
-  IconEdit,
-  IconSquareRoundedCheckFilled,
-  IconTrash,
-} from "@tabler/icons-react";
+import { IconEdit, IconTrash } from "@tabler/icons-react";
 import moment from "moment/moment";
 import { DateTime } from "@/lib/constants";
 import { Button } from "@/components/ui/button";
-import React, { useState } from "react";
+import React from "react";
 import BaseModal from "@/components/Modal/BaseModal";
 import DeletePortfolioForm from "@/components/Form/Portfolio/DeletePortfolioForm";
 import PortfolioForm from "@/components/Form/Portfolio/PortfolioForm";
+import { resolveIcon } from "@/lib/functions/util-component-functions";
+import { Icons } from "@/lib/enums";
 
 /**
  * Renders a table of portfolios
@@ -30,11 +28,6 @@ import PortfolioForm from "@/components/Form/Portfolio/PortfolioForm";
 export default function PortfoliosTable({
   portfolios,
 }: Readonly<{ portfolios: Array<Portfolio> }>) {
-  const [showModal, setShowModal] = useState<"edit" | "delete" | "none">(
-    "none",
-  );
-  const [portfolio, setPortfolio] = useState<Portfolio>();
-
   //  RENDER
 
   return (
@@ -59,14 +52,12 @@ export default function PortfoliosTable({
                 return (
                   <TableRow
                     key={portfolio.uid + idx}
-                    className={"hover:cursor-pointer"}
+                    className={"hover:bg-transparent"}
                   >
                     <TableCell>
-                      {portfolio.defaultPortfolio ? (
-                        <IconSquareRoundedCheckFilled
-                          className={"text-primary"}
-                        />
-                      ) : null}
+                      {portfolio.defaultPortfolio
+                        ? resolveIcon(Icons.DefaultIcon, "text-primary")
+                        : null}
                     </TableCell>
                     <TableCell>{portfolio.portfolioNumber}</TableCell>
                     <TableCell>{portfolio.name}</TableCell>

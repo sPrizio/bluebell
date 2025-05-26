@@ -5,18 +5,15 @@ import { PageInfoProvider } from "@/lib/context/PageInfoProvider";
 import { useUserQuery } from "@/lib/hooks/query/queries";
 import BaseModal from "@/components/Modal/BaseModal";
 import { Button } from "@/components/ui/button";
-import {
-  IconCirclePlus,
-  IconSquareRoundedCheckFilled,
-} from "@tabler/icons-react";
+import { IconCirclePlus } from "@tabler/icons-react";
 import React from "react";
 import { BaseCard } from "@/components/Card/BaseCard";
 import LoadingPage from "@/app/loading";
 import { logErrors } from "@/lib/functions/util-functions";
 import Error from "@/app/error";
-import AccountsTable from "@/components/Table/Account/AccountsTable";
 import PortfoliosTable from "@/components/Table/Portfolio/PortfoliosTable";
 import PortfolioForm from "@/components/Form/Portfolio/PortfolioForm";
+import { resolveIcon } from "@/lib/functions/util-component-functions";
 
 /**
  * The page that shows all of a user's portfolios
@@ -115,7 +112,7 @@ export default function PortfoliosPage() {
 
         <div className={"flex items-center text-sm justify-end w-full"}>
           <span className={"inline-block"}>
-            <IconSquareRoundedCheckFilled className={"text-primary"} />
+            {resolveIcon(Icons.DefaultIcon, "text-primary")}
           </span>
           &nbsp;&nbsp;indicates default portfolio.
         </div>
