@@ -36,7 +36,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  * Testing class for {@link PortfolioApiController}
  *
  * @author Stephen Prizio
- * @version 0.2.0
+ * @version 0.2.2
  */
 @SpringBootTest
 @AutoConfigureMockMvc(addFilters = false)
@@ -174,6 +174,7 @@ class PortfolioApiControllerTest extends AbstractPlanterTest {
     void test_deletePortfolio_missingPortfolio() throws Exception {
         this.mockMvc.perform(delete(getApiPath(BASE, DELETE_PORTFOLIO))
                         .queryParam(PORTFOLIO_NUMBER, "5678")
+                        .requestAttr(SecurityConstants.USER_REQUEST_KEY, generateTestUser())
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.message", containsString("Portfolio not found")));
@@ -182,6 +183,7 @@ class PortfolioApiControllerTest extends AbstractPlanterTest {
     @Test
     void test_deletePortfolio_success() throws Exception {
         this.mockMvc.perform(delete(getApiPath(BASE, DELETE_PORTFOLIO))
+                        .requestAttr(SecurityConstants.USER_REQUEST_KEY, generateTestUser())
                         .queryParam(PORTFOLIO_NUMBER, "1234")
                         .contentType(MediaType.APPLICATION_JSON)
                 )

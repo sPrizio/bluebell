@@ -71,6 +71,10 @@ interface PortfolioRecord {
 }
 
 interface PortfolioStatistics {
+  differenceNetWorth: number;
+  differenceTrades: number;
+  differenceDeposits: number;
+  differenceWithdrawals: number;
   deltaNetWorth: number;
   deltaTrades: number;
   deltaDeposits: number;
@@ -369,6 +373,12 @@ interface HealthCheck {
   baseApiDomain: string;
   version: string;
   apiVersion: string;
+}
+
+interface CreateUpdatePortfolioRequest {
+  defaultPortfolio: boolean;
+  active: boolean;
+  name: string;
 }
 
 interface CreateUpdateAccountRequest {

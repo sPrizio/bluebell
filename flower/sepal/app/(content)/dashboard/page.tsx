@@ -148,7 +148,10 @@ export default function DashboardPage() {
                   <DashboardContent
                     prefix={"$ "}
                     value={portfolioRecord?.netWorth ?? 0}
-                    delta={portfolioRecord?.statistics?.deltaNetWorth ?? 0}
+                    delta={portfolioRecord?.statistics?.differenceNetWorth ?? 0}
+                    deltaPercentage={
+                      portfolioRecord?.statistics?.deltaNetWorth ?? 0
+                    }
                   />
                 }
                 icon={resolveIcon(Icons.ChartDoughnut, "", 30)}
@@ -160,7 +163,10 @@ export default function DashboardPage() {
                 cardContent={
                   <DashboardContent
                     value={portfolioRecord?.trades ?? 0}
-                    delta={portfolioRecord?.statistics?.deltaTrades ?? 0}
+                    delta={portfolioRecord?.statistics?.differenceTrades ?? 0}
+                    deltaPercentage={
+                      portfolioRecord?.statistics?.deltaTrades ?? 0
+                    }
                   />
                 }
                 icon={resolveIcon(Icons.Replace, "", 30)}
@@ -172,7 +178,10 @@ export default function DashboardPage() {
                 cardContent={
                   <DashboardContent
                     value={portfolioRecord?.deposits ?? 0}
-                    delta={portfolioRecord?.statistics?.deltaDeposits ?? 0}
+                    delta={portfolioRecord?.statistics?.differenceDeposits ?? 0}
+                    deltaPercentage={
+                      portfolioRecord?.statistics?.deltaDeposits ?? 0
+                    }
                   />
                 }
                 icon={resolveIcon(Icons.ArrowBarDown, "", 30)}
@@ -184,7 +193,12 @@ export default function DashboardPage() {
                 cardContent={
                   <DashboardContent
                     value={portfolioRecord?.withdrawals ?? 0}
-                    delta={portfolioRecord?.statistics?.deltaWithdrawals ?? 0}
+                    delta={
+                      portfolioRecord?.statistics?.differenceWithdrawals ?? 0
+                    }
+                    deltaPercentage={
+                      portfolioRecord?.statistics?.deltaWithdrawals ?? 0
+                    }
                   />
                 }
                 icon={resolveIcon(Icons.ArrowBarUp, "", 30)}

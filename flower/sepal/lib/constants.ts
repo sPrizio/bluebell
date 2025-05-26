@@ -85,6 +85,13 @@ export const ApiUrls = {
   Portfolio: {
     GetPortfolio:
       getPortfolioDomain() + "/get?portfolioNumber={portfolioNumber}",
+    CreatePortfolio: getPortfolioDomain() + "/create-portfolio",
+    DeletePortfolio:
+      getPortfolioDomain() +
+      "/delete-portfolio?portfolioNumber={portfolioNumber}",
+    UpdatePortfolio:
+      getPortfolioDomain() +
+      "/update-portfolio?portfolioNumber={portfolioNumber}",
   },
   PortfolioRecord: {
     GetPortfolioRecord:
@@ -164,6 +171,22 @@ export const Css = {
   FontFamily: "Inter, sans-serif",
 };
 
+export function CRUDPortfolioSchema() {
+  return z.object({
+    isDefault: z.boolean(),
+    active: z.boolean(),
+    name: z
+      .string()
+      .min(3, {
+        message:
+          "Please enter a portfolio name with a minimum of 3 characters.",
+      })
+      .max(75, {
+        message: "Please enter a portfolio name with at most 75 characters.",
+      }),
+  });
+}
+
 export function CRUDAccountSchema(accInfo: AccountCreationInfo | undefined) {
   return z
     .object({
@@ -179,10 +202,10 @@ export function CRUDAccountSchema(accInfo: AccountCreationInfo | undefined) {
         .string()
         .min(3, {
           message:
-            "Please enter an Account name with a minimum of 3 characters.",
+            "Please enter an account name with a minimum of 3 characters.",
         })
         .max(75, {
-          message: "Please enter an Account name with at most 75 characters.",
+          message: "Please enter an account name with at most 75 characters.",
         }),
       number: z.coerce
         .number()

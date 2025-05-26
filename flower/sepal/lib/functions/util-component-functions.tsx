@@ -8,10 +8,12 @@ import {
   IconArrowsRightLeft,
   IconBrain,
   IconBrandReact,
+  IconBriefcase,
   IconChartDonutFilled,
   IconChartPie,
   IconChartScatter,
-  IconFolders,
+  IconCirclePlus,
+  IconFlag3Filled,
   IconLayoutDashboard,
   IconLogout,
   IconMountain,
@@ -97,11 +99,15 @@ export function resolveIcon(iconCode: string, className = "", iconSize = 24) {
     case Icons.Analysis:
       return <IconSearch className={className} size={iconSize} />;
     case Icons.Portfolios:
-      return <IconFolders className={className} size={iconSize} />;
+      return <IconBriefcase className={className} size={iconSize} />;
     case Icons.JobsOverview:
       return <IconBrain className={className} size={iconSize} />;
     case Icons.Job:
       return <IconBrandReact className={className} size={iconSize} />;
+    case Icons.CirclePlus:
+      return <IconCirclePlus className={className} size={iconSize} />;
+    case Icons.DefaultIcon:
+      return <IconFlag3Filled className={className} size={iconSize} />;
     default:
       return <span>-</span>;
   }

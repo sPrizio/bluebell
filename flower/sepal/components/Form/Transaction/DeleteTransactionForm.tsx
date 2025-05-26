@@ -16,7 +16,7 @@ import { useDeleteTransactionMutation } from "@/lib/hooks/query/mutations";
  * @param account Account
  * @param transaction
  * @author Stephen Prizio
- * @version 0.2.0
+ * @version 0.2.2
  */
 export default function DeleteTransactionForm({
   account,
@@ -50,7 +50,7 @@ export default function DeleteTransactionForm({
       toast({
         title: "Deletion Failed!",
         description:
-          "An error occurred while updating the transaction. Please try again.",
+          "An error occurred while deleting the transaction. Please try again.",
         variant: "danger",
       });
 

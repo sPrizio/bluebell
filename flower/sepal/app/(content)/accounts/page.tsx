@@ -3,10 +3,7 @@
 import React from "react";
 import { BaseCard } from "@/components/Card/BaseCard";
 import { Button } from "@/components/ui/button";
-import {
-  IconCirclePlus,
-  IconSquareRoundedCheckFilled,
-} from "@tabler/icons-react";
+import { IconCirclePlus } from "@tabler/icons-react";
 import BaseModal from "@/components/Modal/BaseModal";
 import AccountsTable from "@/components/Table/Account/AccountsTable";
 import AccountForm from "@/components/Form/Account/AccountForm";
@@ -21,12 +18,13 @@ import { usePortfolioStore } from "@/lib/store/portfolioStore";
 import { useActivePortfolio } from "@/lib/hooks/api/useActivePortoflio";
 import { useUserQuery } from "@/lib/hooks/query/queries";
 import { redirect } from "next/navigation";
+import { resolveIcon } from "@/lib/functions/util-component-functions";
 
 /**
  * The page that shows all of a user's accounts
  *
  * @author Stephen Prizio
- * @version 0.2.0
+ * @version 0.2.2
  */
 export default function AccountsPage() {
   const { data: user } = useUserQuery();
@@ -161,7 +159,7 @@ export default function AccountsPage() {
 
         <div className={"flex items-center text-sm justify-end w-full"}>
           <span className={"inline-block"}>
-            <IconSquareRoundedCheckFilled className={"text-primary"} />
+            {resolveIcon(Icons.DefaultIcon, "text-primary")}
           </span>
           &nbsp;&nbsp;indicates default account.
         </div>

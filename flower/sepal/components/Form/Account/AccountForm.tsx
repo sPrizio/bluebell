@@ -46,13 +46,13 @@ import moment from "moment";
 import ReusableDatePicker from "@/components/DateTime/ReusableDatePicker";
 
 /**
- * Renders a form that can create or update an Account
+ * Renders a form that can create or update an account
  *
  * @param create should create / edit
  * @param portfolioNumber portfolio number
  * @param account Account info
  * @author Stephen Prizio
- * @version 0.2.0
+ * @version 0.2.2
  */
 export default function AccountForm({
   mode = "create",
@@ -169,7 +169,7 @@ export default function AccountForm({
     toast({
       title: isCreateMode() ? "Creation Failed!" : "Update Failed!",
       description: isCreateMode()
-        ? "An error occurred while creating new trading Account. Please check your inputs and try again."
+        ? "An error occurred while creating your new trading account. Please check your inputs and try again."
         : "An error occurred while updating your trading account. Please check your inputs and try again.",
       variant: "danger",
     });
