@@ -9,11 +9,16 @@ import com.bluebell.radicle.exceptions.system.EntityCreationException;
 import com.bluebell.radicle.exceptions.system.EntityModificationException;
 import com.bluebell.radicle.exceptions.validation.MissingRequiredDataException;
 import com.bluebell.radicle.repositories.portfolio.PortfolioRepository;
+import com.bluebell.radicle.services.security.UserService;
 import jakarta.annotation.Resource;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 
@@ -23,13 +28,17 @@ import static com.bluebell.radicle.validation.GenericValidator.validateParameter
  * Service-layer for {@link PortfolioRecord}
  *
  * @author Stephen Prizio
- * @version 0.2.0
+ * @version 0.2.2
  */
+@Slf4j
 @Service("portfolioService")
 public class PortfolioService {
 
     @Resource(name = "portfolioRepository")
     private PortfolioRepository portfolioRepository;
+
+    @Resource(name = "userService")
+    private UserService userService;
 
 
     //  METHODS
@@ -96,6 +105,7 @@ public class PortfolioService {
      * @param portfolio {@link Portfolio}
      * @return true if deleted
      */
+    @Transactional
     public boolean deletePortfolio(final Portfolio portfolio) {
 
         validateParameterIsNotNull(portfolio, CorePlatformConstants.Validation.Portfolio.PORTFOLIO_CANNOT_BE_NULL);
@@ -109,15 +119,52 @@ public class PortfolioService {
             if (activePortfolios.size() == 1) {
                 throw new UnsupportedOperationException("Cannot delete only active portfolio");
             } else {
-                this.portfolioRepository.delete(portfolio);
+                user.setPortfolios(safeRemovePortfolio(user, portfolio));
+                this.portfolioRepository.deleteById(portfolio.getId());
+
                 return true;
             }
         } else if (CollectionUtils.isNotEmpty(inactivePortfolios) && inactivePortfolios.contains(portfolio)) {
-            this.portfolioRepository.delete(portfolio);
+            user.setPortfolios(safeRemovePortfolio(user, portfolio));
+            this.portfolioRepository.deleteById(portfolio.getId());
+
             return true;
         }
 
         return false;
+    }
+
+    /**
+     * Reassigns default portfolios
+     *
+     * @param username username
+     */
+    @Transactional
+    public void reassignPortfolios(final String username) {
+        validateParameterIsNotNull(username, CorePlatformConstants.Validation.Security.User.USERNAME_CANNOT_BE_NULL);
+
+        final Optional<User> user = this.userService.findUserByUsername(username);
+        if (user.isEmpty()) {
+            LOGGER.warn("No portfolios to reassign for user {}", username);
+            return;
+        }
+
+        final List<Portfolio> activePortfolios = user.get().getActivePortfolios();
+        if (CollectionUtils.isNotEmpty(activePortfolios)) {
+            if (activePortfolios.stream().anyMatch(Portfolio::isDefaultPortfolio)) {
+                LOGGER.warn("{} already has a default account, nothing to re-assign", username);
+                return;
+            }
+
+            final Portfolio first = activePortfolios.stream().min(Comparator.comparing(Portfolio::getPortfolioNumber)).orElse(null);
+            if (first == null) {
+                LOGGER.warn("IMPOSSIBLE ERROR");
+                return;
+            }
+
+            first.setDefaultPortfolio(true);
+            this.portfolioRepository.save(first);
+        }
     }
 
     /**
@@ -167,5 +214,18 @@ public class PortfolioService {
      */
     private long generatePortfolioNumber(final long seed) {
         return seed * 1000L;
+    }
+
+    /**
+     * Safely removes a portfolio from the given users portfolio list
+     *
+     * @param user {@link User}
+     * @param portfolio {@link Portfolio}
+     * @return {@link List} of updated {@link Portfolio}s
+     */
+    private List<Portfolio> safeRemovePortfolio(final User user, final Portfolio portfolio) {
+        final List<Portfolio> portfolios = new ArrayList<>(user.getPortfolios());
+        portfolios.remove(portfolio);
+        return portfolios;
     }
 }

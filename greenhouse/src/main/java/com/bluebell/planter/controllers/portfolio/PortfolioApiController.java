@@ -30,7 +30,7 @@ import java.util.Optional;
  * API Controller for {@link PortfolioRecord}
  *
  * @author Stephen Prizio
- * @version 0.2.0
+ * @version 0.2.2
  */
 @RestController
 @RequestMapping("${bluebell.base.api.controller.endpoint}" + ApiPaths.Portfolio.BASE)
@@ -260,9 +260,13 @@ public class PortfolioApiController extends AbstractApiController {
             final @RequestParam("portfolioNumber") long portfolioNumber,
             final HttpServletRequest request
     ) {
+        final User user = (User) request.getAttribute(SecurityConstants.USER_REQUEST_KEY);
         final Optional<Portfolio> portfolio = this.portfolioService.findPortfolioForPortfolioNumber(portfolioNumber);
         return portfolio.map(value -> {
             final boolean result = this.portfolioService.deletePortfolio(value);
+            if (result) {
+                this.portfolioService.reassignPortfolios(user.getUsername());
+            }
             return StandardJsonResponse.<Boolean>builder().success(result).data(result).build();
         }).orElseGet(() -> StandardJsonResponse.<Boolean>builder().success(false).data(false).message(String.format("Portfolio not found for number %d", portfolioNumber)).build());
     }
