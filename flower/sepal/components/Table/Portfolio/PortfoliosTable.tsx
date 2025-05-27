@@ -7,7 +7,6 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { IconEdit, IconTrash } from "@tabler/icons-react";
 import moment from "moment/moment";
 import { DateTime } from "@/lib/constants";
 import { Button } from "@/components/ui/button";

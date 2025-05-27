@@ -8,7 +8,6 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { IconExternalLink } from "@tabler/icons-react";
 import Link from "next/link";
 import {
   formatNegativePoints,

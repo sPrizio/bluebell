@@ -25,7 +25,6 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from "@/components/ui/pagination";
-import { IconPointFilled } from "@tabler/icons-react";
 import { useRouter } from "next/navigation";
 import { resolveIcon } from "@/lib/functions/util-component-functions";
 import { Icons } from "@/lib/enums";

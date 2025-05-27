@@ -3,7 +3,6 @@
 import React, { useState } from "react";
 import BaseModal from "@/components/Modal/BaseModal";
 import { Button } from "@/components/ui/button";
-import { IconExternalLink, IconTrash } from "@tabler/icons-react";
 import AccountForm from "@/components/Form/Account/AccountForm";
 import DeleteAccountForm from "@/components/Form/Account/DeleteAccountForm";
 import { BaseCard } from "@/components/Card/BaseCard";

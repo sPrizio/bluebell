@@ -11,7 +11,6 @@ import {
   formatNegativePoints,
   formatNumberForDisplay,
 } from "@/lib/functions/util-functions";
-import { IconXboxXFilled } from "@tabler/icons-react";
 import { TradeRecord } from "@/types/apiTypes";
 import { resolveIcon } from "@/lib/functions/util-component-functions";
 import { Icons } from "@/lib/enums";

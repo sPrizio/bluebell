@@ -8,7 +8,6 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import Link from "next/link";
-import { IconExternalLink, IconPointFilled } from "@tabler/icons-react";
 import moment from "moment/moment";
 import { DateTime } from "@/lib/constants";
 import { formatNumberForDisplay } from "@/lib/functions/util-functions";

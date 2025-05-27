@@ -23,7 +23,6 @@ import {
 import { delay } from "@/lib/functions/util-functions";
 import MainLogo from "@/components/Navigation/MainLogo";
 import { Loader2 } from "lucide-react";
-import { IconArrowLeft } from "@tabler/icons-react";
 import {
   Select,
   SelectContent,

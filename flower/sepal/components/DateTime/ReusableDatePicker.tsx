@@ -11,9 +11,9 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { IconCalendarMonth } from "@tabler/icons-react";
 import { ControllerRenderProps, FieldValues, Path } from "react-hook-form";
 import { resolveIcon } from "@/lib/functions/util-component-functions";
+import { Icons } from "@/lib/enums";
 
 interface Props<T extends FieldValues, K extends Path<T>> {
   label: string;
@@ -28,7 +28,7 @@ interface Props<T extends FieldValues, K extends Path<T>> {
  * @param hasIcon render icon
  * @param field form field handler
  * @author Stephen Prizio
- * @version 0.0.1
+ * @version 0.2.2
  */
 export default function ReusableDatePicker<
   T extends FieldValues,

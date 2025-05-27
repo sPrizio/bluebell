@@ -9,10 +9,6 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import {
-  IconExternalLink,
-  IconSquareRoundedCheckFilled,
-} from "@tabler/icons-react";
 import Link from "next/link";
 import { formatNumberForDisplay } from "@/lib/functions/util-functions";
 import {

@@ -4,7 +4,6 @@ import React from "react";
 import { Icons } from "@/lib/enums";
 import { BaseCard } from "@/components/Card/BaseCard";
 import { Button } from "@/components/ui/button";
-import { IconEdit } from "@tabler/icons-react";
 import BaseModal from "@/components/Modal/BaseModal";
 import moment from "moment";
 import { DateTime } from "@/lib/constants";

@@ -7,13 +7,6 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Action, JobResultEntry } from "@/types/apiTypes";
-import {
-  IconCircleCheck,
-  IconCircleMinus,
-  IconDatabase,
-  IconLogs,
-  IconXboxX,
-} from "@tabler/icons-react";
 import React from "react";
 import { Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";

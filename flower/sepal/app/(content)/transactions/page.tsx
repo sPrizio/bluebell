@@ -7,7 +7,6 @@ import { selectNewAccount } from "@/lib/functions/util-functions";
 import { BaseCard } from "@/components/Card/BaseCard";
 import AccountTransactionsTable from "@/components/Table/Account/AccountTransactionsTable";
 import { Button } from "@/components/ui/button";
-import { IconCirclePlus } from "@tabler/icons-react";
 import BaseModal from "@/components/Modal/BaseModal";
 import TransactionForm from "@/components/Form/Transaction/TransactionForm";
 import { useActiveAccount } from "@/lib/hooks/api/useActiveAccount";
