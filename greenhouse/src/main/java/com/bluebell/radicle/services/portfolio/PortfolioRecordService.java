@@ -154,6 +154,10 @@ public class PortfolioRecordService {
 
         return PortfolioStatistics
                 .builder()
+                .differenceNetWorth(netProfit)
+                .differenceTrades(differenceTrades.size())
+                .differenceDeposits(differenceDeposits.size())
+                .differenceWithdrawals(differenceWithdrawals.size())
                 .deltaNetWorth(safeDivide(netProfit, BigDecimal.valueOf(netAccount).subtract(BigDecimal.valueOf(netProfit)).doubleValue()))
                 .deltaTrades(safeDivide(differenceTrades.size(), BigDecimal.valueOf(allTrades.size()).subtract(BigDecimal.valueOf(differenceTrades.size())).doubleValue()))
                 .deltaDeposits(safeDivide(differenceDeposits.size(), allDeposits.size()))

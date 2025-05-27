@@ -1,4 +1,5 @@
 import {
+  IconAlertTriangleFilled,
   IconArrowBarToDown,
   IconArrowBarUp,
   IconArrowNarrowDown,
@@ -6,19 +7,44 @@ import {
   IconArrowNarrowRight,
   IconArrowNarrowUp,
   IconArrowsRightLeft,
+  IconBarrierBlock,
   IconBrain,
+  IconBrandAppleFilled,
+  IconBrandFacebookFilled,
+  IconBrandGoogleFilled,
   IconBrandReact,
+  IconBriefcase,
+  IconCalendarMonth,
   IconChartDonutFilled,
   IconChartPie,
   IconChartScatter,
-  IconFolders,
+  IconCircleCheck,
+  IconCircleCheckFilled,
+  IconCircleMinus,
+  IconCirclePlus,
+  IconDatabase,
+  IconEdit,
+  IconExternalLink,
+  IconFlag3Filled,
+  IconHelpSquareRounded,
+  IconInfoSquareRoundedFilled,
   IconLayoutDashboard,
   IconLogout,
+  IconLogs,
+  IconMailFilled,
+  IconMenu2,
+  IconMeteorFilled,
   IconMountain,
   IconNews,
+  IconPlanet,
+  IconPointFilled,
   IconReplaceFilled,
   IconSearch,
+  IconTrash,
   IconUserCircle,
+  IconX,
+  IconXboxX,
+  IconXboxXFilled,
 } from "@tabler/icons-react";
 import Image from "next/image";
 import { Icons } from "@/lib/enums";
@@ -58,15 +84,15 @@ import { Portfolio } from "@/types/apiTypes";
  */
 export function resolveIcon(iconCode: string, className = "", iconSize = 24) {
   switch (iconCode) {
-    case Icons.Dashboard:
+    case Icons.LayoutDashboard:
       return <IconLayoutDashboard className={className} size={iconSize} />;
-    case Icons.AccountOverview:
+    case Icons.PieChart:
       return <IconChartPie className={className} size={iconSize} />;
-    case Icons.UserProfile:
+    case Icons.UserCircle:
       return <IconUserCircle className={className} size={iconSize} />;
-    case Icons.MarketNews:
+    case Icons.News:
       return <IconNews className={className} size={iconSize} />;
-    case Icons.Performance:
+    case Icons.ChartScatter:
       return <IconChartScatter className={className} size={iconSize} />;
     case Icons.Logout:
       return <IconLogout className={className} size={iconSize} />;
@@ -80,9 +106,9 @@ export function resolveIcon(iconCode: string, className = "", iconSize = 24) {
       return <IconArrowNarrowLeft className={className} size={iconSize} />;
     case Icons.ArrowLeftRight:
       return <IconArrowsRightLeft className={className} size={iconSize} />;
-    case Icons.ChartDoughnut:
+    case Icons.ChartDoughnutFilled:
       return <IconChartDonutFilled className={className} size={iconSize} />;
-    case Icons.Replace:
+    case Icons.ReplaceFilled:
       return <IconReplaceFilled className={className} size={iconSize} />;
     case Icons.ArrowBarDown:
       return <IconArrowBarToDown className={className} size={iconSize} />;
@@ -90,18 +116,68 @@ export function resolveIcon(iconCode: string, className = "", iconSize = 24) {
       return <IconArrowBarUp className={className} size={iconSize} />;
     case Icons.Mountain:
       return <IconMountain className={className} size={iconSize} />;
-    case Icons.Transactions:
-      return <IconArrowsRightLeft className={className} size={iconSize} />;
-    case Icons.Trades:
-      return <IconReplaceFilled className={className} size={iconSize} />;
-    case Icons.Analysis:
+    case Icons.Search:
       return <IconSearch className={className} size={iconSize} />;
-    case Icons.Portfolios:
-      return <IconFolders className={className} size={iconSize} />;
-    case Icons.JobsOverview:
+    case Icons.Briefcase:
+      return <IconBriefcase className={className} size={iconSize} />;
+    case Icons.Brain:
       return <IconBrain className={className} size={iconSize} />;
-    case Icons.Job:
+    case Icons.BrandReact:
       return <IconBrandReact className={className} size={iconSize} />;
+    case Icons.CirclePlus:
+      return <IconCirclePlus className={className} size={iconSize} />;
+    case Icons.Flag3Filled:
+      return <IconFlag3Filled className={className} size={iconSize} />;
+    case Icons.Edit:
+      return <IconEdit className={className} size={iconSize} />;
+    case Icons.Trash:
+      return <IconTrash className={className} size={iconSize} />;
+    case Icons.ExternalLink:
+      return <IconExternalLink className={className} size={iconSize} />;
+    case Icons.MeteorFilled:
+      return <IconMeteorFilled className={className} size={iconSize} />;
+    case Icons.InfoSquareRoundedFilled:
+      return (
+        <IconInfoSquareRoundedFilled className={className} size={iconSize} />
+      );
+    case Icons.CircleCheckFilled:
+      return <IconCircleCheckFilled className={className} size={iconSize} />;
+    case Icons.BrandGoogleFilled:
+      return <IconBrandGoogleFilled className={className} size={iconSize} />;
+    case Icons.BrandAppleFilled:
+      return <IconBrandAppleFilled className={className} size={iconSize} />;
+    case Icons.BrandFacebookFilled:
+      return <IconBrandFacebookFilled className={className} size={iconSize} />;
+    case Icons.XboxX:
+      return <IconXboxX className={className} size={iconSize} />;
+    case Icons.XboxXFilled:
+      return <IconXboxXFilled className={className} size={iconSize} />;
+    case Icons.Menu2:
+      return <IconMenu2 className={className} size={iconSize} />;
+    case Icons.MailFilled:
+      return <IconMailFilled className={className} size={iconSize} />;
+    case Icons.PointFilled:
+      return <IconPointFilled className={className} size={iconSize} />;
+    case Icons.AlertTriangleFilled:
+      return <IconAlertTriangleFilled className={className} size={iconSize} />;
+    case Icons.HelpSquareRounded:
+      return <IconHelpSquareRounded className={className} size={iconSize} />;
+    case Icons.CalendarMonth:
+      return <IconCalendarMonth className={className} size={iconSize} />;
+    case Icons.X:
+      return <IconX className={className} size={iconSize} />;
+    case Icons.CircleCheck:
+      return <IconCircleCheck className={className} size={iconSize} />;
+    case Icons.CircleMinus:
+      return <IconCircleMinus className={className} size={iconSize} />;
+    case Icons.Database:
+      return <IconDatabase className={className} size={iconSize} />;
+    case Icons.Logs:
+      return <IconLogs className={className} size={iconSize} />;
+    case Icons.Planet:
+      return <IconPlanet className={className} size={iconSize} />;
+    case Icons.BarrierBlock:
+      return <IconBarrierBlock className={className} size={iconSize} />;
     default:
       return <span>-</span>;
   }

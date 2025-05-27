@@ -10,12 +10,6 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import Link from "next/link";
-import {
-  IconEdit,
-  IconExternalLink,
-  IconPointFilled,
-  IconTrash,
-} from "@tabler/icons-react";
 import moment from "moment/moment";
 import { DateTime } from "@/lib/constants";
 import { formatNumberForDisplay } from "@/lib/functions/util-functions";
@@ -35,6 +29,8 @@ import TransactionForm from "@/components/Form/Transaction/TransactionForm";
 import BaseModal from "@/components/Modal/BaseModal";
 import DeleteTransactionForm from "@/components/Form/Transaction/DeleteTransactionForm";
 import { Account, Transaction } from "@/types/apiTypes";
+import { resolveIcon } from "@/lib/functions/util-component-functions";
+import { Icons } from "@/lib/enums";
 
 /**
  * Renders the account transactions as a table
@@ -44,7 +40,7 @@ import { Account, Transaction } from "@/types/apiTypes";
  * @param showActions shows the modification actions
  * @param showBottomLink show table caption
  * @author Stephen Prizio
- * @version 0.2.0
+ * @version 0.2.2
  */
 export default function AccountTransactionsTable({
   account,
@@ -105,7 +101,7 @@ export default function AccountTransactionsTable({
                   </div>
                   <div className={""}>
                     <Link href={"#"}>
-                      <IconExternalLink size={18} />
+                      {resolveIcon(Icons.ExternalLink, "", 18)}
                     </Link>
                   </div>
                 </div>
@@ -113,12 +109,22 @@ export default function AccountTransactionsTable({
             ) : null}
             <TableHeader>
               <TableRow className={"hover:bg-transparent"}>
-                <TableHead>Date</TableHead>
-                <TableHead>Account</TableHead>
-                <TableHead className={"text-center"}>Type</TableHead>
-                <TableHead className={"text-center"}>Value</TableHead>
-                <TableHead className={"text-right"}>Status</TableHead>
-                {showActions ? <TableHead className={"text-right"} /> : null}
+                <TableHead className={"text-primary font-bold"}>Date</TableHead>
+                <TableHead className={"text-primary font-bold"}>
+                  Account
+                </TableHead>
+                <TableHead className={"text-center text-primary font-bold"}>
+                  Type
+                </TableHead>
+                <TableHead className={"text-center text-primary font-bold"}>
+                  Value
+                </TableHead>
+                <TableHead className={"text-right text-primary font-bold"}>
+                  Status
+                </TableHead>
+                {showActions ? (
+                  <TableHead className={"text-right text-primary font-bold"} />
+                ) : null}
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -146,7 +152,7 @@ export default function AccountTransactionsTable({
                             computeColors(item.transactionStatus.code)
                           }
                         >
-                          <IconPointFilled size={15} />
+                          {resolveIcon(Icons.PointFilled, "", 15)}
                         </span>
                       </div>
                     </TableCell>
@@ -171,7 +177,7 @@ export default function AccountTransactionsTable({
                                   setShowModal("edit");
                                 }}
                               >
-                                <IconEdit />
+                                {resolveIcon(Icons.Edit)}
                                 <span>Edit</span>
                               </DropdownMenuItem>
                               <DropdownMenuItem
@@ -181,7 +187,7 @@ export default function AccountTransactionsTable({
                                   setShowModal("delete");
                                 }}
                               >
-                                <IconTrash />
+                                {resolveIcon(Icons.Trash)}
                                 <span>Delete</span>
                               </DropdownMenuItem>
                             </DropdownMenuGroup>
@@ -214,10 +220,8 @@ export default function AccountTransactionsTable({
           {account && (transaction?.transactionDate ?? false) ? (
             <BaseModal
               isOpen={showModal === "delete"}
-              title={"Edit Transaction"}
-              description={
-                "Keep track of your account's transactions by adding withdrawals & deposits."
-              }
+              title={"Delete Transaction"}
+              description={""}
               content={
                 <DeleteTransactionForm
                   account={account}

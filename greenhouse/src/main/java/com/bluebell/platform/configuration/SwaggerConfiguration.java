@@ -31,7 +31,7 @@ public class SwaggerConfiguration {
 
         Info information = new Info()
                 .title("bluebell - Greenhouse API")
-                .version("0.1.9")
+                .version("0.2.1")
                 .description(
                         """
                         bluebell Wealth Management is a software system designed to track trading accounts and their performance, as well as evaluate trading strategies in order to evolve and adapt strategies

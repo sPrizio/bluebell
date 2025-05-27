@@ -18,7 +18,7 @@ import LoadingPage from "@/app/loading";
  * The page that shows the system's job executions
  *
  * @author Stephen Prizio
- * @version 0.2.1
+ * @version 0.2.2
  */
 export default function JobsPage() {
   const [pageSize, setPageSize] = useState(15);
@@ -44,7 +44,7 @@ export default function JobsPage() {
     title: "Jobs",
     subtitle:
       "A list of background and chronic processes executed by bluebell.",
-    iconCode: Icons.JobsOverview,
+    iconCode: Icons.Brain,
     breadcrumbs: [
       { label: "Dashboard", href: "/dashboard", active: false },
       {

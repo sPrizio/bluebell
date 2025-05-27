@@ -10,6 +10,7 @@ import {
   Broker,
   Currency,
   EnumDisplay,
+  HealthCheck,
   Job,
   MarketNews,
   PagedJobs,
@@ -393,5 +394,12 @@ export const useJobQuery = (jobId: string) => {
   return useQuery<Job>({
     queryKey: ["job", jobId],
     queryFn: () => get<Job>(ApiUrls.Job.GetJobById, { jobId: jobId }),
+  });
+};
+
+export const useHealthCheckQuery = () => {
+  return useQuery<HealthCheck>({
+    queryKey: ["health-check"],
+    queryFn: () => get<HealthCheck>(ApiUrls.System.HealthCheck, {}),
   });
 };

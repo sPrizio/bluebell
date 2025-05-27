@@ -4,7 +4,6 @@ import React from "react";
 import { Icons } from "@/lib/enums";
 import { BaseCard } from "@/components/Card/BaseCard";
 import { Button } from "@/components/ui/button";
-import { IconEdit } from "@tabler/icons-react";
 import BaseModal from "@/components/Modal/BaseModal";
 import moment from "moment";
 import { DateTime } from "@/lib/constants";
@@ -15,12 +14,13 @@ import { useUserQuery } from "@/lib/hooks/query/queries";
 import LoadingPage from "@/app/loading";
 import { logErrors } from "@/lib/functions/util-functions";
 import Error from "@/app/error";
+import { resolveIcon } from "@/lib/functions/util-component-functions";
 
 /**
  * Renders the user profile page
  *
  * @author Stephen Prizio
- * @version 0.2.0
+ * @version 0.2.2
  */
 export default function ProfilePage() {
   const { data: user, isError, error, isLoading } = useUserQuery();
@@ -46,7 +46,7 @@ export default function ProfilePage() {
   const pageInfo = {
     title: "Profile Information",
     subtitle: "Your profile at a glance",
-    iconCode: Icons.UserProfile,
+    iconCode: Icons.UserCircle,
     breadcrumbs: [
       { label: "Dashboard", href: "/dashboard", active: false },
       { label: "Profile", href: "/profile", active: true },
@@ -138,7 +138,7 @@ export default function ProfilePage() {
               }
               trigger={
                 <Button className="" variant={"outline"}>
-                  <IconEdit />
+                  {resolveIcon(Icons.Edit)}
                   &nbsp;Edit
                 </Button>
               }

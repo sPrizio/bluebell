@@ -6,15 +6,16 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { IconHelpSquareRounded } from "@tabler/icons-react";
 import { AccountInsightsType } from "@/types/apiTypes";
+import { resolveIcon } from "@/lib/functions/util-component-functions";
+import { Icons } from "@/lib/enums";
 
 /**
  * Renders an Account's insights
  *
  * @param insights Account insights
  * @author Stephen Prizio
- * @version 0.0.2
+ * @version 0.2.2
  */
 export default function AccountInsights({
   insights,
@@ -48,7 +49,7 @@ export default function AccountInsights({
                 <Tooltip>
                   <TooltipTrigger className={"flex justify-end"}>
                     <span className={"inline-block"}>
-                      <IconHelpSquareRounded className={"text-primary"} />
+                      {resolveIcon(Icons.HelpSquareRounded, "text-primary")}
                     </span>
                     &nbsp;&nbsp;{title}
                   </TooltipTrigger>

@@ -24,13 +24,6 @@ import { delay } from "@/lib/functions/util-functions";
 import MainLogo from "@/components/Navigation/MainLogo";
 import { Loader2 } from "lucide-react";
 import {
-  IconArrowLeft,
-  IconBrandAppleFilled,
-  IconBrandFacebookFilled,
-  IconBrandGoogleFilled,
-  IconMailFilled,
-} from "@tabler/icons-react";
-import {
   Select,
   SelectContent,
   SelectItem,
@@ -41,12 +34,14 @@ import parsePhoneNumberFromString from "libphonenumber-js";
 import SimpleMessage from "@/components/Message/SimpleMessage";
 import { useToast } from "@/lib/hooks/ui/use-toast";
 import { Toaster } from "@/components/ui/toaster";
+import { resolveIcon } from "@/lib/functions/util-component-functions";
+import { Icons } from "@/lib/enums";
 
 /**
  * Renders the login page
  *
  * @author Stephen Prizio
- * @version 0.2.0
+ * @version 0.2.2
  */
 export default function Login() {
   const { toast } = useToast();
@@ -352,28 +347,31 @@ export default function Login() {
                   <div className={"grid grid-cols-1 gap-4 items-center"}>
                     <div>
                       <Button className={"w-full"} variant={"outline"}>
-                        <IconBrandGoogleFilled
-                          size={18}
-                          className={"mr-2 text-primary"}
-                        />
+                        {resolveIcon(
+                          Icons.BrandGoogleFilled,
+                          "mr-2 text-primary",
+                          18,
+                        )}
                         Continue with Google
                       </Button>
                     </div>
                     <div>
                       <Button className={"w-full"} variant={"outline"}>
-                        <IconBrandAppleFilled
-                          size={18}
-                          className={"mr-2 text-primary"}
-                        />
+                        {resolveIcon(
+                          Icons.BrandAppleFilled,
+                          "mr-2 text-primary",
+                          18,
+                        )}
                         Continue with Apple
                       </Button>
                     </div>
                     <div>
                       <Button className={"w-full"} variant={"outline"}>
-                        <IconBrandFacebookFilled
-                          size={18}
-                          className={"mr-2 text-primary"}
-                        />
+                        {resolveIcon(
+                          Icons.BrandFacebookFilled,
+                          "mr-2 text-primary",
+                          18,
+                        )}
                         Continue with Facebook
                       </Button>
                     </div>
@@ -487,37 +485,41 @@ export default function Login() {
                             variant={"outline"}
                             onClick={() => setShowRegisterForm(true)}
                           >
-                            <IconMailFilled
-                              size={18}
-                              className={"mr-2 text-primary"}
-                            />
+                            {resolveIcon(
+                              Icons.MailFilled,
+                              "mr-2 text-primary",
+                              18,
+                            )}
                             Continue with Email
                           </Button>
                         </div>
                         <div>
                           <Button className={"w-full"} variant={"outline"}>
-                            <IconBrandGoogleFilled
-                              size={18}
-                              className={"mr-2 text-primary"}
-                            />
+                            {resolveIcon(
+                              Icons.BrandGoogleFilled,
+                              "mr-2 text-primary",
+                              18,
+                            )}
                             Continue with Google
                           </Button>
                         </div>
                         <div>
                           <Button className={"w-full"} variant={"outline"}>
-                            <IconBrandAppleFilled
-                              size={18}
-                              className={"mr-2 text-primary"}
-                            />
+                            {resolveIcon(
+                              Icons.BrandAppleFilled,
+                              "mr-2 text-primary",
+                              18,
+                            )}
                             Continue with Apple
                           </Button>
                         </div>
                         <div>
                           <Button className={"w-full"} variant={"outline"}>
-                            <IconBrandFacebookFilled
-                              size={18}
-                              className={"mr-2 text-primary"}
-                            />
+                            {resolveIcon(
+                              Icons.BrandFacebookFilled,
+                              "mr-2 text-primary",
+                              18,
+                            )}
                             Continue with Facebook
                           </Button>
                         </div>
@@ -808,7 +810,7 @@ export default function Login() {
                         registerForm.reset();
                       }}
                     >
-                      <IconArrowLeft size={18} />
+                      {resolveIcon(Icons.ArrowLeft, "", 18)}
                       &nbsp;&nbsp;Login
                     </Button>
                   ) : null}

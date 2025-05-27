@@ -49,7 +49,7 @@ import static com.bluebell.radicle.validation.GenericValidator.validateParameter
  * Service-layer for {@link Account} entities
  *
  * @author Stephen Prizio
- * @version 0.2.0
+ * @version 0.2.2
  */
 @Slf4j
 @Service
@@ -155,6 +155,12 @@ public class AccountService {
         }
     }
 
+    /**
+     * Deletes the given {@link Account}
+     *
+     * @param account {@link Account}
+     * @return true if account was deleted
+     */
     @Transactional
     public boolean deleteAccount(final Account account) {
         validateParameterIsNotNull(account, CorePlatformConstants.Validation.Account.ACCOUNT_CANNOT_BE_NULL);
@@ -168,6 +174,12 @@ public class AccountService {
         }
     }
 
+
+    /**
+     * Reassigns default accounts
+     *
+     * @param portfolioNumber portfolio id of accounts to reassign
+     */
     @Transactional
     public void reassignAccounts(final long portfolioNumber) {
 
@@ -179,6 +191,11 @@ public class AccountService {
 
         final List<Account> accounts = portfolio.get().getActiveAccounts();
         if (CollectionUtils.isNotEmpty(accounts)) {
+            if (accounts.stream().anyMatch(Account::isDefaultAccount)) {
+                LOGGER.warn("{} already has a default account. Nothing to re-assign", portfolio);
+                return;
+            }
+
             final Account first = accounts.stream().min(Comparator.comparing(Account::getAccountNumber)).orElse(null);
             if (first == null) {
                 LOGGER.warn("IMPOSSIBLE ERROR");

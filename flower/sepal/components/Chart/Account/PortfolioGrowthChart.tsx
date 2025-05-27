@@ -16,13 +16,14 @@ import {
   ValueType,
 } from "recharts/types/component/DefaultTooltipContent";
 import { BASE_COLORS, Css, DateTime } from "@/lib/constants";
-import { IconPointFilled } from "@tabler/icons-react";
 // @ts-expect-error: error in import due to 3rd party library
 import Please from "pleasejs/dist/Please";
 import { BaseCard } from "@/components/Card/BaseCard";
 import moment from "moment";
 import { formatNumberForDisplay } from "@/lib/functions/util-functions";
 import { PortfolioEquityPoint } from "@/types/apiTypes";
+import { resolveIcon } from "@/lib/functions/util-component-functions";
+import { Icons } from "@/lib/enums";
 
 type Entry = Record<string, number>;
 
@@ -31,7 +32,7 @@ type Entry = Record<string, number>;
  *
  * @param data account equity data points
  * @author Stephen Prizio
- * @version 0.2.0
+ * @version 0.2.2
  */
 export default function PortfolioGrowthChart({
   data = [],
@@ -180,7 +181,7 @@ export default function PortfolioGrowthChart({
                   style={{ color: colors[itx] }}
                 >
                   <span className={"inline-block"}>
-                    <IconPointFilled size={15} />
+                    {resolveIcon(Icons.PointFilled, "", 15)}
                   </span>
                   &nbsp;{item.value}
                 </div>
@@ -189,7 +190,7 @@ export default function PortfolioGrowthChart({
         }
         <div className={"flex items-center justify-end text-primary"}>
           <span className={"inline-block"}>
-            <IconPointFilled size={15} />
+            {resolveIcon(Icons.PointFilled, "", 15)}
           </span>
           &nbsp;portfolio
         </div>

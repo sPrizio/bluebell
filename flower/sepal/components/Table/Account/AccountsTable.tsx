@@ -9,20 +9,18 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import {
-  IconExternalLink,
-  IconSquareRoundedCheckFilled,
-} from "@tabler/icons-react";
 import Link from "next/link";
 import { formatNumberForDisplay } from "@/lib/functions/util-functions";
 import {
   getBrokerImageForCode,
   getFlagForCode,
+  resolveIcon,
 } from "@/lib/functions/util-component-functions";
 import moment from "moment";
 import { DateTime } from "@/lib/constants";
 import { useRouter } from "next/navigation";
 import { Account } from "@/types/apiTypes";
+import { Icons } from "@/lib/enums";
 
 /**
  * Renders a table containing the user's active accounts
@@ -32,7 +30,7 @@ import { Account } from "@/types/apiTypes";
  * @param allowAccountSelection allow clicking on rows
  * @param showCompactTable minimal table flag
  * @author Stephen Prizio
- * @version 0.2.0
+ * @version 0.2.2
  */
 export default function AccountsTable({
   accounts = [],
@@ -87,7 +85,7 @@ export default function AccountsTable({
                 </div>
                 <div className={""}>
                   <Link href={"#"}>
-                    <IconExternalLink size={18} />
+                    {resolveIcon(Icons.ExternalLink, "", 18)}
                   </Link>
                 </div>
               </div>
@@ -161,11 +159,9 @@ export default function AccountsTable({
                     onClick={() => redirectToAccount(item.accountNumber)}
                   >
                     <TableCell className={"text-center"}>
-                      {item.defaultAccount ? (
-                        <IconSquareRoundedCheckFilled
-                          className={"text-primary"}
-                        />
-                      ) : null}
+                      {item.defaultAccount
+                        ? resolveIcon(Icons.Flag3Filled, "text-primary")
+                        : null}
                     </TableCell>
                     <TableCell className={""}>{item.accountNumber}</TableCell>
                     <TableCell>{item.name}</TableCell>

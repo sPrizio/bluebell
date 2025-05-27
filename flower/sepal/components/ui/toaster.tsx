@@ -9,12 +9,8 @@ import {
   ToastTitle,
   ToastViewport,
 } from "@/components/ui/toast";
-import {
-  IconAlertTriangleFilled,
-  IconCircleCheckFilled,
-  IconInfoSquareRoundedFilled,
-  IconXboxXFilled,
-} from "@tabler/icons-react";
+import { resolveIcon } from "@/lib/functions/util-component-functions";
+import { Icons } from "@/lib/enums";
 
 export function Toaster() {
   const { toasts } = useToast();
@@ -38,26 +34,18 @@ export function Toaster() {
       | undefined,
   ) {
     if (!val || val.length < 1) {
-      return (
-        <IconInfoSquareRoundedFilled size={40} className={"text-primary"} />
-      );
+      return resolveIcon(Icons.InfoSquareRoundedFilled, "text-primary", 40);
     }
 
     switch (val) {
       case "success":
-        return (
-          <IconCircleCheckFilled size={40} className={"text-primaryGreen"} />
-        );
+        return resolveIcon(Icons.CircleCheckFilled, "text-primaryGreen", 40);
       case "danger":
-        return <IconXboxXFilled size={40} className={"text-primaryRed"} />;
+        return resolveIcon(Icons.XboxXFilled, "text-primaryRed", 40);
       case "warning":
-        return (
-          <IconAlertTriangleFilled size={40} className={"text-primaryYellow"} />
-        );
+        return resolveIcon(Icons.AlertTriangleFilled, "text-primaryYellow", 40);
       default:
-        return (
-          <IconInfoSquareRoundedFilled size={40} className={"text-primary"} />
-        );
+        return resolveIcon(Icons.InfoSquareRoundedFilled, "text-primary", 40);
     }
   }
 
