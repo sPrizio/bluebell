@@ -12,6 +12,8 @@ import moment from "moment";
 import { DateTime } from "@/lib/constants";
 import { IconNews } from "@tabler/icons-react";
 import { MarketNews } from "@/types/apiTypes";
+import { resolveIcon } from "@/lib/functions/util-component-functions";
+import { Icons } from "@/lib/enums";
 
 /**
  * Renders the market news table
@@ -116,7 +118,7 @@ export default function NewsTable({
                           <TableCell
                             className={computeSeverity(entry.severityLevel)}
                           >
-                            <IconNews size={24} />
+                            {resolveIcon(Icons.News)}
                           </TableCell>
                           <TableCell className={""}>{entry.content}</TableCell>
                           <TableCell className={""}>{entry.forecast}</TableCell>

@@ -17,6 +17,8 @@ import {
 import moment from "moment";
 import { DateTime } from "@/lib/constants";
 import { TradeLog } from "@/types/apiTypes";
+import { resolveIcon } from "@/lib/functions/util-component-functions";
+import { Icons } from "@/lib/enums";
 
 /**
  * Trade history table showing days and all accounts traded on that day
@@ -57,7 +59,7 @@ export default function TradeLogTable({
               </div>
               <div className={""}>
                 <Link href={"/performance?account=default"}>
-                  <IconExternalLink size={18} />
+                  {resolveIcon(Icons.ExternalLink, "", 18)}
                 </Link>
               </div>
             </div>

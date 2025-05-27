@@ -14,6 +14,8 @@ import { DateTime } from "@/lib/constants";
 import { formatNumberForDisplay } from "@/lib/functions/util-functions";
 import React from "react";
 import { Transaction } from "@/types/apiTypes";
+import { resolveIcon } from "@/lib/functions/util-component-functions";
+import { Icons } from "@/lib/enums";
 
 /**
  * Renders the account transactions as a table
@@ -72,7 +74,7 @@ export default function TransactionsTable({
                 </div>
                 <div className={""}>
                   <Link href={"#"}>
-                    <IconExternalLink size={18} />
+                    {resolveIcon(Icons.ExternalLink, "", 18)}
                   </Link>
                 </div>
               </div>
@@ -112,7 +114,7 @@ export default function TransactionsTable({
                           computeColors(item.transactionStatus.code)
                         }
                       >
-                        <IconPointFilled size={15} />
+                        {resolveIcon(Icons.PointFilled, "", 15)}
                       </span>
                     </div>
                   </TableCell>

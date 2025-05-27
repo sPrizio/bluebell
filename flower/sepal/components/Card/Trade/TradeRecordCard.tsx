@@ -11,8 +11,10 @@ import {
   formatNegativePoints,
   formatNumberForDisplay,
 } from "@/lib/functions/util-functions";
-import { IconCircleCheckFilled, IconXboxXFilled } from "@tabler/icons-react";
+import { IconXboxXFilled } from "@tabler/icons-react";
 import { TradeRecord } from "@/types/apiTypes";
+import { resolveIcon } from "@/lib/functions/util-component-functions";
+import { Icons } from "@/lib/enums";
 
 /**
  * Renders a card for displaying Trade records
@@ -115,7 +117,7 @@ export default function TradeRecordCard({
                             "ml-2 inline-block text-primaryGreen text-right"
                           }
                         >
-                          <IconCircleCheckFilled size={iconSize} />
+                          {resolveIcon(Icons.CircleCheckFilled, "", iconSize)}
                         </div>
                       </div>
                       <div
@@ -125,7 +127,7 @@ export default function TradeRecordCard({
                       >
                         <div>{tradeRecord.losses}</div>
                         <div className={"ml-2 inline-block text-primaryRed"}>
-                          <IconXboxXFilled size={iconSize} />
+                          {resolveIcon(Icons.XboxXFilled, "", iconSize)}
                         </div>
                       </div>
                     </div>
@@ -146,7 +148,7 @@ export default function TradeRecordCard({
                           {formatNumberForDisplay(tradeRecord.pointsGained)}
                         </div>
                         <div className={"ml-2 inline-block text-primaryGreen"}>
-                          <IconCircleCheckFilled size={iconSize} />
+                          {resolveIcon(Icons.CircleCheckFilled, "", iconSize)}
                         </div>
                       </div>
                       <div
@@ -160,7 +162,7 @@ export default function TradeRecordCard({
                           )}
                         </div>
                         <div className={"ml-2 inline-block text-primaryRed"}>
-                          <IconXboxXFilled size={iconSize} />
+                          {resolveIcon(Icons.XboxXFilled, "", iconSize)}
                         </div>
                       </div>
                     </div>
@@ -190,7 +192,7 @@ export default function TradeRecordCard({
                             "ml-2 inline-block text-primaryGreen text-right"
                           }
                         >
-                          <IconCircleCheckFilled size={iconSize} />
+                          {resolveIcon(Icons.CircleCheckFilled, "", iconSize)}
                         </div>
                       </div>
                       <div
@@ -200,7 +202,7 @@ export default function TradeRecordCard({
                       >
                         <div>$&nbsp;{tradeRecord.lossAverage}</div>
                         <div className={"ml-2 inline-block text-primaryRed"}>
-                          <IconXboxXFilled size={iconSize} />
+                          {resolveIcon(Icons.XboxXFilled, "", iconSize)}
                         </div>
                       </div>
                     </div>
@@ -218,7 +220,7 @@ export default function TradeRecordCard({
                           {formatNumberForDisplay(tradeRecord.largestWin)}
                         </div>
                         <div className={"ml-2 inline-block text-primaryGreen"}>
-                          <IconCircleCheckFilled size={iconSize} />
+                          {resolveIcon(Icons.CircleCheckFilled, "", iconSize)}
                         </div>
                       </div>
                       <div
@@ -233,7 +235,7 @@ export default function TradeRecordCard({
                           )}
                         </div>
                         <div className={"ml-2 inline-block text-primaryRed"}>
-                          <IconXboxXFilled size={iconSize} />
+                          {resolveIcon(Icons.XboxXFilled, "", iconSize)}
                         </div>
                       </div>
                     </div>

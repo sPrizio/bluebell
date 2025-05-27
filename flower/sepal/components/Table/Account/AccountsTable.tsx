@@ -89,7 +89,7 @@ export default function AccountsTable({
                 </div>
                 <div className={""}>
                   <Link href={"#"}>
-                    <IconExternalLink size={18} />
+                    {resolveIcon(Icons.ExternalLink, "", 18)}
                   </Link>
                 </div>
               </div>
@@ -164,7 +164,7 @@ export default function AccountsTable({
                   >
                     <TableCell className={"text-center"}>
                       {item.defaultAccount
-                        ? resolveIcon(Icons.DefaultIcon, "text-primary")
+                        ? resolveIcon(Icons.Flag3Filled, "text-primary")
                         : null}
                     </TableCell>
                     <TableCell className={""}>{item.accountNumber}</TableCell>

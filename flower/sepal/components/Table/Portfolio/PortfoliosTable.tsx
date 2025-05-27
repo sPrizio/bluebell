@@ -56,7 +56,7 @@ export default function PortfoliosTable({
                   >
                     <TableCell>
                       {portfolio.defaultPortfolio
-                        ? resolveIcon(Icons.DefaultIcon, "text-primary")
+                        ? resolveIcon(Icons.Flag3Filled, "text-primary")
                         : null}
                     </TableCell>
                     <TableCell>{portfolio.portfolioNumber}</TableCell>
@@ -75,7 +75,7 @@ export default function PortfoliosTable({
                         }
                         trigger={
                           <Button variant={"outline"}>
-                            <IconEdit />
+                            {resolveIcon(Icons.Edit)}
                           </Button>
                         }
                       />
@@ -89,7 +89,7 @@ export default function PortfoliosTable({
                         content={<DeletePortfolioForm portfolio={portfolio} />}
                         trigger={
                           <Button variant={"outline"}>
-                            <IconTrash />
+                            {resolveIcon(Icons.Trash)}
                           </Button>
                         }
                       />

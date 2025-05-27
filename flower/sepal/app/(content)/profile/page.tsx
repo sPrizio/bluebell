@@ -15,6 +15,7 @@ import { useUserQuery } from "@/lib/hooks/query/queries";
 import LoadingPage from "@/app/loading";
 import { logErrors } from "@/lib/functions/util-functions";
 import Error from "@/app/error";
+import { resolveIcon } from "@/lib/functions/util-component-functions";
 
 /**
  * Renders the user profile page
@@ -46,7 +47,7 @@ export default function ProfilePage() {
   const pageInfo = {
     title: "Profile Information",
     subtitle: "Your profile at a glance",
-    iconCode: Icons.UserProfile,
+    iconCode: Icons.UserCircle,
     breadcrumbs: [
       { label: "Dashboard", href: "/dashboard", active: false },
       { label: "Profile", href: "/profile", active: true },
@@ -138,7 +139,7 @@ export default function ProfilePage() {
               }
               trigger={
                 <Button className="" variant={"outline"}>
-                  <IconEdit />
+                  {resolveIcon(Icons.Edit)}
                   &nbsp;Edit
                 </Button>
               }

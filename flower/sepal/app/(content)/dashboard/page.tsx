@@ -113,7 +113,7 @@ export default function DashboardPage() {
   const pageInfo = {
     title: "Portfolio Dashboard",
     subtitle: `An overview of portfolio ${portfolio?.name ?? ""}`,
-    iconCode: Icons.Dashboard,
+    iconCode: Icons.LayoutDashboard,
     breadcrumbs: [{ label: "Dashboard", href: "/dashboard", active: true }],
   };
 
@@ -154,7 +154,7 @@ export default function DashboardPage() {
                     }
                   />
                 }
-                icon={resolveIcon(Icons.ChartDoughnut, "", 30)}
+                icon={resolveIcon(Icons.ChartDoughnutFilled, "", 30)}
               />
             </div>
             <div className={""}>
@@ -169,7 +169,7 @@ export default function DashboardPage() {
                     }
                   />
                 }
-                icon={resolveIcon(Icons.Replace, "", 30)}
+                icon={resolveIcon(Icons.ReplaceFilled, "", 30)}
               />
             </div>
             <div>

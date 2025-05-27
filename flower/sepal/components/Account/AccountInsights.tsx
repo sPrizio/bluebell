@@ -8,6 +8,8 @@ import {
 } from "@/components/ui/tooltip";
 import { IconHelpSquareRounded } from "@tabler/icons-react";
 import { AccountInsightsType } from "@/types/apiTypes";
+import { resolveIcon } from "@/lib/functions/util-component-functions";
+import { Icons } from "@/lib/enums";
 
 /**
  * Renders an Account's insights
@@ -48,7 +50,7 @@ export default function AccountInsights({
                 <Tooltip>
                   <TooltipTrigger className={"flex justify-end"}>
                     <span className={"inline-block"}>
-                      <IconHelpSquareRounded className={"text-primary"} />
+                      {resolveIcon(Icons.HelpSquareRounded, "text-primary")}
                     </span>
                     &nbsp;&nbsp;{title}
                   </TooltipTrigger>

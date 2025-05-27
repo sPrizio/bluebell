@@ -27,6 +27,8 @@ import {
 } from "@/components/ui/pagination";
 import { IconPointFilled } from "@tabler/icons-react";
 import { useRouter } from "next/navigation";
+import { resolveIcon } from "@/lib/functions/util-component-functions";
+import { Icons } from "@/lib/enums";
 
 /**
  * Renders the jobs table
@@ -173,7 +175,7 @@ export default function JobsTable({
                               "inline-block " + computeColors(job.status.code)
                             }
                           >
-                            <IconPointFilled size={15} />
+                            {resolveIcon(Icons.PointFilled, "", 15)}
                           </span>
                         </div>
                       </TableCell>

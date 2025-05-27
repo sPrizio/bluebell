@@ -96,7 +96,7 @@ export default function PerformancePage() {
   const pageInfo = {
     title: "Performance",
     subtitle: `A look at trading account ${activeAccount?.name ?? ""}'s performance over time`,
-    iconCode: Icons.Performance,
+    iconCode: Icons.ChartScatter,
     breadcrumbs: [
       { label: "Dashboard", href: "/dashboard", active: false },
       { label: "Accounts", href: "/accounts", active: false },

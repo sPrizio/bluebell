@@ -37,7 +37,7 @@ export default function JobLayout({
   const pageInfo = {
     title: "Job Details",
     subtitle: "View the details for a specific job",
-    iconCode: Icons.Job,
+    iconCode: Icons.BrandReact,
     breadcrumbs: [
       { label: "Dashboard", href: "/dashboard", active: false },
       {

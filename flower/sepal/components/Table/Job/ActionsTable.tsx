@@ -25,6 +25,8 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
+import { resolveIcon } from "@/lib/functions/util-component-functions";
+import { Icons } from "@/lib/enums";
 
 /**
  * Renders the actions table
@@ -61,13 +63,13 @@ export default function ActionsTable({
     const size = 25;
     switch (val) {
       case "SUCCESS":
-        return <IconCircleCheck className={"text-primaryGreen"} size={size} />;
+        return resolveIcon(Icons.CircleCheck, "text-primaryGreen", size);
       case "FAILURE":
-        return <IconXboxX className={"text-primaryRed"} size={size} />;
+        return resolveIcon(Icons.XboxX, "text-primaryRed", size);
       case "IN_PROGRESS":
         return <Loader2 className="animate-spin text-primary" size={size} />;
       default:
-        return <IconCircleMinus className={"text-slate-400"} size={size} />;
+        return resolveIcon(Icons.CircleMinus, "text-slate-400", size);
     }
   }
 
@@ -118,10 +120,7 @@ export default function ActionsTable({
                     <Sheet>
                       <SheetTrigger>
                         <Button variant={"outline"}>
-                          <IconDatabase
-                            className={"text-slate-500"}
-                            size={25}
-                          />
+                          {resolveIcon(Icons.Database, "text-slate-500", 25)}
                         </Button>
                       </SheetTrigger>
                       <SheetContent
@@ -148,7 +147,7 @@ export default function ActionsTable({
                     <Sheet>
                       <SheetTrigger>
                         <Button variant={"outline"}>
-                          <IconLogs className={"text-slate-500"} size={25} />
+                          {resolveIcon(Icons.Logs, "text-slate-500", 25)}
                         </Button>
                       </SheetTrigger>
                       <SheetContent

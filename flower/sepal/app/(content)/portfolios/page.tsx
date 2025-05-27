@@ -39,7 +39,7 @@ export default function PortfoliosPage() {
   const pageInfo = {
     title: "Portfolios",
     subtitle: "A list of all of your trading account portfolios.",
-    iconCode: Icons.Portfolios,
+    iconCode: Icons.Briefcase,
     breadcrumbs: [
       ...((activePortfolios?.length ?? 0) > 0
         ? [{ label: "Dashboard", href: "/dashboard", active: false }]
@@ -100,7 +100,7 @@ export default function PortfoliosPage() {
                 }
                 trigger={
                   <Button className={"w-full text-white"}>
-                    <IconCirclePlus />
+                    {resolveIcon(Icons.CirclePlus)}
                     &nbsp;Add a new portfolio
                   </Button>
                 }
@@ -112,7 +112,7 @@ export default function PortfoliosPage() {
 
         <div className={"flex items-center text-sm justify-end w-full"}>
           <span className={"inline-block"}>
-            {resolveIcon(Icons.DefaultIcon, "text-primary")}
+            {resolveIcon(Icons.Flag3Filled, "text-primary")}
           </span>
           &nbsp;&nbsp;indicates default portfolio.
         </div>

@@ -13,7 +13,10 @@ import TransactionForm from "@/components/Form/Transaction/TransactionForm";
 import { useActiveAccount } from "@/lib/hooks/api/useActiveAccount";
 import ReusableSelect from "@/components/Input/ReusableSelect";
 import { PageInfoProvider } from "@/lib/context/PageInfoProvider";
-import { validatePageQueryFlow } from "@/lib/functions/util-component-functions";
+import {
+  resolveIcon,
+  validatePageQueryFlow,
+} from "@/lib/functions/util-component-functions";
 import LoadingPage from "@/app/loading";
 
 /**
@@ -46,7 +49,7 @@ export default function TransactionsPage() {
   const pageInfo = {
     title: "Transactions",
     subtitle: `A list of transactions for ${activeAccount?.name ?? ""}`,
-    iconCode: Icons.Transactions,
+    iconCode: Icons.ArrowLeftRight,
     breadcrumbs: [
       { label: "Dashboard", href: "/dashboard", active: false },
       { label: "Accounts", href: "/accounts", active: false },
@@ -119,7 +122,7 @@ export default function TransactionsPage() {
                       }
                       trigger={
                         <Button className="w-full text-white">
-                          <IconCirclePlus />
+                          {resolveIcon(Icons.CirclePlus)}
                           &nbsp;Add Transaction
                         </Button>
                       }

@@ -63,7 +63,7 @@ export default function AnalysisPage() {
   const pageInfo = {
     title: "Analysis",
     subtitle: `A more in-depth look at ${activeAccount?.name ?? ""}'s performance.`,
-    iconCode: Icons.Analysis,
+    iconCode: Icons.Search,
     breadcrumbs: [
       { label: "Dashboard", href: "/dashboard", active: false },
       { label: "Accounts", href: "/accounts", active: false },

@@ -85,7 +85,7 @@ export default function TradesPage() {
   const pageInfo = {
     title: "Trades",
     subtitle: `A look at the trades for ${activeAccount?.name ?? ""}`,
-    iconCode: Icons.Trades,
+    iconCode: Icons.ReplaceFilled,
     breadcrumbs: [
       { label: "Dashboard", href: "/dashboard", active: false },
       { label: "Accounts", href: "/accounts", active: false },

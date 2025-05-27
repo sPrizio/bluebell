@@ -33,7 +33,7 @@ export default function MarketNewsPage() {
   const pageInfo = {
     title: "Market News",
     subtitle: "A look at your local market news.",
-    iconCode: Icons.MarketNews,
+    iconCode: Icons.News,
     breadcrumbs: [
       { label: "Dashboard", href: "/dashboard", active: false },
       { label: "Market News", href: "/market-News", active: true },

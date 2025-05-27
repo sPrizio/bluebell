@@ -11,7 +11,6 @@ import {
 } from "@/components/ui/table";
 import Link from "next/link";
 import {
-  IconEdit,
   IconExternalLink,
   IconPointFilled,
   IconTrash,
@@ -35,6 +34,8 @@ import TransactionForm from "@/components/Form/Transaction/TransactionForm";
 import BaseModal from "@/components/Modal/BaseModal";
 import DeleteTransactionForm from "@/components/Form/Transaction/DeleteTransactionForm";
 import { Account, Transaction } from "@/types/apiTypes";
+import { resolveIcon } from "@/lib/functions/util-component-functions";
+import { Icons } from "@/lib/enums";
 
 /**
  * Renders the account transactions as a table
@@ -105,7 +106,7 @@ export default function AccountTransactionsTable({
                   </div>
                   <div className={""}>
                     <Link href={"#"}>
-                      <IconExternalLink size={18} />
+                      {resolveIcon(Icons.ExternalLink, "", 18)}
                     </Link>
                   </div>
                 </div>
@@ -156,7 +157,7 @@ export default function AccountTransactionsTable({
                             computeColors(item.transactionStatus.code)
                           }
                         >
-                          <IconPointFilled size={15} />
+                          {resolveIcon(Icons.PointFilled, "", 15)}
                         </span>
                       </div>
                     </TableCell>
@@ -181,7 +182,7 @@ export default function AccountTransactionsTable({
                                   setShowModal("edit");
                                 }}
                               >
-                                <IconEdit />
+                                {resolveIcon(Icons.Edit)}
                                 <span>Edit</span>
                               </DropdownMenuItem>
                               <DropdownMenuItem
@@ -191,7 +192,7 @@ export default function AccountTransactionsTable({
                                   setShowModal("delete");
                                 }}
                               >
-                                <IconTrash />
+                                {resolveIcon(Icons.Trash)}
                                 <span>Delete</span>
                               </DropdownMenuItem>
                             </DropdownMenuGroup>

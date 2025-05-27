@@ -13,6 +13,7 @@ import {
 } from "@/components/ui/popover";
 import { IconCalendarMonth } from "@tabler/icons-react";
 import { ControllerRenderProps, FieldValues, Path } from "react-hook-form";
+import { resolveIcon } from "@/lib/functions/util-component-functions";
 
 interface Props<T extends FieldValues, K extends Path<T>> {
   label: string;
@@ -45,7 +46,7 @@ export default function ReusableDatePicker<
             !field.value && "text-muted-foreground",
           )}
         >
-          {hasIcon && <IconCalendarMonth size={18} />}
+          {hasIcon && resolveIcon(Icons.CalendarMonth, "", 18)}
           &nbsp;&nbsp;
           {field.value ? format(field.value, "PPP") : <span>{label}</span>}
         </Button>

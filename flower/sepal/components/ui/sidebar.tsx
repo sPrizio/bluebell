@@ -2,7 +2,9 @@
 import { cn } from "@/lib/utils";
 import React, { createContext, useContext, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
-import { IconMenu2, IconX } from "@tabler/icons-react";
+import { IconX } from "@tabler/icons-react";
+import { resolveIcon } from "@/lib/functions/util-component-functions";
+import { Icons } from "@/lib/enums";
 
 interface Links {
   label: string;
@@ -119,10 +121,9 @@ export const MobileSidebar = ({
         {...props}
       >
         <div className="flex justify-end z-20 w-full">
-          <IconMenu2
-            className="text-neutral-800"
-            onClick={() => setOpen(!open)}
-          />
+          <span onClick={() => setOpen(!open)}>
+            {resolveIcon(Icons.Menu2, "text-neutral-800")}
+          </span>
         </div>
         <AnimatePresence>
           {open && (
@@ -143,7 +144,7 @@ export const MobileSidebar = ({
                 className="absolute right-10 top-10 z-50 text-neutral-800"
                 onClick={() => setOpen(!open)}
               >
-                <IconX />
+                {resolveIcon(Icons.X)}
               </div>
               {children}
             </motion.div>
