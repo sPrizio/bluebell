@@ -4,7 +4,6 @@ import { redirect, useRouter, useSearchParams } from "next/navigation";
 import React, { useState } from "react";
 import { AggregateInterval, Icons } from "@/lib/enums";
 import { logErrors, selectNewAccount } from "@/lib/functions/util-functions";
-import { Loader2 } from "lucide-react";
 import TradeRecordCard from "@/components/Card/Trade/TradeRecordCard";
 import { UserTradeRecordControlSelection } from "@/types/uiTypes";
 import moment from "moment";
@@ -118,74 +117,61 @@ export default function PerformancePage() {
   return (
     <PageInfoProvider value={pageInfo}>
       <div className={""}>
-        {isLoading ? (
-          <div className={"h-[72vh] flex items-center justify-center"}>
-            <div className={"grid grid-cols-1 justify-items-center gap-8"}>
-              <div>
-                <Loader2 className="animate-spin text-primary" size={50} />
-              </div>
-              <div className={"text-lg"}>Loading Performance</div>
+        <div className={"grid grid-cols-1 gap-8"}>
+          <div className={"flex items-end justify-end gap-4"}>
+            <div>
+              <ReusableSelect
+                title={"Account"}
+                initialValue={accNumber.toString()}
+                options={
+                  activePortfolio?.accounts
+                    ?.filter((acc) => acc.active)
+                    ?.map((a) => {
+                      return {
+                        label: a.name,
+                        value: a.accountNumber.toString(),
+                      };
+                    }) ?? []
+                }
+                handler={(val: string) => {
+                  selectNewAccount(router, searchParams, parseInt(val));
+                }}
+              />
+            </div>
+            <div>
+              <PerformanceDrawer
+                userSelection={userSelection}
+                onChange={setUserSelection}
+                onSubmit={() => {
+                  setSubmittedFilters(userSelection);
+                  setHasSubmitted(true);
+                }}
+                onCancel={() => {
+                  setUserSelection(submittedFilters);
+                  setHasSubmitted(false);
+                }}
+                tradeRecordControls={tradeRecordControls}
+              />
             </div>
           </div>
-        ) : (
-          <>
-            <div className={"grid grid-cols-1 gap-8"}>
-              <div className={"flex items-end justify-end gap-4"}>
-                <div>
-                  <ReusableSelect
-                    title={"Account"}
-                    initialValue={accNumber.toString()}
-                    options={
-                      activePortfolio?.accounts
-                        ?.filter((acc) => acc.active)
-                        ?.map((a) => {
-                          return {
-                            label: a.name,
-                            value: a.accountNumber.toString(),
-                          };
-                        }) ?? []
-                    }
-                    handler={(val: string) => {
-                      selectNewAccount(router, searchParams, parseInt(val));
-                    }}
-                  />
-                </div>
-                <div>
-                  <PerformanceDrawer
-                    userSelection={userSelection}
-                    onChange={setUserSelection}
-                    onSubmit={() => {
-                      setSubmittedFilters(userSelection);
-                      setHasSubmitted(true);
-                    }}
-                    onCancel={() => {
-                      setUserSelection(submittedFilters);
-                      setHasSubmitted(false);
-                    }}
-                    tradeRecordControls={tradeRecordControls}
-                  />
-                </div>
-              </div>
+        </div>
+        <div className={"grid grid-cols-1 gap-8 mt-8"}>
+          {(tradeRecords?.tradeRecords?.length ?? 0) === 0 && (
+            <div className="text-center text-slate-500">
+              No recent trading activity.
             </div>
-            <div className={"grid grid-cols-1 gap-8 mt-8"}>
-              {(tradeRecords?.tradeRecords?.length ?? 0) === 0 && (
-                <div className="text-center text-slate-500">
-                  No recent trading activity.
-                </div>
-              )}
-              {(tradeRecords?.tradeRecords?.length ?? 0) > 0 &&
-                tradeRecords?.tradeRecords?.map((item, idx) => {
-                  return (
-                    <TradeRecordCard
-                      key={item.uid + "tr" + (idx + 1)}
-                      tradeRecord={item}
-                      aggInterval={userSelection.aggInterval.code}
-                    />
-                  );
-                })}
-            </div>
-          </>
-        )}
+          )}
+          {(tradeRecords?.tradeRecords?.length ?? 0) > 0 &&
+            tradeRecords?.tradeRecords?.map((item, idx) => {
+              return (
+                <TradeRecordCard
+                  key={item.uid + "tr" + (idx + 1)}
+                  tradeRecord={item}
+                  aggInterval={userSelection.aggInterval.code}
+                />
+              );
+            })}
+        </div>
       </div>
     </PageInfoProvider>
   );
