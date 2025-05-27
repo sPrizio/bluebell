@@ -47,6 +47,7 @@ export enum Icons {
   Logs = "logs",
   MeteorFilled = "meteor-filled",
   Planet = "planet",
+  BarrierBlock = "barrier-block",
 }
 
 /**

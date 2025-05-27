@@ -7,6 +7,7 @@ import {
   IconArrowNarrowRight,
   IconArrowNarrowUp,
   IconArrowsRightLeft,
+  IconBarrierBlock,
   IconBrain,
   IconBrandAppleFilled,
   IconBrandFacebookFilled,
@@ -175,6 +176,8 @@ export function resolveIcon(iconCode: string, className = "", iconSize = 24) {
       return <IconLogs className={className} size={iconSize} />;
     case Icons.Planet:
       return <IconPlanet className={className} size={iconSize} />;
+    case Icons.BarrierBlock:
+      return <IconBarrierBlock className={className} size={iconSize} />;
     default:
       return <span>-</span>;
   }
