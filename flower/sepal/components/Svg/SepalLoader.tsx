@@ -1,17 +1,22 @@
 /**
  * Renders the loader svg icon
  *
+ * @param fill ring color
+ * @param accent background color
  * @author Stephen Prizio
  * @version 0.2.2
  */
-export default function SepalLoader() {
+export default function SepalLoader({
+  fill = "fill-primary",
+  accent = "text-gray-200",
+}: Readonly<{ fill?: string; accent?: string }>) {
   //  RENDER
 
   return (
     <>
       <svg
         aria-hidden="true"
-        className="mr-8 h-8 w-8 animate-spin fill-primary text-gray-200 dark:text-gray-600"
+        className={`mr-8 h-8 w-8 animate-spin ${fill} ${accent}`}
         viewBox="0 0 100 101"
         fill="none"
         xmlns="http://www.w3.org/2000/svg"
