@@ -45,6 +45,8 @@ export enum Icons {
   CircleMinus = "circle-minus",
   Database = "database",
   Logs = "logs",
+  MeteorFilled = "meteor-filled",
+  Planet = "planet",
 }
 
 /**

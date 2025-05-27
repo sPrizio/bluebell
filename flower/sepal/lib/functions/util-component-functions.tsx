@@ -32,8 +32,10 @@ import {
   IconLogs,
   IconMailFilled,
   IconMenu2,
+  IconMeteorFilled,
   IconMountain,
   IconNews,
+  IconPlanet,
   IconPointFilled,
   IconReplaceFilled,
   IconSearch,
@@ -131,6 +133,8 @@ export function resolveIcon(iconCode: string, className = "", iconSize = 24) {
       return <IconTrash className={className} size={iconSize} />;
     case Icons.ExternalLink:
       return <IconExternalLink className={className} size={iconSize} />;
+    case Icons.MeteorFilled:
+      return <IconMeteorFilled className={className} size={iconSize} />;
     case Icons.InfoSquareRoundedFilled:
       return (
         <IconInfoSquareRoundedFilled className={className} size={iconSize} />
@@ -169,6 +173,8 @@ export function resolveIcon(iconCode: string, className = "", iconSize = 24) {
       return <IconDatabase className={className} size={iconSize} />;
     case Icons.Logs:
       return <IconLogs className={className} size={iconSize} />;
+    case Icons.Planet:
+      return <IconPlanet className={className} size={iconSize} />;
     default:
       return <span>-</span>;
   }
