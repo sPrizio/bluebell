@@ -20,7 +20,7 @@ import { resolveIcon } from "@/lib/functions/util-component-functions";
  * Renders the user profile page
  *
  * @author Stephen Prizio
- * @version 0.2.0
+ * @version 0.2.2
  */
 export default function ProfilePage() {
   const { data: user, isError, error, isLoading } = useUserQuery();

@@ -25,7 +25,7 @@ import { Icons } from "@/lib/enums";
  * @param log Trade log
  * @param showTotals show totals row
  * @author Stephen Prizio
- * @version 0.0.2
+ * @version 0.2.2
  */
 export default function TradeLogTable({
   log,

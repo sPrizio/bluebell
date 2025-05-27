@@ -41,7 +41,7 @@ import { Icons } from "@/lib/enums";
  * Renders the login page
  *
  * @author Stephen Prizio
- * @version 0.2.0
+ * @version 0.2.2
  */
 export default function Login() {
   const { toast } = useToast();

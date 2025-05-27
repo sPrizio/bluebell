@@ -19,7 +19,7 @@ import { Icons } from "@/lib/enums";
  *
  * @param news market news
  * @author Stephen Prizio
- * @version 0.0.2
+ * @version 0.2.2
  */
 export default function NewsTable({
   news = [],

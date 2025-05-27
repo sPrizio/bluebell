@@ -35,7 +35,7 @@ import { Icons } from "@/lib/enums";
  * @param initialPageSize initial page size
  * @param initialPage initial page
  * @author Stephen Prizio
- * @version 0.2.1
+ * @version 0.2.2
  */
 export default function JobsTable({
   filters,

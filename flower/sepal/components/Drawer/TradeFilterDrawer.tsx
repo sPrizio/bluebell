@@ -38,7 +38,7 @@ type Props = {
  * @param onCancel on cancel of filters
  * @param symbols symbol filters
  * @author Stephen Prizio
- * @version 0.2.1
+ * @version 0.2.2
  */
 export default function TradeFilterDrawer({
   userSelection,

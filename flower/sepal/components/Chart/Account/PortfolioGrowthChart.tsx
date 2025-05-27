@@ -32,7 +32,7 @@ type Entry = Record<string, number>;
  *
  * @param data account equity data points
  * @author Stephen Prizio
- * @version 0.2.0
+ * @version 0.2.2
  */
 export default function PortfolioGrowthChart({
   data = [],

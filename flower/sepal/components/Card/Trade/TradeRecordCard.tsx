@@ -21,7 +21,7 @@ import { Icons } from "@/lib/enums";
  * @param tradeRecord Trade record
  * @param aggInterval aggregated interval
  * @author Stephen Prizio
- * @version 0.2.0
+ * @version 0.2.2
  */
 export default function TradeRecordCard({
   tradeRecord,

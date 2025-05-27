@@ -34,7 +34,7 @@ import { Icons } from "@/lib/enums";
  *
  * @param account Account info
  * @author Stephen Prizio
- * @version 0.2.0
+ * @version 0.2.2
  */
 export default function AccountDetailsCmp({
   account,

@@ -18,7 +18,7 @@ import LoadingPage from "@/app/loading";
  * The page that shows the system's job executions
  *
  * @author Stephen Prizio
- * @version 0.2.1
+ * @version 0.2.2
  */
 export default function JobsPage() {
   const [pageSize, setPageSize] = useState(15);

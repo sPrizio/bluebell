@@ -22,7 +22,7 @@ import LoadingPage from "@/app/loading";
  * The page that shows all of a user's account's transactions. Accounts can be cycled
  *
  * @author Stephen Prizio
- * @version 0.2.1
+ * @version 0.2.2
  */
 export default function TransactionsPage() {
   const searchParams = useSearchParams();

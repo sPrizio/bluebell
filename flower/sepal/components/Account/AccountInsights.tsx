@@ -15,7 +15,7 @@ import { Icons } from "@/lib/enums";
  *
  * @param insights Account insights
  * @author Stephen Prizio
- * @version 0.0.2
+ * @version 0.2.2
  */
 export default function AccountInsights({
   insights,

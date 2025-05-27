@@ -30,7 +30,7 @@ import { validatePageQueryFlow } from "@/lib/functions/util-component-functions"
  * The page that shows an analysis of an account's performance
  *
  * @author Stephen Prizio
- * @version 0.2.0
+ * @version 0.2.2
  */
 export default function AnalysisPage() {
   const searchParams = useSearchParams();

@@ -22,7 +22,7 @@ import { Icons } from "@/lib/enums";
  * @param transactions list of Account transactions
  * @param showBottomLink show table caption
  * @author Stephen Prizio
- * @version 0.2.0
+ * @version 0.2.2
  */
 export default function TransactionsTable({
   transactions = [],

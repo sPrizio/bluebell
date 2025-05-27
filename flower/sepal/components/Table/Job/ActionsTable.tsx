@@ -27,7 +27,7 @@ import { Icons } from "@/lib/enums";
  * @param entries job results entries
  * @param actions job actions
  * @author Stephen Prizio
- * @version 0.2.1
+ * @version 0.2.2
  */
 export default function ActionsTable({
   entries,

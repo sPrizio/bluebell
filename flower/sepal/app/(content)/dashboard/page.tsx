@@ -31,7 +31,7 @@ import { redirect } from "next/navigation";
  * The page that shows an overview of a user's portfolio
  *
  * @author Stephen Prizio
- * @version 0.2.0
+ * @version 0.2.2
  */
 export default function DashboardPage() {
   const {

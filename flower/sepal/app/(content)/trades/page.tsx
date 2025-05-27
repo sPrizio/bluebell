@@ -23,7 +23,7 @@ import Error from "@/app/error";
  * Renders the Trade history page
  *
  * @author Stephen Prizio
- * @version 0.2.0
+ * @version 0.2.2
  */
 export default function TradesPage() {
   const searchParams = useSearchParams();

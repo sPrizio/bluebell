@@ -16,7 +16,7 @@ import { logErrors } from "@/lib/functions/util-functions";
  * Renders the market News page
  *
  * @author Stephen Prizio
- * @version 0.2.0
+ * @version 0.2.2
  */
 export default function MarketNewsPage() {
   const {
