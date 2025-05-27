@@ -10,6 +10,7 @@ import {
   getPortfolioDomain,
   getPortfolioRecordDomain,
   getSymbolDomain,
+  getSystemDomain,
   getTradeDomain,
   getTradeRecordDomain,
   getUserDomain,
@@ -100,6 +101,9 @@ export const ApiUrls = {
   Symbol: {
     GetTradedSymbols:
       getSymbolDomain() + "/get-traded-symbols?accountNumber={accountNumber}",
+  },
+  System: {
+    HealthCheck: getSystemDomain() + "/healthcheck",
   },
   Trade: {
     GetPagedTrades:

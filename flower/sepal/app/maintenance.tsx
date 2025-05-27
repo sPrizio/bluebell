@@ -1,18 +1,15 @@
-"use client";
-
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { IconMeteorFilled } from "@tabler/icons-react";
 import { resolveIcon } from "@/lib/functions/util-component-functions";
 import { Icons } from "@/lib/enums";
 
 /**
- * The generic error page
+ * Renders the maintenance page
  *
  * @author Stephen Prizio
  * @version 0.2.2
  */
-export default function Error() {
+export default function Maintenance() {
   //  RENDER
 
   return (
@@ -24,19 +21,19 @@ export default function Error() {
       >
         <div className={"grid grid-cols-2 gap-6 items-center justify-center"}>
           <div className={"flex justify-center"}>
-            {resolveIcon(Icons.MeteorFilled, "text-red-500", 200)}
+            {resolveIcon(Icons.BarrierBlock, "text-orange-500", 200)}
           </div>
           <div className={""}>
-            <div className={"text-8xl font-semibold pb-6 text-black"}>500</div>
+            <div className={"text-6xl font-semibold pb-6 text-black"}>
+              Break Time
+            </div>
             <div className={"text-2xl font-semibold pb-3 text-black"}>
-              Hello troublemaker!
+              Hello friend!
             </div>
             <div className={"pb-3 text-black"}>
-              An error occurred on our end. Please return to safety!
+              Unfortunately we cannot serve you at this time, but rest assured!
+              We are hard at work, and we&apos;ll be back soon!
             </div>
-            <Link href={"/dashboard"}>
-              <Button className={"bg-primary text-white"}>Dashboard</Button>
-            </Link>
           </div>
         </div>
       </div>

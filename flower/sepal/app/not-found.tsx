@@ -3,6 +3,12 @@ import { Button } from "@/components/ui/button";
 import { resolveIcon } from "@/lib/functions/util-component-functions";
 import { Icons } from "@/lib/enums";
 
+/**
+ * Renders the 404 page
+ *
+ * @author Stephen Prizio
+ * @version 0.2.2
+ */
 export default function NotFound() {
   //  RENDER
 

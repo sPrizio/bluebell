@@ -151,6 +151,15 @@ export function getSymbolDomain(): string {
 }
 
 /**
+ * Gets the system url
+ *
+ * @returns {string} url
+ */
+export function getSystemDomain(): string {
+  return getDomain("/system");
+}
+
+/**
  * Gets the job url
  *
  * @returns {string} url

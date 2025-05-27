@@ -15,8 +15,6 @@ export default function ContentPageLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  //  RENDER
-
   return (
     <AdminPanelLayout>
       <ContentLayout title={""}>
