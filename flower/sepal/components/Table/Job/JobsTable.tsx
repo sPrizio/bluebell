@@ -25,8 +25,9 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from "@/components/ui/pagination";
-import { IconPointFilled } from "@tabler/icons-react";
 import { useRouter } from "next/navigation";
+import { resolveIcon } from "@/lib/functions/util-component-functions";
+import { Icons } from "@/lib/enums";
 
 /**
  * Renders the jobs table
@@ -34,7 +35,7 @@ import { useRouter } from "next/navigation";
  * @param initialPageSize initial page size
  * @param initialPage initial page
  * @author Stephen Prizio
- * @version 0.2.1
+ * @version 0.2.2
  */
 export default function JobsTable({
   filters,
@@ -173,7 +174,7 @@ export default function JobsTable({
                               "inline-block " + computeColors(job.status.code)
                             }
                           >
-                            <IconPointFilled size={15} />
+                            {resolveIcon(Icons.PointFilled, "", 15)}
                           </span>
                         </div>
                       </TableCell>

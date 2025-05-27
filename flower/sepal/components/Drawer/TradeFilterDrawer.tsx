@@ -1,12 +1,12 @@
 import {
   Drawer,
+  DrawerClose,
   DrawerContent,
-  DrawerTrigger,
+  DrawerDescription,
+  DrawerFooter,
   DrawerHeader,
   DrawerTitle,
-  DrawerDescription,
-  DrawerClose,
-  DrawerFooter,
+  DrawerTrigger,
 } from "@/components/ui/drawer";
 import { Button } from "@/components/ui/button";
 import React from "react";
@@ -14,9 +14,9 @@ import { UserTradeControlSelection } from "@/types/uiTypes";
 import { Label } from "@/components/ui/label";
 import {
   Select,
-  SelectTrigger,
   SelectContent,
   SelectItem,
+  SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
 import TradeControlDatePicker from "@/components/DateTime/TradeControlDatePicker";
@@ -38,7 +38,7 @@ type Props = {
  * @param onCancel on cancel of filters
  * @param symbols symbol filters
  * @author Stephen Prizio
- * @version 0.2.1
+ * @version 0.2.2
  */
 export default function TradeFilterDrawer({
   userSelection,

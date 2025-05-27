@@ -30,7 +30,7 @@ import { validatePageQueryFlow } from "@/lib/functions/util-component-functions"
  * The page that shows an analysis of an account's performance
  *
  * @author Stephen Prizio
- * @version 0.2.0
+ * @version 0.2.2
  */
 export default function AnalysisPage() {
   const searchParams = useSearchParams();
@@ -63,7 +63,7 @@ export default function AnalysisPage() {
   const pageInfo = {
     title: "Analysis",
     subtitle: `A more in-depth look at ${activeAccount?.name ?? ""}'s performance.`,
-    iconCode: Icons.Analysis,
+    iconCode: Icons.Search,
     breadcrumbs: [
       { label: "Dashboard", href: "/dashboard", active: false },
       { label: "Accounts", href: "/accounts", active: false },

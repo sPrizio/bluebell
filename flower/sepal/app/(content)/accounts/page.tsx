@@ -3,7 +3,6 @@
 import React from "react";
 import { BaseCard } from "@/components/Card/BaseCard";
 import { Button } from "@/components/ui/button";
-import { IconCirclePlus } from "@tabler/icons-react";
 import BaseModal from "@/components/Modal/BaseModal";
 import AccountsTable from "@/components/Table/Account/AccountsTable";
 import AccountForm from "@/components/Form/Account/AccountForm";
@@ -48,7 +47,7 @@ export default function AccountsPage() {
   const pageInfo = {
     title: "Accounts",
     subtitle: "A list of all of your trading accounts.",
-    iconCode: Icons.AccountOverview,
+    iconCode: Icons.PieChart,
     breadcrumbs: [
       { label: "Dashboard", href: "/dashboard", active: false },
       {
@@ -128,7 +127,7 @@ export default function AccountsPage() {
                 }
                 trigger={
                   <Button className="w-full text-white">
-                    <IconCirclePlus />
+                    {resolveIcon(Icons.CirclePlus)}
                     &nbsp;Add a new account
                   </Button>
                 }
@@ -159,7 +158,7 @@ export default function AccountsPage() {
 
         <div className={"flex items-center text-sm justify-end w-full"}>
           <span className={"inline-block"}>
-            {resolveIcon(Icons.DefaultIcon, "text-primary")}
+            {resolveIcon(Icons.Flag3Filled, "text-primary")}
           </span>
           &nbsp;&nbsp;indicates default account.
         </div>

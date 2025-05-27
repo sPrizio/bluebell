@@ -21,7 +21,7 @@ import { DateTime } from "@/lib/constants";
  * The page that shows an account's performance over time
  *
  * @author Stephen Prizio
- * @version 0.2.0
+ * @version 0.2.2
  */
 export default function PerformancePage() {
   const searchParams = useSearchParams();
@@ -96,7 +96,7 @@ export default function PerformancePage() {
   const pageInfo = {
     title: "Performance",
     subtitle: `A look at trading account ${activeAccount?.name ?? ""}'s performance over time`,
-    iconCode: Icons.Performance,
+    iconCode: Icons.ChartScatter,
     breadcrumbs: [
       { label: "Dashboard", href: "/dashboard", active: false },
       { label: "Accounts", href: "/accounts", active: false },

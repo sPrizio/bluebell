@@ -8,12 +8,13 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import Link from "next/link";
-import { IconExternalLink, IconPointFilled } from "@tabler/icons-react";
 import moment from "moment/moment";
 import { DateTime } from "@/lib/constants";
 import { formatNumberForDisplay } from "@/lib/functions/util-functions";
 import React from "react";
 import { Transaction } from "@/types/apiTypes";
+import { resolveIcon } from "@/lib/functions/util-component-functions";
+import { Icons } from "@/lib/enums";
 
 /**
  * Renders the account transactions as a table
@@ -21,7 +22,7 @@ import { Transaction } from "@/types/apiTypes";
  * @param transactions list of Account transactions
  * @param showBottomLink show table caption
  * @author Stephen Prizio
- * @version 0.2.0
+ * @version 0.2.2
  */
 export default function TransactionsTable({
   transactions = [],
@@ -72,7 +73,7 @@ export default function TransactionsTable({
                 </div>
                 <div className={""}>
                   <Link href={"#"}>
-                    <IconExternalLink size={18} />
+                    {resolveIcon(Icons.ExternalLink, "", 18)}
                   </Link>
                 </div>
               </div>
@@ -112,7 +113,7 @@ export default function TransactionsTable({
                           computeColors(item.transactionStatus.code)
                         }
                       >
-                        <IconPointFilled size={15} />
+                        {resolveIcon(Icons.PointFilled, "", 15)}
                       </span>
                     </div>
                   </TableCell>

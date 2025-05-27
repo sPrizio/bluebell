@@ -7,7 +7,6 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { IconEdit, IconTrash } from "@tabler/icons-react";
 import moment from "moment/moment";
 import { DateTime } from "@/lib/constants";
 import { Button } from "@/components/ui/button";
@@ -56,7 +55,7 @@ export default function PortfoliosTable({
                   >
                     <TableCell>
                       {portfolio.defaultPortfolio
-                        ? resolveIcon(Icons.DefaultIcon, "text-primary")
+                        ? resolveIcon(Icons.Flag3Filled, "text-primary")
                         : null}
                     </TableCell>
                     <TableCell>{portfolio.portfolioNumber}</TableCell>
@@ -75,7 +74,7 @@ export default function PortfoliosTable({
                         }
                         trigger={
                           <Button variant={"outline"}>
-                            <IconEdit />
+                            {resolveIcon(Icons.Edit)}
                           </Button>
                         }
                       />
@@ -89,7 +88,7 @@ export default function PortfoliosTable({
                         content={<DeletePortfolioForm portfolio={portfolio} />}
                         trigger={
                           <Button variant={"outline"}>
-                            <IconTrash />
+                            {resolveIcon(Icons.Trash)}
                           </Button>
                         }
                       />

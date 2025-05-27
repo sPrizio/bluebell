@@ -3,12 +3,6 @@
 import React, { useState } from "react";
 import BaseModal from "@/components/Modal/BaseModal";
 import { Button } from "@/components/ui/button";
-import {
-  IconCirclePlus,
-  IconEdit,
-  IconExternalLink,
-  IconTrash,
-} from "@tabler/icons-react";
 import AccountForm from "@/components/Form/Account/AccountForm";
 import DeleteAccountForm from "@/components/Form/Account/DeleteAccountForm";
 import { BaseCard } from "@/components/Card/BaseCard";
@@ -32,13 +26,15 @@ import {
 import Error from "@/app/error";
 import { logErrors } from "@/lib/functions/util-functions";
 import moment from "moment";
+import { resolveIcon } from "@/lib/functions/util-component-functions";
+import { Icons } from "@/lib/enums";
 
 /**
  * Renders the account details layout
  *
  * @param account Account info
  * @author Stephen Prizio
- * @version 0.2.0
+ * @version 0.2.2
  */
 export default function AccountDetailsCmp({
   account,
@@ -159,7 +155,7 @@ export default function AccountDetailsCmp({
                 }
                 trigger={
                   <Button className="" variant={"primary"}>
-                    <IconCirclePlus />
+                    {resolveIcon(Icons.CirclePlus)}
                     &nbsp;Import Trades
                   </Button>
                 }
@@ -175,7 +171,7 @@ export default function AccountDetailsCmp({
                 }
                 trigger={
                   <Button className="" variant={"outline"}>
-                    <IconEdit />
+                    {resolveIcon(Icons.Edit)}
                     &nbsp;Update
                   </Button>
                 }
@@ -194,7 +190,7 @@ export default function AccountDetailsCmp({
                 title={"Delete Trading Account"}
                 trigger={
                   <Button className="bg-primaryRed text-white hover:bg-primaryRedLight">
-                    <IconTrash />
+                    {resolveIcon(Icons.Trash)}
                     &nbsp;Delete
                   </Button>
                 }
@@ -241,7 +237,7 @@ export default function AccountDetailsCmp({
                       href={`/transactions?account=${account?.accountNumber}`}
                     >
                       <Button variant={"outline"}>
-                        <IconExternalLink size={18} />
+                        {resolveIcon(Icons.ExternalLink, "", 18)}
                         &nbsp;Transactions
                       </Button>
                     </Link>
@@ -367,7 +363,7 @@ export default function AccountDetailsCmp({
               href={`/performance?account=${account?.accountNumber}`}
             >
               <Button className="" variant={"outline"}>
-                <IconExternalLink size={18} />
+                {resolveIcon(Icons.ExternalLink, "", 18)}
                 &nbsp;View Full Performance
               </Button>
             </Link>,
@@ -382,7 +378,7 @@ export default function AccountDetailsCmp({
           headerControls={[
             <Link key={0} href={`/trades?account=${account?.accountNumber}`}>
               <Button className="" variant={"outline"}>
-                <IconExternalLink size={18} />
+                {resolveIcon(Icons.ExternalLink, "", 18)}
                 &nbsp;View All Trades
               </Button>
             </Link>,

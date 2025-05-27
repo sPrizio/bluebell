@@ -8,7 +8,6 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { IconExternalLink } from "@tabler/icons-react";
 import Link from "next/link";
 import {
   formatNegativePoints,
@@ -17,6 +16,8 @@ import {
 import moment from "moment";
 import { DateTime } from "@/lib/constants";
 import { TradeLog } from "@/types/apiTypes";
+import { resolveIcon } from "@/lib/functions/util-component-functions";
+import { Icons } from "@/lib/enums";
 
 /**
  * Trade history table showing days and all accounts traded on that day
@@ -24,7 +25,7 @@ import { TradeLog } from "@/types/apiTypes";
  * @param log Trade log
  * @param showTotals show totals row
  * @author Stephen Prizio
- * @version 0.0.2
+ * @version 0.2.2
  */
 export default function TradeLogTable({
   log,
@@ -57,7 +58,7 @@ export default function TradeLogTable({
               </div>
               <div className={""}>
                 <Link href={"/performance?account=default"}>
-                  <IconExternalLink size={18} />
+                  {resolveIcon(Icons.ExternalLink, "", 18)}
                 </Link>
               </div>
             </div>

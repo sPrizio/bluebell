@@ -17,7 +17,7 @@ import ActionsTable from "@/components/Table/Job/ActionsTable";
  * @param children react content
  * @param params parameters
  * @author Stephen Prizio
- * @version 0.2.1
+ * @version 0.2.2
  */
 export default function JobLayout({
   children,
@@ -37,7 +37,7 @@ export default function JobLayout({
   const pageInfo = {
     title: "Job Details",
     subtitle: "View the details for a specific job",
-    iconCode: Icons.Job,
+    iconCode: Icons.BrandReact,
     breadcrumbs: [
       { label: "Dashboard", href: "/dashboard", active: false },
       {

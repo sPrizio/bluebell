@@ -16,7 +16,7 @@ import { logErrors } from "@/lib/functions/util-functions";
  * Renders the market News page
  *
  * @author Stephen Prizio
- * @version 0.2.0
+ * @version 0.2.2
  */
 export default function MarketNewsPage() {
   const {
@@ -33,7 +33,7 @@ export default function MarketNewsPage() {
   const pageInfo = {
     title: "Market News",
     subtitle: "A look at your local market news.",
-    iconCode: Icons.MarketNews,
+    iconCode: Icons.News,
     breadcrumbs: [
       { label: "Dashboard", href: "/dashboard", active: false },
       { label: "Market News", href: "/market-News", active: true },
