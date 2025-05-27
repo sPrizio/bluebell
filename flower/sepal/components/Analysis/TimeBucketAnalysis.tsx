@@ -3,9 +3,9 @@
 import AnalysisBarChart from "@/components/Chart/Analysis/AnalysisBarChart";
 import React from "react";
 import { FilterSelector } from "@/types/apiTypes";
-import { Loader2 } from "lucide-react";
 import { logErrors } from "@/lib/functions/util-functions";
 import { useTimeBucketsAnalysisQuery } from "@/lib/hooks/query/queries";
+import SepalLoader from "@/components/Svg/SepalLoader";
 
 /**
  * Renders the time bucket analysis content with chart
@@ -14,7 +14,7 @@ import { useTimeBucketsAnalysisQuery } from "@/lib/hooks/query/queries";
  * @param filter filter
  * @param opened trades opened or closed
  * @author Stephen Prizio
- * @version 0.2.0
+ * @version 0.2.2
  */
 export default function TimeBucketAnalysis({
   accountNumber,
@@ -25,34 +25,31 @@ export default function TimeBucketAnalysis({
   filter: FilterSelector;
   opened?: boolean;
 }>) {
-  const {
-    data: timeBucketsAnalysisData,
-    isLoading: isTimeBucketsAnalysisLoading,
-    isError: isTimeBucketsAnalysisError,
-  } = useTimeBucketsAnalysisQuery(accountNumber, opened, filter);
+  const { data, isLoading, isError, error } = useTimeBucketsAnalysisQuery(
+    accountNumber,
+    opened,
+    filter,
+  );
 
   //  RENDER
 
-  if (isTimeBucketsAnalysisError) {
-    logErrors(isTimeBucketsAnalysisError);
+  if (isError) {
+    logErrors(error);
     return <p>Data could not be displayed.</p>;
   }
 
   return (
     <div className={""}>
-      {isTimeBucketsAnalysisLoading ? (
+      {isLoading ? (
         <div className={"h-[100px] flex items-center justify-center"}>
           <div className={"grid grid-cols-1 justify-items-center gap-8"}>
             <div>
-              <Loader2 className="animate-spin text-secondary" size={50} />
+              <SepalLoader />
             </div>
           </div>
         </div>
       ) : (
-        <AnalysisBarChart
-          data={timeBucketsAnalysisData ?? []}
-          filter={filter}
-        />
+        <AnalysisBarChart data={data ?? []} filter={filter} />
       )}
     </div>
   );

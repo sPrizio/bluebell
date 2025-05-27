@@ -68,8 +68,6 @@ export default function ActionsTable({
 
   //  RENDER
 
-  console.log(entries);
-
   return (
     <div>
       <Table>
