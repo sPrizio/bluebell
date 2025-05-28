@@ -1,5 +1,10 @@
 import {
   IconAlertTriangleFilled,
+  IconAntennaBars1,
+  IconAntennaBars2,
+  IconAntennaBars3,
+  IconAntennaBars4,
+  IconAntennaBars5,
   IconArrowBarToDown,
   IconArrowBarUp,
   IconArrowNarrowDown,
@@ -40,6 +45,8 @@ import {
   IconPointFilled,
   IconReplaceFilled,
   IconSearch,
+  IconSquareRoundedChevronDownFilled,
+  IconSquareRoundedChevronUpFilled,
   IconTrash,
   IconUserCircle,
   IconX,
@@ -178,6 +185,30 @@ export function resolveIcon(iconCode: string, className = "", iconSize = 24) {
       return <IconPlanet className={className} size={iconSize} />;
     case Icons.BarrierBlock:
       return <IconBarrierBlock className={className} size={iconSize} />;
+    case Icons.SquareRoundedChevronDownFilled:
+      return (
+        <IconSquareRoundedChevronDownFilled
+          className={className}
+          size={iconSize}
+        />
+      );
+    case Icons.SquareRoundedChevronUpFilled:
+      return (
+        <IconSquareRoundedChevronUpFilled
+          className={className}
+          size={iconSize}
+        />
+      );
+    case Icons.AntennaBars1:
+      return <IconAntennaBars1 className={className} size={iconSize} />;
+    case Icons.AntennaBars2:
+      return <IconAntennaBars2 className={className} size={iconSize} />;
+    case Icons.AntennaBars3:
+      return <IconAntennaBars3 className={className} size={iconSize} />;
+    case Icons.AntennaBars4:
+      return <IconAntennaBars4 className={className} size={iconSize} />;
+    case Icons.AntennaBars5:
+      return <IconAntennaBars5 className={className} size={iconSize} />;
     default:
       return <span>-</span>;
   }
@@ -215,7 +246,7 @@ export function getFlagForCode(val: string, height = 25, width = 25) {
         <Image src={aud} height={height} width={width} alt={"Australia"} />
       );
     default:
-      return <span>-</span>;
+      return <span>{val}</span>;
   }
 }
 
