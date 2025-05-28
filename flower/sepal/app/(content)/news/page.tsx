@@ -16,7 +16,7 @@ import { logErrors } from "@/lib/functions/util-functions";
  * Renders the market News page
  *
  * @author Stephen Prizio
- * @version 0.2.2
+ * @version 0.2.3
  */
 export default function MarketNewsPage() {
   const {
@@ -64,7 +64,7 @@ export default function MarketNewsPage() {
           cardContent={content}
           headerControls={[<FetchMarketNewsButton key={0} />]}
           emptyText={
-            "There doesn\'t seem to be any news for this week. Come back later for an update."
+            "There doesn't seem to be any news for this week. Come back later for an update."
           }
         />
       </div>
