@@ -20,7 +20,7 @@ import React from "react";
  * @param loading loading flag on the card
  * @param emptyText empty text to display when the card is rendered without content
  * @author Stephen Prizio
- * @version 0.0.1
+ * @version 0.2.3
  */
 export function BaseCard({
   title = "",
@@ -66,7 +66,11 @@ export function BaseCard({
                 </div>
                 <div className={"flex items-center gap-4"}>
                   {headerControls?.map((item, key) => {
-                    return <div key={key + 1}>{item}</div>;
+                    return (
+                      <div key={key + 1} className={"flex items-center"}>
+                        {item}
+                      </div>
+                    );
                   })}
                   {icon ? <div className={"text-primary"}>{icon}</div> : null}
                 </div>

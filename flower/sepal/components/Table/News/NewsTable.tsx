@@ -11,26 +11,56 @@ import {
 import moment from "moment";
 import { DateTime } from "@/lib/constants";
 import { MarketNews } from "@/types/apiTypes";
-import { resolveIcon } from "@/lib/functions/util-component-functions";
+import {
+  getFlagForCode,
+  resolveIcon,
+} from "@/lib/functions/util-component-functions";
 import { Icons } from "@/lib/enums";
+import { useState } from "react";
+import { Button } from "@/components/ui/button";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
+import { TooltipArrow } from "@radix-ui/react-tooltip";
 
 /**
  * Renders the market news table
  *
  * @param news market news
  * @author Stephen Prizio
- * @version 0.2.2
+ * @version 0.2.3
  */
 export default function NewsTable({
   news = [],
 }: Readonly<{
   news?: Array<MarketNews>;
 }>) {
-  const background =
-    " bg-primary bg-opacity-5 hover:bg-primary hover:bg-opacity-5 ";
+  const headerBackground = (active: boolean) =>
+    active ? "text-white bg-primary hover:bg-primary " : "text-primary";
   const pastStyle = " opacity-25 ";
 
+  const [hiddenRows, setHiddenRows] =
+    useState<Array<number>>(computePastRows());
+
   //  GENERAL FUNCTIONS
+
+  /**
+   * Computes the row indices for past news
+   */
+  function computePastRows(): Array<number> {
+    const arr: Array<number> = [];
+    if (!news || news.length === 0) return arr;
+    for (let i = 0; i < news?.length; i++) {
+      if (news[i].past) {
+        arr.push(i);
+      }
+    }
+
+    return arr;
+  }
 
   /**
    * Computes the color for the severity level
@@ -48,6 +78,22 @@ export default function NewsTable({
     }
   }
 
+  /**
+   * Toggles the collapsed state for a news row
+   *
+   * @param idx row index
+   */
+  function handleCollapse(idx: number) {
+    const newHiddenRows = [...hiddenRows];
+    if (newHiddenRows.includes(idx)) {
+      newHiddenRows.splice(newHiddenRows.indexOf(idx), 1);
+    } else {
+      newHiddenRows.push(idx);
+    }
+
+    setHiddenRows(newHiddenRows);
+  }
+
   //  RENDER
 
   return (
@@ -56,34 +102,59 @@ export default function NewsTable({
         <TableHeader>
           <TableRow className={"hover:bg-transparent"}>
             <TableHead>Date</TableHead>
-            <TableHead>Time</TableHead>
+            <TableHead className={"w-[90px]"}>Time</TableHead>
             <TableHead>Country</TableHead>
             <TableHead>Impact</TableHead>
-            <TableHead>News</TableHead>
+            <TableHead className={"w-[295px]"}>News</TableHead>
             <TableHead>Forecast</TableHead>
             <TableHead>Previous</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
-          {news?.map((news) => (
+          {news?.map((news, idx) => (
             <>
               <TableRow
-                key={news.uid}
-                className={
-                  "hover:bg-transparent " +
-                  (news.active ? `${background}` : "") +
-                  (news.past ? `${pastStyle}` : "")
-                }
+                key={news.uid + news.date}
+                className={`border-t-1 border-slate-200
+                  hover:bg-transparent 
+                  ${headerBackground(news.active)}`}
               >
-                <TableCell className={"font-semibold text-primary"} colSpan={7}>
+                <TableCell
+                  className={"font-semibold rounded-l-2xl"}
+                  colSpan={6}
+                >
                   {moment(news.date).format(DateTime.ISOLongMonthDayYearFormat)}
+                  {news.active && (
+                    <>
+                      <span className={"ml-2"}>-</span>
+                      <span className={"ml-2"}>Today</span>
+                    </>
+                  )}
+                </TableCell>
+                <TableCell className={"text-right rounded-r-2xl"}>
+                  <div
+                    className={
+                      "flex items-center justify-end w-full font-semibold"
+                    }
+                  >
+                    <Button
+                      variant={"plain"}
+                      className={"ml-2 hover:cursor-pointer"}
+                      onClick={() => handleCollapse(idx)}
+                    >
+                      {hiddenRows.includes(idx)
+                        ? resolveIcon(Icons.SquareRoundedChevronUpFilled)
+                        : resolveIcon(Icons.SquareRoundedChevronDownFilled)}
+                    </Button>
+                  </div>
                 </TableCell>
               </TableRow>
               {(news.slots?.length ?? 0) === 0 ? (
                 <TableRow
+                  key={news.uid + news.date}
                   className={
                     "hover:bg-transparent " +
-                    (news.active ? `${background}` : "") +
+                    `${headerBackground(news.active)}` +
                     (news.past ? `${pastStyle}` : "")
                   }
                 >
@@ -95,38 +166,88 @@ export default function NewsTable({
                   </TableCell>
                 </TableRow>
               ) : null}
-              {news.slots?.map((slot) => {
-                return (slot.entries?.length ?? 0) > 0
-                  ? slot.entries.map((entry, index) => {
-                      return (
-                        <TableRow
-                          key={slot.uid}
-                          className={
-                            "hover:bg-transparent border-0 " +
-                            (news.active ? `${background}` : "") +
-                            (news.past ? `${pastStyle}` : "")
-                          }
-                        >
-                          <TableCell />
-                          {index === 0 ? (
-                            <TableCell className={""}>{slot.time}</TableCell>
-                          ) : (
-                            <TableCell />
-                          )}
-                          <TableCell className={""}>{entry.country}</TableCell>
-                          <TableCell
-                            className={computeSeverity(entry.severityLevel)}
+              {!hiddenRows.includes(idx) &&
+                news.slots?.map((slot) => {
+                  const iconSize = 30;
+                  return (slot.entries?.length ?? 0) > 0
+                    ? slot.entries.map((entry, index) => {
+                        return (
+                          <TableRow
+                            key={slot.uid + news.date + slot.time + index}
+                            className={"hover:bg-transparent border-0 "}
                           >
-                            {resolveIcon(Icons.News)}
-                          </TableCell>
-                          <TableCell className={""}>{entry.content}</TableCell>
-                          <TableCell className={""}>{entry.forecast}</TableCell>
-                          <TableCell className={""}>{entry.previous}</TableCell>
-                        </TableRow>
-                      );
-                    })
-                  : null;
-              })}
+                            <TableCell />
+                            {index === 0 ? (
+                              <TableCell className={""}>{slot.time}</TableCell>
+                            ) : (
+                              <TableCell />
+                            )}
+                            <TableCell className={""}>
+                              {getFlagForCode(entry.country ?? "")}
+                            </TableCell>
+                            <TableCell>
+                              <div className={"flex items-center"}>
+                                <TooltipProvider>
+                                  <Tooltip delayDuration={250}>
+                                    <TooltipTrigger asChild>
+                                      <span
+                                        className={
+                                          "inline-block hover:cursor-pointer"
+                                        }
+                                      >
+                                        {entry.severityLevel === 1 &&
+                                          resolveIcon(
+                                            Icons.AntennaBars3,
+                                            computeSeverity(
+                                              entry.severityLevel,
+                                            ),
+                                            iconSize,
+                                          )}
+                                        {entry.severityLevel === 2 &&
+                                          resolveIcon(
+                                            Icons.AntennaBars4,
+                                            computeSeverity(
+                                              entry.severityLevel,
+                                            ),
+                                            iconSize,
+                                          )}
+                                        {entry.severityLevel === 3 &&
+                                          resolveIcon(
+                                            Icons.AntennaBars5,
+                                            computeSeverity(
+                                              entry.severityLevel,
+                                            ),
+                                            iconSize,
+                                          )}
+                                      </span>
+                                    </TooltipTrigger>
+                                    <TooltipContent side={"left"}>
+                                      <div className={"max-w-[250px]"}>
+                                        Impact/Severity in this case refers to
+                                        the likelihood of this news impacting
+                                        the market as well as the magnitude of
+                                        that implied volatility. More bars means
+                                        more dangerous news.
+                                      </div>
+                                    </TooltipContent>
+                                  </Tooltip>
+                                </TooltipProvider>
+                              </div>
+                            </TableCell>
+                            <TableCell className={""}>
+                              {entry.content}
+                            </TableCell>
+                            <TableCell className={""}>
+                              {entry.forecast}
+                            </TableCell>
+                            <TableCell className={""}>
+                              {entry.previous}
+                            </TableCell>
+                          </TableRow>
+                        );
+                      })
+                    : null;
+                })}
             </>
           )) ?? null}
         </TableBody>

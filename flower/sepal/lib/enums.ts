@@ -48,6 +48,13 @@ export enum Icons {
   MeteorFilled = "meteor-filled",
   Planet = "planet",
   BarrierBlock = "barrier-block",
+  SquareRoundedChevronDownFilled = "square-rounded-chevron-down-filled",
+  SquareRoundedChevronUpFilled = "square-rounded-chevron-up-filled",
+  AntennaBars1 = "antenna-bars-1",
+  AntennaBars2 = "antenna-bars-2",
+  AntennaBars3 = "antenna-bars-3",
+  AntennaBars4 = "antenna-bars-4",
+  AntennaBars5 = "antenna-bars-5",
 }
 
 /**
