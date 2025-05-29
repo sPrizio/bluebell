@@ -8,15 +8,18 @@ import { TradeRecordEquityPoint } from "@/types/apiTypes";
  *
  * @param data array of trade record equity points
  * @param showAsPoints show points instead of balance
+ * @param height height of the chart
  * @author Stephen Prizio
  * @version 0.2.0
  */
 export default function TradeRecordChart({
   data,
   showAsPoints = false,
+  height = 300,
 }: Readonly<{
   data: Array<TradeRecordEquityPoint>;
   showAsPoints?: boolean;
+  height?: number;
 }>) {
   const chartData = useMemo(() => {
     if (!data) {
@@ -47,7 +50,7 @@ export default function TradeRecordChart({
 
   return (
     <div className={"w-full"}>
-      <ResponsiveContainer width={"100%"} height={300}>
+      <ResponsiveContainer width={"100%"} height={height}>
         <AreaChart data={chartData}>
           <defs>
             <linearGradient id="color" x1="0" y1="0" x2="0" y2="1">

@@ -12,8 +12,14 @@ import {
   formatNumberForDisplay,
 } from "@/lib/functions/util-functions";
 import { TradeRecord } from "@/types/apiTypes";
-import { resolveIcon } from "@/lib/functions/util-component-functions";
-import { Icons } from "@/lib/enums";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 
 /**
  * Renders a card for displaying Trade records
@@ -21,7 +27,7 @@ import { Icons } from "@/lib/enums";
  * @param tradeRecord Trade record
  * @param aggInterval aggregated interval
  * @author Stephen Prizio
- * @version 0.2.2
+ * @version 0.2.3
  */
 export default function TradeRecordCard({
   tradeRecord,
@@ -30,7 +36,6 @@ export default function TradeRecordCard({
   tradeRecord: TradeRecord;
   aggInterval: string;
 }>) {
-  const iconSize = 16;
   const [showPoints, setShowPoints] = useState(false);
 
   //  GENERAL FUNCTIONS
@@ -84,202 +89,145 @@ export default function TradeRecordCard({
       title={formatDate(tradeRecord.start)}
       cardContent={
         <div
-          className={"grid grid-cols-1 lg:grid-cols-5 gap-8 items-center mb-4"}
+          className={"grid grid-cols-1 lg:grid-cols-5 gap-8 items-start mb-4"}
         >
           <div className={"lg:col-span-2"}>
             <TradeRecordChart
               data={tradeRecord.equityPoints}
               showAsPoints={showPoints}
+              height={250}
             />
           </div>
           <div className={"lg:col-span-3"}>
-            <div className={"grid grid-cols-3 gap-4 text-sm"}>
-              <div>
-                <div className={"grid grid-cols-3 items-center gap-1"}>
-                  <div className={"col-span-3 bg-primary bg-opacity-10 p-2"}>
-                    <Label className={"font-semibold"}>Trading</Label>
-                  </div>
-                  <div>
-                    {tradeRecord.trades}
-                    <small>&nbsp;trades</small>
-                  </div>
-                  <div className={"col-span-2"}>
-                    <div className={"flex flex-col gap-1"}>
-                      <div
-                        className={
-                          "flex items-center bg-primary bg-opacity-10 py-1 px-2 justify-end"
-                        }
-                      >
-                        <div>{tradeRecord.wins}</div>
-                        <div
-                          className={
-                            "ml-2 inline-block text-primaryGreen text-right"
-                          }
-                        >
-                          {resolveIcon(Icons.CircleCheckFilled, "", iconSize)}
-                        </div>
+            <div>
+              <Table>
+                <TableHeader>
+                  <TableRow className={"hover:bg-transparent"}>
+                    <TableHead
+                      colSpan={3}
+                      className={"text-primary font-semibold"}
+                    >
+                      Trading
+                    </TableHead>
+                    <TableHead
+                      colSpan={3}
+                      className={"text-primary font-semibold"}
+                    >
+                      Statistics
+                    </TableHead>
+                    <TableHead
+                      colSpan={3}
+                      className={"text-primary font-semibold"}
+                    >
+                      Results
+                    </TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  <TableRow
+                    className={"hover:bg-transparent border-transparent"}
+                  >
+                    <TableCell rowSpan={2}>
+                      <div>
+                        {tradeRecord.trades}
+                        <small>
+                          &nbsp;&nbsp;
+                          {tradeRecord.trades === 1 ? "trade" : "trades"}
+                        </small>
                       </div>
-                      <div
-                        className={
-                          "flex items-center bg-primary bg-opacity-10 py-1 px-2 justify-end"
-                        }
-                      >
-                        <div>{tradeRecord.losses}</div>
-                        <div className={"ml-2 inline-block text-primaryRed"}>
-                          {resolveIcon(Icons.XboxXFilled, "", iconSize)}
-                        </div>
+                    </TableCell>
+                    <TableCell className={"text-right"}>
+                      {tradeRecord.wins}
+                      <small>
+                        &nbsp;&nbsp;{tradeRecord.wins === 1 ? "win" : "wins"}
+                      </small>
+                    </TableCell>
+                    <TableCell />
+                    <TableCell rowSpan={2}>Average</TableCell>
+                    <TableCell className={"text-right"}>
+                      $&nbsp;{formatNumberForDisplay(tradeRecord.winAverage)}
+                      <small>&nbsp;win</small>
+                    </TableCell>
+                    <TableCell />
+                    <TableCell>P & L</TableCell>
+                    <TableCell className={"text-right"}>
+                      $&nbsp;{formatNumberForDisplay(tradeRecord.netProfit)}
+                    </TableCell>
+                  </TableRow>
+                  <TableRow className={"hover:bg-transparent"}>
+                    <TableCell className={"text-right"}>
+                      {tradeRecord.losses}
+                      <small>
+                        &nbsp;&nbsp;
+                        {tradeRecord.losses === 1 ? "loss" : "losses"}
+                      </small>
+                    </TableCell>
+                    <TableCell />
+                    <TableCell className={"text-right"}>
+                      $&nbsp;{formatNumberForDisplay(tradeRecord.lossAverage)}
+                      <small>&nbsp;loss</small>
+                    </TableCell>
+                    <TableCell />
+                    <TableCell>Win %</TableCell>
+                    <TableCell className={"text-right"}>
+                      {tradeRecord.winPercentage}%
+                    </TableCell>
+                  </TableRow>
+                  <TableRow
+                    className={"hover:bg-transparent border-transparent"}
+                  >
+                    <TableCell rowSpan={2}>
+                      <div>
+                        {formatNegativePoints(tradeRecord.points)}
+                        <small>&nbsp;points</small>
                       </div>
-                    </div>
-                  </div>
-                  <div>
-                    {formatNegativePoints(tradeRecord.points)}
-                    <br />
-                    <small>&nbsp;points</small>
-                  </div>
-                  <div className={"col-span-2"}>
-                    <div className={"flex flex-col gap-1"}>
-                      <div
-                        className={
-                          "flex items-center bg-primary bg-opacity-10 py-1 px-2 justify-end"
-                        }
-                      >
-                        <div>
-                          {formatNumberForDisplay(tradeRecord.pointsGained)}
-                        </div>
-                        <div className={"ml-2 inline-block text-primaryGreen"}>
-                          {resolveIcon(Icons.CircleCheckFilled, "", iconSize)}
-                        </div>
-                      </div>
-                      <div
-                        className={
-                          "flex items-center bg-primary bg-opacity-10 py-1 px-2 justify-end"
-                        }
-                      >
-                        <div>
-                          {formatNumberForDisplay(
-                            Math.abs(tradeRecord.pointsLost),
-                          )}
-                        </div>
-                        <div className={"ml-2 inline-block text-primaryRed"}>
-                          {resolveIcon(Icons.XboxXFilled, "", iconSize)}
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              <div className={""}>
-                <div className={"grid grid-cols-2 items-center gap-1"}>
-                  <div className={"col-span-2 bg-primary bg-opacity-10 p-2"}>
-                    <Label className={"font-semibold"}>Statistics</Label>
-                  </div>
-                  <div className={""}>Average</div>
-                  <div className={""}>
-                    <div className={"flex flex-col gap-1"}>
-                      <div
-                        className={
-                          "flex items-center bg-primary bg-opacity-10 py-1 px-2 justify-end"
-                        }
-                      >
-                        <div>
-                          $&nbsp;
-                          {formatNumberForDisplay(tradeRecord.winAverage)}
-                        </div>
-                        <div
-                          className={
-                            "ml-2 inline-block text-primaryGreen text-right"
-                          }
-                        >
-                          {resolveIcon(Icons.CircleCheckFilled, "", iconSize)}
-                        </div>
-                      </div>
-                      <div
-                        className={
-                          "flex items-center bg-primary bg-opacity-10 py-1 px-2 justify-end"
-                        }
-                      >
-                        <div>$&nbsp;{tradeRecord.lossAverage}</div>
-                        <div className={"ml-2 inline-block text-primaryRed"}>
-                          {resolveIcon(Icons.XboxXFilled, "", iconSize)}
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                  <div className={""}>Largest</div>
-                  <div className={""}>
-                    <div className={"flex flex-col gap-1"}>
-                      <div
-                        className={
-                          "flex items-center bg-primary bg-opacity-10 py-1 px-2 justify-end"
-                        }
-                      >
-                        <div>
-                          $&nbsp;
-                          {formatNumberForDisplay(tradeRecord.largestWin)}
-                        </div>
-                        <div className={"ml-2 inline-block text-primaryGreen"}>
-                          {resolveIcon(Icons.CircleCheckFilled, "", iconSize)}
-                        </div>
-                      </div>
-                      <div
-                        className={
-                          "flex items-center bg-primary bg-opacity-10 py-1 px-2 justify-end"
-                        }
-                      >
-                        <div>
-                          $&nbsp;
-                          {formatNumberForDisplay(
-                            Math.abs(tradeRecord.largestLoss),
-                          )}
-                        </div>
-                        <div className={"ml-2 inline-block text-primaryRed"}>
-                          {resolveIcon(Icons.XboxXFilled, "", iconSize)}
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                  <div className={""}>Drawdown</div>
-                  <div className={""}>
-                    <div className={"flex flex-col gap-1"}>
-                      <div
-                        className={
-                          "flex items-center bg-primary bg-opacity-10 py-1 px-2 justify-end"
-                        }
-                      >
-                        <div>
-                          $&nbsp;
-                          {formatNumberForDisplay(tradeRecord.lowestPoint)}
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div className={""}>
-                <div className={"grid grid-cols-2 items-center gap-1"}>
-                  <div className={"col-span-2 bg-primary bg-opacity-10 p-2"}>
-                    <Label className={"font-semibold"}>Results</Label>
-                  </div>
-                  {simpleCellNoBg("P & L")}
-                  {simpleCellWithBg(
-                    "$ " + formatNumberForDisplay(tradeRecord.netProfit),
-                    "text-right",
-                  )}
-                  {simpleCellNoBg("Win%")}
-                  {simpleCellWithBg(
-                    tradeRecord.winPercentage + "%",
-                    "text-right",
-                  )}
-                  {simpleCellNoBg("Profitability")}
-                  {simpleCellWithBg(
-                    tradeRecord?.profitability.toString() ?? "",
-                    "text-right",
-                  )}
-                  {simpleCellNoBg("Retention")}
-                  {simpleCellWithBg(tradeRecord.retention + "%", "text-right")}
-                </div>
-              </div>
+                    </TableCell>
+                    <TableCell className={"text-right"}>
+                      {tradeRecord.pointsGained}
+                      <small>&nbsp;gained</small>
+                    </TableCell>
+                    <TableCell />
+                    <TableCell rowSpan={2}>Largest</TableCell>
+                    <TableCell className={"text-right"}>
+                      $&nbsp;{formatNumberForDisplay(tradeRecord.largestWin)}
+                      <small>&nbsp;win</small>
+                    </TableCell>
+                    <TableCell />
+                    <TableCell>Profitability</TableCell>
+                    <TableCell className={"text-right"}>
+                      {tradeRecord.profitability}
+                    </TableCell>
+                  </TableRow>
+                  <TableRow className={"hover:bg-transparent"}>
+                    <TableCell className={"text-right"}>
+                      {tradeRecord.pointsLost}
+                      <small>&nbsp;lost</small>
+                    </TableCell>
+                    <TableCell />
+                    <TableCell className={"text-right"}>
+                      $&nbsp;{formatNumberForDisplay(tradeRecord.largestLoss)}
+                      <small>&nbsp;loss</small>
+                    </TableCell>
+                    <TableCell />
+                    <TableCell>Retention</TableCell>
+                    <TableCell className={"text-right"}>
+                      {tradeRecord.retention}%
+                    </TableCell>
+                  </TableRow>
+                  <TableRow className={"hover:bg-transparent"}>
+                    <TableCell />
+                    <TableCell />
+                    <TableCell />
+                    <TableCell>Drawdown</TableCell>
+                    <TableCell className={"text-right"}>
+                      $&nbsp;{formatNumberForDisplay(tradeRecord.lowestPoint)}
+                    </TableCell>
+                    <TableCell />
+                    <TableCell />
+                    <TableCell />
+                  </TableRow>
+                </TableBody>
+              </Table>
             </div>
           </div>
         </div>
