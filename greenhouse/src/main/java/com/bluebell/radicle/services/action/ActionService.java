@@ -16,7 +16,7 @@ import static com.bluebell.radicle.validation.GenericValidator.validateParameter
  * Service-layer for {@link Action}s
  *
  * @author Stephen Prizio
- * @version 0.1.1
+ * @version 0.2.4
  */
 @Slf4j
 @Service
@@ -49,12 +49,17 @@ public class ActionService {
         final ActionData actionData = action.getPerformableAction().perform();
         if (actionData != null && actionData.isSuccess()) {
             result.setStatus(ActionStatus.SUCCESS);
+            action.setStatus(ActionStatus.SUCCESS);
+
             LOGGER.info("Action {} completed successfully", action.getName());
         } else {
             result.setStatus(ActionStatus.FAILURE);
+            action.setStatus(ActionStatus.FAILURE);
+
             LOGGER.info("Action {} failed. Consult logs for further information", action.getName());
         }
 
+        this.actionRepository.save(action);
         result.setData(actionData);
         return result;
     }
