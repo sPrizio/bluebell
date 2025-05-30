@@ -6,7 +6,7 @@ import static com.bluebell.platform.constants.CorePlatformConstants.NO_INSTANTIA
  * Defines all api paths used by the endpoints and testing module
  *
  * @author Stephen Prizio
- * @version 0.2.1
+ * @version 0.2.4
  */
 public class ApiPaths {
 
@@ -166,8 +166,6 @@ public class ApiPaths {
         public static final String GET = "/get";
 
         public static final String COUNTRY_CODES = "/country-codes";
-
-        public static final String PHONE_TYPES = "/phone-types";
 
         public static final String CURRENCIES = "/currencies";
 
