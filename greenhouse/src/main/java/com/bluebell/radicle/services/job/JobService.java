@@ -11,6 +11,7 @@ import com.bluebell.platform.models.core.entities.job.impl.JobResult;
 import com.bluebell.platform.models.core.entities.job.impl.JobResultEntry;
 import com.bluebell.platform.models.core.nonentities.action.ActionResult;
 import com.bluebell.radicle.performable.ActionPerformable;
+import com.bluebell.radicle.repositories.action.ActionRepository;
 import com.bluebell.radicle.repositories.job.JobRepository;
 import com.bluebell.radicle.repositories.job.JobResultEntryRepository;
 import com.bluebell.radicle.repositories.job.JobResultRepository;
@@ -39,11 +40,14 @@ import static com.bluebell.radicle.validation.GenericValidator.validateParameter
  * Service-layer for {@link Job}
  *
  * @author Stephen Prizio
- * @version 0.2.1
+ * @version 0.2.4
  */
 @Slf4j
 @Service
 public class JobService {
+
+    @Resource(name = "actionRepository")
+    private ActionRepository actionRepository;
 
     @Resource(name = "actionService")
     private ActionService actionService;
@@ -99,7 +103,7 @@ public class JobService {
         this.jobResultRepository.save(jobResult);
 
         final List<JobResultEntry> jobResultEntries = new ArrayList<>();
-        for (final Action action : job.getActions()) {
+        for (Action action : new ArrayList<>(job.getActions())) {
             final ActionResult result = this.actionService.performAction(action);
             if (result.getStatus() == ActionStatus.FAILURE) {
                 job.setStatus(JobStatus.FAILED);
@@ -117,11 +121,12 @@ public class JobService {
 
                 LOGGER.error("Job {} failed at action {}", job.getName(), action.getName());
 
-                this.jobRepository.save(job);
+                job = this.jobRepository.save(job);
                 jobResult.setEntries(jobResultEntries);
+                skipActions(job);
+
                 return this.jobResultRepository.save(jobResult);
             } else if (result.getStatus() == ActionStatus.SUCCESS) {
-
                 JobResultEntry entry = JobResultEntry
                         .builder()
                         .success(true)
@@ -384,5 +389,20 @@ public class JobService {
         validateParameterIsNotNull(end, CorePlatformConstants.Validation.DateTime.END_DATE_CANNOT_BE_NULL);
         validateDatesAreNotMutuallyExclusive(start, end, CorePlatformConstants.Validation.DateTime.MUTUALLY_EXCLUSIVE_DATES);
         validateParameterIsNotNull(sort, CorePlatformConstants.Validation.System.SORT_CANNOT_BE_NULL);
+    }
+
+    /**
+     * Marks actions after the failed one as skipped
+     *
+     * @param job failed {@link Job}
+     */
+    private void skipActions(final Job job) {
+        if (job.getStatus().equals(JobStatus.FAILED)) {
+            final List<Action> actions = new ArrayList<>(job.getActions());
+            actions.stream().filter(a -> a.getStatus().equals(ActionStatus.NOT_STARTED)).forEach(a -> {
+                a.setStatus(ActionStatus.SKIPPED);
+                this.actionRepository.save(a);
+            });
+        }
     }
 }

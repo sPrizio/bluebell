@@ -19,13 +19,6 @@ import {
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Loader2 } from "lucide-react";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { User } from "@/types/apiTypes";
 import { useUpdateUserMutation } from "@/lib/hooks/query/mutations";
 
@@ -35,7 +28,7 @@ import { useUpdateUserMutation } from "@/lib/hooks/query/mutations";
  * @param mode should create / edit
  * @param user User info
  * @author Stephen Prizio
- * @version 0.2.0
+ * @version 0.2.4
  */
 export default function UserForm({
   mode = "create",
@@ -75,8 +68,6 @@ export default function UserForm({
       lastName: user?.lastName ?? "",
       username: user?.username ?? "",
       email: user?.email ?? "",
-      phoneType: user?.phones?.[0]?.phoneType.toUpperCase() ?? "MOBILE",
-      telephoneNumber: user?.phones?.[0]?.telephoneNumber.toString() ?? "",
       password: "this is a temp password that is unused.!!",
       confirmPassword: "this is a temp password that is unused.!!",
     },
@@ -205,55 +196,6 @@ export default function UserForm({
                         placeholder="j.trader@example.com"
                         {...field}
                         type={"text"}
-                      />
-                    </FormControl>
-                    <FormMessage className={"text-primaryRed font-semibold"} />
-                  </FormItem>
-                )}
-              />
-            </div>
-            <div className={""}>
-              <FormField
-                control={form.control}
-                name="phoneType"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel className="!text-current">Phone Type</FormLabel>
-                    <Select
-                      onValueChange={field.onChange}
-                      defaultValue={field.value}
-                    >
-                      <FormControl>
-                        <SelectTrigger>
-                          <SelectValue />
-                        </SelectTrigger>
-                      </FormControl>
-                      <SelectContent>
-                        <SelectItem value={"MOBILE"}>Mobile</SelectItem>
-                        <SelectItem value={"HOME"}>Home</SelectItem>
-                        <SelectItem value={"WORK"}>Work</SelectItem>
-                        <SelectItem value={"OTHER"}>Other</SelectItem>
-                      </SelectContent>
-                    </Select>
-                    <FormMessage className={"text-primaryRed font-semibold"} />
-                  </FormItem>
-                )}
-              />
-            </div>
-            <div className={""}>
-              <FormField
-                control={form.control}
-                name="telephoneNumber"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel className="!text-current">
-                      Phone Number
-                    </FormLabel>
-                    <FormControl>
-                      <Input
-                        placeholder="(123) 456-7890"
-                        {...field}
-                        type={"tel"}
                       />
                     </FormControl>
                     <FormMessage className={"text-primaryRed font-semibold"} />

@@ -3,7 +3,6 @@ package com.bluebell.platform.models.core.entities.security;
 import com.bluebell.platform.enums.security.UserRole;
 import com.bluebell.platform.models.core.entities.GenericEntity;
 import com.bluebell.platform.models.core.entities.portfolio.Portfolio;
-import com.bluebell.platform.models.core.entities.system.PhoneNumber;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
@@ -20,7 +19,7 @@ import java.util.List;
  * Class representation of an individual that can interact with the system, hold accounts and other information
  *
  * @author Stephen Prizio
- * @version 0.2.0
+ * @version 0.2.4
  */
 @Getter
 @Entity
@@ -62,10 +61,6 @@ public class User implements GenericEntity {
     @Setter
     @Column
     private LocalDateTime dateRegistered;
-
-    @Setter
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private @Builder.Default List<PhoneNumber> phones = new ArrayList<>();
 
     @Setter
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)

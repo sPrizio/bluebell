@@ -9,8 +9,16 @@ import org.springframework.stereotype.Repository;
  * Data-access layer for {@link Action} entities
  *
  * @author Stephen Prizio
- * @version 0.1.1
+ * @version 0.2.4
  */
 @Repository
 public interface ActionRepository extends PagingAndSortingRepository<Action, Long>, CrudRepository<Action, Long> {
+
+    /**
+     * Returns an {@link Action} for the given action id
+     *
+     * @param actionId action id
+     * @return {@link Action}
+     */
+    Action findActionByActionId(final String actionId);
 }

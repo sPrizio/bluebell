@@ -9,8 +9,9 @@ import com.bluebell.platform.exceptions.job.JobExecutionException;
 import com.bluebell.platform.models.core.entities.action.impl.Action;
 import com.bluebell.platform.models.core.entities.job.impl.Job;
 import com.bluebell.platform.models.core.entities.job.impl.JobResult;
-import com.bluebell.platform.models.core.nonentities.action.ActionResult;
+import com.bluebell.platform.models.core.nonentities.action.ActionData;
 import com.bluebell.radicle.exceptions.validation.IllegalParameterException;
+import com.bluebell.radicle.performable.ActionPerformable;
 import com.bluebell.radicle.repositories.action.ActionRepository;
 import com.bluebell.radicle.repositories.job.JobRepository;
 import com.bluebell.radicle.services.action.ActionService;
@@ -24,7 +25,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Sort;
-import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.time.LocalDateTime;
@@ -32,13 +32,12 @@ import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
-import static org.mockito.ArgumentMatchers.any;
 
 /**
  * Testing class for {@link JobService}
  *
  * @author Stephen Prizio
- * @version 0.2.1
+ * @version 0.2.4
  */
 @SpringBootTest
 @RunWith(SpringRunner.class)
@@ -47,7 +46,7 @@ class JobServiceTest extends AbstractGenericTest {
     @Autowired
     private ActionRepository actionRepository;
 
-    @MockitoBean
+    @Autowired
     private ActionService actionService;
 
     @Autowired
@@ -105,20 +104,48 @@ class JobServiceTest extends AbstractGenericTest {
     @Test
     void test_executeJob_failedJobOnArbitraryAction() {
 
-        final Action action1 = Action.builder().priority(1).name("Action 1").build();
-        action1.setActionId(UUID.randomUUID().toString());
-        final Action action2 = Action.builder().priority(2).name("Action 2").build();
-        action2.setActionId(UUID.randomUUID().toString());
-        Mockito.when(this.actionService.performAction(action1)).thenReturn(ActionResult.builder().status(ActionStatus.SUCCESS).build());
-        Mockito.when(this.actionService.performAction(action2)).thenReturn(ActionResult.builder().status(ActionStatus.FAILURE).build());
+        ActionPerformable actionPerformable1 = Mockito.mock(ActionPerformable.class);
+        Mockito.when(actionPerformable1.perform()).thenReturn(ActionData.builder().success(true).build());
 
-        final Job job = Job
+        ActionPerformable actionPerformable2 = Mockito.mock(ActionPerformable.class);
+        Mockito.when(actionPerformable2.perform()).thenReturn(ActionData.builder().success(false).build());
+
+        Action action1 = Action.builder().priority(1).name("Action 1").build();
+        action1.setActionId(UUID.randomUUID().toString());
+
+        Action action2 = Action.builder().priority(2).name("Action 2").build();
+        action2.setActionId(UUID.randomUUID().toString());
+
+        Action action3 = Action.builder().priority(3).name("Action 3").build();
+        action3.setActionId(UUID.randomUUID().toString());
+
+        action1 = this.actionRepository.save(action1);
+        action2 = this.actionRepository.save(action2);
+        action3 = this.actionRepository.save(action3);
+
+        Job job = Job
                 .builder()
                 .name("Bad Job")
                 .build();
 
+        job = this.jobRepository.save(job);
+
+        action1.setJob(job);
+        action2.setJob(job);
+        action3.setJob(job);
+
+        action1 = this.actionRepository.save(action1);
+        action2 = this.actionRepository.save(action2);
+        action3 = this.actionRepository.save(action3);
+
+        job = this.jobRepository.save(job);
+
+        action1.setPerformableAction(actionPerformable1);
+        action2.setPerformableAction(actionPerformable2);
+
         job.addAction(action1);
         job.addAction(action2);
+        job.addAction(action3);
 
         try {
             final JobResult jobResult = this.jobService.executeJob(job);
@@ -126,6 +153,9 @@ class JobServiceTest extends AbstractGenericTest {
             assertThat(jobResult.getEntries()).hasSize(2);
             assertThat(jobResult.getEntries().get(0).isSuccess()).isTrue();
             assertThat(jobResult.getEntries().get(1).isSuccess()).isFalse();
+            assertThat(this.actionRepository.findActionByActionId(action1.getActionId()).getStatus()).isEqualTo(ActionStatus.SUCCESS);
+            assertThat(this.actionRepository.findActionByActionId(action2.getActionId()).getStatus()).isEqualTo(ActionStatus.FAILURE);
+            assertThat(this.actionRepository.findActionByActionId(action3.getActionId()).getStatus()).isEqualTo(ActionStatus.SKIPPED);
         } catch (Exception e) {
             Assertions.fail(e);
         }
@@ -134,11 +164,15 @@ class JobServiceTest extends AbstractGenericTest {
     @Test
     void test_executeJob_success() {
 
+        ActionPerformable actionPerformable = Mockito.mock(ActionPerformable.class);
+        Mockito.when(actionPerformable.perform()).thenReturn(ActionData.builder().success(true).build());
+
         final Action action1 = Action.builder().priority(1).name("Action 1").build();
         action1.setActionId(UUID.randomUUID().toString());
+        action1.setPerformableAction(actionPerformable);
         final Action action2 = Action.builder().priority(2).name("Action 2").build();
         action2.setActionId(UUID.randomUUID().toString());
-        Mockito.when(this.actionService.performAction(any())).thenReturn(ActionResult.builder().status(ActionStatus.SUCCESS).build());
+        action2.setPerformableAction(actionPerformable);
 
         final Job job = Job
                 .builder()

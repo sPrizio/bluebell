@@ -9,7 +9,7 @@ import lombok.Getter;
  * Enum representing various states that a {@link Job} can be in
  *
  * @author Stephen Prizio
- * @version 0.1.3
+ * @version 0.2.4
  */
 @Getter
 @Schema(title = "JobStatus", name = "JobStatus", description = "The various states that a Job can be in.")
@@ -17,7 +17,8 @@ public enum JobStatus implements GenericEnum<JobStatus> {
     NOT_STARTED("NOT_STARTED", "Not Started"),
     IN_PROGRESS("IN_PROGRESS", "In Progress"),
     COMPLETED("COMPLETED", "Completed"),
-    FAILED("FAILED", "Failed");
+    FAILED("FAILED", "Failed"),
+    SKIPPED("SKIPPED", "Skipped");
 
     private final String code;
 

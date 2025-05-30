@@ -8,7 +8,6 @@ import BaseModal from "@/components/Modal/BaseModal";
 import moment from "moment";
 import { DateTime } from "@/lib/constants";
 import UserForm from "@/components/Form/User/UserForm";
-import { PhoneNumber } from "@/types/apiTypes";
 import { PageInfoProvider } from "@/lib/context/PageInfoProvider";
 import { useUserQuery } from "@/lib/hooks/query/queries";
 import LoadingPage from "@/app/loading";
@@ -20,7 +19,7 @@ import { resolveIcon } from "@/lib/functions/util-component-functions";
  * Renders the user profile page
  *
  * @author Stephen Prizio
- * @version 0.2.2
+ * @version 0.2.4
  */
 export default function ProfilePage() {
   const { data: user, isError, error, isLoading } = useUserQuery();
@@ -104,29 +103,6 @@ export default function ProfilePage() {
                 ),
               )}
               {basicCell("Roles", formatRoles(user?.roles ?? []))}
-              <div className={"flex flex-col gap-1"}>
-                <div
-                  className={
-                    "text-xxs uppercase font-bold tracking-normal text-primary"
-                  }
-                >
-                  Phone Numbers
-                </div>
-                {user?.phones?.map((phone: PhoneNumber) => {
-                  return (
-                    <div key={phone.uid} className={"flex gap-2"}>
-                      <div className={"basis-[75px]"}>
-                        <small className={"mr-2 uppercase"}>
-                          {phone.phoneType}
-                        </small>
-                      </div>
-                      <div className={"text-right text-sm"}>
-                        {phone.display}
-                      </div>
-                    </div>
-                  );
-                }) ?? null}
-              </div>
             </div>
           }
           headerControls={[

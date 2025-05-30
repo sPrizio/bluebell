@@ -2,7 +2,6 @@ package com.bluebell.platform.models.api.dto.security;
 
 import com.bluebell.platform.models.api.dto.GenericDTO;
 import com.bluebell.platform.models.api.dto.portfolio.PortfolioDTO;
-import com.bluebell.platform.models.api.dto.system.PhoneNumberDTO;
 import com.bluebell.platform.models.core.entities.security.User;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
@@ -19,7 +18,7 @@ import java.util.List;
  * A DTO representation of a {@link User}
  *
  * @author Stephen Prizio
- * @version 0.1.6
+ * @version 0.2.4
  */
 @Setter
 @Getter
@@ -50,9 +49,6 @@ public class UserDTO implements GenericDTO {
 
     @Schema(description = "Date user registered")
     private LocalDateTime dateRegistered;
-
-    @Schema(description = "User's phone numbers")
-    private List<PhoneNumberDTO> phones;
 
     @Schema(description = "User's portfolios")
     private List<PortfolioDTO> portfolios;

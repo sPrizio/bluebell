@@ -6,7 +6,6 @@ import com.bluebell.planter.converters.account.AccountDTOConverter;
 import com.bluebell.planter.converters.transaction.TransactionDTOConverter;
 import com.bluebell.planter.services.UniqueIdentifierService;
 import com.bluebell.platform.models.api.dto.security.CreateUpdateUserDTO;
-import com.bluebell.platform.models.api.dto.system.CreateUpdatePhoneNumberDTO;
 import com.bluebell.radicle.services.security.UserService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
@@ -39,7 +38,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  * Testing class for {@link UserApiController}
  *
  * @author Stephen Prizio
- * @version 0.1.9
+ * @version 0.2.4
  */
 @SpringBootTest
 @AutoConfigureMockMvc(addFilters = false)
@@ -101,16 +100,6 @@ class UserApiControllerTest extends AbstractPlanterTest {
     }
 
 
-    //  ----------------- getPhoneTypes -----------------
-
-    @Test
-    void test_getPhoneTypes_success() throws Exception {
-        this.mockMvc.perform(get(getApiPath(BASE, PHONE_TYPES)))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.data[0]", is("MOBILE")));
-    }
-
-
     //  ----------------- getCurrencies -----------------
 
     @Test
@@ -169,16 +158,6 @@ class UserApiControllerTest extends AbstractPlanterTest {
                 .lastName("Prizio")
                 .firstName("Stephen")
                 .username("s.prizio")
-                .phoneNumbers(
-                        List.of(
-                                CreateUpdatePhoneNumberDTO
-                                        .builder()
-                                        .phoneType("MOBILE")
-                                        .countryCode((short) 1)
-                                        .telephoneNumber(5149411025L)
-                                        .build()
-                        )
-                )
                 .build();
 
         this.mockMvc.perform(post(getApiPath(BASE, CREATE)).contentType(MediaType.APPLICATION_JSON).content(new ObjectMapper().writeValueAsString(data)))
@@ -213,16 +192,6 @@ class UserApiControllerTest extends AbstractPlanterTest {
                 .lastName("Prizio")
                 .firstName("Stephen")
                 .username("s.prizio")
-                .phoneNumbers(
-                        List.of(
-                                CreateUpdatePhoneNumberDTO
-                                        .builder()
-                                        .phoneType("MOBILE")
-                                        .countryCode((short) 1)
-                                        .telephoneNumber(5149411025L)
-                                        .build()
-                        )
-                )
                 .build();
 
         this.mockMvc.perform(put(getApiPath(BASE, UPDATE)).params(map).contentType(MediaType.APPLICATION_JSON).content(new ObjectMapper().writeValueAsString(data)))

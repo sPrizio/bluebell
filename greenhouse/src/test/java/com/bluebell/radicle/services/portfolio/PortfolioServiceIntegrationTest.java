@@ -21,7 +21,7 @@ import static org.assertj.core.api.Assertions.assertThat;
  * Integration testing class for {@link PortfolioService}
  *
  * @author Stephen Prizio
- * @version 0.2.2
+ * @version 0.2.4
  */
 @SpringBootTest
 @RunWith(SpringRunner.class)
@@ -42,7 +42,6 @@ class PortfolioServiceIntegrationTest extends AbstractGenericTest {
     void setUp() {
         user = generateTestUser();
         user.setPortfolios(null);
-        user.setPhones(null);
         user = this.userRepository.save(user);
     }
 

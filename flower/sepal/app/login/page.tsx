@@ -23,14 +23,6 @@ import {
 import { delay } from "@/lib/functions/util-functions";
 import MainLogo from "@/components/Navigation/MainLogo";
 import { Loader2 } from "lucide-react";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import parsePhoneNumberFromString from "libphonenumber-js";
 import SimpleMessage from "@/components/Message/SimpleMessage";
 import { useToast } from "@/lib/hooks/ui/use-toast";
 import { Toaster } from "@/components/ui/toaster";
@@ -41,7 +33,7 @@ import { Icons } from "@/lib/enums";
  * Renders the login page
  *
  * @author Stephen Prizio
- * @version 0.2.2
+ * @version 0.2.4
  */
 export default function Login() {
   const { toast } = useToast();
@@ -78,8 +70,6 @@ export default function Login() {
       lastName: "",
       username: "",
       email: "",
-      phoneType: "MOBILE",
-      telephoneNumber: "",
       password: "",
       confirmPassword: "",
     },
@@ -188,30 +178,6 @@ export default function Login() {
       default:
         return " max-w-[400px] ";
     }
-  }
-
-  /**
-   * Cleans the phone number for display purposes
-   * @param val
-   */
-  function sanitizeTelephoneNumber(val: string) {
-    const returnVal = val.replace(/[^0-9]/gi, "");
-    if (returnVal.length < 11) {
-      const phone = parsePhoneNumberFromString(returnVal, {
-        // set this to use a default country when the phone number omits country code
-        defaultCountry: "US",
-
-        // set to false to require that the whole string is exactly a phone number,
-        // otherwise, it will search for a phone number anywhere within the string
-        extract: false,
-      });
-
-      if (phone) {
-        return phone.formatNational();
-      }
-    }
-
-    return returnVal.substring(0, 10);
   }
 
   //  RENDER
@@ -627,79 +593,6 @@ export default function Login() {
                                 </FormItem>
                               )}
                             />
-                          </div>
-                          <div className={"grid grid-cols-3 gap-2"}>
-                            <div>
-                              <FormField
-                                control={registerForm.control}
-                                name="phoneType"
-                                render={({ field }) => (
-                                  <FormItem>
-                                    <FormLabel className="!text-current">
-                                      Phone Type
-                                    </FormLabel>
-                                    <Select
-                                      onValueChange={field.onChange}
-                                      defaultValue={field.value}
-                                    >
-                                      <FormControl>
-                                        <SelectTrigger>
-                                          <SelectValue />
-                                        </SelectTrigger>
-                                      </FormControl>
-                                      <SelectContent>
-                                        <SelectItem value={"MOBILE"}>
-                                          Mobile
-                                        </SelectItem>
-                                        <SelectItem value={"HOME"}>
-                                          Home
-                                        </SelectItem>
-                                        <SelectItem value={"WORK"}>
-                                          Work
-                                        </SelectItem>
-                                        <SelectItem value={"OTHER"}>
-                                          Other
-                                        </SelectItem>
-                                      </SelectContent>
-                                    </Select>
-                                    <FormMessage
-                                      className={
-                                        "text-primaryRed font-semibold"
-                                      }
-                                    />
-                                  </FormItem>
-                                )}
-                              />
-                            </div>
-                            <div className={"col-span-2"}>
-                              <FormField
-                                control={registerForm.control}
-                                name="telephoneNumber"
-                                render={({ field }) => (
-                                  <FormItem>
-                                    <FormLabel className="!text-current">
-                                      Phone Number
-                                    </FormLabel>
-                                    <FormControl>
-                                      <Input
-                                        placeholder="(123) 456-7890"
-                                        {...field}
-                                        type={"tel"}
-                                        max={10}
-                                        value={sanitizeTelephoneNumber(
-                                          field.value,
-                                        )}
-                                      />
-                                    </FormControl>
-                                    <FormMessage
-                                      className={
-                                        "text-primaryRed font-semibold"
-                                      }
-                                    />
-                                  </FormItem>
-                                )}
-                              />
-                            </div>
                           </div>
                           <div className={""}>
                             <FormField

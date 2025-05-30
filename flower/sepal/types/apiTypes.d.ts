@@ -21,16 +21,8 @@ interface User extends GenericApiType {
   username: string;
   email: string;
   dateRegistered: string;
-  phones: Array<PhoneNumber>;
   portfolios: Array<Portfolio>;
   roles: Array<string>;
-}
-
-interface PhoneNumber extends GenericApiType {
-  phoneType: string;
-  countryCode: string;
-  telephoneNumber: number;
-  display: string;
 }
 
 interface AccountCreationInfo {
@@ -87,8 +79,6 @@ interface GenericEnum extends GenericApiType {
 }
 
 type Language = GenericEnum;
-
-type PhoneType = GenericEnum;
 
 type Country = GenericEnum;
 

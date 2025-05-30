@@ -7,7 +7,6 @@ import com.bluebell.planter.converters.transaction.TransactionDTOConverter;
 import com.bluebell.platform.enums.account.Currency;
 import com.bluebell.platform.enums.system.Country;
 import com.bluebell.platform.enums.system.Language;
-import com.bluebell.platform.enums.system.PhoneType;
 import com.bluebell.platform.models.api.dto.security.CreateUpdateUserDTO;
 import com.bluebell.platform.models.api.dto.security.UserDTO;
 import com.bluebell.platform.models.api.dto.transaction.TransactionDTO;
@@ -38,7 +37,7 @@ import java.util.stream.Collectors;
  * API controller for {@link User}
  *
  * @author Stephen Prizio
- * @version 0.2.0
+ * @version 0.2.4
  */
 @RestController
 @RequestMapping("${bluebell.base.api.controller.endpoint}" + ApiPaths.User.BASE)
@@ -135,38 +134,6 @@ public class UserApiController extends AbstractApiController {
                 .<TreeSet<String>>builder()
                 .success(true)
                 .data(Arrays.stream(Country.values()).map(Country::getPhoneCode).collect(Collectors.toCollection(TreeSet::new)))
-                .build();
-    }
-
-    /**
-     * Returns a {@link StandardJsonResponse} containing all of the {@link PhoneType}s
-     *
-     * @return {@link StandardJsonResponse}
-     */
-    @ValidateApiToken
-    @Operation(summary = "Obtains the supported phone types", description = "Returns a list of phone types supported by bluebell.")
-    @ApiResponse(
-            responseCode = "200",
-            description = "Response when the api successfully obtains the list of supported phone types.",
-            content = @Content(
-                    mediaType = "application/json",
-                    schema = @Schema(implementation = StandardJsonResponse.class)
-            )
-    )
-    @ApiResponse(
-            responseCode = "401",
-            description = "Response when the api call made was unauthorized.",
-            content = @Content(
-                    mediaType = "application/json",
-                    schema = @Schema(implementation = StandardJsonResponse.class, example = "The API token was invalid.")
-            )
-    )
-    @GetMapping(ApiPaths.User.PHONE_TYPES)
-    public StandardJsonResponse<PhoneType[]> getPhoneTypes() {
-        return StandardJsonResponse
-                .<PhoneType[]>builder()
-                .success(true)
-                .data(PhoneType.values())
                 .build();
     }
 

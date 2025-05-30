@@ -8,7 +8,6 @@ import com.bluebell.platform.enums.job.JobType;
 import com.bluebell.platform.enums.news.MarketNewsSeverity;
 import com.bluebell.platform.enums.security.UserRole;
 import com.bluebell.platform.enums.system.Country;
-import com.bluebell.platform.enums.system.PhoneType;
 import com.bluebell.platform.enums.time.MarketPriceTimeInterval;
 import com.bluebell.platform.enums.trade.TradePlatform;
 import com.bluebell.platform.enums.trade.TradeType;
@@ -28,7 +27,6 @@ import com.bluebell.platform.models.core.entities.news.MarketNewsSlot;
 import com.bluebell.platform.models.core.entities.portfolio.Portfolio;
 import com.bluebell.platform.models.core.entities.security.User;
 import com.bluebell.platform.models.core.entities.system.IncomingPing;
-import com.bluebell.platform.models.core.entities.system.PhoneNumber;
 import com.bluebell.platform.models.core.entities.trade.Trade;
 import com.bluebell.platform.models.core.entities.transaction.Transaction;
 import com.bluebell.radicle.enums.DataSource;
@@ -48,7 +46,7 @@ import java.util.Random;
  * Parent-level testing class to provide testing assistance for the project
  *
  * @author Stephen Prizio
- * @version 0.2.0
+ * @version 0.2.4
  */
 public abstract class AbstractGenericTest {
 
@@ -190,22 +188,7 @@ public abstract class AbstractGenericTest {
                 .password("1234")
                 .firstName("Stephen")
                 .lastName("Test")
-                .phones(new ArrayList<>(List.of(generateTestPhoneNumber())))
                 .roles(new ArrayList<>(List.of(UserRole.ADMINISTRATOR, UserRole.TRADER)))
-                .build();
-    }
-
-    /**
-     * Generates a test {@link PhoneNumber}
-     *
-     * @return {@link PhoneNumber}
-     */
-    public PhoneNumber generateTestPhoneNumber() {
-        return PhoneNumber
-                .builder()
-                .phoneType(PhoneType.MOBILE)
-                .telephoneNumber(1112223333)
-                .countryCode((short) 1)
                 .build();
     }
 
