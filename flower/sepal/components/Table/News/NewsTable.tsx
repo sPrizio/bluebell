@@ -93,6 +93,24 @@ export default function NewsTable({
     setHiddenRows(newHiddenRows);
   }
 
+  /**
+   * Formats the time string for proper display
+   *
+   * @param val time string
+   */
+  function formatTime(val: string) {
+    if (val) {
+      const count = (val.match(/:/g) || []).length;
+      if (count > 1) {
+        return val.substring(0, val.lastIndexOf(":"));
+      } else {
+        return val;
+      }
+    }
+
+    return "";
+  }
+
   //  RENDER
 
   return (
@@ -101,12 +119,12 @@ export default function NewsTable({
         <TableHeader>
           <TableRow className={"hover:bg-transparent"}>
             <TableHead>Date</TableHead>
-            <TableHead className={"w-[90px]"}>Time</TableHead>
-            <TableHead>Country</TableHead>
-            <TableHead>Impact</TableHead>
+            <TableHead className={"text-center"}>Time</TableHead>
+            <TableHead className={"text-center"}>Country</TableHead>
+            <TableHead className={"text-center"}>Impact</TableHead>
             <TableHead className={"w-[295px]"}>News</TableHead>
-            <TableHead>Forecast</TableHead>
-            <TableHead>Previous</TableHead>
+            <TableHead className={"text-center"}>Forecast</TableHead>
+            <TableHead className={"text-center"}>Previous</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
@@ -177,15 +195,23 @@ export default function NewsTable({
                           >
                             <TableCell />
                             {index === 0 ? (
-                              <TableCell className={""}>{slot.time}</TableCell>
+                              <TableCell className={"text-center"}>
+                                {formatTime(slot.time)}
+                              </TableCell>
                             ) : (
                               <TableCell />
                             )}
                             <TableCell className={""}>
-                              {getFlagForCode(entry.country ?? "")}
+                              <div
+                                className={"flex items-center justify-center"}
+                              >
+                                {getFlagForCode(entry.country ?? "")}
+                              </div>
                             </TableCell>
                             <TableCell>
-                              <div className={"flex items-center"}>
+                              <div
+                                className={"flex items-center justify-center"}
+                              >
                                 <TooltipProvider>
                                   <Tooltip delayDuration={250}>
                                     <TooltipTrigger asChild>
@@ -236,10 +262,10 @@ export default function NewsTable({
                             <TableCell className={""}>
                               {entry.content}
                             </TableCell>
-                            <TableCell className={""}>
+                            <TableCell className={"text-center"}>
                               {entry.forecast}
                             </TableCell>
-                            <TableCell className={""}>
+                            <TableCell className={"text-center"}>
                               {entry.previous}
                             </TableCell>
                           </TableRow>

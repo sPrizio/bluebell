@@ -15,7 +15,7 @@ import { Account } from "@/types/apiTypes";
  *
  * @param account Account info
  * @author Stephen Prizio
- * @version 0.2.0
+ * @version 0.2.4
  */
 export default function AccountInformation({
   account,
@@ -41,7 +41,7 @@ export default function AccountInformation({
   //  RENDER
 
   return (
-    <div>
+    <div className={"py-4"}>
       <Table>
         <TableBody>
           <TableRow className={"hover:bg-transparent"}>
