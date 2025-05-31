@@ -9,7 +9,10 @@ import {
 import moment from "moment";
 import { DateTime } from "@/lib/constants";
 import React from "react";
-import { formatNumberForDisplay } from "@/lib/functions/util-functions";
+import {
+  formatNegativePoints,
+  formatNumberForDisplay,
+} from "@/lib/functions/util-functions";
 import { TradeRecordReport } from "@/types/apiTypes";
 
 /**
@@ -33,13 +36,14 @@ export default function TradeRecordTable({
       <TableHeader className={"border-b-2 border-primaryLight"}>
         <TableRow className={"hover:bg-transparent"}>
           <TableHead className={"text-primary font-bold"}>Date</TableHead>
-          <TableHead />
-          <TableHead />
           <TableHead className={"text-center text-primary font-bold"}>
             Trades
           </TableHead>
           <TableHead className={"text-center text-primary font-bold"}>
             Win Rate
+          </TableHead>
+          <TableHead className={"text-center text-primary font-bold"}>
+            Points
           </TableHead>
           <TableHead className={"text-right text-primary font-bold"}>
             P & L
@@ -50,18 +54,16 @@ export default function TradeRecordTable({
         {report?.tradeRecords?.map((item) => {
           return (
             <TableRow key={item.uid} className={"hover:bg-transparent"}>
-              <TableCell className={"w-[40px]"}>
-                {moment(item.start).format(DateTime.ISOWeekdayFormat)}
-              </TableCell>
-              <TableCell className={"w-[50px]"}>
-                {moment(item.start).format(DateTime.ISOMonthFormat)}
-              </TableCell>
-              <TableCell className={"w-[25px]"}>
-                {moment(item.start).format(DateTime.ISODayFormat)}
+              <TableCell>
+                {moment(item.start).format(DateTime.ISOWeekdayFormat)},&nbsp;
+                {moment(item.start).format(DateTime.ISOMonthDayFormat)}
               </TableCell>
               <TableCell className={"text-center"}>{item.trades}</TableCell>
               <TableCell className={"text-center"}>
                 {item.winPercentage}%
+              </TableCell>
+              <TableCell className={"text-center"}>
+                {formatNegativePoints(item.points)}
               </TableCell>
               <TableCell
                 className={
@@ -85,13 +87,14 @@ export default function TradeRecordTable({
             <TableCell className={"font-bold"}>
               {report?.tradeRecordTotals?.count ?? 0}&nbsp;days
             </TableCell>
-            <TableCell />
-            <TableCell />
             <TableCell className={"text-center font-bold"}>
               {report?.tradeRecordTotals?.trades ?? 0}
             </TableCell>
             <TableCell className={"text-center font-bold"}>
               {report?.tradeRecordTotals?.winPercentage ?? 0}%
+            </TableCell>
+            <TableCell className={"text-center font-bold"}>
+              {formatNegativePoints(report?.tradeRecordTotals?.netPoints ?? 0)}
             </TableCell>
             <TableCell className={"text-right font-bold "}>
               $&nbsp;

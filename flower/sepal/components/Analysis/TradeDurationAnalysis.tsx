@@ -12,7 +12,7 @@ import SepalLoader from "@/components/Svg/SepalLoader";
  * @param filter analysis filter
  * @param tdFilter trade duration filter
  * @author Stephen Prizio
- * @version 0.2.2
+ * @version 0.2.4
  */
 export default function TradeDurationAnalysis({
   accountNumber,
@@ -37,7 +37,7 @@ export default function TradeDurationAnalysis({
   }
 
   return (
-    <div className={""}>
+    <div className={"pt-6 pb-4"}>
       {isTradeDurationAnalysisLoading ? (
         <div className={"h-[100px] flex items-center justify-center"}>
           <div className={"grid grid-cols-1 justify-items-center gap-8"}>

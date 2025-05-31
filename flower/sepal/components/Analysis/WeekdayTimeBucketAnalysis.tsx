@@ -12,7 +12,7 @@ import SepalLoader from "@/components/Svg/SepalLoader";
  * @param weekday weekday
  * @param filter filter
  * @author Stephen Prizio
- * @version 0.2.2
+ * @version 0.2.4
  */
 export default function WeekdayTimeBucketAnalysis({
   weekday,
@@ -37,7 +37,7 @@ export default function WeekdayTimeBucketAnalysis({
   }
 
   return (
-    <div className={""}>
+    <div className={"pt-6 pb-4"}>
       {isWeekdaysTimeBucketsAnalysisLoading ? (
         <div className={"h-[100px] flex items-center justify-center"}>
           <div className={"grid grid-cols-1 justify-items-center gap-8"}>

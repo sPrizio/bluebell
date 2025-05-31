@@ -14,7 +14,7 @@ import SepalLoader from "@/components/Svg/SepalLoader";
  * @param filter filter
  * @param opened trades opened or closed
  * @author Stephen Prizio
- * @version 0.2.2
+ * @version 0.2.4
  */
 export default function TimeBucketAnalysis({
   accountNumber,
@@ -39,7 +39,7 @@ export default function TimeBucketAnalysis({
   }
 
   return (
-    <div className={""}>
+    <div className={"pt-6 pb-4"}>
       {isLoading ? (
         <div className={"h-[100px] flex items-center justify-center"}>
           <div className={"grid grid-cols-1 justify-items-center gap-8"}>

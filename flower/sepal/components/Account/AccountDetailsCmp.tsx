@@ -28,13 +28,14 @@ import { logErrors } from "@/lib/functions/util-functions";
 import moment from "moment";
 import { resolveIcon } from "@/lib/functions/util-component-functions";
 import { Icons } from "@/lib/enums";
+import LoadingPage from "@/app/loading";
 
 /**
  * Renders the account details layout
  *
  * @param account Account info
  * @author Stephen Prizio
- * @version 0.2.2
+ * @version 0.2.4
  */
 export default function AccountDetailsCmp({
   account,
@@ -131,6 +132,10 @@ export default function AccountDetailsCmp({
     return <Error />;
   }
 
+  if (isLoading) {
+    return <LoadingPage />;
+  }
+
   return (
     <div className={"grid sm:grid-cols-1 lg:grid-cols-2 xl:grid-cols-4 gap-6"}>
       <div className={"sm:col-span-1 lg:col-span-2 xl:col-span-4"}>
@@ -205,7 +210,6 @@ export default function AccountDetailsCmp({
           <div className={"grid col-span-1 gap-6"}>
             <div>
               <BaseCard
-                loading={isLoading}
                 title={"Account Equity"}
                 subtitle={
                   "A look at the evolution of your account since inception."
@@ -247,7 +251,6 @@ export default function AccountDetailsCmp({
             </div>
             <div>
               <BaseCard
-                loading={isLoading}
                 title={"Consistency"}
                 subtitle={
                   "This calculation includes both sizing, RRR and general performance. A greater score indicates higher consistency."
@@ -313,7 +316,6 @@ export default function AccountDetailsCmp({
       </div>
       <div className={""}>
         <BaseCard
-          loading={isLoading}
           title={"Account Information"}
           cardContent={<AccountInformation account={account} />}
         />
@@ -321,7 +323,6 @@ export default function AccountDetailsCmp({
       <div className={"sm:col-span-1 lg:col-span-2 xl:col-span-4"}>
         {accountDetails?.insights ? (
           <BaseCard
-            loading={isLoading}
             title={"Insights"}
             subtitle={
               "A quick look at some of the key markers of this account's performance."
@@ -333,7 +334,6 @@ export default function AccountDetailsCmp({
       <div className={"xl:col-span-2"}>
         {accountDetails?.statistics ? (
           <BaseCard
-            loading={isLoading}
             title={"Statistics"}
             subtitle={
               "A look some of this account's key statistical measures for performance."
@@ -346,7 +346,6 @@ export default function AccountDetailsCmp({
       </div>
       <div className={"xl:col-span-2 flex justify-end"}>
         <BaseCard
-          loading={isLoading}
           title={"Performance"}
           subtitle={`Reviewing the last ${tradeRecordReportLookBack} days of daily trading performances.`}
           cardContent={
@@ -372,7 +371,6 @@ export default function AccountDetailsCmp({
       </div>
       <div className={"sm:col-span-1 lg:col-span-2 xl:col-span-4"}>
         <BaseCard
-          loading={isLoading}
           title={"Trades"}
           subtitle={"A view of some recent trades taken in this account."}
           headerControls={[

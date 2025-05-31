@@ -11,7 +11,7 @@ import SepalLoader from "@/components/Svg/SepalLoader";
  * @param accountNumber account number
  * @param filter filter
  * @author Stephen Prizio
- * @version 0.2.2
+ * @version 0.2.4
  */
 export default function WeekdayAnalysis({
   accountNumber,
@@ -34,7 +34,7 @@ export default function WeekdayAnalysis({
   }
 
   return (
-    <div className={""}>
+    <div className={"pt-6 pb-4"}>
       {isWeekdaysAnalysisLoading ? (
         <div className={"h-[100px] flex items-center justify-center"}>
           <div className={"grid grid-cols-1 justify-items-center gap-8"}>
