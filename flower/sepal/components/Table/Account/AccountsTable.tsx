@@ -21,6 +21,7 @@ import { DateTime } from "@/lib/constants";
 import { useRouter } from "next/navigation";
 import { Account } from "@/types/apiTypes";
 import { Icons } from "@/lib/enums";
+import React from "react";
 
 /**
  * Renders a table containing the user's active accounts
@@ -30,7 +31,7 @@ import { Icons } from "@/lib/enums";
  * @param allowAccountSelection allow clicking on rows
  * @param showCompactTable minimal table flag
  * @author Stephen Prizio
- * @version 0.2.2
+ * @version 0.2.4
  */
 export default function AccountsTable({
   accounts = [],
@@ -131,7 +132,15 @@ export default function AccountsTable({
                         : "hover:bg-transparent"
                     }
                   >
-                    <TableCell>{item.name}</TableCell>
+                    <TableCell>
+                      <div
+                        className={
+                          "sm:w-[100px] md:w-[125px] lg:w-[75px] xl:lg:w-[75px] text-nowrap overflow-hidden text-ellipsis"
+                        }
+                      >
+                        {item.name}
+                      </div>
+                    </TableCell>
                     <TableCell className={"text-center"}>
                       {item.accountType?.label ?? "-"}
                     </TableCell>

@@ -15,6 +15,7 @@ import React from "react";
 import { Transaction } from "@/types/apiTypes";
 import { resolveIcon } from "@/lib/functions/util-component-functions";
 import { Icons } from "@/lib/enums";
+import SepalLoader from "@/components/Svg/SepalLoader";
 
 /**
  * Renders the account transactions as a table
@@ -22,7 +23,7 @@ import { Icons } from "@/lib/enums";
  * @param transactions list of Account transactions
  * @param showBottomLink show table caption
  * @author Stephen Prizio
- * @version 0.2.2
+ * @version 0.2.4
  */
 export default function TransactionsTable({
   transactions = [],
@@ -85,7 +86,7 @@ export default function TransactionsTable({
               <TableHead>Account</TableHead>
               <TableHead className={"text-center"}>Type</TableHead>
               <TableHead className={"text-center"}>Value</TableHead>
-              <TableHead className={"text-right"}>Status</TableHead>
+              <TableHead className={"text-center"}>Status</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -97,24 +98,48 @@ export default function TransactionsTable({
                       DateTime.ISOShortMonthFullDayFormat,
                     )}
                   </TableCell>
-                  <TableCell>{item.accountName}</TableCell>
+                  <TableCell>
+                    <div
+                      className={
+                        "sm:w-[100px] md:w-[125px] lg:w-[75px] xl:lg:w-[75px] text-nowrap overflow-hidden text-ellipsis"
+                      }
+                    >
+                      {item.accountName}
+                    </div>
+                  </TableCell>
                   <TableCell className={"text-center"}>
-                    {item.transactionType.label}
+                    <div
+                      className={
+                        "flex grow items-stretch content-stretch justify-center h-full"
+                      }
+                    >
+                      {item.transactionType.code === "DEPOSIT" &&
+                        resolveIcon(Icons.Download, "text-foreground", 20)}
+                    </div>
                   </TableCell>
                   <TableCell className={"text-center"}>
                     $&nbsp;{formatNumberForDisplay(item.amount)}
                   </TableCell>
-                  <TableCell className={"text-right h-full"}>
-                    <div className={"flex items-center justify-end"}>
-                      {item.transactionStatus.label}&nbsp;
-                      <span
-                        className={
-                          "inline-block " +
-                          computeColors(item.transactionStatus.code)
-                        }
-                      >
-                        {resolveIcon(Icons.PointFilled, "", 15)}
-                      </span>
+                  <TableCell>
+                    <div className={"flex items-center justify-center"}>
+                      {item.transactionStatus.code === "PENDING" && (
+                        <SepalLoader className={"mr-0 !h-5 !w-5"} />
+                      )}
+                      {item.transactionStatus.code === "IN_PROGRESS" && (
+                        <SepalLoader className={"mr-0 !h-5 !w-5"} />
+                      )}
+                      {item.transactionStatus.code === "COMPLETED" &&
+                        resolveIcon(
+                          Icons.ShieldCheckFilled,
+                          "text-primaryGreen",
+                          20,
+                        )}
+                      {item.transactionStatus.code === "FAILED" &&
+                        resolveIcon(
+                          Icons.HexagonLetterXFilled,
+                          "text-primaryRed",
+                          20,
+                        )}
                     </div>
                   </TableCell>
                 </TableRow>

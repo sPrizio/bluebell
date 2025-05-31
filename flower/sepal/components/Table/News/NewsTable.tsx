@@ -24,14 +24,13 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { TooltipArrow } from "@radix-ui/react-tooltip";
 
 /**
  * Renders the market news table
  *
  * @param news market news
  * @author Stephen Prizio
- * @version 0.2.3
+ * @version 0.2.4
  */
 export default function NewsTable({
   news = [],
