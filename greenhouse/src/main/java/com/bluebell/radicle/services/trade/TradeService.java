@@ -10,6 +10,7 @@ import com.bluebell.platform.models.core.entities.trade.Trade;
 import com.bluebell.radicle.exceptions.system.EntityCreationException;
 import com.bluebell.radicle.exceptions.system.EntityModificationException;
 import com.bluebell.radicle.exceptions.validation.MissingRequiredDataException;
+import com.bluebell.radicle.repositories.account.AccountRepository;
 import com.bluebell.radicle.repositories.trade.TradeRepository;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
@@ -241,6 +242,24 @@ public class TradeService {
             return applyChanges(trade, data, account);
         } catch (Exception e) {
             throw new EntityModificationException(String.format("An error occurred while modifying the Trade : %s", e.getMessage()), e);
+        }
+    }
+
+    /**
+     * Deletes an existing {@link Trade}
+     *
+     * @param trade {@link Trade}
+     * @return true if the trade was deleted, false otherwise
+     */
+    public boolean deleteTrade(final Trade trade) {
+        validateParameterIsNotNull(trade, CorePlatformConstants.Validation.Trade.TRADE_CANNOT_BE_NULL);
+
+        try {
+            this.tradeRepository.deleteById(trade.getId());
+            return true;
+        } catch (Exception e) {
+            LOGGER.error(e.getMessage(), e);
+            return false;
         }
     }
 

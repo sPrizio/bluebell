@@ -379,4 +379,16 @@ class TradeServiceTest extends AbstractGenericTest {
                 .extracting("tradeId", "openPrice", "tradePlatform")
                 .containsExactly("123LOL", 102.74, TradePlatform.BLUEBELL);
     }
+
+
+    //  ----------------- deleteTrade -----------------
+
+    @Test
+    void test_deleteTrade_success() {
+        assertThatExceptionOfType(IllegalParameterException.class)
+                .isThrownBy(() -> this.tradeService.deleteTrade(null))
+                .withMessage(CorePlatformConstants.Validation.Trade.TRADE_CANNOT_BE_NULL);
+
+        assertThat(this.tradeService.deleteTrade(generateTestBuyTrade())).isTrue();
+    }
 }

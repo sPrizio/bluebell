@@ -18,6 +18,7 @@ import com.bluebell.radicle.importing.services.strategy.GenericStrategyImportSer
 import com.bluebell.radicle.importing.services.trade.GenericTradeImportService;
 import com.bluebell.radicle.security.aspects.ValidateApiToken;
 import com.bluebell.radicle.security.constants.SecurityConstants;
+import com.bluebell.radicle.services.account.AccountService;
 import com.bluebell.radicle.services.trade.TradeService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -57,6 +58,10 @@ import static com.bluebell.radicle.validation.GenericValidator.*;
 public class TradeApiController extends AbstractApiController {
 
     private static final String TRADE_ID = "tradeId";
+    private static final String NO_TRADE_FOR_TRADE_ID = "No trade found for trade id %s";
+
+    @Resource(name = "accountService")
+    private AccountService accountService;
 
     @Resource(name = "genericStrategyImportService")
     private GenericStrategyImportService genericStrategyImportService;
@@ -495,6 +500,7 @@ public class TradeApiController extends AbstractApiController {
         final User user = (User) request.getAttribute(SecurityConstants.USER_REQUEST_KEY);
         final Account account = getAccountForId(user, accountNumber);
         final Trade newTrade = this.tradeService.createNewTrade(data, account);
+        this.accountService.refreshAccount(account);
 
         return StandardJsonResponse
                 .<TradeDTO>builder()
@@ -575,12 +581,80 @@ public class TradeApiController extends AbstractApiController {
                     .build();
         }
 
+        final Trade updatedTrade = this.tradeService.updateTrade(trade.get(), data, account);
+        this.accountService.refreshAccount(account);
         return StandardJsonResponse
                 .<TradeDTO>builder()
                 .success(true)
-                .data(this.tradeDTOConverter.convert(this.tradeService.updateTrade(trade.get(), data, account)))
+                .data(this.tradeDTOConverter.convert(updatedTrade))
                 .build();
     }
+
+
+    //  ----------------- DELETE REQUESTS -----------------
+
+    /**
+     * Deletes a {@link Trade} for the given account number and trade id
+     * @param accountNumber account number
+     * @param tradeId trade id
+     * @param request {@link HttpServletRequest}
+     * @return {@link StandardJsonResponse}
+     */
+    @ValidateApiToken
+    @Operation(summary = "Deletes an existing trade", description = "Deletes an existing trade for the given account number and trade id.")
+    @ApiResponse(
+            responseCode = "200",
+            description = "Response when the api successfully deletes a trade.",
+            content = @Content(
+                    mediaType = "application/json",
+                    schema = @Schema(implementation = StandardJsonResponse.class)
+            )
+    )
+    @ApiResponse(
+            responseCode = "200",
+            description = "Response when the api cannot find the account for the given account number.",
+            content = @Content(
+                    mediaType = "application/json",
+                    schema = @Schema(implementation = StandardJsonResponse.class, example = "No account was found for number 1234")
+            )
+    )
+    @ApiResponse(
+            responseCode = "200",
+            description = "Response when the api cannot find the trade for the given trade id.",
+            content = @Content(
+                    mediaType = "application/json",
+                    schema = @Schema(implementation = StandardJsonResponse.class, example = "No trade was found for trade id 1234")
+            )
+    )
+    @ApiResponse(
+            responseCode = "401",
+            description = "Response when the api call made was unauthorized.",
+            content = @Content(
+                    mediaType = "application/json",
+                    schema = @Schema(implementation = StandardJsonResponse.class, example = "The API token was invalid.")
+            )
+    )
+    @DeleteMapping(ApiPaths.Trade.DELETE_TRADE)
+    public StandardJsonResponse<Boolean> deleteTrade(
+            @Parameter(name = "accountNumber", description = "The unique identifier for your trading account", example = "1234")
+            final @RequestParam("accountNumber") long accountNumber,
+            @Parameter(name = TRADE_ID, description = "The unique identifier for the trade", example = "1234")
+            final @RequestParam(TRADE_ID) String tradeId,
+            final HttpServletRequest request
+    ) {
+        final User user = (User) request.getAttribute(SecurityConstants.USER_REQUEST_KEY);
+        final Account account = getAccountForId(user, accountNumber);
+        final Optional<Trade> trade = this.tradeService.findTradeByTradeId(tradeId, account);
+        return trade.map(value -> {
+            final boolean result = this.tradeService.deleteTrade(value);
+            if (result) {
+                this.accountService.refreshAccount(account);
+            }
+
+            return StandardJsonResponse.<Boolean>builder().success(result).data(result).build();
+        }).orElseGet(() -> StandardJsonResponse.<Boolean>builder().success(false).data(false).message(String.format(NO_TRADE_FOR_TRADE_ID, tradeId)).build());
+    }
+
 
 
     //  HELPERS

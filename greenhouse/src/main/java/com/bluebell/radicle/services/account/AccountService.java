@@ -49,7 +49,7 @@ import static com.bluebell.radicle.validation.GenericValidator.validateParameter
  * Service-layer for {@link Account} entities
  *
  * @author Stephen Prizio
- * @version 0.2.2
+ * @version 0.2.4
  */
 @Slf4j
 @Service
@@ -82,6 +82,18 @@ public class AccountService {
     //  METHODS
 
     /**
+     * Refreshes the given {@link Account}
+     *
+     * @param account {@link Account}
+     * @return refreshed {@link Account}
+     */
+    @Transactional
+    public Account refreshAccount(final Account account) {
+        validateParameterIsNotNull(account, CorePlatformConstants.Validation.Account.ACCOUNT_CANNOT_BE_NULL);
+        return this.accountRepository.save(this.accountRepository.findAccountByAccountNumber(account.getAccountNumber()).refreshAccount());
+    }
+
+    /**
      * Returns an {@link AccountDetails} for the given {@link Account}
      *
      * @param account {@link Account}
@@ -107,6 +119,7 @@ public class AccountService {
      * @param accountNumber account number
      * @return {@link Optional} of {@link Account}
      */
+    @Transactional
     public Optional<Account> findAccountByAccountNumber(final long accountNumber) {
         return Optional.ofNullable(this.accountRepository.findAccountByAccountNumber(accountNumber));
     }
@@ -159,7 +172,7 @@ public class AccountService {
      * Deletes the given {@link Account}
      *
      * @param account {@link Account}
-     * @return true if account was deleted
+     * @return true if the account was deleted
      */
     @Transactional
     public boolean deleteAccount(final Account account) {

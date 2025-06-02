@@ -104,6 +104,7 @@ class TradeApiControllerTest extends AbstractPlanterTest {
         Mockito.when(this.accountService.findAccountByAccountNumber(5678)).thenReturn(Optional.empty());
         Mockito.when(this.tradeService.createNewTrade(any(), any())).thenReturn(generateTestSellTrade());
         Mockito.when(this.tradeService.updateTrade(any(), any(), any())).thenReturn(generateTestSellTrade());
+        Mockito.when(this.tradeService.deleteTrade(any())).thenReturn(true);
     }
 
 
@@ -472,5 +473,31 @@ class TradeApiControllerTest extends AbstractPlanterTest {
                         .content(new ObjectMapper().writeValueAsString(data)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.data.netProfit", is(-4.50)));
+    }
+
+
+    //  ----------------- deleteTrade -----------------
+
+    @Test
+    void test_deleteTrade_missingTrade() throws Exception {
+        this.mockMvc.perform(delete(getApiPath(BASE, DELETE_TRADE))
+                        .with(testUserContext())
+                        .queryParam(ACCOUNT_NUMBER, "1234")
+                        .queryParam(TRADE_ID, "64351")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.message", is(String.format("No trade found for trade id %s", "64351"))));
+    }
+
+    @Test
+    void test_deleteTrade_success() throws Exception {
+        this.mockMvc.perform(delete(getApiPath(BASE, DELETE_TRADE))
+                        .with(testUserContext())
+                        .queryParam(ACCOUNT_NUMBER, "1234")
+                        .queryParam(TRADE_ID, TEST_ID)
+                        .contentType(MediaType.APPLICATION_JSON)
+                )
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.success", is(true)));
     }
 }
