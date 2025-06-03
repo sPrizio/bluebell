@@ -102,6 +102,12 @@ export const ApiUrls = {
     HealthCheck: getSystemDomain() + "/healthcheck",
   },
   Trade: {
+    DeleteTrade:
+      getTradeDomain() +
+      "/delete-trade?accountNumber={accountNumber}&tradeId={tradeId}",
+    GetTradeForTradeId:
+      getTradeDomain() +
+      "/get-for-trade-id?accountNumber={accountNumber}&tradeId={tradeId}",
     GetPagedTrades:
       getTradeDomain() +
       "/get-for-interval-paged?accountNumber={accountNumber}&start={start}&end={end}&page={page}&pageSize={pageSize}&tradeType={tradeType}&symbol={symbol}&sort={sort}",

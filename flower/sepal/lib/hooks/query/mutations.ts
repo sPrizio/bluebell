@@ -201,3 +201,22 @@ export const useDeleteTransactionMutation = (accountNumber: number) => {
     },
   });
 };
+
+export const useDeleteTradeMutation = (
+  accountNumber: number,
+  tradeId: string,
+) => {
+  const queryClient = useQueryClient();
+  return useMutation<boolean, Error, any>({
+    mutationFn: () =>
+      del<boolean>(ApiUrls.Trade.DeleteTrade, {
+        accountNumber: accountNumber.toString(),
+        tradeId: tradeId,
+      }),
+    onSuccess: (data) => {
+      queryClient.invalidateQueries({
+        queryKey: ["account", accountNumber.toString()],
+      });
+    },
+  });
+};
