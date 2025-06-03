@@ -4,10 +4,11 @@ import com.bluebell.platform.enums.security.UserRole;
 import com.bluebell.platform.models.core.entities.security.User;
 import com.bluebell.radicle.repositories.security.UserRepository;
 import jakarta.annotation.Resource;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Profile;
-import org.springframework.core.annotation.Order;
+import org.springframework.core.Ordered;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -21,10 +22,12 @@ import java.util.List;
  * @version 0.2.4
  */
 @Component
-@Order(1)
 @Profile("dev")
 @ConditionalOnProperty(name = "bluebell.cmdlr.user.data", havingValue = "true", matchIfMissing = true)
-public class UserRunner extends AbstractRunner implements CommandLineRunner {
+public class UserRunner extends AbstractRunner implements CommandLineRunner, Ordered {
+
+    @Value("${bluebell.cmdlr.order.user}")
+    private int order;
 
     @Resource(name = "userRepository")
     private UserRepository userRepository;
@@ -54,5 +57,10 @@ public class UserRunner extends AbstractRunner implements CommandLineRunner {
         this.userRepository.save(user);
 
         logEnd();
+    }
+
+    @Override
+    public int getOrder() {
+        return this.order;
     }
 }

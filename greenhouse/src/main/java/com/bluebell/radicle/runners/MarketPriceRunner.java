@@ -14,7 +14,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Profile;
-import org.springframework.core.annotation.Order;
+import org.springframework.core.Ordered;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -26,19 +26,21 @@ import java.util.Objects;
  * Generates testing {@link MarketPrice}s
  *
  * @author Stephen Prizio
- * @version 0.2.0
+ * @version 0.2.4
  */
 @Component
-@Order(8)
 @Profile("dev")
 @ConditionalOnProperty(name = "bluebell.cmdlr.market.data", havingValue = "true", matchIfMissing = true)
-public class MarketPriceRunner extends AbstractRunner implements CommandLineRunner {
+public class MarketPriceRunner extends AbstractRunner implements CommandLineRunner, Ordered {
 
     @Value("${bluebell.data.root}")
     private String dataRoot;
 
     @Value("${bluebell.init.market.data}")
     private String init;
+
+    @Value("${bluebell.cmdlr.order.market-price}")
+    private int order;
 
     @Resource(name = "marketDataIngestionService")
     private MarketDataIngestionService marketDataIngestionService;
@@ -70,6 +72,11 @@ public class MarketPriceRunner extends AbstractRunner implements CommandLineRunn
         }
 
         logEnd();
+    }
+
+    @Override
+    public int getOrder() {
+        return this.order;
     }
 
 
