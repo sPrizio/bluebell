@@ -90,7 +90,17 @@ public class AccountService {
     @Transactional
     public Account refreshAccount(final Account account) {
         validateParameterIsNotNull(account, CorePlatformConstants.Validation.Account.ACCOUNT_CANNOT_BE_NULL);
-        return this.accountRepository.save(this.accountRepository.findAccountByAccountNumber(account.getAccountNumber()).refreshAccount());
+
+        final double start = account.getInitialBalance();
+        double sum = 0.0;
+        final List<Trade> allTrades = this.tradeService.findAllTradesWithinTimespan(account.getAccountOpenTime(), LocalDateTime.now().plusDays(1), account);
+
+        if (CollectionUtils.isNotEmpty(allTrades)) {
+            sum = this.mathService.getDouble(allTrades.stream().mapToDouble(Trade::getNetProfit).sum());
+        }
+
+        account.setBalance(this.mathService.add(start, sum));
+        return this.accountRepository.save(account);
     }
 
     /**
