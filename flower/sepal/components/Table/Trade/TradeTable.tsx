@@ -30,6 +30,7 @@ import { usePagedTradesQuery } from "@/lib/hooks/query/queries";
 import Error from "@/app/error";
 import { UserTradeControlSelection } from "@/types/uiTypes";
 import LoadingPage from "@/app/loading";
+import { useRouter } from "next/navigation";
 
 /**
  * Renders a table of trades
@@ -39,7 +40,7 @@ import LoadingPage from "@/app/loading";
  * @param initialPageSize initial page size
  * @param initialPage initial page
  * @author Stephen Prizio
- * @version 0.2.1
+ * @version 0.2.4
  */
 export default function TradeTable({
   account,
@@ -52,6 +53,7 @@ export default function TradeTable({
   initialPageSize?: number;
   initialPage?: number;
 }>) {
+  const router = useRouter();
   const [currentPage, setCurrentPage] = useState(initialPage);
 
   const {
@@ -111,7 +113,7 @@ export default function TradeTable({
           <div className={"flex-grow"}>
             <Table>
               <TableHeader className={"border-b-2 border-primaryLight"}>
-                <TableRow>
+                <TableRow className={"hover:bg-transparent"}>
                   <TableHead className={"text-center text-primary font-bold"}>
                     Trade Id
                   </TableHead>
@@ -137,10 +139,10 @@ export default function TradeTable({
                     Close Price
                   </TableHead>
                   <TableHead className={"text-right text-primary font-bold"}>
-                    Net Profit
+                    Points
                   </TableHead>
                   <TableHead className={"text-right text-primary font-bold"}>
-                    Points
+                    Net Profit
                   </TableHead>
                 </TableRow>
               </TableHeader>
@@ -149,7 +151,12 @@ export default function TradeTable({
                   return (
                     <TableRow
                       key={item.tradeId + index}
-                      className={"hover:bg-transparent"}
+                      className={"cursor-pointer"}
+                      onClick={() => {
+                        router.push(
+                          `/trades/${item.tradeId}?account=${account?.accountNumber ?? "default"}`,
+                        );
+                      }}
                     >
                       <TableCell className={"text-center"}>
                         {item.tradeId}
@@ -178,10 +185,10 @@ export default function TradeTable({
                         {formatNumberForDisplay(item.closePrice)}
                       </TableCell>
                       <TableCell className={"text-right"}>
-                        $&nbsp;{formatNumberForDisplay(item.netProfit)}
+                        {formatNegativePoints(item.points)}
                       </TableCell>
                       <TableCell className={"text-right"}>
-                        {formatNegativePoints(item.points)}
+                        $&nbsp;{formatNumberForDisplay(item.netProfit)}
                       </TableCell>
                     </TableRow>
                   );

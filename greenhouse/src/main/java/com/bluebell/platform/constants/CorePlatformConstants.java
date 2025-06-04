@@ -254,6 +254,8 @@ public class CorePlatformConstants {
 
             public static final String TRADE_TYPE_CANNOT_BE_NULL = "tradeType cannot be null";
 
+            public static final String TRADE_PLATFORM_CANNOT_BE_NULL = "tradePlatform cannot be null";
+
             public static final String TRADE_ID_CANNOT_BE_NULL = "tradeId cannot be null";
 
             public static final String IMPORT_STREAM_CANNOT_BE_NULL = "import stream cannot be null";

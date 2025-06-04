@@ -14,10 +14,11 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.annotation.Resource;
 import org.apache.commons.collections4.CollectionUtils;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Profile;
-import org.springframework.core.annotation.Order;
+import org.springframework.core.Ordered;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -33,15 +34,17 @@ import java.util.*;
  * Generates testing {@link MarketNews}
  *
  * @author Stephen Prizio
- * @version 0.2.0
+ * @version 0.2.4
  */
 @Component
-@Order(6)
 @Profile("dev")
 @ConditionalOnProperty(name = "bluebell.cmdlr.market.data", havingValue = "true", matchIfMissing = true)
-public class MarketNewsRunner extends AbstractRunner implements CommandLineRunner {
+public class MarketNewsRunner extends AbstractRunner implements CommandLineRunner, Ordered {
 
     final ObjectMapper objectMapper = new ObjectMapper();
+
+    @Value("${bluebell.cmdlr.order.market-news}")
+    private int order;
 
     @Resource(name = "calendarNewsDayEntryTranslator")
     private CalendarNewsDayEntryTranslator calendarNewsDayEntryTranslator;
@@ -94,6 +97,11 @@ public class MarketNewsRunner extends AbstractRunner implements CommandLineRunne
         }
 
         logEnd();
+    }
+
+    @Override
+    public int getOrder() {
+        return this.order;
     }
 
 

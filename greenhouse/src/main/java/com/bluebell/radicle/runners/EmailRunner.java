@@ -12,7 +12,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Profile;
-import org.springframework.core.annotation.Order;
+import org.springframework.core.Ordered;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
@@ -23,14 +23,16 @@ import java.util.Map;
  * Generates an email to notify that the app has started in development mode
  *
  * @author Stephen Prizio
- * @version 0.1.9
+ * @version 0.2.4
  */
 @Slf4j
 @Component
-@Order(9)
 @Profile("dev")
 @ConditionalOnProperty(name = "bluebell.cmdlr.infra.data", havingValue = "true", matchIfMissing = true)
-public class EmailRunner extends AbstractRunner implements CommandLineRunner {
+public class EmailRunner extends AbstractRunner implements CommandLineRunner, Ordered {
+
+    @Value("${bluebell.cmdlr.order.email}")
+    private int order;
 
     @Autowired
     private Dotenv dotenv;
@@ -68,5 +70,10 @@ public class EmailRunner extends AbstractRunner implements CommandLineRunner {
         }
 
         logEnd();
+    }
+
+    @Override
+    public int getOrder() {
+        return this.order;
     }
 }

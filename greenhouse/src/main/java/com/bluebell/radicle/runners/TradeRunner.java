@@ -8,10 +8,11 @@ import com.bluebell.platform.services.MathService;
 import com.bluebell.radicle.repositories.account.AccountRepository;
 import com.bluebell.radicle.repositories.trade.TradeRepository;
 import jakarta.annotation.Resource;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Profile;
-import org.springframework.core.annotation.Order;
+import org.springframework.core.Ordered;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -23,13 +24,15 @@ import java.util.Random;
  * Generates testing {@link Trade}s
  *
  * @author Stephen Prizio
- * @version 0.2.0
+ * @version 0.2.4
  */
 @Component
-@Order(4)
 @Profile("dev")
 @ConditionalOnProperty(name = "bluebell.cmdlr.trade.data", havingValue = "true", matchIfMissing = true)
-public class TradeRunner extends AbstractRunner implements CommandLineRunner {
+public class TradeRunner extends AbstractRunner implements CommandLineRunner, Ordered {
+
+    @Value("${bluebell.cmdlr.order.trade}")
+    private int order;
 
     private final MathService mathService = new MathService();
     private final Random random = new Random();
@@ -66,6 +69,11 @@ public class TradeRunner extends AbstractRunner implements CommandLineRunner {
         this.accountRepository.save(account3.refreshAccount());
 
         logEnd();
+    }
+
+    @Override
+    public int getOrder() {
+        return this.order;
     }
 
 

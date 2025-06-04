@@ -17,6 +17,7 @@ import {
   PagedTrades,
   Portfolio,
   PortfolioRecord,
+  Trade,
   TradeLog,
   TradePlatform,
   TradeRecordControls,
@@ -99,6 +100,18 @@ export const useRecentTradeRecordsQuery = (
         count: count,
       }),
     enabled: isNumeric(id) && !!user,
+  });
+};
+
+export const useTradeQuery = (accId: string, id: string) => {
+  return useQuery<Trade | null>({
+    queryKey: ["trade", id],
+    queryFn: () =>
+      get<Trade>(ApiUrls.Trade.GetTradeForTradeId, {
+        accountNumber: accId,
+        tradeId: id,
+      }),
+    enabled: isNumeric(accId) && Number(accId) > -1,
   });
 };
 

@@ -7,6 +7,7 @@ import com.bluebell.platform.exceptions.calculator.UnexpectedZeroValueException;
 import com.bluebell.platform.exceptions.enums.EnumValueNotFoundException;
 import com.bluebell.platform.exceptions.system.GenericSystemException;
 import com.bluebell.platform.models.api.json.StandardJsonResponse;
+import com.bluebell.radicle.exceptions.account.InvalidAccountNumberException;
 import com.bluebell.radicle.exceptions.system.EntityCreationException;
 import com.bluebell.radicle.exceptions.system.EntityModificationException;
 import com.bluebell.radicle.exceptions.system.NoResultFoundException;
@@ -36,7 +37,7 @@ import java.time.DateTimeException;
  * Handles the exceptions thrown by the application
  *
  * @author Stephen Prizio
- * @version 0.1.6
+ * @version 0.2.4
  */
 @ControllerAdvice
 public class GlobalExceptionHandler {
@@ -60,6 +61,7 @@ public class GlobalExceptionHandler {
             FileExtensionNotSupportedException.class,
             IllegalParameterException.class,
             InvalidEnumException.class,
+            InvalidAccountNumberException.class,
             InvalidApiTokenException.class,
             FileExtensionNotSupportedException.class,
             JsonMissingPropertyException.class,
