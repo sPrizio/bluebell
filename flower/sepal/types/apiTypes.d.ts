@@ -386,6 +386,21 @@ interface CreateUpdateAccountRequest {
   accountCloseTime: string | undefined | null;
 }
 
+interface CreateUpdateTradeRequest {
+  tradeId?: string | undefined | null;
+  tradePlatform: string;
+  product: string;
+  tradeType: string;
+  closePrice?: number | undefined | null;
+  tradeCloseTime: string | undefined | null;
+  tradeOpenTime: string | undefined | null;
+  lotSize: number;
+  netProfit?: number | undefined | null;
+  openPrice: number | undefined | null;
+  stopLoss?: number | undefined | null;
+  takeProfit?: number | undefined | null;
+}
+
 interface PagedJobs {
   page: number;
   pageSize: number;

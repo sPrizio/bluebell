@@ -48,7 +48,7 @@ export default function TradeDetailsLayout({
 
   const pageInfo = {
     title: "Trade Details",
-    subtitle: "View the details for a specific trade",
+    subtitle: `View the details for trade ${params.id}`,
     iconCode: Icons.ReplaceFilled,
     breadcrumbs: [
       { label: "Dashboard", href: "/dashboard", active: false },

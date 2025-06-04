@@ -102,6 +102,11 @@ export const ApiUrls = {
     HealthCheck: getSystemDomain() + "/healthcheck",
   },
   Trade: {
+    CreateTrade:
+      getTradeDomain() + "/create-trade?accountNumber={accountNumber}",
+    UpdateTrade:
+      getTradeDomain() +
+      "/update-trade?accountNumber={accountNumber}&tradeId={tradeId}",
     DeleteTrade:
       getTradeDomain() +
       "/delete-trade?accountNumber={accountNumber}&tradeId={tradeId}",
@@ -175,6 +180,7 @@ export const Css = {
   ColorGraphAccTertiary: "#bda74e",
   ColorWhite: "#FFFFFF",
   FontFamily: "Inter, sans-serif",
+  SelectItemStyles: "hover:bg-primary/5 hover:cursor-pointer",
 };
 
 export function CRUDPortfolioSchema() {
@@ -397,5 +403,73 @@ export function TradeImportSchema() {
     filename: z
       .instanceof(FileList)
       .refine((file) => file?.length == 1, "File is required."),
+  });
+}
+
+export function CRUDTradeSchema() {
+  return z.object({
+    tradeId: z.string().optional(),
+    product: z
+      .string()
+      .min(3, {
+        message: "Please enter a symbol with a minimum of 3 characters.",
+      })
+      .max(25, {
+        message: "Please enter a symbol with at most 25 characters.",
+      }),
+    tradePlatform: z.string(),
+    tradeType: z.enum(safeConvertEnum(["BUY", "SELL"]), {
+      message: "Please select a trade type.",
+    }),
+    tradeOpenTime: z
+      .date({
+        required_error: "A trade open time is required.",
+      })
+      .optional()
+      .nullable(),
+    tradeCloseTime: z.date().nullable().optional(),
+    lotSize: z.coerce
+      .number()
+      .min(0.01, {
+        message: "Please enter a number between 0.01 and 999999999.",
+      })
+      .max(999999999, {
+        message: "Please enter a number between 0.01 and 999999999.",
+      }),
+    openPrice: z.coerce
+      .number()
+      .min(0.01, {
+        message: "Please enter a number between 0.01 and 999999999.",
+      })
+      .max(999999999, {
+        message: "Please enter a number between 0.01 and 999999999.",
+      }),
+    closePrice: z.coerce
+      .number()
+      .max(999999999, {
+        message: "Please enter a number between 0 and 999999999.",
+      })
+      .optional(),
+    netProfit: z.coerce
+      .number()
+      .min(-999999999, {
+        message: "Please enter a number between -999999999 and 999999999.",
+      })
+      .max(999999999, {
+        message: "Please enter a number between -999999999 and 999999999.",
+      })
+      .optional(),
+    stopLoss: z.coerce
+      .number()
+      .max(999999999, {
+        message: "Please enter a number between 0 and 999999999.",
+      })
+      .optional(),
+    takeProfit: z.coerce
+      .number()
+      .max(999999999, {
+        message: "Please enter a number between 0 and 999999999.",
+      })
+      .optional(),
   });
 }
