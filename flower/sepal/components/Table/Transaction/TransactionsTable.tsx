@@ -114,7 +114,9 @@ export default function TransactionsTable({
                       }
                     >
                       {item.transactionType.code === "DEPOSIT" &&
-                        resolveIcon(Icons.Download, "text-foreground", 20)}
+                        resolveIcon(Icons.Download, "text-foreground", 15)}
+                      {item.transactionType.code === "WITHDRAWAL" &&
+                        resolveIcon(Icons.Upload, "text-foreground", 15)}
                     </div>
                   </TableCell>
                   <TableCell className={"text-center"}>
@@ -123,10 +125,10 @@ export default function TransactionsTable({
                   <TableCell>
                     <div className={"flex items-center justify-center"}>
                       {item.transactionStatus.code === "PENDING" && (
-                        <SepalLoader className={"mr-0 !h-5 !w-5"} />
+                        <SepalLoader className={"m-0 !h-5 !w-5"} />
                       )}
                       {item.transactionStatus.code === "IN_PROGRESS" && (
-                        <SepalLoader className={"mr-0 !h-5 !w-5"} />
+                        <SepalLoader className={"m-0 !h-5 !w-5"} />
                       )}
                       {item.transactionStatus.code === "COMPLETED" &&
                         resolveIcon(

@@ -18,7 +18,7 @@ export default function SepalLoader({
     <>
       <svg
         aria-hidden="true"
-        className={`mr-8 h-8 w-8 animate-spin ${fill} ${accent} ${className}`}
+        className={`h-8 w-8 animate-spin ${fill} ${accent} ${className}`}
         viewBox="0 0 100 101"
         fill="none"
         xmlns="http://www.w3.org/2000/svg"
