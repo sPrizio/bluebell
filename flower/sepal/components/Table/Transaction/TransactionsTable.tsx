@@ -101,7 +101,7 @@ export default function TransactionsTable({
                   <TableCell>
                     <div
                       className={
-                        "sm:w-[100px] md:w-[125px] lg:w-[75px] xl:lg:w-[75px] text-nowrap overflow-hidden text-ellipsis"
+                        "sm:w-[150px] md:w-[150px] lg:w-[150px] xl:lg:w-[75px] text-nowrap overflow-hidden text-ellipsis"
                       }
                     >
                       {item.accountName}
