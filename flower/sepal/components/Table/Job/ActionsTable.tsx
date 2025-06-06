@@ -27,7 +27,7 @@ import { Icons } from "@/lib/enums";
  * @param entries job results entries
  * @param actions job actions
  * @author Stephen Prizio
- * @version 0.2.2
+ * @version 0.2.4
  */
 export default function ActionsTable({
   entries,
@@ -79,7 +79,7 @@ export default function ActionsTable({
             <TableHead className={"text-center text-primary font-bold"}>
               Priority
             </TableHead>
-            <TableHead className={"text-center text-primary font-bold"}>
+            <TableHead className={"text-left text-primary font-bold"}>
               Status
             </TableHead>
             <TableHead className={"text-center text-primary font-bold"}>
@@ -99,7 +99,7 @@ export default function ActionsTable({
                   {action?.priority ?? -1}
                 </TableCell>
                 <TableCell className={"text-right"}>
-                  <div className={"flex items-center justify-end"}>
+                  <div className={"flex items-center justify-start"}>
                     {action?.status?.label}&nbsp;&nbsp;&nbsp;
                     <span className={"inline-block text-primary"}>
                       {computeIcon(action?.status?.code ?? "")}
@@ -122,8 +122,7 @@ export default function ActionsTable({
                         <SheetHeader>
                           <SheetTitle>Action Data</SheetTitle>
                           <SheetDescription>
-                            {/*<pre className={"w-full whitespace-pre-wrap"}>*/}
-                            <pre className={"w-full overflow-x-auto"}>
+                            <pre className={"w-full whitespace-pre-wrap"}>
                               {getJobResult(action.priority - 1)?.data ??
                                 "No data to display."}
                             </pre>
@@ -149,8 +148,7 @@ export default function ActionsTable({
                         <SheetHeader>
                           <SheetTitle>Action Logs</SheetTitle>
                           <SheetDescription>
-                            {/*<pre className={"w-full whitespace-pre-wrap"}>*/}
-                            <pre className={"w-full overflow-x-auto"}>
+                            <pre className={"w-full whitespace-pre-wrap"}>
                               {getJobResult(action.priority - 1)?.logs ??
                                 "No logs to display."}
                             </pre>
