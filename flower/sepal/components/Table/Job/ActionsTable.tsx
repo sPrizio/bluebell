@@ -20,6 +20,7 @@ import {
 } from "@/components/ui/sheet";
 import { resolveIcon } from "@/lib/functions/util-component-functions";
 import { Icons } from "@/lib/enums";
+import BaseTableContainer from "@/components/Table/BaseTableContainer";
 
 /**
  * Renders the actions table
@@ -70,99 +71,107 @@ export default function ActionsTable({
 
   return (
     <div>
-      <Table>
-        <TableHeader>
-          <TableRow className={"hover:bg-transparent"}>
-            <TableHead className={"text-left text-primary font-bold"}>
-              Name
-            </TableHead>
-            <TableHead className={"text-center text-primary font-bold"}>
-              Priority
-            </TableHead>
-            <TableHead className={"text-left text-primary font-bold"}>
-              Status
-            </TableHead>
-            <TableHead className={"text-center text-primary font-bold"}>
-              Data
-            </TableHead>
-            <TableHead className={"text-center text-primary font-bold"}>
-              Logs
-            </TableHead>
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          {actions?.map((action) => {
-            return (
-              <TableRow key={action.uid} className={"hover:bg-transparent"}>
-                <TableCell>{action?.name ?? ""}</TableCell>
-                <TableCell className={"text-center"}>
-                  {action?.priority ?? -1}
-                </TableCell>
-                <TableCell className={"text-right"}>
-                  <div className={"flex items-center justify-start"}>
-                    {action?.status?.label}&nbsp;&nbsp;&nbsp;
-                    <span className={"inline-block text-primary"}>
-                      {computeIcon(action?.status?.code ?? "")}
-                    </span>
-                  </div>
-                </TableCell>
-                <TableCell className={"text-center"}>
-                  <div className={"flex items-center justify-center"}>
-                    <Sheet>
-                      <SheetTrigger>
-                        <Button variant={"outline"}>
-                          {resolveIcon(Icons.Database, "text-slate-500", 25)}
-                        </Button>
-                      </SheetTrigger>
-                      <SheetContent
-                        className={
-                          "sm:w-1/2 md:w-1/2 lg:w-[600px] xl:w-[800px]"
-                        }
-                      >
-                        <SheetHeader>
-                          <SheetTitle>Action Data</SheetTitle>
-                          <SheetDescription>
-                            <pre className={"w-full whitespace-pre-wrap"}>
-                              {getJobResult(action.priority - 1)?.data ??
-                                "No data to display."}
-                            </pre>
-                          </SheetDescription>
-                        </SheetHeader>
-                      </SheetContent>
-                    </Sheet>
-                  </div>
-                </TableCell>
-                <TableCell className={"text-center"}>
-                  <div className={"flex items-center justify-center"}>
-                    <Sheet>
-                      <SheetTrigger>
-                        <Button variant={"outline"}>
-                          {resolveIcon(Icons.Logs, "text-slate-500", 25)}
-                        </Button>
-                      </SheetTrigger>
-                      <SheetContent
-                        className={
-                          "sm:w-1/2 md:w-1/2 lg:w-[600px] xl:w-[800px]"
-                        }
-                      >
-                        <SheetHeader>
-                          <SheetTitle>Action Logs</SheetTitle>
-                          <SheetDescription>
-                            <pre className={"w-full whitespace-pre-wrap"}>
-                              {getJobResult(action.priority - 1)?.logs ??
-                                "No logs to display."}
-                            </pre>
-                          </SheetDescription>
-                        </SheetHeader>
-                      </SheetContent>
-                    </Sheet>
-                  </div>
-                </TableCell>
+      <BaseTableContainer
+        table={
+          <Table>
+            <TableHeader>
+              <TableRow className={"hover:bg-transparent"}>
+                <TableHead className={"text-left text-primary font-bold"}>
+                  Name
+                </TableHead>
+                <TableHead className={"text-center text-primary font-bold"}>
+                  Priority
+                </TableHead>
+                <TableHead className={"text-left text-primary font-bold"}>
+                  Status
+                </TableHead>
+                <TableHead className={"text-center text-primary font-bold"}>
+                  Data
+                </TableHead>
+                <TableHead className={"text-center text-primary font-bold"}>
+                  Logs
+                </TableHead>
               </TableRow>
-            );
-          }) ?? null}
-        </TableBody>
-      </Table>
+            </TableHeader>
+            <TableBody>
+              {actions?.map((action) => {
+                return (
+                  <TableRow key={action.uid} className={"hover:bg-transparent"}>
+                    <TableCell>{action?.name ?? ""}</TableCell>
+                    <TableCell className={"text-center"}>
+                      {action?.priority ?? -1}
+                    </TableCell>
+                    <TableCell className={"text-right"}>
+                      <div className={"flex items-center justify-start"}>
+                        {action?.status?.label}&nbsp;&nbsp;&nbsp;
+                        <span className={"inline-block text-primary"}>
+                          {computeIcon(action?.status?.code ?? "")}
+                        </span>
+                      </div>
+                    </TableCell>
+                    <TableCell className={"text-center"}>
+                      <div className={"flex items-center justify-center"}>
+                        <Sheet>
+                          <SheetTrigger>
+                            <Button variant={"outline"}>
+                              {resolveIcon(
+                                Icons.Database,
+                                "text-slate-500",
+                                25,
+                              )}
+                            </Button>
+                          </SheetTrigger>
+                          <SheetContent
+                            className={
+                              "sm:w-1/2 md:w-1/2 lg:w-[600px] xl:w-[800px]"
+                            }
+                          >
+                            <SheetHeader>
+                              <SheetTitle>Action Data</SheetTitle>
+                              <SheetDescription>
+                                <pre className={"w-full whitespace-pre-wrap"}>
+                                  {getJobResult(action.priority - 1)?.data ??
+                                    "No data to display."}
+                                </pre>
+                              </SheetDescription>
+                            </SheetHeader>
+                          </SheetContent>
+                        </Sheet>
+                      </div>
+                    </TableCell>
+                    <TableCell className={"text-center"}>
+                      <div className={"flex items-center justify-center"}>
+                        <Sheet>
+                          <SheetTrigger>
+                            <Button variant={"outline"}>
+                              {resolveIcon(Icons.Logs, "text-slate-500", 25)}
+                            </Button>
+                          </SheetTrigger>
+                          <SheetContent
+                            className={
+                              "sm:w-1/2 md:w-1/2 lg:w-[600px] xl:w-[800px]"
+                            }
+                          >
+                            <SheetHeader>
+                              <SheetTitle>Action Logs</SheetTitle>
+                              <SheetDescription>
+                                <pre className={"w-full whitespace-pre-wrap"}>
+                                  {getJobResult(action.priority - 1)?.logs ??
+                                    "No logs to display."}
+                                </pre>
+                              </SheetDescription>
+                            </SheetHeader>
+                          </SheetContent>
+                        </Sheet>
+                      </div>
+                    </TableCell>
+                  </TableRow>
+                );
+              }) ?? null}
+            </TableBody>
+          </Table>
+        }
+      />
     </div>
   );
 }

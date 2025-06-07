@@ -28,6 +28,7 @@ import {
 import { useRouter } from "next/navigation";
 import { resolveIcon } from "@/lib/functions/util-component-functions";
 import { Icons } from "@/lib/enums";
+import BaseTableContainer from "@/components/Table/BaseTableContainer";
 
 /**
  * Renders the jobs table
@@ -35,7 +36,7 @@ import { Icons } from "@/lib/enums";
  * @param initialPageSize initial page size
  * @param initialPage initial page
  * @author Stephen Prizio
- * @version 0.2.2
+ * @version 0.2.4
  */
 export default function JobsTable({
   filters,
@@ -121,8 +122,9 @@ export default function JobsTable({
         </div>
       )}
       {(pagedJobs?.jobs?.length ?? 0) > 0 && (
-        <div className={"min-h-[450px]"}>
-          <div className={"flex-grow"}>
+        <BaseTableContainer
+          height={500}
+          table={
             <Table>
               <TableHeader className={"border-b-2 border-primaryLight"}>
                 <TableRow className={"hover:bg-transparent"}>
@@ -183,9 +185,9 @@ export default function JobsTable({
                 })}
               </TableBody>
             </Table>
-          </div>
-          <div className={"mt-4"}>
-            {pages === 1 ? null : (
+          }
+          pagination={
+            pages === 1 ? null : (
               <Pagination
                 className={"flex items-center justify-end text-right"}
               >
@@ -237,9 +239,9 @@ export default function JobsTable({
                   ) : null}
                 </PaginationContent>
               </Pagination>
-            )}
-          </div>
-        </div>
+            )
+          }
+        />
       )}
     </div>
   );
