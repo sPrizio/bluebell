@@ -112,7 +112,7 @@ export default function AccountEquityChart({
   //  RENDER
 
   return (
-    <div className={"flex items-center justify-center pb-2"}>
+    <div className={"flex items-center justify-center py-4"}>
       {data && data.length > 1 && (
         <div className={"w-[100%]"} key={showPoints.toString()}>
           <ResponsiveContainer width="100%" minHeight={400}>

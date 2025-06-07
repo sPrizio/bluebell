@@ -18,10 +18,10 @@ import LoadingPage from "@/app/loading";
  * The page that shows the system's job executions
  *
  * @author Stephen Prizio
- * @version 0.2.2
+ * @version 0.2.4
  */
 export default function JobsPage() {
-  const [pageSize, setPageSize] = useState(15);
+  const [pageSize, setPageSize] = useState(10);
   const [hasSubmitted, setHasSubmitted] = useState(false);
 
   const {

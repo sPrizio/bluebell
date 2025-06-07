@@ -55,6 +55,10 @@ export enum Icons {
   AntennaBars3 = "antenna-bars-3",
   AntennaBars4 = "antenna-bars-4",
   AntennaBars5 = "antenna-bars-5",
+  Download = "download",
+  Upload = "upload",
+  ShieldCheckFilled = "shield-check-filled",
+  HexagonLetterXFilled = "hexagon-letter-x-filled",
 }
 
 /**

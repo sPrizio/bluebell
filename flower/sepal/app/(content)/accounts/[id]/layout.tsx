@@ -70,6 +70,10 @@ export default function AccountDetailsLayout({
         active: true,
       },
     ],
+    backCTA: {
+      label: "Return to your accounts",
+      href: "/accounts",
+    },
   };
 
   //  GENERAL FUNCTIONS

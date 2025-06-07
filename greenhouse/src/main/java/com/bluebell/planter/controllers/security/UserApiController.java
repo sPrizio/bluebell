@@ -38,7 +38,7 @@ import java.util.stream.Collectors;
  * API controller for {@link User}
  *
  * @author Stephen Prizio
- * @version 0.2.0
+ * @version 0.2.4
  */
 @RestController
 @RequestMapping("${bluebell.base.api.controller.endpoint}" + ApiPaths.User.BASE)
@@ -296,7 +296,7 @@ public class UserApiController extends AbstractApiController {
         return StandardJsonResponse
                 .<List<TransactionDTO>>builder()
                 .success(true)
-                .data(this.transactionDTOConverter.convertAll(user.getActivePortfolios().stream().map(Portfolio::getActiveAccounts).flatMap(List::stream).map(Account::getTransactions).filter(Objects::nonNull).flatMap(List::stream).filter(Objects::nonNull).sorted(Comparator.comparing(Transaction::getTransactionDate)).limit(5).toList()))
+                .data(this.transactionDTOConverter.convertAll(user.getActivePortfolios().stream().map(Portfolio::getActiveAccounts).flatMap(List::stream).map(Account::getTransactions).filter(Objects::nonNull).flatMap(List::stream).filter(Objects::nonNull).sorted(Comparator.comparing(Transaction::getTransactionDate).reversed()).limit(5).toList()))
                 .build();
     }
 
