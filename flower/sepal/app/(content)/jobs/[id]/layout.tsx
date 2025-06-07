@@ -51,6 +51,10 @@ export default function JobLayout({
         active: true,
       },
     ],
+    backCTA: {
+      label: "View other jobs",
+      href: "/jobs",
+    },
   };
 
   //  RENDER
