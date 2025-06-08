@@ -4,6 +4,7 @@ import AnalysisBarChart from "@/components/Chart/Analysis/AnalysisBarChart";
 import { useWeekdaysAnalysisQuery } from "@/lib/hooks/query/queries";
 import { logErrors } from "@/lib/functions/util-functions";
 import SepalLoader from "@/components/Svg/SepalLoader";
+import AnalysisChartTooltipCard from "@/components/Card/Analysis/AnalysisChartTooltipCard";
 
 /**
  * Renders the weekday analysis content with chart
@@ -47,7 +48,13 @@ export default function WeekdayAnalysis({
           </div>
         </div>
       ) : (
-        <AnalysisBarChart data={data ?? []} filter={filter} />
+        <AnalysisBarChart
+          data={data ?? []}
+          filter={filter}
+          tooltip={
+            <AnalysisChartTooltipCard filter={filter} headerLabel={"Day"} />
+          }
+        />
       )}
     </div>
   );

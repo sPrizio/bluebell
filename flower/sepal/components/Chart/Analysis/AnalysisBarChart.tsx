@@ -27,15 +27,18 @@ import {
  *
  * @param data data
  * @param filter filter
+ * @param tooltip tooltip react component
  * @author Stephen Prizio
- * @version 0.0.2
+ * @version 0.2.4
  */
 export default function AnalysisBarChart({
   data,
   filter = "PROFIT",
+  tooltip,
 }: Readonly<{
   data: Array<AnalysisResult>;
   filter: FilterSelector;
+  tooltip: React.ReactNode;
 }>) {
   //  COMPONENTS
 
@@ -46,41 +49,14 @@ export default function AnalysisBarChart({
    * @param payload data
    * @param label label
    */
-  const tooltip = ({
+  const tooltipRender = ({
     active,
     payload,
     label,
   }: TooltipProps<ValueType, NameType>) => {
-    if (active && (payload?.length ?? -1 > 0)) {
-      return (
-        <BaseCard
-          title={"Overview"}
-          cardContent={
-            <div className={"mb-4 grid grid-cols-2 gap-4 w-[200px]"}>
-              <div>Time </div>
-              <div className={"text-right"}>{payload?.[0].payload.label}</div>
-              <div>Value</div>
-              <div className={"text-right"}>
-                {filter === "PROFIT" && (
-                  <span>
-                    $&nbsp;{formatNumberForDisplay(payload?.[0].payload.value)}
-                  </span>
-                )}
-                {filter === "POINTS" && (
-                  <span>
-                    {formatNegativePoints(payload?.[0].payload.value)}
-                  </span>
-                )}
-                {filter === "PERCENTAGE" && (
-                  <span>{payload?.[0].payload.value}%</span>
-                )}
-              </div>
-              <div>Count</div>
-              <div className={"text-right"}>{payload?.[0].payload.count}</div>
-            </div>
-          }
-        />
-      );
+    if (active && payload && payload.length > 0 && tooltip) {
+      // @ts-expect-error skip type checking for recharts dependency
+      return React.cloneElement(tooltip, { payload });
     }
 
     return null;
@@ -95,7 +71,7 @@ export default function AnalysisBarChart({
           <CartesianGrid strokeDasharray="3 3" vertical={false} />
           <XAxis dataKey="label" />
           <YAxis />
-          <Tooltip content={tooltip} />
+          <Tooltip content={tooltipRender} />
           <ReferenceLine y={0} stroke="#000" />
           <Bar
             dataKey="value"

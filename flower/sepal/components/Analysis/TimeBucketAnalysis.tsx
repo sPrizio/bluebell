@@ -6,6 +6,7 @@ import { FilterSelector } from "@/types/apiTypes";
 import { logErrors } from "@/lib/functions/util-functions";
 import { useTimeBucketsAnalysisQuery } from "@/lib/hooks/query/queries";
 import SepalLoader from "@/components/Svg/SepalLoader";
+import AnalysisChartTooltipCard from "@/components/Card/Analysis/AnalysisChartTooltipCard";
 
 /**
  * Renders the time bucket analysis content with chart
@@ -53,7 +54,13 @@ export default function TimeBucketAnalysis({
           </div>
         </div>
       ) : (
-        <AnalysisBarChart data={data ?? []} filter={filter} />
+        <AnalysisBarChart
+          data={data ?? []}
+          filter={filter}
+          tooltip={
+            <AnalysisChartTooltipCard filter={filter} headerLabel={"Bucket"} />
+          }
+        />
       )}
     </div>
   );

@@ -4,6 +4,7 @@ import AnalysisBarChart from "@/components/Chart/Analysis/AnalysisBarChart";
 import { useTradeDurationAnalysisQuery } from "@/lib/hooks/query/queries";
 import { logErrors } from "@/lib/functions/util-functions";
 import SepalLoader from "@/components/Svg/SepalLoader";
+import AnalysisChartTooltipCard from "@/components/Card/Analysis/AnalysisChartTooltipCard";
 
 /**
  * Renders the trade duration analysis chart
@@ -51,7 +52,16 @@ export default function TradeDurationAnalysis({
           </div>
         </div>
       ) : (
-        <AnalysisBarChart data={data ?? []} filter={filter} />
+        <AnalysisBarChart
+          data={data ?? []}
+          filter={filter}
+          tooltip={
+            <AnalysisChartTooltipCard
+              filter={filter}
+              headerLabel={"Time Elapsed (s)"}
+            />
+          }
+        />
       )}
     </div>
   );

@@ -4,6 +4,7 @@ import AnalysisBarChart from "@/components/Chart/Analysis/AnalysisBarChart";
 import { useWeekdaysTimeBucketsAnalysisQuery } from "@/lib/hooks/query/queries";
 import { logErrors } from "@/lib/functions/util-functions";
 import SepalLoader from "@/components/Svg/SepalLoader";
+import AnalysisChartTooltipCard from "@/components/Card/Analysis/AnalysisChartTooltipCard";
 
 /**
  * Renders the time bucket weekday analysis content with chart
@@ -48,7 +49,13 @@ export default function WeekdayTimeBucketAnalysis({
           </div>
         </div>
       ) : (
-        <AnalysisBarChart data={data ?? []} filter={filter} />
+        <AnalysisBarChart
+          data={data ?? []}
+          filter={filter}
+          tooltip={
+            <AnalysisChartTooltipCard filter={filter} headerLabel={"Bucket"} />
+          }
+        />
       )}
     </div>
   );
