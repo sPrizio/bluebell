@@ -23,22 +23,23 @@ export default function WeekdayTimeBucketAnalysis({
   accountNumber: number;
   filter: FilterSelector;
 }>) {
-  const {
-    data: weekdaysTimeBucketsAnalysisData,
-    isLoading: isWeekdaysTimeBucketsAnalysisLoading,
-    isError: isWeekdaysTimeBucketsAnalysisError,
-  } = useWeekdaysTimeBucketsAnalysisQuery(accountNumber, weekday, filter);
+  const { data, isLoading, isError, error } =
+    useWeekdaysTimeBucketsAnalysisQuery(accountNumber, weekday, filter);
 
   //  RENDER
 
-  if (isWeekdaysTimeBucketsAnalysisError) {
-    logErrors(isWeekdaysTimeBucketsAnalysisError);
-    return <p>Data could not be displayed.</p>;
+  if (isError) {
+    logErrors(error);
+    return (
+      <div className="text-center text-slate-500 my-4 text-sm">
+        No data to display.
+      </div>
+    );
   }
 
   return (
     <div className={"pt-6 pb-4"}>
-      {isWeekdaysTimeBucketsAnalysisLoading ? (
+      {isLoading ? (
         <div className={"h-[100px] flex items-center justify-center"}>
           <div className={"grid grid-cols-1 justify-items-center gap-8"}>
             <div>
@@ -47,10 +48,7 @@ export default function WeekdayTimeBucketAnalysis({
           </div>
         </div>
       ) : (
-        <AnalysisBarChart
-          data={weekdaysTimeBucketsAnalysisData ?? []}
-          filter={filter}
-        />
+        <AnalysisBarChart data={data ?? []} filter={filter} />
       )}
     </div>
   );

@@ -20,22 +20,25 @@ export default function WeekdayAnalysis({
   accountNumber: number;
   filter: FilterSelector;
 }>) {
-  const {
-    data: weekdaysAnalysisData,
-    isLoading: isWeekdaysAnalysisLoading,
-    isError: isWeekdaysAnalysisError,
-  } = useWeekdaysAnalysisQuery(accountNumber, filter);
+  const { data, isLoading, isError, error } = useWeekdaysAnalysisQuery(
+    accountNumber,
+    filter,
+  );
 
   //  RENDER
 
-  if (isWeekdaysAnalysisError) {
-    logErrors(isWeekdaysAnalysisError);
-    return <p>Data could not be displayed.</p>;
+  if (isError) {
+    logErrors(error);
+    return (
+      <div className="text-center text-slate-500 my-4 text-sm">
+        No data to display.
+      </div>
+    );
   }
 
   return (
     <div className={"pt-6 pb-4"}>
-      {isWeekdaysAnalysisLoading ? (
+      {isLoading ? (
         <div className={"h-[100px] flex items-center justify-center"}>
           <div className={"grid grid-cols-1 justify-items-center gap-8"}>
             <div>
@@ -44,7 +47,7 @@ export default function WeekdayAnalysis({
           </div>
         </div>
       ) : (
-        <AnalysisBarChart data={weekdaysAnalysisData ?? []} filter={filter} />
+        <AnalysisBarChart data={data ?? []} filter={filter} />
       )}
     </div>
   );

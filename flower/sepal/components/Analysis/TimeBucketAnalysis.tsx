@@ -35,7 +35,11 @@ export default function TimeBucketAnalysis({
 
   if (isError) {
     logErrors(error);
-    return <p>Data could not be displayed.</p>;
+    return (
+      <div className="text-center text-slate-500 my-4 text-sm">
+        No data to display.
+      </div>
+    );
   }
 
   return (
