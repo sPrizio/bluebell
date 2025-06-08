@@ -16,19 +16,22 @@ import * as React from "react";
  *
  * @param value value
  * @param onChange onChange handler
+ * @param modal is component in a modal
  * @author Stephen Prizio
- * @version 0.2.0
+ * @version 0.2.4
  */
 export default function TradeControlDatePicker({
   value,
   onChange,
+  modal = false,
 }: Readonly<{
   value: Date | undefined;
   onChange: (date: Date | undefined) => void;
+  modal?: boolean;
 }>) {
   //  RENDER
   return (
-    <Popover>
+    <Popover modal={modal}>
       <PopoverTrigger asChild>
         <Button
           variant={"outline"}
@@ -40,7 +43,7 @@ export default function TradeControlDatePicker({
           {value ? format(value, "PPP") : <span>Pick a date</span>}
         </Button>
       </PopoverTrigger>
-      <PopoverContent className="w-auto p-0">
+      <PopoverContent className="z-[9999] w-auto p-0">
         <Calendar
           mode="single"
           selected={value}
