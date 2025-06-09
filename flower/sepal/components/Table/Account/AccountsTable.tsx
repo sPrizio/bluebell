@@ -142,7 +142,7 @@ export default function AccountsTable({
                         <TableCell>
                           <div
                             className={
-                              "sm:w-[100px] md:w-[125px] lg:w-[75px] xl:lg:w-[75px] text-nowrap overflow-hidden text-ellipsis"
+                              "sm:w-[100px] md:w-[125px] lg:w-[75px] xl:lg:w-[75px] truncate"
                             }
                           >
                             {item.name}
