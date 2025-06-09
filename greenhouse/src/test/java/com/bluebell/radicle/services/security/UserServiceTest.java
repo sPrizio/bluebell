@@ -2,11 +2,9 @@ package com.bluebell.radicle.services.security;
 
 import com.bluebell.AbstractGenericTest;
 import com.bluebell.platform.models.api.dto.security.CreateUpdateUserDTO;
-import com.bluebell.platform.models.api.dto.system.CreateUpdatePhoneNumberDTO;
 import com.bluebell.radicle.exceptions.validation.IllegalParameterException;
 import com.bluebell.radicle.exceptions.validation.MissingRequiredDataException;
 import com.bluebell.radicle.repositories.security.UserRepository;
-import com.bluebell.radicle.repositories.system.PhoneNumberRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
@@ -16,8 +14,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import java.util.List;
-
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.mockito.ArgumentMatchers.any;
@@ -26,7 +22,7 @@ import static org.mockito.ArgumentMatchers.any;
  * Testing class for {@link UserService}
  *
  * @author Stephen Prizio
- * @version 0.1.2
+ * @version 0.2.4
  */
 @SpringBootTest
 @RunWith(SpringRunner.class)
@@ -34,9 +30,6 @@ class UserServiceTest extends AbstractGenericTest {
 
     @MockitoBean
     private UserRepository userRepository;
-
-    @MockitoBean
-    private PhoneNumberRepository phoneNumberRepository;
 
     @Autowired
     private UserService userService;
@@ -46,7 +39,6 @@ class UserServiceTest extends AbstractGenericTest {
         Mockito.when(this.userRepository.findUserByEmail("test@email.com")).thenReturn(generateTestUser());
         Mockito.when(this.userRepository.findUserByUsername("test")).thenReturn(generateTestUser());
         Mockito.when(this.userRepository.save(any())).thenReturn(generateTestUser());
-        Mockito.when(this.phoneNumberRepository.save(any())).thenReturn(generateTestPhoneNumber());
     }
 
 
@@ -101,16 +93,6 @@ class UserServiceTest extends AbstractGenericTest {
                 .lastName("Prizio")
                 .firstName("Stephen")
                 .username("s.prizio")
-                .phoneNumbers(
-                        List.of(
-                                CreateUpdatePhoneNumberDTO
-                                        .builder()
-                                        .phoneType("MOBILE")
-                                        .countryCode((short) 1)
-                                        .telephoneNumber(5149411025L)
-                                        .build()
-                        )
-                )
                 .build();
 
         assertThat(this.userService.createUser(data))
@@ -139,16 +121,6 @@ class UserServiceTest extends AbstractGenericTest {
                 .lastName("Prizio")
                 .firstName("Stephen")
                 .username("s.prizio")
-                .phoneNumbers(
-                        List.of(
-                                CreateUpdatePhoneNumberDTO
-                                        .builder()
-                                        .phoneType("MOBILE")
-                                        .countryCode((short) 1)
-                                        .telephoneNumber(5149411025L)
-                                        .build()
-                        )
-                )
                 .build();
 
         assertThat(this.userService.updateUser(generateTestUser(), data))
