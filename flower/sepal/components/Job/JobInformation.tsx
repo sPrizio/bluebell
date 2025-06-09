@@ -40,7 +40,7 @@ export default function JobInformation({
             <TableBody>
               <TableRow className={"hover:bg-transparent"}>
                 <TableCell className={getHeaderColumnStyles()}>Name</TableCell>
-                <TableCell>{job?.name}</TableCell>
+                <TableCell>{job?.displayName}</TableCell>
               </TableRow>
               <TableRow className={"hover:bg-transparent"}>
                 <TableCell className={getHeaderColumnStyles()}>Type</TableCell>

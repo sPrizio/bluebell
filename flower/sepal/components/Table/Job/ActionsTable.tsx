@@ -97,7 +97,7 @@ export default function ActionsTable({
               {actions?.map((action) => {
                 return (
                   <TableRow key={action.uid} className={"hover:bg-transparent"}>
-                    <TableCell>{action?.name ?? ""}</TableCell>
+                    <TableCell>{action?.displayName ?? ""}</TableCell>
                     <TableCell className={"text-center"}>
                       {action?.priority ?? -1}
                     </TableCell>

@@ -32,6 +32,7 @@ import BaseTableContainer from "@/components/Table/BaseTableContainer";
 
 /**
  * Renders the jobs table
+ *
  * @param filters user selection filters
  * @param initialPageSize initial page size
  * @param initialPage initial page
@@ -153,7 +154,9 @@ export default function JobsTable({
                       className={"hover:cursor-pointer"}
                       onClick={() => redirectToJob(job.id)}
                     >
-                      <TableCell className={"text-left"}>{job.name}</TableCell>
+                      <TableCell className={"text-left"}>
+                        {job.displayName}
+                      </TableCell>
                       <TableCell className={"text-left"}>
                         {job.type.label}
                       </TableCell>
