@@ -26,7 +26,7 @@ import java.util.TreeSet;
  * Job that fetches market data from firstratedata
  *
  * @author Stephen Prizio
- * @version 0.1.5
+ * @version 0.2.4
  */
 @Slf4j
 @Component
@@ -70,6 +70,7 @@ public class FetchMarketDataFromFirstRateDataScheduledJob extends AbstractSchedu
                                     .builder()
                                     .priority(count)
                                     .name(String.format("DownloadFirstRateDataAction_%s_%s", set, LocalDateTime.now()))
+                                    .displayName(String.format("Download dataset: %s", set))
                                     .performableAction(actionPerformable)
                                     .build()
                     )
@@ -85,6 +86,7 @@ public class FetchMarketDataFromFirstRateDataScheduledJob extends AbstractSchedu
                                     .builder()
                                     .priority(count + 1)
                                     .name(String.format("ResolveFirstRateDataDownloadedDataAction_%s", LocalDateTime.now()))
+                                    .displayName("Extract and organize retrieved files")
                                     .performableAction(this.resolveFirstRateDataDownloadedDataActionPerformable)
                                     .build()
                     )
@@ -100,6 +102,7 @@ public class FetchMarketDataFromFirstRateDataScheduledJob extends AbstractSchedu
                 .builder()
                 .type(JobType.FETCH_MARKET_DATA_FROM_FIRST_DATA)
                 .name(String.format("DownloadFirstRateDataJob_%s", LocalDateTime.now()))
+                .displayName("Download FirstRateData job")
                 .build();
 
         downloadDataJob = this.jobRepository.save(downloadDataJob);

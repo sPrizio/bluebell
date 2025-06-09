@@ -70,7 +70,7 @@ public class TradeRecordService {
         LocalDate tempEnd = tempStart.plus(tradeRecordTimeInterval.getAmount(), tradeRecordTimeInterval.getUnit());
 
         final List<TradeRecord> records = new ArrayList<>();
-        while (tempStart.isBefore(end) || tempStart.isEqual(end)) {
+        while (tempStart.isBefore(end)) {
             records.add(generateRecord(tempStart, tempEnd, this.tradeService.findAllTradesWithinTimespan(tempStart.atStartOfDay(), tempEnd.atStartOfDay(), account), tradeRecordTimeInterval, count));
 
             tempStart = tempStart.plus(tradeRecordTimeInterval.getAmount(), tradeRecordTimeInterval.getUnit());

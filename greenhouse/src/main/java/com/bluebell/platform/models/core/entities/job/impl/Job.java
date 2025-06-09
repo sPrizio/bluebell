@@ -21,7 +21,7 @@ import java.util.UUID;
  * An entity that performs actions and collects stats and logs about actions performed
  *
  * @author Stephen Prizio
- * @version 0.1.1
+ * @version 0.2.4
  */
 @Slf4j
 @Getter
@@ -41,6 +41,10 @@ public class Job implements GenericJob {
     @Setter
     @Column
     private String name;
+
+    @Setter
+    @Column
+    private String displayName;
 
     @Setter
     @Column
@@ -72,8 +76,9 @@ public class Job implements GenericJob {
     //  CONSTRUCTORS
 
     @Builder
-    private Job(final String name, final JobType type) {
+    private Job(final String name, final String displayName, final JobType type) {
         this.name = name;
+        this.displayName = displayName;
         this.type = type;
     }
 
