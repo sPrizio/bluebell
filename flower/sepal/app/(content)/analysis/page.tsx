@@ -1,6 +1,6 @@
 "use client";
 
-import { selectNewAccount } from "@/lib/functions/util-functions";
+import { logErrors, selectNewAccount } from "@/lib/functions/util-functions";
 import React, { useState } from "react";
 import { Icons } from "@/lib/enums";
 import { BaseCard } from "@/components/Card/BaseCard";
@@ -25,16 +25,19 @@ import { useActiveAccount } from "@/lib/hooks/api/useActiveAccount";
 import { useRouter, useSearchParams } from "next/navigation";
 import ReusableSelect from "@/components/Input/ReusableSelect";
 import { validatePageQueryFlow } from "@/lib/functions/util-component-functions";
+import LoadingPage from "@/app/loading";
+import Error from "@/app/error";
 
 /**
  * The page that shows an analysis of an account's performance
  *
  * @author Stephen Prizio
- * @version 0.2.2
+ * @version 0.2.4
  */
 export default function AnalysisPage() {
   const searchParams = useSearchParams();
   const router = useRouter();
+
   const {
     isLoading,
     isError,
@@ -43,6 +46,7 @@ export default function AnalysisPage() {
     activeAccount,
     hasMismatch,
   } = useActiveAccount();
+
   const [openTbType, setOpenTbType] = useState<FilterSelector>("PROFIT");
   const [closedTbType, setClosedTbType] = useState<FilterSelector>("PROFIT");
   const [wdType, setWdType] = useState<FilterSelector>("PROFIT");
@@ -60,6 +64,16 @@ export default function AnalysisPage() {
   );
 
   const accNumber = activeAccount?.accountNumber ?? -1;
+
+  if (isLoading) {
+    return <LoadingPage />;
+  }
+
+  if (hasMismatch || isError) {
+    logErrors(error);
+    return <Error />;
+  }
+
   const pageInfo = {
     title: "Analysis",
     subtitle: `A more in-depth look at ${activeAccount?.name ?? ""}'s performance.`,

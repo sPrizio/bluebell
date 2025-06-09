@@ -195,7 +195,7 @@ public class PortfolioRecordService {
                                 .build())
                         .toList());
 
-        if (CollectionUtils.isEmpty(pointsToMerge)) {
+        if (CollectionUtils.isEmpty(pointsToMerge) || CollectionUtils.isEmpty(computedPoints)) {
             return computedPoints;
         }
 

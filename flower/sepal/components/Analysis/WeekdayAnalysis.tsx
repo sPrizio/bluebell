@@ -4,6 +4,7 @@ import AnalysisBarChart from "@/components/Chart/Analysis/AnalysisBarChart";
 import { useWeekdaysAnalysisQuery } from "@/lib/hooks/query/queries";
 import { logErrors } from "@/lib/functions/util-functions";
 import SepalLoader from "@/components/Svg/SepalLoader";
+import AnalysisChartTooltipCard from "@/components/Card/Analysis/AnalysisChartTooltipCard";
 
 /**
  * Renders the weekday analysis content with chart
@@ -11,7 +12,7 @@ import SepalLoader from "@/components/Svg/SepalLoader";
  * @param accountNumber account number
  * @param filter filter
  * @author Stephen Prizio
- * @version 0.2.2
+ * @version 0.2.4
  */
 export default function WeekdayAnalysis({
   accountNumber,
@@ -20,22 +21,25 @@ export default function WeekdayAnalysis({
   accountNumber: number;
   filter: FilterSelector;
 }>) {
-  const {
-    data: weekdaysAnalysisData,
-    isLoading: isWeekdaysAnalysisLoading,
-    isError: isWeekdaysAnalysisError,
-  } = useWeekdaysAnalysisQuery(accountNumber, filter);
+  const { data, isLoading, isError, error } = useWeekdaysAnalysisQuery(
+    accountNumber,
+    filter,
+  );
 
   //  RENDER
 
-  if (isWeekdaysAnalysisError) {
-    logErrors(isWeekdaysAnalysisError);
-    return <p>Data could not be displayed.</p>;
+  if (isError) {
+    logErrors(error);
+    return (
+      <div className="text-center text-slate-500 my-4 text-sm">
+        No data to display.
+      </div>
+    );
   }
 
   return (
-    <div className={""}>
-      {isWeekdaysAnalysisLoading ? (
+    <div className={"pt-6 pb-4"}>
+      {isLoading ? (
         <div className={"h-[100px] flex items-center justify-center"}>
           <div className={"grid grid-cols-1 justify-items-center gap-8"}>
             <div>
@@ -44,7 +48,13 @@ export default function WeekdayAnalysis({
           </div>
         </div>
       ) : (
-        <AnalysisBarChart data={weekdaysAnalysisData ?? []} filter={filter} />
+        <AnalysisBarChart
+          data={data ?? []}
+          filter={filter}
+          tooltip={
+            <AnalysisChartTooltipCard filter={filter} headerLabel={"Day"} />
+          }
+        />
       )}
     </div>
   );

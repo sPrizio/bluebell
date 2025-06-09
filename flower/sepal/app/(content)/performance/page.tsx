@@ -20,7 +20,7 @@ import { DateTime } from "@/lib/constants";
  * The page that shows an account's performance over time
  *
  * @author Stephen Prizio
- * @version 0.2.2
+ * @version 0.2.4
  */
 export default function PerformancePage() {
   const searchParams = useSearchParams();
@@ -140,14 +140,13 @@ export default function PerformancePage() {
             </div>
             <div>
               <PerformanceDrawer
-                userSelection={userSelection}
-                onChange={setUserSelection}
-                onSubmit={() => {
-                  setSubmittedFilters(userSelection);
+                userSelection={submittedFilters}
+                onSubmit={(newSelection) => {
+                  setUserSelection(newSelection);
+                  setSubmittedFilters(newSelection);
                   setHasSubmitted(true);
                 }}
                 onCancel={() => {
-                  setUserSelection(submittedFilters);
                   setHasSubmitted(false);
                 }}
                 tradeRecordControls={tradeRecordControls}

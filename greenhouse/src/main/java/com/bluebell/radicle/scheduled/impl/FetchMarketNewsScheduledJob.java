@@ -21,7 +21,7 @@ import java.time.LocalDateTime;
  * Fetches {@link MarketNews} periodically every Sunday night at 11pm Eastern
  *
  * @author Stephen Prizio
- * @version 0.1.5
+ * @version 0.2.4
  */
 @Slf4j
 @Component
@@ -50,6 +50,7 @@ public class FetchMarketNewsScheduledJob extends AbstractScheduledJob implements
                 .builder()
                 .priority(1)
                 .name("FetchMarketNewsAction_" + LocalDateTime.now())
+                .displayName("Fetch market news")
                 .performableAction(this.fetchMarketNewsActionPerformable)
                 .build();
 
@@ -59,6 +60,7 @@ public class FetchMarketNewsScheduledJob extends AbstractScheduledJob implements
                 .builder()
                 .type(JobType.FETCH_MARKET_NEWS)
                 .name("FetchMarketNewsJob_" + LocalDateTime.now())
+                .displayName("Fetch market news job")
                 .build();
 
         fetchMarketNewsJob = this.jobRepository.save(fetchMarketNewsJob);

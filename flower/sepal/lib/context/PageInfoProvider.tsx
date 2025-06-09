@@ -9,6 +9,10 @@ type PageInfo = {
   subtitle: string;
   iconCode: Icons;
   breadcrumbs: Array<{ label: string; href: string; active: boolean }>;
+  backCTA?: {
+    label: string;
+    href: string;
+  };
 };
 
 const PageInfoContext = createContext<PageInfo | null>(null);
@@ -20,6 +24,14 @@ export function usePageInfo() {
   return context;
 }
 
+/**
+ * Provider for page information
+ *
+ * @param children content
+ * @param value page attributes
+ * @author Stephen Prizio
+ * @version 0.2.4
+ */
 export function PageInfoProvider({
   children,
   value,
@@ -34,6 +46,7 @@ export function PageInfoProvider({
         subtitle={value.subtitle}
         iconCode={value.iconCode}
         breadcrumbs={value.breadcrumbs}
+        backCTA={value.backCTA}
       />
       {children}
     </PageInfoContext.Provider>

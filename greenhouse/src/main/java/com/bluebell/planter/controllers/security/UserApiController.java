@@ -263,7 +263,7 @@ public class UserApiController extends AbstractApiController {
         return StandardJsonResponse
                 .<List<TransactionDTO>>builder()
                 .success(true)
-                .data(this.transactionDTOConverter.convertAll(user.getActivePortfolios().stream().map(Portfolio::getActiveAccounts).flatMap(List::stream).map(Account::getTransactions).filter(Objects::nonNull).flatMap(List::stream).filter(Objects::nonNull).sorted(Comparator.comparing(Transaction::getTransactionDate)).limit(5).toList()))
+                .data(this.transactionDTOConverter.convertAll(user.getActivePortfolios().stream().map(Portfolio::getActiveAccounts).flatMap(List::stream).map(Account::getTransactions).filter(Objects::nonNull).flatMap(List::stream).filter(Objects::nonNull).sorted(Comparator.comparing(Transaction::getTransactionDate).reversed()).limit(5).toList()))
                 .build();
     }
 

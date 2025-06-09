@@ -21,7 +21,7 @@ import java.time.LocalDateTime;
  * Job that runs once per week to clean up any stale {@link Job}s
  *
  * @author Stephen Prizio
- * @version 0.1.8
+ * @version 0.2.4
  */
 @Slf4j
 @Component
@@ -53,6 +53,7 @@ public class CleanupJobsScheduledJob extends AbstractScheduledJob implements Gen
                 .builder()
                 .priority(1)
                 .name(String.format("CleanupInProgressJobsAction_%s", LocalDateTime.now()))
+                .displayName("Cleanup jobs in progress")
                 .performableAction(this.removeStaleJobsInProgressActionPerformable)
                 .build();
 
@@ -62,6 +63,7 @@ public class CleanupJobsScheduledJob extends AbstractScheduledJob implements Gen
                 .builder()
                 .priority(2)
                 .name(String.format("CleanupOldJobsAction_%s", LocalDateTime.now()))
+                .displayName("Cleanup old/stale jobs")
                 .performableAction(this.removeOldJobsActionPerformable)
                 .build();
 
@@ -71,6 +73,7 @@ public class CleanupJobsScheduledJob extends AbstractScheduledJob implements Gen
                 .builder()
                 .type(JobType.CLEANUP_STALE_JOBS)
                 .name(String.format("CleanupStaleJobsJob_%s", LocalDateTime.now()))
+                .displayName("Cleanup stale jobs")
                 .build();
 
         cleanupJobs = this.jobRepository.save(cleanupJobs);

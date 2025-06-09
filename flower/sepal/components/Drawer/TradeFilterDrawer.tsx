@@ -38,7 +38,7 @@ type Props = {
  * @param onCancel on cancel of filters
  * @param symbols symbol filters
  * @author Stephen Prizio
- * @version 0.2.2
+ * @version 0.2.4
  */
 export default function TradeFilterDrawer({
   userSelection,
@@ -66,6 +66,7 @@ export default function TradeFilterDrawer({
               <Label>Start</Label>
               <TradeControlDatePicker
                 value={userSelection.start}
+                modal={true}
                 onChange={(val) =>
                   onChange({ ...userSelection, start: val ?? new Date() })
                 }
@@ -75,6 +76,7 @@ export default function TradeFilterDrawer({
               <Label>End</Label>
               <TradeControlDatePicker
                 value={userSelection.end}
+                modal={true}
                 onChange={(val) =>
                   onChange({ ...userSelection, end: val ?? new Date() })
                 }
@@ -147,9 +149,11 @@ export default function TradeFilterDrawer({
             </div>
           </div>
           <DrawerFooter className={""}>
-            <Button variant={"primary"} onClick={onSubmit}>
-              Apply
-            </Button>
+            <DrawerClose asChild>
+              <Button variant={"primary"} onClick={onSubmit}>
+                Apply
+              </Button>
+            </DrawerClose>
             <DrawerClose asChild>
               <Button variant="outline" onClick={onCancel}>
                 Cancel
