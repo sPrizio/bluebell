@@ -167,15 +167,20 @@ public class TradeRecordService {
 
         if (CollectionUtils.isNotEmpty(accounts)) {
             final List<TradeLogEntryRecord> records = new ArrayList<>();
-            accounts.forEach(acc -> records.add(
-                    TradeLogEntryRecord
-                            .builder()
-                            .account(acc)
-                            .accountNumber(acc.getAccountNumber())
-                            .accountName(acc.getName())
-                            .report(getTradeRecords(start, end, acc, tradeRecordTimeInterval, count))
-                            .build()
-            ));
+            accounts.forEach(acc -> {
+                final TradeRecordReport recordReport = getTradeRecords(start, end, acc, tradeRecordTimeInterval, count);
+                if (recordReport != null && CollectionUtils.isNotEmpty(recordReport.getTradeRecords())) {
+                    records.add(
+                            TradeLogEntryRecord
+                                    .builder()
+                                    .account(acc)
+                                    .accountNumber(acc.getAccountNumber())
+                                    .accountName(acc.getName())
+                                    .report(recordReport)
+                                    .build()
+                    );
+                }
+            });
 
             if (CollectionUtils.isNotEmpty(records)) {
                 final int trades = records.stream().mapToInt(tr -> tr.report().tradeRecordTotals().trades()).sum();
