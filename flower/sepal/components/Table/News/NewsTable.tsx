@@ -140,12 +140,16 @@ export default function NewsTable({
                   ${headerBackground(news.active)}`}
                   >
                     <TableCell
-                      className={"font-semibold rounded-l-2xl"}
+                      className={"font-semibold rounded-l-xl"}
                       colSpan={6}
                     >
-                      {moment(news.date).format(
-                        DateTime.ISOLongMonthDayYearFormat,
-                      )}
+                      {
+                        <span className={"ml-2"}>
+                          {moment(news.date).format(
+                            DateTime.ISOLongMonthDayYearFormat,
+                          )}
+                        </span>
+                      }
                       {news.active && (
                         <>
                           <span className={"ml-2"}>-</span>
@@ -153,7 +157,7 @@ export default function NewsTable({
                         </>
                       )}
                     </TableCell>
-                    <TableCell className={"text-right rounded-r-2xl"}>
+                    <TableCell className={"text-right rounded-r-xl"}>
                       <div
                         className={
                           "flex items-center justify-end w-full font-semibold"
@@ -196,7 +200,12 @@ export default function NewsTable({
                             return (
                               <TableRow
                                 key={slot.uid + news.date + slot.time + index}
-                                className={"hover:bg-transparent border-0 "}
+                                className={
+                                  "hover:bg-transparent border-0" +
+                                  (slot.active
+                                    ? " text-primary font-bold "
+                                    : "")
+                                }
                               >
                                 <TableCell />
                                 {index === 0 ? (
