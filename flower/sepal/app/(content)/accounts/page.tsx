@@ -120,26 +120,6 @@ export default function AccountsPage() {
         <div className={"flex gap-8 w-full items-end justify-end"}>
           <div className={"w-1/2 flex items-end justify-end gap-8"}>
             <div className={""}>
-              <BaseModal
-                title={"Add a new Trading Account"}
-                description={
-                  "Adding a new Account will include it as part of your portfolio. If you do not wish to track your Account in your portfolio, mark it as inactive. These settings can be changed at anytime from the Account page."
-                }
-                trigger={
-                  <Button className="w-full text-white">
-                    {resolveIcon(Icons.CirclePlus)}
-                    &nbsp;Add a new account
-                  </Button>
-                }
-                content={
-                  <AccountForm
-                    portfolioNumber={selectedPortfolioId ?? -1}
-                    mode={"create"}
-                  />
-                }
-              />
-            </div>
-            <div className={""}>
               <ReusableSelect
                 title={"Portfolio"}
                 initialValue={selectedPortfolioId?.toString()}
@@ -151,6 +131,26 @@ export default function AccountsPage() {
                 handler={(val: string) => {
                   setSelectedPortfolioId(parseInt(val));
                 }}
+              />
+            </div>
+            <div className={""}>
+              <BaseModal
+                title={"Add a new Trading Account"}
+                description={
+                  "Adding a new Account will include it as part of your portfolio. If you do not wish to track your Account in your portfolio, mark it as inactive. These settings can be changed at anytime from the Account page."
+                }
+                trigger={
+                  <Button className="w-full text-white">
+                    {resolveIcon(Icons.CirclePlus)}
+                    &nbsp;New Account
+                  </Button>
+                }
+                content={
+                  <AccountForm
+                    portfolioNumber={selectedPortfolioId ?? -1}
+                    mode={"create"}
+                  />
+                }
               />
             </div>
           </div>

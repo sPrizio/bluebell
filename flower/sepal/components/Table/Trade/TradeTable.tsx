@@ -30,6 +30,7 @@ import { usePagedTradesQuery } from "@/lib/hooks/query/queries";
 import Error from "@/app/error";
 import { UserTradeControlSelection } from "@/types/uiTypes";
 import LoadingPage from "@/app/loading";
+import BaseTableContainer from "@/components/Table/BaseTableContainer";
 
 /**
  * Renders a table of trades
@@ -39,7 +40,7 @@ import LoadingPage from "@/app/loading";
  * @param initialPageSize initial page size
  * @param initialPage initial page
  * @author Stephen Prizio
- * @version 0.2.1
+ * @version 0.2.4
  */
 export default function TradeTable({
   account,
@@ -107,8 +108,9 @@ export default function TradeTable({
         </div>
       )}
       {(pagedTrades?.trades?.length ?? 0) > 0 && (
-        <div className={"min-h-[450px]"}>
-          <div className={"flex-grow"}>
+        <BaseTableContainer
+          height={500}
+          table={
             <Table>
               <TableHeader className={"border-b-2 border-primaryLight"}>
                 <TableRow>
@@ -188,57 +190,63 @@ export default function TradeTable({
                 })}
               </TableBody>
             </Table>
-          </div>
-          <div className={"mt-4"}>
-            <Pagination className={"flex items-center justify-end text-right"}>
-              <PaginationContent>
-                {currentPage > 0 ? (
-                  <PaginationItem
-                    onClick={(e) => handleClick(e, currentPage - 1)}
-                  >
-                    <PaginationPrevious href="#" />
-                  </PaginationItem>
-                ) : null}
-                {currentPage > 1 ? (
+          }
+          pagination={
+            pages === 1 ? null : (
+              <Pagination
+                className={"flex items-center justify-end text-right"}
+              >
+                <PaginationContent>
+                  {currentPage > 0 ? (
+                    <PaginationItem
+                      onClick={(e) => handleClick(e, currentPage - 1)}
+                    >
+                      <PaginationPrevious href="#" />
+                    </PaginationItem>
+                  ) : null}
+                  {currentPage > 1 ? (
+                    <PaginationItem>
+                      <PaginationEllipsis />
+                    </PaginationItem>
+                  ) : null}
+                  {currentPage > 0 ? (
+                    <PaginationItem
+                      onClick={(e) => handleClick(e, currentPage - 1)}
+                    >
+                      <PaginationLink href="#">{currentPage}</PaginationLink>
+                    </PaginationItem>
+                  ) : null}
                   <PaginationItem>
-                    <PaginationEllipsis />
+                    <PaginationLink href="#" isActive>
+                      {currentPage + 1}
+                    </PaginationLink>
                   </PaginationItem>
-                ) : null}
-                {currentPage > 0 ? (
-                  <PaginationItem
-                    onClick={(e) => handleClick(e, currentPage - 1)}
-                  >
-                    <PaginationLink href="#">{currentPage}</PaginationLink>
-                  </PaginationItem>
-                ) : null}
-                <PaginationItem>
-                  <PaginationLink href="#" isActive>
-                    {currentPage + 1}
-                  </PaginationLink>
-                </PaginationItem>
-                {currentPage + 1 < pages ? (
-                  <PaginationItem
-                    onClick={(e) => handleClick(e, currentPage + 1)}
-                  >
-                    <PaginationLink href="#">{currentPage + 2}</PaginationLink>
-                  </PaginationItem>
-                ) : null}
-                {currentPage + 1 < pages - 1 ? (
-                  <PaginationItem>
-                    <PaginationEllipsis />
-                  </PaginationItem>
-                ) : null}
-                {currentPage + 1 < pages ? (
-                  <PaginationItem
-                    onClick={(e) => handleClick(e, currentPage + 1)}
-                  >
-                    <PaginationNext href="#" />
-                  </PaginationItem>
-                ) : null}
-              </PaginationContent>
-            </Pagination>
-          </div>
-        </div>
+                  {currentPage + 1 < pages ? (
+                    <PaginationItem
+                      onClick={(e) => handleClick(e, currentPage + 1)}
+                    >
+                      <PaginationLink href="#">
+                        {currentPage + 2}
+                      </PaginationLink>
+                    </PaginationItem>
+                  ) : null}
+                  {currentPage + 1 < pages - 1 ? (
+                    <PaginationItem>
+                      <PaginationEllipsis />
+                    </PaginationItem>
+                  ) : null}
+                  {currentPage + 1 < pages ? (
+                    <PaginationItem
+                      onClick={(e) => handleClick(e, currentPage + 1)}
+                    >
+                      <PaginationNext href="#" />
+                    </PaginationItem>
+                  ) : null}
+                </PaginationContent>
+              </Pagination>
+            )
+          }
+        />
       )}
     </div>
   );

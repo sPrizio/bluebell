@@ -27,7 +27,7 @@ import java.util.TreeSet;
  * Pings all middleware services for their statuses. Reports errors
  *
  * @author Stephen Prizio
- * @version 0.1.6
+ * @version 0.2.4
  */
 @Slf4j
 @Component
@@ -64,6 +64,7 @@ public class PingMiddlewareScheduledJob extends AbstractScheduledJob implements 
                                     .builder()
                                     .priority(count)
                                     .name(String.format("PingMiddlewareAction_%s_%s", middleware.getCode(), LocalDateTime.now()))
+                                    .displayName(String.format("Ping %s middleware",  middleware.getLabel()))
                                     .performableAction(actionPerformable)
                                     .build()
                     )
@@ -76,6 +77,7 @@ public class PingMiddlewareScheduledJob extends AbstractScheduledJob implements 
                 .builder()
                 .type(JobType.PING_MIDDLEWARE)
                 .name(String.format("PingMiddlewareJob_%s", LocalTime.now()))
+                .displayName("Ping middleware job")
                 .build();
 
         pingMiddlewareJob = this.jobRepository.save(pingMiddlewareJob);

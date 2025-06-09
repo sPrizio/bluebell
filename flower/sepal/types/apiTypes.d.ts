@@ -323,6 +323,7 @@ interface Action extends GenericApiType {
   actionId: string;
   priority: number;
   name: string;
+  displayName: string;
   status: EnumDisplay;
   performableAction: string;
 }
@@ -342,6 +343,7 @@ interface Job extends GenericApiType {
   jobId: string;
   id: number;
   name: string;
+  displayName: string;
   executionTime: string;
   completionTime: string;
   status: EnumDisplay;

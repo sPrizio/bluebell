@@ -30,7 +30,7 @@ import java.util.TreeSet;
  * Ingest {@link MarketPrice}s from the ingress
  *
  * @author Stephen Prizio
- * @version 0.1.5
+ * @version 0.2.4
  */
 @Slf4j
 @Component
@@ -75,7 +75,8 @@ public class IngestMarketDataScheduledJob extends AbstractScheduledJob implement
                                         Action
                                                 .builder()
                                                 .priority(count)
-                                                .name(String.format("IngestMarketDataAction_%s_%s_%s", dataSource.getDataRoot(), symbol.getName(), LocalDateTime.now()))
+                                                .name(String.format("IngestMarketDataAction_%s_%s_%s", dataSource.getCode(), symbol.getName(), LocalDateTime.now()))
+                                                .displayName(String.format("Ingest %s data from %s", symbol.getName(), dataSource.getLabel()))
                                                 .performableAction(actionPerformable)
                                                 .build()
                                 )
@@ -96,6 +97,7 @@ public class IngestMarketDataScheduledJob extends AbstractScheduledJob implement
                 .builder()
                 .type(JobType.INGEST_MARKET_DATA)
                 .name(String.format("IngestMarketDataJob_%s", LocalDateTime.now()))
+                .displayName("Ingest market data job")
                 .build();
 
         ingestMarketDataJob = this.jobRepository.save(ingestMarketDataJob);

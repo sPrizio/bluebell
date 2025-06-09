@@ -14,7 +14,7 @@ import org.apache.commons.lang3.StringUtils;
  * DTO representation of {@link Action}
  *
  * @author Stephen Prizio
- * @version 0.2.1
+ * @version 0.2.4
  */
 @Getter
 @Setter
@@ -33,6 +33,9 @@ public class ActionDTO implements GenericDTO, Comparable<ActionDTO> {
 
     @Schema(description = "Action name")
     private String name;
+
+    @Schema(description = "Action display/pretty Name")
+    private String displayName;
 
     @Schema(description = "Action status")
     private EnumDisplay status;

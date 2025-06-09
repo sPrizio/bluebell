@@ -1,3 +1,4 @@
+import React, { useEffect, useState } from "react";
 import {
   Drawer,
   DrawerClose,
@@ -19,14 +20,12 @@ import {
 } from "@/components/ui/select";
 import { AggregateInterval } from "@/lib/enums";
 import { capitalize } from "@/lib/functions/util-functions";
-import React from "react";
 import { UserTradeRecordControlSelection } from "@/types/uiTypes";
 import { TradeRecordControlsYearEntry } from "@/types/apiTypes";
 
 type Props = {
   userSelection: UserTradeRecordControlSelection;
-  onChange: (newSelection: UserTradeRecordControlSelection) => void;
-  onSubmit: () => void;
+  onSubmit: (newSelection: UserTradeRecordControlSelection) => void;
   onCancel: () => void;
   tradeRecordControls:
     | { yearEntries: TradeRecordControlsYearEntry[] }
@@ -37,26 +36,28 @@ type Props = {
  * Component that allows a user to filter trade record performances by various filters
  *
  * @param userSelection user's selection
- * @param onChange what to do on changing of a value
  * @param onSubmit submit handler
  * @param onCancel cancel handler
  * @param tradeRecordControls control filter
  * @author Stephen Prizio
- * @version 0.2.0
+ * @version 0.2.4
  */
 export default function PerformanceDrawer({
   userSelection,
-  onChange,
   onSubmit,
   onCancel,
   tradeRecordControls,
 }: Readonly<Props>) {
+  const [localSelection, setLocalSelection] = useState(userSelection);
+
+  useEffect(() => {
+    setLocalSelection(userSelection);
+  }, [userSelection]);
+
   const matchingYear =
     tradeRecordControls?.yearEntries.find(
-      (ye) => ye.year === userSelection.year,
+      (ye) => ye.year === localSelection.year,
     ) ?? null;
-
-  //  RENDER
 
   return (
     <Drawer>
@@ -75,16 +76,16 @@ export default function PerformanceDrawer({
             <div>
               <Label>Interval</Label>
               <Select
-                value={userSelection.aggInterval.code}
+                value={localSelection.aggInterval.code}
                 onValueChange={(val) =>
-                  onChange({
-                    ...userSelection,
+                  setLocalSelection((prev) => ({
+                    ...prev,
                     aggInterval: AggregateInterval.get(val),
-                  })
+                  }))
                 }
               >
                 <SelectTrigger className="bg-white">
-                  <SelectValue placeholder="Account" />
+                  <SelectValue placeholder="Interval" />
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value={AggregateInterval.DAILY.code}>
@@ -102,70 +103,71 @@ export default function PerformanceDrawer({
             <div>
               <Label>Month</Label>
               <Select
-                value={userSelection.month}
+                value={localSelection.month}
                 disabled={
-                  userSelection.aggInterval.code !==
+                  localSelection.aggInterval.code !==
                   AggregateInterval.DAILY.code
                 }
                 onValueChange={(val) =>
-                  onChange({
-                    ...userSelection,
+                  setLocalSelection((prev) => ({
+                    ...prev,
                     month: val,
-                  })
+                  }))
                 }
               >
                 <SelectTrigger className="bg-white">
-                  <SelectValue placeholder="Account" />
+                  <SelectValue placeholder="Month" />
                 </SelectTrigger>
                 <SelectContent>
-                  {matchingYear?.monthEntries.map((item, idx) => {
-                    return (
-                      <SelectItem
-                        key={item.uid + "my" + (idx + 1)}
-                        value={item.month}
-                        disabled={item.value === 0}
-                      >
-                        {capitalize(item.month)}
-                      </SelectItem>
-                    );
-                  }) ?? <SelectItem value={"NA"}>N/A</SelectItem>}
+                  {matchingYear?.monthEntries.map((item, idx) => (
+                    <SelectItem
+                      key={item.uid + "my" + (idx + 1)}
+                      value={item.month}
+                      disabled={item.value === 0}
+                    >
+                      {capitalize(item.month)}
+                    </SelectItem>
+                  )) ?? <SelectItem value={"NA"}>N/A</SelectItem>}
                 </SelectContent>
               </Select>
             </div>
             <div>
               <Label>Year</Label>
               <Select
-                value={userSelection.year}
+                value={localSelection.year}
                 onValueChange={(val) =>
-                  onChange({
-                    ...userSelection,
+                  setLocalSelection((prev) => ({
+                    ...prev,
                     year: val,
-                  })
+                  }))
                 }
               >
                 <SelectTrigger className="bg-white">
-                  <SelectValue placeholder="Account" />
+                  <SelectValue placeholder="Year" />
                 </SelectTrigger>
                 <SelectContent>
-                  {tradeRecordControls?.yearEntries?.map((item, idx) => {
-                    return (
-                      <SelectItem
-                        key={item.uid + "ye" + (idx + 1)}
-                        value={item.year}
-                        disabled={item.monthEntries.length === 0}
-                      >
-                        {item.year}
-                      </SelectItem>
-                    );
-                  }) ?? <SelectItem value={"NA"}>N/A</SelectItem>}
+                  {tradeRecordControls?.yearEntries?.map((item, idx) => (
+                    <SelectItem
+                      key={item.uid + "ye" + (idx + 1)}
+                      value={item.year}
+                      disabled={item.monthEntries.length === 0}
+                    >
+                      {item.year}
+                    </SelectItem>
+                  )) ?? <SelectItem value={"NA"}>N/A</SelectItem>}
                 </SelectContent>
               </Select>
             </div>
           </div>
-          <DrawerFooter className={""}>
-            <Button variant={"primary"} onClick={onSubmit}>
-              Apply
-            </Button>
+          <DrawerFooter>
+            <DrawerClose asChild>
+              <Button
+                variant="primary"
+                onClick={() => onSubmit(localSelection)}
+              >
+                Apply
+              </Button>
+            </DrawerClose>
             <DrawerClose asChild>
               <Button variant="outline" onClick={onCancel}>
                 Cancel

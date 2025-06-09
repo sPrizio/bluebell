@@ -17,7 +17,7 @@ import java.util.UUID;
  * Represents something that a job does or performs
  *
  * @author Stephen Prizio
- * @version 0.1.2
+ * @version 0.2.4
  */
 @Slf4j
 @Getter
@@ -47,6 +47,10 @@ public class Action implements GenericAction, Comparable<Action> {
 
     @Setter
     @Column
+    private String displayName;
+
+    @Setter
+    @Column
     private ActionStatus status = ActionStatus.NOT_STARTED;
 
     @Setter
@@ -61,9 +65,10 @@ public class Action implements GenericAction, Comparable<Action> {
     //  CONSTRUCTORS
 
     @Builder
-    private Action(final int priority, final String name, final Job job, final ActionPerformable performableAction) {
+    private Action(final int priority, final String name, final String displayName, final Job job, final ActionPerformable performableAction) {
         this.priority = priority;
         this.name = name;
+        this.displayName = displayName;
         this.job = job;
         this.performableAction = performableAction;
     }

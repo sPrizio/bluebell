@@ -32,7 +32,7 @@ import java.util.Random;
  * Generates testing {@link Job}s
  *
  * @author Stephen Prizio
- * @version 0.2.1
+ * @version 0.2.4
  */
 @Component
 @Order(7)
@@ -69,8 +69,11 @@ public class JobRunner extends AbstractRunner implements CommandLineRunner {
 
         final int jobCount = this.random.nextInt(15) + 1;
         for (int i = 0; i < jobCount; i++) {
+            final String randomJobName = getRandomName("Job");
+
             Job job = new Job();
-            job.setName(getRandomName("Job"));
+            job.setName(randomJobName);
+            job.setDisplayName(randomJobName);
             final LocalDateTime start = LocalDateTime.now().minusDays(this.random.nextInt(50)).minusSeconds(this.random.nextInt(500));
             job.setExecutionTime(start);
             job.setCompletionTime(start.plusMinutes(this.random.nextInt(10000) + 1L));
@@ -84,10 +87,12 @@ public class JobRunner extends AbstractRunner implements CommandLineRunner {
             final int actionCount = this.random.nextInt(5) + 1;
             final List<JobResultEntry> entries = new ArrayList<>();
             for (int j = 0; j < actionCount; j++) {
+                final String randomActionName = getRandomName("Action");
                 final Action action = Action.builder().build();
                 boolean success = true;
                 action.setPriority(j + 1);
-                action.setName(getRandomName("Action"));
+                action.setName(randomActionName);
+                action.setDisplayName(randomActionName);
 
                 if (j == actionCount - 1) {
                     if (this.random.nextInt(100) % 2 == 0) {
