@@ -20,6 +20,8 @@ import { AccountCreationInfo } from "@/types/apiTypes";
 
 export const DEFAULT_PAGE_HEADER_SECTION_ICON_SIZE = 36;
 
+export const ISO_TIME_REGEX = /^(?:[01]?\d|2[0-3]):[0-5]\d(?::[0-5]\d)?$/;
+
 export const BASE_COLORS = [
   "red",
   "green",
@@ -426,6 +428,12 @@ export function CRUDTradeSchema() {
         required_error: "A date & time is required when opening a trade.",
       }),
       tradeCloseTime: z.date().nullable().optional(),
+      openTime: z
+        .string()
+        .regex(ISO_TIME_REGEX, "Time must be in the format of hh:mm:ss"),
+      closeTime: z
+        .string()
+        .regex(ISO_TIME_REGEX, "Time must be in the format of hh:mm:ss"),
       lotSize: z.coerce
         .number()
         .min(0.01, {
@@ -470,36 +478,52 @@ export function CRUDTradeSchema() {
         })
         .optional(),
     })
-    .superRefine(({ tradeCloseTime, closePrice, netProfit }, ctx) => {
-      const isClosePriceSet = closePrice !== 0;
-      const isCloseTimeSet =
-        tradeCloseTime !== null && tradeCloseTime !== undefined;
-      const isNetProfitSet = netProfit !== 0;
+    .superRefine(
+      ({ tradeOpenTime, tradeCloseTime, closePrice, netProfit }, ctx) => {
+        const isClosePriceSet = closePrice !== 0;
+        const isCloseTimeSet =
+          tradeCloseTime !== null && tradeCloseTime !== undefined;
+        const isNetProfitSet = netProfit !== 0;
 
-      if (
-        (isClosePriceSet && !isCloseTimeSet) ||
-        (!isClosePriceSet && isCloseTimeSet)
-      ) {
-        ctx.addIssue({
-          code: "custom",
-          message:
-            "You must provide both a close price and close time, or neither.",
-          path: ["closePrice"],
-        });
-        ctx.addIssue({
-          code: "custom",
-          message:
-            "You must provide both a close price and close time, or neither.",
-          path: ["tradeCloseTime"],
-        });
-      }
+        if (
+          (isClosePriceSet && !isCloseTimeSet) ||
+          (!isClosePriceSet && isCloseTimeSet)
+        ) {
+          ctx.addIssue({
+            code: "custom",
+            message:
+              "You must provide both a close price and close time, or neither.",
+            path: ["closePrice"],
+          });
+          ctx.addIssue({
+            code: "custom",
+            message:
+              "You must provide both a close price and close time, or neither.",
+            path: ["tradeCloseTime"],
+          });
+        }
 
-      if (isCloseTimeSet && isClosePriceSet && !isNetProfitSet) {
-        ctx.addIssue({
-          code: "custom",
-          message: "You must provide a net profit when setting a closed trade",
-          path: ["netProfit"],
-        });
-      }
-    });
+        if (isCloseTimeSet && isClosePriceSet && !isNetProfitSet) {
+          ctx.addIssue({
+            code: "custom",
+            message:
+              "You must provide a net profit when setting a closed trade",
+            path: ["netProfit"],
+          });
+        }
+
+        if (isCloseTimeSet && tradeCloseTime < tradeOpenTime) {
+          ctx.addIssue({
+            code: "custom",
+            message: "Close time cannot come before the open time",
+            path: ["tradeOpenTime"],
+          });
+          ctx.addIssue({
+            code: "custom",
+            message: "Close time cannot come before the open time",
+            path: ["tradeCloseTime"],
+          });
+        }
+      },
+    );
 }

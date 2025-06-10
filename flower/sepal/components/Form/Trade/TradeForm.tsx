@@ -7,7 +7,7 @@ import {
 } from "@/lib/hooks/query/mutations";
 import React, { useEffect } from "react";
 import { logErrors } from "@/lib/functions/util-functions";
-import { CRUDTradeSchema, DateTime } from "@/lib/constants";
+import { CRUDTradeSchema, DateTime, ISO_TIME_REGEX } from "@/lib/constants";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -125,6 +125,14 @@ export default function TradeForm({
       netProfit: isCreateMode() ? 0.0 : trade?.netProfit,
       stopLoss: isCreateMode() ? 0.0 : trade?.stopLoss,
       takeProfit: isCreateMode() ? 0.0 : trade?.takeProfit,
+      openTime: isCreateMode()
+        ? "09:30:00"
+        : moment(trade?.tradeOpenTime).format(DateTime.ISOTimeFormat),
+      closeTime: isCreateMode()
+        ? "16:00:00"
+        : trade?.tradeCloseTime
+          ? moment(trade?.tradeCloseTime).format(DateTime.ISOTimeFormat)
+          : "16:00:00",
     },
   });
 
@@ -167,10 +175,21 @@ export default function TradeForm({
    * Safely parses a date for the backend request
    *
    * @param val input date
+   * @param timeVal time aspect
    */
-  function getDate(val: Date | null | undefined): string | null {
+  function getDate(
+    val: Date | null | undefined,
+    timeVal: string,
+  ): string | null {
     if (val) {
-      return moment(val).format(DateTime.ISODateTimeFormat);
+      const isoTime = sanitizeTimeInput(timeVal).split(":");
+      return moment(val)
+        .set({
+          hour: parseInt(isoTime[0], 10),
+          minute: parseInt(isoTime[1], 10),
+          second: parseInt(isoTime[2], 10),
+        })
+        .format(DateTime.ISODateTimeFormat);
     } else {
       return null;
     }
@@ -184,8 +203,8 @@ export default function TradeForm({
   function onSubmit(values: z.infer<typeof formSchema>) {
     const req: CreateUpdateTradeRequest = {
       ...values,
-      tradeOpenTime: getDate(values.tradeOpenTime),
-      tradeCloseTime: getDate(values.tradeCloseTime),
+      tradeOpenTime: getDate(values.tradeOpenTime, values.openTime),
+      tradeCloseTime: getDate(values.tradeCloseTime, values.closeTime),
     };
 
     if (isCreateMode()) {
@@ -193,6 +212,23 @@ export default function TradeForm({
     } else {
       updateTrade(req);
     }
+  }
+
+  function sanitizeTimeInput(val: string): string {
+    if (!val) {
+      return "09:30:00";
+    }
+
+    if (ISO_TIME_REGEX.test(val)) {
+      const parts = val.split(":");
+      const hours = parts[0].padStart(2, "0");
+      const minutes = parts[1].padStart(2, "0");
+      const seconds = parts[2] ? parts[2].padStart(2, "0") : "00";
+
+      return `${hours}:${minutes}:${seconds}`;
+    }
+
+    return "00:00:00";
   }
 
   //  RENDER
@@ -307,44 +343,95 @@ export default function TradeForm({
                 )}
               />
             </div>
-            <div>
-              <FormField
-                control={form.control}
-                name="tradeOpenTime"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel className="!text-current">Open Time</FormLabel>
-                    <ReusableDatePicker
-                      label={"Open Time"}
-                      hasIcon={true}
-                      field={field}
-                    />
-                    <FormMessage className={"text-primaryRed font-semibold"} />
-                  </FormItem>
-                )}
-              />
+            <div className="col-span-2 grid grid-cols-2 gap-4">
+              <div>
+                <FormField
+                  control={form.control}
+                  name="tradeOpenTime"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="!text-current">Open Date</FormLabel>
+                      <ReusableDatePicker
+                        label={"Open Time"}
+                        hasIcon={true}
+                        field={field}
+                      />
+                      <FormMessage
+                        className={"text-primaryRed font-semibold"}
+                      />
+                    </FormItem>
+                  )}
+                />
+              </div>
+              <div>
+                <FormField
+                  control={form.control}
+                  name="openTime"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="!text-current">Time</FormLabel>
+                      <FormControl>
+                        <Input
+                          {...field}
+                          placeholder="09:30:00"
+                          className="bg-background appearance-none [&::-webkit-calendar-picker-indicator]:hidden [&::-webkit-calendar-picker-indicator]:appearance-none"
+                        />
+                      </FormControl>
+                      <FormMessage
+                        className={"text-primaryRed font-semibold"}
+                      />
+                    </FormItem>
+                  )}
+                />
+              </div>
             </div>
-            <div>
-              <FormField
-                control={form.control}
-                name="tradeCloseTime"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel className="!text-current">Close Time</FormLabel>
-                    <ReusableDatePicker
-                      label={"Close Time"}
-                      hasIcon={true}
-                      field={field}
-                    />
-                    <FormDescription>
-                      This field can be left empty. If empty, this trade can be
-                      assumed to be open/active. (Along with an empty close
-                      price)
-                    </FormDescription>
-                    <FormMessage className={"text-primaryRed font-semibold"} />
-                  </FormItem>
-                )}
-              />
+            <div className="col-span-2 grid grid-cols-2 gap-4">
+              <div>
+                <FormField
+                  control={form.control}
+                  name="tradeCloseTime"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="!text-current">
+                        Close Date
+                      </FormLabel>
+                      <ReusableDatePicker
+                        label={"Close Time"}
+                        hasIcon={true}
+                        field={field}
+                      />
+                      <FormDescription>
+                        This field can be left empty, unless a close price is
+                        specified.
+                      </FormDescription>
+                      <FormMessage
+                        className={"text-primaryRed font-semibold"}
+                      />
+                    </FormItem>
+                  )}
+                />
+              </div>
+              <div>
+                <FormField
+                  control={form.control}
+                  name="closeTime"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="!text-current">Time</FormLabel>
+                      <FormControl>
+                        <Input
+                          {...field}
+                          placeholder="16:00:00"
+                          className="bg-background appearance-none [&::-webkit-calendar-picker-indicator]:hidden [&::-webkit-calendar-picker-indicator]:appearance-none"
+                        />
+                      </FormControl>
+                      <FormMessage
+                        className={"text-primaryRed font-semibold"}
+                      />
+                    </FormItem>
+                  )}
+                />
+              </div>
             </div>
             <div>
               <FormField
@@ -387,9 +474,8 @@ export default function TradeForm({
                       <Input placeholder="191.56" {...field} type={"number"} />
                     </FormControl>
                     <FormDescription>
-                      This field can be left empty. If empty, this trade can be
-                      assumed to be open/active. (Along with an empty close
-                      time)
+                      This field can be left empty unless a close time is
+                      specified.
                     </FormDescription>
                     <FormMessage className={"text-primaryRed font-semibold"} />
                   </FormItem>

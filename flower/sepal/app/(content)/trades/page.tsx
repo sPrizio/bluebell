@@ -65,7 +65,7 @@ export default function TradesPage() {
         ? moment(activeAccount?.accountOpenTime ?? "").toDate()
         : moment().toDate(),
       end: moment().toDate(),
-      sort: "asc",
+      sort: "desc",
       type: "ALL",
       symbol: "ALL",
     },
