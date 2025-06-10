@@ -32,7 +32,7 @@ import static com.bluebell.radicle.validation.GenericValidator.validateParameter
  * Service-layer for {@link PortfolioRecord}s
  *
  * @author Stephen Prizio
- * @version 0.2.0
+ * @version 0.2.4
  */
 @Service("portfolioRecordService")
 public class PortfolioRecordService {
@@ -122,6 +122,7 @@ public class PortfolioRecordService {
                         .stream()
                         .map(Account::getTrades)
                         .flatMap(List::stream)
+                        .filter(Trade::isClosed)
                         .toList();
 
         final List<Transaction> allTransactions =

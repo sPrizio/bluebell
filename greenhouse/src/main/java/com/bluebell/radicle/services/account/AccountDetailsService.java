@@ -31,7 +31,7 @@ import static com.bluebell.radicle.validation.GenericValidator.validateParameter
  * Service-layer implementation of {@link AccountDetails}
  *
  * @author Stephen Prizio
- * @version 0.2.0
+ * @version 0.2.4
  */
 @Service("accountDetailsService")
 public class AccountDetailsService {
@@ -90,7 +90,7 @@ public class AccountDetailsService {
         }
 
         final List<AccountEquityPoint> equityPoints = new ArrayList<>();
-        final List<Trade> trades = account.getTrades().stream().sorted(Comparator.comparing(Trade::getTradeCloseTime).thenComparing(Trade::getTradeOpenTime)).toList();
+        final List<Trade> trades = account.getTrades().stream().filter(Trade::isClosed).sorted(Comparator.comparing(Trade::getTradeCloseTime).thenComparing(Trade::getTradeOpenTime)).toList();
         final double starterBalance = this.mathService.subtract(account.getBalance(), account.getTrades().stream().mapToDouble(Trade::getNetProfit).sum());
 
         for (int i = 0; i < trades.size(); i++) {
@@ -236,7 +236,7 @@ public class AccountDetailsService {
      */
     private List<CumulativeTrade> generativeCumulativeTrades(final Account account) {
 
-        final List<Trade> trades = CollectionUtils.isEmpty(account.getTrades()) ? Collections.emptyList() : account.getTrades().stream().sorted(Comparator.comparing(Trade::getTradeCloseTime)).toList();
+        final List<Trade> trades = CollectionUtils.isEmpty(account.getTrades()) ? Collections.emptyList() : account.getTrades().stream().filter(Trade::isClosed).sorted(Comparator.comparing(Trade::getTradeCloseTime)).toList();
         final List<CumulativeTrade> cumulativeTrades = new ArrayList<>();
 
         int count = 0;

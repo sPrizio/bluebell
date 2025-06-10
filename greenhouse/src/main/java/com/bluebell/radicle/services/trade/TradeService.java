@@ -10,7 +10,6 @@ import com.bluebell.platform.models.core.entities.trade.Trade;
 import com.bluebell.radicle.exceptions.system.EntityCreationException;
 import com.bluebell.radicle.exceptions.system.EntityModificationException;
 import com.bluebell.radicle.exceptions.validation.MissingRequiredDataException;
-import com.bluebell.radicle.repositories.account.AccountRepository;
 import com.bluebell.radicle.repositories.trade.TradeRepository;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
@@ -302,7 +301,11 @@ public class TradeService {
         trade.setProduct(data.product());
         trade.setTradeType(GenericEnum.getByCode(TradeType.class, data.tradeType()));
         trade.setClosePrice(data.closePrice());
-        trade.setTradeCloseTime((LocalDateTime.parse(data.tradeCloseTime(), DateTimeFormatter.ISO_DATE_TIME)));
+
+        if (StringUtils.isNotEmpty(data.tradeCloseTime())) {
+            trade.setTradeCloseTime((LocalDateTime.parse(data.tradeCloseTime(), DateTimeFormatter.ISO_DATE_TIME)));
+        }
+
         trade.setTradeOpenTime((LocalDateTime.parse(data.tradeOpenTime(), DateTimeFormatter.ISO_DATE_TIME)));
         trade.setLotSize(data.lotSize());
         trade.setNetProfit(data.netProfit());

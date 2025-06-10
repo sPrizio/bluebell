@@ -35,7 +35,7 @@ import static com.bluebell.radicle.validation.GenericValidator.validateParameter
  * Service-layer for calculating {@link TradeRecord}s
  *
  * @author Stephen Prizio
- * @version 0.2.0
+ * @version 0.2.4
  */
 @Service
 public class TradeRecordService {
@@ -226,7 +226,7 @@ public class TradeRecordService {
         validateParameterIsNotNull(account, CorePlatformConstants.Validation.Account.ACCOUNT_CANNOT_BE_NULL);
         validateParameterIsNotNull(tradeRecordTimeInterval, CorePlatformConstants.Validation.DataIntegrity.INTERVAL_CANNOT_BE_NULL);
 
-        final List<Trade> trades = account.getTrades().stream().sorted(Comparator.comparing(Trade::getTradeCloseTime)).toList();
+        final List<Trade> trades = account.getTrades().stream().filter(Trade::isClosed).sorted(Comparator.comparing(Trade::getTradeCloseTime)).toList();
         final Map<String, Map<String, Integer>> map = new HashMap<>();
 
         for (final Trade trade : trades) {
