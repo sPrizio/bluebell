@@ -179,18 +179,43 @@ export default function TradeTable({
                         {item.lotSize}
                       </TableCell>
                       <TableCell className={"text-left"}>
-                        {moment(item.tradeCloseTime).format(
-                          DateTime.ISOShortMonthDayYearWithTimeFormat,
+                        {!item.tradeCloseTime && (
+                          <span className={"font-semibold text-primary"}>
+                            Live Trade
+                          </span>
                         )}
+                        {item.tradeCloseTime &&
+                          moment(item.tradeCloseTime).format(
+                            DateTime.ISOShortMonthDayYearWithTimeFormat,
+                          )}
                       </TableCell>
                       <TableCell className={"text-center"}>
-                        {formatNumberForDisplay(item.closePrice)}
+                        {!item.tradeCloseTime && (
+                          <span className={"font-semibold text-primary"}>
+                            -
+                          </span>
+                        )}
+                        {item.tradeCloseTime &&
+                          formatNumberForDisplay(item.closePrice)}
                       </TableCell>
                       <TableCell className={"text-right"}>
-                        {formatNegativePoints(item.points)}
+                        {!item.tradeCloseTime && (
+                          <span className={"font-semibold text-primary"}>
+                            -
+                          </span>
+                        )}
+                        {item.tradeCloseTime &&
+                          formatNumberForDisplay(item.points)}
                       </TableCell>
                       <TableCell className={"text-right"}>
-                        $&nbsp;{formatNumberForDisplay(item.netProfit)}
+                        {!item.tradeCloseTime && (
+                          <span className={"font-semibold text-primary"}>
+                            -
+                          </span>
+                        )}
+                        {item.tradeCloseTime && (
+                          <>$&nbsp;{formatNumberForDisplay(item.netProfit)}</>
+                        )}
                       </TableCell>
                     </TableRow>
                   );

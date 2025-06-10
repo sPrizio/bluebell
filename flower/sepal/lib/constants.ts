@@ -407,69 +407,99 @@ export function TradeImportSchema() {
 }
 
 export function CRUDTradeSchema() {
-  return z.object({
-    tradeId: z.string().optional(),
-    product: z
-      .string()
-      .min(3, {
-        message: "Please enter a symbol with a minimum of 3 characters.",
-      })
-      .max(25, {
-        message: "Please enter a symbol with at most 25 characters.",
+  return z
+    .object({
+      tradeId: z.string().optional(),
+      product: z
+        .string()
+        .min(3, {
+          message: "Please enter a symbol with a minimum of 3 characters.",
+        })
+        .max(25, {
+          message: "Please enter a symbol with at most 25 characters.",
+        }),
+      tradePlatform: z.string(),
+      tradeType: z.enum(safeConvertEnum(["BUY", "SELL"]), {
+        message: "Please select a trade type.",
       }),
-    tradePlatform: z.string(),
-    tradeType: z.enum(safeConvertEnum(["BUY", "SELL"]), {
-      message: "Please select a trade type.",
-    }),
-    tradeOpenTime: z
-      .date({
-        required_error: "A trade open time is required.",
-      })
-      .optional()
-      .nullable(),
-    tradeCloseTime: z.date().nullable().optional(),
-    lotSize: z.coerce
-      .number()
-      .min(0.01, {
-        message: "Please enter a number between 0.01 and 999999999.",
-      })
-      .max(999999999, {
-        message: "Please enter a number between 0.01 and 999999999.",
+      tradeOpenTime: z.date({
+        required_error: "A date & time is required when opening a trade.",
       }),
-    openPrice: z.coerce
-      .number()
-      .min(0.01, {
-        message: "Please enter a number between 0.01 and 999999999.",
-      })
-      .max(999999999, {
-        message: "Please enter a number between 0.01 and 999999999.",
-      }),
-    closePrice: z.coerce
-      .number()
-      .max(999999999, {
-        message: "Please enter a number between 0 and 999999999.",
-      })
-      .optional(),
-    netProfit: z.coerce
-      .number()
-      .min(-999999999, {
-        message: "Please enter a number between -999999999 and 999999999.",
-      })
-      .max(999999999, {
-        message: "Please enter a number between -999999999 and 999999999.",
-      })
-      .optional(),
-    stopLoss: z.coerce
-      .number()
-      .max(999999999, {
-        message: "Please enter a number between 0 and 999999999.",
-      })
-      .optional(),
-    takeProfit: z.coerce
-      .number()
-      .max(999999999, {
-        message: "Please enter a number between 0 and 999999999.",
-      })
-      .optional(),
-  });
+      tradeCloseTime: z.date().nullable().optional(),
+      lotSize: z.coerce
+        .number()
+        .min(0.01, {
+          message: "Please enter a number between 0.01 and 999999.",
+        })
+        .max(999999, {
+          message: "Please enter a number between 0.01 and 999999.",
+        }),
+      openPrice: z.coerce
+        .number()
+        .min(0.01, {
+          message: "Please enter a number between 0.01 and 999999.",
+        })
+        .max(999999, {
+          message: "Please enter a number between 0.01 and 999999.",
+        }),
+      closePrice: z.coerce
+        .number()
+        .max(999999999, {
+          message: "Please enter a number between 0 and 999999999.",
+        })
+        .optional(),
+      netProfit: z.coerce
+        .number()
+        .min(-999999999, {
+          message: "Please enter a number between -999999999 and 999999999.",
+        })
+        .max(999999999, {
+          message: "Please enter a number between -999999999 and 999999999.",
+        })
+        .optional(),
+      stopLoss: z.coerce
+        .number()
+        .max(999999999, {
+          message: "Please enter a number between 0 and 999999999.",
+        })
+        .optional(),
+      takeProfit: z.coerce
+        .number()
+        .max(999999999, {
+          message: "Please enter a number between 0 and 999999999.",
+        })
+        .optional(),
+    })
+    .superRefine(({ tradeCloseTime, closePrice, netProfit }, ctx) => {
+      const isClosePriceSet = closePrice !== 0;
+      const isCloseTimeSet =
+        tradeCloseTime !== null && tradeCloseTime !== undefined;
+      const isNetProfitSet = netProfit !== 0;
+
+      if (
+        (isClosePriceSet && !isCloseTimeSet) ||
+        (!isClosePriceSet && isCloseTimeSet)
+      ) {
+        ctx.addIssue({
+          code: "custom",
+          message:
+            "You must provide both a close price and close time, or neither.",
+          path: ["closePrice"],
+        });
+        ctx.addIssue({
+          code: "custom",
+          message:
+            "You must provide both a close price and close time, or neither.",
+          path: ["tradeCloseTime"],
+        });
+      }
+
+      if (isCloseTimeSet && isClosePriceSet && !isNetProfitSet) {
+        ctx.addIssue({
+          code: "custom",
+          message: "You must provide a net profit when setting a closed trade",
+          path: ["netProfit"],
+        });
+      }
+    });
 }

@@ -7,7 +7,7 @@ import {
 } from "@/lib/hooks/query/mutations";
 import React, { useEffect } from "react";
 import { logErrors } from "@/lib/functions/util-functions";
-import { CRUDTradeSchema, Css, DateTime } from "@/lib/constants";
+import { CRUDTradeSchema, DateTime } from "@/lib/constants";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -112,11 +112,13 @@ export default function TradeForm({
       tradePlatform: account?.tradePlatform?.code ?? "METATRADER4",
       tradeType: isCreateMode() ? "default" : trade?.tradeType,
       tradeOpenTime: isCreateMode()
-        ? null
+        ? undefined
         : moment(trade?.tradeOpenTime).toDate(),
       tradeCloseTime: isCreateMode()
-        ? null
-        : moment(trade?.tradeCloseTime ?? null).toDate(),
+        ? undefined
+        : trade?.tradeCloseTime
+          ? moment(trade?.tradeCloseTime).toDate()
+          : undefined,
       lotSize: isCreateMode() ? 0.0 : trade?.lotSize,
       openPrice: isCreateMode() ? 0.0 : trade?.openPrice,
       closePrice: isCreateMode() ? 0.0 : trade?.closePrice,
@@ -201,7 +203,6 @@ export default function TradeForm({
 
   return (
     <div>
-      <p>TODO: ensure validation for trade type, open time</p>
       <Form {...form}>
         <form
           onSubmit={form.handleSubmit(onSubmit, (e) => console.log(e))}
@@ -301,6 +302,7 @@ export default function TradeForm({
                         <SelectItem value={"SELL"}>Sell Trade</SelectItem>
                       </SelectContent>
                     </Select>
+                    <FormMessage className={"text-primaryRed font-semibold"} />
                   </FormItem>
                 )}
               />
@@ -311,7 +313,7 @@ export default function TradeForm({
                 name="tradeOpenTime"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Open Time</FormLabel>
+                    <FormLabel className="!text-current">Open Time</FormLabel>
                     <ReusableDatePicker
                       label={"Open Time"}
                       hasIcon={true}
@@ -328,7 +330,7 @@ export default function TradeForm({
                 name="tradeCloseTime"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Close Time</FormLabel>
+                    <FormLabel className="!text-current">Close Time</FormLabel>
                     <ReusableDatePicker
                       label={"Close Time"}
                       hasIcon={true}
