@@ -39,7 +39,7 @@ class ApexChartServiceTest extends AbstractGenericTest {
 
     @BeforeEach
     void setUp() {
-        Mockito.when(this.marketPriceService.findMarketPricesForTrade(any(), any())).thenReturn(List.of(generateTestMarketPrice()));
+        Mockito.when(this.marketPriceService.findMarketPricesForTrade(any(), any(), any())).thenReturn(List.of(generateTestMarketPrice()));
     }
 
 

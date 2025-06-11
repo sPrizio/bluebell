@@ -36,7 +36,7 @@ public class ApexChartService implements ChartService<ApexChartCandleStick> {
         validateParameterIsNotNull(trade, CorePlatformConstants.Validation.Trade.TRADE_CANNOT_BE_NULL);
         validateParameterIsNotNull(timeInterval, CorePlatformConstants.Validation.System.TIME_INTERVAL_CANNOT_BE_NULL);
 
-        return convertToCandleSticks(this.marketPriceService.findMarketPricesForTrade(trade, timeInterval));
+        return convertToCandleSticks(this.marketPriceService.findMarketPricesForTrade(trade, timeInterval, null));
     }
 
 

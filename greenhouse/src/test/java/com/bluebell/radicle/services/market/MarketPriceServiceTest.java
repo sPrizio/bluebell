@@ -4,6 +4,7 @@ import com.bluebell.AbstractGenericTest;
 import com.bluebell.platform.constants.CorePlatformConstants;
 import com.bluebell.platform.enums.time.MarketPriceTimeInterval;
 import com.bluebell.platform.models.core.entities.market.MarketPrice;
+import com.bluebell.platform.models.core.entities.trade.Trade;
 import com.bluebell.platform.models.core.nonentities.market.AggregatedMarketPrices;
 import com.bluebell.radicle.enums.DataSource;
 import com.bluebell.radicle.exceptions.validation.IllegalParameterException;
@@ -27,7 +28,7 @@ import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
  * Testing class for {@link MarketPriceService}
  *
  * @author Stephen Prizio
- * @version 0.1.8
+ * @version 0.2.4
  */
 @SpringBootTest
 @RunWith(SpringRunner.class)
@@ -96,6 +97,45 @@ class MarketPriceServiceTest extends AbstractGenericTest {
         assertThat(prices.get(1).getHigh()).isEqualTo(18220.72);
         assertThat(pricesEmptyTime).isEmpty();
         assertThat(pricesEmptySource).isEmpty();
+    }
+
+
+    //  ----------------- findMarketPricesForTrade -----------------
+
+    @Test
+    void test_findMarketPricesForTrade_missingTrade() {
+        assertThatExceptionOfType(IllegalParameterException.class)
+                .isThrownBy(() -> this.marketPriceService.findMarketPricesForTrade(null, MarketPriceTimeInterval.FIVE_MINUTE, null))
+                .withMessage(CorePlatformConstants.Validation.Trade.TRADE_CANNOT_BE_NULL);
+    }
+
+    @Test
+    void test_findMarketPricesForTrade_missingInterval() {
+        assertThatExceptionOfType(IllegalParameterException.class)
+                .isThrownBy(() -> this.marketPriceService.findMarketPricesForTrade(generateTestBuyTrade(), null, null))
+                .withMessage(CorePlatformConstants.Validation.System.TIME_INTERVAL_CANNOT_BE_NULL);
+    }
+
+    @Test
+    void test_findMarketPricesForTrade_success() {
+
+        AggregatedMarketPrices prices2 = AggregatedMarketPrices
+                .builder()
+                .marketPrices(this.firstRateDataParser.parseMarketPrices("NDX_5min_sample.csv", MarketPriceTimeInterval.FIVE_MINUTE).marketPrices())
+                .dataSource(DataSource.FIRST_RATE_DATA)
+                .interval(MarketPriceTimeInterval.FIVE_MINUTE)
+                .build();
+
+        this.marketPriceService.saveAll(prices2);
+
+        final Trade trade = generateTestBuyTrade();
+        trade.setProduct("NDX");
+
+        trade.setTradeOpenTime(LocalDate.of(2024, 5, 13).atStartOfDay());
+        trade.setTradeCloseTime(LocalDate.of(2024, 5, 14).atStartOfDay());
+
+        assertThat(this.marketPriceService.findMarketPricesForTrade(trade, MarketPriceTimeInterval.FIVE_MINUTE, DataSource.FIRST_RATE_DATA))
+                .isNotEmpty();
     }
 
 
