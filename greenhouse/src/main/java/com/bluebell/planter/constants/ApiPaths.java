@@ -97,6 +97,8 @@ public class ApiPaths {
         public static final String BASE = "/market-price";
 
         public static final String INGEST = "/ingest";
+
+        public static final String TIME_INTERVALS = "/time-intervals";
     }
 
     public static class MarketNews {
