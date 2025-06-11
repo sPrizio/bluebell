@@ -1,9 +1,10 @@
 package com.bluebell.planter.controllers.chart;
 
 import com.bluebell.planter.AbstractPlanterTest;
-import com.bluebell.planter.constants.ApiConstants;
+import com.bluebell.platform.models.core.entities.account.Account;
 import com.bluebell.platform.models.core.nonentities.apexcharts.ApexChartCandleStick;
 import com.bluebell.radicle.services.chart.ChartService;
+import com.bluebell.radicle.services.trade.TradeService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
@@ -18,6 +19,7 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 
 import java.util.List;
+import java.util.Optional;
 
 import static com.bluebell.planter.constants.ApiPaths.Chart.APEX_DATA;
 import static com.bluebell.planter.constants.ApiPaths.Chart.BASE;
@@ -32,12 +34,14 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  * Testing class for {@link ChartApiController}
  *
  * @author Stephen Prizio
- * @version 0.1.9
+ * @version 0.2.4
  */
 @SpringBootTest
 @AutoConfigureMockMvc(addFilters = false)
 @RunWith(SpringRunner.class)
 class ChartApiControllerTest extends AbstractPlanterTest {
+
+    final Account account = generateTestAccount();
 
     @Autowired
     private MockMvc mockMvc;
@@ -45,83 +49,52 @@ class ChartApiControllerTest extends AbstractPlanterTest {
     @MockitoBean
     private ChartService<ApexChartCandleStick> chartService;
 
+    @MockitoBean
+    private TradeService tradeService;
+
     @BeforeEach
     void setUp() {
-        Mockito.when(this.chartService.getChartData(any(), any(), any(), any(), any())).thenReturn(List.of(ApexChartCandleStick.builder().x(123L).y(new double[]{1.0, 2.0, 3.0}).build()));
+        Mockito.when(this.chartService.getChartDataForTrade(any(), any())).thenReturn(List.of(ApexChartCandleStick.builder().x(123L).y(new double[]{1.0, 2.0, 3.0}).build()));
+        Mockito.when(this.tradeService.findTradeByTradeId("1234", this.account)).thenReturn(Optional.empty());
+        Mockito.when(this.tradeService.findTradeByTradeId("5678", this.account)).thenReturn(Optional.of(generateTestBuyTrade()));
     }
 
 
     //  ----------------- getApexChartData -----------------
 
     @Test
-    void test_getApexChartData_missingParamStart() throws Exception {
+    void test_getApexChartData_missingTrade() throws Exception {
 
         MultiValueMap<String, String> map = new LinkedMultiValueMap<>();
-        map.put("start", List.of("dasdfasdfaf"));
-        map.put("end", List.of("2022-08-25"));
+        map.put("tradeId", List.of("1234"));
         map.put("interval", List.of("FIVE_MINUTE"));
-        map.put("symbol", List.of("NDX"));
-        map.put("dataSource", List.of("METATRADER4"));
+        map.put("accountNumber", List.of("1234"));
 
         this.mockMvc.perform(get(getApiPath(BASE, APEX_DATA)).with(testUserContext()).params(map))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.message", containsString(ApiConstants.CLIENT_ERROR_DEFAULT_MESSAGE)));
+                .andExpect(jsonPath("$.message", containsString("Trade with id 1234 not found")));
     }
 
     @Test
-    void test_getApexChartData_missingParamEnd() throws Exception {
+    void test_getApexChartData_invalidInterval() throws Exception {
 
         MultiValueMap<String, String> map = new LinkedMultiValueMap<>();
-        map.put("start", List.of("2022-08-25"));
-        map.put("end", List.of("asdadasdasd"));
-        map.put("interval", List.of("FIVE_MINUTE"));
-        map.put("symbol", List.of("NDX"));
-        map.put("dataSource", List.of("METATRADER4"));
+        map.put("tradeId", List.of("5678"));
+        map.put("interval", List.of("asdasdasd"));
+        map.put("accountNumber", List.of("1234"));
 
         this.mockMvc.perform(get(getApiPath(BASE, APEX_DATA)).with(testUserContext()).params(map))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.message", containsString(ApiConstants.CLIENT_ERROR_DEFAULT_MESSAGE)));
-    }
-
-    @Test
-    void test_getApexChartData_badSymbol() throws Exception {
-
-        MultiValueMap<String, String> map = new LinkedMultiValueMap<>();
-        map.put("start", List.of("2022-08-24"));
-        map.put("end", List.of("2022-08-25"));
-        map.put("interval", List.of("FIVE_MINUTE"));
-        map.put("symbol", List.of("NDX%&^$$%^#"));
-        map.put("dataSource", List.of("METATRADER4"));
-
-        this.mockMvc.perform(get(getApiPath(BASE, APEX_DATA)).with(testUserContext()).params(map))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.message", is("Invalid symbol: NDX%&^$$%^#")));
-    }
-
-    @Test
-    void test_getApexChartData_badDataSource() throws Exception {
-
-        MultiValueMap<String, String> map = new LinkedMultiValueMap<>();
-        map.put("start", List.of("2022-08-24"));
-        map.put("end", List.of("2022-08-25"));
-        map.put("interval", List.of("FIVE_MINUTE"));
-        map.put("symbol", List.of("NDX"));
-        map.put("dataSource", List.of("BAD"));
-
-        this.mockMvc.perform(get(getApiPath(BASE, APEX_DATA)).with(testUserContext()).params(map))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.message", is("BAD is not a valid data source")));
+                .andExpect(jsonPath("$.message", containsString("is not a valid time interval")));
     }
 
     @Test
     void test_getApexChartData_success() throws Exception {
 
         MultiValueMap<String, String> map = new LinkedMultiValueMap<>();
-        map.put("start", List.of("2022-08-24"));
-        map.put("end", List.of("2022-08-25"));
+        map.put("tradeId", List.of("5678"));
         map.put("interval", List.of("FIVE_MINUTE"));
-        map.put("symbol", List.of("NDX"));
-        map.put("dataSource", List.of("METATRADER4"));
+        map.put("accountNumber", List.of("1234"));
 
         this.mockMvc.perform(get(getApiPath(BASE, APEX_DATA)).with(testUserContext()).params(map))
                 .andExpect(status().isOk())
