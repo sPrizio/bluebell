@@ -1,11 +1,8 @@
 "use client";
 
-import {
-  useMarketPriceTimerIntervalQuery,
-  useTradeQuery,
-} from "@/lib/hooks/query/queries";
+import { useTradeQuery } from "@/lib/hooks/query/queries";
 import { Icons } from "@/lib/enums";
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { useSearchParams } from "next/navigation";
 import LoadingPage from "@/app/loading";
 import { logErrors } from "@/lib/functions/util-functions";
@@ -17,15 +14,7 @@ import { resolveIcon } from "@/lib/functions/util-component-functions";
 import { Button } from "@/components/ui/button";
 import TradeInformation from "@/components/Table/Trade/TradeInformation";
 import { BaseCard } from "@/components/Card/BaseCard";
-import TradeReviewChart from "@/components/Chart/Trade/TradeReviewChart";
-import { EnumDisplay, Weekday } from "@/types/apiTypes";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+import TradeReviewCard from "@/components/Card/Trade/TradeReviewCard";
 
 /**
  * The base layout for the trade detail page
@@ -43,7 +32,6 @@ export default function TradeDetailsLayout({
   params: { id: string };
 }>) {
   const searchParams = useSearchParams();
-  const [chartInterval, setChartInterval] = useState("default");
 
   const {
     data: trade,
@@ -52,26 +40,12 @@ export default function TradeDetailsLayout({
     isLoading: isTradeLoading,
   } = useTradeQuery(searchParams.get("account") ?? "-1", params.id);
 
-  const {
-    data: intervals,
-    isError: isIntervalError,
-    isLoading: isIntervalLoading,
-    error: intervalError,
-    isSuccess: isIntervalSuccess,
-  } = useMarketPriceTimerIntervalQuery();
-
-  useEffect(() => {
-    if (isIntervalSuccess) {
-      setChartInterval(intervals[1].code);
-    }
-  }, [isIntervalSuccess]);
-
-  if (isTradeLoading || isIntervalLoading) {
+  if (isTradeLoading) {
     return <LoadingPage />;
   }
 
-  if (isTradeError || isIntervalError) {
-    logErrors(tradeError, intervalError);
+  if (isTradeError) {
+    logErrors(tradeError);
     return <Error />;
   }
 
@@ -126,34 +100,7 @@ export default function TradeDetailsLayout({
             }
           >
             <div className={"lg:col-span-2 xl:col-span-3"}>
-              <BaseCard
-                title={"Trade Review"}
-                subtitle={"Review the trade as it was taken."}
-                cardContent={
-                  <TradeReviewChart trade={trade} interval={chartInterval} />
-                }
-                headerControls={[
-                  <div key={0}>
-                    <Select
-                      value={chartInterval}
-                      onValueChange={(val) => setChartInterval(val)}
-                    >
-                      <SelectTrigger className="w-[120px] bg-white">
-                        <SelectValue placeholder={"Select a value..."} />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {intervals?.map((inter) => {
-                          return (
-                            <SelectItem key={inter.code} value={inter.code}>
-                              {inter.label}
-                            </SelectItem>
-                          );
-                        }) ?? null}
-                      </SelectContent>
-                    </Select>
-                  </div>,
-                ]}
-              />
+              <TradeReviewCard trade={trade} />
             </div>
             <div>
               <BaseCard
