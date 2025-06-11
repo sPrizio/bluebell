@@ -354,6 +354,7 @@ public abstract class AbstractGenericTest {
                 .dataSource(DataSource.FIRST_RATE_DATA)
                 .interval(MarketPriceTimeInterval.THIRTY_MINUTE)
                 .symbol("Testing")
+                .date(LocalDateTime.now())
                 .open(11234.05)
                 .high(12365.89)
                 .low(10258.30)
