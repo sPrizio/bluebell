@@ -110,7 +110,7 @@ export default function TradeForm({
       tradeId: isCreateMode() ? "" : trade?.tradeId,
       product: isCreateMode() ? "" : trade?.product,
       tradePlatform: account?.tradePlatform?.code ?? "METATRADER4",
-      tradeType: isCreateMode() ? "default" : trade?.tradeType,
+      tradeType: isCreateMode() ? "default" : trade?.tradeType.code,
       tradeOpenTime: isCreateMode()
         ? undefined
         : moment(trade?.tradeOpenTime).toDate(),

@@ -1,8 +1,11 @@
 "use client";
 
-import { useTradeQuery } from "@/lib/hooks/query/queries";
+import {
+  useMarketPriceTimerIntervalQuery,
+  useTradeQuery,
+} from "@/lib/hooks/query/queries";
 import { Icons } from "@/lib/enums";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import LoadingPage from "@/app/loading";
 import { logErrors } from "@/lib/functions/util-functions";
@@ -12,6 +15,17 @@ import BaseModal from "@/components/Modal/BaseModal";
 import DeleteTradeForm from "@/components/Form/Trade/DeleteTradeForm";
 import { resolveIcon } from "@/lib/functions/util-component-functions";
 import { Button } from "@/components/ui/button";
+import TradeInformation from "@/components/Table/Trade/TradeInformation";
+import { BaseCard } from "@/components/Card/BaseCard";
+import TradeReviewChart from "@/components/Chart/Trade/TradeReviewChart";
+import { EnumDisplay, Weekday } from "@/types/apiTypes";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 /**
  * The base layout for the trade detail page
@@ -29,6 +43,7 @@ export default function TradeDetailsLayout({
   params: { id: string };
 }>) {
   const searchParams = useSearchParams();
+  const [chartInterval, setChartInterval] = useState("default");
 
   const {
     data: trade,
@@ -37,12 +52,26 @@ export default function TradeDetailsLayout({
     isLoading: isTradeLoading,
   } = useTradeQuery(searchParams.get("account") ?? "-1", params.id);
 
-  if (isTradeLoading) {
+  const {
+    data: intervals,
+    isError: isIntervalError,
+    isLoading: isIntervalLoading,
+    error: intervalError,
+    isSuccess: isIntervalSuccess,
+  } = useMarketPriceTimerIntervalQuery();
+
+  useEffect(() => {
+    if (isIntervalSuccess) {
+      setChartInterval(intervals[1].code);
+    }
+  }, [isIntervalSuccess]);
+
+  if (isTradeLoading || isIntervalLoading) {
     return <LoadingPage />;
   }
 
-  if (isTradeError) {
-    logErrors(tradeError);
+  if (isTradeError || isIntervalError) {
+    logErrors(tradeError, intervalError);
     return <Error />;
   }
 
@@ -69,32 +98,80 @@ export default function TradeDetailsLayout({
 
   return (
     <PageInfoProvider value={pageInfo}>
-      <div className={"sm:col-span-1 lg:col-span-2 xl:col-span-4"}>
-        <div className={"flex items-end justify-end gap-4"}>
-          <div className={""}>Update</div>
-          <div className={""}>
-            <BaseModal
-              key={1}
-              title={"Delete Trade"}
-              trigger={
-                <Button className="bg-primaryRed text-white hover:bg-primaryRedLight">
-                  {resolveIcon(Icons.Trash)}
-                  &nbsp;Delete
-                </Button>
-              }
-              content={<DeleteTradeForm trade={trade} />}
-            />
+      <div className="grid grid-cols-1 gap-6">
+        <div>
+          <div className={"sm:col-span-1 lg:col-span-2 xl:col-span-4"}>
+            <div className={"flex items-end justify-end gap-4"}>
+              <div className={""}>Update</div>
+              <div className={""}>
+                <BaseModal
+                  key={1}
+                  title={"Delete Trade"}
+                  trigger={
+                    <Button className="bg-primaryRed text-white hover:bg-primaryRedLight">
+                      {resolveIcon(Icons.Trash)}
+                      &nbsp;Delete
+                    </Button>
+                  }
+                  content={<DeleteTradeForm trade={trade} />}
+                />
+              </div>
+            </div>
           </div>
         </div>
-      </div>
-      <div
-        className={"grid sm:grid-cols-1 lg:grid-cols-2 xl:grid-cols-4 gap-6"}
-      >
-        <p>Trades Page</p>
-        <p>Trade: {params.id}</p>
-        <p>Profit: {trade?.netProfit ?? 0}</p>
-        <p>Account: {searchParams.get("account")}</p>
-        {children}
+        <div>
+          <div
+            className={
+              "grid sm:grid-cols-1 lg:grid-cols-3 xl:grid-cols-4 gap-6"
+            }
+          >
+            <div className={"lg:col-span-2 xl:col-span-3"}>
+              <BaseCard
+                title={"Trade Review"}
+                subtitle={"Review the trade as it was taken."}
+                cardContent={
+                  <TradeReviewChart trade={trade} interval={chartInterval} />
+                }
+                headerControls={[
+                  <div key={0}>
+                    <Select
+                      value={chartInterval}
+                      onValueChange={(val) => setChartInterval(val)}
+                    >
+                      <SelectTrigger className="w-[120px] bg-white">
+                        <SelectValue placeholder={"Select a value..."} />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {intervals?.map((inter) => {
+                          return (
+                            <SelectItem key={inter.code} value={inter.code}>
+                              {inter.label}
+                            </SelectItem>
+                          );
+                        }) ?? null}
+                      </SelectContent>
+                    </Select>
+                  </div>,
+                ]}
+              />
+            </div>
+            <div>
+              <BaseCard
+                title={"Trade Information"}
+                subtitle={"View the base trade details."}
+                cardContent={<TradeInformation trade={trade} />}
+              />
+            </div>
+            <div className={"lg:col-span-3 xl:col-span-4"}>
+              <BaseCard
+                title={"Metrics"}
+                subtitle={"See how this trade could have been improved."}
+                cardContent={<p className={"py-4"}>Coming in Phase 2</p>}
+              />
+            </div>
+            {children}
+          </div>
+        </div>
       </div>
     </PageInfoProvider>
   );

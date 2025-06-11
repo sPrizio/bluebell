@@ -167,3 +167,12 @@ export function getSystemDomain(): string {
 export function getJobDomain(): string {
   return getDomain("/job");
 }
+
+/**
+ * Gets the market price domain
+ *
+ * @returns {string} url
+ */
+export function getMarketPriceDomain(): string {
+  return getDomain("/market-price");
+}

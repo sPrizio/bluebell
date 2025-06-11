@@ -7,6 +7,7 @@ import {
   AccountDetails,
   AccountType,
   AnalysisResult,
+  ApexChartCandleStick,
   Broker,
   Currency,
   EnumDisplay,
@@ -414,5 +415,29 @@ export const useHealthCheckQuery = () => {
   return useQuery<HealthCheck>({
     queryKey: ["health-check"],
     queryFn: () => get<HealthCheck>(ApiUrls.System.HealthCheck, {}),
+  });
+};
+
+export const useApexChartQuery = (
+  tradeId: string,
+  accountNumber: number,
+  interval: string,
+) => {
+  return useQuery<Array<ApexChartCandleStick>>({
+    queryKey: ["apexChart", tradeId, interval],
+    queryFn: () =>
+      get<Array<ApexChartCandleStick>>(ApiUrls.Charting.Get, {
+        tradeId: tradeId,
+        accountNumber: accountNumber.toString(),
+        interval: interval,
+      }),
+  });
+};
+
+export const useMarketPriceTimerIntervalQuery = () => {
+  return useQuery<Array<EnumDisplay>>({
+    queryKey: ["market-price-time-intervals"],
+    queryFn: () =>
+      get<Array<EnumDisplay>>(ApiUrls.MarketPrice.GetTimeIntervals, {}),
   });
 };

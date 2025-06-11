@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import AccountForm from "@/components/Form/Account/AccountForm";
 import DeleteAccountForm from "@/components/Form/Account/DeleteAccountForm";
 import { BaseCard } from "@/components/Card/BaseCard";
-import AccountInformation from "@/components/Account/AccountInformation";
+import AccountInformation from "@/components/Table/Account/AccountInformation";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 import SimpleBanner from "@/components/Banner/SimpleBanner";

@@ -12,7 +12,6 @@ import moment from "moment/moment";
 import { DateTime } from "@/lib/constants";
 import React, { useState } from "react";
 import {
-  formatNegativePoints,
   formatNumberForDisplay,
   logErrors,
 } from "@/lib/functions/util-functions";
@@ -166,7 +165,7 @@ export default function TradeTable({
                       <TableCell className={"text-left"}>
                         {item.product}
                       </TableCell>
-                      <TableCell>{item.tradeType}</TableCell>
+                      <TableCell>{item.tradeType.label}</TableCell>
                       <TableCell className={"text-left"}>
                         {moment(item.tradeOpenTime).format(
                           DateTime.ISOShortMonthDayYearWithTimeFormat,

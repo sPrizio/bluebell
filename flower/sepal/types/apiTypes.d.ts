@@ -179,8 +179,8 @@ interface PagedTrades {
 interface Trade extends GenericApiType {
   tradeId: string;
   product: string;
-  tradePlatform: string;
-  tradeType: string;
+  tradePlatform: EnumDisplay;
+  tradeType: EnumDisplay;
   tradeOpenTime: string;
   tradeCloseTime: string;
   lotSize: number;

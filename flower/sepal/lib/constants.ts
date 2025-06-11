@@ -5,7 +5,9 @@ import { hasEmail, hasUsername } from "@/lib/functions/account-functions";
 import {
   getAccountDomain,
   getAnalysisDomain,
+  getChartDomain,
   getJobDomain,
+  getMarketPriceDomain,
   getNewsDomain,
   getPortfolioDomain,
   getPortfolioRecordDomain,
@@ -70,12 +72,20 @@ export const ApiUrls = {
       getAnalysisDomain() +
       "/weekdays-time-buckets?accountNumber={accountNumber}&weekday={weekday}&filter={filter}",
   },
+  Charting: {
+    Get:
+      getChartDomain() +
+      "/apex-data?tradeId={tradeId}&accountNumber={accountNumber}&interval={interval}",
+  },
   Job: {
     GetJobById: getJobDomain() + "/get-by-id?jobId={jobId}",
     GetJobsByStatusAndTypePaged:
       getJobDomain() +
       "/get-status-type-paged?start={start}&end={end}&jobStatus={jobStatus}&jobType={jobType}&page={page}&pageSize={pageSize}&sort={sort}",
     GetJobTypes: getJobDomain() + "/get-job-types",
+  },
+  MarketPrice: {
+    GetTimeIntervals: getMarketPriceDomain() + "/time-intervals",
   },
   News: {
     GetNews: getNewsDomain() + "/get-for-interval?start={start}&end={end}",
@@ -181,6 +191,7 @@ export const Css = {
   ColorGraphAccSecondary: "#82ca9d",
   ColorGraphAccTertiary: "#bda74e",
   ColorWhite: "#FFFFFF",
+  ColorFontPrimary: "rgb(100, 116, 139)",
   FontFamily: "Inter, sans-serif",
   SelectItemStyles: "hover:bg-primary/5 hover:cursor-pointer",
 };
