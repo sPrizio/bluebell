@@ -83,8 +83,6 @@ export const CandleStickChartConfig: { Options: ApexOptions } = {
         const date = w.config.series[seriesIndex].data[dataPointIndex].x;
         const data = w.config.series[seriesIndex].data[dataPointIndex].y;
 
-        console.log(w.config.series[seriesIndex]);
-
         if (w.config.series[seriesIndex].name === "Trade") {
           return CandleStickChartConfigTradeTooltip(
             moment(date).format(DateTime.ISOShortTimeFormat),

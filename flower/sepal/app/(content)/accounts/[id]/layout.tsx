@@ -43,7 +43,12 @@ export default function AccountDetailsLayout({
     return <LoadingPage />;
   }
 
-  if (isPortfolioError || portfolioError || isAccountError) {
+  if (
+    isPortfolioError ||
+    portfolioError ||
+    isAccountError ||
+    portfolioMisMatch
+  ) {
     logErrors(
       "User and portfolio mismatch!",
       portfolioError,

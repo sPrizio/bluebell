@@ -172,7 +172,7 @@ export default function AccountDetailsCmp({
                 key={0}
                 title={"Update Trading Account Information"}
                 description={
-                  "Here you can edit/update any Account information. Note that some aspects of this Account cannot be changed after Account creation."
+                  "Here you can edit/update any account information. Note that some aspects of this account cannot be changed after account creation."
                 }
                 trigger={
                   <Button className="" variant={"outline"}>

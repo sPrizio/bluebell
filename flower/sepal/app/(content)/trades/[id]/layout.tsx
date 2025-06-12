@@ -1,6 +1,6 @@
 "use client";
 
-import { useTradeQuery } from "@/lib/hooks/query/queries";
+import { useAccountQuery, useTradeQuery } from "@/lib/hooks/query/queries";
 import { Icons } from "@/lib/enums";
 import React from "react";
 import { useSearchParams } from "next/navigation";
@@ -15,6 +15,9 @@ import TradeInformation from "@/components/Table/Trade/TradeInformation";
 import { BaseCard } from "@/components/Card/BaseCard";
 import TradeReviewCard from "@/components/Card/Trade/TradeReviewCard";
 import NotFound from "@/app/not-found";
+import TradeForm from "@/components/Form/Trade/TradeForm";
+import { useActivePortfolio } from "@/lib/hooks/api/useActivePortoflio";
+import Error from "@/app/error";
 
 /**
  * The base layout for the trade detail page
@@ -32,21 +35,42 @@ export default function TradeDetailsLayout({
   params: { id: string };
 }>) {
   const searchParams = useSearchParams();
+  const accNumber = searchParams.get("account") ?? "-1";
+
+  const {
+    isLoading: isPortfolioLoading,
+    isError: isPortfolioError,
+    error: portfolioError,
+    activePortfolio,
+    hasMismatch: portfolioMisMatch,
+  } = useActivePortfolio();
+
+  const {
+    data: account,
+    isError: isAccountError,
+    error: accountError,
+    isLoading: isAccountLoading,
+  } = useAccountQuery(accNumber);
 
   const {
     data: trade,
     isError: isTradeError,
     error: tradeError,
     isLoading: isTradeLoading,
-  } = useTradeQuery(searchParams.get("account") ?? "-1", params.id);
+  } = useTradeQuery(accNumber, params.id);
 
-  if (isTradeLoading) {
+  if (isTradeLoading || isAccountLoading || isPortfolioLoading) {
     return <LoadingPage />;
   }
 
   if (isTradeError) {
     logErrors(tradeError);
     return <NotFound />;
+  }
+
+  if (isAccountError || isPortfolioError || portfolioMisMatch) {
+    logErrors(accountError, portfolioError, portfolioMisMatch);
+    return <Error />;
   }
 
   const pageInfo = {
@@ -56,8 +80,18 @@ export default function TradeDetailsLayout({
     breadcrumbs: [
       { label: "Dashboard", href: "/dashboard", active: false },
       {
+        label: `${activePortfolio?.name ?? ""} Accounts`,
+        href: "/accounts",
+        active: false,
+      },
+      {
+        label: `${account?.name ?? "Account"}`,
+        href: `/accounts/${accNumber}`,
+        active: false,
+      },
+      {
         label: `Trades`,
-        href: `/trades?account=${searchParams.get("account")}`,
+        href: `/trades?account=${accNumber}`,
         active: false,
       },
       {
@@ -76,7 +110,23 @@ export default function TradeDetailsLayout({
         <div>
           <div className={"sm:col-span-1 lg:col-span-2 xl:col-span-4"}>
             <div className={"flex items-end justify-end gap-4"}>
-              <div className={""}>Update</div>
+              <div className={""}>
+                <BaseModal
+                  title={"Update Trade Information"}
+                  description={
+                    "Here you can edit/update any trade information. Note that some aspects of this trade cannot be changed after trade creation."
+                  }
+                  trigger={
+                    <Button className="" variant={"outline"}>
+                      {resolveIcon(Icons.Edit)}
+                      &nbsp;Update
+                    </Button>
+                  }
+                  content={
+                    <TradeForm account={account} trade={trade} mode={"edit"} />
+                  }
+                />
+              </div>
               <div className={""}>
                 <BaseModal
                   key={1}

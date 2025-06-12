@@ -48,9 +48,9 @@ export default function TradeForm({
   mode = "create",
   trade,
 }: Readonly<{
-  account: Account;
+  account: Account | null | undefined;
   mode: "create" | "edit";
-  trade?: Trade;
+  trade: Trade | null | undefined;
 }>) {
   if (!isCreateMode() && !trade?.tradeId) {
     throw new Error("Missing Trade for edit mode");
@@ -125,18 +125,36 @@ export default function TradeForm({
       netProfit: isCreateMode() ? 0.0 : trade?.netProfit,
       stopLoss: isCreateMode() ? 0.0 : trade?.stopLoss,
       takeProfit: isCreateMode() ? 0.0 : trade?.takeProfit,
-      openTime: isCreateMode()
-        ? "09:30:00"
-        : moment(trade?.tradeOpenTime).format(DateTime.ISOTimeFormat),
-      closeTime: isCreateMode()
-        ? "16:00:00"
-        : trade?.tradeCloseTime
-          ? moment(trade?.tradeCloseTime).format(DateTime.ISOTimeFormat)
-          : "16:00:00",
+      openTime: getOpenTime(),
+      closeTime: getCloseTime(),
     },
   });
 
   //  GENERAL FUNCTIONS
+
+  /**
+   * Computes the open time for the input
+   */
+  function getOpenTime() {
+    if (isCreateMode()) {
+      return "09:30:00";
+    } else {
+      return moment(trade?.tradeOpenTime).format(DateTime.ISOTimeFormat);
+    }
+  }
+
+  /**
+   * Computes the close time for the input
+   */
+  function getCloseTime() {
+    if (isCreateMode()) {
+      return "16:00:00";
+    } else if (trade?.tradeCloseTime) {
+      return moment(trade.tradeCloseTime).format(DateTime.ISOTimeFormat);
+    } else {
+      return "16:00:00";
+    }
+  }
 
   /**
    * Renders the success notifications
@@ -253,7 +271,11 @@ export default function TradeForm({
                   <FormItem>
                     <FormLabel className="!text-current">Trade ID</FormLabel>
                     <FormControl>
-                      <Input placeholder="1234" {...field} />
+                      <Input
+                        placeholder="1234"
+                        {...field}
+                        disabled={!isCreateMode()}
+                      />
                     </FormControl>
                     <FormDescription>
                       To auto-generate a unique trade id, leave this field blank
@@ -324,6 +346,7 @@ export default function TradeForm({
                     <Select
                       onValueChange={field.onChange}
                       defaultValue={field.value}
+                      disabled={!isCreateMode()}
                     >
                       <FormControl>
                         <SelectTrigger>
@@ -355,6 +378,7 @@ export default function TradeForm({
                         label={"Open Time"}
                         hasIcon={true}
                         field={field}
+                        disabled={!isCreateMode()}
                       />
                       <FormMessage
                         className={"text-primaryRed font-semibold"}
@@ -375,6 +399,7 @@ export default function TradeForm({
                           {...field}
                           placeholder="09:30:00"
                           className="bg-background appearance-none [&::-webkit-calendar-picker-indicator]:hidden [&::-webkit-calendar-picker-indicator]:appearance-none"
+                          disabled={!isCreateMode()}
                         />
                       </FormControl>
                       <FormMessage
@@ -399,6 +424,7 @@ export default function TradeForm({
                         label={"Close Time"}
                         hasIcon={true}
                         field={field}
+                        disabled={!isCreateMode()}
                       />
                       <FormDescription>
                         This field can be left empty, unless a close price is
@@ -423,6 +449,7 @@ export default function TradeForm({
                           {...field}
                           placeholder="16:00:00"
                           className="bg-background appearance-none [&::-webkit-calendar-picker-indicator]:hidden [&::-webkit-calendar-picker-indicator]:appearance-none"
+                          disabled={!isCreateMode()}
                         />
                       </FormControl>
                       <FormMessage
