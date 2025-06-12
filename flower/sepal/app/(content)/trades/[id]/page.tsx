@@ -6,12 +6,12 @@ export const metadata: Metadata = {
 };
 
 /**
- * Renders the Account details page
+ * Renders the trade details page
  *
  * @author Stephen Prizio
  * @version 0.2.4
  */
-export default function AccountDetailsPage() {
+export default function TradeDetailsPage() {
   //  RENDER
 
   //  all logic is contained within the layout.tsx file
