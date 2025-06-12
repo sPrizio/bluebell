@@ -6,11 +6,11 @@ import {
 import { AccountStatisticsType } from "@/types/apiTypes";
 
 /**
- * Renders the Account's statistics
+ * Renders the account's statistics
  *
- * @param statistics Account statistics
+ * @param statistics account statistics
  * @author Stephen Prizio
- * @version 0.0.2
+ * @version 0.2.4
  */
 export default function AccountStatistics({
   statistics,

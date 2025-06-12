@@ -62,7 +62,7 @@ export default function TradeReviewChart({
   const additionalOptions = useMemo(() => {
     const options = CandleStickChartConfig.Options;
 
-    if (trade?.stopLoss) {
+    if ((trade?.stopLoss ?? 0) !== 0) {
       options.annotations?.yaxis?.push({
         y: trade?.stopLoss,
         borderColor: Css.ColorRed,
@@ -82,7 +82,7 @@ export default function TradeReviewChart({
       });
     }
 
-    if (trade?.takeProfit) {
+    if ((trade?.takeProfit ?? 0) !== 0) {
       options.annotations?.yaxis?.push({
         y: trade?.takeProfit,
         borderColor: Css.ColorGreen,

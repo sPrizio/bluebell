@@ -213,7 +213,10 @@ export const useCreateTradeMutation = (accountNumber: number) => {
       ),
     onSuccess: (data) => {
       queryClient.invalidateQueries({
-        queryKey: ["account", accountNumber.toString()],
+        queryKey: ["portfolio"],
+      });
+      queryClient.invalidateQueries({
+        queryKey: ["account"],
       });
       queryClient.invalidateQueries({
         queryKey: ["paginated-trades"],
@@ -236,9 +239,17 @@ export const useUpdateTradeMutation = (
       ),
     onSuccess: (data) => {
       queryClient.invalidateQueries({
-        queryKey: ["account", accountNumber.toString()],
+        queryKey: ["trade", accountNumber.toString(), tradeId],
       });
-      queryClient.invalidateQueries({ queryKey: ["trade", tradeId] });
+      queryClient.invalidateQueries({
+        queryKey: ["trade-insights", accountNumber.toString(), tradeId],
+      });
+      queryClient.invalidateQueries({
+        queryKey: ["portfolio"],
+      });
+      queryClient.invalidateQueries({
+        queryKey: ["account"],
+      });
       queryClient.invalidateQueries({
         queryKey: ["paginated-trades"],
       });
@@ -259,7 +270,10 @@ export const useDeleteTradeMutation = (
       }),
     onSuccess: (data) => {
       queryClient.invalidateQueries({
-        queryKey: ["account", accountNumber.toString()],
+        queryKey: ["account"],
+      });
+      queryClient.invalidateQueries({
+        queryKey: ["portfolio"],
       });
       queryClient.invalidateQueries({
         queryKey: ["paginated-trades"],

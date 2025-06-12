@@ -1,6 +1,10 @@
 "use client";
 
-import { useAccountQuery, useTradeQuery } from "@/lib/hooks/query/queries";
+import {
+  useAccountQuery,
+  useTradeInsightsQuery,
+  useTradeQuery,
+} from "@/lib/hooks/query/queries";
 import { Icons } from "@/lib/enums";
 import React from "react";
 import { useSearchParams } from "next/navigation";
@@ -18,6 +22,7 @@ import NotFound from "@/app/not-found";
 import TradeForm from "@/components/Form/Trade/TradeForm";
 import { useActivePortfolio } from "@/lib/hooks/api/useActivePortoflio";
 import Error from "@/app/error";
+import TradeInsights from "@/components/Trade/TradeInsights";
 
 /**
  * The base layout for the trade detail page
@@ -59,7 +64,19 @@ export default function TradeDetailsLayout({
     isLoading: isTradeLoading,
   } = useTradeQuery(accNumber, params.id);
 
-  if (isTradeLoading || isAccountLoading || isPortfolioLoading) {
+  const {
+    data: tradeInsights,
+    isError: isTradeInsightsError,
+    error: tradeInsightsError,
+    isLoading: isTradeInsightsLoading,
+  } = useTradeInsightsQuery(accNumber, params.id);
+
+  if (
+    isTradeLoading ||
+    isAccountLoading ||
+    isPortfolioLoading ||
+    isTradeInsightsLoading
+  ) {
     return <LoadingPage />;
   }
 
@@ -68,8 +85,18 @@ export default function TradeDetailsLayout({
     return <NotFound />;
   }
 
-  if (isAccountError || isPortfolioError || portfolioMisMatch) {
-    logErrors(accountError, portfolioError, portfolioMisMatch);
+  if (
+    isAccountError ||
+    isPortfolioError ||
+    portfolioMisMatch ||
+    isTradeInsightsError
+  ) {
+    logErrors(
+      accountError,
+      portfolioError,
+      portfolioMisMatch,
+      tradeInsightsError,
+    );
     return <Error />;
   }
 
@@ -150,9 +177,26 @@ export default function TradeDetailsLayout({
             }
           >
             <div className={"lg:col-span-2 xl:col-span-3"}>
-              <TradeReviewCard trade={trade} />
+              <div className={"mb-6"}>
+                <TradeReviewCard trade={trade} />
+              </div>
+              <div>
+                <BaseCard
+                  title={"Trade Details"}
+                  subtitle={"Review key statistics regarding this trade."}
+                  emptyText={
+                    "This trade is active. Once closed, come back here to see key insights"
+                  }
+                  cardContent={
+                    trade?.tradeCloseTime ? (
+                      <TradeInsights insights={tradeInsights} />
+                    ) : null
+                  }
+                />
+              </div>
             </div>
             <div>
+              <div></div>
               <BaseCard
                 title={"Trade Information"}
                 subtitle={"View the base trade details."}

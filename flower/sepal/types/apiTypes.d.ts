@@ -239,6 +239,18 @@ interface TradeRecord extends GenericApiType {
   account: Account;
 }
 
+interface TradeInsightsType {
+  dayOfWeek: string;
+  rrr: number;
+  risk: number;
+  riskEquityPercentage: number;
+  reward: number;
+  rewardEquityPercentage: number;
+  duration: number;
+  drawdown: number;
+  drawdownPercentage: number;
+}
+
 interface TradeLog {
   entries: Array<TradeLogEntry>;
 }

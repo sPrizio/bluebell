@@ -178,7 +178,11 @@ export default function TradesPage() {
                     </Button>
                   }
                   content={
-                    <TradeForm account={activeAccount} mode={"create"} />
+                    <TradeForm
+                      account={activeAccount}
+                      trade={undefined}
+                      mode={"create"}
+                    />
                   }
                 />
               </div>

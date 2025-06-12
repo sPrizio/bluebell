@@ -19,6 +19,7 @@ import {
   Portfolio,
   PortfolioRecord,
   Trade,
+  TradeInsightsType,
   TradeLog,
   TradePlatform,
   TradeRecordControls,
@@ -106,7 +107,7 @@ export const useRecentTradeRecordsQuery = (
 
 export const useTradeQuery = (accId: string, id: string) => {
   return useQuery<Trade | null>({
-    queryKey: ["trade", id],
+    queryKey: ["trade", accId, id],
     queryFn: () =>
       get<Trade>(ApiUrls.Trade.GetTradeForTradeId, {
         accountNumber: accId,
@@ -393,6 +394,20 @@ export const usePagedJobsQuery = (
         jobStatus: jobStatus,
         jobType: jobType,
         sort: sort,
+      }),
+  });
+};
+
+export const useTradeInsightsQuery = (
+  accountNumber: string,
+  tradeId: string,
+) => {
+  return useQuery<TradeInsightsType>({
+    queryKey: ["trade-insights", accountNumber, tradeId],
+    queryFn: () =>
+      get<TradeInsightsType>(ApiUrls.Trade.GetInsights, {
+        accountNumber: accountNumber,
+        tradeId: tradeId,
       }),
   });
 };
