@@ -109,6 +109,8 @@ public abstract class AbstractGenericTest {
                 .openPrice(13083.41)
                 .product("Test Product")
                 .account(generateTestAccount())
+                .stopLoss(13000.0)
+                .takeProfit(13110.0)
                 .build();
     }
 
@@ -354,6 +356,7 @@ public abstract class AbstractGenericTest {
                 .dataSource(DataSource.FIRST_RATE_DATA)
                 .interval(MarketPriceTimeInterval.THIRTY_MINUTE)
                 .symbol("Testing")
+                .date(LocalDateTime.now())
                 .open(11234.05)
                 .high(12365.89)
                 .low(10258.30)

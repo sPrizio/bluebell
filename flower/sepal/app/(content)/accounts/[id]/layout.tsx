@@ -16,7 +16,7 @@ import { useActivePortfolio } from "@/lib/hooks/api/useActivePortoflio";
  * @param children Content
  * @param params Account ID
  * @author Stephen Prizio
- * @version 0.2.0
+ * @version 0.2.4
  */
 export default function AccountDetailsLayout({
   children,
@@ -43,7 +43,12 @@ export default function AccountDetailsLayout({
     return <LoadingPage />;
   }
 
-  if (isPortfolioError || portfolioError || isAccountError) {
+  if (
+    isPortfolioError ||
+    portfolioError ||
+    isAccountError ||
+    portfolioMisMatch
+  ) {
     logErrors(
       "User and portfolio mismatch!",
       portfolioError,
@@ -52,29 +57,6 @@ export default function AccountDetailsLayout({
     );
     return <Error />;
   }
-
-  const pageInfo = {
-    title: "Account Overview",
-    subtitle: computeDescription(),
-    iconCode: Icons.Mountain,
-    breadcrumbs: [
-      { label: "Dashboard", href: "/dashboard", active: false },
-      {
-        label: `${activePortfolio?.name ?? ""} Accounts`,
-        href: "/accounts",
-        active: false,
-      },
-      {
-        label: `${account?.name ?? "Account"}`,
-        href: `/accounts/${params.id}`,
-        active: true,
-      },
-    ],
-    backCTA: {
-      label: "Return to your accounts",
-      href: "/accounts",
-    },
-  };
 
   //  GENERAL FUNCTIONS
 
@@ -94,6 +76,25 @@ export default function AccountDetailsLayout({
 
     return string;
   }
+
+  const pageInfo = {
+    title: "Account Overview",
+    subtitle: computeDescription(),
+    iconCode: Icons.Mountain,
+    breadcrumbs: [
+      { label: "Dashboard", href: "/dashboard", active: false },
+      {
+        label: `${activePortfolio?.name ?? ""} Accounts`,
+        href: "/accounts",
+        active: false,
+      },
+      {
+        label: `${account?.name ?? "Account"}`,
+        href: `/accounts/${params.id}`,
+        active: true,
+      },
+    ],
+  };
 
   //  RENDER
 

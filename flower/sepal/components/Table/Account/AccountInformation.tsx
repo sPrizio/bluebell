@@ -12,9 +12,9 @@ import { Account } from "@/types/apiTypes";
 import BaseTableContainer from "@/components/Table/BaseTableContainer";
 
 /**
- * Renders basic Account information
+ * Renders basic account information
  *
- * @param account Account info
+ * @param account account info
  * @author Stephen Prizio
  * @version 0.2.4
  */

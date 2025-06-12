@@ -7,6 +7,7 @@ import com.bluebell.platform.enums.security.UserRole;
 import com.bluebell.platform.enums.time.MarketPriceTimeInterval;
 import com.bluebell.platform.models.api.json.StandardJsonResponse;
 import com.bluebell.platform.models.core.entities.market.MarketPrice;
+import com.bluebell.platform.models.core.nonentities.data.PairEntry;
 import com.bluebell.platform.util.DirectoryUtil;
 import com.bluebell.platform.util.MetaTrader4FileUtil;
 import com.bluebell.radicle.enums.DataSource;
@@ -32,6 +33,8 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Arrays;
+import java.util.List;
 
 import static com.bluebell.radicle.importing.validation.ImportValidator.validateImportFileExtension;
 
@@ -39,7 +42,7 @@ import static com.bluebell.radicle.importing.validation.ImportValidator.validate
  * Api controller for {@link MarketPrice}
  *
  * @author Stephen Prizio
- * @version 0.2.0
+ * @version 0.2.4
  */
 @Slf4j
 @RestController
@@ -53,6 +56,44 @@ public class MarketPriceApiController extends AbstractApiController {
 
 
     //  METHODS
+
+    //  ----------------- GET REQUESTS -----------------
+
+    /**
+     * Returns a {@link StandardJsonResponse} containing all {@link MarketPriceTimeInterval}s
+     *
+     * @param request {@link HttpServletRequest}
+     * @return {@link StandardJsonResponse}
+     */
+    @ValidateApiToken
+    @Operation(summary = "Get all market price time intervals", description = "Fetches all market price time intervals that are currently supported in bluebell. Examples include Five_MINUTE & FIFTEEN_MINUTE")
+    @ApiResponse(
+            responseCode = "200",
+            description = "Response when the api successfully retrieves all price time intervals.",
+            content = @Content(
+                    mediaType = "application/json",
+                    schema = @Schema(implementation = StandardJsonResponse.class)
+            )
+    )
+    @ApiResponse(
+            responseCode = "401",
+            description = "Response when the api call made was unauthorized.",
+            content = @Content(
+                    mediaType = "application/json",
+                    schema = @Schema(implementation = StandardJsonResponse.class, example = "The API token was invalid.")
+            )
+    )
+    @GetMapping(ApiPaths.MarketPrice.TIME_INTERVALS)
+    public StandardJsonResponse<List<PairEntry>> getTimeIntervals(final HttpServletRequest request) {
+        return StandardJsonResponse
+                .<List<PairEntry>>builder()
+                .success(true)
+                .data(Arrays.stream(MarketPriceTimeInterval.values()).map(tp -> PairEntry.builder().code(tp.getCode()).label(tp.getLabel()).build()).toList())
+                .build();
+    }
+
+
+    //  ----------------- POST REQUESTS -----------------
 
     /**
      * Ingests a market price data file from MT4 and saves it to the file system

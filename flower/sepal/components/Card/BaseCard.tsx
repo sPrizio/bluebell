@@ -8,6 +8,7 @@ import {
 } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import React from "react";
+import SepalLoader from "@/components/Svg/SepalLoader";
 
 /**
  * Base card component
@@ -19,8 +20,9 @@ import React from "react";
  * @param footerControls card footer buttons
  * @param loading loading flag on the card
  * @param emptyText empty text to display when the card is rendered without content
+ * @param includeSkeleton if true, show a skeleton instead of a loader
  * @author Stephen Prizio
- * @version 0.2.3
+ * @version 0.2.4
  */
 export function BaseCard({
   title = "",
@@ -31,6 +33,7 @@ export function BaseCard({
   icon = null,
   loading = false,
   emptyText = "No data present.",
+  includeSkeleton = true,
 }: Readonly<{
   title?: string;
   subtitle?: string;
@@ -40,12 +43,13 @@ export function BaseCard({
   icon?: React.ReactNode;
   loading?: boolean;
   emptyText?: string;
+  includeSkeleton?: boolean;
 }>) {
   //  RENDER
 
   return (
     <>
-      {loading ? (
+      {loading && includeSkeleton && (
         <div className="flex flex-col space-y-3">
           <Skeleton className="h-[175px] w-1/2 rounded-xl" />
           <div className="space-y-2">
@@ -53,7 +57,21 @@ export function BaseCard({
             <Skeleton className="h-4 w-1/5" />
           </div>
         </div>
-      ) : (
+      )}
+      {loading && !includeSkeleton && (
+        <Card className={"w-full"}>
+          <CardContent className="p-6">
+            <div
+              className={
+                "sm:h-[175px] md:h-[300px] flex items-center justify-center"
+              }
+            >
+              <SepalLoader />
+            </div>
+          </CardContent>
+        </Card>
+      )}
+      {!loading && (
         <Card className={"w-full"}>
           {title && title.length > 0 ? (
             <CardHeader className={"pb-2"}>

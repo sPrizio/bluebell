@@ -12,7 +12,6 @@ import moment from "moment/moment";
 import { DateTime } from "@/lib/constants";
 import React, { useState } from "react";
 import {
-  formatNegativePoints,
   formatNumberForDisplay,
   logErrors,
 } from "@/lib/functions/util-functions";
@@ -30,6 +29,7 @@ import { usePagedTradesQuery } from "@/lib/hooks/query/queries";
 import Error from "@/app/error";
 import { UserTradeControlSelection } from "@/types/uiTypes";
 import LoadingPage from "@/app/loading";
+import { useRouter } from "next/navigation";
 import BaseTableContainer from "@/components/Table/BaseTableContainer";
 
 /**
@@ -53,6 +53,7 @@ export default function TradeTable({
   initialPageSize?: number;
   initialPage?: number;
 }>) {
+  const router = useRouter();
   const [currentPage, setCurrentPage] = useState(initialPage);
 
   const {
@@ -113,7 +114,7 @@ export default function TradeTable({
           table={
             <Table>
               <TableHeader className={"border-b-2 border-primaryLight"}>
-                <TableRow>
+                <TableRow className={"hover:bg-transparent"}>
                   <TableHead className={"text-center text-primary font-bold"}>
                     Trade Id
                   </TableHead>
@@ -139,10 +140,10 @@ export default function TradeTable({
                     Close Price
                   </TableHead>
                   <TableHead className={"text-right text-primary font-bold"}>
-                    Net Profit
+                    Points
                   </TableHead>
                   <TableHead className={"text-right text-primary font-bold"}>
-                    Points
+                    Net Profit
                   </TableHead>
                 </TableRow>
               </TableHeader>
@@ -151,7 +152,12 @@ export default function TradeTable({
                   return (
                     <TableRow
                       key={item.tradeId + index}
-                      className={"hover:bg-transparent"}
+                      className={"cursor-pointer"}
+                      onClick={() => {
+                        router.push(
+                          `/trades/${item.tradeId}?account=${account?.accountNumber ?? "default"}`,
+                        );
+                      }}
                     >
                       <TableCell className={"text-center"}>
                         {item.tradeId}
@@ -159,7 +165,7 @@ export default function TradeTable({
                       <TableCell className={"text-left"}>
                         {item.product}
                       </TableCell>
-                      <TableCell>{item.tradeType}</TableCell>
+                      <TableCell>{item.tradeType.label}</TableCell>
                       <TableCell className={"text-left"}>
                         {moment(item.tradeOpenTime).format(
                           DateTime.ISOShortMonthDayYearWithTimeFormat,
@@ -172,18 +178,43 @@ export default function TradeTable({
                         {item.lotSize}
                       </TableCell>
                       <TableCell className={"text-left"}>
-                        {moment(item.tradeCloseTime).format(
-                          DateTime.ISOShortMonthDayYearWithTimeFormat,
+                        {!item.tradeCloseTime && (
+                          <span className={"font-semibold text-primary"}>
+                            Live Trade
+                          </span>
                         )}
+                        {item.tradeCloseTime &&
+                          moment(item.tradeCloseTime).format(
+                            DateTime.ISOShortMonthDayYearWithTimeFormat,
+                          )}
                       </TableCell>
                       <TableCell className={"text-center"}>
-                        {formatNumberForDisplay(item.closePrice)}
+                        {!item.tradeCloseTime && (
+                          <span className={"font-semibold text-primary"}>
+                            -
+                          </span>
+                        )}
+                        {item.tradeCloseTime &&
+                          formatNumberForDisplay(item.closePrice)}
                       </TableCell>
                       <TableCell className={"text-right"}>
-                        $&nbsp;{formatNumberForDisplay(item.netProfit)}
+                        {!item.tradeCloseTime && (
+                          <span className={"font-semibold text-primary"}>
+                            -
+                          </span>
+                        )}
+                        {item.tradeCloseTime &&
+                          formatNumberForDisplay(item.points)}
                       </TableCell>
                       <TableCell className={"text-right"}>
-                        {formatNegativePoints(item.points)}
+                        {!item.tradeCloseTime && (
+                          <span className={"font-semibold text-primary"}>
+                            -
+                          </span>
+                        )}
+                        {item.tradeCloseTime && (
+                          <>$&nbsp;{formatNumberForDisplay(item.netProfit)}</>
+                        )}
                       </TableCell>
                     </TableRow>
                   );

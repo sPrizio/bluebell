@@ -3,6 +3,7 @@ package com.bluebell.radicle.services.market;
 import com.bluebell.platform.constants.CorePlatformConstants;
 import com.bluebell.platform.enums.time.MarketPriceTimeInterval;
 import com.bluebell.platform.models.core.entities.market.MarketPrice;
+import com.bluebell.platform.models.core.entities.trade.Trade;
 import com.bluebell.platform.models.core.nonentities.market.AggregatedMarketPrices;
 import com.bluebell.radicle.enums.DataSource;
 import com.bluebell.radicle.repositories.market.MarketPriceRepository;
@@ -23,7 +24,7 @@ import static com.bluebell.radicle.validation.GenericValidator.validateParameter
  * Service-layer for {@link MarketPrice}
  *
  * @author Stephen Prizio
- * @version 0.1.8
+ * @version 0.2.4
  */
 @Slf4j
 @Service
@@ -54,6 +55,27 @@ public class MarketPriceService {
         validateParameterIsNotNull(dataSource, CorePlatformConstants.Validation.MarketPrice.DATA_SOURCE_CANNOT_BE_NULL);
 
         return this.marketPriceRepository.findMarketPricesWithinTimespan(symbol, timeInterval, start, end, dataSource);
+    }
+
+    /**
+     * Returns a {@link List} of {@link MarketPrice}s for the given {@link Trade}
+     *
+     * @param trade {@link Trade}
+     * @param timeInterval {@link MarketPriceTimeInterval}
+     * @param dataSource {@link DataSource}
+     * @return {@link List} of {@link MarketPrice}
+     */
+    public List<MarketPrice> findMarketPricesForTrade(final Trade trade, final MarketPriceTimeInterval timeInterval, final DataSource dataSource) {
+        validateParameterIsNotNull(trade, CorePlatformConstants.Validation.Trade.TRADE_CANNOT_BE_NULL);
+        validateParameterIsNotNull(timeInterval, CorePlatformConstants.Validation.System.TIME_INTERVAL_CANNOT_BE_NULL);
+
+        return findMarketPricesWithinTimespan(
+                trade.getProduct(),
+                timeInterval,
+                trade.getTradeOpenTime().toLocalDate().atStartOfDay(),
+                trade.getTradeCloseTime().toLocalDate().atStartOfDay().plusDays(1),
+                dataSource != null ? dataSource : trade.getTradePlatform().getDataSource()
+        );
     }
 
     /**

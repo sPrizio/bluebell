@@ -7,13 +7,16 @@ import lombok.Getter;
  * Enum representing the different data sources for historical trading data
  *
  * @author Stephen Prizio
- * @version 0.1.5
+ * @version 0.2.4
  */
 @Getter
 public enum DataSource implements GenericEnum<DataSource> {
     FIRST_RATE_DATA("FIRST_RATE_DATA", "First Rate Data", "firstratedata"),
     METATRADER4("METATRADER4", "Metatrader 4", "mt4"),
-    TRADING_VIEW("TRADING_VIEW", "Trading View", "tradingview"),;
+    METATRADER5("METATRADER5", "Metatrader 5", "mt5"),
+    TRADING_VIEW("TRADING_VIEW", "Trading View", "tradingview"),
+    BLUEBELL("BLUEBELL", "Bluebell", "bluebell"),
+    CTRADER("CTRADER", "cTrader", "ctrader");
 
     private final String code;
 

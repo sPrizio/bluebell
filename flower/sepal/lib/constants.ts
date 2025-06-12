@@ -5,7 +5,9 @@ import { hasEmail, hasUsername } from "@/lib/functions/account-functions";
 import {
   getAccountDomain,
   getAnalysisDomain,
+  getChartDomain,
   getJobDomain,
+  getMarketPriceDomain,
   getNewsDomain,
   getPortfolioDomain,
   getPortfolioRecordDomain,
@@ -19,6 +21,8 @@ import {
 import { AccountCreationInfo } from "@/types/apiTypes";
 
 export const DEFAULT_PAGE_HEADER_SECTION_ICON_SIZE = 36;
+
+export const ISO_TIME_REGEX = /^(?:[01]?\d|2[0-3]):[0-5]\d(?::[0-5]\d)?$/;
 
 export const BASE_COLORS = [
   "red",
@@ -68,12 +72,20 @@ export const ApiUrls = {
       getAnalysisDomain() +
       "/weekdays-time-buckets?accountNumber={accountNumber}&weekday={weekday}&filter={filter}",
   },
+  Charting: {
+    Get:
+      getChartDomain() +
+      "/apex-data?tradeId={tradeId}&accountNumber={accountNumber}&interval={interval}",
+  },
   Job: {
     GetJobById: getJobDomain() + "/get-by-id?jobId={jobId}",
     GetJobsByStatusAndTypePaged:
       getJobDomain() +
       "/get-status-type-paged?start={start}&end={end}&jobStatus={jobStatus}&jobType={jobType}&page={page}&pageSize={pageSize}&sort={sort}",
     GetJobTypes: getJobDomain() + "/get-job-types",
+  },
+  MarketPrice: {
+    GetTimeIntervals: getMarketPriceDomain() + "/time-intervals",
   },
   News: {
     GetNews: getNewsDomain() + "/get-for-interval?start={start}&end={end}",
@@ -102,9 +114,23 @@ export const ApiUrls = {
     HealthCheck: getSystemDomain() + "/healthcheck",
   },
   Trade: {
+    CreateTrade:
+      getTradeDomain() + "/create-trade?accountNumber={accountNumber}",
+    UpdateTrade:
+      getTradeDomain() +
+      "/update-trade?accountNumber={accountNumber}&tradeId={tradeId}",
+    DeleteTrade:
+      getTradeDomain() +
+      "/delete-trade?accountNumber={accountNumber}&tradeId={tradeId}",
+    GetTradeForTradeId:
+      getTradeDomain() +
+      "/get-for-trade-id?accountNumber={accountNumber}&tradeId={tradeId}",
     GetPagedTrades:
       getTradeDomain() +
       "/get-for-interval-paged?accountNumber={accountNumber}&start={start}&end={end}&page={page}&pageSize={pageSize}&tradeType={tradeType}&symbol={symbol}&sort={sort}",
+    GetInsights:
+      getTradeDomain() +
+      "/get-trade-insights?accountNumber={accountNumber}&tradeId={tradeId}",
     ImportTrades:
       getTradeDomain() +
       "/import-trades?accountNumber={accountNumber}&isStrategy={isStrategy}",
@@ -168,7 +194,9 @@ export const Css = {
   ColorGraphAccSecondary: "#82ca9d",
   ColorGraphAccTertiary: "#bda74e",
   ColorWhite: "#FFFFFF",
+  ColorFontPrimary: "rgb(100, 116, 139)",
   FontFamily: "Inter, sans-serif",
+  SelectItemStyles: "hover:bg-primary/5 hover:cursor-pointer",
 };
 
 export function CRUDPortfolioSchema() {
@@ -392,4 +420,124 @@ export function TradeImportSchema() {
       .instanceof(FileList)
       .refine((file) => file?.length == 1, "File is required."),
   });
+}
+
+export function CRUDTradeSchema() {
+  return z
+    .object({
+      tradeId: z.string().optional(),
+      product: z
+        .string()
+        .min(3, {
+          message: "Please enter a symbol with a minimum of 3 characters.",
+        })
+        .max(25, {
+          message: "Please enter a symbol with at most 25 characters.",
+        }),
+      tradePlatform: z.string(),
+      tradeType: z.enum(safeConvertEnum(["BUY", "SELL"]), {
+        message: "Please select a trade type.",
+      }),
+      tradeOpenTime: z.date({
+        required_error: "A date & time is required when opening a trade.",
+      }),
+      tradeCloseTime: z.date().nullable().optional(),
+      openTime: z
+        .string()
+        .regex(ISO_TIME_REGEX, "Time must be in the format of hh:mm:ss"),
+      closeTime: z
+        .string()
+        .regex(ISO_TIME_REGEX, "Time must be in the format of hh:mm:ss"),
+      lotSize: z.coerce
+        .number()
+        .min(0.01, {
+          message: "Please enter a number between 0.01 and 999999.",
+        })
+        .max(999999, {
+          message: "Please enter a number between 0.01 and 999999.",
+        }),
+      openPrice: z.coerce
+        .number()
+        .min(0.01, {
+          message: "Please enter a number between 0.01 and 999999.",
+        })
+        .max(999999, {
+          message: "Please enter a number between 0.01 and 999999.",
+        }),
+      closePrice: z.coerce
+        .number()
+        .max(999999999, {
+          message: "Please enter a number between 0 and 999999999.",
+        })
+        .optional(),
+      netProfit: z.coerce
+        .number()
+        .min(-999999999, {
+          message: "Please enter a number between -999999999 and 999999999.",
+        })
+        .max(999999999, {
+          message: "Please enter a number between -999999999 and 999999999.",
+        })
+        .optional(),
+      stopLoss: z.coerce
+        .number()
+        .max(999999999, {
+          message: "Please enter a number between 0 and 999999999.",
+        })
+        .optional(),
+      takeProfit: z.coerce
+        .number()
+        .max(999999999, {
+          message: "Please enter a number between 0 and 999999999.",
+        })
+        .optional(),
+    })
+    .superRefine(
+      ({ tradeOpenTime, tradeCloseTime, closePrice, netProfit }, ctx) => {
+        const isClosePriceSet = closePrice !== 0;
+        const isCloseTimeSet =
+          tradeCloseTime !== null && tradeCloseTime !== undefined;
+        const isNetProfitSet = netProfit !== 0;
+
+        if (
+          (isClosePriceSet && !isCloseTimeSet) ||
+          (!isClosePriceSet && isCloseTimeSet)
+        ) {
+          ctx.addIssue({
+            code: "custom",
+            message:
+              "You must provide both a close price and close time, or neither.",
+            path: ["closePrice"],
+          });
+          ctx.addIssue({
+            code: "custom",
+            message:
+              "You must provide both a close price and close time, or neither.",
+            path: ["tradeCloseTime"],
+          });
+        }
+
+        if (isCloseTimeSet && isClosePriceSet && !isNetProfitSet) {
+          ctx.addIssue({
+            code: "custom",
+            message:
+              "You must provide a net profit when setting a closed trade",
+            path: ["netProfit"],
+          });
+        }
+
+        if (isCloseTimeSet && tradeCloseTime < tradeOpenTime) {
+          ctx.addIssue({
+            code: "custom",
+            message: "Close time cannot come before the open time",
+            path: ["tradeOpenTime"],
+          });
+          ctx.addIssue({
+            code: "custom",
+            message: "Close time cannot come before the open time",
+            path: ["tradeCloseTime"],
+          });
+        }
+      },
+    );
 }

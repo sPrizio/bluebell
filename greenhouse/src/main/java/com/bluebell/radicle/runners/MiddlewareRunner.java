@@ -5,10 +5,11 @@ import com.bluebell.platform.models.core.entities.system.IncomingPing;
 import com.bluebell.radicle.repositories.system.IncomingPingRepository;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Profile;
-import org.springframework.core.annotation.Order;
+import org.springframework.core.Ordered;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
@@ -17,14 +18,16 @@ import java.time.LocalDateTime;
  * Generates mocked incoming ping responses from the middleware systems
  *
  * @author Stephen Prizio
- * @version 0.1.9
+ * @version 0.2.4
  */
 @Slf4j
 @Component
-@Order(10)
 @Profile("dev")
 @ConditionalOnProperty(name = "bluebell.cmdlr.infra.data", havingValue = "true", matchIfMissing = true)
-public class MiddlewareRunner extends AbstractRunner implements CommandLineRunner {
+public class MiddlewareRunner extends AbstractRunner implements CommandLineRunner, Ordered {
+
+    @Value("${bluebell.cmdlr.order.middleware}")
+    private int order;
 
     @Resource(name = "incomingPingRepository")
     private IncomingPingRepository incomingPingRepository;
@@ -54,5 +57,10 @@ public class MiddlewareRunner extends AbstractRunner implements CommandLineRunne
         );
 
         logEnd();
+    }
+
+    @Override
+    public int getOrder() {
+        return this.order;
     }
 }

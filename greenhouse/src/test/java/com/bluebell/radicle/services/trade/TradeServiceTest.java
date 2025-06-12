@@ -2,12 +2,15 @@ package com.bluebell.radicle.services.trade;
 
 import com.bluebell.AbstractGenericTest;
 import com.bluebell.platform.constants.CorePlatformConstants;
+import com.bluebell.platform.enums.trade.TradePlatform;
 import com.bluebell.platform.enums.trade.TradeType;
+import com.bluebell.platform.models.api.dto.trade.CreateUpdateTradeDTO;
 import com.bluebell.platform.models.core.entities.account.Account;
 import com.bluebell.platform.models.core.entities.portfolio.Portfolio;
 import com.bluebell.platform.models.core.entities.security.User;
 import com.bluebell.platform.models.core.entities.trade.Trade;
 import com.bluebell.radicle.exceptions.validation.IllegalParameterException;
+import com.bluebell.radicle.exceptions.validation.MissingRequiredDataException;
 import com.bluebell.radicle.repositories.trade.TradeRepository;
 import org.assertj.core.groups.Tuple;
 import org.junit.jupiter.api.BeforeEach;
@@ -23,6 +26,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -33,7 +37,7 @@ import static org.mockito.ArgumentMatchers.any;
  * Testing class for {@link TradeService}
  *
  * @author Stephen Prizio
- * @version 0.2.0
+ * @version 0.2.4
  */
 @SpringBootTest
 @RunWith(SpringRunner.class)
@@ -72,6 +76,7 @@ class TradeServiceTest extends AbstractGenericTest {
         Mockito.when(this.tradeRepository.findAllTradesForSymbolWithinDatePaged(any(), any(), any(), any(), any())).thenReturn(new PageImpl<>(List.of(TEST_TRADE_1, TEST_TRADE_2)));
         Mockito.when(this.tradeRepository.findAllTradesForTypeWithinDatePaged(any(), any(), any(), any(), any())).thenReturn(new PageImpl<>(List.of(TEST_TRADE_1, TEST_TRADE_2)));
         Mockito.when(this.tradeRepository.findAllTradesForSymbolAndTypeWithinDatePaged(any(), any(), any(), any(), any(), any())).thenReturn(new PageImpl<>(List.of(TEST_TRADE_1, TEST_TRADE_2)));
+        Mockito.when(this.tradeRepository.save(any())).thenAnswer(invocation -> invocation.getArgument(0));
     }
 
 
@@ -255,5 +260,173 @@ class TradeServiceTest extends AbstractGenericTest {
         assertThat(this.tradeService.findTradeByTradeId("testId1", TEST_ACCOUNT))
                 .map(Trade::getTradeId)
                 .hasValue("testId1");
+    }
+
+
+    //  ----------------- createNewTrade -----------------
+
+    @Test
+    void test_createNewTrade_missingAccount() {
+        assertThatExceptionOfType(IllegalParameterException.class)
+                .isThrownBy(() -> this.tradeService.createNewTrade(null, null))
+                .withMessage(CorePlatformConstants.Validation.Account.ACCOUNT_CANNOT_BE_NULL);
+    }
+
+    @Test
+    void test_createNewTrade_missingData() {
+        assertThatExceptionOfType(MissingRequiredDataException.class)
+                .isThrownBy(() -> this.tradeService.createNewTrade(null, generateTestAccount()))
+                .withMessage("The required data for creating a Trade entity was null or empty");
+    }
+
+    @Test
+    void test_createNewTrade_success() {
+
+        final CreateUpdateTradeDTO data = CreateUpdateTradeDTO
+                .builder()
+                .tradeId("123LOL")
+                .tradePlatform(TradePlatform.BLUEBELL.getCode())
+                .product("Test Equity")
+                .tradeType(TradeType.BUY.getCode())
+                .closePrice(125.36)
+                .tradeCloseTime(LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME))
+                .tradeOpenTime(LocalDateTime.now().minusMinutes(5).format(DateTimeFormatter.ISO_DATE_TIME))
+                .lotSize(0.25)
+                .netProfit(89.63)
+                .openPrice(102.74)
+                .stopLoss(89.55)
+                .takeProfit(125.36)
+                .build();
+
+        assertThat(this.tradeService.createNewTrade(data, generateTestAccount()))
+                .isNotNull()
+                .extracting("tradeId", "openPrice", "tradePlatform")
+                .containsExactly("123LOL", 102.74, TradePlatform.BLUEBELL);
+    }
+
+    @Test
+    void test_createNewTrade_success_randomId() {
+
+        final CreateUpdateTradeDTO data = CreateUpdateTradeDTO
+                .builder()
+                .tradePlatform(TradePlatform.BLUEBELL.getCode())
+                .product("Test Equity")
+                .tradeType(TradeType.BUY.getCode())
+                .closePrice(125.36)
+                .tradeCloseTime(LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME))
+                .tradeOpenTime(LocalDateTime.now().minusMinutes(5).format(DateTimeFormatter.ISO_DATE_TIME))
+                .lotSize(0.25)
+                .netProfit(89.63)
+                .openPrice(102.74)
+                .stopLoss(89.55)
+                .takeProfit(125.36)
+                .build();
+
+        final Trade trade = this.tradeService.createNewTrade(data, generateTestAccount());
+        assertThat(trade)
+                .isNotNull()
+                .extracting("takeProfit", "openPrice", "tradePlatform")
+                .containsExactly(125.36, 102.74, TradePlatform.BLUEBELL);
+
+        assertThat(trade.getTradeId()).startsWith("B-");
+    }
+
+
+    //  ----------------- updateTrade -----------------
+
+    @Test
+    void test_updateTrade_missingTrade() {
+        assertThatExceptionOfType(IllegalParameterException.class)
+                .isThrownBy(() -> this.tradeService.updateTrade(null, null, null))
+                .withMessage(CorePlatformConstants.Validation.Trade.TRADE_CANNOT_BE_NULL);
+    }
+
+    @Test
+    void test_updateTrade_missingAccount() {
+        assertThatExceptionOfType(IllegalParameterException.class)
+                .isThrownBy(() -> this.tradeService.updateTrade(generateTestBuyTrade(), null, null))
+                .withMessage(CorePlatformConstants.Validation.Account.ACCOUNT_CANNOT_BE_NULL);
+    }
+
+    @Test
+    void test_updateTrade_missingData() {
+        assertThatExceptionOfType(MissingRequiredDataException.class)
+                .isThrownBy(() -> this.tradeService.updateTrade(generateTestBuyTrade(), CreateUpdateTradeDTO.builder().build(), generateTestAccount()))
+                .withMessage("The required data for updating a Trade entity was null or empty");
+    }
+
+    @Test
+    void test_updateTrade_success() {
+
+        final CreateUpdateTradeDTO data = CreateUpdateTradeDTO
+                .builder()
+                .tradeId("123LOL")
+                .tradePlatform(TradePlatform.BLUEBELL.getCode())
+                .product("Test Equity")
+                .tradeType(TradeType.BUY.getCode())
+                .closePrice(125.36)
+                .tradeCloseTime(LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME))
+                .tradeOpenTime(LocalDateTime.now().minusMinutes(5).format(DateTimeFormatter.ISO_DATE_TIME))
+                .lotSize(0.25)
+                .netProfit(89.63)
+                .openPrice(102.74)
+                .stopLoss(89.55)
+                .takeProfit(125.36)
+                .build();
+
+        assertThat(this.tradeService.updateTrade(generateTestBuyTrade(), data, generateTestAccount()))
+                .isNotNull()
+                .extracting("tradeId", "openPrice", "tradePlatform")
+                .containsExactly("123LOL", 102.74, TradePlatform.BLUEBELL);
+    }
+
+
+    //  ----------------- deleteTrade -----------------
+
+    @Test
+    void test_deleteTrade_success() {
+        assertThatExceptionOfType(IllegalParameterException.class)
+                .isThrownBy(() -> this.tradeService.deleteTrade(null))
+                .withMessage(CorePlatformConstants.Validation.Trade.TRADE_CANNOT_BE_NULL);
+
+        assertThat(this.tradeService.deleteTrade(generateTestBuyTrade())).isTrue();
+    }
+
+
+    //  ----------------- generateTradeInsights -----------------
+
+    @Test
+    void test_generateTradeInsights_missingParamTrade() {
+        assertThatExceptionOfType(IllegalParameterException.class)
+                .isThrownBy(() -> this.tradeService.generateTradeInsights(null))
+                .withMessage(CorePlatformConstants.Validation.Trade.TRADE_CANNOT_BE_NULL);
+    }
+
+    @Test
+    void test_generateTradeInsights_missingParamAccount() {
+        final Trade trade = generateTestBuyTrade();
+        trade.setAccount(null);
+
+        assertThatExceptionOfType(IllegalParameterException.class)
+                .isThrownBy(() -> this.tradeService.generateTradeInsights(trade))
+                .withMessage(CorePlatformConstants.Validation.Account.ACCOUNT_CANNOT_BE_NULL);
+    }
+
+    @Test
+    void test_generateTradeInsights_openTrade_success() {
+        final Trade trade = generateTestBuyTrade();
+        trade.setClosePrice(0.0);
+        trade.setTradeCloseTime(null);
+
+        assertThat(this.tradeService.generateTradeInsights(trade))
+                .extracting("rrr", "reward", "risk")
+                .containsExactly(0.0, 0.0, 0.0);
+    }
+
+    @Test
+    void test_generateTradeInsights_success() {
+        assertThat(this.tradeService.generateTradeInsights(generateTestBuyTrade()))
+                .extracting("rrr", "reward", "risk")
+                .containsExactly(0.32, 26.59, 83.41);
     }
 }

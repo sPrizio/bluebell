@@ -15,10 +15,11 @@ import com.bluebell.radicle.repositories.job.JobResultEntryRepository;
 import com.bluebell.radicle.repositories.job.JobResultRepository;
 import jakarta.annotation.Resource;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Profile;
-import org.springframework.core.annotation.Order;
+import org.springframework.core.Ordered;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -35,13 +36,15 @@ import java.util.Random;
  * @version 0.2.4
  */
 @Component
-@Order(7)
 @Profile("dev")
 @ConditionalOnProperty(name = "bluebell.cmdlr.infra.data", havingValue = "true", matchIfMissing = true)
-public class JobRunner extends AbstractRunner implements CommandLineRunner {
+public class JobRunner extends AbstractRunner implements CommandLineRunner, Ordered {
 
     private static final List<String> WORDS = new ArrayList<>(CorePlatformConstants.RANDOM_WORDS);
     private final Random random = new Random();
+
+    @Value("${bluebell.cmdlr.order.job}")
+    private int order;
 
     @Resource(name = "actionRepository")
     private ActionRepository actionRepository;
@@ -140,6 +143,11 @@ public class JobRunner extends AbstractRunner implements CommandLineRunner {
         }
 
         logEnd();
+    }
+
+    @Override
+    public int getOrder() {
+        return this.order;
     }
 
 

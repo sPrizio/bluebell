@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import AccountForm from "@/components/Form/Account/AccountForm";
 import DeleteAccountForm from "@/components/Form/Account/DeleteAccountForm";
 import { BaseCard } from "@/components/Card/BaseCard";
-import AccountInformation from "@/components/Account/AccountInformation";
+import AccountInformation from "@/components/Table/Account/AccountInformation";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 import SimpleBanner from "@/components/Banner/SimpleBanner";
@@ -172,7 +172,7 @@ export default function AccountDetailsCmp({
                 key={0}
                 title={"Update Trading Account Information"}
                 description={
-                  "Here you can edit/update any Account information. Note that some aspects of this Account cannot be changed after Account creation."
+                  "Here you can edit/update any account information. Note that some aspects of this account cannot be changed after account creation."
                 }
                 trigger={
                   <Button className="" variant={"outline"}>

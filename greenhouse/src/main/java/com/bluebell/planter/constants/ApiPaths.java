@@ -97,6 +97,8 @@ public class ApiPaths {
         public static final String BASE = "/market-price";
 
         public static final String INGEST = "/ingest";
+
+        public static final String TIME_INTERVALS = "/time-intervals";
     }
 
     public static class MarketNews {
@@ -213,7 +215,15 @@ public class ApiPaths {
 
         public static final String GET_FOR_TRADE_ID = "/get-for-trade-id";
 
+        public static final String GET_TRADE_INSIGHTS = "/get-trade-insights";
+
         public static final String IMPORT_TRADES = "/import-trades";
+
+        public static final String CREATE_TRADE = "/create-trade";
+
+        public static final String UPDATE_TRADE = "/update-trade";
+
+        public static final String DELETE_TRADE = "/delete-trade";
     }
 
     public static class TradeRecord {

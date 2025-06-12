@@ -29,7 +29,7 @@ import static org.mockito.ArgumentMatchers.anyInt;
  * Testing class for {@link AccountDetailsService}
  *
  * @author Stephen Prizio
- * @version 0.1.6
+ * @version 0.2.4
  */
 @SpringBootTest
 @RunWith(SpringRunner.class)
@@ -221,7 +221,7 @@ class AccountDetailsServiceTest extends AbstractGenericTest {
                         14.85,
                         -4.5,
                         2,
-                        0.0,
+                        0.32,
                         1.5,
                         5.18,
                         50,

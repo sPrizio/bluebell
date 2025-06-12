@@ -8,7 +8,10 @@ import { BaseCard } from "@/components/Card/BaseCard";
 import { useActiveAccount } from "@/lib/hooks/api/useActiveAccount";
 import { PageInfoProvider } from "@/lib/context/PageInfoProvider";
 import ReusableSelect from "@/components/Input/ReusableSelect";
-import { validatePageQueryFlow } from "@/lib/functions/util-component-functions";
+import {
+  resolveIcon,
+  validatePageQueryFlow,
+} from "@/lib/functions/util-component-functions";
 import TradeFilterDrawer from "@/components/Drawer/TradeFilterDrawer";
 import { UserTradeControlSelection } from "@/types/uiTypes";
 import moment from "moment";
@@ -18,12 +21,14 @@ import TradeTable from "@/components/Table/Trade/TradeTable";
 import { DateTime } from "@/lib/constants";
 import { useTradedSymbolsQuery } from "@/lib/hooks/query/queries";
 import Error from "@/app/error";
+import BaseModal from "@/components/Modal/BaseModal";
+import TradeForm from "@/components/Form/Trade/TradeForm";
 
 /**
  * Renders the Trade history page
  *
  * @author Stephen Prizio
- * @version 0.2.2
+ * @version 0.2.4
  */
 export default function TradesPage() {
   const searchParams = useSearchParams();
@@ -60,7 +65,7 @@ export default function TradesPage() {
         ? moment(activeAccount?.accountOpenTime ?? "").toDate()
         : moment().toDate(),
       end: moment().toDate(),
-      sort: "asc",
+      sort: "desc",
       type: "ALL",
       symbol: "ALL",
     },
@@ -159,6 +164,26 @@ export default function TradesPage() {
                     setHasSubmitted(false);
                   }}
                   symbols={tradedSymbols}
+                />
+              </div>
+              <div>
+                <BaseModal
+                  title={"Add a new Trade"}
+                  description={
+                    "Add a new trade to this trading account. Additions will update the account's balance and related information."
+                  }
+                  trigger={
+                    <Button className={"w-full text-white"}>
+                      {resolveIcon(Icons.CirclePlus)}&nbsp;Add Trade
+                    </Button>
+                  }
+                  content={
+                    <TradeForm
+                      account={activeAccount}
+                      trade={undefined}
+                      mode={"create"}
+                    />
+                  }
                 />
               </div>
             </div>

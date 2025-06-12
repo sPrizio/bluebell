@@ -5,6 +5,7 @@ import com.bluebell.planter.converters.account.AccountDTOConverter;
 import com.bluebell.planter.services.UniqueIdentifierService;
 import com.bluebell.platform.models.api.dto.trade.TradeDTO;
 import com.bluebell.platform.models.core.entities.trade.Trade;
+import com.bluebell.platform.models.core.nonentities.data.EnumDisplay;
 import com.bluebell.platform.services.MathService;
 import jakarta.annotation.Resource;
 import org.springframework.stereotype.Component;
@@ -13,7 +14,7 @@ import org.springframework.stereotype.Component;
  * Converter for {@link Trade}s into {@link TradeDTO}s
  *
  * @author Stephen Prizio
- * @version 0.1.1
+ * @version 0.2.4
  */
 @Component("tradeDTOConverter")
 public class TradeDTOConverter implements GenericDTOConverter<Trade, TradeDTO> {
@@ -34,24 +35,41 @@ public class TradeDTOConverter implements GenericDTOConverter<Trade, TradeDTO> {
             return TradeDTO.builder().build();
         }
 
-        final MathService mathService = new MathService();
         return TradeDTO
                 .builder()
                 .uid(this.uniqueIdentifierService.generateUid(entity))
                 .tradeId(entity.getTradeId())
-                .tradePlatform(entity.getTradePlatform())
+                .tradePlatform(EnumDisplay.builder().code(entity.getTradePlatform().getCode()).label(entity.getTradePlatform().getLabel()).build())
                 .product(entity.getProduct())
-                .tradeType(entity.getTradeType())
+                .tradeType(EnumDisplay.builder().code(entity.getTradeType().getCode()).label(entity.getTradeType().getLabel()).build())
                 .openPrice(entity.getOpenPrice())
                 .closePrice(entity.getClosePrice())
                 .tradeOpenTime(entity.getTradeOpenTime())
                 .tradeCloseTime(entity.getTradeCloseTime())
                 .lotSize(entity.getLotSize())
                 .netProfit(entity.getNetProfit())
-                .points(Math.abs(mathService.subtract(entity.getOpenPrice(), entity.getClosePrice())))
+                .points(calculatePoints(entity))
                 .stopLoss(entity.getStopLoss())
                 .takeProfit(entity.getTakeProfit())
                 .account(this.accountDTOConverter.convert(entity.getAccount()))
                 .build();
+    }
+
+
+    //  HELPERS
+
+    /**
+     * Safely calculates the points for the given trade
+     *
+     * @param entity {@link Trade}
+     * @return points
+     */
+    private double calculatePoints(final Trade entity) {
+        final MathService mathService = new MathService();
+        if (entity.getClosePrice() != 0) {
+            return Math.abs(mathService.subtract(entity.getOpenPrice(), entity.getClosePrice()));
+        }
+
+        return 0.0;
     }
 }

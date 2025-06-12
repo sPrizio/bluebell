@@ -260,11 +260,13 @@ export default function AnalysisPage() {
               />
             </div>
             <div>
-              Add average count and change color of bar if the count is above
-              average/std
-              <br />
-              Add performance per symbol
-              <br />
+              <BaseCard
+                title={"Performance per symbol"}
+                subtitle={
+                  "How your trades performed for each traded symbol/equity."
+                }
+                cardContent={<p className={"py-4"}>Coming in Phase 2</p>}
+              />
             </div>
           </div>
         }

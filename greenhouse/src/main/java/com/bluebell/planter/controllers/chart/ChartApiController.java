@@ -2,14 +2,16 @@ package com.bluebell.planter.controllers.chart;
 
 import com.bluebell.planter.constants.ApiPaths;
 import com.bluebell.planter.controllers.AbstractApiController;
-import com.bluebell.platform.constants.CorePlatformConstants;
 import com.bluebell.platform.enums.GenericEnum;
 import com.bluebell.platform.enums.time.MarketPriceTimeInterval;
 import com.bluebell.platform.models.api.json.StandardJsonResponse;
+import com.bluebell.platform.models.core.entities.security.User;
+import com.bluebell.platform.models.core.entities.trade.Trade;
 import com.bluebell.platform.models.core.nonentities.apexcharts.ApexChartCandleStick;
-import com.bluebell.radicle.enums.DataSource;
 import com.bluebell.radicle.security.aspects.ValidateApiToken;
+import com.bluebell.radicle.security.constants.SecurityConstants;
 import com.bluebell.radicle.services.chart.ChartService;
+import com.bluebell.radicle.services.trade.TradeService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -21,18 +23,15 @@ import jakarta.servlet.http.HttpServletRequest;
 import org.apache.commons.lang3.EnumUtils;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
-
-import static com.bluebell.radicle.validation.GenericValidator.validateLocalDateFormat;
+import java.util.Optional;
 
 
 /**
  * API controller for providing charting capabilities based on historical data
  *
  * @author Stephen Prizio
- * @version 0.2.0
+ * @version 0.2.4
  */
 @RestController
 @RequestMapping("${bluebell.base.api.controller.endpoint}" + ApiPaths.Chart.BASE)
@@ -43,17 +42,18 @@ public class ChartApiController extends AbstractApiController {
     @Resource(name = "apexChartService")
     private ChartService<ApexChartCandleStick> chartService;
 
+    @Resource(name = "tradeService")
+    private TradeService tradeService;
+
 
     //  ----------------- GET REQUESTS -----------------
 
     /**
      * Generates a {@link List} of {@link ApexChartCandleStick}s for the given start and end interval
      *
-     * @param start    start of time period
-     * @param end      end of time period
+     * @param tradeId trade id
+     * @param accountNumber account number
      * @param interval interval of time
-     * @param symbol symbol
-     * @param dataSource {@link DataSource}
      * @param request  {@link HttpServletRequest}
      * @return {@link StandardJsonResponse}
      */
@@ -61,23 +61,23 @@ public class ChartApiController extends AbstractApiController {
     @Operation(summary = "Obtains the candlesticks for use with ApexCharts", description = "Returns a list of candlesticks in a format expected by ApexCharts.")
     @ApiResponse(
             responseCode = "200",
-            description = "Response when the api call was made with an invalid start date.",
+            description = "Response when the api could not find the trade for the given trade id.",
             content = @Content(
                     mediaType = "application/json",
-                    schema = @Schema(implementation = StandardJsonResponse.class, example = "Invalid Date")
+                    schema = @Schema(implementation = StandardJsonResponse.class, example = "Trade not found for id <bad_id>.")
             )
     )
     @ApiResponse(
             responseCode = "200",
-            description = "Response when the api call was made with an invalid end date.",
+            description = "Response when the api was given an invalid time interval.",
             content = @Content(
                     mediaType = "application/json",
-                    schema = @Schema(implementation = StandardJsonResponse.class, example = "Invalid Date")
+                    schema = @Schema(implementation = StandardJsonResponse.class, example = "Time interval <bad_interval> was invalid.")
             )
     )
     @ApiResponse(
             responseCode = "200",
-            description = "Response when the api successfully obtains the trade duration analysis.",
+            description = "Response when the api successfully obtains the chart info for the given trade.",
             content = @Content(
                     mediaType = "application/json",
                     schema = @Schema(implementation = StandardJsonResponse.class)
@@ -93,56 +93,38 @@ public class ChartApiController extends AbstractApiController {
     )
     @GetMapping(ApiPaths.Chart.APEX_DATA)
     public StandardJsonResponse<List<ApexChartCandleStick>> getApexChartData(
-            @Parameter(name = "start", description = "Start date of time period to analyze", example = "2025-01-01")
-            final @RequestParam("start") String start,
-            @Parameter(name = "end", description = "End date of time period to analyze", example = "2025-01-01")
-            final @RequestParam("end") String end,
+            @Parameter(name = "tradeId", description = "Id of the trade to chart", example = "1234")
+            final @RequestParam("tradeId") String tradeId,
+            @Parameter(name = "accountNumber", description = "The unique identifier for your trading account", example = "1234")
+            final @RequestParam("accountNumber") long accountNumber,
             @Parameter(name = "interval", description = "Time interval to look at intra day", example = "ten-minute")
             final @RequestParam("interval") String interval,
-            @Parameter(name = "symbol", description = "Symbol to look at", example = "NDX")
-            final @RequestParam("symbol") String symbol,
-            @Parameter(name = "dataSource", description = "Which source to pull the market data from", example = "METATRADER4")
-            final @RequestParam("dataSource") String dataSource,
             final HttpServletRequest request
     ) {
-        validateLocalDateFormat(start, CorePlatformConstants.DATE_FORMAT, String.format(CorePlatformConstants.Validation.DateTime.START_DATE_INVALID_FORMAT, start, CorePlatformConstants.DATE_FORMAT));
-        validateLocalDateFormat(end, CorePlatformConstants.DATE_FORMAT, String.format(CorePlatformConstants.Validation.DateTime.END_DATE_INVALID_FORMAT, end, CorePlatformConstants.DATE_FORMAT));
-
-        if (!validateSymbol(symbol)) {
+        if (!EnumUtils.isValidEnumIgnoreCase(MarketPriceTimeInterval.class, interval)) {
             return StandardJsonResponse
                     .<List<ApexChartCandleStick>>builder()
                     .success(false)
-                    .message(String.format("Invalid symbol: %s", symbol))
+                    .message(String.format("%s is not a valid time interval", interval))
                     .build();
         }
 
-        if (!EnumUtils.isValidEnumIgnoreCase(DataSource.class, dataSource)) {
+        final User user = (User) request.getAttribute(SecurityConstants.USER_REQUEST_KEY);
+        final Optional<Trade> trade = this.tradeService.findTradeByTradeId(tradeId, getAccountForId(user, accountNumber));
+
+        if (trade.isEmpty()) {
             return StandardJsonResponse
                     .<List<ApexChartCandleStick>>builder()
                     .success(false)
-                    .message(String.format("%s is not a valid data source", dataSource))
+                    .message(String.format("Trade with id %s not found", tradeId))
                     .build();
         }
 
         final MarketPriceTimeInterval marketPriceTimeInterval = GenericEnum.getByCode(MarketPriceTimeInterval.class, interval);
-        if (marketPriceTimeInterval == MarketPriceTimeInterval.ONE_DAY) {
-            return StandardJsonResponse
-                    .<List<ApexChartCandleStick>>builder()
-                    .success(true)
-                    .data(this.chartService.getChartData(LocalDate.parse(start, DateTimeFormatter.ISO_DATE).minusMonths(1), LocalDate.parse(end, DateTimeFormatter.ISO_DATE), marketPriceTimeInterval, symbol, GenericEnum.getByCode(DataSource.class, dataSource)))
-                    .build();
-        } else if (marketPriceTimeInterval == MarketPriceTimeInterval.ONE_HOUR) {
-            return StandardJsonResponse
-                    .<List<ApexChartCandleStick>>builder()
-                    .success(true)
-                    .data(this.chartService.getChartData(LocalDate.parse(start, DateTimeFormatter.ISO_DATE).minusDays(5), LocalDate.parse(end, DateTimeFormatter.ISO_DATE), marketPriceTimeInterval, symbol, GenericEnum.getByCode(DataSource.class, dataSource)))
-                    .build();
-        }
-
         return StandardJsonResponse
                 .<List<ApexChartCandleStick>>builder()
                 .success(true)
-                .data(this.chartService.getChartData(LocalDate.parse(start, DateTimeFormatter.ISO_DATE), LocalDate.parse(end, DateTimeFormatter.ISO_DATE), marketPriceTimeInterval, symbol, GenericEnum.getByCode(DataSource.class, dataSource)))
+                .data(this.chartService.getChartDataForTrade(trade.get(), marketPriceTimeInterval))
                 .build();
     }
 }
