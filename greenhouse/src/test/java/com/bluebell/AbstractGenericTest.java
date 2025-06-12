@@ -109,6 +109,8 @@ public abstract class AbstractGenericTest {
                 .openPrice(13083.41)
                 .product("Test Product")
                 .account(generateTestAccount())
+                .stopLoss(13000.0)
+                .takeProfit(13110.0)
                 .build();
     }
 

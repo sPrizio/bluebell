@@ -215,6 +215,8 @@ public class ApiPaths {
 
         public static final String GET_FOR_TRADE_ID = "/get-for-trade-id";
 
+        public static final String GET_TRADE_INSIGHTS = "/get-trade-insights";
+
         public static final String IMPORT_TRADES = "/import-trades";
 
         public static final String CREATE_TRADE = "/create-trade";

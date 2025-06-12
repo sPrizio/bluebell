@@ -19,6 +19,7 @@ import com.bluebell.platform.models.core.nonentities.apexcharts.ApexChartCandleS
 import com.bluebell.platform.models.core.nonentities.data.PairEntry;
 import com.bluebell.platform.models.core.nonentities.records.account.AccountDetails;
 import com.bluebell.platform.models.core.nonentities.records.portfolio.PortfolioRecord;
+import com.bluebell.platform.models.core.nonentities.records.trade.TradeInsights;
 import com.bluebell.platform.models.core.nonentities.records.tradelog.TradeLog;
 import com.bluebell.platform.models.core.nonentities.records.traderecord.TradeRecordReport;
 import com.bluebell.platform.models.core.nonentities.records.traderecord.controls.TradeRecordControls;
@@ -61,7 +62,8 @@ public record StandardJsonResponse<T>(
                         PortfolioDTO.class,
                         JobDTO.class,
                         PaginatedJobsDTO.class,
-                        HealthCheckDTO.class
+                        HealthCheckDTO.class,
+                        TradeInsights.class
                 }
         ) T data,
         @Schema(description = "External, client-facing message. Successful calls will usually have an empty message") String message,

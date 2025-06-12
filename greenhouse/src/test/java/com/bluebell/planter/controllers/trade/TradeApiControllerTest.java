@@ -8,6 +8,7 @@ import com.bluebell.platform.enums.trade.TradeType;
 import com.bluebell.platform.models.api.dto.trade.CreateUpdateTradeDTO;
 import com.bluebell.platform.models.core.entities.account.Account;
 import com.bluebell.platform.models.core.entities.trade.Trade;
+import com.bluebell.platform.models.core.nonentities.records.trade.TradeInsights;
 import com.bluebell.radicle.importing.services.trade.GenericTradeImportService;
 import com.bluebell.radicle.services.account.AccountService;
 import com.bluebell.radicle.services.trade.TradeService;
@@ -105,6 +106,7 @@ class TradeApiControllerTest extends AbstractPlanterTest {
         Mockito.when(this.tradeService.createNewTrade(any(), any())).thenReturn(generateTestSellTrade());
         Mockito.when(this.tradeService.updateTrade(any(), any(), any())).thenReturn(generateTestSellTrade());
         Mockito.when(this.tradeService.deleteTrade(any())).thenReturn(true);
+        Mockito.when(this.tradeService.generateTradeInsights(any())).thenReturn(TradeInsights.builder().rrr(1.0).risk(55.0).build());
     }
 
 
@@ -283,6 +285,33 @@ class TradeApiControllerTest extends AbstractPlanterTest {
     }
 
 
+    //  ----------------- getTradeInsights -----------------
+
+    @Test
+    void test_getTradeInsights_missingTrade() throws Exception {
+
+        MultiValueMap<String, String> map = new LinkedMultiValueMap<>();
+        map.put(TRADE_ID, List.of("vdvsdvsvsvdv"));
+        map.put(ACCOUNT_NUMBER, List.of("1234"));
+
+        this.mockMvc.perform(get(getApiPath(BASE, GET_TRADE_INSIGHTS)).with(testUserContext()).params(map))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.message", containsString(ApiConstants.CLIENT_ERROR_DEFAULT_MESSAGE)));
+    }
+
+    @Test
+    void test_getTradeInsights_success() throws Exception {
+
+        MultiValueMap<String, String> map = new LinkedMultiValueMap<>();
+        map.put(TRADE_ID, List.of(TEST_ID));
+        map.put(ACCOUNT_NUMBER, List.of("1234"));
+
+        this.mockMvc.perform(get(getApiPath(BASE, GET_TRADE_INSIGHTS)).with(testUserContext()).params(map))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.data.rrr", is(1.0)));
+    }
+
+
     //  ----------------- postImportTrades -----------------
 
     @Test
@@ -443,7 +472,7 @@ class TradeApiControllerTest extends AbstractPlanterTest {
                         .content(new ObjectMapper().writeValueAsString(data))
                 )
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.message", containsString("No trade was found with trade id: ")));
+                .andExpect(jsonPath("$.message", containsString("No trade found for trade id ")));
     }
 
     @Test

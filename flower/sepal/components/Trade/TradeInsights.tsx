@@ -30,9 +30,7 @@ export default function TradeInsights({
       >
         <div className={"grid grid-cols-2 items-center"}>
           <div className={"flex justify-end text-left p-3"}>{title}</div>
-          <div
-            className={"flex items-center max-lg:justify-start justify-end p-3"}
-          >
+          <div className={"text-right text-sm text-primary font-semibold"}>
             {val}
             {percent !== 0 && (
               <span className={"ml-2 text-xs"}>
@@ -64,11 +62,13 @@ export default function TradeInsights({
         formatNumberForDisplay(insights?.reward ?? 0) + " pts",
         insights?.rewardEquityPercentage ?? 0,
       )}
-      {cell(
-        "Drawdown",
-        "$ " + formatNumberForDisplay(insights?.drawdown ?? 0),
-        insights?.drawdownPercentage ?? 0,
-      )}
+      {(insights?.drawdown ?? 0) === 0 && cell("Drawdown", "N/A", 0)}
+      {(insights?.drawdown ?? 0) !== 0 &&
+        cell(
+          "Drawdown",
+          "$ " + formatNumberForDisplay(insights?.drawdown ?? 0),
+          insights?.drawdownPercentage ?? 0,
+        )}
     </div>
   );
 }

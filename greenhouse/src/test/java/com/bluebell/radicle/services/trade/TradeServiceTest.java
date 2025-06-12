@@ -391,4 +391,42 @@ class TradeServiceTest extends AbstractGenericTest {
 
         assertThat(this.tradeService.deleteTrade(generateTestBuyTrade())).isTrue();
     }
+
+
+    //  ----------------- generateTradeInsights -----------------
+
+    @Test
+    void test_generateTradeInsights_missingParamTrade() {
+        assertThatExceptionOfType(IllegalParameterException.class)
+                .isThrownBy(() -> this.tradeService.generateTradeInsights(null))
+                .withMessage(CorePlatformConstants.Validation.Trade.TRADE_CANNOT_BE_NULL);
+    }
+
+    @Test
+    void test_generateTradeInsights_missingParamAccount() {
+        final Trade trade = generateTestBuyTrade();
+        trade.setAccount(null);
+
+        assertThatExceptionOfType(IllegalParameterException.class)
+                .isThrownBy(() -> this.tradeService.generateTradeInsights(trade))
+                .withMessage(CorePlatformConstants.Validation.Account.ACCOUNT_CANNOT_BE_NULL);
+    }
+
+    @Test
+    void test_generateTradeInsights_openTrade_success() {
+        final Trade trade = generateTestBuyTrade();
+        trade.setClosePrice(0.0);
+        trade.setTradeCloseTime(null);
+
+        assertThat(this.tradeService.generateTradeInsights(trade))
+                .extracting("rrr", "reward", "risk")
+                .containsExactly(0.0, 0.0, 0.0);
+    }
+
+    @Test
+    void test_generateTradeInsights_success() {
+        assertThat(this.tradeService.generateTradeInsights(generateTestBuyTrade()))
+                .extracting("rrr", "reward", "risk")
+                .containsExactly(0.32, 26.59, 83.41);
+    }
 }

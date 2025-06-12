@@ -13,6 +13,7 @@ import com.bluebell.platform.models.api.json.StandardJsonResponse;
 import com.bluebell.platform.models.core.entities.account.Account;
 import com.bluebell.platform.models.core.entities.security.User;
 import com.bluebell.platform.models.core.entities.trade.Trade;
+import com.bluebell.platform.models.core.nonentities.records.trade.TradeInsights;
 import com.bluebell.radicle.exceptions.validation.MissingRequiredDataException;
 import com.bluebell.radicle.importing.services.strategy.GenericStrategyImportService;
 import com.bluebell.radicle.importing.services.trade.GenericTradeImportService;
@@ -340,6 +341,7 @@ public class TradeApiController extends AbstractApiController {
      *
      * @param request {@link HttpServletRequest}
      * @param tradeId trade id
+     * @param accountNumber account number
      * @return {@link StandardJsonResponse}
      */
     @ValidateApiToken
@@ -378,10 +380,60 @@ public class TradeApiController extends AbstractApiController {
     ) {
         final User user = (User) request.getAttribute(SecurityConstants.USER_REQUEST_KEY);
         Optional<Trade> trade = this.tradeService.findTradeByTradeId(tradeId, getAccountForId(user, accountNumber));
-        validateIfPresent(trade, "No trade was found with trade id: %s", tradeId);
+        validateIfPresent(trade, NO_TRADE_FOR_TRADE_ID, tradeId);
         return trade
                 .map(value -> StandardJsonResponse.<TradeDTO>builder().success(true).data(this.tradeDTOConverter.convert(value)).build())
                 .orElseGet(() -> StandardJsonResponse.<TradeDTO>builder().success(false).data(TradeDTO.builder().build()).build());
+    }
+
+    /**
+     * Returns a {@link StandardJsonResponse} containing {@link TradeInsights} for the given trade id
+     *
+     * @param request {@link HttpServletRequest}
+     * @param tradeId trade id
+     * @param accountNumber account number
+     * @return {@link StandardJsonResponse}
+     */
+    @ValidateApiToken
+    @Operation(summary = "Obtains an individual trade's insights", description = "Returns an individual trade and its insights.")
+    @ApiResponse(
+            responseCode = "200",
+            description = "Response when the api cannot find the trade for the given trade id.",
+            content = @Content(
+                    mediaType = "application/json",
+                    schema = @Schema(implementation = StandardJsonResponse.class, example = "No trade found for id 1234")
+            )
+    )
+    @ApiResponse(
+            responseCode = "200",
+            description = "Response when the api successfully obtains the trade insights for the given trade id.",
+            content = @Content(
+                    mediaType = "application/json",
+                    schema = @Schema(implementation = StandardJsonResponse.class)
+            )
+    )
+    @ApiResponse(
+            responseCode = "401",
+            description = "Response when the api call made was unauthorized.",
+            content = @Content(
+                    mediaType = "application/json",
+                    schema = @Schema(implementation = StandardJsonResponse.class, example = "The API token was invalid.")
+            )
+    )
+    @GetMapping(ApiPaths.Trade.GET_TRADE_INSIGHTS)
+    public StandardJsonResponse<TradeInsights> getTradeInsights(
+            @Parameter(name = "accountNumber", description = "The unique identifier for your trading account", example = "1234")
+            final @RequestParam("accountNumber") long accountNumber,
+            @Parameter(name = TRADE_ID, description = "The unique identifier for the trade", example = "1234")
+            final @RequestParam(TRADE_ID) String tradeId,
+            final HttpServletRequest request
+    ) {
+        final User user = (User) request.getAttribute(SecurityConstants.USER_REQUEST_KEY);
+        Optional<Trade> trade = this.tradeService.findTradeByTradeId(tradeId, getAccountForId(user, accountNumber));
+        validateIfPresent(trade, NO_TRADE_FOR_TRADE_ID, tradeId);
+        return trade
+                .map(value -> StandardJsonResponse.<TradeInsights>builder().success(true).data(this.tradeService.generateTradeInsights(value)).build())
+                .orElseGet(() -> StandardJsonResponse.<TradeInsights>builder().success(false).data(TradeInsights.builder().build()).build());
     }
 
 
@@ -577,7 +629,7 @@ public class TradeApiController extends AbstractApiController {
             return StandardJsonResponse
                     .<TradeDTO>builder()
                     .success(false)
-                    .message(String.format("No trade was found with trade id: %s", tradeId))
+                    .message(String.format(NO_TRADE_FOR_TRADE_ID, tradeId))
                     .build();
         }
 
