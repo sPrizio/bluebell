@@ -18,6 +18,13 @@ import { logErrors } from "@/lib/functions/util-functions";
 import Error from "@/app/error";
 import { Trade } from "@/types/apiTypes";
 
+/**
+ * Renders the card that shows a trade review chart
+ *
+ * @param trade trade
+ * @author Stephen Prizio
+ * @version 0.2.4
+ */
 export default function TradeReviewCard({
   trade,
 }: Readonly<{ trade: Trade | undefined | null }>) {
@@ -54,12 +61,18 @@ export default function TradeReviewCard({
   }
 
   //  RENDER
+
   return (
     <BaseCard
       title={"Trade Review"}
       loading={isIntervalLoading || isApexLoading}
+      includeSkeleton={false}
       subtitle={"Review the trade as it was taken."}
-      cardContent={<TradeReviewChart data={apexData ?? []} />}
+      cardContent={
+        (apexData?.length ?? 0) > 0 ? (
+          <TradeReviewChart trade={trade} data={apexData ?? []} />
+        ) : null
+      }
       headerControls={[
         <div key={0}>
           <Select
@@ -81,6 +94,7 @@ export default function TradeReviewCard({
           </Select>
         </div>,
       ]}
+      emptyText={"Trade cannot be reviewed at this time. Come back later."}
     />
   );
 }

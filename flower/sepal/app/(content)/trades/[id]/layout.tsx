@@ -6,7 +6,6 @@ import React from "react";
 import { useSearchParams } from "next/navigation";
 import LoadingPage from "@/app/loading";
 import { logErrors } from "@/lib/functions/util-functions";
-import Error from "@/app/error";
 import { PageInfoProvider } from "@/lib/context/PageInfoProvider";
 import BaseModal from "@/components/Modal/BaseModal";
 import DeleteTradeForm from "@/components/Form/Trade/DeleteTradeForm";
@@ -15,6 +14,7 @@ import { Button } from "@/components/ui/button";
 import TradeInformation from "@/components/Table/Trade/TradeInformation";
 import { BaseCard } from "@/components/Card/BaseCard";
 import TradeReviewCard from "@/components/Card/Trade/TradeReviewCard";
+import NotFound from "@/app/not-found";
 
 /**
  * The base layout for the trade detail page
@@ -46,7 +46,7 @@ export default function TradeDetailsLayout({
 
   if (isTradeError) {
     logErrors(tradeError);
-    return <Error />;
+    return <NotFound />;
   }
 
   const pageInfo = {
