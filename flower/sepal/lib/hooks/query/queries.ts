@@ -426,10 +426,13 @@ export const useJobQuery = (jobId: string) => {
   });
 };
 
+//  at present this query is used for display purposes in the side nav, if this were to change, the enabled flag would need to be refactored
+//  this api call is also used in the middleware, but not with react query
 export const useHealthCheckQuery = () => {
   return useQuery<HealthCheck>({
     queryKey: ["health-check"],
     queryFn: () => get<HealthCheck>(ApiUrls.System.HealthCheck, {}),
+    enabled: process.env.ENABLE_BUILD_VERSION === "true"
   });
 };
 
