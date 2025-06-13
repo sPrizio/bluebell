@@ -107,7 +107,6 @@ export default function UserForm({
    * @param values form values
    */
   async function onSubmit(values: z.infer<typeof formSchema>) {
-    // TODO: as part of BB-35, will likely need to re-format request to take in a list of phone numbers
     if (isCreateMode()) {
       //  TODO: create user logic
       await delay(4000);
