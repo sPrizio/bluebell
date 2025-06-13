@@ -432,7 +432,7 @@ export const useHealthCheckQuery = () => {
   return useQuery<HealthCheck>({
     queryKey: ["health-check"],
     queryFn: () => get<HealthCheck>(ApiUrls.System.HealthCheck, {}),
-    enabled: process.env.ENABLE_BUILD_VERSION === "true"
+    enabled: process.env.ENABLE_BUILD_VERSION === "true",
   });
 };
 
