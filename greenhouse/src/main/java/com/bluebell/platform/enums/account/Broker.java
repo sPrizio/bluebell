@@ -8,14 +8,15 @@ import lombok.Getter;
  * Enum representing the different brokers supported by the system
  *
  * @author Stephen Prizio
- * @version 0.1.3
+ * @version 0.2.4
  */
 @Getter
 @Schema(title = "Brokers", name = "Broker Enum", description = "List of Brokers supported in bluebell.")
 public enum Broker implements GenericEnum<Broker> {
     CMC_MARKETS("CMC_MARKETS", "CMC Markets"),
     FTMO("FTMO", "FTMO"),
-    NA("N/A", "Demo");
+    DEMO("DEMO", "Demo"),
+    NA("N/A", "N/A");
 
     private final String code;
 

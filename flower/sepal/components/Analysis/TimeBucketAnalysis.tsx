@@ -6,6 +6,7 @@ import { FilterSelector } from "@/types/apiTypes";
 import { logErrors } from "@/lib/functions/util-functions";
 import { useTimeBucketsAnalysisQuery } from "@/lib/hooks/query/queries";
 import SepalLoader from "@/components/Svg/SepalLoader";
+import AnalysisChartTooltipCard from "@/components/Card/Analysis/AnalysisChartTooltipCard";
 
 /**
  * Renders the time bucket analysis content with chart
@@ -14,7 +15,7 @@ import SepalLoader from "@/components/Svg/SepalLoader";
  * @param filter filter
  * @param opened trades opened or closed
  * @author Stephen Prizio
- * @version 0.2.2
+ * @version 0.2.4
  */
 export default function TimeBucketAnalysis({
   accountNumber,
@@ -35,11 +36,15 @@ export default function TimeBucketAnalysis({
 
   if (isError) {
     logErrors(error);
-    return <p>Data could not be displayed.</p>;
+    return (
+      <div className="text-center text-slate-500 my-4 text-sm">
+        No data to display.
+      </div>
+    );
   }
 
   return (
-    <div className={""}>
+    <div className={"pt-6 pb-4"}>
       {isLoading ? (
         <div className={"h-[100px] flex items-center justify-center"}>
           <div className={"grid grid-cols-1 justify-items-center gap-8"}>
@@ -49,7 +54,13 @@ export default function TimeBucketAnalysis({
           </div>
         </div>
       ) : (
-        <AnalysisBarChart data={data ?? []} filter={filter} />
+        <AnalysisBarChart
+          data={data ?? []}
+          filter={filter}
+          tooltip={
+            <AnalysisChartTooltipCard filter={filter} headerLabel={"Bucket"} />
+          }
+        />
       )}
     </div>
   );

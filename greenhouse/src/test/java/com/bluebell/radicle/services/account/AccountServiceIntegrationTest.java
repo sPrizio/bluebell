@@ -6,11 +6,13 @@ import com.bluebell.platform.models.api.dto.account.CreateUpdateAccountTradingDa
 import com.bluebell.platform.models.api.dto.trade.CreateUpdateTradeDTO;
 import com.bluebell.platform.models.core.entities.account.Account;
 import com.bluebell.platform.models.core.entities.portfolio.Portfolio;
+import com.bluebell.platform.models.core.entities.trade.Trade;
 import com.bluebell.radicle.exceptions.validation.IllegalParameterException;
 import com.bluebell.radicle.repositories.account.AccountRepository;
 import com.bluebell.radicle.repositories.portfolio.PortfolioRepository;
 import com.bluebell.radicle.repositories.trade.TradeRepository;
 import com.bluebell.radicle.repositories.transaction.TransactionRepository;
+import org.apache.commons.collections4.CollectionUtils;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -20,6 +22,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -29,7 +32,7 @@ import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
  * Testing integrations for {@link AccountService}
  *
  * @author Stephen Prizio
- * @version 0.2.0
+ * @version 0.2.4
  */
 @SpringBootTest
 @RunWith(SpringRunner.class)
@@ -63,6 +66,49 @@ class AccountServiceIntegrationTest extends AbstractGenericTest {
     void tearDown() {
         this.accountRepository.deleteAll();
         this.tradeRepository.deleteAll();
+    }
+
+
+    //  ----------------- refreshAccount -----------------
+
+    @Test
+    void test_refreshAccount_success_noChange() {
+        Account acc = generateTestAccount();
+        acc.setId(null);
+        acc.setAccountNumber(1111L);
+        acc = this.accountRepository.save(acc);
+
+        assertThat(acc.getBalance()).isEqualTo(1000.0);
+
+        acc = this.accountService.refreshAccount(acc);
+
+        assertThat(acc.getBalance()).isEqualTo(1000.0);
+    }
+
+    @Test
+    void test_refreshAccount_success() {
+        Account acc = generateTestAccount();
+        acc.setId(null);
+        acc.setAccountNumber(1111L);
+
+        assertThat(acc.getBalance()).isEqualTo(1000.0);
+
+        acc = this.accountRepository.save(acc.refreshAccount());
+
+        assertThat(CollectionUtils.isEmpty(acc.getTrades())).isTrue();
+
+        Trade trade1 = generateTestBuyTrade();
+        Trade trade2 = generateTestSellTrade();
+        trade1.setAccount(acc);
+        trade2.setAccount(acc);
+
+        this.tradeRepository.saveAll(List.of(trade1, trade2));
+
+        acc.setTrades(new ArrayList<>(List.of(trade1, trade2)));
+        acc = this.accountService.refreshAccount(acc);
+
+        assertThat(acc.getTrades()).hasSize(2);
+        assertThat(acc.getBalance()).isEqualTo(1010.35);
     }
 
 

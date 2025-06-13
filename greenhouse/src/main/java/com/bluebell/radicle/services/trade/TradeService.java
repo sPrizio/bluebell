@@ -1,21 +1,39 @@
 package com.bluebell.radicle.services.trade;
 
 import com.bluebell.platform.constants.CorePlatformConstants;
+import com.bluebell.platform.enums.GenericEnum;
+import com.bluebell.platform.enums.time.MarketPriceTimeInterval;
+import com.bluebell.platform.enums.trade.TradePlatform;
 import com.bluebell.platform.enums.trade.TradeType;
+import com.bluebell.platform.models.api.dto.trade.CreateUpdateTradeDTO;
 import com.bluebell.platform.models.core.entities.account.Account;
+import com.bluebell.platform.models.core.entities.market.MarketPrice;
 import com.bluebell.platform.models.core.entities.trade.Trade;
+import com.bluebell.platform.models.core.nonentities.records.trade.TradeInsights;
+import com.bluebell.platform.services.MathService;
+import com.bluebell.radicle.exceptions.system.EntityCreationException;
+import com.bluebell.radicle.exceptions.system.EntityModificationException;
+import com.bluebell.radicle.exceptions.validation.MissingRequiredDataException;
 import com.bluebell.radicle.repositories.trade.TradeRepository;
+import com.bluebell.radicle.services.market.MarketPriceService;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.javatuples.Pair;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.TextStyle;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
+import java.util.Locale;
 import java.util.Optional;
+import java.util.Random;
 
 import static com.bluebell.radicle.validation.GenericValidator.validateDatesAreNotMutuallyExclusive;
 import static com.bluebell.radicle.validation.GenericValidator.validateParameterIsNotNull;
@@ -24,11 +42,17 @@ import static com.bluebell.radicle.validation.GenericValidator.validateParameter
  * Service-layer for {@link Trade} entities
  *
  * @author Stephen Prizio
- * @version 0.2.1
+ * @version 0.2.4
  */
 @Slf4j
 @Service
 public class TradeService {
+
+    private static final Random RANDOM = new Random();
+    private static final MathService MATH_SERVICE = new MathService();
+
+    @Resource(name = "marketPriceService")
+    private MarketPriceService marketPriceService;
 
     @Resource(name = "tradeRepository")
     private TradeRepository tradeRepository;
@@ -189,6 +213,101 @@ public class TradeService {
         return count;
     }
 
+    /**
+     * Creates a new {@link Trade} with the given data
+     *
+     * @param data {@link CreateUpdateTradeDTO}
+     * @param account {@link Account}
+     * @return new {@link Trade}
+     */
+    public Trade createNewTrade(final CreateUpdateTradeDTO data, final Account account) {
+        validateParameterIsNotNull(account, CorePlatformConstants.Validation.Account.ACCOUNT_CANNOT_BE_NULL);
+
+        if (data == null || StringUtils.isEmpty(data.tradeOpenTime())) {
+            throw new MissingRequiredDataException("The required data for creating a Trade entity was null or empty");
+        }
+
+        try {
+            return applyChanges(Trade.builder().build(), data, account);
+        } catch (Exception e) {
+            throw new EntityCreationException(String.format("A Trade could not be created : %s", e.getMessage()), e);
+        }
+    }
+
+    /**
+     * Updates an existing {@link Trade}
+     *
+     * @param trade {@link Trade}
+     * @param data {@link CreateUpdateTradeDTO}
+     * @param account {@link Account}
+     * @return updated {@link Trade}
+     */
+    public Trade updateTrade(final Trade trade, final CreateUpdateTradeDTO data, final Account account) {
+        validateParameterIsNotNull(trade, CorePlatformConstants.Validation.Trade.TRADE_CANNOT_BE_NULL);
+        validateParameterIsNotNull(account, CorePlatformConstants.Validation.Account.ACCOUNT_CANNOT_BE_NULL);
+
+        if (data == null || StringUtils.isEmpty(data.tradeId())) {
+            throw new MissingRequiredDataException("The required data for updating a Trade entity was null or empty");
+        }
+
+        try {
+            return applyChanges(trade, data, account);
+        } catch (Exception e) {
+            throw new EntityModificationException(String.format("An error occurred while modifying the Trade : %s", e.getMessage()), e);
+        }
+    }
+
+    /**
+     * Deletes an existing {@link Trade}
+     *
+     * @param trade {@link Trade}
+     * @return true if the trade was deleted, false otherwise
+     */
+    public boolean deleteTrade(final Trade trade) {
+        validateParameterIsNotNull(trade, CorePlatformConstants.Validation.Trade.TRADE_CANNOT_BE_NULL);
+
+        try {
+            this.tradeRepository.deleteById(trade.getId());
+            return true;
+        } catch (Exception e) {
+            LOGGER.error(e.getMessage(), e);
+            return false;
+        }
+    }
+
+    /**
+     * Generates trade insights for the given trade
+     *
+     * @param trade {@link Trade
+     * @return {@link TradeInsights}
+     */
+    public TradeInsights generateTradeInsights(final Trade trade) {
+        validateParameterIsNotNull(trade, CorePlatformConstants.Validation.Trade.TRADE_CANNOT_BE_NULL);
+        validateParameterIsNotNull(trade.getAccount(), CorePlatformConstants.Validation.Account.ACCOUNT_CANNOT_BE_NULL);
+
+        if (trade.isOpen()) {
+            return TradeInsights.builder().build();
+        }
+
+        final double balance = trade.getAccount().getBalance();
+        final double risk = trade.getStopLoss() == 0 ? 0.0 : Math.abs(MATH_SERVICE.subtract(trade.getOpenPrice(), trade.getStopLoss()));
+        final double reward = trade.getTakeProfit() == 0 ? -1.0 : Math.abs(MATH_SERVICE.subtract(trade.getOpenPrice(), trade.getTakeProfit()));
+        final Pair<Double, Double> drawdown = calculateDrawdown(trade, trade.getAccount());
+
+        return TradeInsights
+                .builder()
+                .dayOfWeek(trade.getTradeOpenTime().getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.CANADA))
+                .rrr(MATH_SERVICE.divide(reward, risk))
+                .risk(risk)
+                .riskEquityPercentage(calculateEquityPercentage(balance, risk))
+                .reward(reward)
+                .rewardEquityPercentage(calculateEquityPercentage(balance, reward))
+                .duration(Math.abs(ChronoUnit.SECONDS.between(trade.getTradeOpenTime(), trade.getTradeCloseTime())))
+                .drawdown(drawdown.getValue0())
+                .drawdownPercentage(drawdown.getValue1())
+                .build();
+    }
+
 
     //  HELPERS
 
@@ -206,5 +325,124 @@ public class TradeService {
         validateDatesAreNotMutuallyExclusive(start, end, CorePlatformConstants.Validation.DateTime.MUTUALLY_EXCLUSIVE_DATES);
         validateParameterIsNotNull(account, CorePlatformConstants.Validation.Account.ACCOUNT_CANNOT_BE_NULL);
         validateParameterIsNotNull(sort, CorePlatformConstants.Validation.System.SORT_CANNOT_BE_NULL);
+    }
+
+    /**
+     * Applies the changes to the given {@link Trade}}
+     *
+     * @param trade {@link Trade} to update
+     * @param data {@link CreateUpdateTradeDTO}
+     * @param account {@link Account}
+     * @return updated {@link Trade}
+     */
+    private Trade applyChanges(Trade trade, final CreateUpdateTradeDTO data, final Account account) {
+
+        if (StringUtils.isEmpty(data.tradeId())) {
+            trade.setTradeId(generateUniqueTradeId(GenericEnum.getByCode(TradePlatform.class, data.tradePlatform()), account));
+        } else {
+            trade.setTradeId(data.tradeId());
+        }
+
+        trade.setTradePlatform(GenericEnum.getByCode(TradePlatform.class, data.tradePlatform()));
+        trade.setProduct(data.product());
+        trade.setTradeType(GenericEnum.getByCode(TradeType.class, data.tradeType()));
+        trade.setClosePrice(data.closePrice());
+
+        if (StringUtils.isNotEmpty(data.tradeCloseTime())) {
+            trade.setTradeCloseTime((LocalDateTime.parse(data.tradeCloseTime(), DateTimeFormatter.ISO_DATE_TIME)));
+        }
+
+        trade.setTradeOpenTime((LocalDateTime.parse(data.tradeOpenTime(), DateTimeFormatter.ISO_DATE_TIME)));
+        trade.setLotSize(data.lotSize());
+        trade.setNetProfit(data.netProfit());
+        trade.setOpenPrice(data.openPrice());
+        trade.setStopLoss(data.stopLoss());
+        trade.setTakeProfit(data.takeProfit());
+        trade.setAccount(account);
+
+        return this.tradeRepository.save(trade);
+    }
+
+    /**
+     * Generates a unique trade id
+     *
+     * @param tradePlatform {@link TradePlatform}
+     * @param account {@link Account}
+     * @return trade id
+     */
+    private String generateUniqueTradeId(final TradePlatform tradePlatform, final Account account) {
+        validateParameterIsNotNull(tradePlatform, CorePlatformConstants.Validation.Trade.TRADE_PLATFORM_CANNOT_BE_NULL);
+        validateParameterIsNotNull(account, CorePlatformConstants.Validation.Account.ACCOUNT_CANNOT_BE_NULL);
+
+        String generated = String.valueOf(1_000_000 + RANDOM.nextInt(9_000_000));
+        Optional<Trade> matched = findTradeByTradeId(generated, account);
+        while (matched.isPresent()) {
+            generated = String.valueOf(1_000_000 + RANDOM.nextInt(9_000_000));
+            matched = findTradeByTradeId(generated, account);
+        }
+
+        return tradePlatform.getCode().charAt(0) + "-" + generated;
+    }
+
+    /**
+     * Calculates the equity percentage
+     *
+     * @param balance account balance
+     * @param compare delta
+     * @return percentage
+     */
+    private double calculateEquityPercentage(final double balance, final double compare) {
+        if (compare == 0.0) {
+            return 100.0;
+        } else if (compare == -1.0) {
+            return 0.0;
+        }
+
+        return MATH_SERVICE.delta(compare, balance);
+    }
+
+    /**
+     * Computes a percentage for the change in account balance
+     *
+     * @param balance balance
+     * @param delta change
+     * @return percentage
+     */
+    private double computeEquityChange(final double balance, final double delta) {
+        return MATH_SERVICE.multiply(MATH_SERVICE.delta(balance, delta), -1.0);
+    }
+
+    /**
+     * Calculates the drawdown for trade insights
+     *
+     * @param trade {@link Trade}
+     * @param account {@link Account}
+     * @return {@link Pair} of drawdown and percentage
+     */
+    private Pair<Double, Double> calculateDrawdown(final Trade trade, final Account account) {
+        validateParameterIsNotNull(trade, CorePlatformConstants.Validation.Trade.TRADE_CANNOT_BE_NULL);
+        validateParameterIsNotNull(account, CorePlatformConstants.Validation.Account.ACCOUNT_CANNOT_BE_NULL);
+
+        final List<MarketPrice> marketPrices = this.marketPriceService.findMarketPricesForTrade(trade, MarketPriceTimeInterval.ONE_MINUTE, trade.getTradePlatform().getDataSource());
+        if (CollectionUtils.isNotEmpty(marketPrices)) {
+            final double dollarPerPoint = MATH_SERVICE.divide(trade.getNetProfit(), Math.abs(MATH_SERVICE.subtract(trade.getOpenPrice(), trade.getClosePrice())));
+            if (trade.getStopLoss() == trade.getClosePrice()) {
+                return Pair.with(trade.getNetProfit(), computeEquityChange(account.getBalance(), trade.getNetProfit()));
+            }
+
+            final double lowestPoint =
+                    trade.getTradeType() == TradeType.BUY ? marketPrices.stream().mapToDouble(MarketPrice::getLow).min().orElse(0.0) : marketPrices.stream().mapToDouble(MarketPrice::getHigh).max().orElse(0.0);
+
+            if (lowestPoint == trade.getOpenPrice()) {
+                return Pair.with(0.0, 0.0);
+            }
+
+            final double delta = Math.abs(MATH_SERVICE.subtract(lowestPoint, trade.getOpenPrice()));
+            final double count = MATH_SERVICE.multiply(MATH_SERVICE.multiply(dollarPerPoint, delta), -1.0);
+
+            return Pair.with(count, computeEquityChange(account.getBalance(), count));
+        }
+
+        return Pair.with(0.0, 0.0);
     }
 }

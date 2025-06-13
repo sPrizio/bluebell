@@ -11,11 +11,11 @@ import { resolveIcon } from "@/lib/functions/util-component-functions";
 import { Icons } from "@/lib/enums";
 
 /**
- * Renders an Account's insights
+ * Renders an account's insights
  *
- * @param insights Account insights
+ * @param insights account insights
  * @author Stephen Prizio
- * @version 0.2.2
+ * @version 0.2.4
  */
 export default function AccountInsights({
   insights,

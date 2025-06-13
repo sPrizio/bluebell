@@ -2,6 +2,7 @@ package com.bluebell.planter.controllers.market;
 
 import com.bluebell.planter.AbstractPlanterTest;
 import com.bluebell.planter.constants.ApiConstants;
+import com.bluebell.platform.enums.time.MarketPriceTimeInterval;
 import com.bluebell.platform.util.DirectoryUtil;
 import org.apache.commons.io.FileUtils;
 import org.junit.jupiter.api.AfterEach;
@@ -22,10 +23,11 @@ import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
-import static com.bluebell.planter.constants.ApiPaths.MarketPrice.BASE;
-import static com.bluebell.planter.constants.ApiPaths.MarketPrice.INGEST;
+import static com.bluebell.planter.constants.ApiPaths.MarketPrice.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.containsString;
+import static org.hamcrest.Matchers.is;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -51,6 +53,16 @@ class MarketPriceApiControllerTest extends AbstractPlanterTest {
     @AfterEach
     void tearDown() throws IOException {
         FileUtils.deleteDirectory(new File(String.format("%s%stest-ingress", DirectoryUtil.getTestingResourcesDirectory(), File.separator)));
+    }
+
+
+    //  ----------------- getTimeIntervals -----------------
+
+    @Test
+    void test_getTimeIntervals_success() throws Exception {
+        this.mockMvc.perform(get(getApiPath(BASE, TIME_INTERVALS)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.data[0].code", is(MarketPriceTimeInterval.values()[0].getCode())));
     }
 
 

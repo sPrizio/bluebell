@@ -17,7 +17,7 @@ import java.util.Set;
  * DTO representation of {@link Job}
  *
  * @author Stephen Prizio
- * @version 0.2.1
+ * @version 0.2.4
  */
 @Getter
 @Setter
@@ -36,6 +36,9 @@ public class JobDTO implements GenericDTO {
 
     @Schema(description = "Job name")
     private String name;
+
+    @Schema(description = "Job display/pretty name")
+    private String displayName;
 
     @Schema(description = "Job execution/start time")
     private LocalDateTime executionTime;

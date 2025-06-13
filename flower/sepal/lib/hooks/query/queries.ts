@@ -7,6 +7,7 @@ import {
   AccountDetails,
   AccountType,
   AnalysisResult,
+  ApexChartCandleStick,
   Broker,
   Currency,
   EnumDisplay,
@@ -17,6 +18,8 @@ import {
   PagedTrades,
   Portfolio,
   PortfolioRecord,
+  Trade,
+  TradeInsightsType,
   TradeLog,
   TradePlatform,
   TradeRecordControls,
@@ -99,6 +102,18 @@ export const useRecentTradeRecordsQuery = (
         count: count,
       }),
     enabled: isNumeric(id) && !!user,
+  });
+};
+
+export const useTradeQuery = (accId: string, id: string) => {
+  return useQuery<Trade | null>({
+    queryKey: ["trade", accId, id],
+    queryFn: () =>
+      get<Trade>(ApiUrls.Trade.GetTradeForTradeId, {
+        accountNumber: accId,
+        tradeId: id,
+      }),
+    enabled: isNumeric(accId) && Number(accId) > -1,
   });
 };
 
@@ -383,6 +398,20 @@ export const usePagedJobsQuery = (
   });
 };
 
+export const useTradeInsightsQuery = (
+  accountNumber: string,
+  tradeId: string,
+) => {
+  return useQuery<TradeInsightsType>({
+    queryKey: ["trade-insights", accountNumber, tradeId],
+    queryFn: () =>
+      get<TradeInsightsType>(ApiUrls.Trade.GetInsights, {
+        accountNumber: accountNumber,
+        tradeId: tradeId,
+      }),
+  });
+};
+
 export const useJobTypesQuery = () => {
   return useQuery<Array<EnumDisplay>>({
     queryKey: ["job-types"],
@@ -401,5 +430,29 @@ export const useHealthCheckQuery = () => {
   return useQuery<HealthCheck>({
     queryKey: ["health-check"],
     queryFn: () => get<HealthCheck>(ApiUrls.System.HealthCheck, {}),
+  });
+};
+
+export const useApexChartQuery = (
+  tradeId: string,
+  accountNumber: number,
+  interval: string,
+) => {
+  return useQuery<Array<ApexChartCandleStick>>({
+    queryKey: ["apexChart", tradeId, interval],
+    queryFn: () =>
+      get<Array<ApexChartCandleStick>>(ApiUrls.Charting.Get, {
+        tradeId: tradeId,
+        accountNumber: accountNumber.toString(),
+        interval: interval,
+      }),
+  });
+};
+
+export const useMarketPriceTimerIntervalQuery = () => {
+  return useQuery<Array<EnumDisplay>>({
+    queryKey: ["market-price-time-intervals"],
+    queryFn: () =>
+      get<Array<EnumDisplay>>(ApiUrls.MarketPrice.GetTimeIntervals, {}),
   });
 };

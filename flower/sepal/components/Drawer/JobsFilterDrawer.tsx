@@ -40,7 +40,7 @@ type Props = {
  * @param jobTypes job type filters
  * @param jobStatuses job status filters
  * @author Stephen Prizio
- * @version 0.2.1
+ * @version 0.2.4
  */
 export default function JobsFilterDrawer({
   userSelection,
@@ -67,6 +67,7 @@ export default function JobsFilterDrawer({
               <Label>Start</Label>
               <TradeControlDatePicker
                 value={userSelection.start}
+                modal={true}
                 onChange={(val) =>
                   onChange({ ...userSelection, start: val ?? new Date() })
                 }
@@ -76,6 +77,7 @@ export default function JobsFilterDrawer({
               <Label>End</Label>
               <TradeControlDatePicker
                 value={userSelection.end}
+                modal={true}
                 onChange={(val) =>
                   onChange({ ...userSelection, end: val ?? new Date() })
                 }
@@ -150,9 +152,11 @@ export default function JobsFilterDrawer({
             </div>
           </div>
           <DrawerFooter className={""}>
-            <Button variant={"primary"} onClick={onSubmit}>
-              Apply
-            </Button>
+            <DrawerClose asChild>
+              <Button variant={"primary"} onClick={onSubmit}>
+                Apply
+              </Button>
+            </DrawerClose>
             <DrawerClose asChild>
               <Button variant="outline" onClick={onCancel}>
                 Cancel

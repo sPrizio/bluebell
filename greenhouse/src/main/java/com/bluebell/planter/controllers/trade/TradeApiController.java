@@ -6,15 +6,20 @@ import com.bluebell.planter.converters.trade.TradeDTOConverter;
 import com.bluebell.platform.constants.CorePlatformConstants;
 import com.bluebell.platform.enums.GenericEnum;
 import com.bluebell.platform.enums.trade.TradeType;
+import com.bluebell.platform.models.api.dto.trade.CreateUpdateTradeDTO;
 import com.bluebell.platform.models.api.dto.trade.PaginatedTradesDTO;
 import com.bluebell.platform.models.api.dto.trade.TradeDTO;
 import com.bluebell.platform.models.api.json.StandardJsonResponse;
+import com.bluebell.platform.models.core.entities.account.Account;
 import com.bluebell.platform.models.core.entities.security.User;
 import com.bluebell.platform.models.core.entities.trade.Trade;
+import com.bluebell.platform.models.core.nonentities.records.trade.TradeInsights;
+import com.bluebell.radicle.exceptions.validation.MissingRequiredDataException;
 import com.bluebell.radicle.importing.services.strategy.GenericStrategyImportService;
 import com.bluebell.radicle.importing.services.trade.GenericTradeImportService;
 import com.bluebell.radicle.security.aspects.ValidateApiToken;
 import com.bluebell.radicle.security.constants.SecurityConstants;
+import com.bluebell.radicle.services.account.AccountService;
 import com.bluebell.radicle.services.trade.TradeService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -45,7 +50,7 @@ import static com.bluebell.radicle.validation.GenericValidator.*;
  * Api controller for {@link Trade}
  *
  * @author Stephen Prizio
- * @version 0.2.1
+ * @version 0.2.4
  */
 @RestController
 @RequestMapping("${bluebell.base.api.controller.endpoint}" + ApiPaths.Trade.BASE)
@@ -54,6 +59,10 @@ import static com.bluebell.radicle.validation.GenericValidator.*;
 public class TradeApiController extends AbstractApiController {
 
     private static final String TRADE_ID = "tradeId";
+    private static final String NO_TRADE_FOR_TRADE_ID = "No trade found for trade id %s";
+
+    @Resource(name = "accountService")
+    private AccountService accountService;
 
     @Resource(name = "genericStrategyImportService")
     private GenericStrategyImportService genericStrategyImportService;
@@ -332,6 +341,7 @@ public class TradeApiController extends AbstractApiController {
      *
      * @param request {@link HttpServletRequest}
      * @param tradeId trade id
+     * @param accountNumber account number
      * @return {@link StandardJsonResponse}
      */
     @ValidateApiToken
@@ -370,10 +380,60 @@ public class TradeApiController extends AbstractApiController {
     ) {
         final User user = (User) request.getAttribute(SecurityConstants.USER_REQUEST_KEY);
         Optional<Trade> trade = this.tradeService.findTradeByTradeId(tradeId, getAccountForId(user, accountNumber));
-        validateIfPresent(trade, "No trade was found with trade id: %s", tradeId);
+        validateIfPresent(trade, NO_TRADE_FOR_TRADE_ID, tradeId);
         return trade
                 .map(value -> StandardJsonResponse.<TradeDTO>builder().success(true).data(this.tradeDTOConverter.convert(value)).build())
                 .orElseGet(() -> StandardJsonResponse.<TradeDTO>builder().success(false).data(TradeDTO.builder().build()).build());
+    }
+
+    /**
+     * Returns a {@link StandardJsonResponse} containing {@link TradeInsights} for the given trade id
+     *
+     * @param request {@link HttpServletRequest}
+     * @param tradeId trade id
+     * @param accountNumber account number
+     * @return {@link StandardJsonResponse}
+     */
+    @ValidateApiToken
+    @Operation(summary = "Obtains an individual trade's insights", description = "Returns an individual trade and its insights.")
+    @ApiResponse(
+            responseCode = "200",
+            description = "Response when the api cannot find the trade for the given trade id.",
+            content = @Content(
+                    mediaType = "application/json",
+                    schema = @Schema(implementation = StandardJsonResponse.class, example = "No trade found for id 1234")
+            )
+    )
+    @ApiResponse(
+            responseCode = "200",
+            description = "Response when the api successfully obtains the trade insights for the given trade id.",
+            content = @Content(
+                    mediaType = "application/json",
+                    schema = @Schema(implementation = StandardJsonResponse.class)
+            )
+    )
+    @ApiResponse(
+            responseCode = "401",
+            description = "Response when the api call made was unauthorized.",
+            content = @Content(
+                    mediaType = "application/json",
+                    schema = @Schema(implementation = StandardJsonResponse.class, example = "The API token was invalid.")
+            )
+    )
+    @GetMapping(ApiPaths.Trade.GET_TRADE_INSIGHTS)
+    public StandardJsonResponse<TradeInsights> getTradeInsights(
+            @Parameter(name = "accountNumber", description = "The unique identifier for your trading account", example = "1234")
+            final @RequestParam("accountNumber") long accountNumber,
+            @Parameter(name = TRADE_ID, description = "The unique identifier for the trade", example = "1234")
+            final @RequestParam(TRADE_ID) String tradeId,
+            final HttpServletRequest request
+    ) {
+        final User user = (User) request.getAttribute(SecurityConstants.USER_REQUEST_KEY);
+        Optional<Trade> trade = this.tradeService.findTradeByTradeId(tradeId, getAccountForId(user, accountNumber));
+        validateIfPresent(trade, NO_TRADE_FOR_TRADE_ID, tradeId);
+        return trade
+                .map(value -> StandardJsonResponse.<TradeInsights>builder().success(true).data(this.tradeService.generateTradeInsights(value)).build())
+                .orElseGet(() -> StandardJsonResponse.<TradeInsights>builder().success(false).data(TradeInsights.builder().build()).build());
     }
 
 
@@ -442,6 +502,211 @@ public class TradeApiController extends AbstractApiController {
                 .message(result)
                 .build();
     }
+
+    /**
+     * Creates a new {@link Trade} for the given account number
+     *
+     * @param data {@link CreateUpdateTradeDTO}}
+     * @param accountNumber account number
+     * @param request {@link HttpServletRequest}
+     * @return {@link StandardJsonResponse}
+     */
+    @ValidateApiToken
+    @Operation(summary = "Creates a new trade", description = "Creates a new trade for the given account number.")
+    @ApiResponse(
+            responseCode = "200",
+            description = "Response when the api successfully creates a new trade.",
+            content = @Content(
+                    mediaType = "application/json",
+                    schema = @Schema(implementation = StandardJsonResponse.class)
+            )
+    )
+    @ApiResponse(
+            responseCode = "500",
+            description = "Response when the api cannot not find the requested account",
+            content = @Content(
+                    mediaType = "application/json",
+                    schema = @Schema(implementation = StandardJsonResponse.class, example = "Account not found.")
+            )
+    )
+    @ApiResponse(
+            responseCode = "401",
+            description = "Response when the api call made was unauthorized.",
+            content = @Content(
+                    mediaType = "application/json",
+                    schema = @Schema(implementation = StandardJsonResponse.class, example = "The API token was invalid.")
+            )
+    )
+    @PostMapping(ApiPaths.Trade.CREATE_TRADE)
+    public StandardJsonResponse<TradeDTO> postCreateNewTrade(
+            @Parameter(name = "Trade Payload", description = "Payload for creating or updating trades")
+            final @RequestBody CreateUpdateTradeDTO data,
+            @Parameter(name = "accountNumber", description = "The unique identifier for your trading account", example = "1234")
+            final @RequestParam("accountNumber") long accountNumber,
+            final HttpServletRequest request
+    ) {
+        if (data == null || StringUtils.isEmpty(data.tradeOpenTime())) {
+            throw new MissingRequiredDataException("The required data for creating a Trade entity was null or empty");
+        }
+
+        final User user = (User) request.getAttribute(SecurityConstants.USER_REQUEST_KEY);
+        final Account account = getAccountForId(user, accountNumber);
+        final Trade newTrade = this.tradeService.createNewTrade(data, account);
+        this.accountService.refreshAccount(account);
+
+        return StandardJsonResponse
+                .<TradeDTO>builder()
+                .success(true)
+                .data(this.tradeDTOConverter.convert(newTrade))
+                .build();
+    }
+
+
+    //  ----------------- PUT REQUESTS -----------------
+
+    /**
+     * Updates an existing {@link Trade}
+     *
+     * @param tradeId trade id
+     * @param data {@link CreateUpdateTradeDTO}}
+     * @param accountNumber account number
+     * @param request {@link HttpServletRequest}
+     * @return {@link StandardJsonResponse}
+     */
+    @ValidateApiToken
+    @Operation(summary = "Updates an existing trade", description = "Updates an existing trade for the given account number and trade id.")
+    @ApiResponse(
+            responseCode = "200",
+            description = "Response when the api successfully creates a new trade.",
+            content = @Content(
+                    mediaType = "application/json",
+                    schema = @Schema(implementation = StandardJsonResponse.class)
+            )
+    )
+    @ApiResponse(
+            responseCode = "200",
+            description = "Response when the api cannot find the trade for the given trade id.",
+            content = @Content(
+                    mediaType = "application/json",
+                    schema = @Schema(implementation = StandardJsonResponse.class, example = "Trade not found.")
+            )
+    )
+    @ApiResponse(
+            responseCode = "500",
+            description = "Response when the api cannot not find the requested account",
+            content = @Content(
+                    mediaType = "application/json",
+                    schema = @Schema(implementation = StandardJsonResponse.class, example = "Account not found.")
+            )
+    )
+    @ApiResponse(
+            responseCode = "401",
+            description = "Response when the api call made was unauthorized.",
+            content = @Content(
+                    mediaType = "application/json",
+                    schema = @Schema(implementation = StandardJsonResponse.class, example = "The API token was invalid.")
+            )
+    )
+    @PutMapping(ApiPaths.Trade.UPDATE_TRADE)
+    public StandardJsonResponse<TradeDTO> putUpdateTrade(
+            @Parameter(name = "Trade Payload", description = "Payload for creating or updating trades")
+            final @RequestBody CreateUpdateTradeDTO data,
+            @Parameter(name = "accountNumber", description = "The unique identifier for your trading account", example = "1234")
+            final @RequestParam("accountNumber") long accountNumber,
+            @Parameter(name = TRADE_ID, description = "The unique identifier for the trade", example = "1234")
+            final @RequestParam(TRADE_ID) String tradeId,
+            final HttpServletRequest request
+    ) {
+        if (data == null || StringUtils.isEmpty(data.tradeId())) {
+            throw new MissingRequiredDataException("The required data for updating a Trade entity was null or empty");
+        }
+
+        final User user = (User) request.getAttribute(SecurityConstants.USER_REQUEST_KEY);
+        final Account account = getAccountForId(user, accountNumber);
+        final Optional<Trade> trade = this.tradeService.findTradeByTradeId(tradeId, account);
+
+        if (trade.isEmpty()) {
+            return StandardJsonResponse
+                    .<TradeDTO>builder()
+                    .success(false)
+                    .message(String.format(NO_TRADE_FOR_TRADE_ID, tradeId))
+                    .build();
+        }
+
+        final Trade updatedTrade = this.tradeService.updateTrade(trade.get(), data, account);
+        this.accountService.refreshAccount(account);
+        return StandardJsonResponse
+                .<TradeDTO>builder()
+                .success(true)
+                .data(this.tradeDTOConverter.convert(updatedTrade))
+                .build();
+    }
+
+
+    //  ----------------- DELETE REQUESTS -----------------
+
+    /**
+     * Deletes a {@link Trade} for the given account number and trade id
+     * @param accountNumber account number
+     * @param tradeId trade id
+     * @param request {@link HttpServletRequest}
+     * @return {@link StandardJsonResponse}
+     */
+    @ValidateApiToken
+    @Operation(summary = "Deletes an existing trade", description = "Deletes an existing trade for the given account number and trade id.")
+    @ApiResponse(
+            responseCode = "200",
+            description = "Response when the api successfully deletes a trade.",
+            content = @Content(
+                    mediaType = "application/json",
+                    schema = @Schema(implementation = StandardJsonResponse.class)
+            )
+    )
+    @ApiResponse(
+            responseCode = "200",
+            description = "Response when the api cannot find the account for the given account number.",
+            content = @Content(
+                    mediaType = "application/json",
+                    schema = @Schema(implementation = StandardJsonResponse.class, example = "No account was found for number 1234")
+            )
+    )
+    @ApiResponse(
+            responseCode = "200",
+            description = "Response when the api cannot find the trade for the given trade id.",
+            content = @Content(
+                    mediaType = "application/json",
+                    schema = @Schema(implementation = StandardJsonResponse.class, example = "No trade was found for trade id 1234")
+            )
+    )
+    @ApiResponse(
+            responseCode = "401",
+            description = "Response when the api call made was unauthorized.",
+            content = @Content(
+                    mediaType = "application/json",
+                    schema = @Schema(implementation = StandardJsonResponse.class, example = "The API token was invalid.")
+            )
+    )
+    @DeleteMapping(ApiPaths.Trade.DELETE_TRADE)
+    public StandardJsonResponse<Boolean> deleteTrade(
+            @Parameter(name = "accountNumber", description = "The unique identifier for your trading account", example = "1234")
+            final @RequestParam("accountNumber") long accountNumber,
+            @Parameter(name = TRADE_ID, description = "The unique identifier for the trade", example = "1234")
+            final @RequestParam(TRADE_ID) String tradeId,
+            final HttpServletRequest request
+    ) {
+        final User user = (User) request.getAttribute(SecurityConstants.USER_REQUEST_KEY);
+        final Account account = getAccountForId(user, accountNumber);
+        final Optional<Trade> trade = this.tradeService.findTradeByTradeId(tradeId, account);
+        return trade.map(value -> {
+            final boolean result = this.tradeService.deleteTrade(value);
+            if (result) {
+                this.accountService.refreshAccount(account);
+            }
+
+            return StandardJsonResponse.<Boolean>builder().success(result).data(result).build();
+        }).orElseGet(() -> StandardJsonResponse.<Boolean>builder().success(false).data(false).message(String.format(NO_TRADE_FOR_TRADE_ID, tradeId)).build());
+    }
+
 
 
     //  HELPERS

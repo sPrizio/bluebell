@@ -28,10 +28,12 @@ import {
   IconCircleMinus,
   IconCirclePlus,
   IconDatabase,
+  IconDownload,
   IconEdit,
   IconExternalLink,
   IconFlag3Filled,
   IconHelpSquareRounded,
+  IconHexagonLetterXFilled,
   IconInfoSquareRoundedFilled,
   IconLayoutDashboard,
   IconLogout,
@@ -45,9 +47,11 @@ import {
   IconPointFilled,
   IconReplaceFilled,
   IconSearch,
+  IconShieldCheckFilled,
   IconSquareRoundedChevronDownFilled,
   IconSquareRoundedChevronUpFilled,
   IconTrash,
+  IconUpload,
   IconUserCircle,
   IconX,
   IconXboxX,
@@ -209,6 +213,14 @@ export function resolveIcon(iconCode: string, className = "", iconSize = 24) {
       return <IconAntennaBars4 className={className} size={iconSize} />;
     case Icons.AntennaBars5:
       return <IconAntennaBars5 className={className} size={iconSize} />;
+    case Icons.Download:
+      return <IconDownload className={className} size={iconSize} />;
+    case Icons.Upload:
+      return <IconUpload className={className} size={iconSize} />;
+    case Icons.ShieldCheckFilled:
+      return <IconShieldCheckFilled className={className} size={iconSize} />;
+    case Icons.HexagonLetterXFilled:
+      return <IconHexagonLetterXFilled className={className} size={iconSize} />;
     default:
       return <span>-</span>;
   }

@@ -21,7 +21,7 @@ import java.time.LocalDateTime;
  * Job that runs once per week to clean up any stale {@link Account}s
  *
  * @author Stephen Prizio
- * @version 0.1.8
+ * @version 0.2.4
  */
 @Slf4j
 @Component
@@ -50,6 +50,7 @@ public class InvalidateStaleAccountsScheduledJob extends AbstractScheduledJob im
                 .builder()
                 .priority(1)
                 .name(String.format("InvalidateStaleAccountsAction_%s", LocalDateTime.now()))
+                .displayName("Invalidate stale accounts")
                 .performableAction(this.invalidateStaleAccountsActionPerformable)
                 .build();
 
@@ -59,6 +60,7 @@ public class InvalidateStaleAccountsScheduledJob extends AbstractScheduledJob im
                 .builder()
                 .type(JobType.INVALIDATE_STALE_ACCOUNTS)
                 .name(String.format("InvalidateStaleAccountsJob_%s", LocalDateTime.now()))
+                .displayName("Invalidate stale accounts job")
                 .build();
 
         invalidateStaleAccountsJob = this.jobRepository.save(invalidateStaleAccountsJob);

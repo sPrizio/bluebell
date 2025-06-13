@@ -139,11 +139,13 @@ export default function AccountForm({
       tradePlatform: isCreateMode() ? "default" : account?.tradePlatform?.code,
       isLegacy: isCreateMode() ? false : isClosed,
       accountOpenTime: isCreateMode()
-        ? null
+        ? moment().toDate()
         : moment(account?.accountOpenTime).toDate(),
       accountCloseTime: isCreateMode()
-        ? null
-        : moment(account?.accountCloseTime).toDate(),
+        ? moment().toDate()
+        : account?.accountCloseTime
+          ? moment(account?.accountCloseTime).toDate()
+          : moment().toDate(),
     },
   });
 

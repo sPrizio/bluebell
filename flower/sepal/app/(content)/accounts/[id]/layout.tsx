@@ -16,7 +16,7 @@ import { useActivePortfolio } from "@/lib/hooks/api/useActivePortoflio";
  * @param children Content
  * @param params Account ID
  * @author Stephen Prizio
- * @version 0.2.0
+ * @version 0.2.4
  */
 export default function AccountDetailsLayout({
   children,
@@ -43,7 +43,12 @@ export default function AccountDetailsLayout({
     return <LoadingPage />;
   }
 
-  if (isPortfolioError || portfolioError || isAccountError) {
+  if (
+    isPortfolioError ||
+    portfolioError ||
+    isAccountError ||
+    portfolioMisMatch
+  ) {
     logErrors(
       "User and portfolio mismatch!",
       portfolioError,
@@ -51,6 +56,25 @@ export default function AccountDetailsLayout({
       accountError,
     );
     return <Error />;
+  }
+
+  //  GENERAL FUNCTIONS
+
+  /**
+   * Computes a dynamic Account description
+   */
+  function computeDescription() {
+    let string = "";
+    if (account?.accountType?.code?.length ?? -1 > 0) {
+      string +=
+        account?.accountType.label + " Account " + account?.accountNumber;
+    }
+
+    if (account?.broker?.code?.length ?? -1 > 0) {
+      string += " with " + account?.broker.label;
+    }
+
+    return string;
   }
 
   const pageInfo = {
@@ -71,25 +95,6 @@ export default function AccountDetailsLayout({
       },
     ],
   };
-
-  //  GENERAL FUNCTIONS
-
-  /**
-   * Computes a dynamic Account description
-   */
-  function computeDescription() {
-    let string = "";
-    if (account?.accountType?.code?.length ?? -1 > 0) {
-      string +=
-        account?.accountType.label + " Account " + account?.accountNumber;
-    }
-
-    if (account?.broker?.code?.length ?? -1 > 0) {
-      string += " with " + account?.broker.label;
-    }
-
-    return string;
-  }
 
   //  RENDER
 

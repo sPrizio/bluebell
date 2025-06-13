@@ -21,16 +21,8 @@ interface User extends GenericApiType {
   username: string;
   email: string;
   dateRegistered: string;
-  phones: Array<PhoneNumber>;
   portfolios: Array<Portfolio>;
   roles: Array<string>;
-}
-
-interface PhoneNumber extends GenericApiType {
-  phoneType: string;
-  countryCode: string;
-  telephoneNumber: number;
-  display: string;
 }
 
 interface AccountCreationInfo {
@@ -87,8 +79,6 @@ interface GenericEnum extends GenericApiType {
 }
 
 type Language = GenericEnum;
-
-type PhoneType = GenericEnum;
 
 type Country = GenericEnum;
 
@@ -189,8 +179,8 @@ interface PagedTrades {
 interface Trade extends GenericApiType {
   tradeId: string;
   product: string;
-  tradePlatform: string;
-  tradeType: string;
+  tradePlatform: EnumDisplay;
+  tradeType: EnumDisplay;
   tradeOpenTime: string;
   tradeCloseTime: string;
   lotSize: number;
@@ -247,6 +237,18 @@ interface TradeRecord extends GenericApiType {
   interval: TradeRecordTimeInterval;
   equityPoints: Array<TradeRecordEquityPoint>;
   account: Account;
+}
+
+interface TradeInsightsType {
+  dayOfWeek: string;
+  rrr: number;
+  risk: number;
+  riskEquityPercentage: number;
+  reward: number;
+  rewardEquityPercentage: number;
+  duration: number;
+  drawdown: number;
+  drawdownPercentage: number;
 }
 
 interface TradeLog {
@@ -333,6 +335,7 @@ interface Action extends GenericApiType {
   actionId: string;
   priority: number;
   name: string;
+  displayName: string;
   status: EnumDisplay;
   performableAction: string;
 }
@@ -352,6 +355,7 @@ interface Job extends GenericApiType {
   jobId: string;
   id: number;
   name: string;
+  displayName: string;
   executionTime: string;
   completionTime: string;
   status: EnumDisplay;
@@ -394,6 +398,21 @@ interface CreateUpdateAccountRequest {
   isLegacy: boolean;
   accountOpenTime: string | undefined | null;
   accountCloseTime: string | undefined | null;
+}
+
+interface CreateUpdateTradeRequest {
+  tradeId?: string | undefined | null;
+  tradePlatform: string;
+  product: string;
+  tradeType: string;
+  closePrice?: number | undefined | null;
+  tradeCloseTime: string | undefined | null;
+  tradeOpenTime: string | undefined | null;
+  lotSize: number;
+  netProfit?: number | undefined | null;
+  openPrice: number | undefined | null;
+  stopLoss?: number | undefined | null;
+  takeProfit?: number | undefined | null;
 }
 
 interface PagedJobs {

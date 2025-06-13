@@ -36,7 +36,7 @@ export default function JobLayout({
 
   const pageInfo = {
     title: "Job Details",
-    subtitle: "View the details for a specific job",
+    subtitle: `View the details for ${job?.displayName ?? "a specific job"}`,
     iconCode: Icons.BrandReact,
     breadcrumbs: [
       { label: "Dashboard", href: "/dashboard", active: false },
@@ -46,11 +46,15 @@ export default function JobLayout({
         active: false,
       },
       {
-        label: `${job?.name ?? "Job"}`,
+        label: `${job?.displayName ?? "Job"}`,
         href: `/jobs/${params.id}`,
         active: true,
       },
     ],
+    backCTA: {
+      label: "View other jobs",
+      href: "/jobs",
+    },
   };
 
   //  RENDER

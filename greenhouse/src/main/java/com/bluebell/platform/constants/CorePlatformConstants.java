@@ -9,7 +9,7 @@ import java.util.List;
  * Constants defined for the bluebell platform
  *
  * @author Stephen Prizio
- * @version 0.2.1
+ * @version 0.2.4
  */
 public class CorePlatformConstants {
 
@@ -232,22 +232,6 @@ public class CorePlatformConstants {
 
             public static final String SORT_CANNOT_BE_NULL = "sort cannot be null";
 
-            public static class PhoneNumber {
-
-                private PhoneNumber() {
-                    throw new UnsupportedOperationException(String.format(NO_INSTANTIATION, getClass().getName()));
-                }
-
-                public static final String PHONE_NUMBER_CANNOT_BE_NULL = "phone number cannot be null";
-
-                public static final String PHONE_TYPE_CANNOT_BE_NULL = "phone type cannot be null";
-
-                public static final String COUNTRY_CODE_CANNOT_BE_NEGATIVE = "country code cannot be a negative number";
-
-                public static final String TELEPHONE_NUMBER_CANNOT_BE_NEGATIVE = "telephone number cannot be a negative number";
-
-            }
-
             public static class IncomingPing {
 
                 private IncomingPing() {
@@ -269,6 +253,8 @@ public class CorePlatformConstants {
             public static final String TRADE_CANNOT_BE_NULL = "trade cannot be null";
 
             public static final String TRADE_TYPE_CANNOT_BE_NULL = "tradeType cannot be null";
+
+            public static final String TRADE_PLATFORM_CANNOT_BE_NULL = "tradePlatform cannot be null";
 
             public static final String TRADE_ID_CANNOT_BE_NULL = "tradeId cannot be null";
 

@@ -20,7 +20,7 @@ import java.time.LocalDateTime;
  * Job that runs once per week to clean up the processed ingress archive
  *
  * @author Stephen Prizio
- * @version 0.1.5
+ * @version 0.2.4
  */
 @Slf4j
 @Component
@@ -49,6 +49,7 @@ public class CleanupIngestedDataScheduledJob extends AbstractScheduledJob implem
                 .builder()
                 .priority(1)
                 .name(String.format("CleanupIngestedDataAction_%s", LocalDateTime.now()))
+                .displayName("Cleanup ingested data")
                 .performableAction(this.cleanupIngestedDataActionPerformable)
                 .build();
 
@@ -58,6 +59,7 @@ public class CleanupIngestedDataScheduledJob extends AbstractScheduledJob implem
                 .builder()
                 .type(JobType.CLEANUP_INGESTED_DATA)
                 .name(String.format("CleanupIngestedDataJob_%s", LocalDateTime.now()))
+                .displayName("Cleanup ingested data job")
                 .build();
 
         cleanupJob = this.jobRepository.save(cleanupJob);

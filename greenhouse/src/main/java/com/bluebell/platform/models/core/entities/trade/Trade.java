@@ -13,7 +13,7 @@ import java.time.LocalDateTime;
  * Class representation of a trade in the market, a buy or sell exchange
  *
  * @author Stephen Prizio
- * @version 0.1.1
+ * @version 0.2.4
  */
 @Getter
 @Entity
@@ -78,4 +78,25 @@ public class Trade implements GenericEntity {
     @Setter
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.REFRESH)
     private Account account;
+
+
+    //  METHODS
+
+    /**
+     * Helper method for checking the trade is closed and not active
+     *
+     * @return true if an open and close time are specified
+     */
+    public boolean isClosed() {
+        return this.tradeOpenTime != null && this.tradeCloseTime != null;
+    }
+
+    /**
+     * Helper method for checking the trade is active
+     *
+     * @return true if an open time is specified and close time is empty
+     */
+    public boolean isOpen() {
+        return this.tradeOpenTime != null && this.tradeCloseTime == null;
+    }
 }

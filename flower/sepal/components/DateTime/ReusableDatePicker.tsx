@@ -19,6 +19,8 @@ interface Props<T extends FieldValues, K extends Path<T>> {
   label: string;
   hasIcon?: boolean;
   field: ControllerRenderProps<T, K>;
+  modal?: boolean;
+  disabled?: boolean;
 }
 
 /**
@@ -27,17 +29,25 @@ interface Props<T extends FieldValues, K extends Path<T>> {
  * @param label display label
  * @param hasIcon render icon
  * @param field form field handler
+ * @param modal is component in a modal
+ * @param disabled is disabled
  * @author Stephen Prizio
- * @version 0.2.2
+ * @version 0.2.4
  */
 export default function ReusableDatePicker<
   T extends FieldValues,
   K extends Path<T>,
->({ label, hasIcon = true, field }: Readonly<Props<T, K>>) {
+>({
+  label,
+  hasIcon = true,
+  field,
+  modal = true,
+  disabled = false,
+}: Readonly<Props<T, K>>) {
   //  RENDER
 
   return (
-    <Popover>
+    <Popover modal={modal}>
       <PopoverTrigger asChild>
         <Button
           variant={"outline"}
@@ -45,21 +55,21 @@ export default function ReusableDatePicker<
             "w-full justify-start text-left font-normal",
             !field.value && "text-muted-foreground",
           )}
+          disabled={disabled}
         >
           {hasIcon && resolveIcon(Icons.CalendarMonth, "", 18)}
           &nbsp;&nbsp;
           {field.value ? format(field.value, "PPP") : <span>{label}</span>}
         </Button>
       </PopoverTrigger>
-      <PopoverContent className="w-auto p-0">
+      <PopoverContent className="z-[9999] w-auto p-0">
         <Calendar
           mode="single"
           selected={field.value}
           onSelect={field.onChange}
           disabled={(date) =>
-            date > new Date() || date < new Date("1900-01-01")
+            date > new Date() || date < new Date("1900-01-01") || disabled
           }
-          initialFocus
         />
       </PopoverContent>
     </Popover>

@@ -35,7 +35,7 @@ import static com.bluebell.radicle.validation.GenericValidator.validateParameter
  * Service-layer for calculating {@link TradeRecord}s
  *
  * @author Stephen Prizio
- * @version 0.2.0
+ * @version 0.2.4
  */
 @Service
 public class TradeRecordService {
@@ -70,7 +70,7 @@ public class TradeRecordService {
         LocalDate tempEnd = tempStart.plus(tradeRecordTimeInterval.getAmount(), tradeRecordTimeInterval.getUnit());
 
         final List<TradeRecord> records = new ArrayList<>();
-        while (tempStart.isBefore(end) || tempStart.isEqual(end)) {
+        while (tempStart.isBefore(end)) {
             records.add(generateRecord(tempStart, tempEnd, this.tradeService.findAllTradesWithinTimespan(tempStart.atStartOfDay(), tempEnd.atStartOfDay(), account), tradeRecordTimeInterval, count));
 
             tempStart = tempStart.plus(tradeRecordTimeInterval.getAmount(), tradeRecordTimeInterval.getUnit());
@@ -167,15 +167,20 @@ public class TradeRecordService {
 
         if (CollectionUtils.isNotEmpty(accounts)) {
             final List<TradeLogEntryRecord> records = new ArrayList<>();
-            accounts.forEach(acc -> records.add(
-                    TradeLogEntryRecord
-                            .builder()
-                            .account(acc)
-                            .accountNumber(acc.getAccountNumber())
-                            .accountName(acc.getName())
-                            .report(getTradeRecords(start, end, acc, tradeRecordTimeInterval, count))
-                            .build()
-            ));
+            accounts.forEach(acc -> {
+                final TradeRecordReport recordReport = getTradeRecords(start, end, acc, tradeRecordTimeInterval, count);
+                if (recordReport != null && CollectionUtils.isNotEmpty(recordReport.getTradeRecords())) {
+                    records.add(
+                            TradeLogEntryRecord
+                                    .builder()
+                                    .account(acc)
+                                    .accountNumber(acc.getAccountNumber())
+                                    .accountName(acc.getName())
+                                    .report(recordReport)
+                                    .build()
+                    );
+                }
+            });
 
             if (CollectionUtils.isNotEmpty(records)) {
                 final int trades = records.stream().mapToInt(tr -> tr.report().tradeRecordTotals().trades()).sum();
@@ -221,7 +226,7 @@ public class TradeRecordService {
         validateParameterIsNotNull(account, CorePlatformConstants.Validation.Account.ACCOUNT_CANNOT_BE_NULL);
         validateParameterIsNotNull(tradeRecordTimeInterval, CorePlatformConstants.Validation.DataIntegrity.INTERVAL_CANNOT_BE_NULL);
 
-        final List<Trade> trades = account.getTrades().stream().sorted(Comparator.comparing(Trade::getTradeCloseTime)).toList();
+        final List<Trade> trades = account.getTrades().stream().filter(Trade::isClosed).sorted(Comparator.comparing(Trade::getTradeCloseTime)).toList();
         final Map<String, Map<String, Integer>> map = new HashMap<>();
 
         for (final Trade trade : trades) {

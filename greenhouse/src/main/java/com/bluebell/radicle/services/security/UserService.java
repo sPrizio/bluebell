@@ -3,9 +3,7 @@ package com.bluebell.radicle.services.security;
 import com.bluebell.platform.constants.CorePlatformConstants;
 import com.bluebell.platform.enums.security.UserRole;
 import com.bluebell.platform.models.api.dto.security.CreateUpdateUserDTO;
-import com.bluebell.platform.models.api.dto.system.CreateUpdatePhoneNumberDTO;
 import com.bluebell.platform.models.core.entities.security.User;
-import com.bluebell.platform.models.core.entities.system.PhoneNumber;
 import com.bluebell.radicle.exceptions.security.DuplicateUserEmailException;
 import com.bluebell.radicle.exceptions.security.DuplicateUserUsernameException;
 import com.bluebell.radicle.exceptions.system.EntityCreationException;
@@ -13,14 +11,15 @@ import com.bluebell.radicle.exceptions.system.EntityModificationException;
 import com.bluebell.radicle.exceptions.validation.MissingRequiredDataException;
 import com.bluebell.radicle.repositories.security.UserRepository;
 import com.bluebell.radicle.security.services.ApiTokenService;
-import com.bluebell.radicle.services.system.PhoneNumberService;
 import jakarta.annotation.Resource;
-import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 import static com.bluebell.radicle.validation.GenericValidator.validateParameterIsNotNull;
 
@@ -29,16 +28,13 @@ import static com.bluebell.radicle.validation.GenericValidator.validateParameter
  * Service-layer for {@link User} entities
  *
  * @author Stephen Prizio
- * @version 0.1.2
+ * @version 0.2.4
  */
 @Service
 public class UserService {
 
     @Resource(name = "apiTokenService")
     private ApiTokenService apiTokenService;
-
-    @Resource(name = "phoneNumberService")
-    private PhoneNumberService phoneNumberService;
 
     @Resource(name = "userRepository")
     private UserRepository userRepository;
@@ -136,8 +132,6 @@ public class UserService {
      */
     private User applyChanges(User user, final CreateUpdateUserDTO data, final boolean isNew) {
 
-        Set<PhoneNumber> phoneNumbers = (CollectionUtils.isEmpty(user.getPhones())) ? new HashSet<>() : new HashSet<>(user.getPhones());
-
         if (isNew) {
             user.setPassword(data.password());
         }
@@ -148,7 +142,6 @@ public class UserService {
         user.setUsername(data.username());
         user.setRoles(new ArrayList<>(List.of(UserRole.TRADER)));
         user.setPortfolios(new ArrayList<>());
-        user.setPhones(new ArrayList<>());
 
         user = this.userRepository.save(user);
 
@@ -158,21 +151,7 @@ public class UserService {
         }
 
         if (!isNew) {
-            user.getPhones().forEach(ph -> this.phoneNumberService.deletePhoneNumber(ph));
             user = this.userRepository.save(user);
-        }
-
-        if (CollectionUtils.isNotEmpty(data.phoneNumbers())) {
-            for (CreateUpdatePhoneNumberDTO d : data.phoneNumbers()) {
-                final PhoneNumber phoneNumber = this.phoneNumberService.createPhoneNumber(d, user);
-                if (!phoneNumbers.contains(phoneNumber)) {
-                    phoneNumbers.add(phoneNumber);
-                } else {
-                    this.phoneNumberService.deletePhoneNumber(phoneNumber);
-                }
-            }
-
-            user.setPhones(new ArrayList<>(phoneNumbers));
         }
 
         return this.userRepository.save(user);

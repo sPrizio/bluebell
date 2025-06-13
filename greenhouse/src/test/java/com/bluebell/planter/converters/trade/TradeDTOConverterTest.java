@@ -5,6 +5,7 @@ import com.bluebell.planter.services.UniqueIdentifierService;
 import com.bluebell.platform.enums.trade.TradePlatform;
 import com.bluebell.platform.enums.trade.TradeType;
 import com.bluebell.platform.models.api.dto.trade.TradeDTO;
+import com.bluebell.platform.models.core.nonentities.data.EnumDisplay;
 import com.bluebell.platform.services.MathService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -26,7 +27,7 @@ import static org.mockito.ArgumentMatchers.anyDouble;
  * Testing class for {@link TradeDTOConverter}
  *
  * @author Stephen Prizio
- * @version 0.1.3
+ * @version 0.2.4
  */
 @SpringBootTest
 @RunWith(SpringRunner.class)
@@ -65,8 +66,8 @@ class TradeDTOConverterTest extends AbstractPlanterTest {
                 .extracting("tradeId", "tradePlatform", "tradeType", "tradeOpenTime", "tradeCloseTime", "lotSize", "openPrice", "closePrice", "netProfit")
                 .containsExactly(
                         "testId1",
-                        TradePlatform.CMC_MARKETS,
-                        TradeType.BUY,
+                        EnumDisplay.builder().code(TradePlatform.CMC_MARKETS.getCode()).label(TradePlatform.CMC_MARKETS.getLabel()).build(),
+                        EnumDisplay.builder().code(TradeType.BUY.getCode()).label(TradeType.BUY.getLabel()).build(),
                         LocalDateTime.of(2022, 8, 24, 11, 32, 58),
                         LocalDateTime.of(2022, 8, 24, 11, 37, 24),
                         0.75,
@@ -88,8 +89,8 @@ class TradeDTOConverterTest extends AbstractPlanterTest {
                 .extracting("tradeId", "tradePlatform", "tradeType", "tradeOpenTime", "tradeCloseTime", "lotSize", "openPrice", "closePrice", "netProfit")
                 .containsExactly(
                         "testId1",
-                        TradePlatform.CMC_MARKETS,
-                        TradeType.BUY,
+                        EnumDisplay.builder().code(TradePlatform.CMC_MARKETS.getCode()).label(TradePlatform.CMC_MARKETS.getLabel()).build(),
+                        EnumDisplay.builder().code(TradeType.BUY.getCode()).label(TradeType.BUY.getLabel()).build(),
                         LocalDateTime.of(2022, 8, 24, 11, 32, 58),
                         LocalDateTime.of(2022, 8, 24, 11, 37, 24),
                         0.75,

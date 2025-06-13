@@ -1,5 +1,5 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { Account, Portfolio, Transaction, User } from "@/types/apiTypes";
+import { Account, Portfolio, Trade, Transaction, User } from "@/types/apiTypes";
 import { del, post, postFile, put } from "../../functions/client";
 import { ApiUrls } from "../../constants";
 
@@ -198,6 +198,86 @@ export const useDeleteTransactionMutation = (accountNumber: number) => {
     }, //TODO: BB-118
     onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: ["user"] });
+    },
+  });
+};
+
+export const useCreateTradeMutation = (accountNumber: number) => {
+  const queryClient = useQueryClient();
+  return useMutation<Trade, Error, any>({
+    mutationFn: (payload) =>
+      post<Trade>(
+        ApiUrls.Trade.CreateTrade,
+        { accountNumber: accountNumber.toString() },
+        payload,
+      ),
+    onSuccess: (data) => {
+      queryClient.invalidateQueries({
+        queryKey: ["portfolio"],
+      });
+      queryClient.invalidateQueries({
+        queryKey: ["account"],
+      });
+      queryClient.invalidateQueries({
+        queryKey: ["paginated-trades"],
+      });
+    },
+  });
+};
+
+export const useUpdateTradeMutation = (
+  accountNumber: number,
+  tradeId: string,
+) => {
+  const queryClient = useQueryClient();
+  return useMutation<Trade, Error, any>({
+    mutationFn: (payload) =>
+      put<Trade>(
+        ApiUrls.Trade.UpdateTrade,
+        { accountNumber: accountNumber, tradeId: tradeId },
+        payload,
+      ),
+    onSuccess: (data) => {
+      queryClient.invalidateQueries({
+        queryKey: ["trade", accountNumber.toString(), tradeId],
+      });
+      queryClient.invalidateQueries({
+        queryKey: ["trade-insights", accountNumber.toString(), tradeId],
+      });
+      queryClient.invalidateQueries({
+        queryKey: ["portfolio"],
+      });
+      queryClient.invalidateQueries({
+        queryKey: ["account"],
+      });
+      queryClient.invalidateQueries({
+        queryKey: ["paginated-trades"],
+      });
+    },
+  });
+};
+
+export const useDeleteTradeMutation = (
+  accountNumber: number,
+  tradeId: string,
+) => {
+  const queryClient = useQueryClient();
+  return useMutation<boolean, Error, any>({
+    mutationFn: () =>
+      del<boolean>(ApiUrls.Trade.DeleteTrade, {
+        accountNumber: accountNumber.toString(),
+        tradeId: tradeId,
+      }),
+    onSuccess: (data) => {
+      queryClient.invalidateQueries({
+        queryKey: ["account"],
+      });
+      queryClient.invalidateQueries({
+        queryKey: ["portfolio"],
+      });
+      queryClient.invalidateQueries({
+        queryKey: ["paginated-trades"],
+      });
     },
   });
 };
