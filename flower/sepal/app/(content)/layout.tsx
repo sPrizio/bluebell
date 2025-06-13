@@ -8,7 +8,7 @@ import { Toaster } from "@/components/ui/toaster";
  *
  * @param children Content
  * @author Stephen Prizio
- * @version 0.2.0
+ * @version 0.2.5
  */
 export default function ContentPageLayout({
   children,
