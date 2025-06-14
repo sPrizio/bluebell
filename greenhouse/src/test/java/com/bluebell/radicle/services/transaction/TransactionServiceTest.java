@@ -15,6 +15,8 @@ import org.junit.runner.RunWith;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Sort;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.context.junit4.SpringRunner;
 
@@ -30,7 +32,7 @@ import static org.mockito.ArgumentMatchers.any;
  * Testing class for {@link TransactionService}
  *
  * @author Stephen Prizio
- * @version 0.1.7
+ * @version 0.2.5
  */
 @SpringBootTest
 @RunWith(SpringRunner.class)
@@ -56,6 +58,10 @@ class TransactionServiceTest extends AbstractGenericTest {
         Mockito.when(this.transactionRepository.findAllByTransactionStatusAndAccount(any(), any())).thenReturn(List.of(generateTestTransactionDeposit(generateTestAccount())));
         Mockito.when(this.transactionRepository.findAllByTransactionTypeAndAccount(any(), any())).thenReturn(List.of(generateTestTransactionDeposit(generateTestAccount())));
         Mockito.when(this.transactionRepository.findAllByAccount(any())).thenReturn(List.of(generateTestTransactionDeposit(generateTestAccount())));
+        Mockito.when(this.transactionRepository.findAllTransactionsForStatusWithinDatePaged(any(), any(), any(), any(), any())).thenReturn(new PageImpl<>(List.of(generateTestTransactionDeposit(generateTestAccount()), generateTestTransactionWithdrawal(generateTestAccount()))));
+        Mockito.when(this.transactionRepository.findAllTransactionsForTypeWithinDatePaged(any(), any(), any(), any(), any())).thenReturn(new PageImpl<>(List.of(generateTestTransactionDeposit(generateTestAccount()), generateTestTransactionWithdrawal(generateTestAccount()))));
+        Mockito.when(this.transactionRepository.findAllTransactionsForTypeAndStatusWithinTimespanPaged(any(), any(), any(), any(), any(), any())).thenReturn(new PageImpl<>(List.of(generateTestTransactionDeposit(generateTestAccount()), generateTestTransactionWithdrawal(generateTestAccount()))));
+        Mockito.when(this.transactionRepository.findAllTransactionsWithinDatePaged(any(), any(), any(), any())).thenReturn(new PageImpl<>(List.of(generateTestTransactionDeposit(generateTestAccount()), generateTestTransactionWithdrawal(generateTestAccount()))));
     }
 
 
@@ -179,6 +185,130 @@ class TransactionServiceTest extends AbstractGenericTest {
 
         assertThat(this.transactionService.findTransactionForNameAndAccount("test", generateTestAccount()))
                 .isNotEmpty();
+    }
+
+
+    //  ----------------- findAllTransactionsWithinDatePaged (paged) -----------------
+
+    @Test
+    void test_findAllTransactionsWithinDatePaged_paged_missingParamStart() {
+        assertThatExceptionOfType(IllegalParameterException.class)
+                .isThrownBy(() -> this.transactionService.findAllTransactionsWithinDatePaged(null, LocalDateTime.MAX, generateTestAccount(), 0, 10, Sort.by(Sort.Direction.ASC, "transactionDate")))
+                .withMessage(CorePlatformConstants.Validation.DateTime.START_DATE_CANNOT_BE_NULL);
+    }
+
+    @Test
+    void test_findAllTransactionsWithinDatePaged_paged_missingParamEnd() {
+        assertThatExceptionOfType(IllegalParameterException.class)
+                .isThrownBy(() -> this.transactionService.findAllTransactionsWithinDatePaged(LocalDateTime.MAX, null, generateTestAccount(), 0, 10, Sort.by(Sort.Direction.ASC, "transactionDate")))
+                .withMessage(CorePlatformConstants.Validation.DateTime.END_DATE_CANNOT_BE_NULL);
+    }
+
+    @Test
+    void test_findAllTransactionsWithinDatePaged_paged_missingParamAccount() {
+        assertThatExceptionOfType(IllegalParameterException.class)
+                .isThrownBy(() -> this.transactionService.findAllTransactionsWithinDatePaged(LocalDateTime.MIN, LocalDateTime.MAX, null, 0, 10, Sort.by(Sort.Direction.ASC, "transactionDate")))
+                .withMessage(CorePlatformConstants.Validation.Account.ACCOUNT_CANNOT_BE_NULL);
+    }
+
+    @Test
+    void test_findAllTransactionsWithinDatePaged_paged_invalidInterval() {
+        assertThatExceptionOfType(UnsupportedOperationException.class)
+                .isThrownBy(() -> this.transactionService.findAllTransactionsWithinDatePaged(LocalDateTime.MAX, LocalDateTime.MIN, generateTestAccount(), 0, 10, Sort.by(Sort.Direction.ASC, "transactionDate")))
+                .withMessage(CorePlatformConstants.Validation.DateTime.MUTUALLY_EXCLUSIVE_DATES);
+    }
+
+    @Test
+    void test_findAllTransactionsWithinDatePaged_paged_success() {
+        assertThat(this.transactionService.findAllTransactionsWithinDatePaged(LocalDateTime.MIN.plusMonths(1), LocalDateTime.MAX, generateTestAccount(), 0, 10, Sort.by(Sort.Direction.ASC, "transactionDate")))
+                .hasSize(2);
+    }
+
+
+    //  ----------------- findAllTransactionsForStatusWithinDatePaged (paged) -----------------
+
+    @Test
+    void test_findAllTransactionsForStatusWithinDatePaged_missingParams() {
+        assertThatExceptionOfType(IllegalParameterException.class)
+                .isThrownBy(() -> this.transactionService.findAllTransactionsForStatusWithinDatePaged(null, LocalDateTime.MAX, generateTestAccount(), TransactionStatus.COMPLETED, 0, 10, Sort.by(Sort.Direction.ASC, "transactionDate")))
+                .withMessage(CorePlatformConstants.Validation.DateTime.START_DATE_CANNOT_BE_NULL);
+        assertThatExceptionOfType(IllegalParameterException.class)
+                .isThrownBy(() -> this.transactionService.findAllTransactionsForStatusWithinDatePaged(LocalDateTime.MIN, null, generateTestAccount(), TransactionStatus.COMPLETED, 0, 10, Sort.by(Sort.Direction.ASC, "transactionDate")))
+                .withMessage(CorePlatformConstants.Validation.DateTime.END_DATE_CANNOT_BE_NULL);
+        assertThatExceptionOfType(UnsupportedOperationException.class)
+                .isThrownBy(() -> this.transactionService.findAllTransactionsForStatusWithinDatePaged(LocalDateTime.MAX, LocalDateTime.MIN, generateTestAccount(), TransactionStatus.COMPLETED, 0, 10, Sort.by(Sort.Direction.ASC, "transactionDate")))
+                .withMessage(CorePlatformConstants.Validation.DateTime.MUTUALLY_EXCLUSIVE_DATES);
+        assertThatExceptionOfType(IllegalParameterException.class)
+                .isThrownBy(() -> this.transactionService.findAllTransactionsForStatusWithinDatePaged(LocalDateTime.MIN, LocalDateTime.MAX, generateTestAccount(), null, 0, 10, Sort.by(Sort.Direction.ASC, "transactionDate")))
+                .withMessage(CorePlatformConstants.Validation.Transaction.TRANSACTION_STATUS_CANNOT_BE_NULL);
+        assertThatExceptionOfType(IllegalParameterException.class)
+                .isThrownBy(() -> this.transactionService.findAllTransactionsForStatusWithinDatePaged(LocalDateTime.MIN, LocalDateTime.MAX, null, TransactionStatus.COMPLETED, 0, 10, Sort.by(Sort.Direction.ASC, "transactionDate")))
+                .withMessage(CorePlatformConstants.Validation.Account.ACCOUNT_CANNOT_BE_NULL);
+    }
+
+    @Test
+    void test_findAllTransactionsForStatusWithinDatePaged_success() {
+        assertThat(this.transactionService.findAllTransactionsForStatusWithinDatePaged(LocalDateTime.MIN.plusMonths(1), LocalDateTime.MAX, generateTestAccount(), TransactionStatus.COMPLETED, 0, 10, Sort.by(Sort.Direction.ASC, "transactionDate")))
+                .hasSize(2);
+    }
+
+
+    //  ----------------- findAllTransactionsForTypeWithinDatePaged (paged) -----------------
+
+    @Test
+    void test_findAllTransactionsForTypeWithinDatePaged_missingParams() {
+        assertThatExceptionOfType(IllegalParameterException.class)
+                .isThrownBy(() -> this.transactionService.findAllTransactionsForTypeWithinDatePaged(null, LocalDateTime.MAX, generateTestAccount(), TransactionType.DEPOSIT, 0, 10, Sort.by(Sort.Direction.ASC, "transactionDate")))
+                .withMessage(CorePlatformConstants.Validation.DateTime.START_DATE_CANNOT_BE_NULL);
+        assertThatExceptionOfType(IllegalParameterException.class)
+                .isThrownBy(() -> this.transactionService.findAllTransactionsForTypeWithinDatePaged(LocalDateTime.MIN, null, generateTestAccount(), TransactionType.DEPOSIT, 0, 10, Sort.by(Sort.Direction.ASC, "transactionDate")))
+                .withMessage(CorePlatformConstants.Validation.DateTime.END_DATE_CANNOT_BE_NULL);
+        assertThatExceptionOfType(UnsupportedOperationException.class)
+                .isThrownBy(() -> this.transactionService.findAllTransactionsForTypeWithinDatePaged(LocalDateTime.MAX, LocalDateTime.MIN, generateTestAccount(), TransactionType.DEPOSIT, 0, 10, Sort.by(Sort.Direction.ASC, "transactionDate")))
+                .withMessage(CorePlatformConstants.Validation.DateTime.MUTUALLY_EXCLUSIVE_DATES);
+        assertThatExceptionOfType(IllegalParameterException.class)
+                .isThrownBy(() -> this.transactionService.findAllTransactionsForTypeWithinDatePaged(LocalDateTime.MIN, LocalDateTime.MAX, generateTestAccount(), null, 0, 10, Sort.by(Sort.Direction.ASC, "transactionDate")))
+                .withMessage(CorePlatformConstants.Validation.Transaction.TRANSACTION_TYPE_CANNOT_BE_NULL);
+        assertThatExceptionOfType(IllegalParameterException.class)
+                .isThrownBy(() -> this.transactionService.findAllTransactionsForTypeWithinDatePaged(LocalDateTime.MIN, LocalDateTime.MAX, null, TransactionType.DEPOSIT, 0, 10, Sort.by(Sort.Direction.ASC, "transactionDate")))
+                .withMessage(CorePlatformConstants.Validation.Account.ACCOUNT_CANNOT_BE_NULL);
+    }
+
+    @Test
+    void test_findAllTransactionsForTypeWithinDatePaged_success() {
+        assertThat(this.transactionService.findAllTransactionsForTypeWithinDatePaged(LocalDateTime.MIN.plusMonths(1), LocalDateTime.MAX, generateTestAccount(), TransactionType.DEPOSIT, 0, 10, Sort.by(Sort.Direction.ASC, "transactionDate")))
+                .hasSize(2);
+    }
+
+
+    //  ----------------- findAllTransactionsForTypeAndStatusWithinTimespan (paged) -----------------
+
+    @Test
+    void test_findAllTransactionsForTypeAndStatusWithinTimespan_missingParams() {
+        assertThatExceptionOfType(IllegalParameterException.class)
+                .isThrownBy(() -> this.transactionService.findAllTransactionsForTypeAndStatusWithinTimespan(null, LocalDateTime.MAX, TransactionType.DEPOSIT, TransactionStatus.COMPLETED, generateTestAccount(), 0, 10, Sort.by(Sort.Direction.ASC, "transactionDate")))
+                .withMessage(CorePlatformConstants.Validation.DateTime.START_DATE_CANNOT_BE_NULL);
+        assertThatExceptionOfType(IllegalParameterException.class)
+                .isThrownBy(() -> this.transactionService.findAllTransactionsForTypeAndStatusWithinTimespan(LocalDateTime.MIN, null, TransactionType.DEPOSIT, TransactionStatus.COMPLETED, generateTestAccount(), 0, 10, Sort.by(Sort.Direction.ASC, "transactionDate")))
+                .withMessage(CorePlatformConstants.Validation.DateTime.END_DATE_CANNOT_BE_NULL);
+        assertThatExceptionOfType(UnsupportedOperationException.class)
+                .isThrownBy(() -> this.transactionService.findAllTransactionsForTypeAndStatusWithinTimespan(LocalDateTime.MAX, LocalDateTime.MIN, TransactionType.DEPOSIT, TransactionStatus.COMPLETED, generateTestAccount(), 0, 10, Sort.by(Sort.Direction.ASC, "transactionDate")))
+                .withMessage(CorePlatformConstants.Validation.DateTime.MUTUALLY_EXCLUSIVE_DATES);
+        assertThatExceptionOfType(IllegalParameterException.class)
+                .isThrownBy(() -> this.transactionService.findAllTransactionsForTypeAndStatusWithinTimespan(LocalDateTime.MIN, LocalDateTime.MAX, null, TransactionStatus.COMPLETED, generateTestAccount(), 0, 10, Sort.by(Sort.Direction.ASC, "transactionDate")))
+                .withMessage(CorePlatformConstants.Validation.Transaction.TRANSACTION_TYPE_CANNOT_BE_NULL);
+        assertThatExceptionOfType(IllegalParameterException.class)
+                .isThrownBy(() -> this.transactionService.findAllTransactionsForTypeAndStatusWithinTimespan(LocalDateTime.MIN, LocalDateTime.MAX, TransactionType.DEPOSIT, null, generateTestAccount(), 0, 10, Sort.by(Sort.Direction.ASC, "transactionDate")))
+                .withMessage(CorePlatformConstants.Validation.Transaction.TRANSACTION_STATUS_CANNOT_BE_NULL);
+        assertThatExceptionOfType(IllegalParameterException.class)
+                .isThrownBy(() -> this.transactionService.findAllTransactionsForTypeAndStatusWithinTimespan(LocalDateTime.MIN, LocalDateTime.MAX, TransactionType.DEPOSIT, TransactionStatus.COMPLETED, null, 0, 10, Sort.by(Sort.Direction.ASC, "transactionDate")))
+                .withMessage(CorePlatformConstants.Validation.Account.ACCOUNT_CANNOT_BE_NULL);
+    }
+
+    @Test
+    void test_findAllTransactionsForTypeAndStatusWithinTimespan_success() {
+        assertThat(this.transactionService.findAllTransactionsForTypeAndStatusWithinTimespan(LocalDateTime.MIN.plusMonths(1), LocalDateTime.MAX, TransactionType.DEPOSIT, TransactionStatus.COMPLETED, generateTestAccount(), 0, 10, Sort.by(Sort.Direction.ASC, "transactionDate")))
+                .hasSize(2);
     }
 
 

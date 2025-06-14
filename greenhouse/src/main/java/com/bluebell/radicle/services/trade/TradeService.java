@@ -15,6 +15,7 @@ import com.bluebell.radicle.exceptions.system.EntityCreationException;
 import com.bluebell.radicle.exceptions.system.EntityModificationException;
 import com.bluebell.radicle.exceptions.validation.MissingRequiredDataException;
 import com.bluebell.radicle.repositories.trade.TradeRepository;
+import com.bluebell.radicle.services.AbstractEntityService;
 import com.bluebell.radicle.services.market.MarketPriceService;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
@@ -42,11 +43,11 @@ import static com.bluebell.radicle.validation.GenericValidator.validateParameter
  * Service-layer for {@link Trade} entities
  *
  * @author Stephen Prizio
- * @version 0.2.4
+ * @version 0.2.5
  */
 @Slf4j
 @Service
-public class TradeService {
+public class TradeService extends AbstractEntityService {
 
     private static final Random RANDOM = new Random();
     private static final MathService MATH_SERVICE = new MathService();
@@ -310,22 +311,6 @@ public class TradeService {
 
 
     //  HELPERS
-
-    /**
-     * Validates standard trade lookup parameters
-     *
-     * @param start start date
-     * @param end end date
-     * @param account {@link Account}
-     * @param sort {@link Sort}
-     */
-    private void validateStandardParameters(final LocalDateTime start, final LocalDateTime end, final Account account, final Sort sort) {
-        validateParameterIsNotNull(start, CorePlatformConstants.Validation.DateTime.START_DATE_CANNOT_BE_NULL);
-        validateParameterIsNotNull(end, CorePlatformConstants.Validation.DateTime.END_DATE_CANNOT_BE_NULL);
-        validateDatesAreNotMutuallyExclusive(start, end, CorePlatformConstants.Validation.DateTime.MUTUALLY_EXCLUSIVE_DATES);
-        validateParameterIsNotNull(account, CorePlatformConstants.Validation.Account.ACCOUNT_CANNOT_BE_NULL);
-        validateParameterIsNotNull(sort, CorePlatformConstants.Validation.System.SORT_CANNOT_BE_NULL);
-    }
 
     /**
      * Applies the changes to the given {@link Trade}}

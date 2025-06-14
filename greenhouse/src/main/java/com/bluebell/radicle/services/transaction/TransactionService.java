@@ -11,10 +11,14 @@ import com.bluebell.radicle.exceptions.system.EntityCreationException;
 import com.bluebell.radicle.exceptions.system.EntityModificationException;
 import com.bluebell.radicle.exceptions.validation.MissingRequiredDataException;
 import com.bluebell.radicle.repositories.transaction.TransactionRepository;
+import com.bluebell.radicle.services.AbstractEntityService;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -30,11 +34,11 @@ import static com.bluebell.radicle.validation.GenericValidator.validateParameter
  * Service-layer for {@link Transaction}
  *
  * @author Stephen Prizio
- * @version 0.2.0
+ * @version 0.2.5
  */
 @Slf4j
 @Service
-public class TransactionService {
+public class TransactionService extends AbstractEntityService {
 
     @Resource(name = "transactionRepository")
     private TransactionRepository transactionRepository;
@@ -123,6 +127,79 @@ public class TransactionService {
         validateParameterIsNotNull(account, CorePlatformConstants.Validation.Account.ACCOUNT_CANNOT_BE_NULL);
 
         return Optional.ofNullable(this.transactionRepository.findTransactionByNameAndAccount(name, account));
+    }
+
+    /**
+     * Returns a paginated {@link List} of {@link Transaction}s that are within the given time span
+     *
+     * @param start    {@link LocalDateTime} start of interval (inclusive)
+     * @param end      {@link LocalDateTime} end of interval (exclusive)
+     * @param account  {@link Account}
+     * @param page     page number
+     * @param pageSize page size
+     * @param sort     sort order
+     * @return {@link Page} of {@link Transaction}s
+     */
+    public Page<Transaction> findAllTransactionsWithinDatePaged(final LocalDateTime start, final LocalDateTime end, final Account account, final int page, final int pageSize, final Sort sort) {
+        validateStandardParameters(start, end, account, sort);
+        return this.transactionRepository.findAllTransactionsWithinDatePaged(start, end, account, PageRequest.of(page, pageSize, sort));
+    }
+
+    /**
+     * Returns a paginated {@link List} of {@link Transaction}s that are within the given time span for the given status
+     *
+     * @param start             {@link LocalDateTime} start of interval (inclusive)
+     * @param end               {@link LocalDateTime} end of interval (exclusive)
+     * @param account           {@link Account}
+     * @param transactionStatus {@link TransactionStatus}
+     * @param page              page number
+     * @param pageSize          page size
+     * @param sort              sort order
+     * @return {@link Page} of {@link Transaction}s
+     */
+    public Page<Transaction> findAllTransactionsForStatusWithinDatePaged(final LocalDateTime start, final LocalDateTime end, final Account account, final TransactionStatus transactionStatus, final int page, final int pageSize, final Sort sort) {
+        validateStandardParameters(start, end, account, sort);
+        validateParameterIsNotNull(transactionStatus, CorePlatformConstants.Validation.Transaction.TRANSACTION_STATUS_CANNOT_BE_NULL);
+        return this.transactionRepository.findAllTransactionsForStatusWithinDatePaged(start, end, account, transactionStatus, PageRequest.of(page, pageSize, sort));
+    }
+
+    /**
+     * Returns a paginated {@link List} of {@link Transaction}s that are within the given time span for the given transaction type
+     *
+     * @param start           {@link LocalDateTime} start of interval (inclusive)
+     * @param end             {@link LocalDateTime} end of interval (exclusive)
+     * @param account         {@link Account}
+     * @param transactionType {@link TransactionType}
+     * @param page            page number
+     * @param pageSize        page size
+     * @param sort            sort order
+     * @return {@link Page} of {@link Transaction}s
+     */
+    public Page<Transaction> findAllTransactionsForTypeWithinDatePaged(final LocalDateTime start, final LocalDateTime end, final Account account, final TransactionType transactionType, final int page, final int pageSize, final Sort sort) {
+        validateStandardParameters(start, end, account, sort);
+        validateParameterIsNotNull(transactionType, CorePlatformConstants.Validation.Transaction.TRANSACTION_TYPE_CANNOT_BE_NULL);
+        return this.transactionRepository.findAllTransactionsForTypeWithinDatePaged(start, end, account, transactionType, PageRequest.of(page, pageSize, sort));
+    }
+
+    /**
+     * Returns a paginated {@link List} of {@link Transaction}s filtered by their date, status, type and account and sorted
+     *
+     * @param start             {@link LocalDateTime} start of interval (inclusive)
+     * @param end               {@link LocalDateTime} end of interval (exclusive)
+     * @param transactionType   {@link TransactionType}
+     * @param transactionStatus {@link TransactionStatus}
+     * @param account           {@link Account}
+     * @param page              page number
+     * @param pageSize          page size
+     * @param sort              sort order
+     * @return {@link Page} of {@link Transaction}s
+     */
+    public Page<Transaction> findAllTransactionsForTypeAndStatusWithinTimespan(final LocalDateTime start, final LocalDateTime end, final TransactionType transactionType, final TransactionStatus transactionStatus, final Account account, final int page, final int pageSize, final Sort sort) {
+        validateStandardParameters(start, end, account, sort);
+        validateParameterIsNotNull(transactionType, CorePlatformConstants.Validation.Transaction.TRANSACTION_TYPE_CANNOT_BE_NULL);
+        validateParameterIsNotNull(transactionStatus, CorePlatformConstants.Validation.Transaction.TRANSACTION_STATUS_CANNOT_BE_NULL);
+
+        return this.transactionRepository.findAllTransactionsForTypeAndStatusWithinTimespanPaged(start, end, transactionType, transactionStatus, account, PageRequest.of(page, pageSize, sort));
     }
 
     /**
