@@ -1,9 +1,11 @@
 package com.bluebell.radicle.integration.client.firstratedata;
 
+import com.bluebell.radicle.integration.client.AbstractClient;
 import com.bluebell.radicle.integration.client.GetClient;
 import com.bluebell.radicle.integration.client.IntegrationClient;
 import com.bluebell.radicle.integration.exceptions.IntegrationException;
 import lombok.NonNull;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.springframework.util.MultiValueMap;
 
@@ -15,10 +17,11 @@ import static com.bluebell.radicle.validation.GenericValidator.validateParameter
  * Client that fetches data from the firstratedata servers
  *
  * @author Stephen Prizio
- * @version 0.1.5
+ * @version 0.2.5
  */
+@Slf4j
 @Component("firstRateDataIntegrationClient")
-public class FirstRateDataIntegrationClient implements IntegrationClient, GetClient {
+public class FirstRateDataIntegrationClient extends AbstractClient implements IntegrationClient, GetClient {
 
     private static final String FILE_URL_ID = "fileUrlId";
 
@@ -43,6 +46,7 @@ public class FirstRateDataIntegrationClient implements IntegrationClient, GetCli
 
         final File downloadedZip = downloadFile(url, queryParams, fileName);
         if (downloadedZip == null || !downloadedZip.exists()) {
+            LOGGER.error("Could not download zip file.");
             throw new IntegrationException(String.format("No file was received from %s with params %s", url, queryParams));
         }
 

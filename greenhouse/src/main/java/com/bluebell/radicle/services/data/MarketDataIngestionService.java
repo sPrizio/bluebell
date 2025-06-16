@@ -30,7 +30,7 @@ import java.util.TreeSet;
  * Service responsible for obtaining market data within the ingress directory
  *
  * @author Stephen Prizio
- * @version 0.1.5
+ * @version 0.2.5
  */
 @Slf4j
 @Setter
@@ -50,14 +50,17 @@ public class MarketDataIngestionService {
     public Triplet<IngestionStatus, String, Set<MarketPrice>> ingest(final DataSource dataSource, final String symbol, final String dataRoot) {
 
         if (dataSource == null) {
+            LOGGER.error("No data source specified.");
             return Triplet.with(IngestionStatus.FAILED, "No datasource specified!", Collections.emptySet());
         }
 
         if (StringUtils.isEmpty(symbol)) {
+            LOGGER.error("No symbol specified.");
             return Triplet.with(IngestionStatus.FAILED, "No symbol specified!", Collections.emptySet());
         }
 
         if (StringUtils.isEmpty(dataRoot)) {
+            LOGGER.error("No data root specified.");
             return Triplet.with(IngestionStatus.FAILED, "No data root specified!", Collections.emptySet());
         }
 
@@ -67,6 +70,7 @@ public class MarketDataIngestionService {
             final String basePath = this.isTest ? DirectoryUtil.getTestingResourcesDirectory() : DirectoryUtil.getBaseProjectDirectory();
             final File directory = new File(String.format("%s%s%s%s%s%s%s", basePath, File.separator, dataRoot, File.separator, dataSource.getDataRoot(), File.separator, symbol));
 
+            LOGGER.info("Looking up ingestion base {}", directory.getAbsolutePath());
             if (!directory.exists() || !directory.isDirectory()) {
                 return Triplet.with(IngestionStatus.SKIPPED, String.format("Symbol %s does not exist", symbol), Collections.emptySet());
             }
@@ -76,12 +80,13 @@ public class MarketDataIngestionService {
                 return Triplet.with(IngestionStatus.SKIPPED, String.format("Symbol %s does not have any data", symbol), Collections.emptySet());
             }
 
+            LOGGER.info("Intervals detected: {}", Arrays.stream(intervals).map(File::getName).toList());
             intervals = Arrays.stream(intervals).filter(File::isDirectory).toList().toArray(File[]::new);
             for (final File interval : intervals) {
                 final File[] dataFiles = interval.listFiles();
                 final MarketPriceTimeInterval marketPriceTimeInterval = GenericEnum.getByCode(MarketPriceTimeInterval.class, interval.getName().toUpperCase());
                 if (marketPriceTimeInterval == null || isEmptyArray(dataFiles)) {
-                    LOGGER.error("{} was not a valid time interval or no data was available", interval.getName());
+                    LOGGER.error("{} was not a valid time interval or no data was available. Directory {}", interval.getName(), interval.getAbsolutePath());
                     continue;
                 }
 
@@ -98,18 +103,22 @@ public class MarketDataIngestionService {
                 processedDirectory = new File(String.format("%s%s%s%s%s%s%s", DirectoryUtil.getTestingResourcesDirectory(), File.separator, dataRoot, File.separator, "/processed", File.separator, dataSource.getDataRoot()));
             }
 
+            LOGGER.info("Processed directory {}", processedDirectory.getAbsolutePath());
             if (!processedDirectory.exists()) {
                 processedDirectory.mkdirs();
             }
 
             FileUtils.copyDirectory(directory.getParentFile(), processedDirectory);
             FileUtils.deleteDirectory(directory.getParentFile());
+
+            LOGGER.info("Data processed successfully");
             return Triplet.with(IngestionStatus.SUCCESS, "MarketPrices fetched successfully", marketPrices);
         } catch (Exception e) {
             StringWriter sw = new StringWriter();
             PrintWriter pw = new PrintWriter(sw);
             e.printStackTrace(pw);
 
+            LOGGER.error("Failed to process data", e);
             return Triplet.with(IngestionStatus.FAILED, sw.toString(), Collections.emptySet());
         }
     }
