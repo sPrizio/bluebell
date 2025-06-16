@@ -36,6 +36,15 @@ import { usePagedTransactionsQuery } from "@/lib/hooks/query/queries";
 import { UserTransactionControlSelection } from "@/types/uiTypes";
 import Error from "@/app/error";
 import LoadingPage from "@/app/loading";
+import {
+  Pagination,
+  PaginationContent,
+  PaginationEllipsis,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious,
+} from "@/components/ui/pagination";
 
 /**
  * Renders the account transactions as a table
@@ -83,6 +92,17 @@ export default function AccountTransactionsTable({
   );
 
   //  GENERAL FUNCTIONS
+
+  /**
+   * Handles the clicking of a new page button
+   *
+   * @param e event
+   * @param page selected page
+   */
+  function handleClick(e: React.MouseEvent, page: number) {
+    e.preventDefault();
+    setCurrentPage(page);
+  }
 
   /**
    * Computes the appropriate colors depending on the value of the status
@@ -271,6 +291,61 @@ export default function AccountTransactionsTable({
                 })}
               </TableBody>
             </Table>
+          }
+          pagination={
+            pages === 1 ? null : (
+              <Pagination
+                className={"flex items-center justify-end text-right"}
+              >
+                <PaginationContent>
+                  {currentPage > 0 ? (
+                    <PaginationItem
+                      onClick={(e) => handleClick(e, currentPage - 1)}
+                    >
+                      <PaginationPrevious href="#" />
+                    </PaginationItem>
+                  ) : null}
+                  {currentPage > 1 ? (
+                    <PaginationItem>
+                      <PaginationEllipsis />
+                    </PaginationItem>
+                  ) : null}
+                  {currentPage > 0 ? (
+                    <PaginationItem
+                      onClick={(e) => handleClick(e, currentPage - 1)}
+                    >
+                      <PaginationLink href="#">{currentPage}</PaginationLink>
+                    </PaginationItem>
+                  ) : null}
+                  <PaginationItem>
+                    <PaginationLink href="#" isActive>
+                      {currentPage + 1}
+                    </PaginationLink>
+                  </PaginationItem>
+                  {currentPage + 1 < pages ? (
+                    <PaginationItem
+                      onClick={(e) => handleClick(e, currentPage + 1)}
+                    >
+                      <PaginationLink href="#">
+                        {currentPage + 2}
+                      </PaginationLink>
+                    </PaginationItem>
+                  ) : null}
+                  {currentPage + 1 < pages - 1 ? (
+                    <PaginationItem>
+                      <PaginationEllipsis />
+                    </PaginationItem>
+                  ) : null}
+                  {currentPage + 1 < pages ? (
+                    <PaginationItem
+                      onClick={(e) => handleClick(e, currentPage + 1)}
+                    >
+                      <PaginationNext href="#" />
+                    </PaginationItem>
+                  ) : null}
+                </PaginationContent>
+              </Pagination>
+            )
           }
         />
       )}

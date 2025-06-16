@@ -47,7 +47,7 @@ export default function TransactionsPage() {
     error,
   );
 
-  const [pageSize, setPageSize] = useState(15);
+  const [pageSize, setPageSize] = useState(8);
   const [hasSubmitted, setHasSubmitted] = useState(false);
   const [userSelection, setUserSelection] =
     useState<UserTransactionControlSelection>({
