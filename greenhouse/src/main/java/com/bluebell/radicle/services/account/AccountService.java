@@ -94,9 +94,14 @@ public class AccountService {
         final double start = account.getInitialBalance();
         double sum = 0.0;
         final List<Trade> allTrades = this.tradeService.findAllTradesWithinTimespan(account.getAccountOpenTime(), LocalDateTime.now().plusDays(1), account);
+        final List<Transaction> allTransactions = this.transactionService.findAllTransactionsForAccount(account);
 
         if (CollectionUtils.isNotEmpty(allTrades)) {
-            sum = this.mathService.getDouble(allTrades.stream().mapToDouble(Trade::getNetProfit).sum());
+            sum = this.mathService.add(sum, this.mathService.getDouble(allTrades.stream().mapToDouble(Trade::getNetProfit).sum()));
+        }
+
+        if (CollectionUtils.isNotEmpty(allTransactions)) {
+            sum = this.mathService.add(sum, this.mathService.getDouble(allTransactions.stream().mapToDouble(Transaction::getAmount).sum()));
         }
 
         account.setBalance(this.mathService.add(start, sum));

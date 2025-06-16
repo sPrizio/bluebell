@@ -8,6 +8,7 @@ import com.bluebell.platform.models.core.entities.transaction.Transaction;
 import com.bluebell.platform.services.MathService;
 import com.bluebell.radicle.repositories.account.AccountRepository;
 import com.bluebell.radicle.repositories.transaction.TransactionRepository;
+import com.bluebell.radicle.services.account.AccountService;
 import com.bluebell.radicle.services.transaction.TransactionService;
 import jakarta.annotation.Resource;
 import org.apache.commons.lang3.StringUtils;
@@ -46,6 +47,9 @@ public class TransactionRunner extends AbstractRunner implements CommandLineRunn
     @Resource(name = "accountRepository")
     private AccountRepository accountRepository;
 
+    @Resource(name = "accountService")
+    private AccountService accountService;
+
     @Resource(name = "transactionRepository")
     private TransactionRepository transactionRepository;
 
@@ -68,6 +72,10 @@ public class TransactionRunner extends AbstractRunner implements CommandLineRunn
         generateTransactions(account1);
         generateTransactions(account2);
         generateTransactions(account3);
+
+        this.accountService.refreshAccount(account1);
+        this.accountService.refreshAccount(account2);
+        this.accountService.refreshAccount(account3);
 
         logEnd();
     }
