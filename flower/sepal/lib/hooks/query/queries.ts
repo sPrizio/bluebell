@@ -221,7 +221,7 @@ export const usePagedTransactionsQuery = (
   return useQuery<PagedTransactions>({
     placeholderData: keepPreviousData,
     queryKey: [
-      "paginated-transactions",
+      "paged-transactions",
       accountNumber,
       start,
       end,

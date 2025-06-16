@@ -171,13 +171,13 @@ export const useCreateTransactionMutation = (accountNumber: number) => {
       ),
     onSuccess: (data) => {
       queryClient.invalidateQueries({
-        queryKey: ["user"],
+        queryKey: ["portfolio"],
       });
       queryClient.invalidateQueries({
         queryKey: ["account"],
       });
       queryClient.invalidateQueries({
-        queryKey: ["portfolio"],
+        queryKey: ["paged-transactions"],
       });
     },
   });
@@ -200,13 +200,13 @@ export const useUpdateTransactionMutation = (
       ),
     onSuccess: (data) => {
       queryClient.invalidateQueries({
-        queryKey: ["user"],
+        queryKey: ["portfolio"],
       });
       queryClient.invalidateQueries({
         queryKey: ["account"],
       });
       queryClient.invalidateQueries({
-        queryKey: ["portfolio"],
+        queryKey: ["paged-transactions"],
       });
     },
   });
@@ -225,13 +225,13 @@ export const useDeleteTransactionMutation = (
       }),
     onSuccess: (data) => {
       queryClient.invalidateQueries({
-        queryKey: ["user"],
+        queryKey: ["portfolio"],
       });
       queryClient.invalidateQueries({
         queryKey: ["account"],
       });
       queryClient.invalidateQueries({
-        queryKey: ["portfolio"],
+        queryKey: ["paged-transactions"],
       });
     },
   });
