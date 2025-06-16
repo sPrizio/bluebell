@@ -8,6 +8,7 @@ import com.bluebell.platform.models.core.entities.transaction.Transaction;
 import com.bluebell.platform.services.MathService;
 import com.bluebell.radicle.repositories.account.AccountRepository;
 import com.bluebell.radicle.repositories.transaction.TransactionRepository;
+import com.bluebell.radicle.services.transaction.TransactionService;
 import jakarta.annotation.Resource;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
@@ -28,7 +29,7 @@ import java.util.Random;
  * Generates testing {@link Transaction}s
  *
  * @author Stephen Prizio
- * @version 0.2.4
+ * @version 0.2.5
  */
 @Component
 @Profile("dev")
@@ -47,6 +48,9 @@ public class TransactionRunner extends AbstractRunner implements CommandLineRunn
 
     @Resource(name = "transactionRepository")
     private TransactionRepository transactionRepository;
+
+    @Resource(name = "transactionService")
+    private TransactionService transactionService;
 
 
     //  METHODS
@@ -102,6 +106,7 @@ public class TransactionRunner extends AbstractRunner implements CommandLineRunn
             Transaction transaction = Transaction
                     .builder()
                     .transactionType(randomType)
+                    .transactionNumber(this.transactionService.generateUniqueTransactionNumber(account))
                     .transactionDate(randomDay)
                     .name(getRandomName(randomType))
                     .transactionStatus(randomStatus)

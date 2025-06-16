@@ -49,7 +49,7 @@ import static com.bluebell.radicle.validation.GenericValidator.validateParameter
  * Service-layer for {@link Account} entities
  *
  * @author Stephen Prizio
- * @version 0.2.4
+ * @version 0.2.5
  */
 @Slf4j
 @Service
@@ -275,6 +275,7 @@ public class AccountService {
                         Transaction
                                 .builder()
                                 .transactionType(GenericEnum.getByCode(TransactionType.class, tr.transactionType()))
+                                .transactionNumber(tr.transactionNumber())
                                 .transactionDate(LocalDateTime.parse(tr.transactionDate(), DateTimeFormatter.ofPattern(CorePlatformConstants.DATE_TIME_NO_TIMEZONE)))
                                 .name(tr.name())
                                 .transactionStatus(GenericEnum.getByCode(TransactionStatus.class, tr.transactionStatus()))

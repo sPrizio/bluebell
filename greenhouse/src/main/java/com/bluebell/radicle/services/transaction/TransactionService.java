@@ -26,6 +26,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
+import java.util.Random;
 
 import static com.bluebell.radicle.validation.GenericValidator.validateDatesAreNotMutuallyExclusive;
 import static com.bluebell.radicle.validation.GenericValidator.validateParameterIsNotNull;
@@ -40,11 +41,32 @@ import static com.bluebell.radicle.validation.GenericValidator.validateParameter
 @Service
 public class TransactionService extends AbstractEntityService {
 
+    private static final Random RANDOM = new Random();
+
     @Resource(name = "transactionRepository")
     private TransactionRepository transactionRepository;
 
 
     //  METHODS
+
+    /**
+     * Generates a unique transaction number
+     *
+     * @param account {@link Account}
+     * @return transaction number
+     */
+    public long generateUniqueTransactionNumber(final Account account) {
+        validateParameterIsNotNull(account, CorePlatformConstants.Validation.Account.ACCOUNT_CANNOT_BE_NULL);
+
+        long generated = 1_000_000L + RANDOM.nextLong(9_000_000);
+        Optional<Transaction> matched = findTransactionForNumber(generated, account);
+        while (matched.isPresent()) {
+            generated = 1_000_000L + RANDOM.nextLong(9_000_000);
+            matched = findTransactionForNumber(generated, account);
+        }
+
+        return generated;
+    }
 
     /**
      * Returns a {@link List} of {@link Transaction}s within the last 6 months
@@ -116,17 +138,14 @@ public class TransactionService extends AbstractEntityService {
     }
 
     /**
-     * Looks up a {@link Transaction} for the given {@link Account} and transaction name
+     * Looks up a {@link Transaction} for the given {@link Account} and transaction number
      *
-     * @param name    transaction name
      * @param account {@link Account}
      * @return {@link Optional} {@link Transaction}
      */
-    public Optional<Transaction> findTransactionForNameAndAccount(final String name, final Account account) {
-        validateParameterIsNotNull(name, CorePlatformConstants.Validation.Transaction.TRANSACTION_NAME_CANNOT_BE_NULL);
+    public Optional<Transaction> findTransactionForNumber(final long transactionNumber, final Account account) {
         validateParameterIsNotNull(account, CorePlatformConstants.Validation.Account.ACCOUNT_CANNOT_BE_NULL);
-
-        return Optional.ofNullable(this.transactionRepository.findTransactionByNameAndAccount(name, account));
+        return Optional.ofNullable(this.transactionRepository.findTransactionByTransactionNumberAndAccount(transactionNumber, account));
     }
 
     /**
@@ -280,6 +299,7 @@ public class TransactionService extends AbstractEntityService {
         int count = 0;
         for (final Transaction transaction : transactions) {
             count += this.transactionRepository.upsertTransaction(
+                    transaction.getTransactionNumber(),
                     transaction.getTransactionType(),
                     transaction.getTransactionDate(),
                     transaction.getName(),
@@ -304,6 +324,12 @@ public class TransactionService extends AbstractEntityService {
      * @return {@link Transaction}
      */
     private Transaction applyChanges(Transaction transaction, final CreateUpdateTransactionDTO data, final Account account) {
+
+        if (data.transactionNumber() == 0 || data.transactionNumber() == -1) {
+            transaction.setTransactionNumber(generateUniqueTransactionNumber(account));
+        } else {
+            transaction.setTransactionNumber(data.transactionNumber());
+        }
 
         transaction.setTransactionType(GenericEnum.getByCode(TransactionType.class, data.transactionType().toUpperCase()));
         transaction.setTransactionDate(LocalDateTime.parse(data.transactionDate(), DateTimeFormatter.ofPattern(CorePlatformConstants.DATE_TIME_NO_TIMEZONE)));

@@ -46,7 +46,7 @@ import java.util.Random;
  * Parent-level testing class to provide testing assistance for the project
  *
  * @author Stephen Prizio
- * @version 0.2.4
+ * @version 0.2.5
  */
 public abstract class AbstractGenericTest {
 
@@ -84,6 +84,7 @@ public abstract class AbstractGenericTest {
         return CreateUpdateTransactionDTO
                 .builder()
                 .transactionType(transaction.getTransactionType().getCode())
+                .transactionNumber(transaction.getTransactionNumber())
                 .transactionDate(transaction.getTransactionDate().format(DateTimeFormatter.ofPattern(CorePlatformConstants.DATE_TIME_NO_TIMEZONE)))
                 .name(transaction.getName())
                 .transactionStatus(transaction.getTransactionStatus().getCode())
@@ -262,6 +263,7 @@ public abstract class AbstractGenericTest {
         return Transaction.builder()
                 .id(1L)
                 .name("Test Transaction Deposit")
+                .transactionNumber(1234L)
                 .transactionDate(LocalDateTime.of(2022, 8, new Random().nextInt(28) + 1, 12, 24, 36))
                 .transactionType(TransactionType.DEPOSIT)
                 .amount(123.45)
@@ -280,6 +282,7 @@ public abstract class AbstractGenericTest {
         return Transaction.builder()
                 .id(2L)
                 .name("Test Transaction Withdrawal")
+                .transactionNumber(5678L)
                 .transactionDate(LocalDateTime.of(2022, 8, new Random().nextInt(28) + 1, 12, 24, 36))
                 .transactionType(TransactionType.WITHDRAWAL)
                 .amount(-563.36)

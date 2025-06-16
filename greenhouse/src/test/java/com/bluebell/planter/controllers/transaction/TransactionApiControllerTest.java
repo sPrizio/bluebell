@@ -77,8 +77,8 @@ class TransactionApiControllerTest extends AbstractPlanterTest {
         Mockito.when(this.transactionService.findAllTransactionsByTypeForAccount(any(), any())).thenReturn(List.of(generateTestTransactionDeposit(generateTestAccount())));
         Mockito.when(this.transactionService.findAllTransactionsByStatusForAccount(any(), any())).thenReturn(List.of(generateTestTransactionDeposit(generateTestAccount())));
         Mockito.when(this.transactionService.findTransactionsWithinTimespanForAccount(any(), any(), any())).thenReturn(List.of(generateTestTransactionDeposit(generateTestAccount())));
-        Mockito.when(this.transactionService.findTransactionForNameAndAccount("test 1", TEST_ACCOUNT)).thenReturn(Optional.empty());
-        Mockito.when(this.transactionService.findTransactionForNameAndAccount("test 2", TEST_ACCOUNT)).thenReturn(Optional.of(generateTestTransactionDeposit(generateTestAccount())));
+        Mockito.when(this.transactionService.findTransactionForNumber(1234L, TEST_ACCOUNT)).thenReturn(Optional.empty());
+        Mockito.when(this.transactionService.findTransactionForNumber(5678L, TEST_ACCOUNT)).thenReturn(Optional.of(generateTestTransactionDeposit(generateTestAccount())));
         Mockito.when(this.transactionService.createNewTransaction(any(), any())).thenReturn(generateTestTransactionDeposit(generateTestAccount()));
         Mockito.when(this.transactionService.updateTransaction(any(), any(), any())).thenReturn(generateTestTransactionDeposit(generateTestAccount()));
         Mockito.when(this.transactionService.deleteTransaction(any())).thenReturn(true);
@@ -244,12 +244,12 @@ class TransactionApiControllerTest extends AbstractPlanterTest {
     }
 
 
-    //  ----------------- getTransactionForNameAndAccount -----------------
+    //  ----------------- getTransactionForNumberAndAccount -----------------
 
     @Test
-    void test_getTransactionForNameAndAccount_missingAccount() throws Exception {
-        this.mockMvc.perform(get(getApiPath(BASE, GET_BY_NAME_FOR_ACCOUNT))
-                        .queryParam("transactionName", "test 1")
+    void test_getTransactionForNumberAndAccount_missingAccount() throws Exception {
+        this.mockMvc.perform(get(getApiPath(BASE, GET_BY_NUMBER_FOR_ACCOUNT))
+                        .queryParam("transactionNumber", "1234")
                         .queryParam(ACCOUNT_NUMBER, "1234")
                 )
                 .andExpect(status().isOk())
@@ -257,19 +257,19 @@ class TransactionApiControllerTest extends AbstractPlanterTest {
     }
 
     @Test
-    void test_getTransactionForNameAndAccount_missingTransaction() throws Exception {
-        this.mockMvc.perform(get(getApiPath(BASE, GET_BY_NAME_FOR_ACCOUNT))
-                        .queryParam("transactionName", "test 1")
+    void test_getTransactionForNumberAndAccount_missingTransaction() throws Exception {
+        this.mockMvc.perform(get(getApiPath(BASE, GET_BY_NUMBER_FOR_ACCOUNT))
+                        .queryParam("transactionNumber", "1234")
                         .queryParam(ACCOUNT_NUMBER, "5678")
                 )
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.message", is(is(String.format("No transaction was found for account %d and transaction name %s", 5678, "test 1")))));
+                .andExpect(jsonPath("$.message", is(is(String.format("No transaction was found for account %d and transaction number %s", 5678, 1234)))));
     }
 
     @Test
-    void test_getTransactionForNameAndAccount_success() throws Exception {
-        this.mockMvc.perform(get(getApiPath(BASE, GET_BY_NAME_FOR_ACCOUNT))
-                        .queryParam("transactionName", "test 2")
+    void test_getTransactionForNumberAndAccount_success() throws Exception {
+        this.mockMvc.perform(get(getApiPath(BASE, GET_BY_NUMBER_FOR_ACCOUNT))
+                        .queryParam("transactionNumber", "5678")
                         .queryParam(ACCOUNT_NUMBER, "5678")
                 )
                 .andExpect(status().isOk())
@@ -407,7 +407,11 @@ class TransactionApiControllerTest extends AbstractPlanterTest {
 
     @Test
     void test_putUpdateTransaction_badJsonIntegrity() throws Exception {
-        this.mockMvc.perform(put(getApiPath(BASE, UPDATE_TRANSACTION)).queryParam(ACCOUNT_NUMBER, "5678").contentType(MediaType.APPLICATION_JSON).content(new ObjectMapper().writeValueAsString(Map.of("hello", "world"))))
+        this.mockMvc.perform(put(getApiPath(BASE, UPDATE_TRANSACTION))
+                        .queryParam(ACCOUNT_NUMBER, "5678")
+                        .queryParam("transactionNumber", "1234")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(new ObjectMapper().writeValueAsString(Map.of("hello", "world"))))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.message", containsString(ApiConstants.CLIENT_ERROR_DEFAULT_MESSAGE)));
     }
@@ -420,6 +424,7 @@ class TransactionApiControllerTest extends AbstractPlanterTest {
                 .transactionDate(LocalDateTime.now().format(DateTimeFormatter.ofPattern(CorePlatformConstants.DATE_TIME_NO_TIMEZONE)))
                 .transactionStatus(TransactionStatus.COMPLETED.getCode())
                 .transactionType(TransactionType.DEPOSIT.getCode())
+                .transactionNumber(1234)
                 .amount(145.89)
                 .originalName("test 1")
                 .name("Test Deposit")
@@ -429,6 +434,7 @@ class TransactionApiControllerTest extends AbstractPlanterTest {
                         .requestAttr(SecurityConstants.USER_REQUEST_KEY, generateTestUser())
                         .with(testUserContext())
                         .queryParam(ACCOUNT_NUMBER, "5678")
+                        .queryParam("transactionNumber", "1234")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(new ObjectMapper().writeValueAsString(data))
                 )
@@ -442,6 +448,7 @@ class TransactionApiControllerTest extends AbstractPlanterTest {
         final CreateUpdateTransactionDTO data = CreateUpdateTransactionDTO
                 .builder()
                 .transactionDate(LocalDateTime.now().format(DateTimeFormatter.ofPattern(CorePlatformConstants.DATE_TIME_NO_TIMEZONE)))
+                .transactionNumber(5678)
                 .transactionStatus(TransactionStatus.COMPLETED.getCode())
                 .transactionType(TransactionType.DEPOSIT.getCode())
                 .amount(145.89)
@@ -453,11 +460,12 @@ class TransactionApiControllerTest extends AbstractPlanterTest {
                         .requestAttr(SecurityConstants.USER_REQUEST_KEY, generateTestUser())
                         .with(testUserContext())
                         .queryParam(ACCOUNT_NUMBER, "1234")
+                        .queryParam("transactionNumber", "1234")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(new ObjectMapper().writeValueAsString(data))
                 )
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.message", is(String.format("No transaction was found for account %d and transaction name %s", 1234, "test 1"))));
+                .andExpect(jsonPath("$.message", is(String.format("No transaction was found for account %d and transaction number %d", 1234, 1234))));
     }
 
     @Test
@@ -468,6 +476,7 @@ class TransactionApiControllerTest extends AbstractPlanterTest {
                 .transactionDate(LocalDateTime.now().format(DateTimeFormatter.ofPattern(CorePlatformConstants.DATE_TIME_NO_TIMEZONE)))
                 .transactionStatus(TransactionStatus.COMPLETED.getCode())
                 .transactionType(TransactionType.DEPOSIT.getCode())
+                .transactionNumber(5678)
                 .amount(145.89)
                 .originalName("test 2")
                 .name("Test Deposit")
@@ -477,6 +486,7 @@ class TransactionApiControllerTest extends AbstractPlanterTest {
                         .requestAttr(SecurityConstants.USER_REQUEST_KEY, generateTestUser())
                         .with(testUserContext())
                         .queryParam("accountNumber", "1234")
+                        .queryParam("transactionNumber", "5678")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(new ObjectMapper().writeValueAsString(data))
                 )
@@ -491,7 +501,7 @@ class TransactionApiControllerTest extends AbstractPlanterTest {
     void test_deleteTransaction_missingAccount() throws Exception {
         this.mockMvc.perform(delete(getApiPath(BASE, DELETE_TRANSACTION))
                         .with(testUserContext())
-                        .queryParam("transactionName", "test 1")
+                        .queryParam("transactionNumber", "1234")
                         .queryParam("accountNumber", "5678")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
@@ -502,11 +512,11 @@ class TransactionApiControllerTest extends AbstractPlanterTest {
     void test_deleteTransaction_missingTransaction() throws Exception {
         this.mockMvc.perform(delete(getApiPath(BASE, DELETE_TRANSACTION))
                         .with(testUserContext())
-                        .queryParam("transactionName", "test 1")
+                        .queryParam("transactionNumber", "1234")
                         .queryParam("accountNumber", "1234")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.message", is(String.format("No transaction was found for account %d and transaction name %s", 1234, "test 1"))));
+                .andExpect(jsonPath("$.message", is(String.format("No transaction was found for account %d and transaction number %d", 1234, 1234))));
     }
 
     @Test
@@ -514,7 +524,7 @@ class TransactionApiControllerTest extends AbstractPlanterTest {
         this.mockMvc.perform(delete(getApiPath(BASE, DELETE_TRANSACTION))
                         .with(testUserContext())
                         .queryParam("accountNumber", "1234")
-                        .queryParam("transactionName", "test 2")
+                        .queryParam("transactionNumber", "5678")
                         .contentType(MediaType.APPLICATION_JSON)
                 )
                 .andExpect(status().isOk())

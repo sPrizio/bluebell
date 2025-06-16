@@ -261,7 +261,7 @@ public class ApiPaths {
 
         public static final String GET_WITHIN_TIMESPAN_FOR_ACCOUNT = "/get-within-timespan-for-account";
 
-        public static final String GET_BY_NAME_FOR_ACCOUNT = "/get-by-name-for-account";
+        public static final String GET_BY_NUMBER_FOR_ACCOUNT = "/get-by-number-for-account";
 
         public static final String GET_FOR_INTERVAL_PAGED = "/get-for-interval-paged";
 

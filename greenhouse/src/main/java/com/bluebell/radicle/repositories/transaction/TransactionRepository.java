@@ -64,13 +64,13 @@ public interface TransactionRepository extends PagingAndSortingRepository<Transa
     List<Transaction> findAllTransactionsWithinDate(final LocalDateTime start, final LocalDateTime end, final Account account);
 
     /**
-     * Looks up a {@link Transaction} for the given {@link Account} and transaction name
+     * Returns a {@link Transaction} for the given transaction number and {@link Account}
      *
-     * @param name    transaction name
-     * @param account {@link Account}
+     * @param transactionNumber transaction number
+     * @param account           {@link Account}
      * @return {@link Transaction}
      */
-    Transaction findTransactionByNameAndAccount(final String name, final Account account);
+    Transaction findTransactionByTransactionNumberAndAccount(long transactionNumber, Account account);
 
     /**
      * Returns a paginated {@link List} of {@link Transaction}s that are within the given time span
@@ -127,6 +127,7 @@ public interface TransactionRepository extends PagingAndSortingRepository<Transa
     /**
      * Inserts or updates an existing {@link Transaction}
      *
+     * @param transactionNumber transaction number
      * @param transactionType   {@link TransactionType}
      * @param transactionDate   date of the transaction
      * @param name              transaction name
@@ -139,6 +140,7 @@ public interface TransactionRepository extends PagingAndSortingRepository<Transa
     @Transactional
     @Query(value = """
                 INSERT INTO transactions (
+                    transaction_number,
                     transaction_type,
                     transaction_date,
                     transaction_name,
@@ -146,6 +148,7 @@ public interface TransactionRepository extends PagingAndSortingRepository<Transa
                     transaction_amount,
                     account_id
                 ) VALUES (
+                    :transactionNumber,
                     :transactionType,
                     :transactionDate,
                     :transactionName,
@@ -154,6 +157,7 @@ public interface TransactionRepository extends PagingAndSortingRepository<Transa
                     :accountId
                 )
                 ON DUPLICATE KEY UPDATE
+                    transaction_number = :transactionNumber,
                     transaction_type = :transactionType,
                     transaction_date = :transactionDate,
                     transaction_name = :transactionName,
@@ -162,6 +166,7 @@ public interface TransactionRepository extends PagingAndSortingRepository<Transa
                     account_id = :accountId
             """, nativeQuery = true)
     int upsertTransaction(
+            @Param("transactionNumber") long transactionNumber,
             @Param("transactionType") TransactionType transactionType,
             @Param("transactionDate") LocalDateTime transactionDate,
             @Param("transactionName") String name,

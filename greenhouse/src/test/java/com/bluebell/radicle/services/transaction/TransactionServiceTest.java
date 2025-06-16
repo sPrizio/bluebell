@@ -27,6 +27,7 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
 
 /**
  * Testing class for {@link TransactionService}
@@ -47,7 +48,7 @@ class TransactionServiceTest extends AbstractGenericTest {
     @BeforeEach
     void setUp() {
         Mockito.when(this.transactionRepository.save(any())).thenReturn(generateTestTransactionDeposit(generateTestAccount()));
-        Mockito.when(this.transactionRepository.findTransactionByNameAndAccount(any(), any())).thenReturn(generateTestTransactionDeposit(generateTestAccount()));
+        Mockito.when(this.transactionRepository.findTransactionByTransactionNumberAndAccount(anyLong(), any())).thenReturn(generateTestTransactionDeposit(generateTestAccount()));
         Mockito.when(this.transactionRepository.findAllTransactionsWithinDate(LocalDateTime.MIN.plusMonths(1), LocalDateTime.MAX, generateTestAccount())).thenReturn(List.of(generateTestTransactionDeposit(generateTestAccount()), generateTestTransactionWithdrawal(generateTestAccount())));
         Mockito.when(this.transactionRepository.findAllTransactionsWithinDate(
                 Mockito.any(LocalDateTime.class),
@@ -172,18 +173,15 @@ class TransactionServiceTest extends AbstractGenericTest {
     }
 
 
-    //  ----------------- findTransactionForNameAndAccount -----------------
+    //  ----------------- findTransactionForNumber -----------------
 
     @Test
-    void test_findTransactionForNameAndAccount_success() {
+    void test_findTransactionForNumber_success() {
         assertThatExceptionOfType(IllegalParameterException.class)
-                .isThrownBy(() -> this.transactionService.findTransactionForNameAndAccount(null, generateTestAccount()))
-                .withMessage(CorePlatformConstants.Validation.Transaction.TRANSACTION_NAME_CANNOT_BE_NULL);
-        assertThatExceptionOfType(IllegalParameterException.class)
-                .isThrownBy(() -> this.transactionService.findTransactionForNameAndAccount("Test", null))
+                .isThrownBy(() -> this.transactionService.findTransactionForNumber(1234L, null))
                 .withMessage(CorePlatformConstants.Validation.Account.ACCOUNT_CANNOT_BE_NULL);
 
-        assertThat(this.transactionService.findTransactionForNameAndAccount("test", generateTestAccount()))
+        assertThat(this.transactionService.findTransactionForNumber(1234L, generateTestAccount()))
                 .isNotEmpty();
     }
 
@@ -335,6 +333,7 @@ class TransactionServiceTest extends AbstractGenericTest {
                 .builder()
                 .transactionDate(LocalDateTime.now().format(DateTimeFormatter.ofPattern(CorePlatformConstants.DATE_TIME_NO_TIMEZONE)))
                 .transactionStatus(TransactionStatus.COMPLETED.getCode())
+                .transactionNumber(1234L)
                 .transactionType(TransactionType.DEPOSIT.getCode())
                 .amount(145.89)
                 .name("Test Deposit")
@@ -375,6 +374,7 @@ class TransactionServiceTest extends AbstractGenericTest {
 
         final CreateUpdateTransactionDTO data = CreateUpdateTransactionDTO
                 .builder()
+                .transactionNumber(1234L)
                 .transactionDate(LocalDateTime.now().format(DateTimeFormatter.ofPattern(CorePlatformConstants.DATE_TIME_NO_TIMEZONE)))
                 .transactionStatus(TransactionStatus.COMPLETED.getCode())
                 .transactionType(TransactionType.DEPOSIT.getCode())

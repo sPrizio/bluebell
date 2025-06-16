@@ -15,6 +15,7 @@ import com.bluebell.radicle.importing.models.wrapper.transaction.MetaTrader4Tran
 import com.bluebell.radicle.repositories.account.AccountRepository;
 import com.bluebell.radicle.repositories.trade.TradeRepository;
 import com.bluebell.radicle.repositories.transaction.TransactionRepository;
+import com.bluebell.radicle.services.transaction.TransactionService;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -29,7 +30,7 @@ import java.util.regex.Pattern;
  * Parent-level import service for re-usable functionality
  *
  * @author Stephen Prizio
- * @version 0.1.8
+ * @version 0.2.5
  */
 @Slf4j
 @Service("abstractImportService")
@@ -47,6 +48,9 @@ public abstract class AbstractImportService {
 
     @Resource(name = "transactionRepository")
     private TransactionRepository transactionRepository;
+
+    @Resource(name = "transactionService")
+    private TransactionService transactionService;
 
 
     //  METHODS
@@ -321,6 +325,7 @@ public abstract class AbstractImportService {
         return Transaction
                 .builder()
                 .transactionStatus(TransactionStatus.COMPLETED)
+                .transactionNumber(this.transactionService.generateUniqueTransactionNumber(account))
                 .amount(wrapper.amount())
                 .transactionDate(wrapper.getDateTime())
                 .transactionType(wrapper.getType())

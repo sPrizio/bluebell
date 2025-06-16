@@ -54,7 +54,7 @@ import static com.bluebell.radicle.validation.GenericValidator.validateLocalDate
 public class TransactionApiController extends AbstractApiController {
 
     private static final String NO_ACCOUNT_FOR_ACCOUNT_NUMBER = "No account was found for account number %d";
-    private static final String NO_TRANSACTION_FOR_ACCOUNT_AND_NAME = "No transaction was found for account %d and transaction name %s";
+    private static final String NO_TRANSACTION_FOR_ACCOUNT_AND_NUMBER = "No transaction was found for account %d and transaction number %d";
 
     @Resource(name = "accountService")
     private AccountService accountService;
@@ -461,7 +461,7 @@ public class TransactionApiController extends AbstractApiController {
     /**
      * Returns a {@link Transaction} for the given name and account
      *
-     * @param name transaction name
+     * @param transactionNumber transaction number
      * @param accountNumber {@link Account} name
      * @param request {@link HttpServletRequest}
      * @return {@link StandardJsonResponse}
@@ -500,18 +500,18 @@ public class TransactionApiController extends AbstractApiController {
                     schema = @Schema(implementation = StandardJsonResponse.class, example = "The API token was invalid.")
             )
     )
-    @GetMapping(ApiPaths.Transaction.GET_BY_NAME_FOR_ACCOUNT)
-    public StandardJsonResponse<TransactionDTO> getTransactionForNameAndAccount(
-            @Parameter(name = "transactionName", description = "Transaction name", example = "1234")
-            final @RequestParam("transactionName") String name,
+    @GetMapping(ApiPaths.Transaction.GET_BY_NUMBER_FOR_ACCOUNT)
+    public StandardJsonResponse<TransactionDTO> getTransactionForNumberAndAccount(
+            @Parameter(name = "transactionNumber", description = "The unique identifier for the transaction", example = "1234")
+            final @RequestParam("transactionNumber") long transactionNumber,
             @Parameter(name = "accountNumber", description = "Account number", example = "1234")
             final @RequestParam("accountNumber") long accountNumber,
             final HttpServletRequest request
     ) {
         final Optional<Account> account = this.accountService.findAccountByAccountNumber(accountNumber);
         if (account.isPresent()) {
-            final Optional<Transaction> transaction = this.transactionService.findTransactionForNameAndAccount(name, account.get());
-            return transaction.map(value -> StandardJsonResponse.<TransactionDTO>builder().success(true).data(this.transactionDTOConverter.convert(transaction.get())).build()).orElseGet(() -> StandardJsonResponse.<TransactionDTO>builder().success(false).message(String.format(NO_TRANSACTION_FOR_ACCOUNT_AND_NAME, accountNumber, name)).build());
+            final Optional<Transaction> transaction = this.transactionService.findTransactionForNumber(transactionNumber, account.get());
+            return transaction.map(value -> StandardJsonResponse.<TransactionDTO>builder().success(true).data(this.transactionDTOConverter.convert(transaction.get())).build()).orElseGet(() -> StandardJsonResponse.<TransactionDTO>builder().success(false).message(String.format(NO_TRANSACTION_FOR_ACCOUNT_AND_NUMBER, accountNumber, transactionNumber)).build());
         }
 
         return StandardJsonResponse
@@ -701,6 +701,7 @@ public class TransactionApiController extends AbstractApiController {
      *
      * @param data {@link CreateUpdateTransactionDTO}
      * @param accountNumber account number
+     * @param transactionNumber transaction number
      * @param request {@link HttpServletRequest}
      * @return {@link StandardJsonResponse}
      */
@@ -742,6 +743,8 @@ public class TransactionApiController extends AbstractApiController {
     public StandardJsonResponse<TransactionDTO> putUpdateTransaction(
             @Parameter(name = "accountNumber", description = "The unique identifier for your trading account", example = "1234")
             final @RequestParam("accountNumber") long accountNumber,
+            @Parameter(name = "transactionNumber", description = "The unique identifier for the transaction", example = "1234")
+            final @RequestParam("transactionNumber") long transactionNumber,
             @Parameter(name = "Transaction Payload", description = "Payload for creating or updating transactions")
             final @RequestBody CreateUpdateTransactionDTO data,
             final HttpServletRequest request
@@ -752,13 +755,13 @@ public class TransactionApiController extends AbstractApiController {
 
         final User user = (User) request.getAttribute(SecurityConstants.USER_REQUEST_KEY);
         final Account account = getAccountForId(user, accountNumber);
-        final Optional<Transaction> transaction = this.transactionService.findTransactionForNameAndAccount(data.originalName(), account);
+        final Optional<Transaction> transaction = this.transactionService.findTransactionForNumber(transactionNumber, account);
 
         if (transaction.isEmpty()) {
             return StandardJsonResponse
                     .<TransactionDTO>builder()
                     .success(false)
-                    .message(String.format(NO_TRANSACTION_FOR_ACCOUNT_AND_NAME, accountNumber, data.originalName()))
+                    .message(String.format(NO_TRANSACTION_FOR_ACCOUNT_AND_NUMBER, accountNumber, transactionNumber))
                     .build();
         }
 
@@ -777,7 +780,7 @@ public class TransactionApiController extends AbstractApiController {
     /**
      * Deletes a {@link Transaction} with the matching name & account
      *
-     * @param transactionName transaction name
+     * @param transactionNumber transaction number
      * @param accountNumber account number
      * @param request {@link HttpServletRequest}
      * @return {@link StandardJsonResponse}
@@ -810,8 +813,8 @@ public class TransactionApiController extends AbstractApiController {
     )
     @DeleteMapping(ApiPaths.Transaction.DELETE_TRANSACTION)
     public StandardJsonResponse<Boolean> deleteTransaction(
-            @Parameter(name = "transactionName", description = "The transaction's name")
-            final @RequestParam("transactionName") String transactionName,
+            @Parameter(name = "transactionNumber", description = "The unique identifier for the transaction", example = "1234")
+            final @RequestParam("transactionNumber") long transactionNumber,
             @Parameter(name = "accountNumber", description = "The unique identifier for your trading account", example = "1234")
             final @RequestParam("accountNumber") long accountNumber,
             final HttpServletRequest request
@@ -819,7 +822,7 @@ public class TransactionApiController extends AbstractApiController {
 
         final User user = (User) request.getAttribute(SecurityConstants.USER_REQUEST_KEY);
         final Account account = getAccountForId(user, accountNumber);
-        final Optional<Transaction> transaction = this.transactionService.findTransactionForNameAndAccount(transactionName, account);
+        final Optional<Transaction> transaction = this.transactionService.findTransactionForNumber(transactionNumber, account);
 
         return transaction.map(value -> {
             final boolean result = this.transactionService.deleteTransaction(value);
@@ -828,7 +831,7 @@ public class TransactionApiController extends AbstractApiController {
             }
 
             return StandardJsonResponse.<Boolean>builder().success(result).data(result).build();
-        }).orElseGet(() -> StandardJsonResponse.<Boolean>builder().success(false).data(false).message(String.format(NO_TRANSACTION_FOR_ACCOUNT_AND_NAME, accountNumber, transactionName)).build());
+        }).orElseGet(() -> StandardJsonResponse.<Boolean>builder().success(false).data(false).message(String.format(NO_TRANSACTION_FOR_ACCOUNT_AND_NUMBER, accountNumber, transactionNumber)).build());
     }
 
 
