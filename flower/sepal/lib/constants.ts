@@ -151,6 +151,9 @@ export const ApiUrls = {
       "/get-trade-record-controls?accountNumber={accountNumber}&interval={interval}",
   },
   Transaction: {
+    GetPaged:
+      getTransactionDomain() +
+      "/get-for-interval-paged?accountNumber={accountNumber}&start={start}&end={end}&page={page}&pageSize={pageSize}&transactionType={transactionType}&transactionStatus={transactionStatus}&sort={sort}",
     Create:
       getTransactionDomain() +
       "/create-transaction?accountNumber={accountNumber}",

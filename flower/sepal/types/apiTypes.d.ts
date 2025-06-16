@@ -169,6 +169,14 @@ interface Transaction extends GenericApiType {
   accountName: string;
 }
 
+interface PagedTransactions {
+  page: number;
+  pageSize: number;
+  transactions: Array<Transaction>;
+  totalElements: number;
+  totalPages: number;
+}
+
 interface PagedTrades {
   page: number;
   pageSize: number;

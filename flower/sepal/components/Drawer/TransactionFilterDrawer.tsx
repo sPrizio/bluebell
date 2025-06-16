@@ -1,4 +1,4 @@
-import { UserJobControlSelection } from "@/types/uiTypes";
+import { UserTransactionControlSelection } from "@/types/uiTypes";
 import {
   Drawer,
   DrawerClose,
@@ -20,35 +20,31 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import React from "react";
-import { EnumDisplay } from "@/types/apiTypes";
 
 type Props = {
-  userSelection: UserJobControlSelection;
-  onChange: (newSelection: UserJobControlSelection) => void;
+  userSelection: UserTransactionControlSelection;
+  onChange: (userSelection: UserTransactionControlSelection) => void;
   onSubmit: () => void;
   onCancel: () => void;
-  jobTypes?: Array<EnumDisplay>;
 };
 
 /**
- * Renders the job filters popup drawer
+ * Renders the filter drawer for transactions
  *
- * @param userSelection user's selected filters
- * @param onChange on changed of a filter
- * @param onSubmit on apply of filters
- * @param onCancel on cancel of filters
- * @param jobTypes job type filters
- * @param jobStatuses job status filters
+ * @param userSelection user selection
+ * @param onChange on change of a value handler
+ * @param onSubmit on submit handler
+ * @param onCancel on cancel handler
  * @author Stephen Prizio
  * @version 0.2.5
  */
-export default function JobsFilterDrawer({
+export default function TransactionFilterDrawer({
   userSelection,
   onChange,
   onSubmit,
   onCancel,
-  jobTypes = [],
 }: Readonly<Props>) {
+  //  RENDER
   return (
     <Drawer>
       <DrawerTrigger asChild>
@@ -57,9 +53,9 @@ export default function JobsFilterDrawer({
       <DrawerContent>
         <div className="mx-auto w-full max-w-xl">
           <DrawerHeader>
-            <DrawerTitle>Filter Trades</DrawerTitle>
+            <DrawerTitle>Filter Transactions</DrawerTitle>
             <DrawerDescription>
-              Look at your trades at specific points in time.
+              Look at your transactions at specific points in time.
             </DrawerDescription>
           </DrawerHeader>
           <div className="grid grid-cols-3 items-center w-full gap-4 p-4">
@@ -104,13 +100,13 @@ export default function JobsFilterDrawer({
               </Select>
             </div>
             <div>
-              <Label>Job Type</Label>
+              <Label>Transaction Type</Label>
               <Select
-                value={userSelection.jobType}
+                value={userSelection.type}
                 onValueChange={(val: string) =>
                   onChange({
                     ...userSelection,
-                    jobType: val,
+                    type: val,
                   })
                 }
               >
@@ -119,22 +115,19 @@ export default function JobsFilterDrawer({
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value={"ALL"}>All</SelectItem>
-                  {jobTypes?.map((jt) => (
-                    <SelectItem key={jt.code} value={jt.code}>
-                      {jt.label}
-                    </SelectItem>
-                  ))}
+                  <SelectItem value={"DEPOSIT"}>Deposit</SelectItem>
+                  <SelectItem value={"WITHDRAWAL"}>Withdrawal</SelectItem>
                 </SelectContent>
               </Select>
             </div>
             <div>
-              <Label>Status</Label>
+              <Label>Transaction Status</Label>
               <Select
-                value={userSelection.jobStatus}
+                value={userSelection.status}
                 onValueChange={(val: string) =>
                   onChange({
                     ...userSelection,
-                    jobStatus: val,
+                    status: val,
                   })
                 }
               >
@@ -143,10 +136,10 @@ export default function JobsFilterDrawer({
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value={"ALL"}>All</SelectItem>
-                  <SelectItem value={"NOT_STARTED"}>Not Started</SelectItem>
-                  <SelectItem value={"IN_PROGRESS"}>In Progress</SelectItem>
-                  <SelectItem value={"COMPLETED"}>Completed</SelectItem>
                   <SelectItem value={"FAILED"}>Failed</SelectItem>
+                  <SelectItem value={"IN_PROGRESS"}>In Progress</SelectItem>
+                  <SelectItem value={"PENDING"}>Pending</SelectItem>
+                  <SelectItem value={"COMPLETED"}>Completed</SelectItem>
                 </SelectContent>
               </Select>
             </div>

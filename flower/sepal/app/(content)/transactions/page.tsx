@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Icons } from "@/lib/enums";
 import { useRouter, useSearchParams } from "next/navigation";
 import { selectNewAccount } from "@/lib/functions/util-functions";
@@ -17,6 +17,9 @@ import {
   validatePageQueryFlow,
 } from "@/lib/functions/util-component-functions";
 import LoadingPage from "@/app/loading";
+import { UserTransactionControlSelection } from "@/types/uiTypes";
+import moment from "moment/moment";
+import TransactionFilterDrawer from "@/components/Drawer/TransactionFilterDrawer";
 
 /**
  * The page that shows all of a user's account's transactions. Accounts can be cycled
@@ -43,6 +46,34 @@ export default function TransactionsPage() {
     hasMismatch,
     error,
   );
+
+  const [pageSize, setPageSize] = useState(15);
+  const [hasSubmitted, setHasSubmitted] = useState(false);
+  const [userSelection, setUserSelection] =
+    useState<UserTransactionControlSelection>({
+      start: activeAccount?.accountOpenTime
+        ? moment(activeAccount?.accountOpenTime ?? "").toDate()
+        : moment().toDate(),
+      end: moment().toDate(),
+      status: "ALL",
+      type: "ALL",
+      sort: "desc",
+    });
+  const [submittedFilters, setSubmittedFilters] = useState(userSelection);
+
+  useEffect(() => {
+    if (activeAccount?.accountOpenTime) {
+      const newStart = moment(activeAccount.accountOpenTime).toDate();
+      setUserSelection((prev) => ({
+        ...prev,
+        start: newStart,
+      }));
+      setSubmittedFilters((prev) => ({
+        ...prev,
+        start: newStart,
+      }));
+    }
+  }, [activeAccount]);
 
   const accNumber = activeAccount?.accountNumber ?? -1;
   const pageInfo = {
@@ -110,6 +141,21 @@ export default function TransactionsPage() {
                   }
                 />
               </div>
+              <div>
+                <TransactionFilterDrawer
+                  userSelection={userSelection}
+                  onChange={setUserSelection}
+                  onSubmit={() => {
+                    setSubmittedFilters(userSelection);
+                    setHasSubmitted(true);
+                  }}
+                  onCancel={() => {
+                    setUserSelection(submittedFilters);
+                    setSubmittedFilters(userSelection);
+                    setHasSubmitted(false);
+                  }}
+                />
+              </div>
             </div>
           </div>
           <div>
@@ -128,7 +174,8 @@ export default function TransactionsPage() {
                 cardContent={
                   <AccountTransactionsTable
                     account={activeAccount}
-                    transactions={activeAccount?.transactions ?? []}
+                    filters={submittedFilters}
+                    initialPageSize={pageSize}
                     showActions={true}
                     showBottomLink={false}
                   />

@@ -32,6 +32,14 @@ export interface UserTradeControlSelection {
   symbol: string;
 }
 
+export interface UserTransactionControlSelection {
+  start: Date;
+  end: Date;
+  sort: "asc" | "desc";
+  type: string;
+  status: string;
+}
+
 export interface UserJobControlSelection {
   start: Date;
   end: Date;

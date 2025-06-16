@@ -12,14 +12,17 @@ import {
 import Link from "next/link";
 import moment from "moment/moment";
 import { DateTime } from "@/lib/constants";
-import { formatNumberForDisplay } from "@/lib/functions/util-functions";
-import React from "react";
+import {
+  formatNumberForDisplay,
+  logErrors,
+} from "@/lib/functions/util-functions";
+import React, { useState } from "react";
 
 import { Button } from "@/components/ui/button";
 import TransactionForm from "@/components/Form/Transaction/TransactionForm";
 import BaseModal from "@/components/Modal/BaseModal";
 import DeleteTransactionForm from "@/components/Form/Transaction/DeleteTransactionForm";
-import { Account, Transaction } from "@/types/apiTypes";
+import { Account } from "@/types/apiTypes";
 import { resolveIcon } from "@/lib/functions/util-component-functions";
 import { Icons } from "@/lib/enums";
 import BaseTableContainer from "@/components/Table/BaseTableContainer";
@@ -29,12 +32,18 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { usePagedTransactionsQuery } from "@/lib/hooks/query/queries";
+import { UserTransactionControlSelection } from "@/types/uiTypes";
+import Error from "@/app/error";
+import LoadingPage from "@/app/loading";
 
 /**
  * Renders the account transactions as a table
  *
  * @param account Account
- * @param transactions list of Account transactions
+ * @param filters filters
+ * @param initialPageSize initial page size
+ * @param initialPage initial page
  * @param showActions shows the modification actions
  * @param showBottomLink show table caption
  * @author Stephen Prizio
@@ -42,15 +51,37 @@ import {
  */
 export default function AccountTransactionsTable({
   account,
-  transactions = [],
+  filters,
+  initialPageSize = 10,
+  initialPage = 0,
   showActions = false,
   showBottomLink = true,
 }: Readonly<{
   account: Account | null;
-  transactions: Array<Transaction>;
+  filters: UserTransactionControlSelection;
+  initialPageSize?: number;
+  initialPage?: number;
   showActions?: boolean;
   showBottomLink?: boolean;
 }>) {
+  const [currentPage, setCurrentPage] = useState(initialPage);
+
+  const {
+    data: pagedTransactions,
+    isLoading: isPagedTransactionsLoading,
+    isError: isPagedTransactionsError,
+    error: pagedTransactionsError,
+  } = usePagedTransactionsQuery(
+    account?.accountNumber ?? -1,
+    moment(filters.start).format(DateTime.ISODateTimeFormat) ?? "",
+    moment(filters.end).format(DateTime.ISODateTimeFormat) ?? "",
+    currentPage,
+    initialPageSize,
+    filters.type,
+    filters.status,
+    filters.sort,
+  );
+
   //  GENERAL FUNCTIONS
 
   /**
@@ -70,15 +101,29 @@ export default function AccountTransactionsTable({
 
   //  RENDER
 
+  if (!account) {
+    return <Error />;
+  }
+
+  if (isPagedTransactionsLoading) {
+    return <LoadingPage />;
+  }
+
+  if (isPagedTransactionsError) {
+    logErrors(pagedTransactionsError);
+    return <Error />;
+  }
+
+  const pages = pagedTransactions?.totalPages ?? 0;
   return (
     <div className="py-4">
-      {(!transactions || transactions.length === 0) && (
+      {(pagedTransactions?.transactions?.length ?? 0) === 0 && (
         <div className="text-center text-slate-500 mt-2 mb-6 text-sm">
           No recent transactions.
         </div>
       )}
 
-      {transactions.length > 0 && (
+      {(pagedTransactions?.transactions?.length ?? 0) > 0 && (
         <BaseTableContainer
           height={500}
           table={
@@ -135,7 +180,7 @@ export default function AccountTransactionsTable({
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {transactions?.map((item) => {
+                {pagedTransactions?.transactions?.map((item) => {
                   return (
                     <TableRow key={item.uid} className={"hover:bg-transparent"}>
                       <TableCell>{item.transactionNumber}</TableCell>
