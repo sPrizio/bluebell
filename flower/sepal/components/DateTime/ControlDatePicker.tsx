@@ -12,15 +12,15 @@ import { Calendar } from "@/components/ui/calendar";
 import * as React from "react";
 
 /**
- * Datepicker for trade filters
+ * Datepicker for filters
  *
  * @param value value
  * @param onChange onChange handler
  * @param modal is component in a modal
  * @author Stephen Prizio
- * @version 0.2.4
+ * @version 0.2.5
  */
-export default function TradeControlDatePicker({
+export default function ControlDatePicker({
   value,
   onChange,
   modal = false,

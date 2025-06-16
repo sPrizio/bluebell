@@ -6,7 +6,7 @@ import static com.bluebell.platform.constants.CorePlatformConstants.NO_INSTANTIA
  * Defines all api paths used by the endpoints and testing module
  *
  * @author Stephen Prizio
- * @version 0.2.4
+ * @version 0.2.5
  */
 public class ApiPaths {
 
@@ -261,7 +261,9 @@ public class ApiPaths {
 
         public static final String GET_WITHIN_TIMESPAN_FOR_ACCOUNT = "/get-within-timespan-for-account";
 
-        public static final String GET_BY_NAME_FOR_ACCOUNT = "/get-by-name-for-account";
+        public static final String GET_BY_NUMBER_FOR_ACCOUNT = "/get-by-number-for-account";
+
+        public static final String GET_FOR_INTERVAL_PAGED = "/get-for-interval-paged";
 
         public static final String CREATE_TRANSACTION = "/create-transaction";
 

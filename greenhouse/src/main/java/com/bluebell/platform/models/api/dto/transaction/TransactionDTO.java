@@ -15,7 +15,7 @@ import java.time.LocalDateTime;
  * A DTO representation for {@link Transaction}
  *
  * @author Stephen Prizio
- * @version 0.1.1
+ * @version 0.2.5
  */
 @Getter
 @Setter
@@ -25,6 +25,9 @@ public class TransactionDTO implements GenericDTO {
 
     @Schema(description = "Transaction uid")
     private @Builder.Default String uid = StringUtils.EMPTY;
+
+    @Schema(description = "Transaction number")
+    private long transactionNumber;
 
     @Schema(description = "Type of transaction")
     private EnumDisplay transactionType;

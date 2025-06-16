@@ -7,6 +7,7 @@ import com.bluebell.platform.models.core.entities.trade.Trade;
 import com.bluebell.platform.services.MathService;
 import com.bluebell.radicle.repositories.account.AccountRepository;
 import com.bluebell.radicle.repositories.trade.TradeRepository;
+import com.bluebell.radicle.services.account.AccountService;
 import jakarta.annotation.Resource;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
@@ -24,7 +25,7 @@ import java.util.Random;
  * Generates testing {@link Trade}s
  *
  * @author Stephen Prizio
- * @version 0.2.4
+ * @version 0.2.5
  */
 @Component
 @Profile("dev")
@@ -39,6 +40,9 @@ public class TradeRunner extends AbstractRunner implements CommandLineRunner, Or
 
     @Resource(name = "accountRepository")
     private AccountRepository accountRepository;
+
+    @Resource(name = "accountService")
+    private AccountService accountService;
 
     @Resource(name = "tradeRepository")
     private TradeRepository tradeRepository;
@@ -64,9 +68,9 @@ public class TradeRunner extends AbstractRunner implements CommandLineRunner, Or
         account2 = this.accountRepository.findAccountByAccountNumber(5678);
         account3 = this.accountRepository.findAccountByAccountNumber(9638953);
 
-        this.accountRepository.save(account1.refreshAccount());
-        this.accountRepository.save(account2.refreshAccount());
-        this.accountRepository.save(account3.refreshAccount());
+        this.accountService.refreshAccount(account1);
+        this.accountService.refreshAccount(account2);
+        this.accountService.refreshAccount(account3);
 
         logEnd();
     }

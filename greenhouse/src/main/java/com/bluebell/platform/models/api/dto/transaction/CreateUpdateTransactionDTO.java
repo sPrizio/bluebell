@@ -8,12 +8,13 @@ import lombok.Builder;
  * Request object for creating and updating {@link Transaction}s
  *
  * @author Stephen Prizio
- * @version 0.1.7
+ * @version 0.2.5
  */
 @Builder
 @Schema(title = "CreateUpdateTransactionDTO", name = "CreateUpdateTransactionDTO", description = "Payload for creating and updating transactions")
 public record CreateUpdateTransactionDTO(
         @Schema(description = "Transaction type") String transactionType,
+        @Schema(description = "Transaction number") long transactionNumber,
         @Schema(description = "Transaction date") String transactionDate,
         @Schema(description = "Original Transaction name") String originalName,
         @Schema(description = "Transaction name") String name,
