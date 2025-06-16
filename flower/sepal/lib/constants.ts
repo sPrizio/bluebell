@@ -15,6 +15,7 @@ import {
   getSystemDomain,
   getTradeDomain,
   getTradeRecordDomain,
+  getTransactionDomain,
   getUserDomain,
   isValidPassword,
 } from "@/lib/functions/security-functions";
@@ -148,6 +149,17 @@ export const ApiUrls = {
     GetTradeRecordControls:
       getTradeRecordDomain() +
       "/get-trade-record-controls?accountNumber={accountNumber}&interval={interval}",
+  },
+  Transaction: {
+    Create:
+      getTransactionDomain() +
+      "/create-transaction?accountNumber={accountNumber}",
+    Update:
+      getTransactionDomain() +
+      "/update-transaction?accountNumber={accountNumber}&transactionNumber={transactionNumber}",
+    Delete:
+      getTransactionDomain() +
+      "/delete-transaction?accountNumber={accountNumber}&transactionNumber={transactionNumber}",
   },
   User: {
     GetRecentTransactions: getUserDomain() + "/recent-transactions",
@@ -302,6 +314,12 @@ export function CRUDTransactionSchema() {
     type: z.enum(safeConvertEnum(["DEPOSIT", "WITHDRAWAL"]), {
       message: "Please select a transaction type.",
     }),
+    status: z.enum(
+      safeConvertEnum(["FAILED", "IN_PROGRESS", "PENDING", "COMPLETED"]),
+      {
+        message: "Please select a transaction status.",
+      },
+    ),
     amount: z.coerce
       .number()
       .min(1, { message: "Please enter a number between 1 and 999999999." })
@@ -309,6 +327,14 @@ export function CRUDTransactionSchema() {
         message: "Please enter a number between 1 and 999999999.",
       }),
     account: z.coerce.number(),
+    name: z
+      .string()
+      .min(3, {
+        message: "Please enter a first name with a minimum of 3 characters.",
+      })
+      .max(75, {
+        message: "Please enter a first name with at most 75 characters.",
+      }),
   });
 }
 

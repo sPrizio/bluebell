@@ -4,7 +4,7 @@ import { useEffect } from "react";
 import { useSepalModalContext } from "@/lib/context/SepalContext";
 import { useRouter } from "next/navigation";
 import { useToast } from "@/lib/hooks/ui/use-toast";
-import { delay, logErrors } from "@/lib/functions/util-functions";
+import { logErrors } from "@/lib/functions/util-functions";
 import { Button } from "@/components/ui/button";
 import { Loader2 } from "lucide-react";
 import { Account, Transaction } from "@/types/apiTypes";
@@ -16,7 +16,7 @@ import { useDeleteTransactionMutation } from "@/lib/hooks/query/mutations";
  * @param account Account
  * @param transaction
  * @author Stephen Prizio
- * @version 0.2.2
+ * @version 0.2.5
  */
 export default function DeleteTransactionForm({
   account,
@@ -34,7 +34,10 @@ export default function DeleteTransactionForm({
     isSuccess: isDeleteTransactionSuccess,
     isError: isDeleteTransactionError,
     error: deleteTransactionError,
-  } = useDeleteTransactionMutation(account?.accountNumber ?? -1);
+  } = useDeleteTransactionMutation(
+    account?.accountNumber ?? -1,
+    transaction?.transactionNumber ?? -1,
+  );
 
   useEffect(() => {
     if (isDeleteTransactionSuccess) {
@@ -59,20 +62,6 @@ export default function DeleteTransactionForm({
     }
   }, [isDeleteTransactionSuccess, isDeleteTransactionError]);
 
-  //  GENERAL FUNCTIONS
-
-  /**
-   * Deletes the transaction
-   */
-  async function handleDelete() {
-    //  TODO: temp
-    await delay(2000);
-    deleteTransaction({
-      transactionName: transaction?.name ?? "",
-      transactionDate: transaction?.transactionDate ?? "",
-    });
-  }
-
   //  RENDER
 
   return (
@@ -86,7 +75,7 @@ export default function DeleteTransactionForm({
           type="submit"
           className={"bg-primaryRed hover:bg-primaryRedLight text-white"}
           disabled={isDeleteTransactionLoading}
-          onClick={handleDelete}
+          onClick={deleteTransaction}
         >
           {isDeleteTransactionLoading ? (
             <Loader2 className="mr-2 h-4 w-4 animate-spin" />

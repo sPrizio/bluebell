@@ -163,41 +163,76 @@ export const useFetchMarketNewsMutation = () => {
 export const useCreateTransactionMutation = (accountNumber: number) => {
   const queryClient = useQueryClient();
   return useMutation<Transaction, Error, any>({
-    // @ts-expect-error : TODO: TEMP
-    mutationFn: (payload) => {
-      console.log(payload);
-      return null;
-    }, //TODO: BB-118
+    mutationFn: (payload) =>
+      post<Transaction>(
+        ApiUrls.Transaction.Create,
+        { accountNumber: accountNumber.toString() },
+        payload,
+      ),
     onSuccess: (data) => {
-      queryClient.invalidateQueries({ queryKey: ["user"] });
+      queryClient.invalidateQueries({
+        queryKey: ["user"],
+      });
+      queryClient.invalidateQueries({
+        queryKey: ["account"],
+      });
+      queryClient.invalidateQueries({
+        queryKey: ["portfolio"],
+      });
     },
   });
 };
 
-export const useUpdateTransactionMutation = (accountNumber: number) => {
+export const useUpdateTransactionMutation = (
+  accountNumber: number,
+  transactionNumber: number,
+) => {
   const queryClient = useQueryClient();
   return useMutation<Transaction, Error, any>({
-    // @ts-expect-error : TODO: TEMP
-    mutationFn: (payload) => {
-      console.log(payload);
-      return null;
-    }, //TODO: BB-118
+    mutationFn: (payload) =>
+      put<Transaction>(
+        ApiUrls.Transaction.Update,
+        {
+          accountNumber: accountNumber.toString(),
+          transactionNumber: transactionNumber.toString(),
+        },
+        payload,
+      ),
     onSuccess: (data) => {
-      queryClient.invalidateQueries({ queryKey: ["user"] });
+      queryClient.invalidateQueries({
+        queryKey: ["user"],
+      });
+      queryClient.invalidateQueries({
+        queryKey: ["account"],
+      });
+      queryClient.invalidateQueries({
+        queryKey: ["portfolio"],
+      });
     },
   });
 };
 
-export const useDeleteTransactionMutation = (accountNumber: number) => {
+export const useDeleteTransactionMutation = (
+  accountNumber: number,
+  transactionNumber: number,
+) => {
   const queryClient = useQueryClient();
-  return useMutation<Transaction, Error, any>({
-    // @ts-expect-error : TODO: TEMP
-    mutationFn: (payload) => {
-      console.log(payload);
-      return null;
-    }, //TODO: BB-118
+  return useMutation<boolean, Error, any>({
+    mutationFn: () =>
+      del<boolean>(ApiUrls.Transaction.Delete, {
+        accountNumber: accountNumber.toString(),
+        transactionNumber: transactionNumber.toString(),
+      }),
     onSuccess: (data) => {
-      queryClient.invalidateQueries({ queryKey: ["user"] });
+      queryClient.invalidateQueries({
+        queryKey: ["user"],
+      });
+      queryClient.invalidateQueries({
+        queryKey: ["account"],
+      });
+      queryClient.invalidateQueries({
+        queryKey: ["portfolio"],
+      });
     },
   });
 };

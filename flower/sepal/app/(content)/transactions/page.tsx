@@ -22,7 +22,7 @@ import LoadingPage from "@/app/loading";
  * The page that shows all of a user's account's transactions. Accounts can be cycled
  *
  * @author Stephen Prizio
- * @version 0.2.2
+ * @version 0.2.5
  */
 export default function TransactionsPage() {
   const searchParams = useSearchParams();
@@ -70,74 +70,73 @@ export default function TransactionsPage() {
   return (
     <PageInfoProvider value={pageInfo}>
       <div>
-        {
-          <div className={"grid grid-cols-1 gap-8"}>
-            <div className={"flex items-center justify-end gap-4"}>
-              <ReusableSelect
-                title={"Account"}
-                initialValue={accNumber.toString()}
-                options={
-                  activePortfolio?.accounts
-                    ?.filter((acc) => acc.active)
-                    ?.map((a) => {
-                      return {
-                        label: a.name,
-                        value: a.accountNumber.toString(),
-                      };
-                    }) ?? []
-                }
-                handler={(val: string) => {
-                  selectNewAccount(router, searchParams, parseInt(val));
-                }}
-              />
-            </div>
-            <div>
-              {(activeAccount?.transactions?.length ?? 0) === 0 && (
-                <div className="text-center text-slate-500">
-                  No transaction activity.
-                </div>
-              )}
-              {(activeAccount?.transactions?.length ?? 0) > 0 ? (
-                <BaseCard
-                  loading={isLoading}
-                  title={"Transactions"}
-                  subtitle={
-                    "A look at all of your transactions for this account."
+        <div className={"grid grid-cols-1 gap-8"}>
+          <div className="flex gap-8 w-full items-end justify-end">
+            <div className={"w-1/2 flex items-end justify-end gap-8"}>
+              <div>
+                <ReusableSelect
+                  title={"Account"}
+                  initialValue={accNumber.toString()}
+                  options={
+                    activePortfolio?.accounts
+                      ?.filter((acc) => acc.active)
+                      ?.map((a) => {
+                        return {
+                          label: a.name,
+                          value: a.accountNumber.toString(),
+                        };
+                      }) ?? []
                   }
-                  cardContent={
-                    <AccountTransactionsTable
-                      account={activeAccount}
-                      transactions={activeAccount?.transactions ?? []}
-                      showActions={true}
-                      showBottomLink={false}
-                    />
-                  }
-                  headerControls={[
-                    <BaseModal
-                      key={0}
-                      title={"Add a new Transaction"}
-                      description={
-                        "Keep track of your account's transactions by adding withdrawals & deposits."
-                      }
-                      trigger={
-                        <Button className="w-full text-white">
-                          {resolveIcon(Icons.CirclePlus)}
-                          &nbsp;Add Transaction
-                        </Button>
-                      }
-                      content={
-                        <TransactionForm
-                          account={activeAccount}
-                          mode={"create"}
-                        />
-                      }
-                    />,
-                  ]}
+                  handler={(val: string) => {
+                    selectNewAccount(router, searchParams, parseInt(val));
+                  }}
                 />
-              ) : null}
+              </div>
+              <div>
+                <BaseModal
+                  key={0}
+                  title={"Add a new Transaction"}
+                  description={
+                    "Keep track of your account's transactions by adding withdrawals & deposits."
+                  }
+                  trigger={
+                    <Button className="w-full text-white">
+                      {resolveIcon(Icons.CirclePlus)}
+                      &nbsp;Add Transaction
+                    </Button>
+                  }
+                  content={
+                    <TransactionForm account={activeAccount} mode={"create"} />
+                  }
+                />
+              </div>
             </div>
           </div>
-        }
+          <div>
+            {(activeAccount?.transactions?.length ?? 0) === 0 && (
+              <div className="text-center text-slate-500">
+                No transaction activity.
+              </div>
+            )}
+            {(activeAccount?.transactions?.length ?? 0) > 0 ? (
+              <BaseCard
+                loading={isLoading}
+                title={"Transactions"}
+                subtitle={
+                  "A look at all of your transactions for this account."
+                }
+                cardContent={
+                  <AccountTransactionsTable
+                    account={activeAccount}
+                    transactions={activeAccount?.transactions ?? []}
+                    showActions={true}
+                    showBottomLink={false}
+                  />
+                }
+              />
+            ) : null}
+          </div>
+        </div>
       </div>
     </PageInfoProvider>
   );
