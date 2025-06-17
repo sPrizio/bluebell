@@ -29,6 +29,7 @@ import com.bluebell.platform.models.core.entities.security.User;
 import com.bluebell.platform.models.core.entities.system.IncomingPing;
 import com.bluebell.platform.models.core.entities.trade.Trade;
 import com.bluebell.platform.models.core.entities.transaction.Transaction;
+import com.bluebell.platform.services.PasswordService;
 import com.bluebell.radicle.enums.DataSource;
 import com.bluebell.radicle.integration.models.responses.forexfactory.CalendarNewsEntryResponse;
 import com.bluebell.radicle.performable.impl.FetchMarketNewsActionPerformable;
@@ -46,7 +47,7 @@ import java.util.Random;
  * Parent-level testing class to provide testing assistance for the project
  *
  * @author Stephen Prizio
- * @version 0.2.5
+ * @version 0.2.6
  */
 public abstract class AbstractGenericTest {
 
@@ -188,7 +189,7 @@ public abstract class AbstractGenericTest {
                 .portfolios(new ArrayList<>(List.of(generateTestPortfolio())))
                 .email("test@email.com")
                 .username("s.prizio")
-                .password("1234")
+                .password(new PasswordService().encryptPassword("1234"))
                 .firstName("Stephen")
                 .lastName("Test")
                 .roles(new ArrayList<>(List.of(UserRole.ADMINISTRATOR, UserRole.TRADER)))
