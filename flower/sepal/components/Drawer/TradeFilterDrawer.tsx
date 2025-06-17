@@ -19,7 +19,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import TradeControlDatePicker from "@/components/DateTime/TradeControlDatePicker";
+import ControlDatePicker from "@/components/DateTime/ControlDatePicker";
 
 type Props = {
   userSelection: UserTradeControlSelection;
@@ -38,7 +38,7 @@ type Props = {
  * @param onCancel on cancel of filters
  * @param symbols symbol filters
  * @author Stephen Prizio
- * @version 0.2.4
+ * @version 0.2.5
  */
 export default function TradeFilterDrawer({
   userSelection,
@@ -64,7 +64,7 @@ export default function TradeFilterDrawer({
           <div className="grid grid-cols-3 items-center w-full gap-4 p-4">
             <div>
               <Label>Start</Label>
-              <TradeControlDatePicker
+              <ControlDatePicker
                 value={userSelection.start}
                 modal={true}
                 onChange={(val) =>
@@ -74,7 +74,7 @@ export default function TradeFilterDrawer({
             </div>
             <div>
               <Label>End</Label>
-              <TradeControlDatePicker
+              <ControlDatePicker
                 value={userSelection.end}
                 modal={true}
                 onChange={(val) =>

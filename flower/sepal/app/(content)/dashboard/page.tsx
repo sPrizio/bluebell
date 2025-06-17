@@ -137,7 +137,6 @@ export default function DashboardPage() {
               />
             )}
           </div>
-          {/* TODO: BB-54 Implement Portfolio UI */}
           <div
             className={"grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-8"}
           >

@@ -49,7 +49,7 @@ import static com.bluebell.radicle.validation.GenericValidator.validateParameter
  * Service-layer for {@link Account} entities
  *
  * @author Stephen Prizio
- * @version 0.2.4
+ * @version 0.2.5
  */
 @Slf4j
 @Service
@@ -94,9 +94,14 @@ public class AccountService {
         final double start = account.getInitialBalance();
         double sum = 0.0;
         final List<Trade> allTrades = this.tradeService.findAllTradesWithinTimespan(account.getAccountOpenTime(), LocalDateTime.now().plusDays(1), account);
+        final List<Transaction> allTransactions = this.transactionService.findAllTransactionsForAccount(account);
 
         if (CollectionUtils.isNotEmpty(allTrades)) {
-            sum = this.mathService.getDouble(allTrades.stream().mapToDouble(Trade::getNetProfit).sum());
+            sum = this.mathService.add(sum, this.mathService.getDouble(allTrades.stream().mapToDouble(Trade::getNetProfit).sum()));
+        }
+
+        if (CollectionUtils.isNotEmpty(allTransactions)) {
+            sum = this.mathService.add(sum, this.mathService.getDouble(allTransactions.stream().mapToDouble(Transaction::getAmount).sum()));
         }
 
         account.setBalance(this.mathService.add(start, sum));
@@ -275,6 +280,7 @@ public class AccountService {
                         Transaction
                                 .builder()
                                 .transactionType(GenericEnum.getByCode(TransactionType.class, tr.transactionType()))
+                                .transactionNumber(tr.transactionNumber())
                                 .transactionDate(LocalDateTime.parse(tr.transactionDate(), DateTimeFormatter.ofPattern(CorePlatformConstants.DATE_TIME_NO_TIMEZONE)))
                                 .name(tr.name())
                                 .transactionStatus(GenericEnum.getByCode(TransactionStatus.class, tr.transactionStatus()))

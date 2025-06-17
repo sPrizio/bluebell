@@ -176,3 +176,12 @@ export function getJobDomain(): string {
 export function getMarketPriceDomain(): string {
   return getDomain("/market-price");
 }
+
+/**
+ * Gets the transaction domain
+ *
+ * @returns {string} url
+ */
+export function getTransactionDomain(): string {
+  return getDomain("/transaction");
+}

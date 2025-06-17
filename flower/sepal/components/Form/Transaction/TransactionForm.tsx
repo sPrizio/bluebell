@@ -3,11 +3,11 @@
 import { useToast } from "@/lib/hooks/ui/use-toast";
 import { useEffect } from "react";
 import { useSepalModalContext } from "@/lib/context/SepalContext";
-import { CRUDTransactionSchema } from "@/lib/constants";
+import { CRUDTransactionSchema, DateTime } from "@/lib/constants";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import { delay, logErrors } from "@/lib/functions/util-functions";
+import { logErrors } from "@/lib/functions/util-functions";
 import {
   Form,
   FormControl,
@@ -28,7 +28,11 @@ import {
 } from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
 import moment from "moment";
-import { Account, Transaction } from "@/types/apiTypes";
+import {
+  Account,
+  CreateUpdateTransactionRequest,
+  Transaction,
+} from "@/types/apiTypes";
 import {
   useCreateTransactionMutation,
   useUpdateTransactionMutation,
@@ -41,7 +45,7 @@ import {
  * @param account Account info
  * @param transaction transaction info
  * @author Stephen Prizio
- * @version 0.2.0
+ * @version 0.2.5
  */
 export default function TransactionForm({
   mode = "create",
@@ -76,7 +80,10 @@ export default function TransactionForm({
     isSuccess: isUpdateTransactionSuccess,
     isError: isUpdateTransactionError,
     error: updateTransactionError,
-  } = useUpdateTransactionMutation(account?.accountNumber ?? -1);
+  } = useUpdateTransactionMutation(
+    account?.accountNumber ?? -1,
+    transaction?.transactionNumber ?? -1,
+  );
 
   useEffect(() => {
     if (isCreateTransactionSuccess) {
@@ -111,6 +118,10 @@ export default function TransactionForm({
         : transaction?.transactionType.code.toUpperCase(),
       amount: isCreateMode() ? 0.0 : transaction?.amount,
       account: account?.accountNumber ?? -1,
+      name: isCreateMode() ? "" : transaction?.name,
+      status: isCreateMode()
+        ? "default"
+        : transaction?.transactionStatus?.code.toUpperCase(),
     },
   });
 
@@ -148,14 +159,22 @@ export default function TransactionForm({
    * @param values form values
    */
   async function onSubmit(values: z.infer<typeof formSchema>) {
-    //TODO: temp
-    await delay(2000);
-    console.log(values);
+    const req: CreateUpdateTransactionRequest = {
+      ...values,
+      transactionNumber: transaction?.transactionNumber ?? undefined,
+      name: values.name,
+      originalName: isCreateMode() ? values.name : (transaction?.name ?? ""),
+      transactionType: values.type,
+      transactionDate: moment(values.date).format(
+        DateTime.ISOEasyDateTimeFormat,
+      ),
+      transactionStatus: values.status,
+    };
 
     if (isCreateMode()) {
-      createTransaction(values);
+      createTransaction(req);
     } else {
-      updateTransaction(values);
+      updateTransaction(req);
     }
   }
 
@@ -210,6 +229,36 @@ export default function TransactionForm({
             <div>
               <FormField
                 control={form.control}
+                name="name"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="!text-current">Name</FormLabel>
+                    <FormControl>
+                      <Input placeholder={"Funds deposit"} {...field} />
+                    </FormControl>
+                    <FormMessage className={"text-primaryRed font-semibold"} />
+                  </FormItem>
+                )}
+              />
+            </div>
+            <div>
+              <FormField
+                control={form.control}
+                name="amount"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="!text-current">Amount</FormLabel>
+                    <FormControl>
+                      <Input placeholder="1000.00" {...field} type={"number"} />
+                    </FormControl>
+                    <FormMessage className={"text-primaryRed font-semibold"} />
+                  </FormItem>
+                )}
+              />
+            </div>
+            <div>
+              <FormField
+                control={form.control}
                 name="type"
                 render={({ field }) => (
                   <FormItem>
@@ -239,13 +288,31 @@ export default function TransactionForm({
             <div>
               <FormField
                 control={form.control}
-                name="amount"
+                name="status"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel className="!text-current">Balance</FormLabel>
-                    <FormControl>
-                      <Input placeholder="1000.00" {...field} type={"number"} />
-                    </FormControl>
+                    <FormLabel className="!text-current">
+                      Transaction Status
+                    </FormLabel>
+                    <Select
+                      onValueChange={field.onChange}
+                      defaultValue={field.value}
+                    >
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        <SelectItem value={"default"}>Select a type</SelectItem>
+                        <SelectItem value={"FAILED"}>Failed</SelectItem>
+                        <SelectItem value={"IN_PROGRESS"}>
+                          In Progress
+                        </SelectItem>
+                        <SelectItem value={"PENDING"}>Pending</SelectItem>
+                        <SelectItem value={"COMPLETED"}>Completed</SelectItem>
+                      </SelectContent>
+                    </Select>
                     <FormMessage className={"text-primaryRed font-semibold"} />
                   </FormItem>
                 )}

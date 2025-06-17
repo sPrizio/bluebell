@@ -159,6 +159,7 @@ interface AccountDetails {
 }
 
 interface Transaction extends GenericApiType {
+  transactionNumber: number;
   transactionType: EnumDisplay;
   transactionDate: string;
   name: string;
@@ -166,6 +167,14 @@ interface Transaction extends GenericApiType {
   amount: number;
   accountNumber: number;
   accountName: string;
+}
+
+interface PagedTransactions {
+  page: number;
+  pageSize: number;
+  transactions: Array<Transaction>;
+  totalElements: number;
+  totalPages: number;
 }
 
 interface PagedTrades {
@@ -413,6 +422,16 @@ interface CreateUpdateTradeRequest {
   openPrice: number | undefined | null;
   stopLoss?: number | undefined | null;
   takeProfit?: number | undefined | null;
+}
+
+interface CreateUpdateTransactionRequest {
+  transactionType: string;
+  transactionNumber?: number;
+  transactionDate: string;
+  originalName: string;
+  name: string;
+  transactionStatus: string;
+  amount: number;
 }
 
 interface PagedJobs {

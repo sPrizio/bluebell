@@ -11,10 +11,14 @@ import com.bluebell.radicle.exceptions.system.EntityCreationException;
 import com.bluebell.radicle.exceptions.system.EntityModificationException;
 import com.bluebell.radicle.exceptions.validation.MissingRequiredDataException;
 import com.bluebell.radicle.repositories.transaction.TransactionRepository;
+import com.bluebell.radicle.services.AbstractEntityService;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -22,6 +26,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
+import java.util.Random;
 
 import static com.bluebell.radicle.validation.GenericValidator.validateDatesAreNotMutuallyExclusive;
 import static com.bluebell.radicle.validation.GenericValidator.validateParameterIsNotNull;
@@ -30,17 +35,38 @@ import static com.bluebell.radicle.validation.GenericValidator.validateParameter
  * Service-layer for {@link Transaction}
  *
  * @author Stephen Prizio
- * @version 0.2.0
+ * @version 0.2.5
  */
 @Slf4j
 @Service
-public class TransactionService {
+public class TransactionService extends AbstractEntityService {
+
+    private static final Random RANDOM = new Random();
 
     @Resource(name = "transactionRepository")
     private TransactionRepository transactionRepository;
 
 
     //  METHODS
+
+    /**
+     * Generates a unique transaction number
+     *
+     * @param account {@link Account}
+     * @return transaction number
+     */
+    public long generateUniqueTransactionNumber(final Account account) {
+        validateParameterIsNotNull(account, CorePlatformConstants.Validation.Account.ACCOUNT_CANNOT_BE_NULL);
+
+        long generated = 1_000_000L + RANDOM.nextLong(9_000_000);
+        Optional<Transaction> matched = findTransactionForNumber(generated, account);
+        while (matched.isPresent()) {
+            generated = 1_000_000L + RANDOM.nextLong(9_000_000);
+            matched = findTransactionForNumber(generated, account);
+        }
+
+        return generated;
+    }
 
     /**
      * Returns a {@link List} of {@link Transaction}s within the last 6 months
@@ -112,17 +138,87 @@ public class TransactionService {
     }
 
     /**
-     * Looks up a {@link Transaction} for the given {@link Account} and transaction name
+     * Looks up a {@link Transaction} for the given {@link Account} and transaction number
      *
-     * @param name    transaction name
      * @param account {@link Account}
      * @return {@link Optional} {@link Transaction}
      */
-    public Optional<Transaction> findTransactionForNameAndAccount(final String name, final Account account) {
-        validateParameterIsNotNull(name, CorePlatformConstants.Validation.Transaction.TRANSACTION_NAME_CANNOT_BE_NULL);
+    public Optional<Transaction> findTransactionForNumber(final long transactionNumber, final Account account) {
         validateParameterIsNotNull(account, CorePlatformConstants.Validation.Account.ACCOUNT_CANNOT_BE_NULL);
+        return Optional.ofNullable(this.transactionRepository.findTransactionByTransactionNumberAndAccount(transactionNumber, account));
+    }
 
-        return Optional.ofNullable(this.transactionRepository.findTransactionByNameAndAccount(name, account));
+    /**
+     * Returns a paginated {@link List} of {@link Transaction}s that are within the given time span
+     *
+     * @param start    {@link LocalDateTime} start of interval (inclusive)
+     * @param end      {@link LocalDateTime} end of interval (exclusive)
+     * @param account  {@link Account}
+     * @param page     page number
+     * @param pageSize page size
+     * @param sort     sort order
+     * @return {@link Page} of {@link Transaction}s
+     */
+    public Page<Transaction> findAllTransactionsWithinDatePaged(final LocalDateTime start, final LocalDateTime end, final Account account, final int page, final int pageSize, final Sort sort) {
+        validateStandardParameters(start, end, account, sort);
+        return this.transactionRepository.findAllTransactionsWithinDatePaged(start, end, account, PageRequest.of(page, pageSize, sort));
+    }
+
+    /**
+     * Returns a paginated {@link List} of {@link Transaction}s that are within the given time span for the given status
+     *
+     * @param start             {@link LocalDateTime} start of interval (inclusive)
+     * @param end               {@link LocalDateTime} end of interval (exclusive)
+     * @param account           {@link Account}
+     * @param transactionStatus {@link TransactionStatus}
+     * @param page              page number
+     * @param pageSize          page size
+     * @param sort              sort order
+     * @return {@link Page} of {@link Transaction}s
+     */
+    public Page<Transaction> findAllTransactionsForStatusWithinDatePaged(final LocalDateTime start, final LocalDateTime end, final Account account, final TransactionStatus transactionStatus, final int page, final int pageSize, final Sort sort) {
+        validateStandardParameters(start, end, account, sort);
+        validateParameterIsNotNull(transactionStatus, CorePlatformConstants.Validation.Transaction.TRANSACTION_STATUS_CANNOT_BE_NULL);
+        return this.transactionRepository.findAllTransactionsForStatusWithinDatePaged(start, end, account, transactionStatus, PageRequest.of(page, pageSize, sort));
+    }
+
+    /**
+     * Returns a paginated {@link List} of {@link Transaction}s that are within the given time span for the given transaction type
+     *
+     * @param start           {@link LocalDateTime} start of interval (inclusive)
+     * @param end             {@link LocalDateTime} end of interval (exclusive)
+     * @param account         {@link Account}
+     * @param transactionType {@link TransactionType}
+     * @param page            page number
+     * @param pageSize        page size
+     * @param sort            sort order
+     * @return {@link Page} of {@link Transaction}s
+     */
+    public Page<Transaction> findAllTransactionsForTypeWithinDatePaged(final LocalDateTime start, final LocalDateTime end, final Account account, final TransactionType transactionType, final int page, final int pageSize, final Sort sort) {
+        validateStandardParameters(start, end, account, sort);
+        validateParameterIsNotNull(transactionType, CorePlatformConstants.Validation.Transaction.TRANSACTION_TYPE_CANNOT_BE_NULL);
+        return this.transactionRepository.findAllTransactionsForTypeWithinDatePaged(start, end, account, transactionType, PageRequest.of(page, pageSize, sort));
+    }
+
+    /**
+     * Returns a paginated {@link List} of {@link Transaction}s filtered by their date, status, type and account and sorted
+     *
+     * @param start             {@link LocalDateTime} start of interval (inclusive)
+     * @param end               {@link LocalDateTime} end of interval (exclusive)
+     * @param transactionType   {@link TransactionType}
+     * @param transactionStatus {@link TransactionStatus}
+     * @param account           {@link Account}
+     * @param page              page number
+     * @param pageSize          page size
+     * @param sort              sort order
+     * @return {@link Page} of {@link Transaction}s
+     */
+    public Page<Transaction> findAllTransactionsForTypeAndStatusWithinTimespan(final LocalDateTime start, final LocalDateTime end, final TransactionType transactionType, final TransactionStatus transactionStatus, final Account account, final int page, final int pageSize, final Sort sort) {
+        validateStandardParameters(start, end, account, sort);
+        validateParameterIsNotNull(transactionType, CorePlatformConstants.Validation.Transaction.TRANSACTION_TYPE_CANNOT_BE_NULL);
+        validateParameterIsNotNull(transactionStatus, CorePlatformConstants.Validation.Transaction.TRANSACTION_STATUS_CANNOT_BE_NULL);
+
+        return this.transactionRepository.findAllTransactionsForTypeAndStatusWithinTimespanPaged(start, end, transactionType, transactionStatus, account, PageRequest.of(page, pageSize, sort));
     }
 
     /**
@@ -203,6 +299,7 @@ public class TransactionService {
         int count = 0;
         for (final Transaction transaction : transactions) {
             count += this.transactionRepository.upsertTransaction(
+                    transaction.getTransactionNumber(),
                     transaction.getTransactionType(),
                     transaction.getTransactionDate(),
                     transaction.getName(),
@@ -227,6 +324,12 @@ public class TransactionService {
      * @return {@link Transaction}
      */
     private Transaction applyChanges(Transaction transaction, final CreateUpdateTransactionDTO data, final Account account) {
+
+        if (data.transactionNumber() == 0 || data.transactionNumber() == -1) {
+            transaction.setTransactionNumber(generateUniqueTransactionNumber(account));
+        } else {
+            transaction.setTransactionNumber(data.transactionNumber());
+        }
 
         transaction.setTransactionType(GenericEnum.getByCode(TransactionType.class, data.transactionType().toUpperCase()));
         transaction.setTransactionDate(LocalDateTime.parse(data.transactionDate(), DateTimeFormatter.ofPattern(CorePlatformConstants.DATE_TIME_NO_TIMEZONE)));

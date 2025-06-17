@@ -16,6 +16,7 @@ import {
   MarketNews,
   PagedJobs,
   PagedTrades,
+  PagedTransactions,
   Portfolio,
   PortfolioRecord,
   Trade,
@@ -204,6 +205,44 @@ export const useAccountCreationInfoQuery = () => {
       };
     },
     enabled: allLoaded,
+  });
+};
+
+export const usePagedTransactionsQuery = (
+  accountNumber: number,
+  start: string,
+  end: string,
+  page: number,
+  pageSize: number,
+  transactionType: string,
+  transactionStatus: string,
+  sort: "asc" | "desc" = "asc",
+) => {
+  return useQuery<PagedTransactions>({
+    placeholderData: keepPreviousData,
+    queryKey: [
+      "paged-transactions",
+      accountNumber,
+      start,
+      end,
+      page,
+      pageSize,
+      transactionType,
+      transactionStatus,
+      sort,
+    ],
+    queryFn: () =>
+      get<PagedTransactions>(ApiUrls.Transaction.GetPaged, {
+        accountNumber: accountNumber.toString(),
+        start: start,
+        end: end,
+        page: page.toString(),
+        pageSize: pageSize.toString(),
+        transactionType: transactionType,
+        transactionStatus: transactionStatus,
+        sort: sort,
+      }),
+    enabled: accountNumber !== -1,
   });
 };
 
@@ -426,10 +465,13 @@ export const useJobQuery = (jobId: string) => {
   });
 };
 
+//  at present this query is used for display purposes in the side nav, if this were to change, the enabled flag would need to be refactored
+//  this api call is also used in the middleware, but not with react query
 export const useHealthCheckQuery = () => {
   return useQuery<HealthCheck>({
     queryKey: ["health-check"],
     queryFn: () => get<HealthCheck>(ApiUrls.System.HealthCheck, {}),
+    enabled: process.env.ENABLE_BUILD_VERSION === "true",
   });
 };
 

@@ -12,7 +12,7 @@ import org.springframework.stereotype.Component;
  * Converts {@link Transaction}s into {@link TransactionDTO}s
  *
  * @author Stephen Prizio
- * @version 0.1.1
+ * @version 0.2.5
  */
 @Component("transactionDTOConverter")
 public class TransactionDTOConverter implements GenericDTOConverter<Transaction, TransactionDTO> {
@@ -33,6 +33,7 @@ public class TransactionDTOConverter implements GenericDTOConverter<Transaction,
         return TransactionDTO
                 .builder()
                 .uid(this.uniqueIdentifierService.generateUid(entity))
+                .transactionNumber(entity.getTransactionNumber())
                 .transactionType(EnumDisplay.builder().code(entity.getTransactionType().getCode()).label(entity.getTransactionType().getLabel()).build())
                 .transactionDate(entity.getTransactionDate())
                 .amount(entity.getAmount())

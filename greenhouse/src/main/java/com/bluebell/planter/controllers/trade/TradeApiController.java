@@ -50,7 +50,7 @@ import static com.bluebell.radicle.validation.GenericValidator.*;
  * Api controller for {@link Trade}
  *
  * @author Stephen Prizio
- * @version 0.2.4
+ * @version 0.2.5
  */
 @RestController
 @RequestMapping("${bluebell.base.api.controller.endpoint}" + ApiPaths.Trade.BASE)
@@ -306,17 +306,21 @@ public class TradeApiController extends AbstractApiController {
         final Triplet<TradeType, String, Sort> filters = resolveFilters(tradeType, symbol, sort);
 
         Page<Trade> trades;
+        final LocalDateTime startTime = LocalDateTime.parse(start, DateTimeFormatter.ISO_DATE_TIME);
+        final LocalDateTime endTime = LocalDateTime.parse(end, DateTimeFormatter.ISO_DATE_TIME);
+        final Account account = getAccountForId(user, accountNumber);
+
         if (filters.getValue0() != null && StringUtils.isNotEmpty(filters.getValue1())) {
             //  filter by type and symbol
-            trades = this.tradeService.findAllTradesForSymbolAndTradeTypeWithinTimespan(LocalDateTime.parse(start, DateTimeFormatter.ISO_DATE_TIME), LocalDateTime.parse(end, DateTimeFormatter.ISO_DATE_TIME), getAccountForId(user, accountNumber), filters.getValue1(), filters.getValue0(), page, pageSize, filters.getValue2());
+            trades = this.tradeService.findAllTradesForSymbolAndTradeTypeWithinTimespan(startTime, endTime, account, filters.getValue1(), filters.getValue0(), page, pageSize, filters.getValue2());
         } else if (filters.getValue0() != null) {
             //  filter by type only
-            trades = this.tradeService.findAllTradesForTradeTypeWithinTimespan(LocalDateTime.parse(start, DateTimeFormatter.ISO_DATE_TIME), LocalDateTime.parse(end, DateTimeFormatter.ISO_DATE_TIME), getAccountForId(user, accountNumber), filters.getValue0(), page, pageSize, filters.getValue2());
+            trades = this.tradeService.findAllTradesForTradeTypeWithinTimespan(startTime, endTime, account, filters.getValue0(), page, pageSize, filters.getValue2());
         } else if (StringUtils.isNotEmpty(filters.getValue1())) {
             //  filter by symbol only
-            trades = this.tradeService.findAllTradesForSymbolWithinTimespan(LocalDateTime.parse(start, DateTimeFormatter.ISO_DATE_TIME), LocalDateTime.parse(end, DateTimeFormatter.ISO_DATE_TIME), getAccountForId(user, accountNumber), filters.getValue1(), page, pageSize, filters.getValue2());
+            trades = this.tradeService.findAllTradesForSymbolWithinTimespan(startTime, endTime, account, filters.getValue1(), page, pageSize, filters.getValue2());
         } else {
-            trades = this.tradeService.findAllTradesWithinTimespan(LocalDateTime.parse(start, DateTimeFormatter.ISO_DATE_TIME), LocalDateTime.parse(end, DateTimeFormatter.ISO_DATE_TIME), getAccountForId(user, accountNumber), page, pageSize, filters.getValue2());
+            trades = this.tradeService.findAllTradesWithinTimespan(startTime, endTime, account, page, pageSize, filters.getValue2());
         }
 
         return StandardJsonResponse
