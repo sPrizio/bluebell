@@ -6,18 +6,38 @@ import { ApiUrls } from "../../constants";
 export const useLoginMutation = () => {
   const queryClient = useQueryClient();
   return useMutation<User, Error, any>({
-    mutationFn: (payload) => post<User>(ApiUrls.Security.Login, {}, payload),
+    mutationFn: (payload) =>
+      fetch(ApiUrls.Security.InternalLogin, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      }).then(async (res) => {
+        if (!res.ok) {
+          const error = await res.json();
+          throw new Error(error.error ?? "Login failed");
+        }
+        return res.json();
+      }),
     onSuccess: (data) => {
-      queryClient.invalidateQueries({ queryKey: ["user"] });
+      queryClient.invalidateQueries({ queryKey: ["session"] });
     },
-    onError: (error) => {
-      return "test";
+  });
+};
+
+export const useLogoutMutation = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: () =>
+      fetch(ApiUrls.Security.InternalLogout, { method: "POST" }).then((res) => {
+        if (!res.ok) throw new Error("Logout failed");
+      }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["session"] });
     },
   });
 };
 
 export const useIsUserTakenMutation = () => {
-  const queryClient = useQueryClient();
   return useMutation<boolean, Error, any>({
     mutationFn: (payload) =>
       post<boolean>(ApiUrls.Security.IsUserTaken, {}, payload),

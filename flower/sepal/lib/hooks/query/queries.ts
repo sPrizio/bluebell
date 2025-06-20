@@ -30,11 +30,25 @@ import {
 } from "@/types/apiTypes";
 import { isNumeric } from "@/lib/functions/util-functions";
 import { get } from "../../functions/client";
+import { SessionData } from "@/lib/auth/session";
+
+export const useSessionQuery = () => {
+  return useQuery<SessionData>({
+    queryKey: ["session"],
+    queryFn: () =>
+      fetch(ApiUrls.Security.Me).then((res) => {
+        if (!res.ok) throw new Error("Not authenticated");
+        return res.json();
+      }),
+    retry: false,
+    refetchOnWindowFocus: false,
+  });
+};
 
 export const useUserQuery = () => {
   return useQuery<User>({
     queryKey: ["user"],
-    queryFn: () => get<User>(ApiUrls.User.GetUser, { username: "s.test" }), // TODO: change this to the auth module
+    queryFn: () => get<User>(ApiUrls.User.GetUser, { username: "t.test" }), // TODO: change this to the auth module
   });
 };
 

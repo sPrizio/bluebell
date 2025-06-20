@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
+import { redirect } from "next/navigation";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -32,6 +33,7 @@ import {
   useIsUserTakenMutation,
   useLoginMutation,
 } from "@/lib/hooks/query/mutations";
+import { useSessionQuery } from "@/lib/hooks/query/queries";
 
 /**
  * Renders the login page
@@ -80,7 +82,6 @@ export default function Login() {
 
   const {
     mutate: login,
-    data: loginData,
     isPending: isLoggingIn,
     isSuccess: hasLoggedIn,
     isError: couldNotLogIn,
@@ -95,20 +96,22 @@ export default function Login() {
     error: takenError,
   } = useIsUserTakenMutation();
 
-  const isLoading = isLoggingIn || isTakenPending;
+  const {
+    data: session,
+    isLoading: isSessionLoading,
+    isError: isSessionError,
+    error: sessionError,
+  } = useSessionQuery();
+
+  const isLoading = isLoggingIn || isTakenPending || isSessionLoading;
 
   useEffect(() => {
     if (hasLoggedIn) {
-      console.log(loginData?.apiToken ?? "error");
       //  TODO: before feature flagging, ensure that we have a "super user" or "test user" api token
       //  TODO: this token will return the test data, like we've been using for development
       //  TODO: rename the test data runner to remove my name and make it generic test naming
 
-      //  TODO: implement greenhouse api call for fetching user by api token
-
-      //  TODO: perform lookup using api token from this response to fetch the user data (again)
-
-      //  TODO: upon successful get, consider the app authenticated and re-direct to the dashboard page
+      redirect("/dashboard");
     } else if (couldNotLogIn) {
       logErrors(loginError);
       toast({
@@ -121,17 +124,14 @@ export default function Login() {
 
   //  GENERAL FUNCTIONS
 
+  /**
+   * Formats an error message for display purposes
+   *
+   * @param val error message
+   */
   function formatErrorMessage(val: string | undefined) {
     if (val) {
-      const split = val.split("||");
-      if (split && split.length > 1) {
-        try {
-          const json = JSON.parse(split[1]);
-          return json.message;
-        } catch (e) {
-          return "Failed to login. An unknown error occurred. Please try again later.";
-        }
-      }
+      return val.replace("Error: ", "");
     }
 
     return "";

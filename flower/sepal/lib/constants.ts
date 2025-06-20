@@ -38,7 +38,6 @@ export const BASE_COLORS = [
 
 export const ApiCredentials = {
   AuthHeader: "fp-api_token",
-  TestAccountNumber: "28331289",
   TestUserToken:
     "Zmxvd2VycG90X2FwaV90b2tlbiZzLnByaXppb0Bob3RtYWlsLmNvbSYyMDI0LTExLTIwVDEzOjU2OjE1",
 };
@@ -111,6 +110,9 @@ export const ApiUrls = {
   Security: {
     IsUserTaken: getSecurityDomain() + "/is-taken",
     Login: getSecurityDomain() + "/login",
+    InternalLogin: "/api/login",
+    InternalLogout: "/api/logout",
+    Me: "/api/me",
   },
   Symbol: {
     GetTradedSymbols:
