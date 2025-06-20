@@ -185,3 +185,12 @@ export function getMarketPriceDomain(): string {
 export function getTransactionDomain(): string {
   return getDomain("/transaction");
 }
+
+/**
+ * Gets the security domain
+ *
+ * @returns {string} url
+ */
+export function getSecurityDomain(): string {
+  return getDomain("/security");
+}

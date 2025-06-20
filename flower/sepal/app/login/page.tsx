@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -20,7 +20,7 @@ import {
   ForgotPasswordSchema,
   LoginSchema,
 } from "@/lib/constants";
-import { delay } from "@/lib/functions/util-functions";
+import { delay, logErrors } from "@/lib/functions/util-functions";
 import MainLogo from "@/components/Navigation/MainLogo";
 import { Loader2 } from "lucide-react";
 import SimpleMessage from "@/components/Message/SimpleMessage";
@@ -28,16 +28,19 @@ import { useToast } from "@/lib/hooks/ui/use-toast";
 import { Toaster } from "@/components/ui/toaster";
 import { resolveIcon } from "@/lib/functions/util-component-functions";
 import { Icons } from "@/lib/enums";
+import {
+  useIsUserTakenMutation,
+  useLoginMutation,
+} from "@/lib/hooks/query/mutations";
 
 /**
  * Renders the login page
  *
  * @author Stephen Prizio
- * @version 0.2.4
+ * @version 0.2.6
  */
 export default function Login() {
   const { toast } = useToast();
-  const [isLoading, setIsLoading] = useState(false);
   const [success, setSuccess] = useState<"success" | "failed" | "undefined">(
     "undefined",
   );
@@ -51,7 +54,7 @@ export default function Login() {
   const loginForm = useForm<z.infer<typeof loginFormSchema>>({
     resolver: zodResolver(loginFormSchema),
     defaultValues: {
-      username: "",
+      usernameEmail: "",
       password: "",
     },
   });
@@ -75,7 +78,64 @@ export default function Login() {
     },
   });
 
+  const {
+    mutate: login,
+    data: loginData,
+    isPending: isLoggingIn,
+    isSuccess: hasLoggedIn,
+    isError: couldNotLogIn,
+    error: loginError,
+  } = useLoginMutation();
+
+  const {
+    mutate: isTaken,
+    isPending: isTakenPending,
+    isSuccess: isTakenSuccess,
+    isError: isTakenError,
+    error: takenError,
+  } = useIsUserTakenMutation();
+
+  const isLoading = isLoggingIn || isTakenPending;
+
+  useEffect(() => {
+    if (hasLoggedIn) {
+      console.log(loginData?.apiToken ?? "error");
+      //  TODO: before feature flagging, ensure that we have a "super user" or "test user" api token
+      //  TODO: this token will return the test data, like we've been using for development
+      //  TODO: rename the test data runner to remove my name and make it generic test naming
+
+      //  TODO: implement greenhouse api call for fetching user by api token
+
+      //  TODO: perform lookup using api token from this response to fetch the user data (again)
+
+      //  TODO: upon successful get, consider the app authenticated and re-direct to the dashboard page
+    } else if (couldNotLogIn) {
+      logErrors(loginError);
+      toast({
+        title: "Login Failed",
+        description: formatErrorMessage(loginError?.message),
+        variant: "danger",
+      });
+    }
+  }, [hasLoggedIn, couldNotLogIn]);
+
   //  GENERAL FUNCTIONS
+
+  function formatErrorMessage(val: string | undefined) {
+    if (val) {
+      const split = val.split("||");
+      if (split && split.length > 1) {
+        try {
+          const json = JSON.parse(split[1]);
+          return json.message;
+        } catch (e) {
+          return "Failed to login. An unknown error occurred. Please try again later.";
+        }
+      }
+    }
+
+    return "";
+  }
 
   /**
    * Submits the login form
@@ -83,14 +143,8 @@ export default function Login() {
    * @param values form values
    */
   async function onLoginSubmit(values: z.infer<typeof loginFormSchema>) {
-    // Do something with the form values.
-    // ✅ This will be type-safe and validated.
-    setIsLoading(true);
-    await delay(4000);
-    console.log(values);
-
+    login(values);
     setSuccess("success");
-    setIsLoading(false);
   }
 
   /**
@@ -101,14 +155,10 @@ export default function Login() {
   async function onForgotPasswordSubmit(
     values: z.infer<typeof forgotFormSchema>,
   ) {
-    // Do something with the form values.
-    // ✅ This will be type-safe and validated.
-    setIsLoading(true);
     await delay(4000);
-    console.log(values);
-
+    //TODO: handle this
     setSuccess("success");
-    setIsLoading(false);
+    forgotForm.reset();
   }
 
   /**
@@ -118,7 +168,6 @@ export default function Login() {
    * @param values form values
    */
   async function onRegisterSubmit(values: z.infer<typeof registerFormSchema>) {
-    setIsLoading(true);
     await delay(2000);
 
     //const user = await registerUser(values)
@@ -148,8 +197,7 @@ export default function Login() {
       setSuccess("success");
     }
 
-    setIsLoading(false);
-    setIsLoading(false);
+    //  TODO: once registered successfully, redirect to login step, reset creation form.
   }
 
   /**
@@ -245,7 +293,7 @@ export default function Login() {
                       <div>
                         <FormField
                           control={loginForm.control}
-                          name="username"
+                          name="usernameEmail"
                           render={({ field }) => (
                             <FormItem>
                               <FormLabel className="!text-current">
@@ -312,7 +360,7 @@ export default function Login() {
                 <div className={"w-full"}>
                   <div className={"grid grid-cols-1 gap-4 items-center"}>
                     <div>
-                      <Button className={"w-full"} variant={"outline"}>
+                      <Button className={"w-full"} variant={"outline"} disabled>
                         {resolveIcon(
                           Icons.BrandGoogleFilled,
                           "mr-2 text-primary",
@@ -322,7 +370,7 @@ export default function Login() {
                       </Button>
                     </div>
                     <div>
-                      <Button className={"w-full"} variant={"outline"}>
+                      <Button className={"w-full"} variant={"outline"} disabled>
                         {resolveIcon(
                           Icons.BrandAppleFilled,
                           "mr-2 text-primary",
@@ -332,7 +380,7 @@ export default function Login() {
                       </Button>
                     </div>
                     <div>
-                      <Button className={"w-full"} variant={"outline"}>
+                      <Button className={"w-full"} variant={"outline"} disabled>
                         {resolveIcon(
                           Icons.BrandFacebookFilled,
                           "mr-2 text-primary",
@@ -460,7 +508,11 @@ export default function Login() {
                           </Button>
                         </div>
                         <div>
-                          <Button className={"w-full"} variant={"outline"}>
+                          <Button
+                            className={"w-full"}
+                            variant={"outline"}
+                            disabled
+                          >
                             {resolveIcon(
                               Icons.BrandGoogleFilled,
                               "mr-2 text-primary",
@@ -470,7 +522,11 @@ export default function Login() {
                           </Button>
                         </div>
                         <div>
-                          <Button className={"w-full"} variant={"outline"}>
+                          <Button
+                            className={"w-full"}
+                            variant={"outline"}
+                            disabled
+                          >
                             {resolveIcon(
                               Icons.BrandAppleFilled,
                               "mr-2 text-primary",
@@ -480,7 +536,11 @@ export default function Login() {
                           </Button>
                         </div>
                         <div>
-                          <Button className={"w-full"} variant={"outline"}>
+                          <Button
+                            className={"w-full"}
+                            variant={"outline"}
+                            disabled
+                          >
                             {resolveIcon(
                               Icons.BrandFacebookFilled,
                               "mr-2 text-primary",

@@ -11,6 +11,7 @@ import {
   getNewsDomain,
   getPortfolioDomain,
   getPortfolioRecordDomain,
+  getSecurityDomain,
   getSymbolDomain,
   getSystemDomain,
   getTradeDomain,
@@ -106,6 +107,10 @@ export const ApiUrls = {
   PortfolioRecord: {
     GetPortfolioRecord:
       getPortfolioRecordDomain() + "/get?portfolioNumber={portfolioNumber}",
+  },
+  Security: {
+    IsUserTaken: getSecurityDomain() + "/is-taken",
+    Login: getSecurityDomain() + "/login",
   },
   Symbol: {
     GetTradedSymbols:
@@ -422,7 +427,7 @@ export function CRUDUserSchema(editMode: boolean) {
 
 export function LoginSchema() {
   return z.object({
-    username: z
+    usernameEmail: z
       .string()
       .min(3, {
         message: "Please enter a username with a minimum of 3 characters.",
@@ -430,8 +435,8 @@ export function LoginSchema() {
       .max(75, {
         message: "Please enter a username with at most 75 characters.",
       }),
-    password: z.string().min(8, {
-      message: "Please enter a password with a minimum of 8 characters.",
+    password: z.string().min(5, {
+      message: "Please enter a password with a minimum of 5 characters.",
     }),
   });
 }

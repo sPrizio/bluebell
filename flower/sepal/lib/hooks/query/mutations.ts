@@ -3,6 +3,28 @@ import { Account, Portfolio, Trade, Transaction, User } from "@/types/apiTypes";
 import { del, post, postFile, put } from "../../functions/client";
 import { ApiUrls } from "../../constants";
 
+export const useLoginMutation = () => {
+  const queryClient = useQueryClient();
+  return useMutation<User, Error, any>({
+    mutationFn: (payload) => post<User>(ApiUrls.Security.Login, {}, payload),
+    onSuccess: (data) => {
+      queryClient.invalidateQueries({ queryKey: ["user"] });
+    },
+    onError: (error) => {
+      return "test";
+    },
+  });
+};
+
+export const useIsUserTakenMutation = () => {
+  const queryClient = useQueryClient();
+  return useMutation<boolean, Error, any>({
+    mutationFn: (payload) =>
+      post<boolean>(ApiUrls.Security.IsUserTaken, {}, payload),
+    onSuccess: (data) => {},
+  });
+};
+
 export const useCreateUserMutation = () => {
   const queryClient = useQueryClient();
   return useMutation<User, Error, any>({
