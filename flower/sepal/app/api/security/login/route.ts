@@ -21,6 +21,8 @@ export async function GET(req: NextRequest) {
   return NextResponse.json({
     username: session.username,
     isLoggedIn: session.isLoggedIn,
+    token: session.token,
+    roles: session.roles,
   });
 }
 
@@ -32,7 +34,7 @@ export async function GET(req: NextRequest) {
 export async function POST(req: NextRequest) {
   const body = await req.json();
 
-  const apiRes = await fetch(`${ApiUrls.Security.Login}`, {
+  const apiRes = await fetch(`${ApiUrls.External.Security.Login}`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(body),
@@ -60,6 +62,7 @@ export async function POST(req: NextRequest) {
 
   session.username = userData.data.username;
   session.token = userData.data.apiToken;
+  session.roles = userData.data.roles;
   session.isLoggedIn = true;
 
   await session.save();

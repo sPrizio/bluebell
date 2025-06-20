@@ -65,7 +65,11 @@ export function getDomain(appendVal: string): string {
  *
  * @returns {string} url
  */
-export function getChartDomain(): string {
+export function getChartDomain(internal = false): string {
+  if (internal) {
+    return getInternalApiPrefix("/chart");
+  }
+
   return getDomain("/chart");
 }
 
@@ -74,7 +78,11 @@ export function getChartDomain(): string {
  *
  * @returns {string} url
  */
-export function getNewsDomain(): string {
+export function getNewsDomain(internal = false): string {
+  if (internal) {
+    return getInternalApiPrefix("/news");
+  }
+
   return getDomain("/news");
 }
 
@@ -83,7 +91,11 @@ export function getNewsDomain(): string {
  *
  * @returns {string} url
  */
-export function getTradeDomain(): string {
+export function getTradeDomain(internal = false): string {
+  if (internal) {
+    return getInternalApiPrefix("/trade");
+  }
+
   return getDomain("/trade");
 }
 
@@ -92,7 +104,11 @@ export function getTradeDomain(): string {
  *
  * @returns {string} url
  */
-export function getTradeRecordDomain(): string {
+export function getTradeRecordDomain(internal = false): string {
+  if (internal) {
+    return getInternalApiPrefix("/trade-record");
+  }
+
   return getDomain("/trade-record");
 }
 
@@ -101,7 +117,11 @@ export function getTradeRecordDomain(): string {
  *
  * @returns {string} url
  */
-export function getUserDomain(): string {
+export function getUserDomain(internal = false): string {
+  if (internal) {
+    return getInternalApiPrefix("/user");
+  }
+
   return getDomain("/user");
 }
 
@@ -110,7 +130,11 @@ export function getUserDomain(): string {
  *
  * @returns {string} url
  */
-export function getAnalysisDomain(): string {
+export function getAnalysisDomain(internal = false): string {
+  if (internal) {
+    return getInternalApiPrefix("/analysis");
+  }
+
   return getDomain("/analysis");
 }
 
@@ -119,7 +143,11 @@ export function getAnalysisDomain(): string {
  *
  * @returns {string} url
  */
-export function getAccountDomain(): string {
+export function getAccountDomain(internal = false): string {
+  if (internal) {
+    return getInternalApiPrefix("/account");
+  }
+
   return getDomain("/account");
 }
 
@@ -128,7 +156,11 @@ export function getAccountDomain(): string {
  *
  * @returns {string} url
  */
-export function getPortfolioDomain(): string {
+export function getPortfolioDomain(internal = false): string {
+  if (internal) {
+    return getInternalApiPrefix("/portfolio");
+  }
+
   return getDomain("/portfolio");
 }
 
@@ -137,7 +169,11 @@ export function getPortfolioDomain(): string {
  *
  * @returns {string} url
  */
-export function getPortfolioRecordDomain(): string {
+export function getPortfolioRecordDomain(internal = false): string {
+  if (internal) {
+    return getInternalApiPrefix("/portfolio-record");
+  }
+
   return getDomain("/portfolio-record");
 }
 
@@ -146,7 +182,11 @@ export function getPortfolioRecordDomain(): string {
  *
  * @returns {string} url
  */
-export function getSymbolDomain(): string {
+export function getSymbolDomain(internal = false): string {
+  if (internal) {
+    return getInternalApiPrefix("/symbol");
+  }
+
   return getDomain("/symbol");
 }
 
@@ -155,7 +195,11 @@ export function getSymbolDomain(): string {
  *
  * @returns {string} url
  */
-export function getSystemDomain(): string {
+export function getSystemDomain(internal = false): string {
+  if (internal) {
+    return getInternalApiPrefix("/system");
+  }
+
   return getDomain("/system");
 }
 
@@ -164,7 +208,11 @@ export function getSystemDomain(): string {
  *
  * @returns {string} url
  */
-export function getJobDomain(): string {
+export function getJobDomain(internal = false): string {
+  if (internal) {
+    return getInternalApiPrefix("/job");
+  }
+
   return getDomain("/job");
 }
 
@@ -173,7 +221,11 @@ export function getJobDomain(): string {
  *
  * @returns {string} url
  */
-export function getMarketPriceDomain(): string {
+export function getMarketPriceDomain(internal = false): string {
+  if (internal) {
+    return getInternalApiPrefix("/market-price");
+  }
+
   return getDomain("/market-price");
 }
 
@@ -182,15 +234,34 @@ export function getMarketPriceDomain(): string {
  *
  * @returns {string} url
  */
-export function getTransactionDomain(): string {
+export function getTransactionDomain(internal = false): string {
+  if (internal) {
+    return getInternalApiPrefix("/transaction");
+  }
+
   return getDomain("/transaction");
 }
 
 /**
  * Gets the security domain
  *
+ * @param internal if internal api call, render a different path
  * @returns {string} url
  */
-export function getSecurityDomain(): string {
+export function getSecurityDomain(internal = false): string {
+  if (internal) {
+    return getInternalApiPrefix("/security");
+  }
+
   return getDomain("/security");
+}
+
+/**
+ * Gets the api prefix for internal calls
+ *
+ * @param val url
+ * @returns {string} url
+ */
+export function getInternalApiPrefix(val: string): string {
+  return "/api" + val;
 }

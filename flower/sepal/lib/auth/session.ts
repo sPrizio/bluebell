@@ -4,12 +4,14 @@ export interface SessionData {
   username: string;
   isLoggedIn: boolean;
   token: string;
+  roles: Array<string>;
 }
 
 export const defaultSession: SessionData = {
   username: "",
   isLoggedIn: false,
   token: "",
+  roles: [],
 };
 
 export const sessionOptions: SessionOptions = {

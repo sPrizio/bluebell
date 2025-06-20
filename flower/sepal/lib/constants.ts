@@ -1,4 +1,3 @@
-//  each page has a header section that can contain an icon, this is the icon's size
 import { z } from "zod";
 import { safeConvertEnum } from "@/lib/functions/util-functions";
 import { hasEmail, hasUsername } from "@/lib/functions/account-functions";
@@ -22,6 +21,7 @@ import {
 } from "@/lib/functions/security-functions";
 import { AccountCreationInfo } from "@/types/apiTypes";
 
+//  each page has a header section that can contain an icon, this is the icon's size
 export const DEFAULT_PAGE_HEADER_SECTION_ICON_SIZE = 36;
 
 export const ISO_TIME_REGEX = /^(?:[01]?\d|2[0-3]):[0-5]\d(?::[0-5]\d)?$/;
@@ -38,144 +38,279 @@ export const BASE_COLORS = [
 
 export const ApiCredentials = {
   AuthHeader: "fp-api_token",
+  TestUser: "t.test",
   TestUserToken:
     "Zmxvd2VycG90X2FwaV90b2tlbiZzLnByaXppb0Bob3RtYWlsLmNvbSYyMDI0LTExLTIwVDEzOjU2OjE1",
 };
 
 export const ApiUrls = {
-  Account: {
-    CreateAccount:
-      getAccountDomain() + "/create-account?portfolioNumber={portfolioNumber}",
-    UpdateAccount:
-      getAccountDomain() +
-      "/update-account?portfolioNumber={portfolioNumber}&accountNumber={accountNumber}",
-    DeleteAccount:
-      getAccountDomain() +
-      "/delete-account?portfolioNumber={portfolioNumber}&accountNumber={accountNumber}",
-    GetCurrencies: getAccountDomain() + "/currencies",
-    GetAccountTypes: getAccountDomain() + "/account-types",
-    GetBrokers: getAccountDomain() + "/brokers",
-    GetTradePlatforms: getAccountDomain() + "/trade-platforms",
-    GetDetails:
-      getAccountDomain() + "/get-details?accountNumber={accountNumber}",
+  Internal: {
+    Account: {
+      Create:
+        getAccountDomain(true) + "/create?portfolioNumber={portfolioNumber}",
+      Update:
+        getAccountDomain(true) +
+        "/update?portfolioNumber={portfolioNumber}&accountNumber={accountNumber}",
+      Delete:
+        getAccountDomain(true) +
+        "/delete?portfolioNumber={portfolioNumber}&accountNumber={accountNumber}",
+      Currencies: getAccountDomain(true) + "/currencies",
+      AccountTypes: getAccountDomain(true) + "/account-types",
+      Brokers: getAccountDomain(true) + "/brokers",
+      TradePlatforms: getAccountDomain(true) + "/trade-platforms",
+      Details:
+        getAccountDomain(true) + "/details?accountNumber={accountNumber}",
+    },
+    Analysis: {
+      TimeBuckets:
+        getAnalysisDomain() +
+        "/time-buckets?accountNumber={accountNumber}&filter={filter}&isOpened={isOpened}",
+      TradeDuration:
+        getAnalysisDomain() +
+        "/trade-durations?accountNumber={accountNumber}&filter={filter}&tradeDurationFilter={tradeDurationFilter}",
+      Weekdays:
+        getAnalysisDomain() +
+        "/weekdays?accountNumber={accountNumber}&filter={filter}",
+      WeekdaysTimeBuckets:
+        getAnalysisDomain() +
+        "/weekdays-time-buckets?accountNumber={accountNumber}&weekday={weekday}&filter={filter}",
+    },
+    Charting: {
+      Get:
+        getChartDomain() +
+        "/apex-data?tradeId={tradeId}&accountNumber={accountNumber}&interval={interval}",
+    },
+    Job: {
+      GetJobById: getJobDomain() + "/get-by-id?jobId={jobId}",
+      GetJobsByStatusAndTypePaged:
+        getJobDomain() +
+        "/get-status-type-paged?start={start}&end={end}&jobStatus={jobStatus}&jobType={jobType}&page={page}&pageSize={pageSize}&sort={sort}",
+      GetJobTypes: getJobDomain() + "/get-job-types",
+    },
+    MarketPrice: {
+      GetTimeIntervals: getMarketPriceDomain() + "/time-intervals",
+    },
+    News: {
+      GetNews: getNewsDomain() + "/get-for-interval?start={start}&end={end}",
+      FetchNews: getNewsDomain() + "/fetch-news",
+    },
+    Portfolio: {
+      GetPortfolio:
+        getPortfolioDomain() + "/get?portfolioNumber={portfolioNumber}",
+      CreatePortfolio: getPortfolioDomain() + "/create-portfolio",
+      DeletePortfolio:
+        getPortfolioDomain() +
+        "/delete-portfolio?portfolioNumber={portfolioNumber}",
+      UpdatePortfolio:
+        getPortfolioDomain() +
+        "/update-portfolio?portfolioNumber={portfolioNumber}",
+    },
+    PortfolioRecord: {
+      GetPortfolioRecord:
+        getPortfolioRecordDomain() + "/get?portfolioNumber={portfolioNumber}",
+    },
+    Security: {
+      Login: getSecurityDomain(true) + "/login",
+      Logout: getSecurityDomain(true) + "/logout",
+      Me: getSecurityDomain(true) + "/me",
+    },
+    Symbol: {
+      GetTradedSymbols:
+        getSymbolDomain() + "/get-traded-symbols?accountNumber={accountNumber}",
+    },
+    System: {
+      HealthCheck: getSystemDomain() + "/healthcheck",
+    },
+    Trade: {
+      CreateTrade:
+        getTradeDomain() + "/create-trade?accountNumber={accountNumber}",
+      UpdateTrade:
+        getTradeDomain() +
+        "/update-trade?accountNumber={accountNumber}&tradeId={tradeId}",
+      DeleteTrade:
+        getTradeDomain() +
+        "/delete-trade?accountNumber={accountNumber}&tradeId={tradeId}",
+      GetTradeForTradeId:
+        getTradeDomain() +
+        "/get-for-trade-id?accountNumber={accountNumber}&tradeId={tradeId}",
+      GetPagedTrades:
+        getTradeDomain() +
+        "/get-for-interval-paged?accountNumber={accountNumber}&start={start}&end={end}&page={page}&pageSize={pageSize}&tradeType={tradeType}&symbol={symbol}&sort={sort}",
+      GetInsights:
+        getTradeDomain() +
+        "/get-trade-insights?accountNumber={accountNumber}&tradeId={tradeId}",
+      ImportTrades:
+        getTradeDomain() +
+        "/import-trades?accountNumber={accountNumber}&isStrategy={isStrategy}",
+    },
+    TradeRecord: {
+      GetTradeRecords:
+        getTradeRecordDomain() +
+        "/get-for-interval?accountNumber={accountNumber}&start={start}&end={end}&interval={interval}&count={count}",
+      GetRecentTradeRecords:
+        getTradeRecordDomain() +
+        "/get-recent?accountNumber={accountNumber}&interval={interval}&count={count}",
+      GetTradeLog:
+        getTradeRecordDomain() +
+        "/trade-log?start={start}&end={end}&interval={interval}&count={count}",
+      GetTradeRecordControls:
+        getTradeRecordDomain() +
+        "/get-trade-record-controls?accountNumber={accountNumber}&interval={interval}",
+    },
+    Transaction: {
+      GetPaged:
+        getTransactionDomain() +
+        "/get-for-interval-paged?accountNumber={accountNumber}&start={start}&end={end}&page={page}&pageSize={pageSize}&transactionType={transactionType}&transactionStatus={transactionStatus}&sort={sort}",
+      Create:
+        getTransactionDomain() +
+        "/create-transaction?accountNumber={accountNumber}",
+      Update:
+        getTransactionDomain() +
+        "/update-transaction?accountNumber={accountNumber}&transactionNumber={transactionNumber}",
+      Delete:
+        getTransactionDomain() +
+        "/delete-transaction?accountNumber={accountNumber}&transactionNumber={transactionNumber}",
+    },
+    User: {
+      GetRecentTransactions: getUserDomain() + "/recent-transactions",
+      GetUser: getUserDomain() + "/get?username={username}",
+      UpdateUser: getUserDomain() + "/update?username={username}",
+      RegisterUser: getUserDomain() + "/create",
+    },
   },
-  Analysis: {
-    TimeBuckets:
-      getAnalysisDomain() +
-      "/time-buckets?accountNumber={accountNumber}&filter={filter}&isOpened={isOpened}",
-    TradeDuration:
-      getAnalysisDomain() +
-      "/trade-durations?accountNumber={accountNumber}&filter={filter}&tradeDurationFilter={tradeDurationFilter}",
-    Weekdays:
-      getAnalysisDomain() +
-      "/weekdays?accountNumber={accountNumber}&filter={filter}",
-    WeekdaysTimeBuckets:
-      getAnalysisDomain() +
-      "/weekdays-time-buckets?accountNumber={accountNumber}&weekday={weekday}&filter={filter}",
-  },
-  Charting: {
-    Get:
-      getChartDomain() +
-      "/apex-data?tradeId={tradeId}&accountNumber={accountNumber}&interval={interval}",
-  },
-  Job: {
-    GetJobById: getJobDomain() + "/get-by-id?jobId={jobId}",
-    GetJobsByStatusAndTypePaged:
-      getJobDomain() +
-      "/get-status-type-paged?start={start}&end={end}&jobStatus={jobStatus}&jobType={jobType}&page={page}&pageSize={pageSize}&sort={sort}",
-    GetJobTypes: getJobDomain() + "/get-job-types",
-  },
-  MarketPrice: {
-    GetTimeIntervals: getMarketPriceDomain() + "/time-intervals",
-  },
-  News: {
-    GetNews: getNewsDomain() + "/get-for-interval?start={start}&end={end}",
-    FetchNews: getNewsDomain() + "/fetch-news",
-  },
-  Portfolio: {
-    GetPortfolio:
-      getPortfolioDomain() + "/get?portfolioNumber={portfolioNumber}",
-    CreatePortfolio: getPortfolioDomain() + "/create-portfolio",
-    DeletePortfolio:
-      getPortfolioDomain() +
-      "/delete-portfolio?portfolioNumber={portfolioNumber}",
-    UpdatePortfolio:
-      getPortfolioDomain() +
-      "/update-portfolio?portfolioNumber={portfolioNumber}",
-  },
-  PortfolioRecord: {
-    GetPortfolioRecord:
-      getPortfolioRecordDomain() + "/get?portfolioNumber={portfolioNumber}",
-  },
-  Security: {
-    IsUserTaken: getSecurityDomain() + "/is-taken",
-    Login: getSecurityDomain() + "/login",
-    InternalLogin: "/api/login",
-    InternalLogout: "/api/logout",
-    Me: "/api/me",
-  },
-  Symbol: {
-    GetTradedSymbols:
-      getSymbolDomain() + "/get-traded-symbols?accountNumber={accountNumber}",
-  },
-  System: {
-    HealthCheck: getSystemDomain() + "/healthcheck",
-  },
-  Trade: {
-    CreateTrade:
-      getTradeDomain() + "/create-trade?accountNumber={accountNumber}",
-    UpdateTrade:
-      getTradeDomain() +
-      "/update-trade?accountNumber={accountNumber}&tradeId={tradeId}",
-    DeleteTrade:
-      getTradeDomain() +
-      "/delete-trade?accountNumber={accountNumber}&tradeId={tradeId}",
-    GetTradeForTradeId:
-      getTradeDomain() +
-      "/get-for-trade-id?accountNumber={accountNumber}&tradeId={tradeId}",
-    GetPagedTrades:
-      getTradeDomain() +
-      "/get-for-interval-paged?accountNumber={accountNumber}&start={start}&end={end}&page={page}&pageSize={pageSize}&tradeType={tradeType}&symbol={symbol}&sort={sort}",
-    GetInsights:
-      getTradeDomain() +
-      "/get-trade-insights?accountNumber={accountNumber}&tradeId={tradeId}",
-    ImportTrades:
-      getTradeDomain() +
-      "/import-trades?accountNumber={accountNumber}&isStrategy={isStrategy}",
-  },
-  TradeRecord: {
-    GetTradeRecords:
-      getTradeRecordDomain() +
-      "/get-for-interval?accountNumber={accountNumber}&start={start}&end={end}&interval={interval}&count={count}",
-    GetRecentTradeRecords:
-      getTradeRecordDomain() +
-      "/get-recent?accountNumber={accountNumber}&interval={interval}&count={count}",
-    GetTradeLog:
-      getTradeRecordDomain() +
-      "/trade-log?start={start}&end={end}&interval={interval}&count={count}",
-    GetTradeRecordControls:
-      getTradeRecordDomain() +
-      "/get-trade-record-controls?accountNumber={accountNumber}&interval={interval}",
-  },
-  Transaction: {
-    GetPaged:
-      getTransactionDomain() +
-      "/get-for-interval-paged?accountNumber={accountNumber}&start={start}&end={end}&page={page}&pageSize={pageSize}&transactionType={transactionType}&transactionStatus={transactionStatus}&sort={sort}",
-    Create:
-      getTransactionDomain() +
-      "/create-transaction?accountNumber={accountNumber}",
-    Update:
-      getTransactionDomain() +
-      "/update-transaction?accountNumber={accountNumber}&transactionNumber={transactionNumber}",
-    Delete:
-      getTransactionDomain() +
-      "/delete-transaction?accountNumber={accountNumber}&transactionNumber={transactionNumber}",
-  },
-  User: {
-    GetRecentTransactions: getUserDomain() + "/recent-transactions",
-    GetUser: getUserDomain() + "/get?username={username}",
-    UpdateUser: getUserDomain() + "/update?username={username}",
-    RegisterUser: getUserDomain() + "/create",
+  External: {
+    Account: {
+      CreateAccount:
+        getAccountDomain() +
+        "/create-account?portfolioNumber={portfolioNumber}",
+      UpdateAccount:
+        getAccountDomain() +
+        "/update-account?portfolioNumber={portfolioNumber}&accountNumber={accountNumber}",
+      DeleteAccount:
+        getAccountDomain() +
+        "/delete-account?portfolioNumber={portfolioNumber}&accountNumber={accountNumber}",
+      GetCurrencies: getAccountDomain() + "/currencies",
+      GetAccountTypes: getAccountDomain() + "/account-types",
+      GetBrokers: getAccountDomain() + "/brokers",
+      GetTradePlatforms: getAccountDomain() + "/trade-platforms",
+      GetDetails:
+        getAccountDomain() + "/get-details?accountNumber={accountNumber}",
+    },
+    Analysis: {
+      TimeBuckets:
+        getAnalysisDomain() +
+        "/time-buckets?accountNumber={accountNumber}&filter={filter}&isOpened={isOpened}",
+      TradeDuration:
+        getAnalysisDomain() +
+        "/trade-durations?accountNumber={accountNumber}&filter={filter}&tradeDurationFilter={tradeDurationFilter}",
+      Weekdays:
+        getAnalysisDomain() +
+        "/weekdays?accountNumber={accountNumber}&filter={filter}",
+      WeekdaysTimeBuckets:
+        getAnalysisDomain() +
+        "/weekdays-time-buckets?accountNumber={accountNumber}&weekday={weekday}&filter={filter}",
+    },
+    Charting: {
+      Get:
+        getChartDomain() +
+        "/apex-data?tradeId={tradeId}&accountNumber={accountNumber}&interval={interval}",
+    },
+    Job: {
+      GetJobById: getJobDomain() + "/get-by-id?jobId={jobId}",
+      GetJobsByStatusAndTypePaged:
+        getJobDomain() +
+        "/get-status-type-paged?start={start}&end={end}&jobStatus={jobStatus}&jobType={jobType}&page={page}&pageSize={pageSize}&sort={sort}",
+      GetJobTypes: getJobDomain() + "/get-job-types",
+    },
+    MarketPrice: {
+      GetTimeIntervals: getMarketPriceDomain() + "/time-intervals",
+    },
+    News: {
+      GetNews: getNewsDomain() + "/get-for-interval?start={start}&end={end}",
+      FetchNews: getNewsDomain() + "/fetch-news",
+    },
+    Portfolio: {
+      GetPortfolio:
+        getPortfolioDomain() + "/get?portfolioNumber={portfolioNumber}",
+      CreatePortfolio: getPortfolioDomain() + "/create-portfolio",
+      DeletePortfolio:
+        getPortfolioDomain() +
+        "/delete-portfolio?portfolioNumber={portfolioNumber}",
+      UpdatePortfolio:
+        getPortfolioDomain() +
+        "/update-portfolio?portfolioNumber={portfolioNumber}",
+    },
+    PortfolioRecord: {
+      GetPortfolioRecord:
+        getPortfolioRecordDomain() + "/get?portfolioNumber={portfolioNumber}",
+    },
+    Security: {
+      IsUserTaken: getSecurityDomain() + "/is-taken",
+      Login: getSecurityDomain() + "/login",
+    },
+    Symbol: {
+      GetTradedSymbols:
+        getSymbolDomain() + "/get-traded-symbols?accountNumber={accountNumber}",
+    },
+    System: {
+      HealthCheck: getSystemDomain() + "/healthcheck",
+    },
+    Trade: {
+      CreateTrade:
+        getTradeDomain() + "/create-trade?accountNumber={accountNumber}",
+      UpdateTrade:
+        getTradeDomain() +
+        "/update-trade?accountNumber={accountNumber}&tradeId={tradeId}",
+      DeleteTrade:
+        getTradeDomain() +
+        "/delete-trade?accountNumber={accountNumber}&tradeId={tradeId}",
+      GetTradeForTradeId:
+        getTradeDomain() +
+        "/get-for-trade-id?accountNumber={accountNumber}&tradeId={tradeId}",
+      GetPagedTrades:
+        getTradeDomain() +
+        "/get-for-interval-paged?accountNumber={accountNumber}&start={start}&end={end}&page={page}&pageSize={pageSize}&tradeType={tradeType}&symbol={symbol}&sort={sort}",
+      GetInsights:
+        getTradeDomain() +
+        "/get-trade-insights?accountNumber={accountNumber}&tradeId={tradeId}",
+      ImportTrades:
+        getTradeDomain() +
+        "/import-trades?accountNumber={accountNumber}&isStrategy={isStrategy}",
+    },
+    TradeRecord: {
+      GetTradeRecords:
+        getTradeRecordDomain() +
+        "/get-for-interval?accountNumber={accountNumber}&start={start}&end={end}&interval={interval}&count={count}",
+      GetRecentTradeRecords:
+        getTradeRecordDomain() +
+        "/get-recent?accountNumber={accountNumber}&interval={interval}&count={count}",
+      GetTradeLog:
+        getTradeRecordDomain() +
+        "/trade-log?start={start}&end={end}&interval={interval}&count={count}",
+      GetTradeRecordControls:
+        getTradeRecordDomain() +
+        "/get-trade-record-controls?accountNumber={accountNumber}&interval={interval}",
+    },
+    Transaction: {
+      GetPaged:
+        getTransactionDomain() +
+        "/get-for-interval-paged?accountNumber={accountNumber}&start={start}&end={end}&page={page}&pageSize={pageSize}&transactionType={transactionType}&transactionStatus={transactionStatus}&sort={sort}",
+      Create:
+        getTransactionDomain() +
+        "/create-transaction?accountNumber={accountNumber}",
+      Update:
+        getTransactionDomain() +
+        "/update-transaction?accountNumber={accountNumber}&transactionNumber={transactionNumber}",
+      Delete:
+        getTransactionDomain() +
+        "/delete-transaction?accountNumber={accountNumber}&transactionNumber={transactionNumber}",
+    },
+    User: {
+      GetRecentTransactions: getUserDomain() + "/recent-transactions",
+      GetUser: getUserDomain() + "/get?username={username}",
+      UpdateUser: getUserDomain() + "/update?username={username}",
+      RegisterUser: getUserDomain() + "/create",
+    },
   },
 };
 
