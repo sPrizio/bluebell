@@ -9,7 +9,7 @@ import java.util.List;
  * Constants defined for the bluebell platform
  *
  * @author Stephen Prizio
- * @version 0.2.4
+ * @version 0.2.6
  */
 public class CorePlatformConstants {
 
@@ -205,6 +205,10 @@ public class CorePlatformConstants {
             }
 
             public static final String API_TOKEN_CANNOT_BE_NULL = "apiToken cannot be null";
+
+            public static final String USERNAME_EMAIL_CANNOT_BE_NULL = "Username/Email comparison string cannot be empty";
+
+            public static final String PASSWORD_CANNOT_BE_NULL = "password cannot be null";
 
             public static class User {
 

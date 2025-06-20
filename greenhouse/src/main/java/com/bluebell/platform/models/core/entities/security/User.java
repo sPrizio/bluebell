@@ -3,15 +3,14 @@ package com.bluebell.platform.models.core.entities.security;
 import com.bluebell.platform.enums.security.UserRole;
 import com.bluebell.platform.models.core.entities.GenericEntity;
 import com.bluebell.platform.models.core.entities.portfolio.Portfolio;
+import com.bluebell.platform.services.PasswordService;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 import org.apache.commons.collections4.CollectionUtils;
 
-import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Base64;
 import java.util.Collections;
 import java.util.List;
 
@@ -19,7 +18,7 @@ import java.util.List;
  * Class representation of an individual that can interact with the system, hold accounts and other information
  *
  * @author Stephen Prizio
- * @version 0.2.4
+ * @version 0.2.6
  */
 @Getter
 @Entity
@@ -74,12 +73,21 @@ public class User implements GenericEntity {
     //  METHODS
 
     /**
+     * Reads a secured password
+     *
+     * @return plain-text password
+     */
+    public String getPassword() {
+        return new PasswordService().readPassword(this.password);
+    }
+
+    /**
      * Sets a secured password
      *
      * @param password password
      */
-    public void setPassword(String password) {
-        this.password = new String(Base64.getEncoder().encode(password.getBytes(StandardCharsets.UTF_8)));
+    public void setPassword(final String password) {
+        this.password = new PasswordService().encryptPassword(password);
     }
 
     /**
