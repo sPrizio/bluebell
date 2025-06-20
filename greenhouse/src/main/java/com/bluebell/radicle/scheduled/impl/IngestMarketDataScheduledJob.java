@@ -23,6 +23,7 @@ import org.springframework.stereotype.Component;
 
 import java.io.File;
 import java.time.LocalDateTime;
+import java.util.Arrays;
 import java.util.Set;
 import java.util.TreeSet;
 
@@ -65,6 +66,7 @@ public class IngestMarketDataScheduledJob extends AbstractScheduledJob implement
             if (dataSourceDirectory.exists() && dataSourceDirectory.isDirectory()) {
                 final File[] symbols = dataSourceDirectory.listFiles();
                 if (symbols != null) {
+                    LOGGER.info("Symbols {} detected for data source {} in directory {}", Arrays.stream(symbols).map(File::getName).toList(), dataSource.getLabel(), dataSourceDirectory.getAbsolutePath());
                     for (final File symbol : symbols) {
                         final IngestMarketDataActionPerformable actionPerformable = this.applicationContext.getBean(IngestMarketDataActionPerformable.class);
                         actionPerformable.setDataSource(dataSource);

@@ -119,11 +119,11 @@ export function getMenuList(pathname: string): Group[] {
           label: "My Profile",
           icon: CircleUserRound,
         },
-        {
+        /*{
           href: "/logout",
           label: "Sign Out",
           icon: LogOut,
-        },
+        },*/
       ],
     },
   ];

@@ -1,6 +1,6 @@
 # greenhouse
 
-Current Iteration: **0.2.4**\
+Current Iteration: **0.2.6**\
 Current Release: **Pre-release**
 
 ---

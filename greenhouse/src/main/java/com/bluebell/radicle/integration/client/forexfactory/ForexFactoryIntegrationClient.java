@@ -1,5 +1,6 @@
 package com.bluebell.radicle.integration.client.forexfactory;
 
+import com.bluebell.radicle.integration.client.AbstractClient;
 import com.bluebell.radicle.integration.client.GetClient;
 import com.bluebell.radicle.integration.client.IntegrationClient;
 import lombok.NonNull;
@@ -13,10 +14,10 @@ import static com.bluebell.radicle.validation.GenericValidator.validateParameter
  * Web client that interfaces with the forex factor API
  *
  * @author Stephen Prizio
- * @version 0.1.1
+ * @version 0.2.5
  */
 @Component("forexFactoryIntegrationClient")
-public class ForexFactoryIntegrationClient implements IntegrationClient, GetClient {
+public class ForexFactoryIntegrationClient extends AbstractClient implements IntegrationClient, GetClient {
 
 
     //  METHODS

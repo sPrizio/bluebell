@@ -9,13 +9,14 @@ import com.bluebell.platform.models.core.nonentities.data.EnumDisplay;
 import jakarta.annotation.Resource;
 import org.springframework.stereotype.Component;
 
+import java.time.temporal.ChronoUnit;
 import java.util.TreeSet;
 
 /**
  * Converts {@link Job}s  into {@link JobDTO}s
  *
  * @author Stephen Prizio
- * @version 0.2.4
+ * @version 0.2.6
  */
 @Component("jobDTOConverter")
 public class JobDTOConverter implements GenericDTOConverter<Job, JobDTO> {
@@ -39,6 +40,11 @@ public class JobDTOConverter implements GenericDTOConverter<Job, JobDTO> {
             return JobDTO.builder().build();
         }
 
+        long timeElapsed = -1;
+        if (entity.getExecutionTime() != null && entity.getCompletionTime() != null) {
+            timeElapsed = ChronoUnit.SECONDS.between(entity.getExecutionTime(), entity.getCompletionTime());
+        }
+
         return JobDTO
                 .builder()
                 .uid(this.uniqueIdentifierService.generateUid(entity))
@@ -52,6 +58,7 @@ public class JobDTOConverter implements GenericDTOConverter<Job, JobDTO> {
                 .type(EnumDisplay.builder().code(entity.getType().getCode()).label(entity.getType().getLabel()).build())
                 .actions(new TreeSet<>(this.actionDTOConverter.convertAll(entity.getActions())))
                 .jobResult(this.jobResultDTOConverter.convert(entity.getJobResult()))
+                .timeElapsed(timeElapsed)
                 .build();
     }
 }

@@ -371,6 +371,7 @@ interface Job extends GenericApiType {
   type: EnumDisplay;
   actions: Array<Action>;
   jobResult: JobResult;
+  timeElapsed: number;
 }
 
 interface PagedJobs {
