@@ -1,8 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import { Ellipsis } from "lucide-react";
-import { usePathname } from "next/navigation";
+import { Ellipsis, Icon, Loader2 } from "lucide-react";
+import { redirect, usePathname } from "next/navigation";
 
 import { cn } from "@/lib/utils";
 import { getMenuList } from "@/lib/menu-list";
@@ -18,6 +18,10 @@ import { useHealthCheckQuery } from "@/lib/hooks/query/queries";
 import LoadingPage from "@/app/loading";
 import { logErrors } from "@/lib/functions/util-functions";
 import Error from "@/app/error";
+import { resolveIcon } from "@/lib/functions/util-component-functions";
+import { Icons } from "@/lib/enums";
+import { useLogoutMutation } from "@/lib/hooks/query/mutations";
+import React, { useEffect } from "react";
 
 interface MenuProps {
   isOpen: boolean | undefined;
@@ -28,18 +32,31 @@ interface MenuProps {
  *
  * @param isOpen is open or closed
  * @author Stephen Prizio
- * @version 0.2.5
+ * @version 0.2.6
  */
 export function Menu({ isOpen }: Readonly<MenuProps>) {
+  const {
+    mutate: logout,
+    isError: isLogoutError,
+    isPending: isLogoutLoading,
+    error: logoutError,
+    isSuccess: isLogoutSuccess,
+  } = useLogoutMutation();
   const pathname = usePathname();
   const menuList = getMenuList(pathname);
   const { data, isError, isLoading, error } = useHealthCheckQuery();
   const footerItemStyles = "w-full text-center text-sm text-foreground";
   const showBuildVersion = process.env.ENABLE_BUILD_VERSION === "true";
 
+  useEffect(() => {
+    if (isLogoutSuccess) {
+      redirect("/login");
+    }
+  }, [isLogoutSuccess]);
+
   function matchHref(val: string, href: string) {
     if (href.includes("?")) {
-      return pathname.startsWith(href.substr(0, href.indexOf("?")));
+      return pathname.startsWith(href.substring(0, href.indexOf("?")));
     }
 
     return pathname.startsWith(href);
@@ -70,8 +87,8 @@ export function Menu({ isOpen }: Readonly<MenuProps>) {
     return <LoadingPage />;
   }
 
-  if (isError) {
-    logErrors(error);
+  if (isError || isLogoutError) {
+    logErrors(error, logoutError);
     return <Error />;
   }
 
@@ -152,6 +169,45 @@ export function Menu({ isOpen }: Readonly<MenuProps>) {
               )}
             </li>
           ))}
+          <li className={"w-full"}>
+            <div className="w-full">
+              <TooltipProvider disableHoverableContent>
+                <Tooltip delayDuration={100}>
+                  <TooltipTrigger asChild>
+                    <Button
+                      variant={"ghost"}
+                      className="w-full justify-start h-10 mb-1"
+                      asChild
+                      onClick={() => logout()}
+                    >
+                      <Link href={"/"}>
+                        <span className={cn(isOpen === false ? "" : "mr-4")}>
+                          {isLogoutLoading ? (
+                            <Loader2 className="animate-spin" size={18} />
+                          ) : (
+                            resolveIcon(Icons.Logout, "rotate-180", 18)
+                          )}
+                        </span>
+                        <p
+                          className={cn(
+                            "max-w-[200px] truncate",
+                            isOpen === false
+                              ? "-translate-x-96 opacity-0"
+                              : "translate-x-0 opacity-100",
+                          )}
+                        >
+                          {isLogoutLoading ? "Signing out" : "Sign Out"}
+                        </p>
+                      </Link>
+                    </Button>
+                  </TooltipTrigger>
+                  {isOpen === false && (
+                    <TooltipContent side="right">{"Sign out"}</TooltipContent>
+                  )}
+                </Tooltip>
+              </TooltipProvider>
+            </div>
+          </li>
         </ul>
       </div>
       <div

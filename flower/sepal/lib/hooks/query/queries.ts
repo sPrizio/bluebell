@@ -1,5 +1,6 @@
 import { keepPreviousData, useQuery } from "@tanstack/react-query";
 import { ApiUrls, DateTime } from "../../constants";
+import { useRouter } from "next/navigation";
 import moment from "moment";
 import {
   Account,
@@ -33,14 +34,18 @@ import { get } from "../../functions/client";
 import { SessionData } from "@/lib/auth/session";
 
 export const useSessionQuery = () => {
+  const router = useRouter();
+
   return useQuery<SessionData>({
     queryKey: ["session"],
     queryFn: () =>
       fetch(ApiUrls.Internal.Security.Me).then((res) => {
-        if (!res.ok) {
-          console.log(res);
+        if (res.status === 401) {
+          router.push("/login");
+        } else if (!res.ok) {
           throw new Error("Not authenticated");
         }
+
         return res.json();
       }),
     retry: false,

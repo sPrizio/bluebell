@@ -119,8 +119,6 @@ export default function DashboardPage() {
     breadcrumbs: [{ label: "Dashboard", href: "/dashboard", active: true }],
   };
 
-  console.log(user);
-  console.log(activePortfolio);
   return (
     <PageInfoProvider value={pageInfo}>
       <div>
