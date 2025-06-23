@@ -43,7 +43,7 @@ public class UserRunner extends AbstractRunner implements CommandLineRunner, Ord
 
         User user = User
                 .builder()
-                .apiToken("Zmxvd2VycG90X2FwaV90b2tlbiZzLnByaXppb0Bob3RtYWlsLmNvbSYyMDI0LTExLTIwVDEzOjU2OjE1")
+                .apiToken("Zmxvd2VycG90X2FwaV90b2tlbiZ0ZXN0LnVzZXJAYmx1ZWJlbGwuY29tJjIwMjQtMTEtMjBUMTM6NTY6MTU=")
                 .dateRegistered(LocalDateTime.of(2024, 11, 20, 13, 56, 15))
                 .email("test.user@bluebell.com")
                 .firstName("Test")
