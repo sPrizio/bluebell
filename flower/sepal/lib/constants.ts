@@ -40,8 +40,10 @@ export const ApiCredentials = {
   AuthHeader: "fp-api_token",
   TestUser: "t.test",
   TestUserToken:
-    "Zmxvd2VycG90X2FwaV90b2tlbiZzLnByaXppb0Bob3RtYWlsLmNvbSYyMDI0LTExLTIwVDEzOjU2OjE1",
+    "Zmxvd2VycG90X2FwaV90b2tlbiZ0ZXN0LnVzZXJAYmx1ZWJlbGwuY29tJjIwMjQtMTEtMjBUMTM6NTY6MTU=",
 };
+
+export const AUTH_ENABLED = process.env.AUTH_ENABLED === "true";
 
 export const ApiUrls = {
   Internal: {

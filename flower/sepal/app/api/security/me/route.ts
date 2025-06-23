@@ -1,12 +1,36 @@
 import { NextRequest, NextResponse } from "next/server";
-import { ApiUrls } from "@/lib/constants";
+import { ApiCredentials, ApiUrls, AUTH_ENABLED } from "@/lib/constants";
 import { getIronSession } from "iron-session";
 import { SessionData, sessionOptions } from "@/lib/auth/session";
 import { ApiResponse, User } from "@/types/apiTypes";
 
 export async function GET(req: NextRequest, options: RequestInit = {}) {
-  const res = NextResponse.next();
+  const res = new NextResponse();
   const session = await getIronSession<SessionData>(req, res, sessionOptions);
+
+  if (!AUTH_ENABLED) {
+    const mockSession: SessionData = {
+      token: ApiCredentials.TestUserToken,
+      username: ApiCredentials.TestUser,
+      isLoggedIn: true,
+      roles: ["TRADER", "ADMINISTRATOR", "SYSTEM"],
+    };
+
+    session.token = ApiCredentials.TestUserToken;
+    session.username = ApiCredentials.TestUser;
+    session.isLoggedIn = true;
+    session.roles = ["TRADER", "ADMINISTRATOR", "SYSTEM"];
+
+    await session.save();
+
+    return new NextResponse(JSON.stringify(mockSession), {
+      status: 200,
+      headers: {
+        "Content-Type": "application/json",
+        ...Object.fromEntries(res.headers),
+      },
+    });
+  }
 
   if (!session?.token || !session?.username) {
     return NextResponse.json(

@@ -1,7 +1,6 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { redirect } from "next/navigation";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -17,6 +16,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import {
+  AUTH_ENABLED,
   CRUDUserSchema,
   ForgotPasswordSchema,
   LoginSchema,
@@ -33,6 +33,7 @@ import {
   useIsUserTakenMutation,
   useLoginMutation,
 } from "@/lib/hooks/query/mutations";
+import { useRouter } from "next/navigation";
 
 /**
  * Renders the login page
@@ -42,6 +43,7 @@ import {
  */
 export default function Login() {
   const { toast } = useToast();
+  const router = useRouter();
   const [success, setSuccess] = useState<"success" | "failed" | "undefined">(
     "undefined",
   );
@@ -99,11 +101,7 @@ export default function Login() {
 
   useEffect(() => {
     if (hasLoggedIn) {
-      //  TODO: before feature flagging, ensure that we have a "super user" or "test user" api token
-      //  TODO: this token will return the test data, like we've been using for development
-      //  TODO: rename the test data runner to remove my name and make it generic test naming
-
-      redirect("/dashboard");
+      router.push("/dashboard");
     } else if (couldNotLogIn) {
       logErrors(loginError);
       toast({
@@ -221,6 +219,10 @@ export default function Login() {
   }
 
   //  RENDER
+
+  if (!AUTH_ENABLED) {
+    router.replace("/dashboard");
+  }
 
   return (
     <div className={"h-[100vh] flex items-center justify-center w-full"}>

@@ -22,6 +22,7 @@ import { resolveIcon } from "@/lib/functions/util-component-functions";
 import { Icons } from "@/lib/enums";
 import { useLogoutMutation } from "@/lib/hooks/query/mutations";
 import React, { useEffect } from "react";
+import { AUTH_ENABLED } from "@/lib/constants";
 
 interface MenuProps {
   isOpen: boolean | undefined;
@@ -169,45 +170,47 @@ export function Menu({ isOpen }: Readonly<MenuProps>) {
               )}
             </li>
           ))}
-          <li className={"w-full"}>
-            <div className="w-full">
-              <TooltipProvider disableHoverableContent>
-                <Tooltip delayDuration={100}>
-                  <TooltipTrigger asChild>
-                    <Button
-                      variant={"ghost"}
-                      className="w-full justify-start h-10 mb-1"
-                      asChild
-                      onClick={() => logout()}
-                    >
-                      <Link href={"/"}>
-                        <span className={cn(isOpen === false ? "" : "mr-4")}>
-                          {isLogoutLoading ? (
-                            <Loader2 className="animate-spin" size={18} />
-                          ) : (
-                            resolveIcon(Icons.Logout, "rotate-180", 18)
-                          )}
-                        </span>
-                        <p
-                          className={cn(
-                            "max-w-[200px] truncate",
-                            isOpen === false
-                              ? "-translate-x-96 opacity-0"
-                              : "translate-x-0 opacity-100",
-                          )}
-                        >
-                          {isLogoutLoading ? "Signing out" : "Sign Out"}
-                        </p>
-                      </Link>
-                    </Button>
-                  </TooltipTrigger>
-                  {isOpen === false && (
-                    <TooltipContent side="right">{"Sign out"}</TooltipContent>
-                  )}
-                </Tooltip>
-              </TooltipProvider>
-            </div>
-          </li>
+          {AUTH_ENABLED && (
+            <li className={"w-full"}>
+              <div className="w-full">
+                <TooltipProvider disableHoverableContent>
+                  <Tooltip delayDuration={100}>
+                    <TooltipTrigger asChild>
+                      <Button
+                        variant={"ghost"}
+                        className="w-full justify-start h-10 mb-1"
+                        asChild
+                        onClick={() => logout()}
+                      >
+                        <Link href={"/"}>
+                          <span className={cn(isOpen === false ? "" : "mr-4")}>
+                            {isLogoutLoading ? (
+                              <Loader2 className="animate-spin" size={18} />
+                            ) : (
+                              resolveIcon(Icons.Logout, "rotate-180", 18)
+                            )}
+                          </span>
+                          <p
+                            className={cn(
+                              "max-w-[200px] truncate",
+                              isOpen === false
+                                ? "-translate-x-96 opacity-0"
+                                : "translate-x-0 opacity-100",
+                            )}
+                          >
+                            {isLogoutLoading ? "Signing out" : "Sign Out"}
+                          </p>
+                        </Link>
+                      </Button>
+                    </TooltipTrigger>
+                    {isOpen === false && (
+                      <TooltipContent side="right">{"Sign out"}</TooltipContent>
+                    )}
+                  </Tooltip>
+                </TooltipProvider>
+              </div>
+            </li>
+          )}
         </ul>
       </div>
       <div

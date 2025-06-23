@@ -6,7 +6,6 @@ import {
   ChartScatter,
   CircleUserRound,
   LayoutDashboard,
-  LogOut,
   LucideIcon,
   Newspaper,
   ReplaceAll,

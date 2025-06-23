@@ -1,6 +1,6 @@
 "use client";
 
-import { Sidebar } from "@/components/ui/admin-panel/sidebar";
+import { SepalSidebar } from "@/components/ui/admin-panel/sepalSidebar";
 import { useSidebar } from "@/lib/hooks/ui/use-sidebar";
 import { useStore } from "@/lib/hooks/ui/use-store";
 import { cn } from "@/lib/utils";
@@ -27,7 +27,7 @@ export default function AdminPanelLayout({
 
   return (
     <>
-      <Sidebar />
+      <SepalSidebar />
       <main
         className={cn(
           "min-h-[calc(95vh_-_56px)] bg-[#f6f8fb] transition-[margin-left] ease-in-out duration-300",

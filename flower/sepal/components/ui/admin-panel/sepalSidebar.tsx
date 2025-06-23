@@ -8,7 +8,13 @@ import { cn } from "@/lib/utils";
 import MainLogo from "@/components/Navigation/MainLogo";
 import MobileLogo from "@/components/Navigation/MobileLogo";
 
-export function Sidebar() {
+/**
+ * Renders the side bar for sepal logos
+ *
+ * @author Stephen Prizio
+ * @version 0.2.6
+ */
+export function SepalSidebar() {
   const sidebar = useStore(useSidebar, (x) => x);
   if (!sidebar) return null;
   const { isOpen, toggleOpen, getOpenState, setIsHover, settings } = sidebar;
