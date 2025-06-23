@@ -33,7 +33,6 @@ import {
   useIsUserTakenMutation,
   useLoginMutation,
 } from "@/lib/hooks/query/mutations";
-import { useSessionQuery } from "@/lib/hooks/query/queries";
 
 /**
  * Renders the login page
@@ -96,14 +95,7 @@ export default function Login() {
     error: takenError,
   } = useIsUserTakenMutation();
 
-  const {
-    data: session,
-    isLoading: isSessionLoading,
-    isError: isSessionError,
-    error: sessionError,
-  } = useSessionQuery();
-
-  const isLoading = isLoggingIn || isTakenPending || isSessionLoading;
+  const isLoading = isLoggingIn || isTakenPending;
 
   useEffect(() => {
     if (hasLoggedIn) {

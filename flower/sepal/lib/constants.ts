@@ -63,51 +63,52 @@ export const ApiUrls = {
     },
     Analysis: {
       TimeBuckets:
-        getAnalysisDomain() +
+        getAnalysisDomain(true) +
         "/time-buckets?accountNumber={accountNumber}&filter={filter}&isOpened={isOpened}",
       TradeDuration:
-        getAnalysisDomain() +
+        getAnalysisDomain(true) +
         "/trade-durations?accountNumber={accountNumber}&filter={filter}&tradeDurationFilter={tradeDurationFilter}",
       Weekdays:
-        getAnalysisDomain() +
+        getAnalysisDomain(true) +
         "/weekdays?accountNumber={accountNumber}&filter={filter}",
       WeekdaysTimeBuckets:
-        getAnalysisDomain() +
+        getAnalysisDomain(true) +
         "/weekdays-time-buckets?accountNumber={accountNumber}&weekday={weekday}&filter={filter}",
     },
     Charting: {
-      Get:
-        getChartDomain() +
+      Apex:
+        getChartDomain(true) +
         "/apex-data?tradeId={tradeId}&accountNumber={accountNumber}&interval={interval}",
     },
     Job: {
-      GetJobById: getJobDomain() + "/get-by-id?jobId={jobId}",
-      GetJobsByStatusAndTypePaged:
-        getJobDomain() +
+      ById: getJobDomain(true) + "/get-by-id?jobId={jobId}",
+      ByStatusAndTypePaged:
+        getJobDomain(true) +
         "/get-status-type-paged?start={start}&end={end}&jobStatus={jobStatus}&jobType={jobType}&page={page}&pageSize={pageSize}&sort={sort}",
-      GetJobTypes: getJobDomain() + "/get-job-types",
+      Types: getJobDomain(true) + "/get-job-types",
     },
     MarketPrice: {
-      GetTimeIntervals: getMarketPriceDomain() + "/time-intervals",
+      TimeIntervals: getMarketPriceDomain(true) + "/time-intervals",
     },
     News: {
-      GetNews: getNewsDomain() + "/get-for-interval?start={start}&end={end}",
-      FetchNews: getNewsDomain() + "/fetch-news",
+      GetByInterval:
+        getNewsDomain(true) + "/get-for-interval?start={start}&end={end}",
+      FetchUpdate: getNewsDomain(true) + "/fetch-news",
     },
     Portfolio: {
-      GetPortfolio:
-        getPortfolioDomain() + "/get?portfolioNumber={portfolioNumber}",
-      CreatePortfolio: getPortfolioDomain() + "/create-portfolio",
-      DeletePortfolio:
-        getPortfolioDomain() +
-        "/delete-portfolio?portfolioNumber={portfolioNumber}",
-      UpdatePortfolio:
-        getPortfolioDomain() +
-        "/update-portfolio?portfolioNumber={portfolioNumber}",
+      Get:
+        getPortfolioDomain(true) +
+        "/get-portfolio?portfolioNumber={portfolioNumber}",
+      Create: getPortfolioDomain(true) + "/create",
+      Delete:
+        getPortfolioDomain(true) + "/delete?portfolioNumber={portfolioNumber}",
+      Update:
+        getPortfolioDomain(true) + "/update?portfolioNumber={portfolioNumber}",
     },
     PortfolioRecord: {
-      GetPortfolioRecord:
-        getPortfolioRecordDomain() + "/get?portfolioNumber={portfolioNumber}",
+      Get:
+        getPortfolioRecordDomain(true) +
+        "/get-portfolio-record?portfolioNumber={portfolioNumber}",
     },
     Security: {
       Login: getSecurityDomain(true) + "/login",
@@ -115,67 +116,65 @@ export const ApiUrls = {
       Me: getSecurityDomain(true) + "/me",
     },
     Symbol: {
-      GetTradedSymbols:
-        getSymbolDomain() + "/get-traded-symbols?accountNumber={accountNumber}",
+      GetTraded:
+        getSymbolDomain(true) + "/get-traded?accountNumber={accountNumber}",
     },
     System: {
-      HealthCheck: getSystemDomain() + "/healthcheck",
+      HealthCheck: getSystemDomain(true) + "/healthcheck",
     },
     Trade: {
-      CreateTrade:
-        getTradeDomain() + "/create-trade?accountNumber={accountNumber}",
-      UpdateTrade:
-        getTradeDomain() +
-        "/update-trade?accountNumber={accountNumber}&tradeId={tradeId}",
-      DeleteTrade:
-        getTradeDomain() +
-        "/delete-trade?accountNumber={accountNumber}&tradeId={tradeId}",
-      GetTradeForTradeId:
-        getTradeDomain() +
+      Create: getTradeDomain(true) + "/create?accountNumber={accountNumber}",
+      Update:
+        getTradeDomain(true) +
+        "/update?accountNumber={accountNumber}&tradeId={tradeId}",
+      Delete:
+        getTradeDomain(true) +
+        "/delete?accountNumber={accountNumber}&tradeId={tradeId}",
+      GetForTradeId:
+        getTradeDomain(true) +
         "/get-for-trade-id?accountNumber={accountNumber}&tradeId={tradeId}",
-      GetPagedTrades:
-        getTradeDomain() +
+      GetForIntervalPaged:
+        getTradeDomain(true) +
         "/get-for-interval-paged?accountNumber={accountNumber}&start={start}&end={end}&page={page}&pageSize={pageSize}&tradeType={tradeType}&symbol={symbol}&sort={sort}",
       GetInsights:
-        getTradeDomain() +
-        "/get-trade-insights?accountNumber={accountNumber}&tradeId={tradeId}",
-      ImportTrades:
-        getTradeDomain() +
-        "/import-trades?accountNumber={accountNumber}&isStrategy={isStrategy}",
+        getTradeDomain(true) +
+        "/get-insights?accountNumber={accountNumber}&tradeId={tradeId}",
+      Import:
+        getTradeDomain(true) +
+        "/import?accountNumber={accountNumber}&isStrategy={isStrategy}",
     },
     TradeRecord: {
-      GetTradeRecords:
-        getTradeRecordDomain() +
+      GetForInterval:
+        getTradeRecordDomain(true) +
         "/get-for-interval?accountNumber={accountNumber}&start={start}&end={end}&interval={interval}&count={count}",
-      GetRecentTradeRecords:
-        getTradeRecordDomain() +
+      GetRecent:
+        getTradeRecordDomain(true) +
         "/get-recent?accountNumber={accountNumber}&interval={interval}&count={count}",
       GetTradeLog:
-        getTradeRecordDomain() +
+        getTradeRecordDomain(true) +
         "/trade-log?start={start}&end={end}&interval={interval}&count={count}",
-      GetTradeRecordControls:
-        getTradeRecordDomain() +
-        "/get-trade-record-controls?accountNumber={accountNumber}&interval={interval}",
+      GetControls:
+        getTradeRecordDomain(true) +
+        "/get-controls?accountNumber={accountNumber}&interval={interval}",
     },
     Transaction: {
-      GetPaged:
-        getTransactionDomain() +
+      GetForIntervalPaged:
+        getTransactionDomain(true) +
         "/get-for-interval-paged?accountNumber={accountNumber}&start={start}&end={end}&page={page}&pageSize={pageSize}&transactionType={transactionType}&transactionStatus={transactionStatus}&sort={sort}",
       Create:
-        getTransactionDomain() +
-        "/create-transaction?accountNumber={accountNumber}",
+        getTransactionDomain(true) + "/create?accountNumber={accountNumber}",
       Update:
-        getTransactionDomain() +
-        "/update-transaction?accountNumber={accountNumber}&transactionNumber={transactionNumber}",
+        getTransactionDomain(true) +
+        "/update?accountNumber={accountNumber}&transactionNumber={transactionNumber}",
       Delete:
-        getTransactionDomain() +
-        "/delete-transaction?accountNumber={accountNumber}&transactionNumber={transactionNumber}",
+        getTransactionDomain(true) +
+        "/delete?accountNumber={accountNumber}&transactionNumber={transactionNumber}",
     },
     User: {
-      GetRecentTransactions: getUserDomain() + "/recent-transactions",
-      GetUser: getUserDomain() + "/get?username={username}",
-      UpdateUser: getUserDomain() + "/update?username={username}",
-      RegisterUser: getUserDomain() + "/create",
+      GetRecentTransactions: getUserDomain(true) + "/get-recent-transactions",
+      Get: getUserDomain(true) + "/get-user?username={username}",
+      Update: getUserDomain(true) + "/update?username={username}",
+      Create: getUserDomain(true) + "/create",
     },
   },
   External: {

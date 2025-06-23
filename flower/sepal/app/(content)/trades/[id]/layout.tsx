@@ -23,6 +23,7 @@ import TradeForm from "@/components/Form/Trade/TradeForm";
 import { useActivePortfolio } from "@/lib/hooks/api/useActivePortoflio";
 import Error from "@/app/error";
 import TradeInsights from "@/components/Trade/TradeInsights";
+import { useSessionContext } from "@/lib/context/SessionContext";
 
 /**
  * The base layout for the trade detail page
@@ -30,7 +31,7 @@ import TradeInsights from "@/components/Trade/TradeInsights";
  * @param children react content
  * @param params parameters
  * @author Stephen Prizio
- * @version 0.2.4
+ * @version 0.2.6
  */
 export default function TradeDetailsLayout({
   children,
@@ -39,6 +40,7 @@ export default function TradeDetailsLayout({
   children: React.ReactNode;
   params: { id: string };
 }>) {
+  const session = useSessionContext();
   const searchParams = useSearchParams();
   const accNumber = searchParams.get("account") ?? "-1";
 
@@ -55,7 +57,7 @@ export default function TradeDetailsLayout({
     isError: isAccountError,
     error: accountError,
     isLoading: isAccountLoading,
-  } = useAccountQuery(accNumber);
+  } = useAccountQuery(accNumber, session?.username ?? "");
 
   const {
     data: trade,

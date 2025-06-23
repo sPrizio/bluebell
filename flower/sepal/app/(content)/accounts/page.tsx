@@ -18,15 +18,17 @@ import { useActivePortfolio } from "@/lib/hooks/api/useActivePortoflio";
 import { useUserQuery } from "@/lib/hooks/query/queries";
 import { redirect } from "next/navigation";
 import { resolveIcon } from "@/lib/functions/util-component-functions";
+import { useSessionContext } from "@/lib/context/SessionContext";
 
 /**
  * The page that shows all of a user's accounts
  *
  * @author Stephen Prizio
- * @version 0.2.2
+ * @version 0.2.6
  */
 export default function AccountsPage() {
-  const { data: user } = useUserQuery();
+  const session = useSessionContext();
+  const { data: user } = useUserQuery(session?.username ?? "");
   const { isLoading, isError, error, activePortfolio, hasMismatch } =
     useActivePortfolio();
   const { selectedPortfolioId, setSelectedPortfolioId } = usePortfolioStore();

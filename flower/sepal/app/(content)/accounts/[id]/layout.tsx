@@ -9,6 +9,7 @@ import { logErrors } from "@/lib/functions/util-functions";
 import Error from "@/app/error";
 import AccountDetailsCmp from "@/components/Account/AccountDetailsCmp";
 import { useActivePortfolio } from "@/lib/hooks/api/useActivePortoflio";
+import { useSessionContext } from "@/lib/context/SessionContext";
 
 /**
  * The base layout for the Account detail page
@@ -16,7 +17,7 @@ import { useActivePortfolio } from "@/lib/hooks/api/useActivePortoflio";
  * @param children Content
  * @param params Account ID
  * @author Stephen Prizio
- * @version 0.2.4
+ * @version 0.2.6
  */
 export default function AccountDetailsLayout({
   children,
@@ -25,6 +26,7 @@ export default function AccountDetailsLayout({
   children: React.ReactNode;
   params: { id: string };
 }>) {
+  const session = useSessionContext();
   const {
     isLoading: isPortfolioLoading,
     isError: isPortfolioError,
@@ -37,7 +39,7 @@ export default function AccountDetailsLayout({
     isError: isAccountError,
     error: accountError,
     isLoading: isAccountLoading,
-  } = useAccountQuery(params.id);
+  } = useAccountQuery(params.id, session?.username ?? "");
 
   if (isPortfolioLoading || isAccountLoading) {
     return <LoadingPage />;

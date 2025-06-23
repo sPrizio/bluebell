@@ -1,5 +1,3 @@
-import { ApiCredentials } from "@/lib/constants";
-
 /**
  * Checks for a valid password as per the guidelines defined by greenhouse
  *
@@ -37,9 +35,7 @@ export function isValidPassword(val: string): boolean {
  * Returns the auth header for api calls
  */
 export function getAuthHeader(): any {
-  const obj: any = {};
-  obj[ApiCredentials.AuthHeader] = ApiCredentials.TestUserToken;
-  return obj;
+  return {};
 }
 
 /**
@@ -49,6 +45,15 @@ export function getAuthHeader(): any {
  */
 export function baseUrl(): string {
   return process.env.NEXT_PUBLIC_BASE_API_DOMAIN ?? "";
+}
+
+/**
+ * Gets the domain api url (base url + version)
+ *
+ * @returns {string} url
+ */
+export function getBaseDomain(): string {
+  return baseUrl() + process.env.NEXT_PUBLIC_BASE_API_VERSION;
 }
 
 /**
@@ -250,7 +255,7 @@ export function getTransactionDomain(internal = false): string {
  */
 export function getSecurityDomain(internal = false): string {
   if (internal) {
-    return getInternalApiPrefix("/security");
+    return "/api/security";
   }
 
   return getDomain("/security");
@@ -263,5 +268,5 @@ export function getSecurityDomain(internal = false): string {
  * @returns {string} url
  */
 export function getInternalApiPrefix(val: string): string {
-  return "/api" + val;
+  return "/api/proxy" + val;
 }

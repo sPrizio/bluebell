@@ -29,32 +29,38 @@ import moment from "moment";
 import { resolveIcon } from "@/lib/functions/util-component-functions";
 import { Icons } from "@/lib/enums";
 import LoadingPage from "@/app/loading";
+import { useSessionContext } from "@/lib/context/SessionContext";
 
 /**
  * Renders the account details layout
  *
  * @param account Account info
  * @author Stephen Prizio
- * @version 0.2.4
+ * @version 0.2.6
  */
 export default function AccountDetailsCmp({
   account,
 }: Readonly<{
   account: Account;
 }>) {
+  const session = useSessionContext();
   const tradeRecordReportLookBack = 8;
   const {
     data: accountDetails,
     isError: isAccountDetailsError,
     error: accountDetailsError,
     isLoading: isAccountDetailsLoading,
-  } = useAccountDetailsQuery(account.accountNumber.toString());
+  } = useAccountDetailsQuery(
+    account.accountNumber.toString(),
+    session?.username ?? "",
+  );
   const {
     data: recentTradeRecords,
     isError: isRecentTradeRecordsError,
     error: recentTradeRecordsError,
     isLoading: isRecentTradeRecordsLoading,
   } = useRecentTradeRecordsQuery(
+    session?.username ?? "",
     account.accountNumber.toString(),
     "DAILY",
     tradeRecordReportLookBack,

@@ -36,8 +36,11 @@ export const useSessionQuery = () => {
   return useQuery<SessionData>({
     queryKey: ["session"],
     queryFn: () =>
-      fetch(ApiUrls.Security.Me).then((res) => {
-        if (!res.ok) throw new Error("Not authenticated");
+      fetch(ApiUrls.Internal.Security.Me).then((res) => {
+        if (!res.ok) {
+          console.log(res);
+          throw new Error("Not authenticated");
+        }
         return res.json();
       }),
     retry: false,
@@ -45,10 +48,13 @@ export const useSessionQuery = () => {
   });
 };
 
-export const useUserQuery = () => {
+export const useUserQuery = (username: string) => {
   return useQuery<User>({
-    queryKey: ["user"],
-    queryFn: () => get<User>(ApiUrls.User.GetUser, { username: "t.test" }), // TODO: change this to the auth module
+    queryKey: ["user", username],
+    queryFn: () =>
+      //get<User>(ApiUrls.User.GetUser, { username: ApiCredentials.TestUser }),
+      get<User>(ApiUrls.Internal.User.Get, { username: username }),
+    enabled: !!username,
   });
 };
 
@@ -56,7 +62,7 @@ export const usePortfolioQuery = (portfolioNumber: number) => {
   return useQuery<Portfolio>({
     queryKey: ["portfolio", portfolioNumber],
     queryFn: () =>
-      get<Portfolio>(ApiUrls.Portfolio.GetPortfolio, {
+      get<Portfolio>(ApiUrls.Internal.Portfolio.Get, {
         portfolioNumber: portfolioNumber,
       }),
     enabled: portfolioNumber !== -1,
@@ -67,7 +73,7 @@ export const usePortfolioRecordQuery = (portfolioNumber: number) => {
   return useQuery<PortfolioRecord>({
     queryKey: ["portfolio-record", portfolioNumber],
     queryFn: () =>
-      get<PortfolioRecord>(ApiUrls.PortfolioRecord.GetPortfolioRecord, {
+      get<PortfolioRecord>(ApiUrls.Internal.PortfolioRecord.Get, {
         portfolioNumber: portfolioNumber,
       }),
     enabled: portfolioNumber !== -1,
@@ -78,7 +84,7 @@ export const useRecentTransactionsQuery = () => {
   return useQuery<Array<Transaction>>({
     queryKey: ["recent-transactions"],
     queryFn: () =>
-      get<Array<Transaction>>(ApiUrls.User.GetRecentTransactions, {}),
+      get<Array<Transaction>>(ApiUrls.Internal.User.GetRecentTransactions, {}),
   });
 };
 
@@ -96,22 +102,24 @@ export const useTradeLogQuery = () => {
 
   return useQuery<TradeLog>({
     queryKey: ["trade-log", from, to, params.interval, params.count],
-    queryFn: () => get<TradeLog>(ApiUrls.TradeRecord.GetTradeLog, params),
+    queryFn: () =>
+      get<TradeLog>(ApiUrls.Internal.TradeRecord.GetTradeLog, params),
   });
 };
 
 export const useRecentTradeRecordsQuery = (
+  username: string,
   id: string,
   interval: string,
   count: number,
 ) => {
-  const { data: user } = useUserQuery();
+  const { data: user } = useUserQuery(username);
   const accountId = parseInt(id, 10);
 
   return useQuery<TradeRecordReport | null>({
     queryKey: ["recent-trade-records", id],
     queryFn: () =>
-      get<TradeRecordReport>(ApiUrls.TradeRecord.GetRecentTradeRecords, {
+      get<TradeRecordReport>(ApiUrls.Internal.TradeRecord.GetRecent, {
         accountNumber: accountId.toString(),
         interval: interval,
         count: count,
@@ -124,7 +132,7 @@ export const useTradeQuery = (accId: string, id: string) => {
   return useQuery<Trade | null>({
     queryKey: ["trade", accId, id],
     queryFn: () =>
-      get<Trade>(ApiUrls.Trade.GetTradeForTradeId, {
+      get<Trade>(ApiUrls.Internal.Trade.GetForTradeId, {
         accountNumber: accId,
         tradeId: id,
       }),
@@ -132,8 +140,8 @@ export const useTradeQuery = (accId: string, id: string) => {
   });
 };
 
-export const useAccountQuery = (id: string) => {
-  const { data: user } = useUserQuery();
+export const useAccountQuery = (id: string, username: string) => {
+  const { data: user } = useUserQuery(username);
   const accountId = parseInt(id, 10);
 
   return useQuery<Account | null>({
@@ -146,14 +154,14 @@ export const useAccountQuery = (id: string) => {
   });
 };
 
-export const useAccountDetailsQuery = (id: string) => {
-  const { data: user } = useUserQuery();
+export const useAccountDetailsQuery = (id: string, username: string) => {
+  const { data: user } = useUserQuery(username);
   const accountId = parseInt(id, 10);
 
   return useQuery<AccountDetails | null>({
     queryKey: ["account-details", id],
     queryFn: () =>
-      get<AccountDetails>(ApiUrls.Account.GetDetails, {
+      get<AccountDetails>(ApiUrls.Internal.Account.Details, {
         accountNumber: accountId.toString(),
       }),
     enabled: isNumeric(id) && !!user,
@@ -163,14 +171,15 @@ export const useAccountDetailsQuery = (id: string) => {
 export const useCurrenciesQuery = () => {
   return useQuery<Array<Currency>>({
     queryKey: ["currencies"],
-    queryFn: () => get<Array<Currency>>(ApiUrls.Account.GetCurrencies, {}),
+    queryFn: () =>
+      get<Array<Currency>>(ApiUrls.Internal.Account.Currencies, {}),
   });
 };
 
 export const useBrokersQuery = () => {
   return useQuery<Array<Broker>>({
     queryKey: ["brokers"],
-    queryFn: () => get<Array<Broker>>(ApiUrls.Account.GetBrokers, {}),
+    queryFn: () => get<Array<Broker>>(ApiUrls.Internal.Account.Brokers, {}),
   });
 };
 
@@ -178,14 +187,15 @@ export const useTradePlatformsQuery = () => {
   return useQuery<Array<TradePlatform>>({
     queryKey: ["trade-platforms"],
     queryFn: () =>
-      get<Array<TradePlatform>>(ApiUrls.Account.GetTradePlatforms, {}),
+      get<Array<TradePlatform>>(ApiUrls.Internal.Account.TradePlatforms, {}),
   });
 };
 
 export const useAccountTypesQuery = () => {
   return useQuery<Array<AccountType>>({
     queryKey: ["account-types"],
-    queryFn: () => get<Array<AccountType>>(ApiUrls.Account.GetAccountTypes, {}),
+    queryFn: () =>
+      get<Array<AccountType>>(ApiUrls.Internal.Account.AccountTypes, {}),
   });
 };
 
@@ -246,7 +256,7 @@ export const usePagedTransactionsQuery = (
       sort,
     ],
     queryFn: () =>
-      get<PagedTransactions>(ApiUrls.Transaction.GetPaged, {
+      get<PagedTransactions>(ApiUrls.Internal.Transaction.GetForIntervalPaged, {
         accountNumber: accountNumber.toString(),
         start: start,
         end: end,
@@ -284,7 +294,7 @@ export const usePagedTradesQuery = (
       sort,
     ],
     queryFn: () =>
-      get<PagedTrades>(ApiUrls.Trade.GetPagedTrades, {
+      get<PagedTrades>(ApiUrls.Internal.Trade.GetForIntervalPaged, {
         accountNumber: accountNumber.toString(),
         start: start,
         end: end,
@@ -306,7 +316,7 @@ export const useTimeBucketsAnalysisQuery = (
   return useQuery<Array<AnalysisResult>>({
     queryKey: ["time-buckets", accountNumber, isOpened, filter],
     queryFn: () =>
-      get<Array<AnalysisResult>>(ApiUrls.Analysis.TimeBuckets, {
+      get<Array<AnalysisResult>>(ApiUrls.Internal.Analysis.TimeBuckets, {
         accountNumber: accountNumber.toString(),
         isOpened: isOpened.toString(),
         filter: filter,
@@ -321,7 +331,7 @@ export const useWeekdaysAnalysisQuery = (
   return useQuery<Array<AnalysisResult>>({
     queryKey: ["weekdays", accountNumber, filter],
     queryFn: () =>
-      get<Array<AnalysisResult>>(ApiUrls.Analysis.Weekdays, {
+      get<Array<AnalysisResult>>(ApiUrls.Internal.Analysis.Weekdays, {
         accountNumber: accountNumber.toString(),
         filter: filter,
       }),
@@ -336,11 +346,14 @@ export const useWeekdaysTimeBucketsAnalysisQuery = (
   return useQuery<Array<AnalysisResult>>({
     queryKey: ["weekdays-time-buckets", accountNumber, weekday, filter],
     queryFn: () =>
-      get<Array<AnalysisResult>>(ApiUrls.Analysis.WeekdaysTimeBuckets, {
-        accountNumber: accountNumber.toString(),
-        weekday: weekday,
-        filter: filter,
-      }),
+      get<Array<AnalysisResult>>(
+        ApiUrls.Internal.Analysis.WeekdaysTimeBuckets,
+        {
+          accountNumber: accountNumber.toString(),
+          weekday: weekday,
+          filter: filter,
+        },
+      ),
   });
 };
 
@@ -352,7 +365,7 @@ export const useTradeDurationAnalysisQuery = (
   return useQuery<Array<AnalysisResult>>({
     queryKey: ["time-buckets", accountNumber, tradeDurationFilter, filter],
     queryFn: () =>
-      get<Array<AnalysisResult>>(ApiUrls.Analysis.TradeDuration, {
+      get<Array<AnalysisResult>>(ApiUrls.Internal.Analysis.TradeDuration, {
         accountNumber: accountNumber.toString(),
         tradeDurationFilter: tradeDurationFilter.toString(),
         filter: filter,
@@ -364,7 +377,10 @@ export const useMarketNewsQuery = (start: string, end: string) => {
   return useQuery<Array<MarketNews>>({
     queryKey: ["market-news", start, end],
     queryFn: () =>
-      get<Array<MarketNews>>(ApiUrls.News.GetNews, { start: start, end: end }),
+      get<Array<MarketNews>>(ApiUrls.Internal.News.GetByInterval, {
+        start: start,
+        end: end,
+      }),
   });
 };
 
@@ -376,7 +392,7 @@ export const useTradeRecordControlsQuery = (
   return useQuery<TradeRecordControls>({
     queryKey: ["trade-record-controls", accountNumber, interval],
     queryFn: () =>
-      get<TradeRecordControls>(ApiUrls.TradeRecord.GetTradeRecordControls, {
+      get<TradeRecordControls>(ApiUrls.Internal.TradeRecord.GetControls, {
         accountNumber: accountNumber.toString(),
         interval: interval,
       }),
@@ -395,7 +411,7 @@ export const useTradeRecordsQuery = (
   return useQuery<TradeRecordReport>({
     queryKey: ["trade-records", accountNumber, start, end, interval, count],
     queryFn: () =>
-      get<TradeRecordReport>(ApiUrls.TradeRecord.GetTradeRecords, {
+      get<TradeRecordReport>(ApiUrls.Internal.TradeRecord.GetForInterval, {
         accountNumber: accountNumber.toString(),
         start: start,
         end: end,
@@ -410,7 +426,7 @@ export const useTradedSymbolsQuery = (accountNumber: number) => {
   return useQuery<Array<string>>({
     queryKey: ["traded-symbols", accountNumber],
     queryFn: () =>
-      get<Array<string>>(ApiUrls.Symbol.GetTradedSymbols, {
+      get<Array<string>>(ApiUrls.Internal.Symbol.GetTraded, {
         accountNumber: accountNumber.toString(),
       }),
     enabled: accountNumber > -1,
@@ -439,7 +455,7 @@ export const usePagedJobsQuery = (
       sort,
     ],
     queryFn: () =>
-      get<PagedJobs>(ApiUrls.Job.GetJobsByStatusAndTypePaged, {
+      get<PagedJobs>(ApiUrls.Internal.Job.ByStatusAndTypePaged, {
         start: start,
         end: end,
         page: page.toString(),
@@ -458,7 +474,7 @@ export const useTradeInsightsQuery = (
   return useQuery<TradeInsightsType>({
     queryKey: ["trade-insights", accountNumber, tradeId],
     queryFn: () =>
-      get<TradeInsightsType>(ApiUrls.Trade.GetInsights, {
+      get<TradeInsightsType>(ApiUrls.Internal.Trade.GetInsights, {
         accountNumber: accountNumber,
         tradeId: tradeId,
       }),
@@ -468,14 +484,14 @@ export const useTradeInsightsQuery = (
 export const useJobTypesQuery = () => {
   return useQuery<Array<EnumDisplay>>({
     queryKey: ["job-types"],
-    queryFn: () => get<Array<EnumDisplay>>(ApiUrls.Job.GetJobTypes, {}),
+    queryFn: () => get<Array<EnumDisplay>>(ApiUrls.Internal.Job.Types, {}),
   });
 };
 
 export const useJobQuery = (jobId: string) => {
   return useQuery<Job>({
     queryKey: ["job", jobId],
-    queryFn: () => get<Job>(ApiUrls.Job.GetJobById, { jobId: jobId }),
+    queryFn: () => get<Job>(ApiUrls.Internal.Job.ById, { jobId: jobId }),
   });
 };
 
@@ -484,7 +500,7 @@ export const useJobQuery = (jobId: string) => {
 export const useHealthCheckQuery = () => {
   return useQuery<HealthCheck>({
     queryKey: ["health-check"],
-    queryFn: () => get<HealthCheck>(ApiUrls.System.HealthCheck, {}),
+    queryFn: () => get<HealthCheck>(ApiUrls.Internal.System.HealthCheck, {}),
     enabled: process.env.ENABLE_BUILD_VERSION === "true",
   });
 };
@@ -497,7 +513,7 @@ export const useApexChartQuery = (
   return useQuery<Array<ApexChartCandleStick>>({
     queryKey: ["apexChart", tradeId, interval],
     queryFn: () =>
-      get<Array<ApexChartCandleStick>>(ApiUrls.Charting.Get, {
+      get<Array<ApexChartCandleStick>>(ApiUrls.Internal.Charting.Apex, {
         tradeId: tradeId,
         accountNumber: accountNumber.toString(),
         interval: interval,
@@ -509,6 +525,6 @@ export const useMarketPriceTimerIntervalQuery = () => {
   return useQuery<Array<EnumDisplay>>({
     queryKey: ["market-price-time-intervals"],
     queryFn: () =>
-      get<Array<EnumDisplay>>(ApiUrls.MarketPrice.GetTimeIntervals, {}),
+      get<Array<EnumDisplay>>(ApiUrls.Internal.MarketPrice.TimeIntervals, {}),
   });
 };

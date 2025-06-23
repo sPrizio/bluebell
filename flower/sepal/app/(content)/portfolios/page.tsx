@@ -13,15 +13,22 @@ import Error from "@/app/error";
 import PortfoliosTable from "@/components/Table/Portfolio/PortfoliosTable";
 import PortfolioForm from "@/components/Form/Portfolio/PortfolioForm";
 import { resolveIcon } from "@/lib/functions/util-component-functions";
+import { useSessionContext } from "@/lib/context/SessionContext";
 
 /**
  * The page that shows all of a user's portfolios
  *
  * @author Stephen Prizio
- * @version 0.2.2
+ * @version 0.2.6
  */
 export default function PortfoliosPage() {
-  const { data: user, isLoading, isError, error } = useUserQuery();
+  const session = useSessionContext();
+  const {
+    data: user,
+    isLoading,
+    isError,
+    error,
+  } = useUserQuery(session?.username ?? "");
 
   if (isLoading) {
     return <LoadingPage />;

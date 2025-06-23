@@ -14,15 +14,22 @@ import LoadingPage from "@/app/loading";
 import { logErrors } from "@/lib/functions/util-functions";
 import Error from "@/app/error";
 import { resolveIcon } from "@/lib/functions/util-component-functions";
+import { useSessionContext } from "@/lib/context/SessionContext";
 
 /**
  * Renders the user profile page
  *
  * @author Stephen Prizio
- * @version 0.2.4
+ * @version 0.2.6
  */
 export default function ProfilePage() {
-  const { data: user, isError, error, isLoading } = useUserQuery();
+  const session = useSessionContext();
+  const {
+    data: user,
+    isError,
+    error,
+    isLoading,
+  } = useUserQuery(session?.username ?? "");
 
   //  GENERAL FUNCTIONS
 

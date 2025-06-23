@@ -26,21 +26,23 @@ import ReusableSelect from "@/components/Input/ReusableSelect";
 import { usePortfolioStore } from "@/lib/store/portfolioStore";
 import { resolveIcon } from "@/lib/functions/util-component-functions";
 import { redirect } from "next/navigation";
+import { useSessionContext } from "@/lib/context/SessionContext";
 
 /**
  * The page that shows an overview of a user's portfolio
  *
  * @author Stephen Prizio
- * @version 0.2.2
+ * @version 0.2.6
  */
 export default function DashboardPage() {
+  const session = useSessionContext();
   const {
     data: user,
     isError: isUserError,
     error: userError,
     isLoading: isUserLoading,
     isSuccess: isUserSuccess,
-  } = useUserQuery();
+  } = useUserQuery(session?.username ?? "");
 
   const { setSelectedPortfolioId } = usePortfolioStore();
   const [activePortfolio, setActivePortfolio] = useState(-1);
@@ -117,6 +119,8 @@ export default function DashboardPage() {
     breadcrumbs: [{ label: "Dashboard", href: "/dashboard", active: true }],
   };
 
+  console.log(user);
+  console.log(activePortfolio);
   return (
     <PageInfoProvider value={pageInfo}>
       <div>
