@@ -17,7 +17,7 @@ import {
 import { useHealthCheckQuery } from "@/lib/hooks/query/queries";
 import LoadingPage from "@/app/loading";
 import { logErrors } from "@/lib/functions/util-functions";
-import Error from "@/app/error";
+import ErrorPage from "@/app/error";
 import { resolveIcon } from "@/lib/functions/util-component-functions";
 import { Icons } from "@/lib/enums";
 import { useLogoutMutation } from "@/lib/hooks/query/mutations";
@@ -90,7 +90,7 @@ export function Menu({ isOpen }: Readonly<MenuProps>) {
 
   if (isError || isLogoutError) {
     logErrors(error, logoutError);
-    return <Error />;
+    return <ErrorPage />;
   }
 
   //  RENDER

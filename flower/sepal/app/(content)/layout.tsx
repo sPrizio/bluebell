@@ -6,7 +6,7 @@ import AdminPanelLayout from "@/components/ui/admin-panel/admin-panel-layout";
 import { Toaster } from "@/components/ui/toaster";
 import { useSessionQuery } from "@/lib/hooks/query/queries";
 import { logErrors } from "@/lib/functions/util-functions";
-import Error from "@/app/error";
+import ErrorPage from "@/app/error";
 import LoadingPage from "@/app/loading";
 import { SessionContext } from "@/lib/context/SessionContext";
 import { useRouter } from "next/navigation";
@@ -34,7 +34,7 @@ export default function ContentPageLayout({
 
   if (isSessionError) {
     logErrors(sessionError);
-    return <Error />;
+    return <ErrorPage />;
   }
 
   if (isSessionLoading) {

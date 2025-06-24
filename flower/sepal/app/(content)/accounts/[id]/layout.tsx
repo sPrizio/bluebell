@@ -1,12 +1,12 @@
 "use client";
 
 import React from "react";
-import { Icons } from "@/lib/enums";
+import { Icons, UserPrivilege } from "@/lib/enums";
 import { PageInfoProvider } from "@/lib/context/PageInfoProvider";
 import { useAccountQuery } from "@/lib/hooks/query/queries";
 import LoadingPage from "@/app/loading";
 import { logErrors } from "@/lib/functions/util-functions";
-import Error from "@/app/error";
+import ErrorPage from "@/app/error";
 import AccountDetailsCmp from "@/components/Account/AccountDetailsCmp";
 import { useActivePortfolio } from "@/lib/hooks/api/useActivePortoflio";
 import { useSessionContext } from "@/lib/context/SessionContext";
@@ -57,7 +57,7 @@ export default function AccountDetailsLayout({
       portfolioMisMatch,
       accountError,
     );
-    return <Error />;
+    return <ErrorPage />;
   }
 
   //  GENERAL FUNCTIONS
@@ -83,6 +83,7 @@ export default function AccountDetailsLayout({
     title: "Account Overview",
     subtitle: computeDescription(),
     iconCode: Icons.Mountain,
+    privilege: UserPrivilege.TRADER,
     breadcrumbs: [
       { label: "Dashboard", href: "/dashboard", active: false },
       {

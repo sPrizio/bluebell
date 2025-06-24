@@ -3,6 +3,7 @@ import { ApiCredentials, ApiUrls, AUTH_ENABLED } from "@/lib/constants";
 import { getIronSession } from "iron-session";
 import { SessionData, sessionOptions } from "@/lib/auth/session";
 import { ApiResponse, User } from "@/types/apiTypes";
+import { UserPrivilege } from "@/lib/enums";
 
 export async function GET(req: NextRequest, options: RequestInit = {}) {
   const res = new NextResponse();
@@ -13,13 +14,17 @@ export async function GET(req: NextRequest, options: RequestInit = {}) {
       token: ApiCredentials.TestUserToken,
       username: ApiCredentials.TestUser,
       isLoggedIn: true,
-      roles: ["TRADER", "ADMINISTRATOR", "SYSTEM"],
+      roles: [
+        UserPrivilege.TRADER,
+        UserPrivilege.ADMINISTRATOR,
+        UserPrivilege.SYSTEM,
+      ],
     };
 
-    session.token = ApiCredentials.TestUserToken;
-    session.username = ApiCredentials.TestUser;
-    session.isLoggedIn = true;
-    session.roles = ["TRADER", "ADMINISTRATOR", "SYSTEM"];
+    session.token = mockSession.token;
+    session.username = mockSession.username;
+    session.isLoggedIn = mockSession.isLoggedIn;
+    session.roles = mockSession.roles;
 
     await session.save();
 

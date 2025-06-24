@@ -10,7 +10,7 @@ import {
 } from "@/components/ui/table";
 import moment from "moment";
 import { DateTime } from "@/lib/constants";
-import { MarketNews } from "@/types/apiTypes";
+import { MarketNews, MarketNewsSlot } from "@/types/apiTypes";
 import {
   getFlagForCode,
   resolveIcon,
@@ -31,7 +31,7 @@ import BaseTableContainer from "@/components/Table/BaseTableContainer";
  *
  * @param news market news
  * @author Stephen Prizio
- * @version 0.2.4
+ * @version 0.2.6
  */
 export default function NewsTable({
   news = [],
@@ -60,6 +60,32 @@ export default function NewsTable({
     }
 
     return arr;
+  }
+
+  /**
+   * Calculates the styles to apply to the time slot rows
+   *
+   * @param news market news
+   * @param slot time slot
+   */
+  function calculateTimeRowStyles(
+    news: MarketNews,
+    slot: MarketNewsSlot,
+  ): string {
+    let styles = " hover:bg-transparent border-0 ";
+    const currentTime = moment();
+    const slotTime = moment(
+      `${news.date} ${slot.time}`,
+      DateTime.ISOEasyDateTimeFormat,
+    );
+
+    if (slot.active) {
+      styles += " text-primary font-bold ";
+    } else if (slotTime.isBefore(currentTime)) {
+      styles += " opacity-25   ";
+    }
+
+    return styles;
   }
 
   /**
@@ -200,14 +226,11 @@ export default function NewsTable({
                             return (
                               <TableRow
                                 key={slot.uid + news.date + slot.time + index}
-                                className={
-                                  "hover:bg-transparent border-0" +
-                                  (slot.active
-                                    ? " text-primary font-bold "
-                                    : "")
-                                }
+                                className={calculateTimeRowStyles(news, slot)}
                               >
-                                <TableCell />
+                                <TableCell className={"text-right w-[100px]"}>
+                                  {slot.active ? "Upcoming" : ""}
+                                </TableCell>
                                 {index === 0 ? (
                                   <TableCell className={"text-center"}>
                                     {formatTime(slot.time)}

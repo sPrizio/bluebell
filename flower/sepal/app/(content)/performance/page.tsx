@@ -2,14 +2,14 @@
 
 import { redirect, useRouter, useSearchParams } from "next/navigation";
 import React, { useState } from "react";
-import { AggregateInterval, Icons } from "@/lib/enums";
+import { AggregateInterval, Icons, UserPrivilege } from "@/lib/enums";
 import { logErrors, selectNewAccount } from "@/lib/functions/util-functions";
 import TradeRecordCard from "@/components/Card/Trade/TradeRecordCard";
 import { UserTradeRecordControlSelection } from "@/types/uiTypes";
 import moment from "moment";
 import { PageInfoProvider } from "@/lib/context/PageInfoProvider";
 import LoadingPage from "@/app/loading";
-import Error from "@/app/error";
+import ErrorPage from "@/app/error";
 import { useActiveAccount } from "@/lib/hooks/api/useActiveAccount";
 import { useTradeData } from "@/lib/hooks/api/useTradeRecordsData";
 import PerformanceDrawer from "@/components/Drawer/PerformanceDrawer";
@@ -20,7 +20,7 @@ import { DateTime } from "@/lib/constants";
  * The page that shows an account's performance over time
  *
  * @author Stephen Prizio
- * @version 0.2.4
+ * @version 0.2.6
  */
 export default function PerformancePage() {
   const searchParams = useSearchParams();
@@ -89,13 +89,14 @@ export default function PerformancePage() {
       errorControls,
       errorRecords,
     );
-    return <Error />;
+    return <ErrorPage />;
   }
 
   const pageInfo = {
     title: "Performance",
     subtitle: `A look at trading account ${activeAccount?.name ?? ""}'s performance over time`,
     iconCode: Icons.ChartScatter,
+    privilege: UserPrivilege.TRADER,
     breadcrumbs: [
       { label: "Dashboard", href: "/dashboard", active: false },
       { label: "Accounts", href: "/accounts", active: false },

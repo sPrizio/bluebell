@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { Icons } from "@/lib/enums";
+import { Icons, UserPrivilege } from "@/lib/enums";
 import { BaseCard } from "@/components/Card/BaseCard";
 import { Button } from "@/components/ui/button";
 import BaseModal from "@/components/Modal/BaseModal";
@@ -12,7 +12,7 @@ import { PageInfoProvider } from "@/lib/context/PageInfoProvider";
 import { useUserQuery } from "@/lib/hooks/query/queries";
 import LoadingPage from "@/app/loading";
 import { logErrors } from "@/lib/functions/util-functions";
-import Error from "@/app/error";
+import ErrorPage from "@/app/error";
 import { resolveIcon } from "@/lib/functions/util-component-functions";
 import { useSessionContext } from "@/lib/context/SessionContext";
 
@@ -53,6 +53,7 @@ export default function ProfilePage() {
     title: "Profile Information",
     subtitle: "Your profile at a glance",
     iconCode: Icons.UserCircle,
+    privilege: UserPrivilege.TRADER,
     breadcrumbs: [
       { label: "Dashboard", href: "/dashboard", active: false },
       { label: "Profile", href: "/profile", active: true },
@@ -67,7 +68,7 @@ export default function ProfilePage() {
 
   if (isError) {
     logErrors(error);
-    return <Error />;
+    return <ErrorPage />;
   }
 
   /**

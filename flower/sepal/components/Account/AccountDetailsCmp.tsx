@@ -23,7 +23,7 @@ import {
   useAccountDetailsQuery,
   useRecentTradeRecordsQuery,
 } from "@/lib/hooks/query/queries";
-import Error from "@/app/error";
+import ErrorPage from "@/app/error";
 import { logErrors } from "@/lib/functions/util-functions";
 import moment from "moment";
 import { resolveIcon } from "@/lib/functions/util-component-functions";
@@ -135,7 +135,7 @@ export default function AccountDetailsCmp({
 
   if (isAccountDetailsError || isRecentTradeRecordsError) {
     logErrors(accountDetailsError, recentTradeRecordsError);
-    return <Error />;
+    return <ErrorPage />;
   }
 
   if (isLoading) {

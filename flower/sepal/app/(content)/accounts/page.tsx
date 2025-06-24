@@ -9,8 +9,8 @@ import AccountForm from "@/components/Form/Account/AccountForm";
 import { Account } from "@/types/apiTypes";
 import LoadingPage from "@/app/loading";
 import { logErrors } from "@/lib/functions/util-functions";
-import Error from "@/app/error";
-import { Icons } from "@/lib/enums";
+import ErrorPage from "@/app/error";
+import { Icons, UserPrivilege } from "@/lib/enums";
 import { PageInfoProvider } from "@/lib/context/PageInfoProvider";
 import ReusableSelect from "@/components/Input/ReusableSelect";
 import { usePortfolioStore } from "@/lib/store/portfolioStore";
@@ -43,13 +43,14 @@ export default function AccountsPage() {
 
   if (hasMismatch || isError) {
     logErrors("User and portfolio mismatch!", error);
-    return <Error />;
+    return <ErrorPage />;
   }
 
   const pageInfo = {
     title: "Accounts",
     subtitle: "A list of all of your trading accounts.",
     iconCode: Icons.PieChart,
+    privilege: UserPrivilege.TRADER,
     breadcrumbs: [
       { label: "Dashboard", href: "/dashboard", active: false },
       {

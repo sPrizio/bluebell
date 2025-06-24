@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { Icons } from "@/lib/enums";
+import { Icons, UserPrivilege } from "@/lib/enums";
 import { BaseCard } from "@/components/Card/BaseCard";
 import DashboardContent from "@/components/Card/Content/DashboardContent";
 import {
@@ -18,7 +18,7 @@ import {
   useTradeLogQuery,
   useUserQuery,
 } from "@/lib/hooks/query/queries";
-import Error from "@/app/error";
+import ErrorPage from "@/app/error";
 import LoadingPage from "@/app/loading";
 import TransactionsTable from "@/components/Table/Transaction/TransactionsTable";
 import { PageInfoProvider } from "@/lib/context/PageInfoProvider";
@@ -109,13 +109,14 @@ export default function DashboardPage() {
       recentTransactionsError,
       tradeLogError,
     );
-    return <Error />;
+    return <ErrorPage />;
   }
 
   const pageInfo = {
     title: "Portfolio Dashboard",
     subtitle: `An overview of portfolio ${portfolio?.name ?? ""}`,
     iconCode: Icons.LayoutDashboard,
+    privilege: UserPrivilege.TRADER,
     breadcrumbs: [{ label: "Dashboard", href: "/dashboard", active: true }],
   };
 
