@@ -6,6 +6,7 @@ import com.bluebell.planter.services.UniqueIdentifierService;
 import com.bluebell.platform.enums.security.UserRole;
 import com.bluebell.platform.models.api.dto.security.UserDTO;
 import com.bluebell.platform.models.core.entities.security.User;
+import com.bluebell.platform.models.core.nonentities.data.EnumDisplay;
 import jakarta.annotation.Resource;
 import org.springframework.stereotype.Component;
 
@@ -14,7 +15,7 @@ import org.springframework.stereotype.Component;
  * Converts {@link User}s into {@link UserDTO}s
  *
  * @author Stephen Prizio
- * @version 0.2.4
+ * @version 0.2.6
  */
 @Component("userDTOConverter")
 public class UserDTOConverter implements GenericDTOConverter<User, UserDTO> {
@@ -47,7 +48,7 @@ public class UserDTOConverter implements GenericDTOConverter<User, UserDTO> {
                 .lastName(entity.getLastName())
                 .dateRegistered(entity.getDateRegistered())
                 .portfolios(this.portfolioDTOConverter.convertAll(entity.getPortfolios()))
-                .roles(entity.getRoles().stream().map(UserRole::getLabel).toList())
+                .roles(entity.getRoles().stream().map(role -> EnumDisplay.builder().code(role.getCode()).label(role.getLabel()).build()).toList())
                 .build();
     }
 }

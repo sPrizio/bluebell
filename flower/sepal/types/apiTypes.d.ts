@@ -22,7 +22,7 @@ interface User extends GenericApiType {
   email: string;
   dateRegistered: string;
   portfolios: Array<Portfolio>;
-  roles: Array<string>;
+  roles: Array<EnumDisplay>;
 }
 
 interface AccountCreationInfo {

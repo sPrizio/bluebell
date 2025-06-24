@@ -62,7 +62,7 @@ export async function POST(req: NextRequest) {
 
   session.username = userData.data.username;
   session.token = userData.data.apiToken;
-  session.roles = userData.data.roles;
+  session.roles = userData.data.roles.map((role) => role.code);
   session.isLoggedIn = true;
 
   await session.save();
