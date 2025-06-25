@@ -17,7 +17,7 @@ import java.util.Set;
  * DTO representation of {@link Job}
  *
  * @author Stephen Prizio
- * @version 0.2.4
+ * @version 0.2.6
  */
 @Getter
 @Setter
@@ -57,4 +57,7 @@ public class JobDTO implements GenericDTO {
 
     @Schema(description = "Result of running the job")
     private JobResultDTO jobResult;
+
+    @Schema(description = "Time elapsed in seconds")
+    private long timeElapsed;
 }

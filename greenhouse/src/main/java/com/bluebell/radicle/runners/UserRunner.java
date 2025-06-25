@@ -19,7 +19,7 @@ import java.util.List;
  * First data runner in the order, creates {@link User}s
  *
  * @author Stephen Prizio
- * @version 0.2.4
+ * @version 0.2.6
  */
 @Component
 @Profile("dev")
@@ -43,12 +43,12 @@ public class UserRunner extends AbstractRunner implements CommandLineRunner, Ord
 
         User user = User
                 .builder()
-                .apiToken("Zmxvd2VycG90X2FwaV90b2tlbiZzLnByaXppb0Bob3RtYWlsLmNvbSYyMDI0LTExLTIwVDEzOjU2OjE1")
+                .apiToken("Zmxvd2VycG90X2FwaV90b2tlbiZ0ZXN0LnVzZXJAYmx1ZWJlbGwuY29tJjIwMjQtMTEtMjBUMTM6NTY6MTU=")
                 .dateRegistered(LocalDateTime.of(2024, 11, 20, 13, 56, 15))
-                .email("s.prizio@hotmail.com")
-                .firstName("Stephen")
+                .email("test.user@bluebell.com")
+                .firstName("Test")
                 .lastName("Test")
-                .username("s.test")
+                .username("t.test")
                 .roles(List.of(UserRole.TRADER, UserRole.ADMINISTRATOR, UserRole.SYSTEM))
                 .build();
 

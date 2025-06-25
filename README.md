@@ -30,7 +30,7 @@ Dependencies & Integrations
 ### flower | Front-End
 ***flower*** is the front-end, consumer-facing subset of bluebell. Currently, ***flower*** is composed of the following modules:
 
-- Current Iteration: **0.2.5**
+- Current Iteration: **0.2.6**
 - Current Release: **Pre-Release**
 
 #### sepal
@@ -49,7 +49,7 @@ It advertises bluebell and opens the product up to external consumption and purc
 the automation systems for importing, obtaining and manipulating external data. Additionally, strategy visualizers and
 data parsing systems are contained within ***greenhouse***. ***greenhouse*** is currently composed of the following modules:
 
-- Current Iteration: **0.2.4**
+- Current Iteration: **0.2.6**
 - Current Release: **Pre-Release**
 
 #### anther ####

@@ -21,8 +21,9 @@ const nextConfig = {
   },
   env: {
     ENABLE_BUILD_VERSION: "true",
-    SEPAL_VERSION: "0.2.5",
+    SEPAL_VERSION: "0.2.6",
     ALLOW_FETCHING_MARKET_NEWS: "false",
+    AUTH_ENABLED: "true",
   },
 };
 

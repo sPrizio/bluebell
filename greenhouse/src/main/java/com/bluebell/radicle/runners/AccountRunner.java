@@ -24,7 +24,7 @@ import java.time.LocalDateTime;
  * Generates testing {@link Account}s
  *
  * @author Stephen Prizio
- * @version 0.2.4
+ * @version 0.2.6
  */
 @Component
 @Profile("dev")
@@ -49,7 +49,7 @@ public class AccountRunner extends AbstractRunner implements CommandLineRunner, 
 
         logStart();
 
-        final User user = this.userRepository.findUserByUsername("s.test");
+        final User user = this.userRepository.findUserByUsername("t.test");
         final Portfolio portfolio = user.getActivePortfolios().get(0);
 
         Account account1 = Account

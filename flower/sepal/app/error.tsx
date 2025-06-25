@@ -2,7 +2,6 @@
 
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { IconMeteorFilled } from "@tabler/icons-react";
 import { resolveIcon } from "@/lib/functions/util-component-functions";
 import { Icons } from "@/lib/enums";
 
@@ -10,9 +9,9 @@ import { Icons } from "@/lib/enums";
  * The generic error page
  *
  * @author Stephen Prizio
- * @version 0.2.2
+ * @version 0.2.6
  */
-export default function Error() {
+export default function ErrorPage() {
   //  RENDER
 
   return (

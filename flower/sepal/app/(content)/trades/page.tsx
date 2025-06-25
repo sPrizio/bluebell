@@ -3,7 +3,7 @@
 import { useRouter, useSearchParams } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import { logErrors, selectNewAccount } from "@/lib/functions/util-functions";
-import { Icons } from "@/lib/enums";
+import { Icons, UserPrivilege } from "@/lib/enums";
 import { BaseCard } from "@/components/Card/BaseCard";
 import { useActiveAccount } from "@/lib/hooks/api/useActiveAccount";
 import { PageInfoProvider } from "@/lib/context/PageInfoProvider";
@@ -20,7 +20,7 @@ import LoadingPage from "@/app/loading";
 import TradeTable from "@/components/Table/Trade/TradeTable";
 import { DateTime } from "@/lib/constants";
 import { useTradedSymbolsQuery } from "@/lib/hooks/query/queries";
-import Error from "@/app/error";
+import ErrorPage from "@/app/error";
 import BaseModal from "@/components/Modal/BaseModal";
 import TradeForm from "@/components/Form/Trade/TradeForm";
 
@@ -28,7 +28,7 @@ import TradeForm from "@/components/Form/Trade/TradeForm";
  * Renders the Trade history page
  *
  * @author Stephen Prizio
- * @version 0.2.4
+ * @version 0.2.6
  */
 export default function TradesPage() {
   const searchParams = useSearchParams();
@@ -91,6 +91,7 @@ export default function TradesPage() {
     title: "Trades",
     subtitle: `A look at the trades for ${activeAccount?.name ?? ""}`,
     iconCode: Icons.ReplaceFilled,
+    privilege: UserPrivilege.TRADER,
     breadcrumbs: [
       { label: "Dashboard", href: "/dashboard", active: false },
       { label: "Accounts", href: "/accounts", active: false },
@@ -118,7 +119,7 @@ export default function TradesPage() {
 
   if (isTradedSymbolsError) {
     logErrors(tradedSymbolsError);
-    return <Error />;
+    return <ErrorPage />;
   }
 
   if (!activeAccount || isTradedSymbolsLoading) {

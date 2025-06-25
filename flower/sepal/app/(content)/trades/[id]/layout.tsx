@@ -5,7 +5,7 @@ import {
   useTradeInsightsQuery,
   useTradeQuery,
 } from "@/lib/hooks/query/queries";
-import { Icons } from "@/lib/enums";
+import { Icons, UserPrivilege } from "@/lib/enums";
 import React from "react";
 import { useSearchParams } from "next/navigation";
 import LoadingPage from "@/app/loading";
@@ -18,11 +18,12 @@ import { Button } from "@/components/ui/button";
 import TradeInformation from "@/components/Table/Trade/TradeInformation";
 import { BaseCard } from "@/components/Card/BaseCard";
 import TradeReviewCard from "@/components/Card/Trade/TradeReviewCard";
-import NotFound from "@/app/not-found";
+import NotFoundPage from "@/app/not-found";
 import TradeForm from "@/components/Form/Trade/TradeForm";
 import { useActivePortfolio } from "@/lib/hooks/api/useActivePortoflio";
-import Error from "@/app/error";
+import ErrorPage from "@/app/error";
 import TradeInsights from "@/components/Trade/TradeInsights";
+import { useSessionContext } from "@/lib/context/SessionContext";
 
 /**
  * The base layout for the trade detail page
@@ -30,7 +31,7 @@ import TradeInsights from "@/components/Trade/TradeInsights";
  * @param children react content
  * @param params parameters
  * @author Stephen Prizio
- * @version 0.2.4
+ * @version 0.2.6
  */
 export default function TradeDetailsLayout({
   children,
@@ -39,6 +40,7 @@ export default function TradeDetailsLayout({
   children: React.ReactNode;
   params: { id: string };
 }>) {
+  const session = useSessionContext();
   const searchParams = useSearchParams();
   const accNumber = searchParams.get("account") ?? "-1";
 
@@ -55,7 +57,7 @@ export default function TradeDetailsLayout({
     isError: isAccountError,
     error: accountError,
     isLoading: isAccountLoading,
-  } = useAccountQuery(accNumber);
+  } = useAccountQuery(accNumber, session?.username ?? "");
 
   const {
     data: trade,
@@ -82,7 +84,7 @@ export default function TradeDetailsLayout({
 
   if (isTradeError) {
     logErrors(tradeError);
-    return <NotFound />;
+    return <NotFoundPage />;
   }
 
   if (
@@ -97,13 +99,14 @@ export default function TradeDetailsLayout({
       portfolioMisMatch,
       tradeInsightsError,
     );
-    return <Error />;
+    return <ErrorPage />;
   }
 
   const pageInfo = {
     title: "Trade Details",
     subtitle: `View the details for trade ${params.id}`,
     iconCode: Icons.ReplaceFilled,
+    privilege: UserPrivilege.TRADER,
     breadcrumbs: [
       { label: "Dashboard", href: "/dashboard", active: false },
       {

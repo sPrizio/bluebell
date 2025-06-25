@@ -3,10 +3,55 @@ import { Account, Portfolio, Trade, Transaction, User } from "@/types/apiTypes";
 import { del, post, postFile, put } from "../../functions/client";
 import { ApiUrls } from "../../constants";
 
+export const useLoginMutation = () => {
+  const queryClient = useQueryClient();
+  return useMutation<User, Error, any>({
+    mutationFn: (payload) =>
+      fetch(ApiUrls.Internal.Security.Login, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      }).then(async (res) => {
+        if (!res.ok) {
+          const error = await res.json();
+          throw new Error(error.error ?? "Login failed");
+        }
+        return res.json();
+      }),
+    onSuccess: (data) => {
+      queryClient.invalidateQueries({ queryKey: ["session"] });
+    },
+  });
+};
+
+export const useLogoutMutation = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: () =>
+      fetch(ApiUrls.Internal.Security.Logout, { method: "POST" }).then(
+        (res) => {
+          if (!res.ok) throw new Error("Logout failed");
+        },
+      ),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["session"] });
+    },
+  });
+};
+
+export const useIsUserTakenMutation = () => {
+  return useMutation<boolean, Error, any>({
+    mutationFn: (payload) =>
+      post<boolean>(ApiUrls.External.Security.IsUserTaken, {}, payload),
+    onSuccess: (data) => {},
+  });
+};
+
 export const useCreateUserMutation = () => {
   const queryClient = useQueryClient();
   return useMutation<User, Error, any>({
-    mutationFn: (payload) => post<User>(ApiUrls.User.RegisterUser, {}, payload),
+    mutationFn: (payload) =>
+      post<User>(ApiUrls.Internal.User.Create, {}, payload),
     onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: ["user"] });
     },
@@ -17,7 +62,7 @@ export const useUpdateUserMutation = (username: string) => {
   const queryClient = useQueryClient();
   return useMutation<User, Error, any>({
     mutationFn: (payload) =>
-      put<User>(ApiUrls.User.UpdateUser, { username: username }, payload),
+      put<User>(ApiUrls.Internal.User.Update, { username: username }, payload),
     onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: ["user"] });
     },
@@ -29,7 +74,7 @@ export const useCreateAccountMutation = (portfolioNumber: number) => {
   return useMutation<Account, Error, any>({
     mutationFn: (payload) =>
       post<Account>(
-        ApiUrls.Account.CreateAccount,
+        ApiUrls.Internal.Account.Create,
         { portfolioNumber: portfolioNumber },
         payload,
       ),
@@ -50,7 +95,7 @@ export const useUpdateAccountMutation = (
   return useMutation<Account, Error, any>({
     mutationFn: (payload) =>
       put<Account>(
-        ApiUrls.Account.UpdateAccount,
+        ApiUrls.Internal.Account.Update,
         {
           portfolioNumber: portfolioNumber,
           accountNumber: accNumber.toString(),
@@ -73,7 +118,7 @@ export const useDeleteAccountMutation = (
   const queryClient = useQueryClient();
   return useMutation<boolean, Error, any>({
     mutationFn: () =>
-      del<boolean>(ApiUrls.Account.DeleteAccount, {
+      del<boolean>(ApiUrls.Internal.Account.Delete, {
         portfolioNumber: portfolioNumber,
         accountNumber: accNumber.toString(),
       }),
@@ -90,7 +135,7 @@ export const useCreatePortfolioMutation = () => {
   const queryClient = useQueryClient();
   return useMutation<Portfolio, Error, any>({
     mutationFn: (payload) =>
-      post<Portfolio>(ApiUrls.Portfolio.CreatePortfolio, {}, payload),
+      post<Portfolio>(ApiUrls.Internal.Portfolio.Create, {}, payload),
     onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: ["user"] });
     },
@@ -102,7 +147,7 @@ export const useUpdatePortfolioMutation = (portfolioNumber: number) => {
   return useMutation<Portfolio, Error, any>({
     mutationFn: (payload) =>
       put<Portfolio>(
-        ApiUrls.Portfolio.UpdatePortfolio,
+        ApiUrls.Internal.Portfolio.Update,
         { portfolioNumber: portfolioNumber },
         payload,
       ),
@@ -118,7 +163,7 @@ export const useDeletePortfolioMutation = (portfolioNumber: number) => {
   const queryClient = useQueryClient();
   return useMutation<boolean, Error, any>({
     mutationFn: () =>
-      del<boolean>(ApiUrls.Portfolio.DeletePortfolio, {
+      del<boolean>(ApiUrls.Internal.Portfolio.Delete, {
         portfolioNumber: portfolioNumber,
       }),
     onSuccess: (data) => {
@@ -137,10 +182,9 @@ export const useImportTradesMutation = (accNumber: number) => {
       const formData = new FormData();
       formData.append("file", payload.filename[0] ?? "");
       formData.append("fileName", payload.filename[0].name ?? "");
-      console.log(payload.filename[0]);
 
       return postFile<boolean>(
-        ApiUrls.Trade.ImportTrades,
+        ApiUrls.Internal.Trade.Import,
         {
           accountNumber: accNumber.toString(),
           isStrategy: payload.isStrategy.toString(),
@@ -150,13 +194,15 @@ export const useImportTradesMutation = (accNumber: number) => {
     },
     onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: ["user"] });
+      queryClient.invalidateQueries({ queryKey: ["account"] });
     },
   });
 };
 
 export const useFetchMarketNewsMutation = () => {
   return useMutation<boolean, Error, any>({
-    mutationFn: (payload) => post<boolean>(ApiUrls.News.FetchNews, {}, {}),
+    mutationFn: (payload) =>
+      post<boolean>(ApiUrls.Internal.News.FetchUpdate, {}, {}),
   });
 };
 
@@ -165,7 +211,7 @@ export const useCreateTransactionMutation = (accountNumber: number) => {
   return useMutation<Transaction, Error, any>({
     mutationFn: (payload) =>
       post<Transaction>(
-        ApiUrls.Transaction.Create,
+        ApiUrls.Internal.Transaction.Create,
         { accountNumber: accountNumber.toString() },
         payload,
       ),
@@ -191,7 +237,7 @@ export const useUpdateTransactionMutation = (
   return useMutation<Transaction, Error, any>({
     mutationFn: (payload) =>
       put<Transaction>(
-        ApiUrls.Transaction.Update,
+        ApiUrls.Internal.Transaction.Update,
         {
           accountNumber: accountNumber.toString(),
           transactionNumber: transactionNumber.toString(),
@@ -219,7 +265,7 @@ export const useDeleteTransactionMutation = (
   const queryClient = useQueryClient();
   return useMutation<boolean, Error, any>({
     mutationFn: () =>
-      del<boolean>(ApiUrls.Transaction.Delete, {
+      del<boolean>(ApiUrls.Internal.Transaction.Delete, {
         accountNumber: accountNumber.toString(),
         transactionNumber: transactionNumber.toString(),
       }),
@@ -242,7 +288,7 @@ export const useCreateTradeMutation = (accountNumber: number) => {
   return useMutation<Trade, Error, any>({
     mutationFn: (payload) =>
       post<Trade>(
-        ApiUrls.Trade.CreateTrade,
+        ApiUrls.Internal.Trade.Create,
         { accountNumber: accountNumber.toString() },
         payload,
       ),
@@ -268,7 +314,7 @@ export const useUpdateTradeMutation = (
   return useMutation<Trade, Error, any>({
     mutationFn: (payload) =>
       put<Trade>(
-        ApiUrls.Trade.UpdateTrade,
+        ApiUrls.Internal.Trade.Update,
         { accountNumber: accountNumber, tradeId: tradeId },
         payload,
       ),
@@ -299,7 +345,7 @@ export const useDeleteTradeMutation = (
   const queryClient = useQueryClient();
   return useMutation<boolean, Error, any>({
     mutationFn: () =>
-      del<boolean>(ApiUrls.Trade.DeleteTrade, {
+      del<boolean>(ApiUrls.Internal.Trade.Delete, {
         accountNumber: accountNumber.toString(),
         tradeId: tradeId,
       }),

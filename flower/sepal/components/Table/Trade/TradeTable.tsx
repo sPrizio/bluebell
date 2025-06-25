@@ -26,7 +26,7 @@ import {
 } from "@/components/ui/pagination";
 import { Account } from "@/types/apiTypes";
 import { usePagedTradesQuery } from "@/lib/hooks/query/queries";
-import Error from "@/app/error";
+import ErrorPage from "@/app/error";
 import { UserTradeControlSelection } from "@/types/uiTypes";
 import LoadingPage from "@/app/loading";
 import { useRouter } from "next/navigation";
@@ -40,7 +40,7 @@ import BaseTableContainer from "@/components/Table/BaseTableContainer";
  * @param initialPageSize initial page size
  * @param initialPage initial page
  * @author Stephen Prizio
- * @version 0.2.4
+ * @version 0.2.6
  */
 export default function TradeTable({
   account,
@@ -88,7 +88,7 @@ export default function TradeTable({
   //  RENDER
 
   if (!account) {
-    return <Error />;
+    return <ErrorPage />;
   }
 
   if (isPagedTradesLoading) {
@@ -97,7 +97,7 @@ export default function TradeTable({
 
   if (isPagedTradesError) {
     logErrors(pagedTradesError);
-    return <Error />;
+    return <ErrorPage />;
   }
 
   const pages = pagedTrades?.totalPages ?? 0;
