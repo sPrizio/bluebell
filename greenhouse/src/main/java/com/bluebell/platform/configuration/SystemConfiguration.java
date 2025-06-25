@@ -14,25 +14,29 @@ import java.util.Properties;
  * Configuration for bluebell
  *
  * @author Stephen Prizio
- * @version 0.1.6
+ * @version 1.0.0
  */
 @Configuration
 public class SystemConfiguration {
 
     @Bean
     public Dotenv dotenv() {
-        return Dotenv.configure().directory(DirectoryUtil.getBaseProjectDirectory()).load();
+        return Dotenv
+                .configure()
+                .directory(DirectoryUtil.getBaseProjectDirectory())
+                .ignoreIfMissing()
+                .load();
     }
 
     @Bean
-    public JavaMailSender getJavaMailSender() {
+    public JavaMailSender getJavaMailSender(final Dotenv dotenv) {
 
         JavaMailSenderImpl mailSender = new JavaMailSenderImpl();
         mailSender.setHost("smtp.gmail.com");
         mailSender.setPort(587);
 
-        final String username = dotenv().get("EMAIL_APP_USERNAME");
-        final String password = dotenv().get("EMAIL_APP_PASSWORD");
+        final String username = getEnvVar("EMAIL_APP_USERNAME", dotenv);
+        final String password = getEnvVar("EMAIL_APP_PASSWORD", dotenv);
 
         if (StringUtils.isEmpty(username)) {
             throw new IllegalStateException("EMAIL_APP_USERNAME is required");
@@ -52,5 +56,20 @@ public class SystemConfiguration {
         props.put("mail.debug", "true");
 
         return mailSender;
+    }
+
+
+    //  HELPERS
+
+    /**
+     * Checks system env first, then falls back to dotenv
+     */
+    private String getEnvVar(String key, Dotenv dotenv) {
+        String val = System.getenv(key);
+        if (StringUtils.isNotEmpty(val)) {
+            return val;
+        }
+
+        return dotenv.get(key);
     }
 }

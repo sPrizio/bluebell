@@ -23,7 +23,7 @@ import java.util.Map;
  * Generates an email to notify that the app has started in development mode
  *
  * @author Stephen Prizio
- * @version 0.2.4
+ * @version 1.0.0
  */
 @Slf4j
 @Component
@@ -52,7 +52,11 @@ public class EmailRunner extends AbstractRunner implements CommandLineRunner, Or
         logStart();
 
         if (Boolean.parseBoolean(this.shouldNotify)) {
-            final String recipient = this.dotenv.get("EMAIL_APP_RECIPIENT");
+            String recipient = this.dotenv.get("EMAIL_APP_RECIPIENT");
+            if (StringUtils.isEmpty(recipient)) {
+                System.getenv("EMAIL_APP_RECIPIENT");
+            }
+
             if (StringUtils.isEmpty(recipient)) {
                 throw new IllegalStateException("EMAIL_APP_RECIPIENT is not set");
             }
