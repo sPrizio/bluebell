@@ -15,7 +15,7 @@ import moment from "moment";
 import { DateTime } from "@/lib/constants";
 import LoadingPage from "@/app/loading";
 import { logErrors } from "@/lib/functions/util-functions";
-import Error from "@/app/error";
+import ErrorPage from "@/app/error";
 import {
   Pagination,
   PaginationContent,
@@ -37,7 +37,7 @@ import BaseTableContainer from "@/components/Table/BaseTableContainer";
  * @param initialPageSize initial page size
  * @param initialPage initial page
  * @author Stephen Prizio
- * @version 0.2.4
+ * @version 0.2.6
  */
 export default function JobsTable({
   filters,
@@ -111,7 +111,7 @@ export default function JobsTable({
 
   if (isErrorJobs) {
     logErrors(jobsError);
-    return <Error />;
+    return <ErrorPage />;
   }
 
   const pages = pagedJobs?.totalPages ?? 0;

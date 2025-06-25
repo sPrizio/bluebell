@@ -1,6 +1,6 @@
 "use client";
 
-import { Icons } from "@/lib/enums";
+import { Icons, UserPrivilege } from "@/lib/enums";
 import { PageInfoProvider } from "@/lib/context/PageInfoProvider";
 import { useUserQuery } from "@/lib/hooks/query/queries";
 import BaseModal from "@/components/Modal/BaseModal";
@@ -9,19 +9,26 @@ import React from "react";
 import { BaseCard } from "@/components/Card/BaseCard";
 import LoadingPage from "@/app/loading";
 import { logErrors } from "@/lib/functions/util-functions";
-import Error from "@/app/error";
+import ErrorPage from "@/app/error";
 import PortfoliosTable from "@/components/Table/Portfolio/PortfoliosTable";
 import PortfolioForm from "@/components/Form/Portfolio/PortfolioForm";
 import { resolveIcon } from "@/lib/functions/util-component-functions";
+import { useSessionContext } from "@/lib/context/SessionContext";
 
 /**
  * The page that shows all of a user's portfolios
  *
  * @author Stephen Prizio
- * @version 0.2.2
+ * @version 0.2.6
  */
 export default function PortfoliosPage() {
-  const { data: user, isLoading, isError, error } = useUserQuery();
+  const session = useSessionContext();
+  const {
+    data: user,
+    isLoading,
+    isError,
+    error,
+  } = useUserQuery(session?.username ?? "");
 
   if (isLoading) {
     return <LoadingPage />;
@@ -29,7 +36,7 @@ export default function PortfoliosPage() {
 
   if (isError) {
     logErrors(error);
-    return <Error />;
+    return <ErrorPage />;
   }
 
   const activePortfolios = user?.portfolios?.filter((p) => p.active) ?? [];
@@ -39,6 +46,7 @@ export default function PortfoliosPage() {
     title: "Portfolios",
     subtitle: "A list of all of your trading account portfolios.",
     iconCode: Icons.Briefcase,
+    privilege: UserPrivilege.TRADER,
     breadcrumbs: [
       ...((activePortfolios?.length ?? 0) > 0
         ? [{ label: "Dashboard", href: "/dashboard", active: false }]

@@ -3,6 +3,7 @@ package com.bluebell.platform.models.api.dto.security;
 import com.bluebell.platform.models.api.dto.GenericDTO;
 import com.bluebell.platform.models.api.dto.portfolio.PortfolioDTO;
 import com.bluebell.platform.models.core.entities.security.User;
+import com.bluebell.platform.models.core.nonentities.data.EnumDisplay;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
 import lombok.Getter;
@@ -18,7 +19,7 @@ import java.util.List;
  * A DTO representation of a {@link User}
  *
  * @author Stephen Prizio
- * @version 0.2.4
+ * @version 0.2.6
  */
 @Setter
 @Getter
@@ -54,7 +55,7 @@ public class UserDTO implements GenericDTO {
     private List<PortfolioDTO> portfolios;
 
     @Schema(description = "User's privileges")
-    private List<String> roles;
+    private List<EnumDisplay> roles;
 
 
     //  METHODS

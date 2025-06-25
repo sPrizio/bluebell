@@ -2,7 +2,7 @@
 
 import { logErrors, selectNewAccount } from "@/lib/functions/util-functions";
 import React, { useState } from "react";
-import { Icons } from "@/lib/enums";
+import { Icons, UserPrivilege } from "@/lib/enums";
 import { BaseCard } from "@/components/Card/BaseCard";
 import {
   Select,
@@ -26,13 +26,13 @@ import { useRouter, useSearchParams } from "next/navigation";
 import ReusableSelect from "@/components/Input/ReusableSelect";
 import { validatePageQueryFlow } from "@/lib/functions/util-component-functions";
 import LoadingPage from "@/app/loading";
-import Error from "@/app/error";
+import ErrorPage from "@/app/error";
 
 /**
  * The page that shows an analysis of an account's performance
  *
  * @author Stephen Prizio
- * @version 0.2.4
+ * @version 0.2.6
  */
 export default function AnalysisPage() {
   const searchParams = useSearchParams();
@@ -71,13 +71,14 @@ export default function AnalysisPage() {
 
   if (hasMismatch || isError) {
     logErrors(error);
-    return <Error />;
+    return <ErrorPage />;
   }
 
   const pageInfo = {
     title: "Analysis",
     subtitle: `A more in-depth look at ${activeAccount?.name ?? ""}'s performance.`,
     iconCode: Icons.Search,
+    privilege: UserPrivilege.TRADER,
     breadcrumbs: [
       { label: "Dashboard", href: "/dashboard", active: false },
       { label: "Accounts", href: "/accounts", active: false },

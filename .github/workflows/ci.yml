@@ -71,6 +71,10 @@ jobs:
           cache: 'npm'
           cache-dependency-path: './flower/sepal/package-lock.json'
 
+      - name: "[sepal] - Inject Secrets into .env"
+        run: echo "AUTH_KEY=${{ secrets.SEPAL_AUTH_KEY }}" > .env
+        working-directory: './flower/sepal'
+
       - name: "[sepal] - Install Dependencies"
         run: npm ci
         working-directory: './flower/sepal'

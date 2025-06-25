@@ -15,7 +15,7 @@ import {
   useMarketPriceTimerIntervalQuery,
 } from "@/lib/hooks/query/queries";
 import { logErrors } from "@/lib/functions/util-functions";
-import Error from "@/app/error";
+import ErrorPage from "@/app/error";
 import { Trade } from "@/types/apiTypes";
 
 /**
@@ -23,7 +23,7 @@ import { Trade } from "@/types/apiTypes";
  *
  * @param trade trade
  * @author Stephen Prizio
- * @version 0.2.4
+ * @version 0.2.6
  */
 export default function TradeReviewCard({
   trade,
@@ -57,7 +57,7 @@ export default function TradeReviewCard({
 
   if (isIntervalError || isApexError) {
     logErrors(intervalError, apexError);
-    return <Error />;
+    return <ErrorPage />;
   }
 
   //  RENDER

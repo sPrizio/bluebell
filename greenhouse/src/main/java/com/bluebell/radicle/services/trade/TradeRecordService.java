@@ -183,13 +183,14 @@ public class TradeRecordService {
             });
 
             if (CollectionUtils.isNotEmpty(records)) {
+                final TradeRecordReport report = records.get(records.size() - 1).report();
                 final int trades = records.stream().mapToInt(tr -> tr.report().tradeRecordTotals().trades()).sum();
 
-                if (trades != 0) {
+                if (trades != 0 && CollectionUtils.isNotEmpty(report.tradeRecords())) {
                     entries.add(
                             TradeLogEntry
                                     .builder()
-                                    .start(records.get(records.size() - 1).report().tradeRecords().get(records.size() - 1).end())
+                                    .start(report.tradeRecords().get(report.tradeRecords().size() - 1).end())
                                     .end(records.get(0).report().tradeRecords().get(0).start())
                                     .records(records)
                                     .totals(

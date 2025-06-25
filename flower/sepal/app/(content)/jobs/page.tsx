@@ -1,7 +1,7 @@
 "use client";
 
 import { PageInfoProvider } from "@/lib/context/PageInfoProvider";
-import { Icons } from "@/lib/enums";
+import { Icons, UserPrivilege } from "@/lib/enums";
 import { BaseCard } from "@/components/Card/BaseCard";
 import { useState } from "react";
 import { UserJobControlSelection } from "@/types/uiTypes";
@@ -11,14 +11,14 @@ import { Button } from "@/components/ui/button";
 import JobsFilterDrawer from "@/components/Drawer/JobsFilterDrawer";
 import { useJobTypesQuery } from "@/lib/hooks/query/queries";
 import { logErrors } from "@/lib/functions/util-functions";
-import Error from "@/app/error";
+import ErrorPage from "@/app/error";
 import LoadingPage from "@/app/loading";
 
 /**
  * The page that shows the system's job executions
  *
  * @author Stephen Prizio
- * @version 0.2.4
+ * @version 0.2.6
  */
 export default function JobsPage() {
   const [pageSize, setPageSize] = useState(10);
@@ -45,6 +45,7 @@ export default function JobsPage() {
     subtitle:
       "A list of background and chronic processes executed by bluebell.",
     iconCode: Icons.Brain,
+    privilege: UserPrivilege.SYSTEM,
     breadcrumbs: [
       { label: "Dashboard", href: "/dashboard", active: false },
       {
@@ -61,7 +62,7 @@ export default function JobsPage() {
 
   if (isJobTypesError) {
     logErrors(jobTypesError);
-    return <Error />;
+    return <ErrorPage />;
   }
 
   //  RENDER

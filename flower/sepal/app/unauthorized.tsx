@@ -1,15 +1,15 @@
-import Link from "next/link";
-import { Button } from "@/components/ui/button";
 import { resolveIcon } from "@/lib/functions/util-component-functions";
 import { Icons } from "@/lib/enums";
+import Link from "next/link";
+import { Button } from "@/components/ui/button";
 
 /**
- * Renders the maintenance page
+ * Renders the unauthorized page
  *
  * @author Stephen Prizio
- * @version 0.2.2
+ * @version 0.2.6
  */
-export default function Maintenance() {
+export default function UnauthorizedPage() {
   //  RENDER
 
   return (
@@ -21,19 +21,20 @@ export default function Maintenance() {
       >
         <div className={"grid grid-cols-2 gap-6 items-center justify-center"}>
           <div className={"flex justify-center"}>
-            {resolveIcon(Icons.BarrierBlock, "text-orange-500", 200)}
+            {resolveIcon(Icons.LockFilled, "text-primaryRed", 200)}
           </div>
           <div className={""}>
-            <div className={"text-6xl font-semibold pb-6 text-black"}>
-              Break Time
-            </div>
+            <div className={"text-8xl font-semibold pb-6 text-black"}>401</div>
             <div className={"text-2xl font-semibold pb-3 text-black"}>
-              Hello friend!
+              Hello, Infiltrator
             </div>
             <div className={"pb-3 text-black"}>
-              Unfortunately we cannot serve you at this time, but rest assured!
-              We are hard at work, and we&apos;ll be back soon!
+              You do not possess sufficient privileges to view this page. Please
+              return to the dashboard.
             </div>
+            <Link href={"/dashboard"}>
+              <Button className={"bg-primary text-white"}>Dashboard</Button>
+            </Link>
           </div>
         </div>
       </div>

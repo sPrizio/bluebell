@@ -59,6 +59,7 @@ export enum Icons {
   Upload = "upload",
   ShieldCheckFilled = "shield-check-filled",
   HexagonLetterXFilled = "hexagon-letter-x-filled",
+  LockFilled = "lock-filled",
 }
 
 /**
@@ -85,4 +86,10 @@ export class AggregateInterval {
         return this.YEARLY;
     }
   }
+}
+
+export enum UserPrivilege {
+  TRADER = "TRADER",
+  ADMINISTRATOR = "ADMINISTRATOR",
+  SYSTEM = "SYSTEM",
 }

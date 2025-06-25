@@ -34,7 +34,7 @@ import {
 } from "@/components/ui/tooltip";
 import { usePagedTransactionsQuery } from "@/lib/hooks/query/queries";
 import { UserTransactionControlSelection } from "@/types/uiTypes";
-import Error from "@/app/error";
+import ErrorPage from "@/app/error";
 import LoadingPage from "@/app/loading";
 import {
   Pagination,
@@ -56,7 +56,7 @@ import {
  * @param showActions shows the modification actions
  * @param showBottomLink show table caption
  * @author Stephen Prizio
- * @version 0.2.5
+ * @version 0.2.6
  */
 export default function AccountTransactionsTable({
   account,
@@ -122,7 +122,7 @@ export default function AccountTransactionsTable({
   //  RENDER
 
   if (!account) {
-    return <Error />;
+    return <ErrorPage />;
   }
 
   if (isPagedTransactionsLoading) {
@@ -131,7 +131,7 @@ export default function AccountTransactionsTable({
 
   if (isPagedTransactionsError) {
     logErrors(pagedTransactionsError);
-    return <Error />;
+    return <ErrorPage />;
   }
 
   const pages = pagedTransactions?.totalPages ?? 0;

@@ -36,6 +36,7 @@ import {
   IconHexagonLetterXFilled,
   IconInfoSquareRoundedFilled,
   IconLayoutDashboard,
+  IconLockFilled,
   IconLogout,
   IconLogs,
   IconMailFilled,
@@ -83,7 +84,7 @@ import td from "@/app/assets/brokers/td.png";
 import LoadingPage from "@/app/loading";
 import { redirect } from "next/navigation";
 import { logErrors } from "@/lib/functions/util-functions";
-import Error from "@/app/error";
+import ErrorPage from "@/app/error";
 import { Portfolio } from "@/types/apiTypes";
 
 /**
@@ -221,6 +222,8 @@ export function resolveIcon(iconCode: string, className = "", iconSize = 24) {
       return <IconShieldCheckFilled className={className} size={iconSize} />;
     case Icons.HexagonLetterXFilled:
       return <IconHexagonLetterXFilled className={className} size={iconSize} />;
+    case Icons.LockFilled:
+      return <IconLockFilled className={className} size={iconSize} />;
     default:
       return <span>-</span>;
   }
@@ -390,6 +393,6 @@ export function validatePageQueryFlow(
 
   if (hasMismatch || isError) {
     logErrors("User and portfolio mismatch!", error);
-    return <Error />;
+    return <ErrorPage />;
   }
 }
