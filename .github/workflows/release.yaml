@@ -86,6 +86,7 @@ jobs:
           BASE_API_VERSION=${{ secrets[ format('FLOWER_BASE_API_VERSION_{0}', env.UPPER_ENV) ] }}
           NEXT_PUBLIC_BASE_API_DOMAIN=${{ secrets[ format('FLOWER_BASE_API_DOMAIN_{0}', env.UPPER_ENV) ] }}
           NEXT_PUBLIC_BASE_API_VERSION=${{ secrets[ format('FLOWER_BASE_API_VERSION_{0}', env.UPPER_ENV) ] }}
+          AUTH_KEY=${{ secrets.SEPAL_AUTH_KEY }}
           EOF
 
       - name: "[bluebell] - Build Docker Image"
