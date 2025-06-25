@@ -182,7 +182,6 @@ export const useImportTradesMutation = (accNumber: number) => {
       const formData = new FormData();
       formData.append("file", payload.filename[0] ?? "");
       formData.append("fileName", payload.filename[0].name ?? "");
-      console.log(payload.filename[0]);
 
       return postFile<boolean>(
         ApiUrls.Internal.Trade.Import,
@@ -195,6 +194,7 @@ export const useImportTradesMutation = (accNumber: number) => {
     },
     onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: ["user"] });
+      queryClient.invalidateQueries({ queryKey: ["account"] });
     },
   });
 };

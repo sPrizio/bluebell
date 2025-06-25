@@ -15,6 +15,7 @@ import { logErrors } from "@/lib/functions/util-functions";
 import ErrorPage from "@/app/error";
 import { resolveIcon } from "@/lib/functions/util-component-functions";
 import { useSessionContext } from "@/lib/context/SessionContext";
+import { EnumDisplay } from "@/types/apiTypes";
 
 /**
  * Renders the user profile page
@@ -38,12 +39,13 @@ export default function ProfilePage() {
    *
    * @param vals roles
    */
-  function formatRoles(vals: string[]) {
+  function formatRoles(vals: EnumDisplay[]) {
     return (
       vals
         ?.map(
           (val) =>
-            val.substring(0, 1).toUpperCase() + val.substring(1).toLowerCase(),
+            val.label.substring(0, 1).toUpperCase() +
+            val.label.substring(1).toLowerCase(),
         )
         .join(" \u00B7 ") ?? ""
     );

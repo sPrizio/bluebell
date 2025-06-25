@@ -95,7 +95,7 @@ export const useRecentTransactionsQuery = () => {
 
 export const useTradeLogQuery = () => {
   const from = moment().subtract(8, "days").format(DateTime.ISODateFormat);
-  const to = moment().format(DateTime.ISODateFormat);
+  const to = moment().add(1, "days").format(DateTime.ISODateFormat);
 
   const params = {
     start: from,

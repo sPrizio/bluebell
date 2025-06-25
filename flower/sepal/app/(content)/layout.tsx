@@ -33,7 +33,7 @@ export default function ContentPageLayout({
   } = useSessionQuery();
 
   useEffect(() => {
-    if (AUTH_ENABLED && !(session?.isLoggedIn ?? false)) {
+    if (AUTH_ENABLED && !isSessionLoading && !(session?.isLoggedIn ?? false)) {
       router.replace("/login");
     }
   }, [router, session]);
