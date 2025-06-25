@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useEffect } from "react";
 import { ContentLayout } from "@/components/ui/admin-panel/content-layout";
 import AdminPanelLayout from "@/components/ui/admin-panel/admin-panel-layout";
 import { Toaster } from "@/components/ui/toaster";
@@ -32,6 +32,12 @@ export default function ContentPageLayout({
     error: sessionError,
   } = useSessionQuery();
 
+  useEffect(() => {
+    if (AUTH_ENABLED && !(session?.isLoggedIn ?? false)) {
+      router.replace("/login");
+    }
+  }, [router, session]);
+
   if (isSessionError) {
     logErrors(sessionError);
     return <ErrorPage />;
@@ -39,10 +45,6 @@ export default function ContentPageLayout({
 
   if (isSessionLoading) {
     return <LoadingPage />;
-  }
-
-  if (AUTH_ENABLED && !(session?.isLoggedIn ?? false)) {
-    router.replace("/login");
   }
 
   return (

@@ -34,6 +34,9 @@ import {
   useLoginMutation,
 } from "@/lib/hooks/query/mutations";
 import { useRouter } from "next/navigation";
+import { useSessionContext } from "@/lib/context/SessionContext";
+import { useSessionQuery } from "@/lib/hooks/query/queries";
+import ErrorPage from "@/app/error";
 
 /**
  * Renders the login page
@@ -43,6 +46,12 @@ import { useRouter } from "next/navigation";
  */
 export default function Login() {
   const { toast } = useToast();
+  const {
+    data: session,
+    isLoading: isSessionLoading,
+    isError: isSessionError,
+    error: sessionError,
+  } = useSessionQuery();
   const router = useRouter();
   const [success, setSuccess] = useState<"success" | "failed" | "undefined">(
     "undefined",
@@ -97,10 +106,10 @@ export default function Login() {
     error: takenError,
   } = useIsUserTakenMutation();
 
-  const isLoading = isLoggingIn || isTakenPending;
+  const isLoading = isLoggingIn || isTakenPending || isSessionLoading;
 
   useEffect(() => {
-    if (hasLoggedIn) {
+    if (hasLoggedIn || session?.isLoggedIn) {
       router.push("/dashboard");
     } else if (couldNotLogIn) {
       logErrors(loginError);
@@ -110,7 +119,7 @@ export default function Login() {
         variant: "danger",
       });
     }
-  }, [hasLoggedIn, couldNotLogIn]);
+  }, [hasLoggedIn, couldNotLogIn, session]);
 
   //  GENERAL FUNCTIONS
 
@@ -222,6 +231,11 @@ export default function Login() {
 
   if (!AUTH_ENABLED) {
     router.replace("/dashboard");
+  }
+
+  if (isSessionError) {
+    logErrors(sessionError);
+    return <ErrorPage />;
   }
 
   return (

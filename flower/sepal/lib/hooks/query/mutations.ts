@@ -11,15 +11,13 @@ export const useLoginMutation = () => {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),
-      })
-        .then(async (res) => {
-          if (!res.ok) {
-            const error = await res.json();
-            throw new Error(error.error ?? "Login failed");
-          }
-          return res.json();
-        })
-        .catch((e) => console.error("error occurred", e)),
+      }).then(async (res) => {
+        if (!res.ok) {
+          const error = await res.json();
+          throw new Error(error.error ?? "Login failed");
+        }
+        return res.json();
+      }),
     onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: ["session"] });
     },
