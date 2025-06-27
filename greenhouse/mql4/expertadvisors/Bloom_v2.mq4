@@ -5,7 +5,7 @@
 //+------------------------------------------------------------------+
 #property copyright "Stephen Prizio"
 #property link      "https://www.bluebell.com"
-#property version   "1.10"
+#property version   "2.00"
 #property strict
 
 enum tradeSignal {
@@ -17,7 +17,7 @@ enum tradeSignal {
 
 input bool online = true;
 input double lotSize = 0.01;
-input double stopLoss = 3.0;
+input double stopLossPercentage = 3.0;
 input bool allowMultipleTrades = false;
 
 // Global Variables
@@ -75,9 +75,6 @@ void OnBar() {
 
    if (online) {
       TrailStopLoss();
-
-      // TODO: look into stagnating bars as an exit criteria. Use the Dow Jones as an example
-
       if (allowMultipleTrades) {
          Trade();
       } else if (!HasOpenTrades()) {
@@ -201,7 +198,7 @@ void TrailStopLoss() {
          continue;
       }
 
-      double slDistance = currentPrice * (stopLoss / 100.0);
+      double slDistance = currentPrice * (stopLossPercentage / 100.0);
       double newSL;
 
       if (type == OP_BUY) {
@@ -212,8 +209,8 @@ void TrailStopLoss() {
 
       // Only tighten SL
       double currentSL = OrderStopLoss();
-      //bool shouldUpdate = (type == OP_BUY && (currentSL == 0 || newSL > currentSL)) || (type == OP_SELL && (currentSL == 0 || newSL < currentSL));
-      if (/*shouldUpdate && */MathAbs(OrderStopLoss() - newSL) > Point) {
+      bool shouldUpdate = (type == OP_BUY && (currentSL == 0 || newSL > currentSL)) || (type == OP_SELL && (currentSL == 0 || newSL < currentSL));
+      if (shouldUpdate && MathAbs(OrderStopLoss() - newSL) > Point) {
          bool modified = OrderModify(OrderTicket(), OrderOpenPrice(), newSL, OrderTakeProfit(), 0, clrRed);
          if (!modified) {
             Print("Failed to update SL for ticket #", OrderTicket(), ": ", GetLastError());
@@ -245,28 +242,28 @@ bool HasOpenTrades() {
 
 
 /*
-   Control Statistics. Sprout Version 1.0
-   As of January 1st, 2025 (exclusive)
+   Control Statistics. Bloom Version 2.0 (S&P 500)
+   Account Balance: $10,000
+   As of June 27th, 2025 (exclusive)
    Parameters:
       online = true;
-      lotSize = 0.25;
-      tradesLimit = 3;
+      lotSize = 0.04;
+      stopLossPercentage = 1.5;
+      allowMultipleTrades = false;
 
       // Global Variables
-      activeTradeId = -1;
-      slippage = 10;
-      globalTime;
-      canTrade = false;
-      tradesToday = 0;
-      activeAtr = -1.0;
+      int activeTradeId = -1;
+      int slippage = 10;
+      datetime globalTime;
+      bool canTrade = false;
 */
 /*
    +------------------------------------------------------------------+
-   | Trades                                                        428 |
-   | Net Profit                                             $23,981.70 |
-   | Profitability                                                1.53 |
-   | Win %                                                      51.17% |
-   | Max Drawdown                                   $3,950.80 (10.92%) |
-   | Relative Drawdown                              $3,950.80 (10.92%) |
+   | Trades                                                         23 |
+   | Net Profit                                              $2,640.76 |
+   | Profitability                                                3.65 |
+   | Win %                                                      60.87% |
+   | Max Drawdown                                      $747.94 (6.53%) |
+   | Relative Drawdown                                 $747.94 (6.53%) |
    +------------------------------------------------------------------+
 */
