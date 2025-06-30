@@ -6,6 +6,7 @@ import lombok.experimental.UtilityClass;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.File;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
@@ -13,7 +14,7 @@ import java.nio.file.Paths;
  * Utility class for file and directory operations
  *
  * @author Stephen Prizio
- * @version 0.1.8
+ * @version 1.0.0
  */
 @Slf4j
 @UtilityClass
@@ -62,21 +63,27 @@ public class DirectoryUtil {
      */
     public static String getBaseProjectDirectory() {
 
-        Path currentPath = Paths.get(new File("").getAbsoluteFile().getPath());
-        if (currentPath.endsWith("/app")) {
-            return currentPath.toAbsolutePath() + "/greenhouse";
+        Path currentPath = Paths.get("").toAbsolutePath();
+        if (currentPath.getFileName().toString().equals("greenhouse") && Files.exists(currentPath.resolve("pom.xml"))) {
+            return currentPath.toString();
         }
 
-        if (currentPath.endsWith("bluebell")) {
-            return currentPath + File.separator + "greenhouse";
+        Path possibleSubdir = currentPath.resolve("greenhouse");
+        if (Files.exists(possibleSubdir.resolve("pom.xml"))) {
+            return possibleSubdir.toString();
         }
 
-        while (!currentPath.endsWith("greenhouse")) {
+        while (currentPath != null) {
+            if (currentPath.getFileName().toString().equals("greenhouse") && Files.exists(currentPath.resolve("pom.xml"))) {
+                return currentPath.toString();
+            }
+
             currentPath = currentPath.getParent();
         }
 
-        return currentPath.toAbsolutePath().toString();
+        throw new IllegalStateException("Unable to find base project directory");
     }
+
 
     /**
      * Returns the path to the base project's testing resources
@@ -100,7 +107,7 @@ public class DirectoryUtil {
     /**
      * Returns the path to a particular {@link DataSource}'s data root
      *
-     * @param dataRoot ingress root
+     * @param dataRoot   ingress root
      * @param dataSource {@link DataSource}
      * @return path
      */
