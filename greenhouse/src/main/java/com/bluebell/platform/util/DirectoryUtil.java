@@ -64,7 +64,7 @@ public class DirectoryUtil {
     public static String getBaseProjectDirectory() {
 
         Path currentPath = Paths.get("").toAbsolutePath();
-        if (currentPath.getFileName().toString().equals("greenhouse") && Files.exists(currentPath.resolve("pom.xml"))) {
+        if (Files.exists(currentPath.resolve("pom.xml"))) {
             return currentPath.toString();
         }
 
@@ -73,15 +73,16 @@ public class DirectoryUtil {
             return possibleSubdir.toString();
         }
 
-        while (currentPath != null) {
-            if (currentPath.getFileName().toString().equals("greenhouse") && Files.exists(currentPath.resolve("pom.xml"))) {
-                return currentPath.toString();
+        Path pathToCheck = currentPath.getParent();
+        while (pathToCheck != null) {
+            if (Files.exists(pathToCheck.resolve("pom.xml"))) {
+                return pathToCheck.toString();
             }
 
-            currentPath = currentPath.getParent();
+            pathToCheck = pathToCheck.getParent();
         }
 
-        throw new IllegalStateException("Unable to find base project directory");
+        throw new IllegalStateException("Unable to find base project directory with pom.xml");
     }
 
 
