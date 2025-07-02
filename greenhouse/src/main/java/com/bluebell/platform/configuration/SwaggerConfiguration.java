@@ -13,7 +13,7 @@ import java.util.List;
  * Configuration for Swagger documentation
  *
  * @author Stephen Prizio
- * @version 0.2.4
+ * @version 1.0.0
  */
 @Configuration
 public class SwaggerConfiguration {
@@ -31,12 +31,12 @@ public class SwaggerConfiguration {
 
         Info information = new Info()
                 .title("bluebell - Greenhouse API")
-                .version("0.2.4")
+                .version("1.0.0")
                 .description(
                         """
                         bluebell Wealth Management is a software system designed to track trading accounts and their performance, as well as evaluate trading strategies in order to evolve and adapt strategies
                         to maintain their effectiveness. bluebell comprises both a front-end project (flower) and back-end project (greenhouse), each comprises numerous modules, each with different functionalities. bluebell is
-                        built on a MariaDB ORM and is integrated with React.js and Java Spring Boot.
+                        built on a PostgreSQL ORM and is integrated with React.js and Java Spring Boot.
                         """
                 )
                 .contact(myContact);

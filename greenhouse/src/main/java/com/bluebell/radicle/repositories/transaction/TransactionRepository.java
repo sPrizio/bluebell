@@ -21,7 +21,7 @@ import java.util.List;
  * Data-access later for {@link Transaction} entities
  *
  * @author Stephen Prizio
- * @version 0.2.5
+ * @version 1.0.0
  */
 @Repository
 public interface TransactionRepository extends PagingAndSortingRepository<Transaction, Long>, CrudRepository<Transaction, Long> {
@@ -156,14 +156,7 @@ public interface TransactionRepository extends PagingAndSortingRepository<Transa
                     :transactionAmount,
                     :accountId
                 )
-                ON DUPLICATE KEY UPDATE
-                    transaction_number = :transactionNumber,
-                    transaction_type = :transactionType,
-                    transaction_date = :transactionDate,
-                    transaction_name = :transactionName,
-                    transaction_status = :transactionStatus,
-                    transaction_amount = :transactionAmount,
-                    account_id = :accountId
+                ON CONFLICT (transaction_number, account_id) DO NOTHING
             """, nativeQuery = true)
     int upsertTransaction(
             @Param("transactionNumber") long transactionNumber,

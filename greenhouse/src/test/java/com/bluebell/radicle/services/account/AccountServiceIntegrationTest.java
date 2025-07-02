@@ -1,6 +1,7 @@
 package com.bluebell.radicle.services.account;
 
 import com.bluebell.AbstractGenericTest;
+import com.bluebell.configuration.BluebellTestConfiguration;
 import com.bluebell.platform.constants.CorePlatformConstants;
 import com.bluebell.platform.models.api.dto.account.CreateUpdateAccountTradingDataDTO;
 import com.bluebell.platform.models.api.dto.trade.CreateUpdateTradeDTO;
@@ -19,6 +20,8 @@ import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.annotation.Import;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.time.LocalDateTime;
@@ -32,13 +35,17 @@ import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
  * Testing integrations for {@link AccountService}
  *
  * @author Stephen Prizio
- * @version 0.2.4
+ * @version 1.0.0
  */
+@Import(BluebellTestConfiguration.class)
 @SpringBootTest
 @RunWith(SpringRunner.class)
 class AccountServiceIntegrationTest extends AbstractGenericTest {
 
     private Account account;
+
+    @Autowired
+    private JdbcTemplate jdbcTemplate;
 
     @Autowired
     private AccountRepository accountRepository;
@@ -57,6 +64,7 @@ class AccountServiceIntegrationTest extends AbstractGenericTest {
 
     @BeforeEach
     void setUp() {
+        this.jdbcTemplate.execute("TRUNCATE TABLE accounts RESTART IDENTITY CASCADE");
         final Account acc = generateTestAccount();
         acc.setId(null);
         this.account = this.accountRepository.save(acc);

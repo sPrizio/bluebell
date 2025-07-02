@@ -28,11 +28,6 @@
         <option name="INCLUDE" value="false" />
       </pattern>
       <pattern>
-        <option name="PATTERN" value="com.bluebell.platform.configuration.*" />
-        <option name="ENABLED" value="true" />
-        <option name="INCLUDE" value="false" />
-      </pattern>
-      <pattern>
         <option name="PATTERN" value="com.bluebell.platform.constants.*" />
         <option name="ENABLED" value="true" />
         <option name="INCLUDE" value="false" />
@@ -106,6 +101,10 @@
         <option name="PATTERN" value="com.bluebell.radicle.integration.models.*" />
         <option name="ENABLED" value="true" />
         <option name="INCLUDE" value="false" />
+      </pattern>
+      <pattern>
+        <option name="PATTERN" value="com.bluebell.configuration.*" />
+        <option name="ENABLED" value="true" />
       </pattern>
       <pattern>
         <option name="PATTERN" value="com.bluebell.radicle.importing.models.*" />

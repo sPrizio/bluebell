@@ -26,13 +26,13 @@ import java.util.TreeSet;
  * Job that fetches market data from firstratedata
  *
  * @author Stephen Prizio
- * @version 0.2.4
+ * @version 1.0.0
  */
 @Slf4j
 @Component
 public class FetchMarketDataFromFirstRateDataScheduledJob extends AbstractScheduledJob implements GenericScheduledJob<Enum<JobType>> {
 
-    @Value("${bluebell.frd.fullSet.fileUrlIDs}")
+    @Value("${bluebell.frd.currentSet.fileUrlIDs}")
     private String fullSet;
 
     @Autowired
