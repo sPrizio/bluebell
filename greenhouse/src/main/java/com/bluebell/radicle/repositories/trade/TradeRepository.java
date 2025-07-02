@@ -21,7 +21,7 @@ import java.util.List;
  * Data-access layer for {@link Trade} entities
  *
  * @author Stephen Prizio
- * @version 0.2.0
+ * @version 1.0.0
  */
 @Repository
 public interface TradeRepository extends PagingAndSortingRepository<Trade, Long>, CrudRepository<Trade, Long> {
@@ -166,18 +166,7 @@ public interface TradeRepository extends PagingAndSortingRepository<Trade, Long>
                     :takeProfit,
                     :accountId
                 )
-                ON DUPLICATE KEY UPDATE
-                    product = :product,
-                    trade_platform = :tradePlatform,
-                    trade_type = :tradeType,
-                    trade_open_time = :tradeOpenTime,
-                    trade_close_time = :tradeCloseTime,
-                    lot_size = :lotSize,
-                    open_price = :openPrice,
-                    close_price = :closePrice,
-                    net_profit = :netProfit,
-                    stop_loss = :stopLoss,
-                    take_profit = :takeProfit
+                ON CONFLICT (trade_id, account_id) DO NOTHING
             """, nativeQuery = true)
     int upsertTrade(
             @Param("tradeId") String tradeId,

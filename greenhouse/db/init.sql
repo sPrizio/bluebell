@@ -1,4 +1,4 @@
-CREATE DATABASE IF NOT EXISTS bluebell;
-CREATE USER IF NOT EXISTS 'admin'@'%' IDENTIFIED BY 'nimda';
-GRANT ALL PRIVILEGES ON bluebell.* TO 'admin'@'%';
-FLUSH PRIVILEGES;
+CREATE DATABASE bluebell;
+
+-- Grant all privileges to the `postgres` user on the bluebell database
+GRANT ALL PRIVILEGES ON DATABASE bluebell TO postgres;

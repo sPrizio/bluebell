@@ -1,20 +1,21 @@
 services:
   db:
-    image: mariadb:11.7-rc
+    image: postgres:16
     environment:
-      - MYSQL_ROOT_PASSWORD=admin
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=admin
+      - POSTGRES_DB=bluebell
     volumes:
-      - mariadb-data:/var/lib/mysql
+      - postgres-data:/var/lib/postgresql/data
       - ./greenhouse/db/init.sql:/docker-entrypoint-initdb.d/init.sql
     ports:
-      - "3307:3306" # changing 3306 on host machine to 3307
+      - "3307:5432"
     healthcheck:
-      test: ["CMD", "mariadb-admin" ,"ping", "-h", "db", "--password=admin"]
+      test: [ "CMD", "pg_isready", "-U", "postgres" ]
       interval: 10s
       timeout: 5s
       retries: 5
       start_period: 10s
-    restart: always
 
   greenhouse:
     build:
@@ -61,4 +62,4 @@ services:
       greenhouse:
         condition: service_started
 volumes:
-  mariadb-data:
+  postgres-data:
