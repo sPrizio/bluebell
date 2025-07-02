@@ -17,7 +17,7 @@
 
 ---
 
-***bluebell Capital*** specializes in software systems that trade equities algorithmically and provides specialized tracking for trading accounts and their performance. Additionally, bluebell provides evaluating trading strategies capabilties in order to evolve and adapt strategies to maintain their effectiveness. bluebell comprises both a front-end project (flower) and back-end project (greenhouse), each comprising numerous modules, each with different functionalities. bluebell is built on a MariaDB ORM and is integrated with NextJs, Java Spring Boot & Docker.
+***bluebell Capital*** specializes in software systems that trade equities algorithmically and provides specialized tracking for trading accounts and their performance. Additionally, bluebell provides evaluating trading strategies capabilities in order to evolve and adapt strategies to maintain their effectiveness. bluebell comprises both a front-end project (flower) and back-end project (greenhouse), each comprising numerous modules, each with different functionalities. bluebell is built on a PostgreSQL ORM and is integrated with NextJs, Java Spring Boot & Docker.
 
 Dependencies & Integrations
 - **NextJs**: Core front-end functionality built on React.js

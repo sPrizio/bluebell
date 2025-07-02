@@ -1,4 +1,8 @@
-CREATE DATABASE bluebell;
-
--- Grant all privileges to the `postgres` user on the bluebell database
-GRANT ALL PRIVILEGES ON DATABASE bluebell TO postgres;
+DO
+$$
+BEGIN
+   IF NOT EXISTS (SELECT FROM pg_database WHERE datname = 'bluebell') THEN
+      CREATE DATABASE bluebell;
+END IF;
+END
+$$;
