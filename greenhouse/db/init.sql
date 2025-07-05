@@ -1,4 +1,8 @@
-CREATE DATABASE IF NOT EXISTS bluebell;
-CREATE USER IF NOT EXISTS 'admin'@'%' IDENTIFIED BY 'nimda';
-GRANT ALL PRIVILEGES ON bluebell.* TO 'admin'@'%';
-FLUSH PRIVILEGES;
+DO
+$$
+BEGIN
+   IF NOT EXISTS (SELECT FROM pg_database WHERE datname = 'bluebell') THEN
+      CREATE DATABASE bluebell;
+END IF;
+END
+$$;

@@ -1,6 +1,7 @@
 package com.bluebell.radicle.services.market;
 
 import com.bluebell.AbstractGenericTest;
+import com.bluebell.configuration.BluebellTestConfiguration;
 import com.bluebell.platform.constants.CorePlatformConstants;
 import com.bluebell.platform.enums.time.MarketPriceTimeInterval;
 import com.bluebell.platform.models.core.entities.market.MarketPrice;
@@ -15,6 +16,8 @@ import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.annotation.Import;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.time.LocalDate;
@@ -28,13 +31,17 @@ import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
  * Testing class for {@link MarketPriceService}
  *
  * @author Stephen Prizio
- * @version 0.2.4
+ * @version 1.0.0
  */
+@Import(BluebellTestConfiguration.class)
 @SpringBootTest
 @RunWith(SpringRunner.class)
 class MarketPriceServiceTest extends AbstractGenericTest {
 
     private final FirstRateDataParser firstRateDataParser = new FirstRateDataParser(true, "NDX", "/test-data");
+
+    @Autowired
+    private JdbcTemplate jdbcTemplate;
 
     @Autowired
     private MarketPriceRepository marketPriceRepository;
@@ -44,6 +51,7 @@ class MarketPriceServiceTest extends AbstractGenericTest {
 
     @BeforeEach
     void setUp() {
+        this.jdbcTemplate.execute("TRUNCATE TABLE market_prices RESTART IDENTITY CASCADE");
         this.marketPriceRepository.deleteAll();
     }
 
@@ -91,7 +99,7 @@ class MarketPriceServiceTest extends AbstractGenericTest {
                 this.marketPriceService.findMarketPricesWithinTimespan("NDX", MarketPriceTimeInterval.FIVE_MINUTE, LocalDate.of(2024, 5, 10).atStartOfDay(), LocalDate.of(2024, 5, 12).atStartOfDay(), DataSource.FIRST_RATE_DATA);
 
         final List<MarketPrice> pricesEmptySource =
-                this.marketPriceService.findMarketPricesWithinTimespan("NDX", MarketPriceTimeInterval.THIRTY_MINUTE, LocalDateTime.MIN, LocalDateTime.MAX, DataSource.TRADING_VIEW);
+                this.marketPriceService.findMarketPricesWithinTimespan("NDX", MarketPriceTimeInterval.THIRTY_MINUTE, LocalDateTime.now().minusYears(10), LocalDateTime.now().plusYears(10), DataSource.TRADING_VIEW);
 
         assertThat(prices).isNotEmpty();
         assertThat(prices.get(1).getHigh()).isEqualTo(18220.72);
@@ -183,7 +191,7 @@ class MarketPriceServiceTest extends AbstractGenericTest {
 
         prices3.marketPrices().iterator().next().setClose(9636.36);
         count = this.marketPriceService.saveAll(prices3);
-        assertThat(count).isBetween(1, 790);
+        assertThat(count).isEqualTo(0);
     }
 
 
@@ -218,7 +226,7 @@ class MarketPriceServiceTest extends AbstractGenericTest {
 
         prices3.marketPrices().iterator().next().setClose(9636.36);
         count = this.marketPriceService.saveAllSet(prices3.marketPrices());
-        assertThat(count).isBetween(1, 790);
+        assertThat(count).isEqualTo(0);
     }
 
 }

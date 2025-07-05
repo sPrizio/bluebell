@@ -1,6 +1,7 @@
 package com.bluebell.radicle.services.export;
 
 import com.bluebell.AbstractGenericTest;
+import com.bluebell.configuration.BluebellTestConfiguration;
 import com.bluebell.platform.constants.CorePlatformConstants;
 import com.bluebell.platform.enums.time.MarketPriceTimeInterval;
 import com.bluebell.platform.models.core.nonentities.market.AggregatedMarketPrices;
@@ -16,6 +17,8 @@ import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.annotation.Import;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.io.File;
@@ -30,13 +33,17 @@ import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
  * Testing class for {@link MetaTrader4ExportService}
  *
  * @author Stephen Prizio
- * @version 0.1.8
+ * @version 1.0.0
  */
+@Import(BluebellTestConfiguration.class)
 @SpringBootTest
 @RunWith(SpringRunner.class)
 class MetaTrader4ExportServiceTest extends AbstractGenericTest {
 
     private final FirstRateDataParser firstRateDataParser = new FirstRateDataParser(true, "NDX", "/test-data");
+
+    @Autowired
+    private JdbcTemplate jdbcTemplate;
 
     @Autowired
     private MarketPriceRepository marketPriceRepository;
@@ -49,6 +56,7 @@ class MetaTrader4ExportServiceTest extends AbstractGenericTest {
 
     @BeforeEach
     void setUp() {
+        this.jdbcTemplate.execute("TRUNCATE TABLE accounts, trades, transactions RESTART IDENTITY CASCADE");
         this.marketPriceRepository.deleteAll();
     }
 

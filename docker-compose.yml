@@ -1,20 +1,21 @@
 services:
   db:
-    image: mariadb:11.7-rc
+    image: postgres:16
     environment:
-      - MYSQL_ROOT_PASSWORD=admin
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=admin
+      - POSTGRES_DB=bluebell
     volumes:
-      - mariadb-data:/var/lib/mysql
+      - postgres-data:/var/lib/postgresql/data
       - ./greenhouse/db/init.sql:/docker-entrypoint-initdb.d/init.sql
     ports:
-      - "3307:3306" # changing 3306 on host machine to 3307
+      - "3307:5432"
     healthcheck:
-      test: ["CMD", "mariadb-admin" ,"ping", "-h", "db", "--password=admin"]
+      test: [ "CMD", "pg_isready", "-U", "postgres" ]
       interval: 10s
       timeout: 5s
       retries: 5
       start_period: 10s
-    restart: always
 
   greenhouse:
     build:
@@ -26,9 +27,9 @@ services:
     ports:
       - "8080:8080"
     environment:
-      - SPRING_DATASOURCE_URL=jdbc:mariadb://db:3306/bluebell
-      - SPRING_DATASOURCE_USERNAME=admin
-      - SPRING_DATASOURCE_PASSWORD=nimda
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/bluebell
+      - SPRING_DATASOURCE_USERNAME=postgres
+      - SPRING_DATASOURCE_PASSWORD=admin
       - SPRING_PROFILES_ACTIVE=${SPRING_PROFILE:-staging}
     depends_on:
       db:
@@ -61,4 +62,4 @@ services:
       greenhouse:
         condition: service_started
 volumes:
-  mariadb-data:
+  postgres-data:
