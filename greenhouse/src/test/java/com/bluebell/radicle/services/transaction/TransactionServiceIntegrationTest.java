@@ -1,6 +1,7 @@
 package com.bluebell.radicle.services.transaction;
 
 import com.bluebell.AbstractGenericTest;
+import com.bluebell.configuration.BluebellTestConfiguration;
 import com.bluebell.platform.constants.CorePlatformConstants;
 import com.bluebell.platform.enums.transaction.TransactionStatus;
 import com.bluebell.platform.models.core.entities.account.Account;
@@ -14,6 +15,8 @@ import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.annotation.Import;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.List;
@@ -25,13 +28,17 @@ import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
  * Testing class for integrations within {@link TransactionService}
  *
  * @author Stephen Prizio
- * @version 0.2.5
+ * @version 1.0.0
  */
+@Import(BluebellTestConfiguration.class)
 @SpringBootTest
 @RunWith(SpringRunner.class)
 class TransactionServiceIntegrationTest extends AbstractGenericTest {
 
     private Account account;
+
+    @Autowired
+    private JdbcTemplate jdbcTemplate;
 
     @Autowired
     private AccountRepository accountRepository;
@@ -44,6 +51,7 @@ class TransactionServiceIntegrationTest extends AbstractGenericTest {
 
     @BeforeEach
     void setUp() {
+        this.jdbcTemplate.execute("TRUNCATE TABLE transactions RESTART IDENTITY CASCADE");
         final Account acc = generateTestAccount();
         acc.setId(null);
         this.account = this.accountRepository.save(acc);
@@ -88,7 +96,7 @@ class TransactionServiceIntegrationTest extends AbstractGenericTest {
         transaction1.setTransactionStatus(TransactionStatus.FAILED);
         transaction1.setAmount(23.45);
 
-        assertThat(this.transactionService.saveAll(List.of(transaction1, transaction2), this.account)).isEqualTo(2);
+        assertThat(this.transactionService.saveAll(List.of(transaction1, transaction2), this.account)).isZero();
         assertThat(this.transactionRepository.count()).isEqualTo(2);
     }
 }
