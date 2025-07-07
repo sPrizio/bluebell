@@ -1,6 +1,6 @@
 name: Wiki suggestion
 description: All issues related to the wiki documentation, mainly corrections and ideas
-labels: ["documentation", "bluebell", "assistance"]
+labels: ["documentation", "bluebell", "assistance", "needs triage"]
 body:
   - type: input
     id: wiki-page
@@ -19,21 +19,11 @@ body:
       description: |
         Please specify your issue in regards to our wiki documentation.
         If you're reporting a mistake/correction, state what is wrong.
-        If you're suggesting an idea, explain the details.
+        If you're suggesting an idea, please provide details.
       placeholder: |
-        As of today the wiki doesn't explain how to trade perfectly and make millions of dollars.
+        As of today, the wiki doesn't explain how to trade perfectly and make millions of dollars.
     validations:
       required: true
-  - type: textarea
-    id: wrong-text
-    attributes:
-      label: Wrong text
-      description: |
-        The existing text on the wiki which you classify as wrong.
-        If you're suggesting a new page, paragraph or other addition to the wiki, then this section is not mandatory.
-      placeholder: |
-        Lack of perfect trading strategies!
-      render: markdown
   - type: textarea
     id: suggested-improvement
     attributes:
@@ -47,8 +37,8 @@ body:
   - type: textarea
     id: additional-info
     attributes:
-      label: Additional info
-      description: Everything else you consider worthy that we didn't ask for.
+      label: Additional Information
+      description: Anything noteworthy that you think might be useful for the team to know.
   - type: markdown
     attributes:
       value: |
