@@ -1,4 +1,4 @@
-name: Enhancement idea
+name: Feature/Enhancement Request
 description: General idea for improving the project
 labels: ["enhancement", "needs triage"]
 body:
@@ -6,7 +6,7 @@ body:
     id: checklist
     attributes:
       label: Checklist
-      description: Ensure that our enhancement idea form is appropriate for you.
+      description: Ensure that this feature request is suitable for bluebell and has not already been requested.
       options:
         - label: This is not a **[duplicate](https://github.com/sPrizio/bluebell/issues)** of an existing issue
           required: true
@@ -15,10 +15,9 @@ body:
   - type: textarea
     id: enhancement-purpose
     attributes:
-      label: Enhancement purpose
+      label: Feature Description
       description: |
-        Purpose of the enhancement - if it solves some problem, precise in particular which. If it benefits the program in some other way, precise in particular why.
-        Present the underlying reason why this enhancement makes sense, and what is the context of it.
+        Describe the purpose of this feature, what it should do and why you think it would be useful for the system.
       placeholder: |
         My broker isn't supported and I would like to see this integration become possible
     validations:
@@ -27,28 +26,16 @@ body:
     id: solution
     attributes:
       label: Solution
-      description: What would you like to see as a solution to the purpose specified by you above?
+      description: Based on what you said above, how would you like this feature to work/be presented to the user?
       placeholder: |
         Just make it work, right?
     validations:
       required: true
   - type: textarea
-    id: why-existing-not-sufficient
-    attributes:
-      label: Why currently available solutions are not sufficient?
-      description: |
-        Evaluate the existing solutions in regards to your requirements.
-        If something you're suggesting is already possible, then explain to us why the currently available solutions are not sufficient.
-        If it's not possible yet, then explain to us why it should be.
-      placeholder: |
-        I don't like manually importing my account and trade information, automation would make it far better and make me give you thousands of dollars
-    validations:
-      required: true
-  - type: textarea
     id: additional-info
     attributes:
-      label: Additional info
-      description: Everything else you consider worthy that we didn't ask for.
+      label: Additional Information
+      description: Anything noteworthy that you think might be useful for the team to know.
   - type: markdown
     attributes:
       value: |
