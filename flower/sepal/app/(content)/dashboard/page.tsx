@@ -8,7 +8,6 @@ import {
   getActivePortfolioNumber,
   logErrors,
 } from "@/lib/functions/util-functions";
-import AccountsTable from "@/components/Table/Account/AccountsTable";
 import TradeLogTable from "@/components/Table/Trade/TradeLogTable";
 import PortfolioGrowthChart from "@/components/Chart/Account/PortfolioGrowthChart";
 import {
@@ -27,6 +26,7 @@ import { usePortfolioStore } from "@/lib/store/portfolioStore";
 import { resolveIcon } from "@/lib/functions/util-component-functions";
 import { redirect } from "next/navigation";
 import { useSessionContext } from "@/lib/context/SessionContext";
+import BalancesTable from "@/components/Table/Account/BalancesTable";
 
 /**
  * The page that shows an overview of a user's portfolio
@@ -229,11 +229,11 @@ export default function DashboardPage() {
             </div>
             <div className={""}>
               <BaseCard
-                title={"Accounts"}
-                subtitle={"Only active accounts will be shown."}
+                title={"Balances"}
+                subtitle={"Active account balances."}
                 cardContent={
                   portfolio?.accounts?.filter((acc) => acc.active).length ? (
-                    <AccountsTable
+                    <BalancesTable
                       accounts={portfolio.accounts.filter((acc) => acc.active)}
                       showAllLink={true}
                     />

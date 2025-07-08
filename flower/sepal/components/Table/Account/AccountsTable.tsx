@@ -1,14 +1,6 @@
 "use client";
 
-import {
-  Table,
-  TableBody,
-  TableCaption,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
+import { TableCell, TableHead, TableRow } from "@/components/ui/table";
 import Link from "next/link";
 import { formatNumberForDisplay } from "@/lib/functions/util-functions";
 import {
@@ -32,7 +24,7 @@ import BaseTableContainer from "@/components/Table/BaseTableContainer";
  * @param allowAccountSelection allow clicking on rows
  * @param showCompactTable minimal table flag
  * @author Stephen Prizio
- * @version 0.2.4
+ * @version 1.0.0
  */
 export default function AccountsTable({
   accounts = [],
@@ -69,166 +61,137 @@ export default function AccountsTable({
     }
   }
 
-  //  RENDER
-
   return (
-    <div className={"pb-2"}>
+    <div className="pb-2">
       {accounts && accounts.length > 0 ? (
         <BaseTableContainer
-          table={
-            <Table>
-              {showAllLink ? (
-                <TableCaption>
-                  <div
+          headerContent={
+            showCompactTable ? (
+              <TableRow className="hover:bg-transparent">
+                <TableHead className="w-[150px]">Name</TableHead>
+                <TableHead className="w-[100px] text-center">Type</TableHead>
+                <TableHead className="w-[100px] text-center">Broker</TableHead>
+                <TableHead className="w-[120px] text-right">Balance</TableHead>
+              </TableRow>
+            ) : (
+              <TableRow className="hover:bg-transparent">
+                <TableHead className="w-[50px] text-center" />
+                <TableHead className="w-[75px]">Number</TableHead>
+                <TableHead className="w-[175px]">Name</TableHead>
+                <TableHead className="w-[175px]">Opened</TableHead>
+                <TableHead className="w-[60px] text-center">Currency</TableHead>
+                <TableHead className="w-[125px] text-center">
+                  Platform
+                </TableHead>
+                <TableHead className="w-[85px] text-center">Type</TableHead>
+                <TableHead className="w-[60px] text-center">Broker</TableHead>
+                <TableHead className="w-[175px]">Last Traded</TableHead>
+                <TableHead className="w-[120px] text-right">Balance</TableHead>
+              </TableRow>
+            )
+          }
+          bodyContent={
+            showCompactTable ? (
+              <>
+                {accounts.map((item) => (
+                  <TableRow
+                    key={item.uid}
                     className={
-                      "flex items-center justify-center gap-1 pb-2 mt-4 text-sm"
+                      allowAccountSelection
+                        ? "hover:cursor-pointer"
+                        : "hover:bg-transparent"
                     }
                   >
-                    <div className={""}>
-                      <Link href={"/accounts"}>View All Accounts</Link>
-                    </div>
-                    <div className={""}>
-                      <Link href={"#"}>
-                        {resolveIcon(Icons.ExternalLink, "", 18)}
-                      </Link>
-                    </div>
-                  </div>
-                </TableCaption>
-              ) : null}
-              <TableHeader>
-                {showCompactTable ? (
-                  <TableRow className={"hover:bg-transparent"}>
-                    <TableHead>Name</TableHead>
-                    <TableHead className={"text-center"}>Type</TableHead>
-                    <TableHead className={"text-center"}>Broker</TableHead>
-                    <TableHead className="text-right">Balance</TableHead>
+                    <TableCell className="w-[150px]">
+                      <div className="truncate">{item.name}</div>
+                    </TableCell>
+                    <TableCell className="w-[100px] text-center">
+                      {item.accountType?.label ?? "-"}
+                    </TableCell>
+                    <TableCell className="w-[100px] text-center">
+                      {item.broker?.label ?? ""}
+                    </TableCell>
+                    <TableCell className="w-[120px] text-right">
+                      $&nbsp;{formatNumberForDisplay(item.balance)}
+                    </TableCell>
                   </TableRow>
-                ) : (
-                  <TableRow className={"hover:bg-transparent"}>
-                    <TableHead className={"w-[50px] text-center"} />
-                    <TableHead className={"w-[150px]"}>Number</TableHead>
-                    <TableHead className={"w-[175px]"}>Name</TableHead>
-                    <TableHead className={"w-[175px]"}>Opened</TableHead>
-                    {/*<TableHead className={'w-[175px]'}>Status</TableHead>*/}
-                    <TableHead className={"w-[60px] text-center"}>
-                      Currency
-                    </TableHead>
-                    <TableHead className={"w-[125px] text-center"}>
-                      Platform
-                    </TableHead>
-                    <TableHead className={"w-[85px] text-center"}>
-                      Type
-                    </TableHead>
-                    <TableHead className={"w-[60px] text-center"}>
-                      Broker
-                    </TableHead>
-                    <TableHead className={"w-[175px]"}>Last Traded</TableHead>
-                    <TableHead className="text-right">Balance</TableHead>
+                ))}
+              </>
+            ) : (
+              <>
+                {accounts.map((item) => (
+                  <TableRow
+                    key={item.uid}
+                    className={
+                      allowAccountSelection
+                        ? "hover:cursor-pointer"
+                        : "hover:bg-transparent"
+                    }
+                    onClick={() => redirectToAccount(item.accountNumber)}
+                  >
+                    <TableCell className="w-[50px] text-center">
+                      {item.defaultAccount &&
+                        resolveIcon(Icons.Flag3Filled, "text-primary")}
+                    </TableCell>
+                    <TableCell className="w-[75px]">
+                      {item.accountNumber}
+                    </TableCell>
+                    <TableCell className="w-[175px]">{item.name}</TableCell>
+                    <TableCell className="w-[175px]">
+                      {moment(item.accountOpenTime).format(
+                        DateTime.ISOShortMonthShortDayYearWithTimeFormat,
+                      )}
+                    </TableCell>
+                    <TableCell className="w-[60px] text-center">
+                      <div className="flex items-center justify-center">
+                        {getFlagForCode(item.currency?.code ?? "")}
+                      </div>
+                    </TableCell>
+                    <TableCell className="w-[125px] text-center">
+                      {item.tradePlatform?.label ?? "-"}
+                    </TableCell>
+                    <TableCell className="w-[85px] text-center">
+                      {item.accountType?.label ?? "-"}
+                    </TableCell>
+                    <TableCell className="w-[60px] text-center">
+                      <div className="flex items-center justify-center">
+                        {getBrokerImage(item.broker.code)}
+                      </div>
+                    </TableCell>
+                    <TableCell className="w-[175px]">
+                      {item.lastTraded ? (
+                        moment(item.lastTraded).format(
+                          DateTime.ISOShortMonthDayYearWithTimeFormat,
+                        )
+                      ) : (
+                        <span>No trades</span>
+                      )}
+                    </TableCell>
+                    <TableCell className="w-[120px] text-right">
+                      $&nbsp;{formatNumberForDisplay(item.balance)}
+                    </TableCell>
                   </TableRow>
-                )}
-              </TableHeader>
-              {showCompactTable ? (
-                <TableBody>
-                  {accounts?.map((item) => {
-                    return (
-                      <TableRow
-                        key={item.uid}
-                        className={
-                          allowAccountSelection
-                            ? "hover:cursor-pointer"
-                            : "hover:bg-transparent"
-                        }
-                      >
-                        <TableCell>
-                          <div
-                            className={
-                              "sm:w-[100px] md:w-[125px] lg:w-[75px] xl:lg:w-[75px] truncate"
-                            }
-                          >
-                            {item.name}
-                          </div>
-                        </TableCell>
-                        <TableCell className={"text-center"}>
-                          {item.accountType?.label ?? "-"}
-                        </TableCell>
-                        <TableCell className={"text-center"}>
-                          {item.broker?.label ?? ""}
-                        </TableCell>
-                        <TableCell className="text-right">
-                          $&nbsp;{formatNumberForDisplay(item.balance)}
-                        </TableCell>
-                      </TableRow>
-                    );
-                  }) ?? null}
-                </TableBody>
-              ) : (
-                <TableBody>
-                  {accounts?.map((item) => {
-                    return (
-                      <TableRow
-                        key={item.uid}
-                        className={
-                          allowAccountSelection
-                            ? "hover:cursor-pointer"
-                            : "hover:bg-transparent"
-                        }
-                        onClick={() => redirectToAccount(item.accountNumber)}
-                      >
-                        <TableCell className={"text-center"}>
-                          {item.defaultAccount
-                            ? resolveIcon(Icons.Flag3Filled, "text-primary")
-                            : null}
-                        </TableCell>
-                        <TableCell className={""}>
-                          {item.accountNumber}
-                        </TableCell>
-                        <TableCell>{item.name}</TableCell>
-                        <TableCell className={""}>
-                          {moment(item.accountOpenTime).format(
-                            DateTime.ISOShortMonthShortDayYearWithTimeFormat,
-                          )}
-                        </TableCell>
-                        {/*<TableCell className={''}>
-                            {
-                              (item.accountCloseTime === '-1' || !item.accountCloseTime || item.accountCloseTime.length === 0) ?
-                                <Badge text={'Open'} variant={'success'} /> : <Badge text={'Closed'} variant={'danger'} />/*moment(item.accountCloseTime).format(DateTime.ISOShortMonthDayYearWithTimeFormat)*/}
-                        {/*</TableCell>*/}
-                        <TableCell className={"text-center"}>
-                          <div className={"flex items-center justify-center"}>
-                            {getFlagForCode(item.currency?.code ?? "")}
-                          </div>
-                        </TableCell>
-                        <TableCell className={"text-center"}>
-                          {item.tradePlatform?.label ?? "-"}
-                        </TableCell>
-                        <TableCell className={"text-center"}>
-                          {item.accountType?.label ?? "-"}
-                        </TableCell>
-                        <TableCell className={"text-center"}>
-                          <div className={"flex items-center justify-center"}>
-                            {getBrokerImage(item.broker.code)}
-                          </div>
-                        </TableCell>
-                        <TableCell className={""}>
-                          {item.lastTraded &&
-                            moment(item.lastTraded).format(
-                              DateTime.ISOShortMonthDayYearWithTimeFormat,
-                            )}
-                          {!item.lastTraded && <span>No trades</span>}
-                        </TableCell>
-                        <TableCell className="text-right">
-                          $&nbsp;{formatNumberForDisplay(item.balance)}
-                        </TableCell>
-                      </TableRow>
-                    );
-                  }) ?? null}
-                </TableBody>
-              )}
-            </Table>
+                ))}
+              </>
+            )
+          }
+          caption={
+            showAllLink ? (
+              <div className="flex items-center justify-center gap-1 pb-2 mt-4 text-sm text-muted-foreground">
+                <div>
+                  <Link href="/accounts">View All Accounts</Link>
+                </div>
+                <div>
+                  <Link href="#">
+                    {resolveIcon(Icons.ExternalLink, "", 18)}
+                  </Link>
+                </div>
+              </div>
+            ) : null
           }
         />
       ) : (
-        <div className={"text-center pb-2 text-slate-600"}>
+        <div className="text-center pb-2 text-slate-600">
           No accounts found.
         </div>
       )}

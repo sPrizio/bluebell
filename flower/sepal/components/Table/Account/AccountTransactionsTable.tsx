@@ -1,14 +1,6 @@
 "use client";
 
-import {
-  Table,
-  TableBody,
-  TableCaption,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
+import { TableCell, TableHead, TableRow } from "@/components/ui/table";
 import Link from "next/link";
 import moment from "moment/moment";
 import { DateTime } from "@/lib/constants";
@@ -56,7 +48,7 @@ import {
  * @param showActions shows the modification actions
  * @param showBottomLink show table caption
  * @author Stephen Prizio
- * @version 0.2.6
+ * @version 1.0.0
  */
 export default function AccountTransactionsTable({
   account,
@@ -146,151 +138,134 @@ export default function AccountTransactionsTable({
       {(pagedTransactions?.transactions?.length ?? 0) > 0 && (
         <BaseTableContainer
           height={500}
-          table={
-            <Table>
-              {showBottomLink ? (
-                <TableCaption>
-                  <div
-                    className={
-                      "flex items-center justify-center gap-1 pb-2 mt-4 text-sm"
-                    }
-                  >
-                    <div className={""}>
-                      <Link href={"/transactions?account=default"}>
-                        View All Transactions
-                      </Link>
-                    </div>
-                    <div className={""}>
-                      <Link href={"#"}>
-                        {resolveIcon(Icons.ExternalLink, "", 18)}
-                      </Link>
-                    </div>
+          headerContent={
+            <TableRow className={"hover:bg-transparent"}>
+              <TableHead className="text-primary font-bold w-[90px]">
+                ID
+              </TableHead>
+              <TableHead className="text-primary font-bold w-[150px]">
+                Name
+              </TableHead>
+              <TableHead className="text-primary font-bold w-[130px]">
+                Date
+              </TableHead>
+              <TableHead className="text-center text-primary font-bold w-[120px]">
+                Type
+              </TableHead>
+              <TableHead className="text-center text-primary font-bold w-[120px]">
+                Value
+              </TableHead>
+              <TableHead className="text-right text-primary font-bold w-[130px]">
+                Status
+              </TableHead>
+              {showActions && (
+                <>
+                  <TableHead className="w-[20px]" />
+                  <TableHead className="text-primary font-bold w-[50px]" />
+                  <TableHead className="text-primary font-bold w-[50px]" />
+                </>
+              )}
+            </TableRow>
+          }
+          bodyContent={pagedTransactions?.transactions?.map((item) => {
+            return (
+              <TableRow key={item.uid} className={"hover:bg-transparent"}>
+                <TableCell className="w-[90px]">
+                  {item.transactionNumber}
+                </TableCell>
+                <TableCell className="w-[150px]">
+                  <TooltipProvider>
+                    <Tooltip>
+                      <TooltipTrigger className="truncate">
+                        <div className="truncate">{item.name}</div>
+                      </TooltipTrigger>
+                      <TooltipContent>{item.name}</TooltipContent>
+                    </Tooltip>
+                  </TooltipProvider>
+                </TableCell>
+                <TableCell className="w-[130px]">
+                  {moment(item.transactionDate).format(
+                    DateTime.ISOShortMonthFullDayFormat,
+                  )}
+                </TableCell>
+                <TableCell className="text-center w-[120px]">
+                  {item.transactionType.label}
+                </TableCell>
+                <TableCell className="text-center w-[120px]">
+                  $ {formatNumberForDisplay(item.amount)}
+                </TableCell>
+                <TableCell className="text-right w-[130px]">
+                  <div className="flex items-center justify-end">
+                    {item.transactionStatus.label}&nbsp;
+                    <span
+                      className={`inline-block ${computeColors(item.transactionStatus.code)}`}
+                    >
+                      {resolveIcon(Icons.PointFilled, "", 15)}
+                    </span>
                   </div>
-                </TableCaption>
-              ) : null}
-              <TableHeader>
-                <TableRow className={"hover:bg-transparent"}>
-                  <TableHead className={"text-primary font-bold"}>ID</TableHead>
-                  <TableHead className={"text-primary font-bold"}>
-                    Name
-                  </TableHead>
-                  <TableHead className={"text-primary font-bold"}>
-                    Date
-                  </TableHead>
-                  <TableHead className={"text-center text-primary font-bold"}>
-                    Type
-                  </TableHead>
-                  <TableHead className={"text-center text-primary font-bold"}>
-                    Value
-                  </TableHead>
-                  <TableHead className={"text-right text-primary font-bold"}>
-                    Status
-                  </TableHead>
-                  {showActions ? (
-                    <>
-                      <TableHead />
-                      <TableHead
-                        className={"text-primary font-bold w-[50px]"}
+                </TableCell>
+                {showActions && account && (
+                  <>
+                    <TableCell className="w-[20px]" />
+                    <TableCell className="w-[50px]">
+                      <BaseModal
+                        title="Edit Transaction"
+                        description="Keep track of your account's transactions by adding withdrawals & deposits."
+                        content={
+                          <TransactionForm
+                            account={account}
+                            mode="edit"
+                            transaction={item}
+                          />
+                        }
+                        trigger={
+                          <Button variant="outline">
+                            {resolveIcon(Icons.Edit)}
+                          </Button>
+                        }
                       />
-                      <TableHead
-                        className={"text-primary font-bold w-[50px]"}
+                    </TableCell>
+                    <TableCell className="w-[50px]">
+                      <BaseModal
+                        title="Delete Transaction"
+                        description="Delete this transaction."
+                        content={
+                          <DeleteTransactionForm
+                            account={account}
+                            transaction={item}
+                          />
+                        }
+                        trigger={
+                          <Button variant="outline">
+                            {resolveIcon(Icons.Trash)}
+                          </Button>
+                        }
                       />
-                    </>
-                  ) : null}
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {pagedTransactions?.transactions?.map((item) => {
-                  return (
-                    <TableRow key={item.uid} className={"hover:bg-transparent"}>
-                      <TableCell>{item.transactionNumber}</TableCell>
-                      <TableCell>
-                        <TooltipProvider>
-                          <Tooltip>
-                            <TooltipTrigger className={"truncate"}>
-                              <div
-                                className={
-                                  "text-left sm:w-[150px] md:w-[150px] lg:w-[150px] xl:lg:w-[150px] truncate"
-                                }
-                              >
-                                {item.name}
-                              </div>
-                            </TooltipTrigger>
-                            <TooltipContent>{item.name}</TooltipContent>
-                          </Tooltip>
-                        </TooltipProvider>
-                      </TableCell>
-                      <TableCell>
-                        {moment(item.transactionDate).format(
-                          DateTime.ISOShortMonthFullDayFormat,
-                        )}
-                      </TableCell>
-                      <TableCell className={"text-center"}>
-                        {item.transactionType.label}
-                      </TableCell>
-                      <TableCell className={"text-center"}>
-                        $&nbsp;{formatNumberForDisplay(item.amount)}
-                      </TableCell>
-                      <TableCell className={"text-right h-full"}>
-                        <div className={"flex items-center justify-end"}>
-                          {item.transactionStatus.label}&nbsp;
-                          <span
-                            className={
-                              "inline-block " +
-                              computeColors(item.transactionStatus.code)
-                            }
-                          >
-                            {resolveIcon(Icons.PointFilled, "", 15)}
-                          </span>
-                        </div>
-                      </TableCell>
-                      {showActions && account ? (
-                        <>
-                          <TableCell />
-                          <TableCell>
-                            <BaseModal
-                              title={"Edit Transaction"}
-                              description={
-                                "Keep track of your account's transactions by adding withdrawals & deposits."
-                              }
-                              content={
-                                <TransactionForm
-                                  account={account}
-                                  mode={"edit"}
-                                  transaction={item}
-                                />
-                              }
-                              trigger={
-                                <Button variant={"outline"}>
-                                  {resolveIcon(Icons.Edit)}
-                                </Button>
-                              }
-                            />
-                          </TableCell>
-                          <TableCell>
-                            <BaseModal
-                              title={"Delete Transaction"}
-                              description={"Delete this transaction."}
-                              content={
-                                <DeleteTransactionForm
-                                  account={account}
-                                  transaction={item}
-                                />
-                              }
-                              trigger={
-                                <Button variant={"outline"}>
-                                  {resolveIcon(Icons.Trash)}
-                                </Button>
-                              }
-                            />
-                          </TableCell>
-                        </>
-                      ) : null}
-                    </TableRow>
-                  );
-                })}
-              </TableBody>
-            </Table>
+                    </TableCell>
+                  </>
+                )}
+              </TableRow>
+            );
+          })}
+          caption={
+            showBottomLink && (
+              <div
+                className={
+                  "flex items-center justify-center gap-1 pb-2 mt-4 text-sm"
+                }
+              >
+                <div className={""}>
+                  <Link href={"/transactions?account=default"}>
+                    View All Transactions
+                  </Link>
+                </div>
+                <div className={""}>
+                  <Link href={"#"}>
+                    {resolveIcon(Icons.ExternalLink, "", 18)}
+                  </Link>
+                </div>
+              </div>
+            )
           }
           pagination={
             pages === 1 ? null : (

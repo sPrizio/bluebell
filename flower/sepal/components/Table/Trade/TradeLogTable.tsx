@@ -1,13 +1,5 @@
 import React from "react";
-import {
-  Table,
-  TableBody,
-  TableCaption,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
+import { TableCell, TableHead, TableRow } from "@/components/ui/table";
 import Link from "next/link";
 import {
   formatNegativePoints,
@@ -37,7 +29,7 @@ interface GroupedEntry {
  * @param log Trade log
  * @param showTotals show totals row
  * @author Stephen Prizio
- * @version 0.2.4
+ * @version 1.0.0
  */
 export default function TradeLogTable({
   log,
@@ -109,7 +101,7 @@ export default function TradeLogTable({
       });
     }
 
-    return arr?.sort((a, b) => b.date.localeCompare(a.date)) ?? [];
+    return arr?.toSorted((a, b) => b.date.localeCompare(a.date)) ?? [];
   }
 
   //  RENDER
@@ -124,129 +116,139 @@ export default function TradeLogTable({
       {(log?.entries?.length ?? 0) > 0 && (
         <BaseTableContainer
           height={500}
-          table={
-            <Table>
-              <TableCaption>
-                <div
-                  className={
-                    "flex items-center justify-center gap-1 pb-2 mt-4 text-sm"
-                  }
-                >
-                  <div className={""}>
-                    <Link href={"/performance?account=default"}>
-                      View Full Performance
-                    </Link>
-                  </div>
-                  <div className={""}>
-                    <Link href={"/performance?account=default"}>
-                      {resolveIcon(Icons.ExternalLink, "", 18)}
-                    </Link>
-                  </div>
-                </div>
-              </TableCaption>
-              <TableHeader>
-                <TableRow className={"hover:bg-transparent"}>
-                  <TableHead>Date</TableHead>
-                  <TableHead>Account</TableHead>
-                  <TableHead className={"text-center"}>Trades</TableHead>
-                  <TableHead className={"text-center"}>Win %</TableHead>
-                  <TableHead className={"text-center"}>Points</TableHead>
-                  <TableHead className="text-right">P & L</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {log?.entries?.map((item, idx) => {
+          headerContent={
+            <TableRow className="hover:bg-transparent">
+              <TableHead className="w-[180px]">Date</TableHead>
+              <TableHead className="w-[160px]">Account</TableHead>
+              <TableHead className="text-center w-[100px] pr-[24px]">
+                Trades
+              </TableHead>
+              <TableHead className="text-center w-[100px] pr-[16px]">
+                Win %
+              </TableHead>
+              <TableHead className="text-center w-[100px] pr-[32px]">
+                Points
+              </TableHead>
+              <TableHead className="text-right w-[120px] pr-[16px]">
+                P & L
+              </TableHead>
+            </TableRow>
+          }
+          bodyContent={log?.entries?.map((item, idx) => {
+            return (
+              <React.Fragment key={"rf" + idx}>
+                {groupedEntries?.map((gr, grIdx) => {
                   return (
-                    <React.Fragment key={"rf" + idx}>
-                      {groupedEntries?.map((gr, grIdx) => {
+                    <React.Fragment key={"gr" + grIdx + "rf"}>
+                      <TableRow
+                        key={gr + "gr" + idx}
+                        className={"hover:bg-transparent"}
+                      >
+                        <TableCell
+                          colSpan={6}
+                          className={"text-primary font-semibold"}
+                        >
+                          {moment(gr.date).format(
+                            DateTime.ISOMonthWeekDayFormat,
+                          )}
+                        </TableCell>
+                      </TableRow>
+                      {gr.records?.map((rec) => {
                         return (
-                          <React.Fragment key={"gr" + grIdx + "rf"}>
-                            <TableRow
-                              key={gr + "gr" + idx}
-                              className={"hover:bg-transparent"}
-                            >
-                              <TableCell
-                                colSpan={6}
-                                className={"text-primary font-semibold"}
-                              >
-                                {moment(gr.date).format(
-                                  DateTime.ISOMonthWeekDayFormat,
-                                )}
-                              </TableCell>
-                            </TableRow>
-                            {gr.records?.map((rec) => {
-                              return (
-                                <TableRow
-                                  key={
-                                    rec.tradeRecord.end +
-                                    rec.tradeRecord.trades +
-                                    rec.tradeRecord.netProfit +
-                                    rec.tradeRecord.points
-                                  }
-                                  className={"hover:bg-transparent"}
-                                >
-                                  <TableCell className={"invisible"}>
-                                    {moment(rec.tradeRecord.end).format(
-                                      DateTime.ISOMonthWeekDayFormat,
-                                    )}
-                                  </TableCell>
-                                  <TableCell>{rec.accountName}</TableCell>
-                                  <TableCell className={"text-center"}>
-                                    {rec.tradeRecord.trades}
-                                  </TableCell>
-                                  <TableCell className={"text-center"}>
-                                    {rec.tradeRecord.winPercentage}
-                                  </TableCell>
-                                  <TableCell className={"text-center"}>
-                                    {formatNegativePoints(
-                                      rec.tradeRecord.points,
-                                    )}
-                                  </TableCell>
-                                  <TableCell className="text-right">
-                                    $&nbsp;{" "}
-                                    {formatNumberForDisplay(
-                                      rec.tradeRecord.netProfit,
-                                    )}
-                                  </TableCell>
-                                </TableRow>
-                              );
-                            }) ?? null}
-                          </React.Fragment>
+                          <TableRow
+                            key={
+                              rec.tradeRecord.end +
+                              rec.tradeRecord.trades +
+                              rec.tradeRecord.netProfit +
+                              rec.tradeRecord.points
+                            }
+                            className={"hover:bg-transparent"}
+                          >
+                            <TableCell className="w-[180px] invisible">
+                              {moment(rec.tradeRecord.end).format(
+                                DateTime.ISOMonthWeekDayFormat,
+                              )}
+                            </TableCell>
+                            <TableCell className="w-[160px]">
+                              {rec.accountName}
+                            </TableCell>
+                            <TableCell className="text-center w-[100px]">
+                              {rec.tradeRecord.trades}
+                            </TableCell>
+                            <TableCell className="text-center w-[100px]">
+                              {rec.tradeRecord.winPercentage}
+                            </TableCell>
+                            <TableCell className="text-center w-[100px]">
+                              {formatNegativePoints(rec.tradeRecord.points)}
+                            </TableCell>
+                            <TableCell className="text-right w-[120px]">
+                              $&nbsp;
+                              {formatNumberForDisplay(
+                                rec.tradeRecord.netProfit,
+                              )}
+                            </TableCell>
+                          </TableRow>
                         );
                       }) ?? null}
-                      {showTotals && (
-                        <TableRow
-                          className={
-                            "hover:bg-transparent !border-t-2 !border-primaryLight text-primary"
-                          }
-                        >
-                          <TableCell className={"font-bold"}>Totals</TableCell>
-                          <TableCell className={"font-bold"}>
-                            {item.totals.accountsTraded ?? 0}&nbsp;&nbsp;
-                            {(item.totals.accountsTraded ?? 0) === 1
-                              ? "account"
-                              : "accounts"}
-                          </TableCell>
-                          <TableCell className={"text-center font-bold"}>
-                            {item.totals.trades ?? 0}
-                          </TableCell>
-                          <TableCell className={"text-center font-bold"}>
-                            {item.totals.winPercentage ?? 0}%
-                          </TableCell>
-                          <TableCell className={"text-center font-bold"}>
-                            {formatNegativePoints(item.totals.netPoints ?? 0)}
-                          </TableCell>
-                          <TableCell className={"text-right font-bold "}>
-                            $&nbsp;
-                            {formatNumberForDisplay(item.totals.netProfit)}
-                          </TableCell>
-                        </TableRow>
-                      )}
                     </React.Fragment>
                   );
-                })}
-              </TableBody>
-            </Table>
+                }) ?? null}
+              </React.Fragment>
+            );
+          })}
+          footerContent={
+            (showTotals &&
+              log?.entries?.map((item, idx) => {
+                return (
+                  <TableRow
+                    key={idx + "_totals"}
+                    className={
+                      "hover:bg-transparent !border-t-2 !border-primaryLight text-primary"
+                    }
+                  >
+                    <TableCell className="w-[180px] font-bold">
+                      Totals
+                    </TableCell>
+                    <TableCell className="w-[160px] font-bold">
+                      {item.totals.accountsTraded ?? 0}&nbsp;&nbsp;
+                      {(item.totals.accountsTraded ?? 0) === 1
+                        ? "account"
+                        : "accounts"}
+                    </TableCell>
+                    <TableCell className="text-center w-[100px] font-bold pr-[24px]">
+                      {item.totals.trades ?? 0}
+                    </TableCell>
+                    <TableCell className="text-center w-[100px] font-bold pr-[16px]">
+                      {item.totals.winPercentage ?? 0}%
+                    </TableCell>
+                    <TableCell className="text-center w-[100px] font-bold pr-[32px]">
+                      {formatNegativePoints(item.totals.netPoints ?? 0)}
+                    </TableCell>
+                    <TableCell className="text-right w-[120px] font-bold pr-[16px]">
+                      $&nbsp;{formatNumberForDisplay(item.totals.netProfit)}
+                    </TableCell>
+                  </TableRow>
+                );
+              })) ??
+            null
+          }
+          caption={
+            <div
+              className={
+                "flex items-center justify-center gap-1 pb-2 mt-4 text-sm text-muted-foreground"
+              }
+            >
+              <div className={""}>
+                <Link href={"/performance?account=default"}>
+                  View Full Performance
+                </Link>
+              </div>
+              <div className={""}>
+                <Link href={"/performance?account=default"}>
+                  {resolveIcon(Icons.ExternalLink, "", 18)}
+                </Link>
+              </div>
+            </div>
           }
         />
       )}

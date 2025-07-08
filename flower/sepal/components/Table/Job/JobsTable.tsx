@@ -1,13 +1,6 @@
 "use client";
 
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
+import { TableCell, TableHead, TableRow } from "@/components/ui/table";
 import { UserJobControlSelection } from "@/types/uiTypes";
 import { usePagedJobsQuery } from "@/lib/hooks/query/queries";
 import React, { useState } from "react";
@@ -37,7 +30,7 @@ import BaseTableContainer from "@/components/Table/BaseTableContainer";
  * @param initialPageSize initial page size
  * @param initialPage initial page
  * @author Stephen Prizio
- * @version 0.2.6
+ * @version 1.0.0
  */
 export default function JobsTable({
   filters,
@@ -125,70 +118,60 @@ export default function JobsTable({
       {(pagedJobs?.jobs?.length ?? 0) > 0 && (
         <BaseTableContainer
           height={500}
-          table={
-            <Table>
-              <TableHeader className={"border-b-2 border-primaryLight"}>
-                <TableRow className={"hover:bg-transparent"}>
-                  <TableHead className={"text-left text-primary font-bold"}>
-                    Name
-                  </TableHead>
-                  <TableHead className={"text-left text-primary font-bold"}>
-                    Type
-                  </TableHead>
-                  <TableHead className={"text-left text-primary font-bold"}>
-                    Start time
-                  </TableHead>
-                  <TableHead className={"text-left text-primary font-bold"}>
-                    Completion Time
-                  </TableHead>
-                  <TableHead className={"text-center text-primary font-bold"}>
-                    Status
-                  </TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {pagedJobs?.jobs?.map((job, index) => {
-                  return (
-                    <TableRow
-                      key={job.jobId + index}
-                      className={"hover:cursor-pointer"}
-                      onClick={() => redirectToJob(job.id)}
-                    >
-                      <TableCell className={"text-left"}>
-                        {job.displayName}
-                      </TableCell>
-                      <TableCell className={"text-left"}>
-                        {job.type.label}
-                      </TableCell>
-                      <TableCell className={"text-left"}>
-                        {moment(job.executionTime).format(
-                          DateTime.ISOShortMonthDayYearWithTimeFormat,
-                        )}
-                      </TableCell>
-                      <TableCell className={"text-left"}>
-                        {job.completionTime === null ? "In Progress" : null}
-                        {moment(job.completionTime).format(
-                          DateTime.ISOShortMonthDayYearWithTimeFormat,
-                        )}
-                      </TableCell>
-                      <TableCell className={"text-right h-full"}>
-                        <div className={"flex items-center justify-end"}>
-                          {job.status.label}&nbsp;
-                          <span
-                            className={
-                              "inline-block " + computeColors(job.status.code)
-                            }
-                          >
-                            {resolveIcon(Icons.PointFilled, "", 15)}
-                          </span>
-                        </div>
-                      </TableCell>
-                    </TableRow>
-                  );
-                })}
-              </TableBody>
-            </Table>
+          headerContent={
+            <TableRow className={"hover:bg-transparent"}>
+              <TableHead className={"text-left text-primary font-bold"}>
+                Name
+              </TableHead>
+              <TableHead className={"text-left text-primary font-bold"}>
+                Type
+              </TableHead>
+              <TableHead className={"text-left text-primary font-bold"}>
+                Start time
+              </TableHead>
+              <TableHead className={"text-left text-primary font-bold"}>
+                Completion Time
+              </TableHead>
+              <TableHead className={"text-right text-primary font-bold"}>
+                Status
+              </TableHead>
+            </TableRow>
           }
+          bodyContent={pagedJobs?.jobs?.map((job, index) => {
+            return (
+              <TableRow
+                key={job.jobId + index}
+                className={"hover:cursor-pointer"}
+                onClick={() => redirectToJob(job.id)}
+              >
+                <TableCell className={"text-left"}>{job.displayName}</TableCell>
+                <TableCell className={"text-left"}>{job.type.label}</TableCell>
+                <TableCell className={"text-left"}>
+                  {moment(job.executionTime).format(
+                    DateTime.ISOShortMonthDayYearWithTimeFormat,
+                  )}
+                </TableCell>
+                <TableCell className={"text-left"}>
+                  {job.completionTime === null ? "In Progress" : null}
+                  {moment(job.completionTime).format(
+                    DateTime.ISOShortMonthDayYearWithTimeFormat,
+                  )}
+                </TableCell>
+                <TableCell className={"text-right h-full"}>
+                  <div className={"flex items-center justify-end"}>
+                    {job.status.label}&nbsp;
+                    <span
+                      className={
+                        "inline-block " + computeColors(job.status.code)
+                      }
+                    >
+                      {resolveIcon(Icons.PointFilled, "", 15)}
+                    </span>
+                  </div>
+                </TableCell>
+              </TableRow>
+            );
+          })}
           pagination={
             pages === 1 ? null : (
               <Pagination

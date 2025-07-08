@@ -1,13 +1,6 @@
 "use client";
 
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
+import { TableCell, TableHead, TableRow } from "@/components/ui/table";
 import moment from "moment/moment";
 import { DateTime } from "@/lib/constants";
 import React, { useState } from "react";
@@ -40,7 +33,7 @@ import BaseTableContainer from "@/components/Table/BaseTableContainer";
  * @param initialPageSize initial page size
  * @param initialPage initial page
  * @author Stephen Prizio
- * @version 0.2.6
+ * @version 1.0.0
  */
 export default function TradeTable({
   account,
@@ -111,117 +104,98 @@ export default function TradeTable({
       {(pagedTrades?.trades?.length ?? 0) > 0 && (
         <BaseTableContainer
           height={500}
-          table={
-            <Table>
-              <TableHeader className={"border-b-2 border-primaryLight"}>
-                <TableRow className={"hover:bg-transparent"}>
-                  <TableHead className={"text-center text-primary font-bold"}>
-                    Trade Id
-                  </TableHead>
-                  <TableHead className={"text-left text-primary font-bold"}>
-                    Product
-                  </TableHead>
-                  <TableHead className={"text-left text-primary font-bold"}>
-                    Type
-                  </TableHead>
-                  <TableHead className={"text-left text-primary font-bold"}>
-                    Open Time
-                  </TableHead>
-                  <TableHead className={"text-center text-primary font-bold"}>
-                    Open Price
-                  </TableHead>
-                  <TableHead className={"text-center text-primary font-bold"}>
-                    Lot Size
-                  </TableHead>
-                  <TableHead className={"text-left text-primary font-bold"}>
-                    Close Time
-                  </TableHead>
-                  <TableHead className={"text-center text-primary font-bold"}>
-                    Close Price
-                  </TableHead>
-                  <TableHead className={"text-right text-primary font-bold"}>
-                    Points
-                  </TableHead>
-                  <TableHead className={"text-right text-primary font-bold"}>
-                    Net Profit
-                  </TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {pagedTrades?.trades?.map((item, index) => {
-                  return (
-                    <TableRow
-                      key={item.tradeId + index}
-                      className={"cursor-pointer"}
-                      onClick={() => {
-                        router.push(
-                          `/trades/${item.tradeId}?account=${account?.accountNumber ?? "default"}`,
-                        );
-                      }}
-                    >
-                      <TableCell className={"text-center"}>
-                        {item.tradeId}
-                      </TableCell>
-                      <TableCell className={"text-left"}>
-                        {item.product}
-                      </TableCell>
-                      <TableCell>{item.tradeType.label}</TableCell>
-                      <TableCell className={"text-left"}>
-                        {moment(item.tradeOpenTime).format(
-                          DateTime.ISOShortMonthDayYearWithTimeFormat,
-                        )}
-                      </TableCell>
-                      <TableCell className={"text-center"}>
-                        {formatNumberForDisplay(item.openPrice)}
-                      </TableCell>
-                      <TableCell className={"text-center"}>
-                        {item.lotSize}
-                      </TableCell>
-                      <TableCell className={"text-left"}>
-                        {!item.tradeCloseTime && (
-                          <span className={"font-semibold text-primary"}>
-                            Live Trade
-                          </span>
-                        )}
-                        {item.tradeCloseTime &&
-                          moment(item.tradeCloseTime).format(
-                            DateTime.ISOShortMonthDayYearWithTimeFormat,
-                          )}
-                      </TableCell>
-                      <TableCell className={"text-center"}>
-                        {!item.tradeCloseTime && (
-                          <span className={"font-semibold text-primary"}>
-                            -
-                          </span>
-                        )}
-                        {item.tradeCloseTime &&
-                          formatNumberForDisplay(item.closePrice)}
-                      </TableCell>
-                      <TableCell className={"text-right"}>
-                        {!item.tradeCloseTime && (
-                          <span className={"font-semibold text-primary"}>
-                            -
-                          </span>
-                        )}
-                        {item.tradeCloseTime &&
-                          formatNumberForDisplay(item.points)}
-                      </TableCell>
-                      <TableCell className={"text-right"}>
-                        {!item.tradeCloseTime && (
-                          <span className={"font-semibold text-primary"}>
-                            -
-                          </span>
-                        )}
-                        {item.tradeCloseTime && (
-                          <>$&nbsp;{formatNumberForDisplay(item.netProfit)}</>
-                        )}
-                      </TableCell>
-                    </TableRow>
-                  );
-                })}
-              </TableBody>
-            </Table>
+          headerContent={
+            <TableRow className={"hover:bg-transparent"}>
+              <TableHead className={"text-center text-primary font-bold"}>
+                Trade Id
+              </TableHead>
+              <TableHead className={"text-left text-primary font-bold"}>
+                Product
+              </TableHead>
+              <TableHead className={"text-left text-primary font-bold"}>
+                Type
+              </TableHead>
+              <TableHead className={"text-left text-primary font-bold"}>
+                Open Time
+              </TableHead>
+              <TableHead className={"text-center text-primary font-bold"}>
+                Open Price
+              </TableHead>
+              <TableHead className={"text-center text-primary font-bold"}>
+                Lot Size
+              </TableHead>
+              <TableHead className={"text-left text-primary font-bold"}>
+                Close Time
+              </TableHead>
+              <TableHead className={"text-center text-primary font-bold"}>
+                Close Price
+              </TableHead>
+              <TableHead className={"text-right text-primary font-bold"}>
+                Points
+              </TableHead>
+              <TableHead className={"text-right text-primary font-bold"}>
+                Net Profit
+              </TableHead>
+            </TableRow>
           }
+          bodyContent={pagedTrades?.trades?.map((item, index) => {
+            return (
+              <TableRow
+                key={item.tradeId + index}
+                className={"cursor-pointer"}
+                onClick={() => {
+                  router.push(
+                    `/trades/${item.tradeId}?account=${account?.accountNumber ?? "default"}`,
+                  );
+                }}
+              >
+                <TableCell className={"text-center"}>{item.tradeId}</TableCell>
+                <TableCell className={"text-left"}>{item.product}</TableCell>
+                <TableCell>{item.tradeType.label}</TableCell>
+                <TableCell className={"text-left"}>
+                  {moment(item.tradeOpenTime).format(
+                    DateTime.ISOShortMonthDayYearWithTimeFormat,
+                  )}
+                </TableCell>
+                <TableCell className={"text-center"}>
+                  {formatNumberForDisplay(item.openPrice)}
+                </TableCell>
+                <TableCell className={"text-center"}>{item.lotSize}</TableCell>
+                <TableCell className={"text-left"}>
+                  {!item.tradeCloseTime && (
+                    <span className={"font-semibold text-primary"}>
+                      Live Trade
+                    </span>
+                  )}
+                  {item.tradeCloseTime &&
+                    moment(item.tradeCloseTime).format(
+                      DateTime.ISOShortMonthDayYearWithTimeFormat,
+                    )}
+                </TableCell>
+                <TableCell className={"text-center"}>
+                  {!item.tradeCloseTime && (
+                    <span className={"font-semibold text-primary"}>-</span>
+                  )}
+                  {item.tradeCloseTime &&
+                    formatNumberForDisplay(item.closePrice)}
+                </TableCell>
+                <TableCell className={"text-right"}>
+                  {!item.tradeCloseTime && (
+                    <span className={"font-semibold text-primary"}>-</span>
+                  )}
+                  {item.tradeCloseTime && formatNumberForDisplay(item.points)}
+                </TableCell>
+                <TableCell className={"text-right"}>
+                  {!item.tradeCloseTime && (
+                    <span className={"font-semibold text-primary"}>-</span>
+                  )}
+                  {item.tradeCloseTime && (
+                    <>$&nbsp;{formatNumberForDisplay(item.netProfit)}</>
+                  )}
+                </TableCell>
+              </TableRow>
+            );
+          })}
           pagination={
             pages === 1 ? null : (
               <Pagination

@@ -12,14 +12,7 @@ import {
   formatNumberForDisplay,
 } from "@/lib/functions/util-functions";
 import { TradeRecord } from "@/types/apiTypes";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
+import { TableCell, TableHead, TableRow } from "@/components/ui/table";
 import BaseTableContainer from "@/components/Table/BaseTableContainer";
 
 /**
@@ -28,7 +21,7 @@ import BaseTableContainer from "@/components/Table/BaseTableContainer";
  * @param tradeRecord Trade record
  * @param aggInterval aggregated interval
  * @author Stephen Prizio
- * @version 0.2.4
+ * @version 1.0.0
  */
 export default function TradeRecordCard({
   tradeRecord,
@@ -101,135 +94,133 @@ export default function TradeRecordCard({
           </div>
           <div className={"lg:col-span-3"}>
             <BaseTableContainer
-              table={
-                <Table>
-                  <TableHeader>
-                    <TableRow className={"hover:bg-transparent"}>
-                      <TableHead
-                        colSpan={3}
-                        className={"text-primary font-semibold"}
-                      >
-                        Trading
-                      </TableHead>
-                      <TableHead
-                        colSpan={3}
-                        className={"text-primary font-semibold"}
-                      >
-                        Statistics
-                      </TableHead>
-                      <TableHead
-                        colSpan={3}
-                        className={"text-primary font-semibold"}
-                      >
-                        Results
-                      </TableHead>
-                    </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    <TableRow
-                      className={"hover:bg-transparent border-transparent"}
-                    >
-                      <TableCell rowSpan={2}>
-                        <div>
-                          {tradeRecord.trades}
-                          <small>
-                            &nbsp;&nbsp;
-                            {tradeRecord.trades === 1 ? "trade" : "trades"}
-                          </small>
-                        </div>
-                      </TableCell>
-                      <TableCell className={"text-right"}>
-                        {tradeRecord.wins}
-                        <small>
-                          &nbsp;&nbsp;{tradeRecord.wins === 1 ? "win" : "wins"}
-                        </small>
-                      </TableCell>
-                      <TableCell />
-                      <TableCell rowSpan={2}>Average</TableCell>
-                      <TableCell className={"text-right"}>
-                        $&nbsp;{formatNumberForDisplay(tradeRecord.winAverage)}
-                        <small>&nbsp;win</small>
-                      </TableCell>
-                      <TableCell />
-                      <TableCell>P & L</TableCell>
-                      <TableCell className={"text-right"}>
-                        $&nbsp;{formatNumberForDisplay(tradeRecord.netProfit)}
-                      </TableCell>
-                    </TableRow>
-                    <TableRow className={"hover:bg-transparent"}>
-                      <TableCell className={"text-right"}>
-                        {tradeRecord.losses}
+              headerContent={
+                <TableRow className={"hover:bg-transparent"}>
+                  <TableHead
+                    colSpan={3}
+                    className={"text-primary font-semibold"}
+                  >
+                    Trading
+                  </TableHead>
+                  <TableHead
+                    colSpan={3}
+                    className={"text-primary font-semibold"}
+                  >
+                    Statistics
+                  </TableHead>
+                  <TableHead
+                    colSpan={3}
+                    className={"text-primary font-semibold"}
+                  >
+                    Results
+                  </TableHead>
+                </TableRow>
+              }
+              bodyContent={
+                <>
+                  <TableRow
+                    className={"hover:bg-transparent border-transparent"}
+                  >
+                    <TableCell rowSpan={2}>
+                      <div>
+                        {tradeRecord.trades}
                         <small>
                           &nbsp;&nbsp;
-                          {tradeRecord.losses === 1 ? "loss" : "losses"}
+                          {tradeRecord.trades === 1 ? "trade" : "trades"}
                         </small>
-                      </TableCell>
-                      <TableCell />
-                      <TableCell className={"text-right"}>
-                        $&nbsp;{formatNumberForDisplay(tradeRecord.lossAverage)}
-                        <small>&nbsp;loss</small>
-                      </TableCell>
-                      <TableCell />
-                      <TableCell>Win %</TableCell>
-                      <TableCell className={"text-right"}>
-                        {tradeRecord.winPercentage}%
-                      </TableCell>
-                    </TableRow>
-                    <TableRow
-                      className={"hover:bg-transparent border-transparent"}
-                    >
-                      <TableCell rowSpan={2}>
-                        <div>
-                          {formatNegativePoints(tradeRecord.points)}
-                          <small>&nbsp;points</small>
-                        </div>
-                      </TableCell>
-                      <TableCell className={"text-right"}>
-                        {tradeRecord.pointsGained}
-                        <small>&nbsp;gained</small>
-                      </TableCell>
-                      <TableCell />
-                      <TableCell rowSpan={2}>Largest</TableCell>
-                      <TableCell className={"text-right"}>
-                        $&nbsp;{formatNumberForDisplay(tradeRecord.largestWin)}
-                        <small>&nbsp;win</small>
-                      </TableCell>
-                      <TableCell />
-                      <TableCell>Profitability</TableCell>
-                      <TableCell className={"text-right"}>
-                        {tradeRecord.profitability}
-                      </TableCell>
-                    </TableRow>
-                    <TableRow className={"hover:bg-transparent"}>
-                      <TableCell className={"text-right"}>
-                        {tradeRecord.pointsLost}
-                        <small>&nbsp;lost</small>
-                      </TableCell>
-                      <TableCell />
-                      <TableCell className={"text-right"}>
-                        $&nbsp;{formatNumberForDisplay(tradeRecord.largestLoss)}
-                        <small>&nbsp;loss</small>
-                      </TableCell>
-                      <TableCell />
-                      <TableCell>Retention</TableCell>
-                      <TableCell className={"text-right"}>
-                        {tradeRecord.retention}%
-                      </TableCell>
-                    </TableRow>
-                    <TableRow className={"hover:bg-transparent"}>
-                      <TableCell />
-                      <TableCell />
-                      <TableCell />
-                      <TableCell>Drawdown</TableCell>
-                      <TableCell className={"text-right"}>
-                        $&nbsp;{formatNumberForDisplay(tradeRecord.lowestPoint)}
-                      </TableCell>
-                      <TableCell />
-                      <TableCell />
-                      <TableCell />
-                    </TableRow>
-                  </TableBody>
-                </Table>
+                      </div>
+                    </TableCell>
+                    <TableCell className={"text-right"}>
+                      {tradeRecord.wins}
+                      <small>
+                        &nbsp;&nbsp;{tradeRecord.wins === 1 ? "win" : "wins"}
+                      </small>
+                    </TableCell>
+                    <TableCell />
+                    <TableCell rowSpan={2}>Average</TableCell>
+                    <TableCell className={"text-right"}>
+                      $&nbsp;{formatNumberForDisplay(tradeRecord.winAverage)}
+                      <small>&nbsp;win</small>
+                    </TableCell>
+                    <TableCell />
+                    <TableCell>P & L</TableCell>
+                    <TableCell className={"text-right"}>
+                      $&nbsp;{formatNumberForDisplay(tradeRecord.netProfit)}
+                    </TableCell>
+                  </TableRow>
+                  <TableRow className={"hover:bg-transparent"}>
+                    <TableCell className={"text-right"}>
+                      {tradeRecord.losses}
+                      <small>
+                        &nbsp;&nbsp;
+                        {tradeRecord.losses === 1 ? "loss" : "losses"}
+                      </small>
+                    </TableCell>
+                    <TableCell />
+                    <TableCell className={"text-right"}>
+                      $&nbsp;{formatNumberForDisplay(tradeRecord.lossAverage)}
+                      <small>&nbsp;loss</small>
+                    </TableCell>
+                    <TableCell />
+                    <TableCell>Win %</TableCell>
+                    <TableCell className={"text-right"}>
+                      {tradeRecord.winPercentage}%
+                    </TableCell>
+                  </TableRow>
+                  <TableRow
+                    className={"hover:bg-transparent border-transparent"}
+                  >
+                    <TableCell rowSpan={2}>
+                      <div>
+                        {formatNegativePoints(tradeRecord.points)}
+                        <small>&nbsp;points</small>
+                      </div>
+                    </TableCell>
+                    <TableCell className={"text-right"}>
+                      {tradeRecord.pointsGained}
+                      <small>&nbsp;gained</small>
+                    </TableCell>
+                    <TableCell />
+                    <TableCell rowSpan={2}>Largest</TableCell>
+                    <TableCell className={"text-right"}>
+                      $&nbsp;{formatNumberForDisplay(tradeRecord.largestWin)}
+                      <small>&nbsp;win</small>
+                    </TableCell>
+                    <TableCell />
+                    <TableCell>Profitability</TableCell>
+                    <TableCell className={"text-right"}>
+                      {tradeRecord.profitability}
+                    </TableCell>
+                  </TableRow>
+                  <TableRow className={"hover:bg-transparent"}>
+                    <TableCell className={"text-right"}>
+                      {tradeRecord.pointsLost}
+                      <small>&nbsp;lost</small>
+                    </TableCell>
+                    <TableCell />
+                    <TableCell className={"text-right"}>
+                      $&nbsp;{formatNumberForDisplay(tradeRecord.largestLoss)}
+                      <small>&nbsp;loss</small>
+                    </TableCell>
+                    <TableCell />
+                    <TableCell>Retention</TableCell>
+                    <TableCell className={"text-right"}>
+                      {tradeRecord.retention}%
+                    </TableCell>
+                  </TableRow>
+                  <TableRow className={"hover:bg-transparent"}>
+                    <TableCell />
+                    <TableCell />
+                    <TableCell />
+                    <TableCell>Drawdown</TableCell>
+                    <TableCell className={"text-right"}>
+                      $&nbsp;{formatNumberForDisplay(tradeRecord.lowestPoint)}
+                    </TableCell>
+                    <TableCell />
+                    <TableCell />
+                    <TableCell />
+                  </TableRow>
+                </>
               }
             />
           </div>

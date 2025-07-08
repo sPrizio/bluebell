@@ -1,12 +1,4 @@
-import {
-  Table,
-  TableBody,
-  TableCaption,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
+import { TableCell, TableHead, TableRow } from "@/components/ui/table";
 import Link from "next/link";
 import moment from "moment/moment";
 import { DateTime } from "@/lib/constants";
@@ -24,7 +16,7 @@ import BaseTableContainer from "@/components/Table/BaseTableContainer";
  * @param transactions list of Account transactions
  * @param showBottomLink show table caption
  * @author Stephen Prizio
- * @version 0.2.4
+ * @version 1.0.0
  */
 export default function TransactionsTable({
   transactions = [],
@@ -61,97 +53,91 @@ export default function TransactionsTable({
       )}
       {transactions.length > 0 && (
         <BaseTableContainer
-          table={
-            <Table>
-              {showBottomLink ? (
-                <TableCaption>
+          headerContent={
+            <TableRow className={"hover:bg-transparent"}>
+              <TableHead>Date</TableHead>
+              <TableHead>Account</TableHead>
+              <TableHead className={"text-center"}>Type</TableHead>
+              <TableHead className={"text-center"}>Value</TableHead>
+              <TableHead className={"text-center"}>Status</TableHead>
+            </TableRow>
+          }
+          bodyContent={transactions?.map((item) => {
+            return (
+              <TableRow key={item.uid} className={"hover:bg-transparent"}>
+                <TableCell>
+                  {moment(item.transactionDate).format(
+                    DateTime.ISOShortMonthFullDayFormat,
+                  )}
+                </TableCell>
+                <TableCell>
                   <div
                     className={
-                      "flex items-center justify-center gap-1 pb-2 mt-4 text-sm"
+                      "sm:w-[150px] md:w-[150px] lg:w-[150px] xl:lg:w-[75px] truncate"
                     }
                   >
-                    <div className={""}>
-                      <Link href={"/transactions?account=default"}>
-                        View All Transactions
-                      </Link>
-                    </div>
-                    <div className={""}>
-                      <Link href={"#"}>
-                        {resolveIcon(Icons.ExternalLink, "", 18)}
-                      </Link>
-                    </div>
+                    {item.accountName}
                   </div>
-                </TableCaption>
-              ) : null}
-              <TableHeader>
-                <TableRow className={"hover:bg-transparent"}>
-                  <TableHead>Date</TableHead>
-                  <TableHead>Account</TableHead>
-                  <TableHead className={"text-center"}>Type</TableHead>
-                  <TableHead className={"text-center"}>Value</TableHead>
-                  <TableHead className={"text-center"}>Status</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {transactions?.map((item) => {
-                  return (
-                    <TableRow key={item.uid} className={"hover:bg-transparent"}>
-                      <TableCell>
-                        {moment(item.transactionDate).format(
-                          DateTime.ISOShortMonthFullDayFormat,
-                        )}
-                      </TableCell>
-                      <TableCell>
-                        <div
-                          className={
-                            "sm:w-[150px] md:w-[150px] lg:w-[150px] xl:lg:w-[75px] truncate"
-                          }
-                        >
-                          {item.accountName}
-                        </div>
-                      </TableCell>
-                      <TableCell className={"text-center"}>
-                        <div
-                          className={
-                            "flex grow items-stretch content-stretch justify-center h-full"
-                          }
-                        >
-                          {item.transactionType.code === "DEPOSIT" &&
-                            resolveIcon(Icons.Download, "text-foreground", 15)}
-                          {item.transactionType.code === "WITHDRAWAL" &&
-                            resolveIcon(Icons.Upload, "text-foreground", 15)}
-                        </div>
-                      </TableCell>
-                      <TableCell className={"text-center"}>
-                        $&nbsp;{formatNumberForDisplay(item.amount)}
-                      </TableCell>
-                      <TableCell>
-                        <div className={"flex items-center justify-center"}>
-                          {item.transactionStatus.code === "PENDING" && (
-                            <SepalLoader className={"m-0 !h-5 !w-5"} />
-                          )}
-                          {item.transactionStatus.code === "IN_PROGRESS" && (
-                            <SepalLoader className={"m-0 !h-5 !w-5"} />
-                          )}
-                          {item.transactionStatus.code === "COMPLETED" &&
-                            resolveIcon(
-                              Icons.ShieldCheckFilled,
-                              "text-primaryGreen",
-                              20,
-                            )}
-                          {item.transactionStatus.code === "FAILED" &&
-                            resolveIcon(
-                              Icons.HexagonLetterXFilled,
-                              "text-primaryRed",
-                              20,
-                            )}
-                        </div>
-                      </TableCell>
-                    </TableRow>
-                  );
-                })}
-              </TableBody>
-            </Table>
+                </TableCell>
+                <TableCell className={"text-center"}>
+                  <div
+                    className={
+                      "flex grow items-stretch content-stretch justify-center h-full"
+                    }
+                  >
+                    {item.transactionType.code === "DEPOSIT" &&
+                      resolveIcon(Icons.Download, "text-foreground", 15)}
+                    {item.transactionType.code === "WITHDRAWAL" &&
+                      resolveIcon(Icons.Upload, "text-foreground", 15)}
+                  </div>
+                </TableCell>
+                <TableCell className={"text-center"}>
+                  $&nbsp;{formatNumberForDisplay(item.amount)}
+                </TableCell>
+                <TableCell>
+                  <div className={"flex items-center justify-center"}>
+                    {item.transactionStatus.code === "PENDING" && (
+                      <SepalLoader className={"m-0 !h-5 !w-5"} />
+                    )}
+                    {item.transactionStatus.code === "IN_PROGRESS" && (
+                      <SepalLoader className={"m-0 !h-5 !w-5"} />
+                    )}
+                    {item.transactionStatus.code === "COMPLETED" &&
+                      resolveIcon(
+                        Icons.ShieldCheckFilled,
+                        "text-primaryGreen",
+                        20,
+                      )}
+                    {item.transactionStatus.code === "FAILED" &&
+                      resolveIcon(
+                        Icons.HexagonLetterXFilled,
+                        "text-primaryRed",
+                        20,
+                      )}
+                  </div>
+                </TableCell>
+              </TableRow>
+            );
+          })}
+          caption={
+            showBottomLink && (
+              <div
+                className={
+                  "flex items-center justify-center gap-1 pb-2 mt-4 text-sm text-muted-foreground"
+                }
+              >
+                <div className={""}>
+                  <Link href={"/transactions?account=default"}>
+                    View All Transactions
+                  </Link>
+                </div>
+                <div className={""}>
+                  <Link href={"#"}>
+                    {resolveIcon(Icons.ExternalLink, "", 18)}
+                  </Link>
+                </div>
+              </div>
+            )
           }
         />
       )}

@@ -1,12 +1,5 @@
 import { Portfolio } from "@/types/apiTypes";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
+import { TableCell, TableHead, TableRow } from "@/components/ui/table";
 import moment from "moment/moment";
 import { DateTime } from "@/lib/constants";
 import { Button } from "@/components/ui/button";
@@ -23,7 +16,7 @@ import BaseTableContainer from "@/components/Table/BaseTableContainer";
  *
  * @param portfolios array of portfolios
  * @author Stephen Prizio
- * @version 0.2.4
+ * @version 1.0.0
  */
 export default function PortfoliosTable({
   portfolios,
@@ -35,81 +28,76 @@ export default function PortfoliosTable({
       {portfolios && portfolios.length > 0 ? (
         <div>
           <BaseTableContainer
-            table={
-              <Table>
-                <TableHeader>
-                  <TableRow className={"hover:bg-transparent"}>
-                    <TableHead />
-                    <TableHead className={"text-primary font-bold"}>
-                      ID
-                    </TableHead>
-                    <TableHead className={"text-primary font-bold"}>
-                      Name
-                    </TableHead>
-                    <TableHead className={"text-primary font-bold"}>
-                      Date Created
-                    </TableHead>
-                    <TableHead className={"text-primary font-bold w-[50px]"} />
-                    <TableHead className={"text-primary font-bold w-[50px]"} />
+            headerContent={
+              <TableRow className={"hover:bg-transparent"}>
+                <TableHead className="w-[40px]" />
+                <TableHead className="w-[100px] text-primary font-bold">
+                  ID
+                </TableHead>
+                <TableHead className="w-[200px] text-primary font-bold">
+                  Name
+                </TableHead>
+                <TableHead className="w-[200px] text-primary font-bold">
+                  Date Created
+                </TableHead>
+                <TableHead className="w-[50px] text-primary font-bold" />
+                <TableHead className="w-[50px] text-primary font-bold" />
+              </TableRow>
+            }
+            bodyContent={
+              portfolios?.map((portfolio, idx) => {
+                return (
+                  <TableRow
+                    key={portfolio.uid + idx}
+                    className={"hover:bg-transparent"}
+                  >
+                    <TableCell className="w-[40px]">
+                      {portfolio.defaultPortfolio
+                        ? resolveIcon(Icons.Flag3Filled, "text-primary")
+                        : null}
+                    </TableCell>
+                    <TableCell className="w-[100px]">
+                      {portfolio.portfolioNumber}
+                    </TableCell>
+                    <TableCell className="w-[200px]">
+                      {portfolio.name}
+                    </TableCell>
+                    <TableCell className="w-[200px]">
+                      {moment(portfolio.created).format(
+                        DateTime.ISOShortMonthShortDayYearWithTimeFormat,
+                      )}
+                    </TableCell>
+                    <TableCell className="w-[50px]">
+                      <BaseModal
+                        title={"Edit Portfolio"}
+                        description={"Edit your portfolio information."}
+                        content={
+                          <PortfolioForm portfolio={portfolio} mode={"edit"} />
+                        }
+                        trigger={
+                          <Button variant={"outline"}>
+                            {resolveIcon(Icons.Edit)}
+                          </Button>
+                        }
+                      />
+                    </TableCell>
+                    <TableCell className="w-[50px]">
+                      <BaseModal
+                        title={"Delete Portfolio"}
+                        description={
+                          "Delete your portfolio information and associated accounts."
+                        }
+                        content={<DeletePortfolioForm portfolio={portfolio} />}
+                        trigger={
+                          <Button variant={"outline"}>
+                            {resolveIcon(Icons.Trash)}
+                          </Button>
+                        }
+                      />
+                    </TableCell>
                   </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {portfolios?.map((portfolio, idx) => {
-                    return (
-                      <TableRow
-                        key={portfolio.uid + idx}
-                        className={"hover:bg-transparent"}
-                      >
-                        <TableCell>
-                          {portfolio.defaultPortfolio
-                            ? resolveIcon(Icons.Flag3Filled, "text-primary")
-                            : null}
-                        </TableCell>
-                        <TableCell>{portfolio.portfolioNumber}</TableCell>
-                        <TableCell>{portfolio.name}</TableCell>
-                        <TableCell>
-                          {moment(portfolio.created).format(
-                            DateTime.ISOShortMonthShortDayYearWithTimeFormat,
-                          )}
-                        </TableCell>
-                        <TableCell>
-                          <BaseModal
-                            title={"Edit Portfolio"}
-                            description={"Edit your portfolio information."}
-                            content={
-                              <PortfolioForm
-                                portfolio={portfolio}
-                                mode={"edit"}
-                              />
-                            }
-                            trigger={
-                              <Button variant={"outline"}>
-                                {resolveIcon(Icons.Edit)}
-                              </Button>
-                            }
-                          />
-                        </TableCell>
-                        <TableCell>
-                          <BaseModal
-                            title={"Delete Portfolio"}
-                            description={
-                              "Delete your portfolio information and associated accounts."
-                            }
-                            content={
-                              <DeletePortfolioForm portfolio={portfolio} />
-                            }
-                            trigger={
-                              <Button variant={"outline"}>
-                                {resolveIcon(Icons.Trash)}
-                              </Button>
-                            }
-                          />
-                        </TableCell>
-                      </TableRow>
-                    );
-                  }) ?? null}
-                </TableBody>
-              </Table>
+                );
+              }) ?? null
             }
           />
         </div>
