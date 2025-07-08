@@ -18,7 +18,7 @@ import java.util.List;
  * Data-access layer for {@link MarketPrice}
  *
  * @author Stephen Prizio
- * @version 0.1.8
+ * @version 1.0.0
  */
 @Repository
 public interface MarketPriceRepository extends PagingAndSortingRepository<MarketPrice, Long>, CrudRepository<MarketPrice, Long> {
@@ -52,17 +52,31 @@ public interface MarketPriceRepository extends PagingAndSortingRepository<Market
      */
     @Modifying
     @Transactional
-    @Query(value = "INSERT INTO market_prices (price_date, market_price_time_interval, symbol, open, high, low, close, volume, data_source) " +
-            "VALUES (:date, :interval, :symbol, :open, :high, :low, :close, :volume, :dataSource) " +
-            "ON DUPLICATE KEY UPDATE " +
-            "open = :open, " +
-            "high = :high, " +
-            "low = :low, " +
-            "close = :close, " +
-            "volume = :volume, " +
-            "price_date = price_date",
-            nativeQuery = true
-    )
+    @Query(value = """
+        INSERT INTO market_prices (
+            price_date,
+            market_price_time_interval,
+            symbol,
+            open,
+            high,
+            low,
+            close,
+            volume,
+            data_source                
+        )
+        VALUES (
+            :date,
+            :interval,
+            :symbol,
+            :open,
+            :high,
+            :low,
+            :close,
+            :volume,
+            :dataSource            
+        )
+        ON CONFLICT (price_date, market_price_time_interval, data_source, symbol) DO NOTHING
+    """, nativeQuery = true)
     int upsertMarketPrice(
             final @Param("date") LocalDateTime date,
             final @Param("interval") MarketPriceTimeInterval interval,

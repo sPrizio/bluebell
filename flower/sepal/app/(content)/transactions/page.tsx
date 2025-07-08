@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { Icons } from "@/lib/enums";
+import { Icons, UserPrivilege } from "@/lib/enums";
 import { useRouter, useSearchParams } from "next/navigation";
 import { selectNewAccount } from "@/lib/functions/util-functions";
 import { BaseCard } from "@/components/Card/BaseCard";
@@ -25,7 +25,7 @@ import TransactionFilterDrawer from "@/components/Drawer/TransactionFilterDrawer
  * The page that shows all of a user's account's transactions. Accounts can be cycled
  *
  * @author Stephen Prizio
- * @version 0.2.5
+ * @version 0.2.6
  */
 export default function TransactionsPage() {
   const searchParams = useSearchParams();
@@ -80,6 +80,7 @@ export default function TransactionsPage() {
     title: "Transactions",
     subtitle: `A list of transactions for ${activeAccount?.name ?? ""}`,
     iconCode: Icons.ArrowLeftRight,
+    privilege: UserPrivilege.TRADER,
     breadcrumbs: [
       { label: "Dashboard", href: "/dashboard", active: false },
       { label: "Accounts", href: "/accounts", active: false },

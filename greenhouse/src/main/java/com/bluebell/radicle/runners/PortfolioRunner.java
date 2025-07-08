@@ -17,7 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
  * Generates testing {@link Portfolio}s
  *
  * @author Stephen Prizio
- * @version 0.2.4
+ * @version 0.2.6
  */
 @Component
 @Profile("dev")
@@ -42,7 +42,7 @@ public class PortfolioRunner extends AbstractRunner implements CommandLineRunner
 
         logStart();
 
-        final User user = this.userRepository.findUserByUsername("s.test");
+        final User user = this.userRepository.findUserByUsername("t.test");
         this.portfolioRepository.save(Portfolio
                 .builder()
                 .name("Test Portfolio")

@@ -29,7 +29,7 @@ import java.util.Map;
  * Parent-level scheduled job for common functionality
  *
  * @author Stephen Prizio
- * @version 0.1.6
+ * @version 1.0.0
  */
 @Slf4j
 public abstract class AbstractScheduledJob {
@@ -119,12 +119,7 @@ public abstract class AbstractScheduledJob {
                         )
                         .build();
 
-        final String recipient = this.dotenv.get("EMAIL_APP_RECIPIENT");
-        if (StringUtils.isEmpty(recipient)) {
-            throw new IllegalStateException("EMAIL_APP_RECIPIENT is not set");
-        }
-
-        this.emailService.sendEmail(recipient, String.format("%s job failure", job.getType().getLabel()), failedJobTemplate);
+        sendEmail(job, failedJobTemplate);
     }
 
     /**
@@ -153,11 +148,29 @@ public abstract class AbstractScheduledJob {
                         )
                         .build();
 
-        final String recipient = this.dotenv.get("EMAIL_APP_RECIPIENT");
+        sendEmail(job, failedJobTemplate);
+    }
+
+
+    //  HELPERS
+
+    /**
+     * Sends an email about a failed job with the given template
+     *
+     * @param job {@link Job}
+     * @param emailTemplate {@link EmailTemplate}
+     */
+    private void sendEmail(final Job job, final EmailTemplate emailTemplate) {
+
+        String recipient = this.dotenv.get("EMAIL_APP_RECIPIENT");
+        if (StringUtils.isEmpty(recipient)) {
+            recipient = System.getenv("EMAIL_APP_RECIPIENT");
+        }
+
         if (StringUtils.isEmpty(recipient)) {
             throw new IllegalStateException("EMAIL_APP_RECIPIENT is not set");
         }
 
-        this.emailService.sendEmail(recipient, String.format("%s job failure", job.getType().getLabel()), failedJobTemplate);
+        this.emailService.sendEmail(recipient, String.format("%s job failure", job.getType().getLabel()), emailTemplate);
     }
 }

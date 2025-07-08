@@ -27,7 +27,7 @@ import java.util.Optional;
  * is attached and the request is allowed to proceed. Otherwise, the request is failed immediately
  *
  * @author Stephen Prizio
- * @version 0.1.5
+ * @version 0.2.6
  */
 @Aspect
 @Component
@@ -72,8 +72,8 @@ public class ValidateApiTokenAspect {
         if (isNotSecured(request)) {
             return proceedingJoinPoint.proceed();
         } else if (request instanceof HttpServletRequest req) {
-            if (StringUtils.isNotEmpty(req.getHeader(SecurityConstants.API_KEY_TOKEN))) {
-                final String token = req.getHeader(SecurityConstants.API_KEY_TOKEN);
+            final String token = extractToken(req);
+            if (StringUtils.isNotEmpty(token)) {
                 final String email = this.apiTokenService.getEmailForApiToken(token);
 
                 if (StringUtils.isNotEmpty(email)) {
@@ -159,5 +159,21 @@ public class ValidateApiTokenAspect {
         final StackTraceElement[] stackTrace = Thread.currentThread().getStackTrace();
         return Arrays.stream(stackTrace).anyMatch(el -> el.getMethodName().startsWith("test")) &&
                 Arrays.stream(stackTrace).anyMatch(el -> StringUtils.isNotEmpty(el.getFileName()) && el.getFileName().contains("Test.java"));
+    }
+
+    /**
+     * Extracts the authorization token from the request
+     *
+     * @param req {@link HttpServletRequest}
+     * @return auth token
+     */
+    private String extractToken(final HttpServletRequest req) {
+        if (StringUtils.isNotEmpty(req.getHeader("Authorization"))) {
+            return req.getHeader("Authorization").replace("Bearer ", "").trim();
+        } else if (StringUtils.isNotEmpty(req.getHeader(SecurityConstants.API_KEY_TOKEN))) {
+            return req.getHeader(SecurityConstants.API_KEY_TOKEN);
+        }
+
+        throw new InvalidApiTokenException("Invalid API token. Authorization token was not present!");
     }
 }

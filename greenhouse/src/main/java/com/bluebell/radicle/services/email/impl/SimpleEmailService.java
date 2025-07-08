@@ -20,7 +20,7 @@ import static com.bluebell.radicle.validation.GenericValidator.validateParameter
  * Implementation of the {@link EmailService} for sending emails about {@link Job}s
  *
  * @author Stephen Prizio
- * @version 0.1.6
+ * @version 1.0.0
  */
 @Slf4j
 @Service
@@ -50,7 +50,11 @@ public class SimpleEmailService implements EmailService {
         validateParameterIsNotNull(subject, CorePlatformConstants.Validation.Email.SUBJECT_CANNOT_BE_NULL);
         validateParameterIsNotNull(emailTemplate, CorePlatformConstants.Validation.Email.EMAIL_TEMPLATE_CANNOT_BE_NULL);
 
-        final String sender = this.dotenv.get("EMAIL_APP_SENDER");
+        String sender = this.dotenv.get("EMAIL_APP_SENDER");
+        if (StringUtils.isEmpty(sender)) {
+            sender = System.getenv("EMAIL_APP_SENDER");
+        }
+
         if (StringUtils.isEmpty(sender)) {
             throw new IllegalStateException("EMAIL_APP_SENDER is not set");
         }

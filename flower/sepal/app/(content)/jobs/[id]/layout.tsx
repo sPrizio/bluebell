@@ -3,10 +3,10 @@
 import React from "react";
 import { useJobQuery } from "@/lib/hooks/query/queries";
 import LoadingPage from "@/app/loading";
-import Error from "@/app/error";
+import ErrorPage from "@/app/error";
 import { logErrors } from "@/lib/functions/util-functions";
 import { PageInfoProvider } from "@/lib/context/PageInfoProvider";
-import { Icons } from "@/lib/enums";
+import { Icons, UserPrivilege } from "@/lib/enums";
 import JobInformation from "@/components/Job/JobInformation";
 import { BaseCard } from "@/components/Card/BaseCard";
 import ActionsTable from "@/components/Table/Job/ActionsTable";
@@ -17,7 +17,7 @@ import ActionsTable from "@/components/Table/Job/ActionsTable";
  * @param children react content
  * @param params parameters
  * @author Stephen Prizio
- * @version 0.2.2
+ * @version 0.2.6
  */
 export default function JobLayout({
   children,
@@ -31,13 +31,14 @@ export default function JobLayout({
 
   if (isError) {
     logErrors(error);
-    return <Error />;
+    return <ErrorPage />;
   }
 
   const pageInfo = {
     title: "Job Details",
     subtitle: `View the details for ${job?.displayName ?? "a specific job"}`,
     iconCode: Icons.BrandReact,
+    privilege: UserPrivilege.SYSTEM,
     breadcrumbs: [
       { label: "Dashboard", href: "/dashboard", active: false },
       {

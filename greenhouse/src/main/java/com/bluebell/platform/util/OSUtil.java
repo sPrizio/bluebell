@@ -3,6 +3,7 @@ package com.bluebell.platform.util;
 import com.bluebell.platform.constants.CorePlatformConstants;
 import lombok.experimental.UtilityClass;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 
 import java.io.File;
 import java.io.IOException;
@@ -13,7 +14,7 @@ import java.nio.file.StandardCopyOption;
  * System-level utility classes for operating system operations and jdk stuff
  *
  * @author Stephen Prizio
- * @version 0.1.6
+ * @version 1.0.0
  */
 @Slf4j
 @UtilityClass
@@ -28,6 +29,10 @@ public class OSUtil {
      * @param args runtime arguments
      */
     public void generateEnv(final String[] args) {
+
+        if (StringUtils.isNotEmpty(System.getenv("GREENHOUSE_LAUNCHER"))) {
+            return;
+        }
 
         final File env = new File(String.format("%s%sconfig-%s.txt", DirectoryUtil.getBaseProjectDirectory(), File.separator, getOSProfile(args)));
         if (!env.exists()) {

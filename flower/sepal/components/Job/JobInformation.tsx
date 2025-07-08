@@ -4,6 +4,7 @@ import moment from "moment/moment";
 import { DateTime } from "@/lib/constants";
 import Badge from "@/components/Badge/Badge";
 import BaseTableContainer from "@/components/Table/BaseTableContainer";
+import { formatTimeElapsed } from "@/lib/functions/util-functions";
 
 /**
  * Renders a job information component
@@ -88,6 +89,16 @@ export default function JobInformation({
                   {job?.status?.code === "FAILED" && (
                     <Badge text={job?.status?.label ?? ""} variant={"danger"} />
                   )}
+                </TableCell>
+              </TableRow>
+              <TableRow className={"hover:bg-transparent"}>
+                <TableCell className={getHeaderColumnStyles()}>
+                  Time Taken
+                </TableCell>
+                <TableCell>
+                  {(job?.timeElapsed ?? -1) === -1
+                    ? "In Progress"
+                    : formatTimeElapsed(job?.timeElapsed ?? -1)}
                 </TableCell>
               </TableRow>
             </TableBody>

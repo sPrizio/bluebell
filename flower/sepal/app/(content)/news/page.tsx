@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { Icons } from "@/lib/enums";
+import { Icons, UserPrivilege } from "@/lib/enums";
 import { BaseCard } from "@/components/Card/BaseCard";
 import NewsTable from "@/components/Table/News/NewsTable";
 import moment from "moment";
@@ -16,7 +16,7 @@ import { logErrors } from "@/lib/functions/util-functions";
  * Renders the market News page
  *
  * @author Stephen Prizio
- * @version 0.2.3
+ * @version 0.2.6
  */
 export default function MarketNewsPage() {
   const {
@@ -34,6 +34,7 @@ export default function MarketNewsPage() {
     title: "Market News",
     subtitle: "A look at your local market news.",
     iconCode: Icons.News,
+    privilege: UserPrivilege.TRADER,
     breadcrumbs: [
       { label: "Dashboard", href: "/dashboard", active: false },
       { label: "Market News", href: "/market-News", active: true },

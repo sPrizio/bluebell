@@ -7,9 +7,9 @@ import { Icons } from "@/lib/enums";
  * Renders the 404 page
  *
  * @author Stephen Prizio
- * @version 0.2.2
+ * @version 0.2.6
  */
-export default function NotFound() {
+export default function NotFoundPage() {
   //  RENDER
 
   return (

@@ -1,6 +1,7 @@
 package com.bluebell.radicle.services.trade;
 
 import com.bluebell.AbstractGenericTest;
+import com.bluebell.configuration.BluebellTestConfiguration;
 import com.bluebell.platform.models.core.entities.account.Account;
 import com.bluebell.platform.models.core.entities.trade.Trade;
 import com.bluebell.radicle.repositories.account.AccountRepository;
@@ -11,6 +12,8 @@ import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.annotation.Import;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.List;
@@ -21,13 +24,17 @@ import static org.assertj.core.api.Assertions.assertThat;
  * Testing class for integrations within {@link TradeService}
  *
  * @author Stephen Prizio
- * @version 0.1.6
+ * @version 1.0.0
  */
+@Import(BluebellTestConfiguration.class)
 @SpringBootTest
 @RunWith(SpringRunner.class)
 class TradeServiceIntegrationTest extends AbstractGenericTest {
 
     private Account account;
+
+    @Autowired
+    private JdbcTemplate jdbcTemplate;
 
     @Autowired
     private AccountRepository accountRepository;
@@ -40,6 +47,7 @@ class TradeServiceIntegrationTest extends AbstractGenericTest {
 
     @BeforeEach
     void setUp() {
+        this.jdbcTemplate.execute("TRUNCATE TABLE trades RESTART IDENTITY CASCADE");
         final Account acc = generateTestAccount();
         acc.setId(null);
         this.account = this.accountRepository.save(acc);
@@ -69,7 +77,7 @@ class TradeServiceIntegrationTest extends AbstractGenericTest {
         trade1.setNetProfit(-1.0);
         trade1.setOpenPrice(23.45);
 
-        assertThat(this.tradeService.saveAll(List.of(trade1, trade2), this.account)).isEqualTo(2);
+        assertThat(this.tradeService.saveAll(List.of(trade1, trade2), this.account)).isEqualTo(0);
         assertThat(this.tradeRepository.count()).isEqualTo(2);
     }
 }

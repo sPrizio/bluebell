@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { Icons } from "@/lib/enums";
+import { Icons, UserPrivilege } from "@/lib/enums";
 import { BaseCard } from "@/components/Card/BaseCard";
 import { Button } from "@/components/ui/button";
 import BaseModal from "@/components/Modal/BaseModal";
@@ -12,17 +12,25 @@ import { PageInfoProvider } from "@/lib/context/PageInfoProvider";
 import { useUserQuery } from "@/lib/hooks/query/queries";
 import LoadingPage from "@/app/loading";
 import { logErrors } from "@/lib/functions/util-functions";
-import Error from "@/app/error";
+import ErrorPage from "@/app/error";
 import { resolveIcon } from "@/lib/functions/util-component-functions";
+import { useSessionContext } from "@/lib/context/SessionContext";
+import { EnumDisplay } from "@/types/apiTypes";
 
 /**
  * Renders the user profile page
  *
  * @author Stephen Prizio
- * @version 0.2.4
+ * @version 0.2.6
  */
 export default function ProfilePage() {
-  const { data: user, isError, error, isLoading } = useUserQuery();
+  const session = useSessionContext();
+  const {
+    data: user,
+    isError,
+    error,
+    isLoading,
+  } = useUserQuery(session?.username ?? "");
 
   //  GENERAL FUNCTIONS
 
@@ -31,12 +39,13 @@ export default function ProfilePage() {
    *
    * @param vals roles
    */
-  function formatRoles(vals: string[]) {
+  function formatRoles(vals: EnumDisplay[]) {
     return (
       vals
         ?.map(
           (val) =>
-            val.substring(0, 1).toUpperCase() + val.substring(1).toLowerCase(),
+            val.label.substring(0, 1).toUpperCase() +
+            val.label.substring(1).toLowerCase(),
         )
         .join(" \u00B7 ") ?? ""
     );
@@ -46,6 +55,7 @@ export default function ProfilePage() {
     title: "Profile Information",
     subtitle: "Your profile at a glance",
     iconCode: Icons.UserCircle,
+    privilege: UserPrivilege.TRADER,
     breadcrumbs: [
       { label: "Dashboard", href: "/dashboard", active: false },
       { label: "Profile", href: "/profile", active: true },
@@ -60,7 +70,7 @@ export default function ProfilePage() {
 
   if (isError) {
     logErrors(error);
-    return <Error />;
+    return <ErrorPage />;
   }
 
   /**

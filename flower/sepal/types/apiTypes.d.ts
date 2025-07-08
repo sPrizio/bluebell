@@ -22,7 +22,7 @@ interface User extends GenericApiType {
   email: string;
   dateRegistered: string;
   portfolios: Array<Portfolio>;
-  roles: Array<string>;
+  roles: Array<EnumDisplay>;
 }
 
 interface AccountCreationInfo {
@@ -371,6 +371,7 @@ interface Job extends GenericApiType {
   type: EnumDisplay;
   actions: Array<Action>;
   jobResult: JobResult;
+  timeElapsed: number;
 }
 
 interface PagedJobs {
