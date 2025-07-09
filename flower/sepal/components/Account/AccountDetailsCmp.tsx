@@ -381,7 +381,7 @@ export default function AccountDetailsCmp({
       <div className={"sm:col-span-1 lg:col-span-2 xl:col-span-4"}>
         <BaseCard
           title={"Trades"}
-          subtitle={"A view of some recent trades taken in this account."}
+          subtitle={"A view of some recent trades taken in the last 2 weeks."}
           headerControls={[
             <Link key={0} href={`/trades?account=${account?.accountNumber}`}>
               <Button className="" variant={"outline"}>
@@ -394,7 +394,7 @@ export default function AccountDetailsCmp({
             <TradeTable
               account={account}
               filters={{
-                start: moment().subtract(1, "weeks").toDate(),
+                start: moment().subtract(2, "weeks").toDate(),
                 end: moment().add(1, "days").toDate(),
                 sort: "desc",
                 type: "ALL",

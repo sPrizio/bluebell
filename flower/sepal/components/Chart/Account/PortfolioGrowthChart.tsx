@@ -3,6 +3,7 @@
 import React from "react";
 import {
   Area,
+  AreaChart,
   ComposedChart,
   Legend,
   Line,
@@ -96,20 +97,11 @@ export default function PortfolioGrowthChart({
     // @ts-expect-error : ignore typing
     for (const acc of point.accounts) {
       if (acc.name === key) {
-        return acc.normalized;
+        return acc.value;
       }
     }
 
     return 0;
-  }
-
-  /**
-   * Calculates the sume of keys for the counter object
-   */
-  function aggregateSumByKey(data: Entry[], key: string): number {
-    return data.reduce((sum, item) => {
-      return sum + (item[key] || 0);
-    }, 0);
   }
 
   /**
@@ -118,15 +110,11 @@ export default function PortfolioGrowthChart({
   function generateAccData() {
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     const res: any[] = [];
-    let counter = 0.0;
-    const counterObj: Entry[] = [];
 
     for (const point of data) {
-      counter += point.normalized;
-
-      const data = {
+      const pointData = {
         date: point.date,
-        portfolio: counter,
+        portfolio: point.portfolio,
       };
 
       for (const key of getAccountKeys()) {
@@ -134,12 +122,11 @@ export default function PortfolioGrowthChart({
           [key]: resolveChartDataPointValue(point, key),
         };
 
-        counterObj.push(obj);
         // @ts-expect-error : ignore typing
-        data[key] = aggregateSumByKey(counterObj, key);
+        pointData[key] = obj[key];
       }
 
-      res.push(data);
+      res.push(pointData);
     }
 
     return res;
@@ -192,7 +179,7 @@ export default function PortfolioGrowthChart({
           <span className={"inline-block"}>
             {resolveIcon(Icons.PointFilled, "", 15)}
           </span>
-          &nbsp;portfolio
+          &nbsp;Portfolio
         </div>
       </div>
     );
@@ -226,7 +213,7 @@ export default function PortfolioGrowthChart({
                       {item.dataKey}
                     </div>
                     <div className="text-right">
-                      {formatNumberForDisplay(item.value)}%
+                      {"$"}&nbsp;{formatNumberForDisplay(item.value)}
                     </div>
                   </>
                 );
@@ -247,7 +234,7 @@ export default function PortfolioGrowthChart({
       {(data?.length ?? 0) > 0 && (
         <div className={"flex items-center justify-center pb-2"}>
           <div className={"w-[100%]"}>
-            <ResponsiveContainer width="100%" minHeight={300}>
+            <ResponsiveContainer width="100%" minHeight={350}>
               <ComposedChart data={accChartData}>
                 <defs>
                   <linearGradient id="color" x1="0" y1="0" x2="0" y2="1">
@@ -271,23 +258,20 @@ export default function PortfolioGrowthChart({
                 {hasMultipleAccounts()
                   ? getAccountKeys().map((item: string, itx: number) => {
                       return (
-                        <Line
-                          key={itx}
+                        <Area
+                          key={itx + 1}
                           type="monotone"
                           dot={false}
                           dataKey={item}
-                          strokeWidth={3}
+                          strokeWidth={4}
                           stroke={colors[itx]}
+                          fill={colors[itx]}
+                          stackId="1"
                         />
                       );
                     })
                   : null}
-                <YAxis
-                  dataKey={"portfolio"}
-                  type="number"
-                  domain={["dataMin", "dataMax"]}
-                  hide={true}
-                />
+                <YAxis type="number" hide={true} />
                 <Area
                   type="monotone"
                   dot={false}

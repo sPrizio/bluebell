@@ -210,7 +210,7 @@ export default function AccountTransactionsTable({
                     <TableCell className="w-[50px]">
                       <BaseModal
                         title="Edit Transaction"
-                        description="Keep track of your account's transactions by adding withdrawals & deposits."
+                        description="Update this transaction's information. Any updates to the value will trigger an account balance recalculation."
                         content={
                           <TransactionForm
                             account={account}
@@ -228,7 +228,7 @@ export default function AccountTransactionsTable({
                     <TableCell className="w-[50px]">
                       <BaseModal
                         title="Delete Transaction"
-                        description="Delete this transaction."
+                        description="This action is permanent and will trigger an account balance recalculation."
                         content={
                           <DeleteTransactionForm
                             account={account}

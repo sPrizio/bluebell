@@ -16,7 +16,7 @@ import {
 } from "@/components/ui/tooltip";
 import { useHealthCheckQuery } from "@/lib/hooks/query/queries";
 import LoadingPage from "@/app/loading";
-import { logErrors } from "@/lib/functions/util-functions";
+import { delay, logErrors } from "@/lib/functions/util-functions";
 import ErrorPage from "@/app/error";
 import { resolveIcon } from "@/lib/functions/util-component-functions";
 import { Icons } from "@/lib/enums";
@@ -34,7 +34,7 @@ interface MenuProps {
  *
  * @param isOpen is open or closed
  * @author Stephen Prizio
- * @version 0.2.6
+ * @version 1.0.0
  */
 export function Menu({ isOpen }: Readonly<MenuProps>) {
   const {
@@ -53,7 +53,9 @@ export function Menu({ isOpen }: Readonly<MenuProps>) {
 
   useEffect(() => {
     if (isLogoutSuccess) {
-      redirect("/login");
+      setTimeout(() => {
+        redirect("/login");
+      }, 500);
     }
   }, [isLogoutSuccess]);
 
@@ -188,11 +190,11 @@ export function Menu({ isOpen }: Readonly<MenuProps>) {
                     <TooltipTrigger asChild>
                       <Button
                         variant={"ghost"}
-                        className="w-full justify-start h-10 mb-1"
+                        className="w-full justify-start h-10 mb-1 hover:cursor-pointer"
                         asChild
                         onClick={() => logout()}
                       >
-                        <Link href={"/"}>
+                        <div>
                           <span className={cn(isOpen === false ? "" : "mr-4")}>
                             {isLogoutLoading ? (
                               <Loader2 className="animate-spin" size={18} />
@@ -210,7 +212,7 @@ export function Menu({ isOpen }: Readonly<MenuProps>) {
                           >
                             {isLogoutLoading ? "Signing out" : "Sign Out"}
                           </p>
-                        </Link>
+                        </div>
                       </Button>
                     </TooltipTrigger>
                     {isOpen === false && (
