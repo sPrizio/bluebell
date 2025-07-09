@@ -1,11 +1,4 @@
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
+import { TableCell, TableHead, TableRow } from "@/components/ui/table";
 import moment from "moment";
 import { DateTime } from "@/lib/constants";
 import React from "react";
@@ -56,7 +49,10 @@ export default function TradeRecordTable({
           <>
             {report?.tradeRecords?.map((item) => {
               return (
-                <TableRow key={item.uid} className={"hover:bg-transparent"}>
+                <TableRow
+                  key={item.uid + "_tr_" + item.start}
+                  className={"hover:bg-transparent"}
+                >
                   <TableCell>
                     {moment(item.start).format(DateTime.ISOWeekdayFormat)}
                     ,&nbsp;

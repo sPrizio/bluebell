@@ -22,7 +22,7 @@ import SepalLoader from "@/components/Svg/SepalLoader";
  * @param emptyText empty text to display when the card is rendered without content
  * @param includeSkeleton if true, show a skeleton instead of a loader
  * @author Stephen Prizio
- * @version 0.2.4
+ * @version 1.0.0
  */
 export function BaseCard({
   title = "",
@@ -73,7 +73,7 @@ export function BaseCard({
       )}
       {!loading && (
         <Card className={"w-full"}>
-          {title && title.length > 0 ? (
+          {title && title.length > 0 && (
             <CardHeader className={"pb-2"}>
               <div className={"flex flex-row gap-4 items-start w-full"}>
                 <div className={"flex-1"}>
@@ -94,8 +94,6 @@ export function BaseCard({
                 </div>
               </div>
             </CardHeader>
-          ) : (
-            <div className={"p-6"} />
           )}
           <CardContent className={"pb-2"}>
             {cardContent || (
