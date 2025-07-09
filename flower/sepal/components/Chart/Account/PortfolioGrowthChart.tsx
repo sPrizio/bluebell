@@ -32,7 +32,7 @@ type Entry = Record<string, number>;
  *
  * @param data account equity data points
  * @author Stephen Prizio
- * @version 0.2.2
+ * @version 1.0.0
  */
 export default function PortfolioGrowthChart({
   data = [],
@@ -210,26 +210,27 @@ export default function PortfolioGrowthChart({
       const date = payload?.[0].payload.date ?? "";
       return (
         <BaseCard
-          title={moment(date).format(DateTime.ISOMonthYearFormat)}
           cardContent={
-            <div className={"flex flex-col items-center"}>
-              {
-                // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-                payload?.map((item: any, itx: number) => {
-                  return (
+            <div className="grid grid-cols-2 gap-2 max-w-64 text-sm pt-4 pb-2">
+              <div className="font-bold">Period</div>
+              <div className="text-right">
+                {moment(date).format(DateTime.ISOMonthYearFormat)}
+              </div>
+              {payload?.map((item: any, itx: number) => {
+                return (
+                  <>
                     <div
-                      key={itx + 1}
-                      className={"flex flex-row items-center w-[250px] gap-6"}
+                      className="font-bold capitalize"
                       style={{ color: item.color }}
                     >
-                      <div className={"justify-start"}>{item.dataKey}</div>
-                      <div className={"grow justify-end text-right"}>
-                        {formatNumberForDisplay(item.value)}&nbsp;%
-                      </div>
+                      {item.dataKey}
                     </div>
-                  );
-                }) ?? null
-              }
+                    <div className="text-right">
+                      {formatNumberForDisplay(item.value)}%
+                    </div>
+                  </>
+                );
+              })}
             </div>
           }
         />

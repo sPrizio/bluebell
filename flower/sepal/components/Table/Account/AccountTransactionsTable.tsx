@@ -143,7 +143,7 @@ export default function AccountTransactionsTable({
               <TableHead className="text-primary font-bold w-[90px]">
                 ID
               </TableHead>
-              <TableHead className="text-primary font-bold w-[150px]">
+              <TableHead className="text-primary font-bold w-[200px]">
                 Name
               </TableHead>
               <TableHead className="text-primary font-bold w-[130px]">
@@ -152,10 +152,10 @@ export default function AccountTransactionsTable({
               <TableHead className="text-center text-primary font-bold w-[120px]">
                 Type
               </TableHead>
-              <TableHead className="text-center text-primary font-bold w-[120px]">
-                Value
+              <TableHead className="text-center text-primary font-bold w-[80px]">
+                Amount
               </TableHead>
-              <TableHead className="text-right text-primary font-bold w-[130px]">
+              <TableHead className="text-right text-primary font-bold w-[100px]">
                 Status
               </TableHead>
               {showActions && (
@@ -173,7 +173,7 @@ export default function AccountTransactionsTable({
                 <TableCell className="w-[90px]">
                   {item.transactionNumber}
                 </TableCell>
-                <TableCell className="w-[150px]">
+                <TableCell className="w-[200px]">
                   <TooltipProvider>
                     <Tooltip>
                       <TooltipTrigger className="truncate">
@@ -185,16 +185,16 @@ export default function AccountTransactionsTable({
                 </TableCell>
                 <TableCell className="w-[130px]">
                   {moment(item.transactionDate).format(
-                    DateTime.ISOShortMonthFullDayFormat,
+                    DateTime.ISOLongMonthDayYearFormat,
                   )}
                 </TableCell>
                 <TableCell className="text-center w-[120px]">
                   {item.transactionType.label}
                 </TableCell>
-                <TableCell className="text-center w-[120px]">
+                <TableCell className="text-center w-[80px]">
                   $ {formatNumberForDisplay(item.amount)}
                 </TableCell>
-                <TableCell className="text-right w-[130px]">
+                <TableCell className="text-right w-[100px]">
                   <div className="flex items-center justify-end">
                     {item.transactionStatus.label}&nbsp;
                     <span

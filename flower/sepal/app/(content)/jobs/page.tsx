@@ -13,12 +13,13 @@ import { useJobTypesQuery } from "@/lib/hooks/query/queries";
 import { logErrors } from "@/lib/functions/util-functions";
 import ErrorPage from "@/app/error";
 import LoadingPage from "@/app/loading";
+import { CONTROL_GAP, PAGE_GAP } from "@/lib/constants";
 
 /**
  * The page that shows the system's job executions
  *
  * @author Stephen Prizio
- * @version 0.2.6
+ * @version 1.0.0
  */
 export default function JobsPage() {
   const [pageSize, setPageSize] = useState(10);
@@ -69,8 +70,8 @@ export default function JobsPage() {
 
   return (
     <PageInfoProvider value={pageInfo}>
-      <div className={"grid grid-cols-1 gap-8 w-full"}>
-        <div className={"flex items-end justify-end gap-4"}>
+      <div className={`grid grid-cols-1 w-full ${PAGE_GAP}`}>
+        <div className={`flex items-end justify-end ${CONTROL_GAP}`}>
           <JobsFilterDrawer
             userSelection={userSelection}
             onChange={setUserSelection}

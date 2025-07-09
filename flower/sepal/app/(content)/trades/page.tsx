@@ -18,7 +18,7 @@ import moment from "moment";
 import { Button } from "@/components/ui/button";
 import LoadingPage from "@/app/loading";
 import TradeTable from "@/components/Table/Trade/TradeTable";
-import { DateTime } from "@/lib/constants";
+import { CONTROL_GAP, DateTime, PAGE_GAP } from "@/lib/constants";
 import { useTradedSymbolsQuery } from "@/lib/hooks/query/queries";
 import ErrorPage from "@/app/error";
 import BaseModal from "@/components/Modal/BaseModal";
@@ -28,7 +28,7 @@ import TradeForm from "@/components/Form/Trade/TradeForm";
  * Renders the Trade history page
  *
  * @author Stephen Prizio
- * @version 0.2.6
+ * @version 1.0.0
  */
 export default function TradesPage() {
   const searchParams = useSearchParams();
@@ -130,8 +130,8 @@ export default function TradesPage() {
     <PageInfoProvider value={pageInfo}>
       <div className={""}>
         {
-          <div className={"grid grid-cols-1 gap-8"}>
-            <div className={"flex items-end justify-end gap-4"}>
+          <div className={`grid grid-cols-1 ${PAGE_GAP}`}>
+            <div className={`flex items-end justify-end ${CONTROL_GAP}`}>
               <div>
                 <ReusableSelect
                   title={"Account"}

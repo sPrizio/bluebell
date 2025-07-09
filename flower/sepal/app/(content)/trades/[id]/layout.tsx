@@ -24,6 +24,7 @@ import { useActivePortfolio } from "@/lib/hooks/api/useActivePortoflio";
 import ErrorPage from "@/app/error";
 import TradeInsights from "@/components/Trade/TradeInsights";
 import { useSessionContext } from "@/lib/context/SessionContext";
+import { CONTROL_GAP, PAGE_GAP } from "@/lib/constants";
 
 /**
  * The base layout for the trade detail page
@@ -31,7 +32,7 @@ import { useSessionContext } from "@/lib/context/SessionContext";
  * @param children react content
  * @param params parameters
  * @author Stephen Prizio
- * @version 0.2.6
+ * @version 1.0.0
  */
 export default function TradeDetailsLayout({
   children,
@@ -136,10 +137,10 @@ export default function TradeDetailsLayout({
 
   return (
     <PageInfoProvider value={pageInfo}>
-      <div className="grid grid-cols-1 gap-6">
+      <div className={`grid grid-cols-1 ${PAGE_GAP}`}>
         <div>
           <div className={"sm:col-span-1 lg:col-span-2 xl:col-span-4"}>
-            <div className={"flex items-end justify-end gap-4"}>
+            <div className={`flex items-end justify-end ${CONTROL_GAP}`}>
               <div className={""}>
                 <BaseModal
                   title={"Update Trade Information"}
