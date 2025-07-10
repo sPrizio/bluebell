@@ -89,11 +89,11 @@ export default function NewsTable({
   function computeSeverity(val: number) {
     switch (val) {
       case 1:
-        return " text-threatLow ";
+        return " text-threatSevere ";
       case 2:
         return " text-threatModerate ";
       default:
-        return " text-threatSevere ";
+        return " text-threatLow ";
     }
   }
 
@@ -245,7 +245,7 @@ export default function NewsTable({
                                           "inline-block hover:cursor-pointer"
                                         }
                                       >
-                                        {entry.severityLevel === 1 &&
+                                        {entry.severityLevel === 3 &&
                                           resolveIcon(
                                             Icons.AntennaBars3,
                                             computeSeverity(
@@ -261,7 +261,7 @@ export default function NewsTable({
                                             ),
                                             iconSize,
                                           )}
-                                        {entry.severityLevel === 3 &&
+                                        {entry.severityLevel === 1 &&
                                           resolveIcon(
                                             Icons.AntennaBars5,
                                             computeSeverity(
