@@ -3,10 +3,8 @@
 import React from "react";
 import {
   Area,
-  AreaChart,
   ComposedChart,
   Legend,
-  Line,
   ResponsiveContainer,
   Tooltip,
   TooltipProps,
@@ -25,8 +23,6 @@ import { formatNumberForDisplay } from "@/lib/functions/util-functions";
 import { PortfolioEquityPoint } from "@/types/apiTypes";
 import { resolveIcon } from "@/lib/functions/util-component-functions";
 import { Icons } from "@/lib/enums";
-
-type Entry = Record<string, number>;
 
 /**
  * Renders a chart to display an account's growth over time
@@ -198,7 +194,7 @@ export default function PortfolioGrowthChart({
       return (
         <BaseCard
           cardContent={
-            <div className="grid grid-cols-2 gap-2 max-w-64 text-sm pt-4 pb-2">
+            <div className="grid grid-cols-2 gap-2 max-w-64 text-sm pt-4 pb-2 items-center">
               <div className="font-bold">Period</div>
               <div className="text-right">
                 {moment(date).format(DateTime.ISOMonthYearFormat)}

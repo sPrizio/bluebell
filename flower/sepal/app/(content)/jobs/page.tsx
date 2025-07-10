@@ -3,7 +3,7 @@
 import { PageInfoProvider } from "@/lib/context/PageInfoProvider";
 import { Icons, UserPrivilege } from "@/lib/enums";
 import { BaseCard } from "@/components/Card/BaseCard";
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import { UserJobControlSelection } from "@/types/uiTypes";
 import moment from "moment/moment";
 import JobsTable from "@/components/Table/Job/JobsTable";
@@ -22,7 +22,8 @@ import { CONTROL_GAP, PAGE_GAP } from "@/lib/constants";
  * @version 1.0.0
  */
 export default function JobsPage() {
-  const [pageSize, setPageSize] = useState(10);
+  const initialPageSize = 10;
+  const [pageSize, setPageSize] = useState(initialPageSize);
   const [hasSubmitted, setHasSubmitted] = useState(false);
 
   const {
@@ -57,6 +58,19 @@ export default function JobsPage() {
     ],
   };
 
+  //  GENERAL FUNCTIONS
+
+  /**
+   * Handles the toggling of showing all jobs
+   */
+  const handleClick = useCallback(() => {
+    if (pageSize > initialPageSize) {
+      setPageSize(initialPageSize);
+    } else {
+      setPageSize(100000);
+    }
+  }, [pageSize]);
+
   if (isJobTypesLoading) {
     return <LoadingPage />;
   }
@@ -72,6 +86,11 @@ export default function JobsPage() {
     <PageInfoProvider value={pageInfo}>
       <div className={`grid grid-cols-1 w-full ${PAGE_GAP}`}>
         <div className={`flex items-end justify-end ${CONTROL_GAP}`}>
+          <div>
+            <Button key={0} variant={"outline"} onClick={handleClick}>
+              {pageSize > initialPageSize ? "Minimize" : "Show All"}
+            </Button>
+          </div>
           <JobsFilterDrawer
             userSelection={userSelection}
             onChange={setUserSelection}
@@ -99,15 +118,6 @@ export default function JobsPage() {
                 initialPageSize={pageSize}
               />
             }
-            headerControls={[
-              <Button
-                key={0}
-                variant={"outline"}
-                onClick={() => setPageSize(100000)}
-              >
-                View All Jobs
-              </Button>,
-            ]}
           />
         </div>
       </div>
