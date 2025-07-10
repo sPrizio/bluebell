@@ -32,7 +32,7 @@ interface Props<T extends FieldValues, K extends Path<T>> {
  * @param modal is component in a modal
  * @param disabled is disabled
  * @author Stephen Prizio
- * @version 0.2.4
+ * @version 1.0.0
  */
 export default function ReusableDatePicker<
   T extends FieldValues,
@@ -52,14 +52,19 @@ export default function ReusableDatePicker<
         <Button
           variant={"outline"}
           className={cn(
-            "w-full justify-start text-left font-normal",
+            "w-full justify-start text-left font-normal px-[12px]",
             !field.value && "text-muted-foreground",
           )}
           disabled={disabled}
         >
-          {hasIcon && resolveIcon(Icons.CalendarMonth, "", 18)}
-          &nbsp;&nbsp;
-          {field.value ? format(field.value, "PPP") : <span>{label}</span>}
+          {hasIcon && (
+            <>{resolveIcon(Icons.CalendarMonth, "", 18)}&nbsp;&nbsp;</>
+          )}
+          {field.value ? (
+            <span>{format(field.value, "PPP")}</span>
+          ) : (
+            <span>{label}</span>
+          )}
         </Button>
       </PopoverTrigger>
       <PopoverContent className="z-[9999] w-auto p-0">

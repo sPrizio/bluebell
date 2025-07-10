@@ -1,5 +1,5 @@
 import { Job } from "@/types/apiTypes";
-import { Table, TableBody, TableCell, TableRow } from "@/components/ui/table";
+import { TableCell, TableRow } from "@/components/ui/table";
 import moment from "moment/moment";
 import { DateTime } from "@/lib/constants";
 import Badge from "@/components/Badge/Badge";
@@ -10,7 +10,7 @@ import { formatTimeElapsed } from "@/lib/functions/util-functions";
  * Renders a job information component
  *
  * @author Stephen Prizio
- * @version 0.2.4
+ * @version 1.0.0
  */
 export default function JobInformation({
   job,
@@ -36,73 +36,65 @@ export default function JobInformation({
   return (
     <div className={"py-4"}>
       <BaseTableContainer
-        table={
-          <Table>
-            <TableBody>
-              <TableRow className={"hover:bg-transparent"}>
-                <TableCell className={getHeaderColumnStyles()}>Name</TableCell>
-                <TableCell>{job?.displayName}</TableCell>
-              </TableRow>
-              <TableRow className={"hover:bg-transparent"}>
-                <TableCell className={getHeaderColumnStyles()}>Type</TableCell>
-                <TableCell>{job?.type?.label ?? ""}</TableCell>
-              </TableRow>
-              <TableRow className={"hover:bg-transparent"}>
-                <TableCell className={getHeaderColumnStyles()}>
-                  Execution Time
-                </TableCell>
-                <TableCell>
-                  {moment(job?.executionTime).format(
+        bodyContent={
+          <>
+            <TableRow className={"hover:bg-transparent"}>
+              <TableCell className={getHeaderColumnStyles()}>Name</TableCell>
+              <TableCell>{job?.displayName}</TableCell>
+            </TableRow>
+            <TableRow className={"hover:bg-transparent"}>
+              <TableCell className={getHeaderColumnStyles()}>Type</TableCell>
+              <TableCell>{job?.type?.label ?? ""}</TableCell>
+            </TableRow>
+            <TableRow className={"hover:bg-transparent"}>
+              <TableCell className={getHeaderColumnStyles()}>
+                Execution Time
+              </TableCell>
+              <TableCell>
+                {moment(job?.executionTime).format(
+                  DateTime.ISOShortMonthShortDayYearWithTimeFormat,
+                )}
+              </TableCell>
+            </TableRow>
+            <TableRow className={"hover:bg-transparent"}>
+              <TableCell className={getHeaderColumnStyles()}>
+                Completion Time
+              </TableCell>
+              <TableCell>
+                {job?.executionTime ? null : "Ongoing"}
+                {job?.completionTime &&
+                  moment(job?.completionTime).format(
                     DateTime.ISOShortMonthShortDayYearWithTimeFormat,
                   )}
-                </TableCell>
-              </TableRow>
-              <TableRow className={"hover:bg-transparent"}>
-                <TableCell className={getHeaderColumnStyles()}>
-                  Completion Time
-                </TableCell>
-                <TableCell>
-                  {job?.executionTime ? null : "Ongoing"}
-                  {job?.completionTime &&
-                    moment(job?.completionTime).format(
-                      DateTime.ISOShortMonthShortDayYearWithTimeFormat,
-                    )}
-                </TableCell>
-              </TableRow>
-              <TableRow className={"hover:bg-transparent"}>
-                <TableCell className={getHeaderColumnStyles(true)}>
-                  Status
-                </TableCell>
-                <TableCell>
-                  {job?.status?.code === "COMPLETED" && (
-                    <Badge
-                      text={job?.status?.label ?? ""}
-                      variant={"success"}
-                    />
-                  )}
-                  {job?.status?.code === "IN_PROGRESS" && (
-                    <Badge
-                      text={job?.status?.label ?? ""}
-                      variant={"warning"}
-                    />
-                  )}
-                  {job?.status?.code === "FAILED" && (
-                    <Badge text={job?.status?.label ?? ""} variant={"danger"} />
-                  )}
-                </TableCell>
-              </TableRow>
-              <TableRow className={"hover:bg-transparent"}>
-                <TableCell className={getHeaderColumnStyles()}>
-                  Time Taken
-                </TableCell>
-                <TableCell>
-                  {(job?.timeElapsed ?? -1) === -1
-                    ? "In Progress"
-                    : formatTimeElapsed(job?.timeElapsed ?? -1)}
-                </TableCell>
-              </TableRow>
-            </TableBody>
-          </Table>
+              </TableCell>
+            </TableRow>
+            <TableRow className={"hover:bg-transparent"}>
+              <TableCell className={getHeaderColumnStyles(true)}>
+                Status
+              </TableCell>
+              <TableCell>
+                {job?.status?.code === "COMPLETED" && (
+                  <Badge text={job?.status?.label ?? ""} variant={"success"} />
+                )}
+                {job?.status?.code === "IN_PROGRESS" && (
+                  <Badge text={job?.status?.label ?? ""} variant={"warning"} />
+                )}
+                {job?.status?.code === "FAILED" && (
+                  <Badge text={job?.status?.label ?? ""} variant={"danger"} />
+                )}
+              </TableCell>
+            </TableRow>
+            <TableRow className={"hover:bg-transparent"}>
+              <TableCell className={getHeaderColumnStyles()}>
+                Time Taken
+              </TableCell>
+              <TableCell>
+                {(job?.timeElapsed ?? -1) === -1
+                  ? "In Progress"
+                  : formatTimeElapsed(job?.timeElapsed ?? -1)}
+              </TableCell>
+            </TableRow>
+          </>
         }
       />
     </div>

@@ -18,7 +18,7 @@ import * as React from "react";
  * @param onChange onChange handler
  * @param modal is component in a modal
  * @author Stephen Prizio
- * @version 0.2.5
+ * @version 1.0.0
  */
 export default function ControlDatePicker({
   value,
@@ -36,7 +36,7 @@ export default function ControlDatePicker({
         <Button
           variant={"outline"}
           className={cn(
-            "w-full justify-start text-left font-normal",
+            "w-full justify-start text-left font-normal px-[12px]",
             !value && "text-muted-foreground",
           )}
         >

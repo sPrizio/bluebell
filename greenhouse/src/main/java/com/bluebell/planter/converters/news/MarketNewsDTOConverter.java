@@ -3,18 +3,22 @@ package com.bluebell.planter.converters.news;
 import com.bluebell.planter.converters.GenericDTOConverter;
 import com.bluebell.planter.services.UniqueIdentifierService;
 import com.bluebell.platform.models.api.dto.news.MarketNewsDTO;
+import com.bluebell.platform.models.api.dto.news.MarketNewsSlotDTO;
 import com.bluebell.platform.models.core.entities.news.MarketNews;
 import jakarta.annotation.Resource;
+import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Comparator;
+import java.util.List;
 
 /**
  * Converter that converts {@link MarketNews} into {@link MarketNewsDTO}s
  *
  * @author Stephen Prizio
- * @version 0.1.1
+ * @version 1.0.0
  */
 @Component("marketNewsDTOConverter")
 public class MarketNewsDTOConverter implements GenericDTOConverter<MarketNews, MarketNewsDTO> {
@@ -48,7 +52,16 @@ public class MarketNewsDTOConverter implements GenericDTOConverter<MarketNews, M
 
         final LocalDateTime now = LocalDateTime.now();
         if (now.toLocalDate().isEqual(entity.getDate())) {
-            marketNewsDTO.getSlots().stream().filter(slot -> slot.getTime().isAfter(now.toLocalTime())).findFirst().ifPresent(slot -> slot.setActive(true));
+            final List<MarketNewsSlotDTO> activeSlots =
+                    marketNewsDTO.getSlots()
+                            .stream()
+                            .filter(slot -> now.toLocalTime().isBefore(slot.getTime()))
+                            .sorted(Comparator.comparing(MarketNewsSlotDTO::getTime))
+                            .toList();
+
+            if (CollectionUtils.isNotEmpty(activeSlots)) {
+                activeSlots.get(0).setActive(true);
+            }
         }
 
         return marketNewsDTO;

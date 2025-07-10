@@ -5,7 +5,6 @@ import {
   Area,
   ComposedChart,
   Legend,
-  Line,
   ResponsiveContainer,
   Tooltip,
   TooltipProps,
@@ -25,14 +24,12 @@ import { PortfolioEquityPoint } from "@/types/apiTypes";
 import { resolveIcon } from "@/lib/functions/util-component-functions";
 import { Icons } from "@/lib/enums";
 
-type Entry = Record<string, number>;
-
 /**
  * Renders a chart to display an account's growth over time
  *
  * @param data account equity data points
  * @author Stephen Prizio
- * @version 0.2.2
+ * @version 1.0.0
  */
 export default function PortfolioGrowthChart({
   data = [],
@@ -96,20 +93,11 @@ export default function PortfolioGrowthChart({
     // @ts-expect-error : ignore typing
     for (const acc of point.accounts) {
       if (acc.name === key) {
-        return acc.normalized;
+        return acc.value;
       }
     }
 
     return 0;
-  }
-
-  /**
-   * Calculates the sume of keys for the counter object
-   */
-  function aggregateSumByKey(data: Entry[], key: string): number {
-    return data.reduce((sum, item) => {
-      return sum + (item[key] || 0);
-    }, 0);
   }
 
   /**
@@ -118,15 +106,11 @@ export default function PortfolioGrowthChart({
   function generateAccData() {
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     const res: any[] = [];
-    let counter = 0.0;
-    const counterObj: Entry[] = [];
 
     for (const point of data) {
-      counter += point.normalized;
-
-      const data = {
+      const pointData = {
         date: point.date,
-        portfolio: counter,
+        portfolio: point.portfolio,
       };
 
       for (const key of getAccountKeys()) {
@@ -134,12 +118,11 @@ export default function PortfolioGrowthChart({
           [key]: resolveChartDataPointValue(point, key),
         };
 
-        counterObj.push(obj);
         // @ts-expect-error : ignore typing
-        data[key] = aggregateSumByKey(counterObj, key);
+        pointData[key] = obj[key];
       }
 
-      res.push(data);
+      res.push(pointData);
     }
 
     return res;
@@ -192,7 +175,7 @@ export default function PortfolioGrowthChart({
           <span className={"inline-block"}>
             {resolveIcon(Icons.PointFilled, "", 15)}
           </span>
-          &nbsp;portfolio
+          &nbsp;Portfolio
         </div>
       </div>
     );
@@ -210,26 +193,27 @@ export default function PortfolioGrowthChart({
       const date = payload?.[0].payload.date ?? "";
       return (
         <BaseCard
-          title={moment(date).format(DateTime.ISOMonthYearFormat)}
           cardContent={
-            <div className={"flex flex-col items-center"}>
-              {
-                // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-                payload?.map((item: any, itx: number) => {
-                  return (
+            <div className="grid grid-cols-2 gap-2 max-w-64 text-sm pt-4 pb-2 items-center">
+              <div className="font-bold">Period</div>
+              <div className="text-right">
+                {moment(date).format(DateTime.ISOMonthYearFormat)}
+              </div>
+              {payload?.map((item: any, itx: number) => {
+                return (
+                  <>
                     <div
-                      key={itx + 1}
-                      className={"flex flex-row items-center w-[250px] gap-6"}
+                      className="font-bold capitalize"
                       style={{ color: item.color }}
                     >
-                      <div className={"justify-start"}>{item.dataKey}</div>
-                      <div className={"grow justify-end text-right"}>
-                        {formatNumberForDisplay(item.value)}&nbsp;%
-                      </div>
+                      {item.dataKey}
                     </div>
-                  );
-                }) ?? null
-              }
+                    <div className="text-right">
+                      {"$"}&nbsp;{formatNumberForDisplay(item.value)}
+                    </div>
+                  </>
+                );
+              })}
             </div>
           }
         />
@@ -246,7 +230,7 @@ export default function PortfolioGrowthChart({
       {(data?.length ?? 0) > 0 && (
         <div className={"flex items-center justify-center pb-2"}>
           <div className={"w-[100%]"}>
-            <ResponsiveContainer width="100%" minHeight={300}>
+            <ResponsiveContainer width="100%" minHeight={350}>
               <ComposedChart data={accChartData}>
                 <defs>
                   <linearGradient id="color" x1="0" y1="0" x2="0" y2="1">
@@ -270,23 +254,20 @@ export default function PortfolioGrowthChart({
                 {hasMultipleAccounts()
                   ? getAccountKeys().map((item: string, itx: number) => {
                       return (
-                        <Line
-                          key={itx}
+                        <Area
+                          key={itx + 1}
                           type="monotone"
                           dot={false}
                           dataKey={item}
-                          strokeWidth={3}
+                          strokeWidth={4}
                           stroke={colors[itx]}
+                          fill={colors[itx]}
+                          stackId="1"
                         />
                       );
                     })
                   : null}
-                <YAxis
-                  dataKey={"portfolio"}
-                  type="number"
-                  domain={["dataMin", "dataMax"]}
-                  hide={true}
-                />
+                <YAxis type="number" hide={true} />
                 <Area
                   type="monotone"
                   dot={false}

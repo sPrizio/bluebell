@@ -25,7 +25,7 @@ import { AccountEquityPoint } from "@/types/apiTypes";
  * @param data Account equity data points
  * @param showPoints show balance or points
  * @author Stephen Prizio
- * @version 0.2.0
+ * @version 1.0.0
  */
 export default function AccountEquityChart({
   data = [],
@@ -77,29 +77,28 @@ export default function AccountEquityChart({
       const date = payload?.[0].payload.date ?? "";
       return (
         <BaseCard
-          title={moment(date).format(
-            DateTime.ISOShortMonthDayYearWithTimeFormat,
-          )}
           cardContent={
-            <div className={"flex flex-col items-center"}>
+            <div className="grid grid-cols-2 gap-2 max-w-64 text-sm pt-4 pb-2">
               {payload?.map((item: any, itx: number) => {
                 return (
-                  <div
-                    key={itx + 1}
-                    className={"flex flex-row items-center w-[200px] gap-6"}
-                    style={{ color: item.color }}
-                  >
-                    <div className={"justify-start capitalize"}>
-                      {showPoints ? "Points" : "Balance"}
+                  <>
+                    <div className="font-bold text-primary">Date</div>
+                    <div className="text-right">
+                      {moment(date).format(DateTime.ISOLongMonthDayYearFormat)}
                     </div>
-                    <div className={"grow justify-end text-right"}>
+                    <div className="font-bold text-primary">Time</div>
+                    <div className="text-right">
+                      {moment(date).format(DateTime.ISOShortTimeFormat)}
+                    </div>
+                    <div className="font-bold text-primary">Balance</div>
+                    <div className="text-right">
                       {showPoints
                         ? formatNumberForDisplay(item.value)
                         : "$ " + formatNumberForDisplay(item.value)}
                     </div>
-                  </div>
+                  </>
                 );
-              }) ?? null}
+              })}
             </div>
           }
         />

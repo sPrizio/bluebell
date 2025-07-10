@@ -18,7 +18,7 @@ import {
  * @param headerLabel label for x-axis
  * @param payload recharts payload
  * @author Stephen Prizio
- * @version 0.2.4
+ * @version 1.0.0
  */
 export default function AnalysisChartTooltipCard({
   filter,
@@ -32,27 +32,35 @@ export default function AnalysisChartTooltipCard({
   //  RENDER
   return (
     <BaseCard
-      title={"Overview"}
       cardContent={
-        <div className={"mb-4 grid grid-cols-2 gap-4 w-[250px]"}>
-          <div>{headerLabel}</div>
-          <div className={"text-right"}>{payload?.[0].payload.label}</div>
-          <div>Value</div>
-          <div className={"text-right"}>
-            {filter === "PROFIT" && (
-              <span>
-                $&nbsp;{formatNumberForDisplay(payload?.[0].payload.value)}
-              </span>
-            )}
-            {filter === "POINTS" && (
-              <span>{formatNegativePoints(payload?.[0].payload.value)}</span>
-            )}
-            {filter === "PERCENTAGE" && (
-              <span>{payload?.[0].payload.value}%</span>
-            )}
-          </div>
-          <div>Count</div>
-          <div className={"text-right"}>{payload?.[0].payload.count}</div>
+        <div className="grid grid-cols-2 gap-2 max-w-64 text-sm pt-4 pb-2">
+          {payload?.map((item: any, itx: number) => {
+            return (
+              <>
+                <div className="font-bold text-primary">{headerLabel}</div>
+                <div className="text-right">{payload?.[0].payload.label}</div>
+                <div className="font-bold text-primary">Value</div>
+                <div className="text-right">
+                  {filter === "PROFIT" && (
+                    <span>
+                      $&nbsp;
+                      {formatNumberForDisplay(payload?.[0].payload.value)}
+                    </span>
+                  )}
+                  {filter === "POINTS" && (
+                    <span>
+                      {formatNegativePoints(payload?.[0].payload.value)}
+                    </span>
+                  )}
+                  {filter === "PERCENTAGE" && (
+                    <span>{payload?.[0].payload.value}%</span>
+                  )}
+                </div>
+                <div className="font-bold text-primary">Count</div>
+                <div className="text-right">{payload?.[0].payload.count}</div>
+              </>
+            );
+          })}
         </div>
       }
     />

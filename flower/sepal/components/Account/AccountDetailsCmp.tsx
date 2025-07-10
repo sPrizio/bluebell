@@ -30,13 +30,14 @@ import { resolveIcon } from "@/lib/functions/util-component-functions";
 import { Icons } from "@/lib/enums";
 import LoadingPage from "@/app/loading";
 import { useSessionContext } from "@/lib/context/SessionContext";
+import { CONTROL_GAP, PAGE_GAP } from "@/lib/constants";
 
 /**
  * Renders the account details layout
  *
  * @param account Account info
  * @author Stephen Prizio
- * @version 0.2.6
+ * @version 1.0.0
  */
 export default function AccountDetailsCmp({
   account,
@@ -143,7 +144,9 @@ export default function AccountDetailsCmp({
   }
 
   return (
-    <div className={"grid sm:grid-cols-1 lg:grid-cols-2 xl:grid-cols-4 gap-6"}>
+    <div
+      className={`grid sm:grid-cols-1 lg:grid-cols-2 xl:grid-cols-4 ${PAGE_GAP}`}
+    >
       <div className={"sm:col-span-1 lg:col-span-2 xl:col-span-4"}>
         <div className={"flex gap-12 items-center"}>
           <div className={"flex-1"}>
@@ -156,7 +159,7 @@ export default function AccountDetailsCmp({
               variant={(account?.active ?? false) ? "info" : "danger"}
             />
           </div>
-          <div className={"flex gap-4 items-center justify-end"}>
+          <div className={`flex ${CONTROL_GAP} items-center justify-end`}>
             <div className={""}>
               <BaseModal
                 key={0}
@@ -213,7 +216,7 @@ export default function AccountDetailsCmp({
       </div>
       <div className={"xl:col-span-3"}>
         <div className={"col-span-1 lg:col-span-3"}>
-          <div className={"grid col-span-1 gap-6"}>
+          <div className={`grid col-span-1 ${PAGE_GAP}`}>
             <div>
               <BaseCard
                 title={"Account Equity"}
@@ -378,7 +381,7 @@ export default function AccountDetailsCmp({
       <div className={"sm:col-span-1 lg:col-span-2 xl:col-span-4"}>
         <BaseCard
           title={"Trades"}
-          subtitle={"A view of some recent trades taken in this account."}
+          subtitle={"A view of some recent trades taken in the last 2 weeks."}
           headerControls={[
             <Link key={0} href={`/trades?account=${account?.accountNumber}`}>
               <Button className="" variant={"outline"}>
@@ -391,7 +394,7 @@ export default function AccountDetailsCmp({
             <TradeTable
               account={account}
               filters={{
-                start: moment().subtract(1, "weeks").toDate(),
+                start: moment().subtract(2, "weeks").toDate(),
                 end: moment().add(1, "days").toDate(),
                 sort: "desc",
                 type: "ALL",

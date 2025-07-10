@@ -19,12 +19,13 @@ import { useUserQuery } from "@/lib/hooks/query/queries";
 import { redirect } from "next/navigation";
 import { resolveIcon } from "@/lib/functions/util-component-functions";
 import { useSessionContext } from "@/lib/context/SessionContext";
+import { CONTROL_GAP, PAGE_GAP } from "@/lib/constants";
 
 /**
  * The page that shows all of a user's accounts
  *
  * @author Stephen Prizio
- * @version 0.2.6
+ * @version 1.0.0
  */
 export default function AccountsPage() {
   const session = useSessionContext();
@@ -119,43 +120,41 @@ export default function AccountsPage() {
 
   return (
     <PageInfoProvider value={pageInfo}>
-      <div className={"grid grid-cols-1 gap-8 w-full"}>
-        <div className={"flex gap-8 w-full items-end justify-end"}>
-          <div className={"w-1/2 flex items-end justify-end gap-8"}>
-            <div className={""}>
-              <ReusableSelect
-                title={"Portfolio"}
-                initialValue={selectedPortfolioId?.toString()}
-                options={
-                  user?.portfolios?.map((p) => {
-                    return { label: p.name, value: p.portfolioNumber };
-                  }) ?? []
-                }
-                handler={(val: string) => {
-                  setSelectedPortfolioId(parseInt(val));
-                }}
-              />
-            </div>
-            <div className={""}>
-              <BaseModal
-                title={"Add a new Trading Account"}
-                description={
-                  "Adding a new Account will include it as part of your portfolio. If you do not wish to track your Account in your portfolio, mark it as inactive. These settings can be changed at anytime from the Account page."
-                }
-                trigger={
-                  <Button className="w-full text-white">
-                    {resolveIcon(Icons.CirclePlus)}
-                    &nbsp;New Account
-                  </Button>
-                }
-                content={
-                  <AccountForm
-                    portfolioNumber={selectedPortfolioId ?? -1}
-                    mode={"create"}
-                  />
-                }
-              />
-            </div>
+      <div className={`grid grid-cols-1 ${PAGE_GAP} w-full`}>
+        <div className={`flex w-full items-end justify-end ${CONTROL_GAP}`}>
+          <div className={""}>
+            <ReusableSelect
+              title={"Portfolio"}
+              initialValue={selectedPortfolioId?.toString()}
+              options={
+                user?.portfolios?.map((p) => {
+                  return { label: p.name, value: p.portfolioNumber };
+                }) ?? []
+              }
+              handler={(val: string) => {
+                setSelectedPortfolioId(parseInt(val));
+              }}
+            />
+          </div>
+          <div className={""}>
+            <BaseModal
+              title={"Add a new Trading Account"}
+              description={
+                "Adding a new Account will include it as part of your portfolio. If you do not wish to track your Account in your portfolio, mark it as inactive. These settings can be changed at anytime from the Account page."
+              }
+              trigger={
+                <Button className="w-full text-white">
+                  {resolveIcon(Icons.CirclePlus)}
+                  &nbsp;New Account
+                </Button>
+              }
+              content={
+                <AccountForm
+                  portfolioNumber={selectedPortfolioId ?? -1}
+                  mode={"create"}
+                />
+              }
+            />
           </div>
         </div>
 

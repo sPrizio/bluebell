@@ -27,12 +27,13 @@ import ReusableSelect from "@/components/Input/ReusableSelect";
 import { validatePageQueryFlow } from "@/lib/functions/util-component-functions";
 import LoadingPage from "@/app/loading";
 import ErrorPage from "@/app/error";
+import { CONTROL_GAP, PAGE_GAP } from "@/lib/constants";
 
 /**
  * The page that shows an analysis of an account's performance
  *
  * @author Stephen Prizio
- * @version 0.2.6
+ * @version 1.0.0
  */
 export default function AnalysisPage() {
   const searchParams = useSearchParams();
@@ -123,154 +124,148 @@ export default function AnalysisPage() {
 
   return (
     <PageInfoProvider value={pageInfo}>
-      <div className={""}>
-        {
-          <div className={"grid grid-cols-2 justify-center gap-8"}>
-            <div className={"col-span-2"}>
-              <div className={"flex items-center justify-end gap-4"}>
-                <div>
-                  <ReusableSelect
-                    title={"Account"}
-                    initialValue={accNumber.toString()}
-                    options={
-                      activePortfolio?.accounts
-                        ?.filter((acc) => acc.active)
-                        ?.map((a) => {
-                          return {
-                            label: a.name,
-                            value: a.accountNumber.toString(),
-                          };
-                        }) ?? []
-                    }
-                    handler={(val: string) => {
-                      selectNewAccount(router, searchParams, parseInt(val));
-                    }}
-                  />
-                </div>
-              </div>
-            </div>
+      <div className={`grid grid-cols-2 justify-center ${PAGE_GAP}`}>
+        <div className={"col-span-2"}>
+          <div className={`flex items-center justify-end ${CONTROL_GAP}`}>
             <div>
-              <BaseCard
-                title={"Time Buckets (Opened)"}
-                subtitle={
-                  "How your trades performed for each segment of the day when opened."
+              <ReusableSelect
+                title={"Account"}
+                initialValue={accNumber.toString()}
+                options={
+                  activePortfolio?.accounts
+                    ?.filter((acc) => acc.active)
+                    ?.map((a) => {
+                      return {
+                        label: a.name,
+                        value: a.accountNumber.toString(),
+                      };
+                    }) ?? []
                 }
-                headerControls={[select(openTbType, setOpenTbType)]}
-                cardContent={
-                  <TimeBucketAnalysis
-                    accountNumber={accNumber}
-                    filter={openTbType}
-                    opened={true}
-                  />
-                }
-              />
-            </div>
-            <div>
-              <BaseCard
-                title={"Time Buckets (Closed)"}
-                subtitle={
-                  "How your trades performed for each segment of the day when closed."
-                }
-                headerControls={[select(closedTbType, setClosedTbType)]}
-                cardContent={
-                  <TimeBucketAnalysis
-                    accountNumber={accNumber}
-                    filter={closedTbType}
-                  />
-                }
-              />
-            </div>
-            <div>
-              <BaseCard
-                title={"Weekday Performance"}
-                subtitle={"How your trades performed for each day of the week."}
-                headerControls={[select(wdType, setWdType)]}
-                cardContent={
-                  <WeekdayAnalysis accountNumber={accNumber} filter={wdType} />
-                }
-              />
-            </div>
-            <div>
-              <BaseCard
-                title={"Weekday & Time Bucket Performance"}
-                subtitle={
-                  "How your trades performed at different times on a specific weekday."
-                }
-                headerControls={[
-                  <div key={0}>
-                    <Select
-                      value={weekday}
-                      onValueChange={(val) => setWeekday(val as Weekday)}
-                    >
-                      <SelectTrigger className="w-[120px] bg-white">
-                        <SelectValue placeholder={"Select a value..."} />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value={"MONDAY"}>Monday</SelectItem>
-                        <SelectItem value={"TUESDAY"}>Tuesday</SelectItem>
-                        <SelectItem value={"WEDNESDAY"}>Wednesday</SelectItem>
-                        <SelectItem value={"THURSDAY"}>Thursday</SelectItem>
-                        <SelectItem value={"FRIDAY"}>Friday</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>,
-                  select(tbWdType, setTbWdType),
-                ]}
-                cardContent={
-                  <WeekdayTimeBucketAnalysis
-                    accountNumber={accNumber}
-                    weekday={weekday}
-                    filter={wdType}
-                  />
-                }
-              />
-            </div>
-            <div>
-              <BaseCard
-                title={"Trade Duration Performance"}
-                subtitle={
-                  "How your trades performed for various lengths of time."
-                }
-                headerControls={[
-                  <div key={0}>
-                    <Select
-                      value={tdFilter}
-                      onValueChange={(val) =>
-                        setTdFilter(val as TradeDurationFilterSelector)
-                      }
-                    >
-                      <SelectTrigger className="w-[120px] bg-white">
-                        <SelectValue placeholder={"Select a value..."} />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value={"ALL"}>All Trades</SelectItem>
-                        <SelectItem value={"WINS"}>Wins Only</SelectItem>
-                        <SelectItem value={"LOSSES"}>Losses Only</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>,
-                  select(tdType, setTdType),
-                ]}
-                cardContent={
-                  <TradeDurationAnalysis
-                    accountNumber={accNumber}
-                    filter={tdType}
-                    tdFilter={tdFilter}
-                  />
-                }
-              />
-            </div>
-            <div>
-              <BaseCard
-                title={"Performance per symbol"}
-                subtitle={
-                  "How your trades performed for each traded symbol/equity."
-                }
-                cardContent={<p className={"py-4"}>Coming in Phase 2</p>}
+                handler={(val: string) => {
+                  selectNewAccount(router, searchParams, parseInt(val));
+                }}
               />
             </div>
           </div>
-        }
+        </div>
+        <div>
+          <BaseCard
+            title={"Time Buckets (Opened)"}
+            subtitle={
+              "How your trades performed for each segment of the day when opened."
+            }
+            headerControls={[select(openTbType, setOpenTbType)]}
+            cardContent={
+              <TimeBucketAnalysis
+                accountNumber={accNumber}
+                filter={openTbType}
+                opened={true}
+              />
+            }
+          />
+        </div>
+        <div>
+          <BaseCard
+            title={"Time Buckets (Closed)"}
+            subtitle={
+              "How your trades performed for each segment of the day when closed."
+            }
+            headerControls={[select(closedTbType, setClosedTbType)]}
+            cardContent={
+              <TimeBucketAnalysis
+                accountNumber={accNumber}
+                filter={closedTbType}
+              />
+            }
+          />
+        </div>
+        <div>
+          <BaseCard
+            title={"Weekday Performance"}
+            subtitle={"How your trades performed for each day of the week."}
+            headerControls={[select(wdType, setWdType)]}
+            cardContent={
+              <WeekdayAnalysis accountNumber={accNumber} filter={wdType} />
+            }
+          />
+        </div>
+        <div>
+          <BaseCard
+            title={"Weekday & Time Bucket Performance"}
+            subtitle={
+              "How your trades performed at different times on a specific weekday."
+            }
+            headerControls={[
+              <div key={0}>
+                <Select
+                  value={weekday}
+                  onValueChange={(val) => setWeekday(val as Weekday)}
+                >
+                  <SelectTrigger className="w-[120px] bg-white">
+                    <SelectValue placeholder={"Select a value..."} />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value={"MONDAY"}>Monday</SelectItem>
+                    <SelectItem value={"TUESDAY"}>Tuesday</SelectItem>
+                    <SelectItem value={"WEDNESDAY"}>Wednesday</SelectItem>
+                    <SelectItem value={"THURSDAY"}>Thursday</SelectItem>
+                    <SelectItem value={"FRIDAY"}>Friday</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>,
+              select(tbWdType, setTbWdType),
+            ]}
+            cardContent={
+              <WeekdayTimeBucketAnalysis
+                accountNumber={accNumber}
+                weekday={weekday}
+                filter={wdType}
+              />
+            }
+          />
+        </div>
+        <div>
+          <BaseCard
+            title={"Trade Duration Performance"}
+            subtitle={"How your trades performed for various lengths of time."}
+            headerControls={[
+              <div key={0}>
+                <Select
+                  value={tdFilter}
+                  onValueChange={(val) =>
+                    setTdFilter(val as TradeDurationFilterSelector)
+                  }
+                >
+                  <SelectTrigger className="w-[120px] bg-white">
+                    <SelectValue placeholder={"Select a value..."} />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value={"ALL"}>All Trades</SelectItem>
+                    <SelectItem value={"WINS"}>Wins Only</SelectItem>
+                    <SelectItem value={"LOSSES"}>Losses Only</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>,
+              select(tdType, setTdType),
+            ]}
+            cardContent={
+              <TradeDurationAnalysis
+                accountNumber={accNumber}
+                filter={tdType}
+                tdFilter={tdFilter}
+              />
+            }
+          />
+        </div>
+        <div>
+          <BaseCard
+            title={"Performance per symbol"}
+            subtitle={
+              "How your trades performed for each traded symbol/equity."
+            }
+            cardContent={<p className={"py-4"}>Coming in Phase 2</p>}
+          />
+        </div>
       </div>
     </PageInfoProvider>
   );

@@ -45,6 +45,10 @@ export const ApiCredentials = {
 
 export const AUTH_ENABLED = process.env.AUTH_ENABLED === "true";
 
+export const PAGE_GAP = "gap-8";
+
+export const CONTROL_GAP = "gap-4";
+
 export const ApiUrls = {
   Internal: {
     Account: {

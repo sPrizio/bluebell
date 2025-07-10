@@ -14,12 +14,13 @@ import PortfoliosTable from "@/components/Table/Portfolio/PortfoliosTable";
 import PortfolioForm from "@/components/Form/Portfolio/PortfolioForm";
 import { resolveIcon } from "@/lib/functions/util-component-functions";
 import { useSessionContext } from "@/lib/context/SessionContext";
+import { CONTROL_GAP, PAGE_GAP } from "@/lib/constants";
 
 /**
  * The page that shows all of a user's portfolios
  *
  * @author Stephen Prizio
- * @version 0.2.6
+ * @version 1.0.0
  */
 export default function PortfoliosPage() {
   const session = useSessionContext();
@@ -96,24 +97,22 @@ export default function PortfoliosPage() {
 
   return (
     <PageInfoProvider value={pageInfo}>
-      <div className={"grid grid-cols-1 gap-8 w-full"}>
-        <div className={"flex gap-8 w-full items-end justify-end"}>
-          <div className={"w-1/2 flex items-end justify-end gap-8"}>
-            <div>
-              <BaseModal
-                title={"Add a new Portfolio"}
-                description={
-                  "A portfolio is a collection of accounts. Use it to capture the performance of a group of accounts and perform analysis on each of them. If you wish to track accounts purely for archive/historical reasons, mark the portfolio as inactive."
-                }
-                trigger={
-                  <Button className={"w-full text-white"}>
-                    {resolveIcon(Icons.CirclePlus)}
-                    &nbsp;Add a new portfolio
-                  </Button>
-                }
-                content={<PortfolioForm mode={"create"} />}
-              />
-            </div>
+      <div className={`grid grid-cols-1 w-full ${PAGE_GAP}`}>
+        <div className={`flex ${CONTROL_GAP} w-full items-end justify-end`}>
+          <div>
+            <BaseModal
+              title={"Add a new Portfolio"}
+              description={
+                "A portfolio is a collection of accounts. Use it to capture the performance of a group of accounts and perform analysis on each of them. If you wish to track accounts purely for archive/historical reasons, mark the portfolio as inactive."
+              }
+              trigger={
+                <Button className={"w-full text-white"}>
+                  {resolveIcon(Icons.CirclePlus)}
+                  &nbsp;Add a new portfolio
+                </Button>
+              }
+              content={<PortfolioForm mode={"create"} />}
+            />
           </div>
         </div>
 

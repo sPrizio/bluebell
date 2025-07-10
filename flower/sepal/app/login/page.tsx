@@ -34,7 +34,6 @@ import {
   useLoginMutation,
 } from "@/lib/hooks/query/mutations";
 import { useRouter } from "next/navigation";
-import { useSessionContext } from "@/lib/context/SessionContext";
 import { useSessionQuery } from "@/lib/hooks/query/queries";
 import ErrorPage from "@/app/error";
 
@@ -42,7 +41,7 @@ import ErrorPage from "@/app/error";
  * Renders the login page
  *
  * @author Stephen Prizio
- * @version 0.2.6
+ * @version 1.0.0
  */
 export default function Login() {
   const { toast } = useToast();
@@ -110,7 +109,9 @@ export default function Login() {
 
   useEffect(() => {
     if (hasLoggedIn || session?.isLoggedIn) {
-      router.push("/dashboard");
+      setTimeout(() => {
+        router.push("/dashboard");
+      }, 500);
     } else if (couldNotLogIn) {
       logErrors(loginError);
       toast({
